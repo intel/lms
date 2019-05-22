@@ -1,0 +1,3 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+#pragma deleteinstance ("__Namespace.Name='Intel_ME'", FAIL)

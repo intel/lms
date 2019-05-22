@@ -1,0 +1,547 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+AMT_SetupAuditRecord
+</TITLE>
+<META NAME="keywords" CONTENT="AMT_SetupAuditRecord class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="AMT_SetupAuditRecord";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class AMT_SetupAuditRecord</H2>
+
+	<b>Used in features:</b>  Intel(R) ME defined Classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_RecordForLog.html">CIM_RecordForLog</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_LogEntry.html">CIM_LogEntry</A>
+         <IMG SRC="inherit.gif" ALT="extended by "><A HREF="AMT_SetupAuditRecord.html">AMT_SetupAuditRecord</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>AMT_SetupAuditRecord</B><DT> extends <A HREF="CIM_LogEntry.html">CIM_LogEntry</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>Provides a record of the last Intel(R) ME Activation Event as recorded by Intel(R) ME<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=0.0.4<br/>LOCALE=0x409<br/>dynamic<br/>provider=IntelMEProv<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#InstanceID">InstanceID</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#ElementName">ElementName</A></B> </CODE>
+<BR>
+A user-friendly name for the object . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#Description">Description</A></B> </CODE>
+<BR>
+The Description property provides a textual description of the object.<br/>
+</TD>
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#ProvisioningTLSMode">ProvisioningTLSMode</A></B> </CODE>
+<BR>
+Specifies the TLS algorithm used for provisioning<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#SecureDNS">SecureDNS</A></B> </CODE>
+<BR>
+Specifies whether the OOB service was pre-configured with DNS suffix information to verify the SSL certificate used for configuration<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#HostInitiated">HostInitiated</A></B> </CODE>
+<BR>
+Indicates whether a previous provisioning attempt was initiated by the host<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#SelectedHashType">SelectedHashType</A></B> </CODE>
+<BR>
+Specifies the hash algorithm used to generate seed values for HMAC computations performed in the registration operation<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#SelectedHashData">SelectedHashData</A></B> </CODE>
+<BR>
+The stored Hash value of the root certificate used to validate the provisioning server . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#CACertificateSerial1">CACertificateSerial1</A></B> </CODE>
+<BR>
+The serial number of the first intermediate CA in the certification chain<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#CACertificateSerial2">CACertificateSerial2</A></B> </CODE>
+<BR>
+The serial number of the second intermediate CA in the certification chain<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#CACertificateSerial3">CACertificateSerial3</A></B> </CODE>
+<BR>
+The serial number of the third intermediate CA in the certification chain<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#AdditionalCaSerialNums">AdditionalCaSerialNums</A></B> </CODE>
+<BR>
+Indicates whether the certificate chain includes additional CA that were not recorded<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#IsTimeValid">IsTimeValid</A></B> </CODE>
+<BR>
+Indicates whether the certificate timestamp verification was successful.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#ProvServerIP">ProvServerIP</A></B> </CODE>
+<BR>
+The Provisioning Server IP address<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#ProvServerFQDN">ProvServerFQDN</A></B> </CODE>
+<BR>
+Common Name specified in the SSL certificate, typically this is the FQDN of the provisioning server<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#CreationTimeStamp">CreationTimeStamp</A></B> </CODE>
+<BR>
+Provides  Time and Date of the Provisioning operation, based on the  system Real-Time-clock (RTC)<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_SetupAuditRecord.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="InstanceID"><!-- --></A><H3>
+InstanceID <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>InstanceID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class. In order to ensure uniqueness within the NameSpace, the value of InstanceID SHOULD be constructed using the following 'preferred' algorithm: <br>&lt;OrgID&gt;:&lt;LocalID&gt; <br>Where &lt;OrgID&gt; and &lt;LocalID&gt; are separated by a colon ':', and where &lt;OrgID&gt; MUST include a copyrighted, trademarked or otherwise unique name that is owned by the business entity creating/defining the InstanceID, or is a registered ID that is assigned to the business entity by a recognized global authority (This is similar to the &lt;Schema Name&gt;_&lt;Class Name&gt; structure of Schema class names.) In addition, to ensure uniqueness &lt;OrgID&gt; MUST NOT contain a colon (':'). When using this algorithm, the first colon to appear in InstanceID MUST appear between &lt;OrgID&gt; and &lt;LocalID&gt;. <br>&lt;LocalID&gt; is chosen by the business entity and SHOULD not be re-used to identify different underlying (real-world) elements. If the above 'preferred' algorithm is not used, the defining entity MUST assure that the resultant InstanceID is not re-used across any InstanceIDs produced by this or other providers for this instance's NameSpace. <br>For DMTF defined instances, the 'preferred' algorithm MUST be used with the &lt;OrgID&gt; set to 'CIM'.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=InstanceID<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ElementName"><!-- --></A><H3>
+ElementName </H3>
+<PRE>
+public string <B>ElementName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A user-friendly name for the object. This property allows each instance to define a user-friendly name in addition to its key properties, identity data, and description information. <br>Note that the Name property of ManagedSystemElement is also defined as a user-friendly name. But, it is often subclassed to be a Key. It is not reasonable that the same property can convey both identity and a user-friendly name, without inconsistencies. Where Name exists and is not a Key (such as for instances of LogicalDevice), the same information can be present in both the Name and ElementName properties.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Description"><!-- --></A><H3>
+Description </H3>
+<PRE>
+public string <B>Description</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Description property provides a textual description of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ProvisioningTLSMode"><!-- --></A><H3>
+ProvisioningTLSMode </H3>
+<PRE>
+public uint8 <B>ProvisioningTLSMode</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Specifies the TLS algorithm used for provisioning<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2}<br/>Values={NOT READY, PKI, PSK}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SecureDNS"><!-- --></A><H3>
+SecureDNS </H3>
+<PRE>
+public boolean <B>SecureDNS</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Specifies whether the OOB service was pre-configured with DNS suffix information to verify the SSL certificate used for configuration<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="HostInitiated"><!-- --></A><H3>
+HostInitiated </H3>
+<PRE>
+public boolean <B>HostInitiated</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether a previous provisioning attempt was initiated by the host<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SelectedHashType"><!-- --></A><H3>
+SelectedHashType </H3>
+<PRE>
+public uint32 <B>SelectedHashType</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Specifies the hash algorithm used to generate seed values for HMAC computations performed in the registration operation<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={1, 2}<br/>Values={SHA-1, SHA-256}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SelectedHashData"><!-- --></A><H3>
+SelectedHashData </H3>
+<PRE>
+public uint8[] <B>SelectedHashData</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The stored Hash value of the root certificate used to validate the provisioning server. More information on the root CA can be retrieved by querying the AMT_ProvisioningCertificateHash instance<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CACertificateSerial1"><!-- --></A><H3>
+CACertificateSerial1 </H3>
+<PRE>
+public uint8[] <B>CACertificateSerial1</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The serial number of the first intermediate CA in the certification chain<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CACertificateSerial2"><!-- --></A><H3>
+CACertificateSerial2 </H3>
+<PRE>
+public uint8[] <B>CACertificateSerial2</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The serial number of the second intermediate CA in the certification chain<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CACertificateSerial3"><!-- --></A><H3>
+CACertificateSerial3 </H3>
+<PRE>
+public uint8[] <B>CACertificateSerial3</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The serial number of the third intermediate CA in the certification chain<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="AdditionalCaSerialNums"><!-- --></A><H3>
+AdditionalCaSerialNums </H3>
+<PRE>
+public boolean <B>AdditionalCaSerialNums</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether the certificate chain includes additional CA that were not recorded<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="IsTimeValid"><!-- --></A><H3>
+IsTimeValid </H3>
+<PRE>
+public boolean <B>IsTimeValid</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether the certificate timestamp verification was successful.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ProvServerIP"><!-- --></A><H3>
+ProvServerIP </H3>
+<PRE>
+public string <B>ProvServerIP</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Provisioning Server IP address<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ProvServerFQDN"><!-- --></A><H3>
+ProvServerFQDN </H3>
+<PRE>
+public string <B>ProvServerFQDN</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Common Name specified in the SSL certificate, typically this is the FQDN of the provisioning server<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CreationTimeStamp"><!-- --></A><H3>
+CreationTimeStamp </H3>
+<PRE>
+public datetime <B>CreationTimeStamp</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Provides  Time and Date of the Provisioning operation, based on the  system Real-Time-clock (RTC)<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=CreationTimeStamp<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]AMT_SetupAuditRecord Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,39 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2009-@LMS_VERSION_YEAR@ Intel Corporation
+ */
+/*++
+
+@file: version.h
+
+--*/
+
+#ifndef __VERSION_H__
+#define __VERSION_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define MAJOR_VERSION              @LMS_VERSION_MAJOR@
+#define MINOR_VERSION              @LMS_VERSION_MINOR@
+#define QUICK_FIX_NUMBER           @LMS_VERSION_PATCH@
+
+/** Build Version Number.  Updated automatically by build scripts */
+#define VER_BUILD          @LMS_VERSION_BUILD@
+/** Build Version String.  Updated automatically by build scripts */
+#define VER_BUILD_STR     "@LMS_VERSION_BUILD@"
+
+/**  Adding the current year date string for use in updating the year component of the
+***  displayed copyright message.
+***  the string needs to be the full 4 char value without spaces or special characters.
+***  For example:
+***        "2012"
+*/
+#define CURRENT_YEAR_STRING   "@LMS_VERSION_YEAR@"
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // __VERSION_H__

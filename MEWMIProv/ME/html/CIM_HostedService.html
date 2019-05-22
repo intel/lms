@@ -1,0 +1,214 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+CIM_HostedService
+</TITLE>
+<META NAME="keywords" CONTENT="CIM_HostedService class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="CIM_HostedService";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class CIM_HostedService</H2>
+
+	
+		
+<PRE>
+
+<A HREF="CIM_Dependency.html">CIM_Dependency</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_HostedService.html">CIM_HostedService</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+Association class <B>CIM_HostedService</B><DT> extends <A HREF="CIM_Dependency.html">CIM_Dependency</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>CIM_HostedService is an association between a Service and the System on which the functionality is located. The cardinality of this association is one-to-many. A System can host many Services. Services are weak with respect to their hosting System. Heuristic: A Service is hosted on the System where the LogicalDevices or SoftwareFeatures that implement the Service are located. The model does not represent Services hosted across multiple systems. The model is as an ApplicationSystem that acts as an aggregation point for Services that are each located on a single host.<br/><br/><b>Qualifiers:</b><br>-------------<br>Association<br/>Version=2.10.0<br/>UMLPackagePath=CIM::Core::Service<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;REF CIM_System </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_HostedService.html#Antecedent">Antecedent</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The hosting System.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;REF CIM_Service </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_HostedService.html#Dependent">Dependent</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The Service hosted on the System.<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_HostedService.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_HostedService.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="Antecedent"><!-- --></A><H3>
+Antecedent <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public REF CIM_System <B>Antecedent</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The hosting System.<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=Antecedent<br/>Min=1<br/>Max=1<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Dependent"><!-- --></A><H3>
+Dependent <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public REF CIM_Service <B>Dependent</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Service hosted on the System.<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=Dependent<br/>Weak<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]CIM_HostedService Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

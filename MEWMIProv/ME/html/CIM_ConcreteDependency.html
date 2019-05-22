@@ -1,0 +1,174 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+CIM_ConcreteDependency
+</TITLE>
+<META NAME="keywords" CONTENT="CIM_ConcreteDependency class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="CIM_ConcreteDependency";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class CIM_ConcreteDependency</H2>
+
+	<b>Used in features:</b>  CIM Schema inheritance classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_Dependency.html">CIM_Dependency</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ConcreteDependency.html">CIM_ConcreteDependency</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+Association class <B>CIM_ConcreteDependency</B><DT> extends <A HREF="CIM_Dependency.html">CIM_Dependency</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>CIM_ConcreteDependency is a generic association used to establish dependency relationships between ManagedElements. It is defined as a concrete subclass of the abstract CIM_Dependency class, to be used in place of many specific subclasses of Dependency that add no semantics, that is subclasses that do not clarify the type of dependency, update cardinalities, or add or remove qualifiers. Note that when you define additional semantics for Dependency, this class must not be subclassed. Specific semantics continue to be defined as subclasses of the abstract CIM_Dependency. ConcreteDependency is limited in its use as a concrete form of a general dependency. <br><br>It was deemed more prudent to create this concrete subclass than to change Dependency from an abstract to a concrete class. Dependency already had multiple abstract subclasses in the CIM Schema, and wider industry usage and impact could not be anticipated.<br/><br/><b>Qualifiers:</b><br>-------------<br>Association<br/>Version=2.10.0<br/>UMLPackagePath=CIM::Core::CoreElements<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;REF CIM_ManagedElement </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteDependency.html#Antecedent">Antecedent</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Antecedent represents the independent object in this association.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;REF CIM_ManagedElement </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteDependency.html#Dependent">Dependent</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Dependent represents the object that is dependent on the Antecedent.<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+
+
+
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="Antecedent"><!-- --></A><H3>
+Antecedent <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public REF CIM_ManagedElement <B>Antecedent</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Antecedent represents the independent object in this association.<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=Antecedent<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Dependent"><!-- --></A><H3>
+Dependent <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public REF CIM_ManagedElement <B>Dependent</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Dependent represents the object that is dependent on the Antecedent.<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=Dependent<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

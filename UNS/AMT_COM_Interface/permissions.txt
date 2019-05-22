@@ -1,0 +1,2 @@
+GetAMTVersion=users
+GetLMSVersion=users

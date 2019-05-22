@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'LMS'
+		'LMS.EXE'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}

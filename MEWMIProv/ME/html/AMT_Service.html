@@ -1,0 +1,441 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+AMT_Service
+</TITLE>
+<META NAME="keywords" CONTENT="AMT_Service class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="AMT_Service";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class AMT_Service</H2>
+
+	<b>Used in features:</b>  Intel(R) ME defined Classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ManagedSystemElement.html">CIM_ManagedSystemElement</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_LogicalElement.html">CIM_LogicalElement</A>
+         <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_EnabledLogicalElement.html">CIM_EnabledLogicalElement</A>
+            <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_Service.html">CIM_Service</A>
+               <IMG SRC="inherit.gif" ALT="extended by "><A HREF="AMT_Service.html">AMT_Service</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>AMT_Service</B><DT> extends <A HREF="CIM_Service.html">CIM_Service</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>A class providing access to Intel(R) AMT Features configuration, such as KVM and IDE-Redirect<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=0.0.1<br/>LOCALE=0x409<br/>dynamic<br/>provider=IntelMEProv<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#Name">Name</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The Name property uniquely identifies the Service and provides an indication of the functionality that is managed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#CreationClassName">CreationClassName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+CreationClassName indicates the name of the class or the subclass that is used in the creation of an instance . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#SystemName">SystemName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The Name of the scoping System.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#SystemCreationClassName">SystemCreationClassName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The CreationClassName of the scoping System.<br/>
+</TD>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#isWebUIEnabled">isWebUIEnabled</A></B>(enabled)</CODE>
+<BR>
+Indicates whether the WebUI capability is currently enabled<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#getSOLState">getSOLState</A></B>(hardEnabled, softEnabled, active)</CODE>
+<BR>
+Indicates whether SOL is currently enabled / active<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#getIDERState">getIDERState</A></B>(hardEnabled, softEnabled, active)</CODE>
+<BR>
+Indicates whether IDER is currently enabled / active<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#getKVMState">getKVMState</A></B>(hardEnabled, softEnabled, active)</CODE>
+<BR>
+Indicates whether KVM is currently enabled / active<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#TerminateKVMSession">TerminateKVMSession</A></B>()</CODE>
+<BR>
+Terminates KVM session<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#setSpriteZoom">setSpriteZoom</A></B>(zoom)</CODE>
+<BR>
+Allows user to specify Sprite zoom level<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#setSpriteLocale">setSpriteLocale</A></B>(locale)</CODE>
+<BR>
+Allows user to specify Sprite locale<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_Service.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="Name"><!-- --></A><H3>
+Name <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>Name</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Name property uniquely identifies the Service and provides an indication of the functionality that is managed. This functionality is described in more detail in the Description property of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=Name<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CreationClassName"><!-- --></A><H3>
+CreationClassName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>CreationClassName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>CreationClassName indicates the name of the class or the subclass that is used in the creation of an instance. When used with the other key properties of this class, this property allows all instances of this class and its subclasses to be uniquely identified.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SystemName"><!-- --></A><H3>
+SystemName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>SystemName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Name of the scoping System.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/>Propagated=CIM_System.Name<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SystemCreationClassName"><!-- --></A><H3>
+SystemCreationClassName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>SystemCreationClassName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The CreationClassName of the scoping System.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/>Propagated=CIM_System.CreationClassName<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="isWebUIEnabled"><!-- --></A>
+<H3>isWebUIEnabled</H3>
+<PRE>
+public uint32 <B>isWebUIEnabled</B>([OUT]boolean enabled)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates whether the WebUI capability is currently enabled<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>enabled</b><DD><b>General Information:</b><br/>Indicates whether the WebUI capability is currently enabled<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSOLState"><!-- --></A>
+<H3>getSOLState</H3>
+<PRE>
+public uint32 <B>getSOLState</B>([OUT]UINT32 hardEnabled, [OUT]UINT32 softEnabled, [OUT]boolean active)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates whether SOL is currently enabled / active<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>hardEnabled</b><DD><b>General Information:</b><br/>Indicates whether SOL is enabled by MEBX<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={Enabled, Disabled, UNKNOWN}<br/><br/><DT><b>softEnabled</b><DD><b>General Information:</b><br/>Indicates whether SOL is enabled by WS-Management interface (using AMT_RedirectionService class)<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={Enabled, Disabled, UNKNOWN}<br/><br/><DT><b>active</b><DD><b>General Information:</b><br/>Indicates whether SOL session is currently open<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getIDERState"><!-- --></A>
+<H3>getIDERState</H3>
+<PRE>
+public uint32 <B>getIDERState</B>([OUT]UINT32 hardEnabled, [OUT]UINT32 softEnabled, [OUT]boolean active)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates whether IDER is currently enabled / active<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>hardEnabled</b><DD><b>General Information:</b><br/>Indicates whether IDER is enabled by MEBX<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={Enabled, Disabled, UNKNOWN}<br/><br/><DT><b>softEnabled</b><DD><b>General Information:</b><br/>Indicates whether IDER is enabled by WS-Management interface (using AMT_RedirectionService class)<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={Enabled, Disabled, UNKNOWN}<br/><br/><DT><b>active</b><DD><b>General Information:</b><br/>Indicates whether IDER session is currently open<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getKVMState"><!-- --></A>
+<H3>getKVMState</H3>
+<PRE>
+public uint32 <B>getKVMState</B>([OUT]UINT32 hardEnabled, [OUT]UINT32 softEnabled, [OUT]boolean active)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates whether KVM is currently enabled / active<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>hardEnabled</b><DD><b>General Information:</b><br/>Indicates whether KVM is enabled by MEBX<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={Enabled, Disabled, UNKNOWN}<br/><br/><DT><b>softEnabled</b><DD><b>General Information:</b><br/>Indicates whether KVM is enabled by WS-Management interface (using CIM_KVMRedirectionSAP class)<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={Enabled, Disabled, UNKNOWN}<br/><br/><DT><b>active</b><DD><b>General Information:</b><br/>Indicates whether KVM session is currently open<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="TerminateKVMSession"><!-- --></A>
+<H3>TerminateKVMSession</H3>
+<PRE>
+public uint32 <B>TerminateKVMSession</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Terminates KVM session<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setSpriteZoom"><!-- --></A>
+<H3>setSpriteZoom</H3>
+<PRE>
+public uint32 <B>setSpriteZoom</B>([IN]uint8 zoom)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Allows user to specify Sprite zoom level<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>zoom</b><DD><b>General Information:</b><br/>Zoom level<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/>ValueMap={1, 2}<br/>Values={No zoom, Zoom x2}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setSpriteLocale"><!-- --></A>
+<H3>setSpriteLocale</H3>
+<PRE>
+public uint32 <B>setSpriteLocale</B>([IN]uint8 locale)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Allows user to specify Sprite locale<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>locale</b><DD><b>General Information:</b><br/>Sprite locale<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/>ValueMap={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}<br/>Values={English, French, German, Chinese Traditional, Japanese, Russian, Italian, Spanish, Portuguese Brazil, Korean, Chinese Simplified}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]AMT_Service Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

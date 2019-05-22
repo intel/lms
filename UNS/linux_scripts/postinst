@@ -1,0 +1,10 @@
+#!/bin/bash
+##############
+# LMS postinst hook
+##############
+
+udevadm control -R && udevadm trigger -c add
+systemctl restart rsyslog
+systemctl -q daemon-reload
+systemctl enable -fq lms
+systemctl start -q lms &

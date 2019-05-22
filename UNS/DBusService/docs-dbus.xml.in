@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+>
+<book id="index" xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<bookinfo>
+		<title>Local Managebility Service D-Bus Interfaces</title>
+		<releaseinfo>Version @LMS_VERSION_STRING@</releaseinfo>
+	</bookinfo>
+
+	<xi:include href="@CMAKE_CURRENT_BINARY_DIR@/docs-com.intel.amt.lms.xml"/>
+	<xi:include href="@CMAKE_CURRENT_BINARY_DIR@/docs-com.intel.amt.lms.Manageability.xml"/>
+	<xi:include href="@CMAKE_CURRENT_BINARY_DIR@/docs-com.intel.amt.lms.PTHI.xml"/>
+	<xi:include href="@CMAKE_CURRENT_BINARY_DIR@/docs-com.intel.amt.lms.AT_Device.xml"/>
+	<xi:include href="@CMAKE_CURRENT_BINARY_DIR@/docs-com.intel.amt.lms.UNSAlert.xml"/>
+</book>

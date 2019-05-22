@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# run script for Python tests
+#
+# Usage: run <python> <dir> <file>
+#
+(cd $2;
+ f=`dirname $0`;
+ LD_LIBRARY_PATH=$f/../../../build/src/lib $1 $3)

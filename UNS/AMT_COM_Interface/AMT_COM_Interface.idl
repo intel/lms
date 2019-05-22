@@ -1,0 +1,194 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2010-2019 Intel Corporation
+ */
+// AMT_COM_Interface.idl : IDL source for AMT_COM_Interface
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (AMT_COM_Interface.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "AMT_COM_Interface_defs.h";
+
+[
+	object,
+	uuid(7F500119-6CE4-42F2-8AF9-FD602BEC79F7),
+	dual,
+	nonextensible,
+	helpstring("IPTHI_Commands Interface"),
+	pointer_default(unique)
+]
+interface IPTHI_Commands : IDispatch{
+	
+	[id(1), helpstring("method GetAMTVersion")] HRESULT GetAMTVersion([out] BSTR* AMTVersion);
+	[id(2), helpstring("method GetLMSVersion")] HRESULT GetLMSVersion([out] BSTR* sVersion);
+	[id(3), helpstring("method GetHeciVersion")] HRESULT GetHeciVersion([out] BSTR* sVersion);
+	[id(4), helpstring("method GetProvisioningMode")] HRESULT GetProvisioningMode([out] SHORT* pProvisioningMode);
+	[id(5), helpstring("method GetProvisioningTlsMode")] HRESULT GetProvisioningTlsMode([out] SHORT* pProvisioningTlsMode);
+	[id(6), helpstring("method GetProvisioningState")] HRESULT GetProvisioningState([out] SHORT* pProvisioningState);
+	[id(7), helpstring("method GetNetworkConnectionStatus (Remote Access, NetworkConnectionType, ConnectionTrigger")]
+		HRESULT GetNetworkConnectionStatus([out] SHORT* pStatus,[out] SHORT* pConnectionType,[out] SHORT* pConnectionTrigger);
+	[id(8), helpstring("method GetUserInitiatedEnabled (connetcion status(CIRA disabled/enabled)")] HRESULT GetUserInitiatedEnabled([out] SHORT* pStatus);
+	[id(9), helpstring("method getWebUIState")] HRESULT getWebUIState([out] SHORT* pState);
+	[id(10), helpstring("method GetPowerPolicy")] HRESULT GetPowerPolicy([out] BSTR* bstrPolicy);
+	[id(11), helpstring("method GetLastResetReason")] HRESULT GetLastResetReason([out] SHORT* pReason);
+	[id(12), helpstring("method GetRedirectionStatus")] HRESULT GetRedirectionStatus([out] SHORT* pSOL, [out] SHORT* pIDER);
+	[id(13), helpstring("method GetSystemDefenseStatus")] HRESULT GetSystemDefenseStatus([out] SHORT* pStatus);
+	[id(14), helpstring("method GetNetworkSettings (0-WIRED, 1-WIRELESS)")] 
+		HRESULT GetNetworkSettings( [in] SHORT ConnectionType /*WIRED, WIRELESS*/,
+									[out] SHORT* pDhcpEnabled ,// Both
+									[out] BSTR*  bstrIpAddress,//Both
+									[out] BSTR*  bstrMacAddress,//Both
+									[out] SHORT* pLinkStatus, //Both
+									[out] SHORT* pWirelessControl,// WIRELESS
+									[out] SHORT* pWirelessConfEnabled); //WIRELESS
+	[id(15), helpstring("method GetSystemUUID")] HRESULT GetSystemUUID([out] BSTR* bstrUUID);
+	[id(16), helpstring("method OpenUserInitiatedConnection")] HRESULT OpenUserInitiatedConnection(void);
+	[id(17), helpstring("method CloseUserInitiatedConnection")] HRESULT CloseUserInitiatedConnection(void);
+	[id(18), helpstring("method GetIPv6NetworkSettings (0-WIRED, 1-WIRELESS)")] 
+		HRESULT GetIPv6NetworkSettings( [in] SHORT ConnectionType /*WIRED, WIRELESS*/,
+										[out] BSTR* IPv6DefaultRouter,
+										[out] BSTR* PrimaryDNS,
+										[out] BSTR* SecondaryDNS,
+										[out,size_is(4160)] VARIANT* pResponse, //IPv6 Addresses
+										[out] VARIANT_BOOL* pIpv6Enable);
+	[id(19) , helpstring("method TerminateKVMSession")] HRESULT TerminateKVMSession(void);
+	[id(20) , helpstring("method GetKVMRedirectionState")] HRESULT GetKVMRedirectionState([out] VARIANT_BOOL* pEnabled, [out] VARIANT_BOOL* pConnected);
+
+	[id(21) , helpstring("method GetSpriteLanguage")] HRESULT GetSpriteLanguage([out] SHORT* Language);
+	[id(22) , helpstring("method SetSpriteLanguage")] HRESULT SetSpriteLanguage([in] SHORT Language);
+	[id(23) , helpstring("method GetSpriteZoom")] HRESULT GetSpriteZoom([out] SHORT* Zoom);
+	[id(24) , helpstring("method SetSpriteZoom")] HRESULT SetSpriteZoom([in] SHORT Zoom);
+	[id(25) , helpstring("method GetSpriteParameters")] HRESULT GetSpriteParameters([out] SHORT* Language,[out] SHORT* Zoom);
+	[id(26) , helpstring("method GetConfigurationInfo")] HRESULT GetConfigurationInfo([out] SHORT* pControlMode,[out] SHORT* pProvisioningMethod, [out] BSTR* pCreationTimeStamp,[out] SAFEARRAY(BYTE)* pCertHash);
+	[id(27) , helpstring("method TerminateRemedySessions")] HRESULT TerminateRemedySessions(void);
+	[id(28) , helpstring("method GetUserConsentState")] HRESULT GetUserConsentState([out] SHORT* pState, [out] USER_CONSENT_POLICY* pPolicy);
+	[id(29) , helpstring("method GetWLANLinkInfo")] HRESULT GetWLANLinkInfo([out] UINT* pPreference, [out] UINT* pControl, [out] UINT* pProtection);
+	[id(30) , helpstring("method SetLinkPreferenceToHost")] HRESULT SetLinkPreferenceToHost();
+	[id(31) , helpstring("method InitiateUserConnection(out ResponseStatus)")] HRESULT InitiateUserConnection([out] SHORT* pStatus);
+	[id(32), helpstring("method userInitiatedPolicyRuleExists (connetcion status - CIRA disabled/enabled)")] HRESULT userInitiatedPolicyRuleExists([out] SHORT* pStatus);
+	[id(33), helpstring("method snmpEventSubscriberExists (snmpEvent existence - eventSubscriber exists/doesn't exists)")] HRESULT snmpEventSubscriberExists([out] SHORT* pExists);
+	[id(34), helpstring("method CILAFilterCollectionSubscriptionExists (filter Collection Subscription existence - Subscriber exists/doesn't exists)")] HRESULT CILAFilterCollectionSubscriptionExists([out] SHORT* pExists);
+	[id(35), helpstring("method UpdateScreenSettings")] HRESULT UpdateScreenSettings([in] EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters); //Naftali
+	[id(36), helpstring("method UpdateScreenSettings2")] HRESULT UpdateScreenSettings2([in] EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, [in] SHORT numOfDisplays);
+	[id(37), helpstring("method GetRedirectionSessionLinkTechnology")] HRESULT GetRedirectionSessionLinkTechnology ([in] REDIRECTION_SESSION_TYPE sessionType, [out] SHORT* pLinkTechnology);
+	[id(38), helpstring("method IsRebootAfterProvisioningNeeded")] HRESULT IsRebootAfterProvisioningNeeded( [out] VARIANT_BOOL* pNeeded);
+	[id(39), helpstring("method ProxyAddProxyEntry")] HRESULT ProxyAddProxyEntry(	[in]  BSTR                proxy_fqdn, 
+																					[in]  USHORT              proxy_port,
+																					[in]  SAFEARRAY(BYTE)      gateway_mac_address,
+																					[in]  BSTR                 network_dns_suffix);
+	[id(40), helpstring("method userInitiatedPolicyRuleForLocalMpsExists (Local MPS is configured with a User Initiated trigger)")] HRESULT userInitiatedPolicyRuleForLocalMpsExists([out] SHORT* pStatus);
+
+
+};
+
+[
+	object,
+	uuid(795982AA-D73D-4242-AEDD-2C0116B3E5F9),
+	dual,
+	nonextensible,
+	helpstring("IAT_Device Interface"),
+	pointer_default(unique)
+]
+interface IAT_Device : IDispatch{
+	[id(1), helpstring("method GetATDeviceInfo")] HRESULT GetATDeviceInfo([out] SHORT* pState, [out] BSTR* bstrInfo);
+	[id(2), helpstring("method GetAuditLogs")]HRESULT GetAuditLogs([out] BSTR* bstrAuditLogs);
+};
+[
+	object,
+	uuid(0B810B0A-AF72-4974-B47C-BFC1C0C4F770),
+	dual,
+	nonextensible,
+	helpstring("IUNSAlert Interface"),
+	pointer_default(unique)
+]
+interface IUNSAlert : IDispatch{
+	[id(1), helpstring("method RiseAlert")] HRESULT RiseAlert([in]USHORT category,
+				[in]ULONG id,
+				[in]BSTR message,
+				[in]BSTR messageArg,
+				[in]BSTR messageID, 
+				[in]BSTR dateTime);
+	[id(3), helpstring("method GetIMSSEventHistory")] HRESULT GetIMSSEventHistory([out] BSTR* bstrEventHistory);
+	[id(4), helpstring("method ResetUNSstartedEvent")] HRESULT ResetUNSstartedEvent();
+};
+[
+	object,
+	uuid(86D71C1F-A911-4A55-A455-C7E4111C8EDF),
+	dual,
+	nonextensible,
+	helpstring("IManageability_Commands Interface"),
+	pointer_default(unique)
+]
+interface IManageability_Commands : IDispatch{
+	
+
+	//[id(1), helpstring("method GetFeatureState")] HRESULT GetFeatureState([out] ULONG* pState);
+	//[id(2), helpstring("method GetPlatformFeatureCapability")] HRESULT GetPlatformFeatureCapability([out] ULONG* pPlatform, [out] ULONG* pSKU);
+	[id(3), helpstring("method GetTheFeatureState")] HRESULT GetTheFeatureState([in] FEATURES feat, [out] FEATURE_STATE* pState);
+	[id(4), helpstring("method GetFeaturesState")] HRESULT GetFeaturesState([out]SAFEARRAY(SHORT)* ppStates);
+	[id(5), helpstring("method GetCustomerType")] HRESULT GetCustomerType([out] CUSTOMER_TYPE* pType);
+	[id(6), helpstring("method GetPlatformType")] HRESULT GetPlatformType([out] PLATFORM_TYPE* pType);
+	[id(7), helpstring("method GetMenageabiltyMode")] HRESULT GetMenageabiltyMode([out] MENAGEABILTY_MODE* pMode);
+	[id(8), helpstring("method GetFWInfo")] HRESULT GetFWInfo([out] BSTR* pMEBxVersion, [out] ULONG* pBiosBootState, [out] VARIANT_BOOL* pCryptoFuseEnable, [out] VARIANT_BOOL* pLocalFWupdateEnable);
+	[id(9), helpstring("method GetPMCVersion")] HRESULT GetPMCVersion([out] BSTR* pFwVer);
+};
+[
+	uuid(9853D245-3E9D-4946-895A-F30D6396DEA6),
+	version(1.0),
+	helpstring("AMT_COM_Interface 1.0 Type Library")
+]
+library AMT_COM_InterfaceLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(80C25488-192B-4DE2-8150-5B2D2A2F835E),
+		helpstring("PTHI_Commands Class")
+	]
+	coclass PTHI_Commands
+	{
+		[default] interface IPTHI_Commands;
+	};
+	[
+		uuid(FA1F00CD-4445-401B-ADDF-FA4126EAA7C2),
+		helpstring("AT_Device Class")
+	]
+	coclass AT_Device
+	{
+		[default] interface IAT_Device;
+	};
+	[
+		uuid(4963AF6F-AFE7-4928-95A6-3AF77F17A646),
+		helpstring("_IUNSAlertEvents Interface")
+	]
+	dispinterface _IUNSAlertEvents
+	{
+		properties:
+		methods:
+			[id(1), helpstring("method Alert")] void Alert([in]USHORT category,
+				[in]ULONG id,
+				[in]BSTR message,
+				[in]BSTR messageArg,
+				[in]BSTR messageID, 
+				[in]BSTR dateTime);
+	};
+	[
+		uuid(64417EAE-2E0E-45E8-A8C1-03284E3D3587),
+		helpstring("UNSAlert Class")
+	]
+	coclass UNSAlert
+	{
+		[default] interface IUNSAlert;
+		[default, source] dispinterface _IUNSAlertEvents;
+	};
+	[
+		uuid(7CABC14E-7C51-4AAA-AE3F-CFEB42D5016A),
+		helpstring("IManageability_Commands Class")
+	]
+	coclass Manageability_Commands
+	{
+		[default] interface IManageability_Commands;
+	};
+};

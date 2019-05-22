@@ -1,0 +1,24 @@
+HKCR
+{
+	LMS.AT_Device.1 = s 'AT_Device Class'
+	{
+		CLSID = s '{FA1F00CD-4445-401B-ADDF-FA4126EAA7C2}'
+	}
+	LMS.AT_Device = s 'AT_Device Class'
+	{
+		CLSID = s '{FA1F00CD-4445-401B-ADDF-FA4126EAA7C2}'
+		CurVer = s 'LMS.AT_Device.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FA1F00CD-4445-401B-ADDF-FA4126EAA7C2} = s 'AT_Device Class'
+		{
+			ProgID = s 'LMS.AT_Device.1'
+			VersionIndependentProgID = s 'LMS.AT_Device'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{9853D245-3E9D-4946-895A-F30D6396DEA6}'
+		}
+	}
+}

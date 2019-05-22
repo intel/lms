@@ -1,0 +1,638 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+OOB_Service
+</TITLE>
+<META NAME="keywords" CONTENT="OOB_Service class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="OOB_Service";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class OOB_Service</H2>
+
+	<b>Used in features:</b>  Intel(R) ME defined Classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ManagedSystemElement.html">CIM_ManagedSystemElement</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_LogicalElement.html">CIM_LogicalElement</A>
+         <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_EnabledLogicalElement.html">CIM_EnabledLogicalElement</A>
+            <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_Service.html">CIM_Service</A>
+               <IMG SRC="inherit.gif" ALT="extended by "><A HREF="OOB_Service.html">OOB_Service</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>OOB_Service</B><DT> extends <A HREF="CIM_Service.html">CIM_Service</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>A class for handling Intel(R) ME's OOB activation(aka Intel(R) AMT provisioning) and for reporting the OOB configuration<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=0.0.4<br/>LOCALE=0x409<br/>dynamic<br/>provider=IntelMEProv<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#Name">Name</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The Name property uniquely identifies the Service and provides an indication of the functionality that is managed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#CreationClassName">CreationClassName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+CreationClassName indicates the name of the class or the subclass that is used in the creation of an instance . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#SystemName">SystemName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The Name of the scoping System.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#SystemCreationClassName">SystemCreationClassName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The CreationClassName of the scoping System.<br/>
+</TD>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetAMTProvisioningMode">GetAMTProvisioningMode</A></B>(mode)</CODE>
+<BR>
+Returns the current provisioning (activation) mode of the device . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#isRemoteConfigEnabled">isRemoteConfigEnabled</A></B>(enabled)</CODE>
+<BR>
+Indicates if Remote Configuration is enabled in the MEBx<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetActivationTLSMode">GetActivationTLSMode</A></B>(mode)</CODE>
+<BR>
+Indicates whether the device is using TLS-PSK or TLS-PKI activation mode<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetPID">GetPID</A></B>(PID)</CODE>
+<BR>
+When the device is configured in TLS-PSK mode, this functions returns the PID value of the device, this can be used by Provisioning servers to associate a PSK value<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetHelloPacketDestInfo">GetHelloPacketDestInfo</A></B>(Address, ConfigServerListeningPort)</CODE>
+<BR>
+Returns the information about the server which Intel(R) AMT will send Hello packets to . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetAMTFQDN">GetAMTFQDN</A></B>(FQDN)</CODE>
+<BR>
+Intel(R) AMT's configured Fully Qualified Domain Name<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#Activate">Activate</A></B>(OTP, PKIDNSSuffix, provTLSMode)</CODE>
+<BR>
+Activate Intel(R) AMT using Remote Configuration<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#CancelActivation">CancelActivation</A></B>()</CODE>
+<BR>
+Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetProvisioningState">GetProvisioningState</A></B>(state)</CODE>
+<BR>
+GetProvisioningState<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetProvisioningInfo">GetProvisioningInfo</A></B>(PKIDNSSuffix, ConfigServerFQDN)</CODE>
+<BR>
+GetProvisioningInfo returns the FQDN of configuration server and the PKI FQDN suffix<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#isTLSEnabled">isTLSEnabled</A></B>(enabled)</CODE>
+<BR>
+Specifies whether Intel(R) AMT TLS port is enabled<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#OpenUserInitiatedConnection">OpenUserInitiatedConnection</A></B>()</CODE>
+<BR>
+CIRA: User request to initiate a CIRA connection<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#CloseUserInitiatedConnection">CloseUserInitiatedConnection</A></B>()</CODE>
+<BR>
+CIRA: Request Intel(R) ME to close an existing CIRA connection<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetRemoteAccessConnectionStatus">GetRemoteAccessConnectionStatus</A></B>(NetworkConStatus, ConnectionTrigger, MPshostName, RemoteAccessConStatus)</CODE>
+<BR>
+CIRA: Retrieves information of an active CIRA connection<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#GetLocalAdminCredentials">GetLocalAdminCredentials</A></B>(Username, Password)</CODE>
+<BR>
+Get the AMT local Administrator credentials . . .<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="OOB_Service.html#Unconfigure">Unconfigure</A></B>()</CODE>
+<BR>
+Un-configure the AMT system . . .<br/>
+</TD>
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="Name"><!-- --></A><H3>
+Name <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>Name</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Name property uniquely identifies the Service and provides an indication of the functionality that is managed. This functionality is described in more detail in the Description property of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=Name<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CreationClassName"><!-- --></A><H3>
+CreationClassName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>CreationClassName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>CreationClassName indicates the name of the class or the subclass that is used in the creation of an instance. When used with the other key properties of this class, this property allows all instances of this class and its subclasses to be uniquely identified.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SystemName"><!-- --></A><H3>
+SystemName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>SystemName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Name of the scoping System.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/>Propagated=CIM_System.Name<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SystemCreationClassName"><!-- --></A><H3>
+SystemCreationClassName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>SystemCreationClassName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The CreationClassName of the scoping System.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/>Propagated=CIM_System.CreationClassName<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="GetAMTProvisioningMode"><!-- --></A>
+<H3>GetAMTProvisioningMode</H3>
+<PRE>
+public uint32 <B>GetAMTProvisioningMode</B>([OUT]uint8 mode)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Returns the current provisioning (activation) mode of the device. This command is deprecated since Intel(R) AMT 7.0.<br/><br/><b>Qualifiers:</b><br>-------------<br>InternalOnly=Check Intel(R) AMT 6.0 support<br/>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>mode</b><DD><b>General Information:</b><br/>Provisioning mode<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2, 3}<br/>Values={None, Enterprise, Small-Business, Remote Connectivity_Service}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="isRemoteConfigEnabled"><!-- --></A>
+<H3>isRemoteConfigEnabled</H3>
+<PRE>
+public uint32 <B>isRemoteConfigEnabled</B>([OUT]boolean enabled)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates if Remote Configuration is enabled in the MEBx<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>enabled</b><DD><b>General Information:</b><br/>Indicates if Remote Configuration is enabled in the MEBx<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetActivationTLSMode"><!-- --></A>
+<H3>GetActivationTLSMode</H3>
+<PRE>
+public uint32 <B>GetActivationTLSMode</B>([OUT]uint8 mode)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates whether the device is using TLS-PSK or TLS-PKI activation mode<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>mode</b><DD><b>General Information:</b><br/>TLS activation mode<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={NOT READY, PSK, PKI}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetPID"><!-- --></A>
+<H3>GetPID</H3>
+<PRE>
+public uint32 <B>GetPID</B>([OUT]string PID)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>When the device is configured in TLS-PSK mode, this functions returns the PID value of the device, this can be used by Provisioning servers to associate a PSK value<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>PID</b><DD><b>General Information:</b><br/>PID value<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetHelloPacketDestInfo"><!-- --></A>
+<H3>GetHelloPacketDestInfo</H3>
+<PRE>
+public uint32 <B>GetHelloPacketDestInfo</B>([OUT]string Address, [OUT]uint16 ConfigServerListeningPort)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Returns the information about the server which Intel(R) AMT will send Hello packets to. The OOB server (aka Intel(R) AMT) sends 'Hello packet' messages to this address as a mean to trigger remote configuration<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>Address</b><DD><b>General Information:</b><br/>returns the address information (IPv4, IPv6 or FQDN) of the configuration server<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>InternalOnly=if not configured return 'provisionserver'<br/><br/><DT><b>ConfigServerListeningPort</b><DD><b>General Information:</b><br/>TCP Port of the configuration server to send Hello packets to<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>InternalOnly=if not configured return '9971'<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetAMTFQDN"><!-- --></A>
+<H3>GetAMTFQDN</H3>
+<PRE>
+public uint32 <B>GetAMTFQDN</B>([OUT]string FQDN)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Intel(R) AMT's configured Fully Qualified Domain Name<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>FQDN</b><DD><b>General Information:</b><br/>Intel(R) AMT's configured Fully Qualified Domain Name<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Activate"><!-- --></A>
+<H3>Activate</H3>
+<PRE>
+public uint32 <B>Activate</B>([IN]string OTP, [IN]string PKIDNSSuffix, [OUT]uint8 provTLSMode)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />Permitted realms: Administrators<br/><br/>
+<b>General Information:</b><br/>Activate Intel(R) AMT using Remote Configuration<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>OTP</b><DD><b>General Information:</b><br/>Optional One-Time-Password value the remote configuration service can use to authenticate the device<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/><br/><DT><b>PKIDNSSuffix</b><DD><b>General Information:</b><br/>Optional DNSSuffix to match<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/><br/><DT><b>provTLSMode</b><DD><b>General Information:</b><br/>Intel(R) AMT's TLS activation mode<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={NOT READY, PSK, PKI}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="CancelActivation"><!-- --></A>
+<H3>CancelActivation</H3>
+<PRE>
+public uint32 <B>CancelActivation</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />Permitted realms: Administrators<br/><br/>
+<b>General Information:</b><br/>Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetProvisioningState"><!-- --></A>
+<H3>GetProvisioningState</H3>
+<PRE>
+public uint32 <B>GetProvisioningState</B>([OUT]uint8 state)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>GetProvisioningState<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>state</b><DD><b>General Information:</b><br/>Provisioning state<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={PRE-Provisioning, IN-Provisioning, POST-Provisioning}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetProvisioningInfo"><!-- --></A>
+<H3>GetProvisioningInfo</H3>
+<PRE>
+public uint32 <B>GetProvisioningInfo</B>([OUT]string PKIDNSSuffix, [OUT]string ConfigServerFQDN)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>GetProvisioningInfo returns the FQDN of configuration server and the PKI FQDN suffix<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>PKIDNSSuffix</b><DD><b>General Information:</b><br/>PKIDNSSuffix Specified<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/><DT><b>ConfigServerFQDN</b><DD><b>General Information:</b><br/>The ConfigurationServerFQDN, set to null if not specified<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="isTLSEnabled"><!-- --></A>
+<H3>isTLSEnabled</H3>
+<PRE>
+public uint32 <B>isTLSEnabled</B>([OUT]boolean enabled)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Specifies whether Intel(R) AMT TLS port is enabled<br/><br/><b>Qualifiers:</b><br>-------------<br>InternalOnly=consider modifying the API to specify all open ports<br/>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>enabled</b><DD><b>General Information:</b><br/>Specifies whether Intel(R) AMT TLS port is enabled<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="OpenUserInitiatedConnection"><!-- --></A>
+<H3>OpenUserInitiatedConnection</H3>
+<PRE>
+public uint32 <B>OpenUserInitiatedConnection</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>CIRA: User request to initiate a CIRA connection<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="CloseUserInitiatedConnection"><!-- --></A>
+<H3>CloseUserInitiatedConnection</H3>
+<PRE>
+public uint32 <B>CloseUserInitiatedConnection</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>CIRA: Request Intel(R) ME to close an existing CIRA connection<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetRemoteAccessConnectionStatus"><!-- --></A>
+<H3>GetRemoteAccessConnectionStatus</H3>
+<PRE>
+public uint32 <B>GetRemoteAccessConnectionStatus</B>([OUT]uint32 NetworkConStatus, [OUT]uint32 ConnectionTrigger, [OUT]string MPshostName, [OUT]uint32 RemoteAccessConStatus)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>CIRA: Retrieves information of an active CIRA connection<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>NetworkConStatus</b><DD><b>General Information:</b><br/>Indicates the network connection status from Intel(R) AMT standpoint<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2, 3}<br/>Values={Direct, VPN, Outside Enterprise, Unknown}<br/><br/><DT><b>ConnectionTrigger</b><DD><b>General Information:</b><br/>Indicates the trigger for the remote access establishment in case a connection status is connected/connecting<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2, 3}<br/>Values={User Initiated, Alert, Periodic, Provisioning}<br/><br/><DT><b>MPshostName</b><DD><b>General Information:</b><br/>The MPS hostname that Intel(R) AMT is connected or trying to connect to<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/><DT><b>RemoteAccessConStatus</b><DD><b>General Information:</b><br/>the status of the connection (not connected, connecting, connected)<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={not connected, connecting, connected}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="GetLocalAdminCredentials"><!-- --></A>
+<H3>GetLocalAdminCredentials</H3>
+<PRE>
+public uint32 <B>GetLocalAdminCredentials</B>([OUT]string Username, [OUT]string Password)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />Permitted realms: Administrators<br/><br/>
+<b>General Information:</b><br/>Get the AMT local Administrator credentials. A local application or a service running as a Windows local administrator, can use this method to retrieve credentials from AMT. This application can use these credentials to authenticate to AMT during WSMAN commands. <br/><br/><b>Qualifiers:</b><br>-------------<br>Amended<br/>Static<br/>Implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>Username</b><DD><b>General Information:</b><br/>Local administrator username<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/><DT><b>Password</b><DD><b>General Information:</b><br/>Local administrator password<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]OOB_Service Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<A NAME="Unconfigure"><!-- --></A>
+<H3>Unconfigure</H3>
+<PRE>
+public  <B>Unconfigure</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />Permitted realms: Administrators<br/><br/>
+<b>General Information:</b><br/>Un-configure the AMT system<br/>
+</DD>
+</DL>
+<HR>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

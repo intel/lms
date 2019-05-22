@@ -1,0 +1,89 @@
+// Copyright (c) 2008 DMTF.  All rights reserved.
+   [Association, Version ( "2.20.0" ), 
+    UMLPackagePath ( "CIM::Core::PowerMgmt" ), 
+    Description ( 
+       "The association between a Managed System Element and its power "
+       "management service." )]
+class CIM_AssociatedPowerManagementService : CIM_ServiceAvailableToElement {
+
+      [Override ( "ServiceProvided" ), 
+       Max ( 1 ), 
+       Description ( "The Service that is available." )]
+   CIM_PowerManagementService REF ServiceProvided;
+
+      [Description ( 
+          "The current power state of the associated Managed System Element."
+           ), 
+       ValueMap { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+          "11", "12", "13", "14", "15", "16", "17", "..", 
+          "0x7FFF..0xFFFF" }, 
+       Values { "Other", "On", "Sleep - Light", "Sleep -Deep", 
+          "Power Cycle (Off - Soft)", "Off - Hard", 
+          "Hibernate (Off - Soft)", "Off - Soft", 
+          "Power Cycle (Off-Hard)", "Master Bus Reset", 
+          "Diagnostic Interrupt (NMI)", "Off - Soft Graceful", 
+          "Off - Hard Graceful", "Master Bus Reset Graceful", 
+          "Power Cycle (Off - Soft Graceful)", 
+          "Power Cycle (Off - Hard Graceful)", 
+          "Diagnostic Interrupt (INIT)", "DMTF Reserved", 
+          "Vendor Specific" }, 
+       MappingStrings { "MIF.DMTF|System Power Controls|001.2" }, 
+       ModelCorrespondence { 
+          "CIM_PowerManagementCapabilities.PowerCapabilities" }]
+   uint16 PowerState;
+
+      [Description ( 
+          "A string describing the additional power management "
+          "state of the element, used when the PowerState is set to "
+          "the value 1, \"Other\"." ), 
+       ModelCorrespondence { 
+          "CIM_AssociatedPowerManagementService.PowerState" }]
+   string OtherPowerState;
+
+      [Description ( 
+          "The desired or the last requested power state of the "
+          "associated Managed System Element, irrespective of the "
+          "mechanism through which the request was made. If the "
+          "requested power state is unknown, then the property "
+          "shall have the value of 0 (\"Unknown\"). If the property "
+          "has no meaning or is not supported, then the property "
+          "shall have value 12(\"Not Applicable\")." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+          "10", "11", "12", "13", "14", "15", "16", "17", "18", 
+          "..", "0x7FFF..0xFFFF" }, 
+       Values { "Unknown", "Other", "On", "Sleep - Light", 
+          "Sleep -_Deep", "Power Cycle (Off - Soft)", "Off - Hard", 
+          "Hibernate (Off - Soft)", "Off - Soft", 
+          "Power Cycle (Off-Hard)", "Master Bus Reset", 
+          "Diagnostic Interrupt (NMI)", "Not Applicable", 
+          "Off - Soft Graceful", "Off - Hard Graceful", 
+          "Master Bus Reset Graceful", 
+          "Power Cycle (Off - Soft Graceful)", 
+          "Power Cycle (Off - Hard Graceful)", 
+          "Diagnostic Interrupt (INIT)", "DMTF Reserved", 
+          "Vendor Specific" }, 
+       MappingStrings { "MIF.DMTF|System Power Controls|001.2" }, 
+       ModelCorrespondence { 
+          "CIM_PowerManagementCapabilities.PowerCapabilities", 
+          "CIM_AssociatedPowerManagementService.OtherRequestedPowerState" }]
+   uint16 RequestedPowerState = 12;
+
+      [Description ( 
+          "A string describing the additional power management "
+          "state of the element, used when the RequestedPowerState "
+          "is set to the value 1, \"Other\"." ), 
+       ModelCorrespondence { 
+          "CIM_AssociatedPowerManagementService.RequestedPowerState" }]
+   string OtherRequestedPowerState;
+
+      [Description ( 
+          "The time when the element will be powered on again, used "
+          "when the RequestedPowerState has the value 2, \"On\", 5, "
+          "\"Power Cycle (Off - Soft)\" or 6, \"Power Cycle (Off - "
+          "Hard)\"." ), 
+       ModelCorrespondence { 
+          "CIM_AssociatedPowerManagementService.RequestedPowerState" }]
+   datetime PowerOnTime;
+
+
+};

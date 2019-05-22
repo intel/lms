@@ -1,0 +1,957 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+CIM_ConcreteJob
+</TITLE>
+<META NAME="keywords" CONTENT="CIM_ConcreteJob class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="CIM_ConcreteJob";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class CIM_ConcreteJob</H2>
+
+	<b>Used in features:</b>  CIM Schema inheritance classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ManagedSystemElement.html">CIM_ManagedSystemElement</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_LogicalElement.html">CIM_LogicalElement</A>
+         <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_Job.html">CIM_Job</A>
+            <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ConcreteJob.html">CIM_ConcreteJob</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>CIM_ConcreteJob</B><DT> extends <A HREF="CIM_Job.html">CIM_Job</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>A concrete version of Job. This class represents a generic and instantiable unit of work, such as a batch or a print job.<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=2.19.0<br/>UMLPackagePath=CIM::Core::CoreElements<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#OtherRecoveryAction">OtherRecoveryAction</A></B> </CODE>
+<BR>
+A string describing the recovery action when the RecoveryAction property of the instance is 1 ("Other").<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#RecoveryAction">RecoveryAction</A></B> </CODE>
+<BR>
+Describes the recovery action to be taken for an unsuccessfully run Job . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#ErrorDescription">ErrorDescription</A></B> </CODE>
+<BR>
+A free-form string that contains the vendor error description . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#ErrorCode">ErrorCode</A></B> </CODE>
+<BR>
+A vendor-specific error code . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#DeleteOnCompletion">DeleteOnCompletion</A></B> </CODE>
+<BR>
+Indicates whether or not the job should be automatically deleted upon completion . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#PercentComplete">PercentComplete</A></B> </CODE>
+<BR>
+The percentage of the job that has completed at the time that this value is requested . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Priority">Priority</A></B> </CODE>
+<BR>
+Indicates the urgency or importance of execution of the Job . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Owner">Owner</A></B> </CODE>
+<BR>
+The User that submitted the Job, or the Service or method name that caused the job to be created.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Notify">Notify</A></B> </CODE>
+<BR>
+The User who is to be notified upon the Job completion or failure.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#UntilTime">UntilTime</A></B> </CODE>
+<BR>
+The time after which the Job is invalid or should be stopped . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#LocalOrUtcTime">LocalOrUtcTime</A></B> </CODE>
+<BR>
+This property indicates whether the times represented in the RunStartInterval and UntilTime properties represent local times or UTC times . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#RunStartInterval">RunStartInterval</A></B> </CODE>
+<BR>
+The time interval after midnight when the Job should be processed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;sint8 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#RunDayOfWeek">RunDayOfWeek</A></B> </CODE>
+<BR>
+A positive or negative integer used in conjunction with RunDay to indicate the day of the week on which the Job is processed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;sint8 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#RunDay">RunDay</A></B> </CODE>
+<BR>
+The day in the month on which the Job should be processed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#RunMonth">RunMonth</A></B> </CODE>
+<BR>
+The month during which the Job should be processed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#JobRunTimes">JobRunTimes</A></B> </CODE>
+<BR>
+The number of times that the Job should be run . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#ElapsedTime">ElapsedTime</A></B> </CODE>
+<BR>
+The time interval that the Job has been executing or the total execution time if the Job is complete . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#StartTime">StartTime</A></B> </CODE>
+<BR>
+The time that the Job was actually started . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#ScheduledStartTime">ScheduledStartTime</A></B> </CODE>
+<BR>
+The time that the current Job is scheduled to start . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#TimeSubmitted">TimeSubmitted</A></B> </CODE>
+<BR>
+The time that the Job was submitted to execute . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#JobStatus">JobStatus</A></B> </CODE>
+<BR>
+A free-form string that represents the status of the job . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#HealthState">HealthState</A></B> </CODE>
+<BR>
+Indicates the current health of the element . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Status">Status</A></B> </CODE>
+<BR>
+A string indicating the current status of the object . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#StatusDescriptions">StatusDescriptions</A></B> </CODE>
+<BR>
+Strings describing the various OperationalStatus array values . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#OperationalStatus">OperationalStatus</A></B> </CODE>
+<BR>
+Indicates the current statuses of the element . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#InstallDate">InstallDate</A></B> </CODE>
+<BR>
+A datetime value that indicates when the object was installed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Caption">Caption</A></B> </CODE>
+<BR>
+The Caption property is a short textual description (one- line string) of the object.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Description">Description</A></B> </CODE>
+<BR>
+The Description property provides a textual description of the object.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#ElementName">ElementName</A></B> </CODE>
+<BR>
+A user-friendly name for the object . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#InstanceID">InstanceID</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#Name">Name</A></B> </CODE>
+<BR>
+The user-friendly name for this instance of a Job . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#JobState">JobState</A></B> </CODE>
+<BR>
+JobState is an integer enumeration that indicates the operational state of a Job . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#TimeOfLastStateChange">TimeOfLastStateChange</A></B> </CODE>
+<BR>
+The date or time when the state of the Job last changed . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#TimeBeforeRemoval">TimeBeforeRemoval</A></B> </CODE>
+<BR>
+The amount of time that the Job is retained after it has finished executing, either succeeding or failing in that execution . . .<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#KillJob">KillJob</A></B>(DeleteOnKill)</CODE>
+<BR>
+KillJob is being deprecated because there is no distinction made between an orderly shutdown and an immediate kill . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_ConcreteJob.html#RequestStateChange">RequestStateChange</A></B>(RequestedState, TimeoutPeriod)</CODE>
+<BR>
+Requests that the state of the job be changed to the value specified in the RequestedState parameter . . .<br/>
+</TD>
+
+
+
+
+
+
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="OtherRecoveryAction"><!-- --></A><H3>
+OtherRecoveryAction </H3>
+<PRE>
+public string <B>OtherRecoveryAction</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A string describing the recovery action when the RecoveryAction property of the instance is 1 ("Other").<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_Job.RecoveryAction}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RecoveryAction"><!-- --></A><H3>
+RecoveryAction </H3>
+<PRE>
+public uint16 <B>RecoveryAction</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Describes the recovery action to be taken for an unsuccessfully run Job. The possible values are: <br>0 = "Unknown", meaning it is unknown as to what recovery action to take <br>1 = "Other", indicating that the recovery action will be specified in the OtherRecoveryAction property <br>2 = "Do Not Continue", meaning stop the execution of the job and appropriately update its status <br>3 = "Continue With Next Job", meaning continue with the next job in the queue <br>4 = "Re-run Job", indicating that the job should be re-run <br>5 = "Run Recovery Job", meaning run the Job associated using the RecoveryJob relationship. Note that the recovery Job must already be in the queue from which it will run.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3, 4, 5}<br/>Values={Unknown, Other, Do Not Continue, Continue With Next Job, Re-run Job, Run Recovery Job}<br/>ModelCorrespondence={CIM_Job.OtherRecoveryAction}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ErrorDescription"><!-- --></A><H3>
+ErrorDescription </H3>
+<PRE>
+public string <B>ErrorDescription</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A free-form string that contains the vendor error description. Note that this property is also present in the JobProcessingStatistics class. This class is necessary to capture the processing information for recurring Jobs, because only the 'last' run error can be stored in this single-valued property.<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_Job.ErrorCode}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ErrorCode"><!-- --></A><H3>
+ErrorCode </H3>
+<PRE>
+public uint16 <B>ErrorCode</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A vendor-specific error code. The value must be set to zero if the Job completed without error. Note that this property is also present in the JobProcessingStatistics class. This class is necessary to capture the processing information for recurring Jobs, because only the 'last' run error can be stored in this single-valued property.<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_Job.ErrorDescription}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="DeleteOnCompletion"><!-- --></A><H3>
+DeleteOnCompletion </H3>
+<PRE>
+public boolean <B>DeleteOnCompletion</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether or not the job should be automatically deleted upon completion. Note that the 'completion' of a recurring job is defined by its JobRunTimes or UntilTime properties, or when the Job is terminated by manual intervention. If this property is set to false and the job completes, then the extrinsic method DeleteInstance must be used to delete the job instead of updating this property.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="PercentComplete"><!-- --></A><H3>
+PercentComplete </H3>
+<PRE>
+public uint16 <B>PercentComplete</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The percentage of the job that has completed at the time that this value is requested. Note that this property is also present in the JobProcessingStatistics class. This class is necessary to capture the processing information for recurring Jobs, because only the 'last' run data can be stored in this single-valued property. <br>Note that the value 101 is undefined and will be not be allowed in the next major revision of the specification.<br/><br/><b>Qualifiers:</b><br>-------------<br>Units=Percent<br/>MinValue=0<br/>MaxValue=101<br/>PUnit=percent<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Priority"><!-- --></A><H3>
+Priority </H3>
+<PRE>
+public uint32 <B>Priority</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates the urgency or importance of execution of the Job. The lower the number, the higher the priority. Note that this property is also present in the JobProcessingStatistics class. This class is necessary to capture the setting information that would influence the results of a job.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Owner"><!-- --></A><H3>
+Owner </H3>
+<PRE>
+public string <B>Owner</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The User that submitted the Job, or the Service or method name that caused the job to be created.<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_OwningJobElement}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Notify"><!-- --></A><H3>
+Notify </H3>
+<PRE>
+public string <B>Notify</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The User who is to be notified upon the Job completion or failure.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="UntilTime"><!-- --></A><H3>
+UntilTime </H3>
+<PRE>
+public datetime <B>UntilTime</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The time after which the Job is invalid or should be stopped. This time can be represented by an actual date and time, or by an interval relative to the time that this property is requested. A value of all nines indicates that the Job can run indefinitely.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>ModelCorrespondence={CIM_Job.LocalOrUtcTime}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="LocalOrUtcTime"><!-- --></A><H3>
+LocalOrUtcTime </H3>
+<PRE>
+public uint16 <B>LocalOrUtcTime</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>This property indicates whether the times represented in the RunStartInterval and UntilTime properties represent local times or UTC times. Time values are synchronized worldwide by using the enumeration value 2, "UTC Time".<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>ValueMap={1, 2}<br/>Values={Local Time, UTC Time}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RunStartInterval"><!-- --></A><H3>
+RunStartInterval </H3>
+<PRE>
+public datetime <B>RunStartInterval</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The time interval after midnight when the Job should be processed. For example, <br>00000000020000.000000:000 <br>indicates that the Job should be run on or after two o'clock, local time or UTC time (distinguished using the LocalOrUtcTime property.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>ModelCorrespondence={CIM_Job.RunMonth, CIM_Job.RunDay, CIM_Job.RunDayOfWeek, CIM_Job.RunStartInterval}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RunDayOfWeek"><!-- --></A><H3>
+RunDayOfWeek </H3>
+<PRE>
+public sint8 <B>RunDayOfWeek</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A positive or negative integer used in conjunction with RunDay to indicate the day of the week on which the Job is processed. RunDayOfWeek is set to 0 to indicate an exact day of the month, such as March 1. A positive integer (representing Sunday, Monday, ..., Saturday) means that the day of week is found on or after the specified RunDay. A negative integer (representing -Sunday, -Monday, ..., -Saturday) means that the day of week is found on or BEFORE the RunDay.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>ValueMap={-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7}<br/>Values={-Saturday, -Friday, -Thursday, -Wednesday, -Tuesday, -Monday, -Sunday, ExactDayOfMonth, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday}<br/>ModelCorrespondence={CIM_Job.RunMonth, CIM_Job.RunDay, CIM_Job.RunStartInterval}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RunDay"><!-- --></A><H3>
+RunDay </H3>
+<PRE>
+public sint8 <B>RunDay</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The day in the month on which the Job should be processed. There are two different interpretations for this property, depending on the value of DayOfWeek. In one case, RunDay defines the day-in-month on which the Job is processed. This interpretation is used when the DayOfWeek is 0. A positive or negative integer indicates whether the RunDay should be calculated from the beginning or end of the month. For example, 5 indicates the fifth day in the RunMonth and -1 indicates the last day in the RunMonth. <br><br>When RunDayOfWeek is not 0, RunDay is the day-in-month on which the Job is processed, defined in conjunction with RunDayOfWeek. For example, if RunDay is 15 and RunDayOfWeek is Saturday, then the Job is processed on the first Saturday on or after the 15th day in the RunMonth (for example, the third Saturday in the month). If RunDay is 20 and RunDayOfWeek is -Saturday, then this indicates the first Saturday on or before the 20th day in the RunMonth. If RunDay is -1 and RunDayOfWeek is -Sunday, then this indicates the last Sunday in the RunMonth.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>MinValue=-31<br/>MaxValue=31<br/>ModelCorrespondence={CIM_Job.RunMonth, CIM_Job.RunDayOfWeek, CIM_Job.RunStartInterval}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RunMonth"><!-- --></A><H3>
+RunMonth </H3>
+<PRE>
+public uint8 <B>RunMonth</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The month during which the Job should be processed. Specify 0 for January, 1 for February, and so on.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>ValueMap={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}<br/>Values={January, February, March, April, May, June, July, August, September, October, November, December}<br/>ModelCorrespondence={CIM_Job.RunDay, CIM_Job.RunDayOfWeek, CIM_Job.RunStartInterval}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="JobRunTimes"><!-- --></A><H3>
+JobRunTimes </H3>
+<PRE>
+public uint32 <B>JobRunTimes</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The number of times that the Job should be run. A value of 1 indicates that the Job is not recurring, while any non-zero value indicates a limit to the number of times that the Job will recur. Zero indicates that there is no limit to the number of times that the Job can be processed, but that it is terminated either after the UntilTime or by manual intervention. By default, a Job is processed once.<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ElapsedTime"><!-- --></A><H3>
+ElapsedTime </H3>
+<PRE>
+public datetime <B>ElapsedTime</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The time interval that the Job has been executing or the total execution time if the Job is complete. Note that this property is also present in the JobProcessingStatistics class. This class is necessary to capture the processing information for recurring Jobs, because only the 'last' run time can be stored in this single-valued property.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="StartTime"><!-- --></A><H3>
+StartTime </H3>
+<PRE>
+public datetime <B>StartTime</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The time that the Job was actually started. This time can be represented by an actual date and time, or by an interval relative to the time that this property is requested. Note that this property is also present in the JobProcessingStatistics class. This class is necessary to capture the processing information for recurring Jobs, because only the 'last' run time can be stored in this single-valued property.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ScheduledStartTime"><!-- --></A><H3>
+ScheduledStartTime </H3>
+<PRE>
+public datetime <B>ScheduledStartTime</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The time that the current Job is scheduled to start. This time can be represented by the actual date and time, or an interval relative to the time that this property is requested. A value of all zeroes indicates that the Job is already executing. The property is deprecated in lieu of the more expressive scheduling properties, RunMonth, RunDay, RunDayOfWeek, and RunStartInterval.<br/><br/><b>Qualifiers:</b><br>-------------<br>Deprecated={CIM_Job.RunMonth, CIM_Job.RunDay, CIM_Job.RunDayOfWeek, CIM_Job.RunStartInterval}<br/>Write<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="TimeSubmitted"><!-- --></A><H3>
+TimeSubmitted </H3>
+<PRE>
+public datetime <B>TimeSubmitted</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The time that the Job was submitted to execute. A value of all zeroes indicates that the owning element is not capable of reporting a date and time. Therefore, the ScheduledStartTime and StartTime are reported as intervals relative to the time their values are requested.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="JobStatus"><!-- --></A><H3>
+JobStatus </H3>
+<PRE>
+public string <B>JobStatus</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A free-form string that represents the status of the job. The primary status is reflected in the inherited OperationalStatus property. JobStatus provides additional, implementation-specific details.<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_ManagedSystemElement.OperationalStatus}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="HealthState"><!-- --></A><H3>
+HealthState </H3>
+<PRE>
+public uint16 <B>HealthState</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates the current health of the element. This attribute expresses the health of this element but not necessarily that of its subcomponents. The possible values are 0 to 30, where 5 means the element is entirely healthy and 30 means the element is completely non-functional. The following continuum is defined: <br>"Non-recoverable Error" (30) - The element has completely failed, and recovery is not possible. All functionality provided by this element has been lost. <br>"Critical Failure" (25) - The element is non-functional and recovery might not be possible. <br>"Major Failure" (20) - The element is failing. It is possible that some or all of the functionality of this component is degraded or not working. <br>"Minor Failure" (15) - All functionality is available but some might be degraded. <br>"Degraded/Warning" (10) - The element is in working order and all functionality is provided. However, the element is not working to the best of its abilities. For example, the element might not be operating at optimal performance or it might be reporting recoverable errors. <br>"OK" (5) - The element is fully functional and is operating within normal operational parameters and without error. <br>"Unknown" (0) - The implementation cannot report on HealthState at this time. <br>DMTF has reserved the unused portion of the continuum for additional HealthStates in the future.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 5, 10, 15, 20, 25, 30, ..}<br/>Values={Unknown, OK, Degraded/Warning, Minor failure, Major failure, Critical failure, Non-recoverable error, DMTF Reserved}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Status"><!-- --></A><H3>
+Status </H3>
+<PRE>
+public string <B>Status</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A string indicating the current status of the object. Various operational and non-operational statuses are defined. This property is deprecated in lieu of OperationalStatus, which includes the same semantics in its enumeration. This change is made for 3 reasons: <br>1) Status is more correctly defined as an array. This definition overcomes the limitation of describing status using a single value, when it is really a multi-valued property (for example, an element might be OK AND Stopped. <br>2) A MaxLen of 10 is too restrictive and leads to unclear enumerated values. <br>3) The change to a uint16 data type was discussed when CIM V2.0 was defined. However, existing V1.0 implementations used the string property and did not want to modify their code. Therefore, Status was grandfathered into the Schema. Use of the deprecated qualifier allows the maintenance of the existing property, but also permits an improved definition using OperationalStatus.<br/><br/><b>Qualifiers:</b><br>-------------<br>Deprecated={CIM_ManagedSystemElement.OperationalStatus}<br/>ValueMap={OK, Error, Degraded, Unknown, Pred Fail, Starting, Stopping, Service, Stressed, NonRecover, No Contact, Lost Comm, Stopped}<br/>MaxLen=10<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="StatusDescriptions"><!-- --></A><H3>
+StatusDescriptions </H3>
+<PRE>
+public string[] <B>StatusDescriptions</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Strings describing the various OperationalStatus array values. For example, if "Stopping" is the value assigned to OperationalStatus, then this property may contain an explanation as to why an object is being stopped. Note that entries in this array are correlated with those at the same array index in OperationalStatus.<br/><br/><b>Qualifiers:</b><br>-------------<br>ArrayType=Indexed<br/>ModelCorrespondence={CIM_ManagedSystemElement.OperationalStatus}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="OperationalStatus"><!-- --></A><H3>
+OperationalStatus </H3>
+<PRE>
+public uint16[] <B>OperationalStatus</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates the current statuses of the element. Various operational statuses are defined. Many of the enumeration's values are self-explanatory. However, a few are not and are described here in more detail. <br>"Stressed" indicates that the element is functioning, but needs attention. Examples of "Stressed" states are overload, overheated, and so on. <br>"Predictive Failure" indicates that an element is functioning nominally but predicting a failure in the near future. <br>"In Service" describes an element being configured, maintained, cleaned, or otherwise administered. <br>"No Contact" indicates that the monitoring system has knowledge of this element, but has never been able to establish communications with it. <br>"Lost Communication" indicates that the ManagedSystem Element is known to exist and has been contacted successfully in the past, but is currently unreachable. <br>"Stopped" and "Aborted" are similar, although the former implies a clean and orderly stop, while the latter implies an abrupt stop where the state and configuration of the element might need to be updated. <br>"Dormant" indicates that the element is inactive or quiesced. <br>"Supporting Entity in Error" indicates that this element might be "OK" but that another element, on which it is dependent, is in error. An example is a network service or endpoint that cannot function due to lower-layer networking problems. <br>"Completed" indicates that the element has completed its operation. This value should be combined with either OK, Error, or Degraded so that a client can tell if the complete operation Completed with OK (passed), Completed with Error (failed), or Completed with Degraded (the operation finished, but it did not complete OK or did not report an error). <br>"Power Mode" indicates that the element has additional power model information contained in the Associated PowerManagementService association. <br>OperationalStatus replaces the Status property on ManagedSystemElement to provide a consistent approach to enumerations, to address implementation needs for an array property, and to provide a migration path from today's environment to the future. This change was not made earlier because it required the deprecated qualifier. Due to the widespread use of the existing Status property in management applications, it is strongly recommended that providers or instrumentation provide both the Status and OperationalStatus properties. Further, the first value of OperationalStatus should contain the primary status for the element. When instrumented, Status (because it is single-valued) should also provide the primary status of the element.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, .., 0x8000..}<br/>Values={Unknown, Other, OK, Degraded, Stressed, Predictive Failure, Error, Non-Recoverable Error, Starting, Stopping, Stopped, In Service, No Contact, Lost Communication, Aborted, Dormant, Supporting Entity in Error, Completed, Power Mode, DMTF Reserved, Vendor Reserved}<br/>ArrayType=Indexed<br/>ModelCorrespondence={CIM_ManagedSystemElement.StatusDescriptions}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="InstallDate"><!-- --></A><H3>
+InstallDate </H3>
+<PRE>
+public datetime <B>InstallDate</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A datetime value that indicates when the object was installed. Lack of a value does not indicate that the object is not installed.<br/><br/><b>Qualifiers:</b><br>-------------<br>MappingStrings={MIF.DMTF|ComponentID|001.5}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Caption"><!-- --></A><H3>
+Caption </H3>
+<PRE>
+public string <B>Caption</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Caption property is a short textual description (one- line string) of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=64<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Description"><!-- --></A><H3>
+Description </H3>
+<PRE>
+public string <B>Description</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Description property provides a textual description of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ElementName"><!-- --></A><H3>
+ElementName </H3>
+<PRE>
+public string <B>ElementName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A user-friendly name for the object. This property allows each instance to define a user-friendly name in addition to its key properties, identity data, and description information. <br>Note that the Name property of ManagedSystemElement is also defined as a user-friendly name. But, it is often subclassed to be a Key. It is not reasonable that the same property can convey both identity and a user-friendly name, without inconsistencies. Where Name exists and is not a Key (such as for instances of LogicalDevice), the same information can be present in both the Name and ElementName properties.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="InstanceID"><!-- --></A><H3>
+InstanceID <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>InstanceID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class. In order to ensure uniqueness within the NameSpace, the value of InstanceID SHOULD be constructed using the following 'preferred' algorithm: <br>&lt;OrgID&gt;:&lt;LocalID&gt; <br>Where &lt;OrgID&gt; and &lt;LocalID&gt; are separated by a colon ':', and where &lt;OrgID&gt; must include a copyrighted, trademarked or otherwise unique name that is owned by the business entity that is creating or defining the InstanceID, or that is a registered ID that is assigned to the business entity by a recognized global authority. (This requirement is similar to the &lt;Schema Name&gt;_&lt;Class Name&gt; structure of Schema class names.) In addition, to ensure uniqueness &lt;OrgID&gt; must not contain a colon (':'). When using this algorithm, the first colon to appear in InstanceID must appear between &lt;OrgID&gt; and &lt;LocalID&gt;. <br>&lt;LocalID&gt; is chosen by the business entity and should not be re-used to identify different underlying (real-world) elements. If the above 'preferred' algorithm is not used, the defining entity must assure that the resulting InstanceID is not re-used across any InstanceIDs produced by this or other providers for the NameSpace of this instance. <br>For DMTF defined instances, the 'preferred' algorithm must be used with the &lt;OrgID&gt; set to 'CIM'.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=InstanceID<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Name"><!-- --></A><H3>
+Name </H3>
+<PRE>
+public string <B>Name</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The user-friendly name for this instance of a Job. In addition, the user-friendly name can be used as a property for a search or query. (Note: Name does not have to be unique within a namespace.)<br/><br/><b>Qualifiers:</b><br>-------------<br>Required<br/>Override=Name<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="JobState"><!-- --></A><H3>
+JobState </H3>
+<PRE>
+public uint16 <B>JobState</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>JobState is an integer enumeration that indicates the operational state of a Job. It can also indicate transitions between these states, for example, 'Shutting Down' and 'Starting'. Following is a brief description of the states: <br>New (2) indicates that the job has never been started. <br>Starting (3) indicates that the job is moving from the 'New', 'Suspended', or 'Service' states into the 'Running' state. <br>Running (4) indicates that the Job is running. <br>Suspended (5) indicates that the Job is stopped, but can be restarted in a seamless manner. <br>Shutting Down (6) indicates that the job is moving to a 'Completed', 'Terminated', or 'Killed' state. <br>Completed (7) indicates that the job has completed normally. <br>Terminated (8) indicates that the job has been stopped by a 'Terminate' state change request. The job and all its underlying processes are ended and can be restarted (this is job-specific) only as a new job. <br>Killed (9) indicates that the job has been stopped by a 'Kill' state change request. Underlying processes might have been left running, and cleanup might be required to free up resources. <br>Exception (10) indicates that the Job is in an abnormal state that might be indicative of an error condition. Actual status might be displayed though job-specific objects. <br>Service (11) indicates that the Job is in a vendor-specific state that supports problem discovery, or resolution, or both.<br>Query pending (12) waiting for a client to resolve a query<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13..32767, 32768..65535}<br/>Values={New, Starting, Running, Suspended, Shutting Down, Completed, Terminated, Killed, Exception, Service, Query Pending, DMTF Reserved, Vendor Reserved}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="TimeOfLastStateChange"><!-- --></A><H3>
+TimeOfLastStateChange </H3>
+<PRE>
+public datetime <B>TimeOfLastStateChange</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The date or time when the state of the Job last changed. If the state of the Job has not changed and this property is populated, then it must be set to a 0 interval value. If a state change was requested, but rejected or not yet processed, the property must not be updated.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="TimeBeforeRemoval"><!-- --></A><H3>
+TimeBeforeRemoval </H3>
+<PRE>
+public datetime <B>TimeBeforeRemoval</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The amount of time that the Job is retained after it has finished executing, either succeeding or failing in that execution. The job must remain in existence for some period of time regardless of the value of the DeleteOnCompletion property. <br>The default is five minutes.<br/><br/><b>Qualifiers:</b><br>-------------<br>Required<br/>Write<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="KillJob"><!-- --></A>
+<H3>KillJob</H3>
+<PRE>
+public uint32 <B>KillJob</B>([IN]boolean DeleteOnKill)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>KillJob is being deprecated because there is no distinction made between an orderly shutdown and an immediate kill. CIM_ConcreteJob.RequestStateChange() provides 'Terminate' and 'Kill' options to allow this distinction. <br>A method to kill this job and any underlying processes, and to remove any 'dangling' associations.<br/><br/><b>Qualifiers:</b><br>-------------<br>Deprecated={CIM_ConcreteJob.RequestStateChange()}<br/>ValueMap={0, 1, 2, 3, 4, 6, 7, .., 32768..65535}<br/>Values={Success, Not Supported, Unknown, Timeout, Failed, Access Denied, Not Found, DMTF Reserved, Vendor Specific}<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>DeleteOnKill</b><DD><b>General Information:</b><br/>Indicates whether or not the Job should be automatically deleted upon termination. This parameter takes precedence over the property, DeleteOnCompletion.<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="RequestStateChange"><!-- --></A>
+<H3>RequestStateChange</H3>
+<PRE>
+public uint32 <B>RequestStateChange</B>([IN]uint16 RequestedState, [IN]datetime TimeoutPeriod)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Requests that the state of the job be changed to the value specified in the RequestedState parameter. Invoking the RequestStateChange method multiple times could result in earlier requests being overwritten or lost. <br>If 0 is returned, then the task completed successfully. Any other return code indicates an error condition.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3, 4, 5, 6, .., 4096, 4097, 4098, 4099, 4100..32767, 32768..65535}<br/>Values={Completed with No Error, Not Supported, Unknown/Unspecified Error, Can NOT complete within Timeout Period, Failed, Invalid Parameter, In Use, DMTF Reserved, Method Parameters Checked - Transition Started, Invalid State Transition, Use of Timeout Parameter Not Supported, Busy, Method Reserved, Vendor Specific}<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>RequestedState</b><DD><b>General Information:</b><br/>RequestStateChange changes the state of a job. The possible values are as follows: <br>Start (2) changes the state to 'Running'. <br>Suspend (3) stops the job temporarily. The intention is to subsequently restart the job with 'Start'. It might be possible to enter the 'Service' state while suspended. (This is job-specific.) <br>Terminate (4) stops the job cleanly, saving data, preserving the state, and shutting down all underlying processes in an orderly manner. <br>Kill (5) terminates the job immediately with no requirement to save data or preserve the state. <br>Service (6) puts the job into a vendor-specific service state. It might be possible to restart the job.<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/>ValueMap={2, 3, 4, 5, 6, 7..32767, 32768..65535}<br/>Values={Start, Suspend, Terminate, Kill, Service, DMTF Reserved, Vendor Reserved}<br/><br/><DT><b>TimeoutPeriod</b><DD><b>General Information:</b><br/>A timeout period that specifies the maximum amount of time that the client expects the transition to the new state to take. The interval format must be used to specify the TimeoutPeriod. A value of 0 or a null parameter indicates that the client has no time requirements for the transition. <br>If this property does not contain 0 or null and the implementation does not support this parameter, a return code of 'Use Of Timeout Parameter Not Supported' must be returned.<br/><br/><b>Qualifiers:</b><br>-------------<br>IN<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

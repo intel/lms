@@ -1,0 +1,383 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+CIM_LogEntry
+</TITLE>
+<META NAME="keywords" CONTENT="CIM_LogEntry class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="CIM_LogEntry";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class CIM_LogEntry</H2>
+
+	<b>Used in features:</b>  CIM Schema inheritance classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_RecordForLog.html">CIM_RecordForLog</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_LogEntry.html">CIM_LogEntry</A>
+
+</PRE>
+<DL>
+<DT><B>Known Subclasses:</B> <DD><A HREF="AMT_SetupAuditRecord.html">AMT_SetupAuditRecord</A>  </DD>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>CIM_LogEntry</B><DT> extends <A HREF="CIM_RecordForLog.html">CIM_RecordForLog</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>The LogEntry object can describe the definitional format for entries in a Log, or can be used to instantiate the actual entries in the Log.<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=2.19.0<br/>UMLPackagePath=CIM::System::Logs<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#Locale">Locale</A></B> </CODE>
+<BR>
+A locale indicates a particular geographical, political, or cultural region . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#RecordData">RecordData</A></B> </CODE>
+<BR>
+A string containing LogRecord data . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#RecordFormat">RecordFormat</A></B> </CODE>
+<BR>
+A string describing the data structure of the information in the property, RecordData . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#Caption">Caption</A></B> </CODE>
+<BR>
+The Caption property is a short textual description (one- line string) of the object.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#Description">Description</A></B> </CODE>
+<BR>
+The Description property provides a textual description of the object.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#ElementName">ElementName</A></B> </CODE>
+<BR>
+A user-friendly name for the object . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#InstanceID">InstanceID</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#LogInstanceID">LogInstanceID</A></B> </CODE>
+<BR>
+The containing Log's InstanceID.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#LogName">LogName</A></B> </CODE>
+<BR>
+The containing Log's Name . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#RecordID">RecordID</A></B> </CODE>
+<BR>
+RecordID may be used to provide a representation of log entry ordering or pointers/handles for log entries.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;datetime </CODE></FONT></TD>
+<TD><CODE><B><A HREF="CIM_LogEntry.html#CreationTimeStamp">CreationTimeStamp</A></B> </CODE>
+<BR>
+A LogEntry may include a timestamp for the entry.<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+
+
+
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="Locale"><!-- --></A><H3>
+Locale </H3>
+<PRE>
+public string <B>Locale</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A locale indicates a particular geographical, political, or cultural region. The Locale specifies the language used in creating the RecordForLog data. If the Locale property is empty, it is assumed that the default locale is en_US (English). <br>The locale string consists of three sub-strings, separated by underscores: <br>- The first sub-string is the language code, as specified in ISO639. <br>- The second sub-string is the country code, as specified in ISO3166. <br>- The third sub-string is a variant, which is vendor specific. <br>For example, US English appears as: "en_US_WIN", where the "WIN" variant would specify a Windows browser-specific collation (if one exists). Since the variant is not standardized, it is not commonly used and generally is limited to easily recognizable values ("WIN", "UNIX", "EURO", etc.) used in standard environments. The language and country codes are required; the variant may be empty.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RecordData"><!-- --></A><H3>
+RecordData </H3>
+<PRE>
+public string <B>RecordData</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A string containing LogRecord data. <br>If the corresponding RecordFormat property is &lt;empty&gt;, or cannot be parsed according to the recommended format, RecordData should be interpreted as a free-form string. If the RecordFormat property contains parseable format information (as recommended in the RecordFormat Description qualifier), the RecordData string SHOULD be parsed in accordance with this format. In this case, RecordData SHOULD begin with the delimiter character and this character SHOULD be used to separate substrings in the manner described. The RecordData string can then be parsed by the data consumer and appropriately typed.<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_RecordForLog.RecordFormat}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RecordFormat"><!-- --></A><H3>
+RecordFormat </H3>
+<PRE>
+public string <B>RecordFormat</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A string describing the data structure of the information in the property, RecordData. If the RecordFormat string is &lt;empty&gt;, RecordData should be interpreted as a free-form string. <br><br>To describe the data structure of RecordData, the RecordFormat string should be constructed as follows: <br>- The first character is a delimiter character and is used to parse the remainder of the string into sub-strings. <br>- Each sub-string is separated by the delimiter character and should be in the form of a CIM property declaration (i.e., datatype and property name). This set of declarations may be used to interpret the similarly delimited RecordData property. <br>For example, using a '*' delimiter, RecordFormat = "*string ThisDay*uint32 ThisYear*datetime SomeTime" <br>may be used to interpret: RecordData = "*This is Friday*2002*20020807141000.000000-300".<br/><br/><b>Qualifiers:</b><br>-------------<br>ModelCorrespondence={CIM_RecordForLog.RecordData}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Caption"><!-- --></A><H3>
+Caption </H3>
+<PRE>
+public string <B>Caption</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Caption property is a short textual description (one- line string) of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=64<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Description"><!-- --></A><H3>
+Description </H3>
+<PRE>
+public string <B>Description</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Description property provides a textual description of the object.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ElementName"><!-- --></A><H3>
+ElementName </H3>
+<PRE>
+public string <B>ElementName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A user-friendly name for the object. This property allows each instance to define a user-friendly name in addition to its key properties, identity data, and description information. <br>Note that the Name property of ManagedSystemElement is also defined as a user-friendly name. But, it is often subclassed to be a Key. It is not reasonable that the same property can convey both identity and a user-friendly name, without inconsistencies. Where Name exists and is not a Key (such as for instances of LogicalDevice), the same information can be present in both the Name and ElementName properties.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="InstanceID"><!-- --></A><H3>
+InstanceID <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>InstanceID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class. In order to ensure uniqueness within the NameSpace, the value of InstanceID SHOULD be constructed using the following 'preferred' algorithm: <br>&lt;OrgID&gt;:&lt;LocalID&gt; <br>Where &lt;OrgID&gt; and &lt;LocalID&gt; are separated by a colon ':', and where &lt;OrgID&gt; MUST include a copyrighted, trademarked or otherwise unique name that is owned by the business entity creating/defining the InstanceID, or is a registered ID that is assigned to the business entity by a recognized global authority (This is similar to the &lt;Schema Name&gt;_&lt;Class Name&gt; structure of Schema class names.) In addition, to ensure uniqueness &lt;OrgID&gt; MUST NOT contain a colon (':'). When using this algorithm, the first colon to appear in InstanceID MUST appear between &lt;OrgID&gt; and &lt;LocalID&gt;. <br>&lt;LocalID&gt; is chosen by the business entity and SHOULD not be re-used to identify different underlying (real-world) elements. If the above 'preferred' algorithm is not used, the defining entity MUST assure that the resultant InstanceID is not re-used across any InstanceIDs produced by this or other providers for this instance's NameSpace. <br>For DMTF defined instances, the 'preferred' algorithm MUST be used with the &lt;OrgID&gt; set to 'CIM'.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=InstanceID<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="LogInstanceID"><!-- --></A><H3>
+LogInstanceID </H3>
+<PRE>
+public string <B>LogInstanceID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The containing Log's InstanceID.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="LogName"><!-- --></A><H3>
+LogName </H3>
+<PRE>
+public string <B>LogName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The containing Log's Name. This property is available for backwards continuity with CIM_LogRecord.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RecordID"><!-- --></A><H3>
+RecordID </H3>
+<PRE>
+public string <B>RecordID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>RecordID may be used to provide a representation of log entry ordering or pointers/handles for log entries.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CreationTimeStamp"><!-- --></A><H3>
+CreationTimeStamp </H3>
+<PRE>
+public datetime <B>CreationTimeStamp</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A LogEntry may include a timestamp for the entry.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

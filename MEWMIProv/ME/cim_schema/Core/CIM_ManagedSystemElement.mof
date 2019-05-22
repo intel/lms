@@ -1,0 +1,186 @@
+// Copyright (c) 2005 DMTF.  All rights reserved.
+// <change cr="SysDevCR00711.001" type ="change">Update of
+// descriptions based on Tech Edit review.</change>
+// <change cr="SysDevCR00796.002" type ="change">Remove Experimantal
+// qualifier from HealthState property.</change>
+// <change cr="ArchCR00066.004" type="add">Add UmlPackagePath
+// qualifier values to CIM Schema.</change>
+// ==================================================================
+//  CIM_ManagedSystemElement
+// ==================================================================
+   [Abstract, Version ( "2.11.0" ), 
+    UMLPackagePath ( "CIM::Core::CoreElements" ), 
+    Description ( 
+       "CIM_ManagedSystemElement is the base class for the System "
+       "Element hierarchy. Any distinguishable component of a System "
+       "is a candidate for inclusion in this class. Examples of system "
+       "components include: \n"
+       "- software components such as application servers, databases, "
+       "and applications \n"
+       "- operating system components such as files, processes, and "
+       "threads \n"
+       "- device components such as disk drives, controllers, "
+       "processors, and printers \n"
+       "- physical components such as chips and cards." )]
+class CIM_ManagedSystemElement : CIM_ManagedElement {
+
+      [Description ( 
+          "A datetime value that indicates when the object was "
+          "installed. Lack of a value does not indicate that the "
+          "object is not installed." ), 
+       MappingStrings { "MIF.DMTF|ComponentID|001.5" }]
+   datetime InstallDate;
+
+      [Description ( 
+          "The Name property defines the label by which the object "
+          "is known. When subclassed, the Name property can be "
+          "overridden to be a Key property." ), 
+       MaxLen ( 1024 )]
+   string Name;
+
+      [Description ( 
+          "Indicates the current statuses of the element. Various "
+          "operational statuses are defined. Many of the "
+          "enumeration\'s values are self-explanatory. However, a "
+          "few are not and are described here in more detail. \n"
+          "\"Stressed\" indicates that the element is functioning, "
+          "but needs attention. Examples of \"Stressed\" states are "
+          "overload, overheated, and so on. \n"
+          "\"Predictive Failure\" indicates that an element is "
+          "functioning nominally but predicting a failure in the "
+          "near future. \n"
+          "\"In Service\" describes an element being configured, "
+          "maintained, cleaned, or otherwise administered. \n"
+          "\"No Contact\" indicates that the monitoring system has "
+          "knowledge of this element, but has never been able to "
+          "establish communications with it. \n"
+          "\"Lost Communication\" indicates that the ManagedSystem "
+          "Element is known to exist and has been contacted "
+          "successfully in the past, but is currently unreachable. \n"
+          "\"Stopped\" and \"Aborted\" are similar, although the "
+          "former implies a clean and orderly stop, while the "
+          "latter implies an abrupt stop where the state and "
+          "configuration of the element might need to be updated. \n"
+          "\"Dormant\" indicates that the element is inactive or "
+          "quiesced. \n"
+          "\"Supporting Entity in Error\" indicates that this "
+          "element might be \"OK\" but that another element, on "
+          "which it is dependent, is in error. An example is a "
+          "network service or endpoint that cannot function due to "
+          "lower-layer networking problems. \n"
+          "\"Completed\" indicates that the element has completed "
+          "its operation. This value should be combined with either "
+          "OK, Error, or Degraded so that a client can tell if the "
+          "complete operation Completed with OK (passed), Completed "
+          "with Error (failed), or Completed with Degraded (the "
+          "operation finished, but it did not complete OK or did "
+          "not report an error). \n"
+          "\"Power Mode\" indicates that the element has additional "
+          "power model information contained in the Associated "
+          "PowerManagementService association. \n"
+          "OperationalStatus replaces the Status property on "
+          "ManagedSystemElement to provide a consistent approach to "
+          "enumerations, to address implementation needs for an "
+          "array property, and to provide a migration path from "
+          "today\'s environment to the future. This change was not "
+          "made earlier because it required the deprecated "
+          "qualifier. Due to the widespread use of the existing "
+          "Status property in management applications, it is "
+          "strongly recommended that providers or instrumentation "
+          "provide both the Status and OperationalStatus "
+          "properties. Further, the first value of "
+          "OperationalStatus should contain the primary status for "
+          "the element. When instrumented, Status (because it is "
+          "single-valued) should also provide the primary status of "
+          "the element." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+          "10", "11", "12", "13", "14", "15", "16", "17", "18", 
+          "..", "0x8000.." }, 
+       Values { "Unknown", "Other", "OK", "Degraded", "Stressed", 
+          "Predictive Failure", "Error", "Non-Recoverable Error", 
+          "Starting", "Stopping", "Stopped", "In Service", 
+          "No Contact", "Lost Communication", "Aborted", "Dormant", 
+          "Supporting Entity in Error", "Completed", "Power Mode", 
+          "DMTF Reserved", "Vendor Reserved" }, 
+       ArrayType ( "Indexed" ), 
+       ModelCorrespondence { 
+          "CIM_ManagedSystemElement.StatusDescriptions" }]
+   uint16 OperationalStatus[];
+
+      [Description ( 
+          "Strings describing the various OperationalStatus array "
+          "values. For example, if \"Stopping\" is the value "
+          "assigned to OperationalStatus, then this property may "
+          "contain an explanation as to why an object is being "
+          "stopped. Note that entries in this array are correlated "
+          "with those at the same array index in OperationalStatus." ), 
+       ArrayType ( "Indexed" ), 
+       ModelCorrespondence { 
+          "CIM_ManagedSystemElement.OperationalStatus" }]
+   string StatusDescriptions[];
+
+      [Deprecated { "CIM_ManagedSystemElement.OperationalStatus" }, 
+       Description ( 
+          "A string indicating the current status of the object. "
+          "Various operational and non-operational statuses are "
+          "defined. This property is deprecated in lieu of "
+          "OperationalStatus, which includes the same semantics in "
+          "its enumeration. This change is made for 3 reasons: \n"
+          "1) Status is more correctly defined as an array. This "
+          "definition overcomes the limitation of describing status "
+          "using a single value, when it is really a multi-valued "
+          "property (for example, an element might be OK AND "
+          "Stopped. \n"
+          "2) A MaxLen of 10 is too restrictive and leads to "
+          "unclear enumerated values. \n"
+          "3) The change to a uint16 data type was discussed when "
+          "CIM V2.0 was defined. However, existing V1.0 "
+          "implementations used the string property and did not "
+          "want to modify their code. Therefore, Status was "
+          "grandfathered into the Schema. Use of the deprecated "
+          "qualifier allows the maintenance of the existing "
+          "property, but also permits an improved definition using "
+          "OperationalStatus." ), 
+       ValueMap { "OK", "Error", "Degraded", "Unknown", "Pred Fail", 
+          "Starting", "Stopping", "Service", "Stressed", 
+          "NonRecover", "No Contact", "Lost Comm", "Stopped" }, 
+       MaxLen ( 10 )]
+   string Status;
+
+      [Description ( 
+          "Indicates the current health of the element. This "
+          "attribute expresses the health of this element but not "
+          "necessarily that of its subcomponents. The possible "
+          "values are 0 to 30, where 5 means the element is "
+          "entirely healthy and 30 means the element is completely "
+          "non-functional. The following continuum is defined: \n"
+          "\"Non-recoverable Error\" (30) - The element has "
+          "completely failed, and recovery is not possible. All "
+          "functionality provided by this element has been lost. \n"
+          "\"Critical Failure\" (25) - The element is "
+          "non-functional and recovery might not be possible. \n"
+          "\"Major Failure\" (20) - The element is failing. It is "
+          "possible that some or all of the functionality of this "
+          "component is degraded or not working. \n"
+          "\"Minor Failure\" (15) - All functionality is available "
+          "but some might be degraded. \n"
+          "\"Degraded/Warning\" (10) - The element is in working "
+          "order and all functionality is provided. However, the "
+          "element is not working to the best of its abilities. For "
+          "example, the element might not be operating at optimal "
+          "performance or it might be reporting recoverable errors. \n"
+          "\"OK\" (5) - The element is fully functional and is "
+          "operating within normal operational parameters and "
+          "without error. \n"
+          "\"Unknown\" (0) - The implementation cannot report on "
+          "HealthState at this time. \n"
+          "DMTF has reserved the unused portion of the continuum "
+          "for additional HealthStates in the future." ), 
+       ValueMap { "0", "5", "10", "15", "20", "25", "30", ".." }, 
+       Values { "Unknown", "OK", "Degraded/Warning", 
+          "Minor failure", "Major failure", "Critical failure", 
+          "Non-recoverable error", "DMTF Reserved" }]
+   uint16 HealthState;
+
+
+};

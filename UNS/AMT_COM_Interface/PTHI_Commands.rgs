@@ -1,0 +1,24 @@
+HKCR
+{
+	UNS.PTHI_Commands.1 = s 'PTHI_Commands Class'
+	{
+		CLSID = s '{80C25488-192B-4DE2-8150-5B2D2A2F835E}'
+	}
+	UNS.PTHI_Commands = s 'PTHI_Commands Class'
+	{
+		CLSID = s '{80C25488-192B-4DE2-8150-5B2D2A2F835E}'
+		CurVer = s 'UNS.PTHI_Commands.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {80C25488-192B-4DE2-8150-5B2D2A2F835E} = s 'PTHI_Commands Class'
+		{
+			ProgID = s 'UNS.PTHI_Commands.1'
+			VersionIndependentProgID = s 'UNS.PTHI_Commands'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{9853D245-3E9D-4946-895A-F30D6396DEA6}'
+		}
+	}
+}

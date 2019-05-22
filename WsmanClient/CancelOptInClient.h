@@ -1,0 +1,42 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2009-2015 Intel Corporation
+ */
+/*++
+
+@file: CancelOptInClient.h
+
+--*/
+
+#ifndef  _CancelOptInClient_H
+#define  _CancelOptInClient_H
+
+
+#include "BaseWSManClient.h"
+#include <string>
+#include "IPS_OptInService.h"
+
+
+class WSMAN_DLL_API CancelOptInClient : public BaseWSManClient
+{
+public:
+	CancelOptInClient();
+	CancelOptInClient(const std::string &User, const std::string &Password);
+	virtual ~CancelOptInClient();
+
+	/*Actual soap actions!*/
+	
+	bool CancelOptIn(unsigned int* pReturnValue);
+	bool GetUserConsentState(short* pState, short* pPolicy);
+	bool Init(bool forceGet = false);
+private:
+	
+	bool m_isInit;
+	static const std::string DEFAULT_USER;
+	static const std::string DEFAULT_PASS;
+	LOCK_BEFORE;
+	Intel::Manageability::Cim::Typed::IPS_OptInService m_service;
+	UNLOCK_AFTER;
+};
+
+#endif //CancelOptInClient_H

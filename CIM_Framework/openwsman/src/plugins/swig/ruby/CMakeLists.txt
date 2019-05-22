@@ -1,0 +1,54 @@
+#
+# CMakeLists.txt for openwsman/src/plugins/swig/ruby
+#
+
+enable_testing()
+ADD_SUBDIRECTORY(tests)
+
+# prefer vendor dirs
+SET(RUBY_WSMAN_LIB_DIR ${RUBY_VENDORLIB_DIR})
+SET(RUBY_WSMAN_ARCH_DIR ${RUBY_VENDORARCH_DIR})
+
+SET( SWIG_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/swig_wrap.c" )
+SET( SWIG_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/../plugin.i" )
+
+ADD_CUSTOM_COMMAND (
+   OUTPUT  ${SWIG_OUTPUT}
+   COMMAND ${CMAKE_COMMAND} -E echo_append "Creating wrapper code for ruby..."
+   COMMAND ${SWIG_EXECUTABLE} -ruby -autorename -I${CMAKE_SOURCE_DIR}/include -I${CMAKE_SOURCE_DIR}/bindings -o ${SWIG_OUTPUT} ${SWIG_INPUT}
+   COMMAND ${CMAKE_COMMAND} -E echo "Done."
+   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../*.i
+   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../src/*.c
+   DEPENDS ${CMAKE_SOURCE_DIR}/bindings/*.i
+)
+
+
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" )
+
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../src )
+# wsman_config.h is generated
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
+# all other wsman includes
+INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR}/include )
+INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR}/bindings )
+INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
+INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH}/${RUBY_ARCH} )
+
+ADD_DEFINITIONS(-DTARGET_RUBY)
+
+#
+# libwsman_ruby_plugin.so
+#
+
+SET( NAME wsman_ruby_plugin )
+ADD_LIBRARY( ${NAME} ${SWIG_OUTPUT})
+TARGET_LINK_LIBRARIES( ${NAME} ${RUBY_LIBRARY} )
+TARGET_LINK_LIBRARIES( ${NAME} pthread )
+
+INSTALL(TARGETS ${NAME} LIBRARY DESTINATION ${PACKAGE_PLUGIN_DIR})
+
+#
+# openwsmanplugin.rb: plugin implementation
+#
+INSTALL(FILES openwsmanplugin.rb DESTINATION ${RUBY_WSMAN_LIB_DIR})

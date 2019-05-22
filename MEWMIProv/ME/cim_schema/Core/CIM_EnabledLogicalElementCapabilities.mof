@@ -1,0 +1,47 @@
+// Copyright (c) 2005 DMTF.  All rights reserved.
+// <change cr="CIMCoreCR00804.001" type ="change">Remove Experimental
+// from class.</change>
+// <change cr="ArchCR00066.004" type="add">Add UmlPackagePath
+// qualifier values to CIM Schema.</change>
+// <change cr="CIMCoreCR00854" type ="change">Corrected typos 
+// in description.</change>
+// ==================================================================
+//  CIM_EnabledLogicalElementCapabilities
+// ==================================================================
+   [Version ( "2.14.0" ), 
+    UMLPackagePath ( "CIM::Core::Capabilities" ), 
+    Description ( 
+       "EnabledLogicalElementCapabilities describes the capabilities "
+       "supported for changing the state of the associated "
+       "EnabledLogicalElement." )]
+class CIM_EnabledLogicalElementCapabilities : CIM_Capabilities {
+
+      [Description ( 
+          "Boolean indicating whether the ElementName can be modified."
+           ), 
+       MappingStrings { 
+          "FC-SWAPI.INCITS-T11|SWAPI_UNIT_CONFIG_CAPS_T|EditName" }, 
+       ModelCorrespondence { "CIM_ManagedElement.ElementName" }]
+   boolean ElementNameEditSupported;
+
+      [Description ( "Maximum supported ElementName length." ), 
+       MaxValue ( 256 ), 
+       MappingStrings { 
+          "FC-SWAPI.INCITS-T11|SWAPI_UNIT_CONFIG_CAPS_T|MaxNameChars" }, 
+       ModelCorrespondence { 
+          "CIM_FCSwitchCapabilities.ElementNameEditSupported" }]
+   uint16 MaxElementNameLen;
+
+      [Description ( 
+          "RequestedStatesSupported indicates the possible states "
+          "that can be requested when using the method "
+          "RequestStateChange on the EnabledLogicalElement." ), 
+       ValueMap { "2", "3", "4", "6", "7", "8", "9", "10", "11" }, 
+       Values { "Enabled", "Disabled", "Shut Down", "Offline", 
+          "Test", "Defer", "Quiesce", "Reboot", "Reset" }, 
+       ModelCorrespondence { 
+          "CIM_EnabledLogicalElement.RequestStateChange" }]
+   uint16 RequestedStatesSupported[];
+
+
+};

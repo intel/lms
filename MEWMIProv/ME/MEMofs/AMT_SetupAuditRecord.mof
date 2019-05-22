@@ -1,0 +1,64 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+   [Version ( "0.0.4" ), 
+    Description ( 
+       "Provides a record of the last Intel(R) ME Activation Event as recorded by Intel(R) ME" ):Amended, LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+class AMT_SetupAuditRecord : CIM_LogEntry {
+
+  [Description ("Specifies the TLS algorithm used for provisioning"),	
+      ValueMap { "0", "1", "2" }, 
+       Values {"NOT READY", "PKI", "PSK" }]
+   uint8 ProvisioningTLSMode;
+
+  [Description ("Specifies whether the OOB service was pre-configured with "
+  	"DNS suffix information to verify the SSL certificate used for configuration")]
+   boolean SecureDNS;
+
+   [Description ("Indicates whether a previous provisioning attempt was initiated by the host")]
+   boolean HostInitiated;
+	
+   [Description ("Specifies the hash algorithm used to generate seed values for HMAC computations performed in the registration operation"),
+	  ValueMap { "1", "2" }, 
+      Values { "SHA-1", "SHA-256" }]
+   uint32 SelectedHashType;
+
+[Description ("The stored Hash value of the root certificate used to validate the provisioning server. "
+		"More information on the root CA can be retrieved by querying the AMT_ProvisioningCertificateHash instance")]
+   uint8 SelectedHashData[];
+
+[Description ("The serial number of the first intermediate CA in the certification chain")]
+   uint8 CACertificateSerial1[];
+
+[Description ("The serial number of the second intermediate CA in the certification chain")]
+   uint8 CACertificateSerial2[];
+
+[Description ("The serial number of the third intermediate CA in the certification chain")]
+   uint8 CACertificateSerial3[];
+
+[Description ("Indicates whether the certificate chain includes additional CA that were not recorded")]
+   boolean AdditionalCaSerialNums;
+
+[Description ("Indicates whether the certificate timestamp verification was successful.")]
+   boolean IsTimeValid;
+
+[Description ("The Provisioning Server IP address")]
+   string ProvServerIP;
+
+  
+[Description ("Common Name specified in the SSL certificate, typically this is the "
+		"FQDN of the provisioning server")]
+   string ProvServerFQDN;
+[Override ( "CreationTimeStamp" ), 
+  Description ( "Provides  Time and Date of the Provisioning operation, "
+		"based on the  system Real-Time-clock (RTC)")]
+   datetime CreationTimeStamp;
+
+
+};

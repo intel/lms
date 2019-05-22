@@ -1,0 +1,33 @@
+ //Copyright 2009 - 2012 Intel Corporation All Rights Reserved.
+
+#PRAGMA AUTORECOVER
+#pragma include ("cim_schema/Core/CIM_ManagedElement.mof")
+#pragma include ("cim_schema/System/CIM_RecordForLog.mof")
+#pragma include ("cim_schema/System/CIM_LogEntry.mof")
+#pragma include ("cim_schema/User/CIM_Credential.mof")
+#pragma include ("cim_schema/Core/CIM_ManagedSystemElement.mof")
+#pragma include ("cim_schema/Core/CIM_LogicalElement.mof")
+#pragma include ("cim_schema/Core/CIM_Job.mof")
+#pragma include ("cim_schema/Core/CIM_ConcreteJob.mof")
+#pragma include ("cim_schema/Core/CIM_EnabledLogicalElement.mof")
+#pragma include ("cim_schema/Core/CIM_System.mof")
+#pragma include ("cim_schema/System/CIM_ComputerSystem.mof")
+#pragma include ("cim_schema/Core/CIM_Service.mof")
+#pragma include ("cim_schema/Core/CIM_Dependency.mof")
+#pragma include ("cim_schema/Core/CIM_SettingData.mof") 
+#pragma include ("cim_schema/Core/CIM_Dependency.mof")
+#pragma include ("cim_schema/Core/CIM_Component.mof")
+
+//for implemnetation notes, internal use only
+Qualifier InternalOnly : string = null, 
+    Scope(any), 
+    Flavor(EnableOverride, ToSubclass, Translatable);
+#pragma include ("MEMofs/AMT_SetupAuditRecord.mof")
+#pragma include ("MEMofs/AMT_ProvisioningCertificateHash.mof")
+#pragma include ("MEMofs/ME_System.mof")
+#pragma include ("MEMofs/OOB_Service.mof")
+#pragma include ("MEMofs/AMT_Service.mof")
+#pragma include ("MEmofs/AMT_EthernetPortSettings.mof")
+#pragma include ("MEmofs/ME_Event.mof")
+#pragma include ("MEmofs/CIM_ConcreteComponent.mof")
+#pragma include ("MEmofs/CIM_HostedService.mof")

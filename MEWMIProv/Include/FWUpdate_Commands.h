@@ -1,0 +1,31 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2009-2015 Intel Corporation
+ */
+/*++
+
+@file: FW_Commands.h
+
+--*/
+
+#pragma once
+#include "stdafx.h"
+#include <atlbase.h>
+#include <string>
+#include "GetFWVersionCommand.h"
+#include "GetFWCapsCommand.h"
+#include "GetPlatformTypeCommand.h"
+#include "StatusCodeDefinitions.h"
+
+class FWUpdate_Commands
+{
+public:
+	UINT32 GetFWUpdateVersion(Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE& Version);
+	UINT32 GetFWCapabilities(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& capabilities);
+	UINT32 GetFWFeaturesState(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& features);
+	UINT32 GetFWPlatformType(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform);
+
+	unsigned int GetFWUpdateStateCommand(bool* enabled);
+
+public:
+};

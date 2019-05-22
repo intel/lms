@@ -1,0 +1,57 @@
+name: lms
+version: "2.0.99.0"
+summary: Intel(R) AMT Local Manageability Service
+description: Intel(R) Active Management Technology Local Manageability Service
+
+grade: stable
+confinement: strict
+
+apps:
+  lms:
+    command: lms
+    daemon: simple
+    plugs:
+        - network-observe
+        - network-bind
+        - shutdown
+        - network
+        - hardware-observe
+        - network-manager
+        - network-control
+        - intel-mei
+    slots:
+        - dbus-svc
+    #environment:
+       #LMS_ENABLE_DEBUG: 1
+
+slots:
+  dbus-svc:
+    interface: dbus
+    bus: system
+    name: com.intel.amt.lms
+
+parts:
+  lms:
+    plugin: cmake
+    configflags:
+      #- -DCMAKE_BUILD_TYPE=Debug
+    source: .
+    build-packages:
+      - g++
+      - make
+      - libace-dev
+      - libxerces-c-dev
+      - libnl-3-dev
+      - libnl-route-3-dev
+      - python3
+      - libxml2-dev
+      - network-manager-dev
+      - xsltproc
+      - docbook-xsl
+    stage-packages:
+      - libace-6.3.3
+      - libnl-3-200
+      - libnl-route-3-200
+      - libcurl3
+      - libxerces-c3.1
+      - libxml2

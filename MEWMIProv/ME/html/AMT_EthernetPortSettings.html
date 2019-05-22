@@ -1,0 +1,403 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+AMT_EthernetPortSettings
+</TITLE>
+<META NAME="keywords" CONTENT="AMT_EthernetPortSettings class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="AMT_EthernetPortSettings";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class AMT_EthernetPortSettings</H2>
+
+	<b>Used in features:</b>  Intel(R) ME defined Classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_SettingData.html">CIM_SettingData</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="AMT_EthernetPortSettings.html">AMT_EthernetPortSettings</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>AMT_EthernetPortSettings</B><DT> extends <A HREF="CIM_SettingData.html">CIM_SettingData</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>This class contains all Intel(R) AMT specific settings (IP, DHCP) for one network interface in the system.<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=0.0.3<br/>LOCALE=0x409<br/>dynamic<br/>provider=IntelMEProv<br/>InternalOnly=This class is taken from the ME CIM schema <br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#ElementName">ElementName</A></B> </CODE>
+<BR>
+The user-friendly name for this instance of SettingData . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#InstanceID">InstanceID</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class . . .<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#MACAddress">MACAddress</A></B> </CODE>
+<BR>
+The MAC address used by Intel(R) AMT in a string format . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#LinkIsUp">LinkIsUp</A></B> </CODE>
+<BR>
+Indicates whether the network link is up<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#DHCPEnabled">DHCPEnabled</A></B> </CODE>
+<BR>
+Indicates whether DHCP is in use . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#IPAddress">IPAddress</A></B> </CODE>
+<BR>
+String representation of IP address . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#SubnetMask">SubnetMask</A></B> </CODE>
+<BR>
+Subnet mask in a string format . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#DefaultGateway">DefaultGateway</A></B> </CODE>
+<BR>
+Default Gateway in a string format . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#PrimaryDNS">PrimaryDNS</A></B> </CODE>
+<BR>
+Primary DNS in a string format . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#SecondaryDNS">SecondaryDNS</A></B> </CODE>
+<BR>
+Secondary DNS in a string format . . .<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_EthernetPortSettings.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="ElementName"><!-- --></A><H3>
+ElementName </H3>
+<PRE>
+public string <B>ElementName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The user-friendly name for this instance of SettingData. In addition, the user-friendly name can be used as an index property for a search or query. (Note: The name does not have to be unique within a namespace.)<br/><br/><b>Qualifiers:</b><br>-------------<br>Required<br/>Override=ElementName<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="InstanceID"><!-- --></A><H3>
+InstanceID <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>InstanceID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class. To ensure uniqueness within the NameSpace, the value of InstanceID should be constructed using the following "preferred" algorithm: <br>&lt;OrgID&gt;:&lt;LocalID&gt; <br>Where &lt;OrgID&gt; and &lt;LocalID&gt; are separated by a colon (:), and where &lt;OrgID&gt; must include a copyrighted, trademarked, or otherwise unique name that is owned by the business entity that is creating or defining the InstanceID or that is a registered ID assigned to the business entity by a recognized global authority. (This requirement is similar to the &lt;Schema Name&gt;_&lt;Class Name&gt; structure of Schema class names.) In addition, to ensure uniqueness, &lt;OrgID&gt; must not contain a colon (:). When using this algorithm, the first colon to appear in InstanceID must appear between &lt;OrgID&gt; and &lt;LocalID&gt;. <br>&lt;LocalID&gt; is chosen by the business entity and should not be reused to identify different underlying (real-world) elements. If the above "preferred" algorithm is not used, the defining entity must assure that the resulting InstanceID is not reused across any InstanceIDs produced by this or other providers for the NameSpace of this instance. <br>For DMTF-defined instances, the "preferred" algorithm must be used with the &lt;OrgID&gt; set to CIM.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=InstanceID<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="MACAddress"><!-- --></A><H3>
+MACAddress </H3>
+<PRE>
+public string <B>MACAddress</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The MAC address used by Intel(R) AMT in a string format. For Example: 01-02-3f-b0-99-99. (This property can only be read and can't be changed.)<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="LinkIsUp"><!-- --></A><H3>
+LinkIsUp </H3>
+<PRE>
+public boolean <B>LinkIsUp</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether the network link is up<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="DHCPEnabled"><!-- --></A><H3>
+DHCPEnabled </H3>
+<PRE>
+public boolean <B>DHCPEnabled</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether DHCP is in use. When this parameter is set to true these parameters will be ignored: SubnetMask, DefaultGAteway, IPAddress, PrimaryDNS, SecondaryDNS.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="IPAddress"><!-- --></A><H3>
+IPAddress </H3>
+<PRE>
+public string <B>IPAddress</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>String representation of IP address. Get operation - reports the acquired IP address (whether in static or DHCP mode). Put operation - sets the IP address (in static mode only).<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SubnetMask"><!-- --></A><H3>
+SubnetMask </H3>
+<PRE>
+public string <B>SubnetMask</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Subnet mask in a string format. For example: 255.255.0.0<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="DefaultGateway"><!-- --></A><H3>
+DefaultGateway </H3>
+<PRE>
+public string <B>DefaultGateway</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Default Gateway in a string format. For example: 10.12.232.1<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="PrimaryDNS"><!-- --></A><H3>
+PrimaryDNS </H3>
+<PRE>
+public string <B>PrimaryDNS</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Primary DNS in a string format. For example: 10.12.232.1<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="SecondaryDNS"><!-- --></A><H3>
+SecondaryDNS </H3>
+<PRE>
+public string <B>SecondaryDNS</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Secondary DNS in a string format. For example: 10.12.232.1<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]AMT_EthernetPortSettings Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

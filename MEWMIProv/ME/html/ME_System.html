@@ -1,0 +1,694 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+ME_System
+</TITLE>
+<META NAME="keywords" CONTENT="ME_System class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="ME_System";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class ME_System</H2>
+
+	<b>Used in features:</b>  Intel(R) ME defined Classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ManagedSystemElement.html">CIM_ManagedSystemElement</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_LogicalElement.html">CIM_LogicalElement</A>
+         <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_EnabledLogicalElement.html">CIM_EnabledLogicalElement</A>
+            <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_System.html">CIM_System</A>
+               <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_ComputerSystem.html">CIM_ComputerSystem</A>
+                  <IMG SRC="inherit.gif" ALT="extended by "><A HREF="ME_System.html">ME_System</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>ME_System</B><DT> extends <A HREF="CIM_ComputerSystem.html">CIM_ComputerSystem</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>A class Representing Intel(R) Manageability Engine (Intel(R) ME) information<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=0.0.4<br/>dynamic<br/>provider=IntelMEProv<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#OtherDedicatedDescriptions">OtherDedicatedDescriptions</A></B> </CODE>
+<BR>
+A string describing how or why the system is dedicated when the Dedicated array includes the value 2, "Other".<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#Dedicated">Dedicated</A></B> </CODE>
+<BR>
+Enumeration indicating the purpose(s) to which the ComputerSystem is dedicated, if any, and what functionality is provided . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#NameFormat">NameFormat</A></B> </CODE>
+<BR>
+The ComputerSystem object and its derivatives are Top Level Objects of CIM . . .<br/>
+</TD>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#EnabledDefault">EnabledDefault</A></B> </CODE>
+<BR>
+An enumerated value indicating an administrator's default or startup configuration for the Enabled State of an element . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#RequestedState">RequestedState</A></B> </CODE>
+<BR>
+RequestedState is an integer enumeration that indicates the last requested or desired state for the element, irrespective of the mechanism through which it was requested . . .<br/>
+</TD>
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#EnabledState">EnabledState</A></B> </CODE>
+<BR>
+EnabledState is an integer enumeration that indicates the enabled and disabled states of an element . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint16 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#HealthState">HealthState</A></B> </CODE>
+<BR>
+Indicates the current health of the element . . .<br/>
+</TD>
+
+
+
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#ElementName">ElementName</A></B> </CODE>
+<BR>
+A user-friendly name for the object . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#CreationClassName">CreationClassName</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+CreationClassName indicates the name of the class or the subclass used in the creation of an instance . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#Name">Name</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+The inherited Name serves as the key of a System instance in an enterprise environment.<br/>
+</TD>
+
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#FWVersion">FWVersion</A></B> </CODE>
+<BR>
+Intel(R) ME firmware version in format: Major.Minor.Revision.build<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#Capabilities">Capabilities</A></B> </CODE>
+<BR>
+Capabilities represents the supported features on this system<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#EnabledCapabilities">EnabledCapabilities</A></B> </CODE>
+<BR>
+EnabledCapabilities represents the enabled features on this system<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#PlatformType">PlatformType</A></B> </CODE>
+<BR>
+PlatformType represents the category the system belongs to<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#UserSegmentType">UserSegmentType</A></B> </CODE>
+<BR>
+UserSegmentType represents the market segment the system belongs to<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#ManageabilityMode">ManageabilityMode</A></B> </CODE>
+<BR>
+ManageabilityMode represents the manageability mode . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#CryptoFuseEnabled">CryptoFuseEnabled</A></B> </CODE>
+<BR>
+Represents the status of the chipset CryptoFuse, when disabled, Intel(R) ME will not perform any encryption operations<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getFwUpdateOverrideParams">getFwUpdateOverrideParams</A></B>(Counter, OverrideQualifier)</CODE>
+<BR>
+Receives local  FW Update counters . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getLastMEResetReason">getLastMEResetReason</A></B>(ReasonCode)</CODE>
+<BR>
+Returns the cause for the last Intel(R) ME Reset operation<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getCurrentPowerPolicy">getCurrentPowerPolicy</A></B>(PowerPolicy)</CODE>
+<BR>
+Specifies the list of ACPI states Intel(R) ME is operational in<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#IsFirmwareUpdateEnabled">IsFirmwareUpdateEnabled</A></B>(enabled)</CODE>
+<BR>
+Indicates whether the Firmware Update capability is currently enabled<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getCapabilities">getCapabilities</A></B>(Capabilities, EnabledCapabilities)</CODE>
+<BR>
+Specifies the list of supported features on this system<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="OtherDedicatedDescriptions"><!-- --></A><H3>
+OtherDedicatedDescriptions </H3>
+<PRE>
+public string[] <B>OtherDedicatedDescriptions</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A string describing how or why the system is dedicated when the Dedicated array includes the value 2, "Other".<br/><br/><b>Qualifiers:</b><br>-------------<br>ArrayType=Indexed<br/>ModelCorrespondence={CIM_ComputerSystem.Dedicated}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Dedicated"><!-- --></A><H3>
+Dedicated </H3>
+<PRE>
+public uint16[] <B>Dedicated</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Enumeration indicating the purpose(s) to which the ComputerSystem is dedicated, if any, and what functionality is provided. For example, one could specify that the System is dedicated to "Print" (value=11) or acts as a "Hub" (value=8). <br>Also, one could indicate that this is a general purpose system by indicating 'Not Dedicated' (value=0) but that it also hosts 'Print' (value=11) or mobile phone 'Mobile User Device' (value=17) services. <br>A clarification is needed with respect to the value 17 ("Mobile User Device"). An example of a dedicated user device is a mobile phone or a barcode scanner in a store that communicates via radio frequency. These systems are quite limited in functionality and programmability, and are not considered 'general purpose' computing platforms. Alternately, an example of a mobile system that is 'general purpose' (i.e., is NOT dedicated) is a hand-held computer. Although limited in its programmability, new software can be downloaded and its functionality expanded by the user. <br>A value of "Management" indicates this instance is dedicated to hosting system management software.<br>A value of "Management Controller" indicates this instance represents specialized hardware dedicated to systems management (i.e., a Baseboard Management Controller (BMC) or service processor).<br>The management scope of a "Management Controller" is typically a single managed system in which it is contained.<br>A value of "Chassis Manager" indicates this instance represents a system dedicated to management of a blade chassis and its contained devices. This value would be used to represent a Shelf Controller. A "Chassis Manager" is an aggregation point for management and may rely on subordinate management controllers for the management of constituent parts. A value of "Host-based RAID Controller" indicates this instance represents a RAID storage controller contained within a host computer. A value of "Storage Device Enclosure" indicates this instance represents an enclosure that contains storage devices. A "Virtual Tape Library" is the emulation of a tape library by a Virtual Library System. A "Virtual Library System" uses disk storage to emulate tape libraries.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36..32567, 32568..65535}<br/>Values={Not Dedicated, Unknown, Other, Storage, Router, Switch, Layer 3 Switch, Central Office Switch, Hub, Access Server, Firewall, Print, I/O, Web Caching, Management, Block Server, File Server, Mobile User Device, Repeater, Bridge/Extender, Gateway, Storage Virtualizer, Media Library, ExtenderNode, NAS Head, Self-contained NAS, UPS, IP Phone, Management Controller, Chassis Manager, Host-based RAID controller, Storage Device Enclosure, Desktop, Laptop, Virtual Tape Library, Virtual Library System, DMTF Reserved, Vendor Reserved}<br/>ArrayType=Indexed<br/>MappingStrings={MIB.IETF|MIB-II.sysServices, FC-GS.INCITS-T11 | Platform | PlatformType}<br/>ModelCorrespondence={CIM_ComputerSystem.OtherDedicatedDescriptions}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="NameFormat"><!-- --></A><H3>
+NameFormat </H3>
+<PRE>
+public string <B>NameFormat</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The ComputerSystem object and its derivatives are Top Level Objects of CIM. They provide the scope for numerous components. Having unique System keys is required. The NameFormat property identifies how the ComputerSystem Name is generated. The NameFormat ValueMap qualifier defines the various mechanisms for assigning the name. Note that another name can be assigned and used for the ComputerSystem that better suit a business, using the inherited ElementName property.<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=NameFormat<br/>ValueMap={Other, IP, Dial, HID, NWA, HWA, X25, ISDN, IPX, DCC, ICD, E.164, SNA, OID/OSI, WWN, NAA}<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="EnabledDefault"><!-- --></A><H3>
+EnabledDefault </H3>
+<PRE>
+public uint16 <B>EnabledDefault</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>An enumerated value indicating an administrator's default or startup configuration for the Enabled State of an element. By default, the element is "Enabled" (value=2).<br/><br/><b>Qualifiers:</b><br>-------------<br>Write<br/>ValueMap={2, 3, 5, 6, 7, 9, .., 32768..65535}<br/>Values={Enabled, Disabled, Not Applicable, Enabled but Offline, No Default, Quiesce, DMTF Reserved, Vendor Reserved}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="RequestedState"><!-- --></A><H3>
+RequestedState </H3>
+<PRE>
+public uint16 <B>RequestedState</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>RequestedState is an integer enumeration that indicates the last requested or desired state for the element, irrespective of the mechanism through which it was requested. The actual state of the element is represented by EnabledState. This property is provided to compare the last requested and current enabled or disabled states. Note that when EnabledState is set to 5 ("Not Applicable"), then this property has no meaning. Refer to the EnabledState property description for explanations of the values in the RequestedState enumeration. <br>"Unknown" (0) indicates the last requested state for the element is unknown.<br>Note that the value "No Change" (5) has been deprecated in lieu of indicating the last requested state is "Unknown" (0). If the last requested or desired state is unknown, RequestedState should have the value "Unknown" (0), but may have the value "No Change" (5).Offline (6) indicates that the element has been requested to transition to the Enabled but Offline EnabledState. <br>It should be noted that there are two new values in RequestedState that build on the statuses of EnabledState. These are "Reboot" (10) and "Reset" (11). Reboot refers to doing a "Shut Down" and then moving to an "Enabled" state. Reset indicates that the element is first "Disabled" and then "Enabled". The distinction between requesting "Shut Down" and "Disabled" should also be noted. Shut Down requests an orderly transition to the Disabled state, and might involve removing power, to completely erase any existing state. The Disabled state requests an immediate disabling of the element, such that it will not execute or accept any commands or processing requests. <br><br>This property is set as the result of a method invocation (such as Start or StopService on CIM_Service), or can be overridden and defined as WRITEable in a subclass. The method approach is considered superior to a WRITEable property, because it allows an explicit invocation of the operation and the return of a result code. <br><br>If knowledge of the last RequestedState is not supported for the EnabledLogicalElement, the property shall be NULL or have the value 12 "Not Applicable".<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, .., 32768..65535}<br/>Values={Unknown, Enabled, Disabled, Shut Down, No Change, Offline, Test, Deferred, Quiesce, Reboot, Reset, Not Applicable, DMTF Reserved, Vendor Reserved}<br/>ModelCorrespondence={CIM_EnabledLogicalElement.EnabledState}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="EnabledState"><!-- --></A><H3>
+EnabledState </H3>
+<PRE>
+public uint16 <B>EnabledState</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>EnabledState is an integer enumeration that indicates the enabled and disabled states of an element. It can also indicate the transitions between these requested states. For example, shutting down (value=4) and starting (value=10) are transient states between enabled and disabled. The following text briefly summarizes the various enabled and disabled states: <br>Enabled (2) indicates that the element is or could be executing commands, will process any queued commands, and queues new requests. <br>Disabled (3) indicates that the element will not execute commands and will drop any new requests. <br>Shutting Down (4) indicates that the element is in the process of going to a Disabled state. <br>Not Applicable (5) indicates the element does not support being enabled or disabled. <br>Enabled but Offline (6) indicates that the element might be completing commands, and will drop any new requests. <br>Test (7) indicates that the element is in a test state. <br>Deferred (8) indicates that the element might be completing commands, but will queue any new requests. <br>Quiesce (9) indicates that the element is enabled but in a restricted mode.<br>Starting (10) indicates that the element is in the process of going to an Enabled state. New requests are queued.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11..32767, 32768..65535}<br/>Values={Unknown, Other, Enabled, Disabled, Shutting Down, Not Applicable, Enabled but Offline, In Test, Deferred, Quiesce, Starting, DMTF Reserved, Vendor Reserved}<br/>ModelCorrespondence={CIM_EnabledLogicalElement.OtherEnabledState}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="HealthState"><!-- --></A><H3>
+HealthState </H3>
+<PRE>
+public uint16 <B>HealthState</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates the current health of the element. This attribute expresses the health of this element but not necessarily that of its subcomponents. The possible values are 0 to 30, where 5 means the element is entirely healthy and 30 means the element is completely non-functional. The following continuum is defined: <br>"Non-recoverable Error" (30) - The element has completely failed, and recovery is not possible. All functionality provided by this element has been lost. <br>"Critical Failure" (25) - The element is non-functional and recovery might not be possible. <br>"Major Failure" (20) - The element is failing. It is possible that some or all of the functionality of this component is degraded or not working. <br>"Minor Failure" (15) - All functionality is available but some might be degraded. <br>"Degraded/Warning" (10) - The element is in working order and all functionality is provided. However, the element is not working to the best of its abilities. For example, the element might not be operating at optimal performance or it might be reporting recoverable errors. <br>"OK" (5) - The element is fully functional and is operating within normal operational parameters and without error. <br>"Unknown" (0) - The implementation cannot report on HealthState at this time. <br>DMTF has reserved the unused portion of the continuum for additional HealthStates in the future.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 5, 10, 15, 20, 25, 30, ..}<br/>Values={Unknown, OK, Degraded/Warning, Minor failure, Major failure, Critical failure, Non-recoverable error, DMTF Reserved}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ElementName"><!-- --></A><H3>
+ElementName </H3>
+<PRE>
+public string <B>ElementName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A user-friendly name for the object. This property allows each instance to define a user-friendly name in addition to its key properties, identity data, and description information. <br>Note that the Name property of ManagedSystemElement is also defined as a user-friendly name. But, it is often subclassed to be a Key. It is not reasonable that the same property can convey both identity and a user-friendly name, without inconsistencies. Where Name exists and is not a Key (such as for instances of LogicalDevice), the same information can be present in both the Name and ElementName properties.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CreationClassName"><!-- --></A><H3>
+CreationClassName <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>CreationClassName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>CreationClassName indicates the name of the class or the subclass used in the creation of an instance. When used with the other key properties of this class, this property allows all instances of this class and its subclasses to be uniquely identified.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Name"><!-- --></A><H3>
+Name <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>Name</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The inherited Name serves as the key of a System instance in an enterprise environment.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>Override=Name<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="FWVersion"><!-- --></A><H3>
+FWVersion </H3>
+<PRE>
+public string <B>FWVersion</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Intel(R) ME firmware version in format: Major.Minor.Revision.build<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Capabilities"><!-- --></A><H3>
+Capabilities </H3>
+<PRE>
+public uint32 <B>Capabilities</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Capabilities represents the supported features on this system<br/><br/><b>Qualifiers:</b><br>-------------<br>bitValues={Intel(R) Active Management Technology, NA, NA, Intel(R) Anti-Theft Technology, Intel(R) Upgrade Service, Intel(R) Virtualization Engine, NA, Please Contact Intel For More Details, NA, Intel(R) Integrated Clock Controler, Intel(R) Protected Audio Video Path, NA, NA, NA, IPv6, Keyboard Video Mouse, Please Contact Intel For More Details, NA, Transport Layer Security, Please Contact Intel For More Details, Intel(R) Standard Manageability, Intel(R) Level 3 Manageability Upgrade, Intel(R) Dynamic Application Loader, Intel(R) Small Business Technology}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="EnabledCapabilities"><!-- --></A><H3>
+EnabledCapabilities </H3>
+<PRE>
+public uint32 <B>EnabledCapabilities</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>EnabledCapabilities represents the enabled features on this system<br/><br/><b>Qualifiers:</b><br>-------------<br>bitValues={Intel(R) Active Management Technology, NA, NA, Intel(R) Anti-Theft Technology, Intel(R) Upgrade Service, Intel(R) Virtualization Engine, NA, Please Contact Intel For More Details, NA, Intel(R) Integrated Clock Controler, Intel(R) Protected Audio Video Path, NA, NA, NA, IPv6, Keyboard Video Mouse, Please Contact Intel For More Details, NA, Transport Layer Security, Please Contact Intel For More Details, Intel(R) Standard Manageability, Intel(R) Level 3 Manageability Upgrade, Intel(R) Dynamic Application Loader, Intel(R) Small Business Technology}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="PlatformType"><!-- --></A><H3>
+PlatformType </H3>
+<PRE>
+public uint32 <B>PlatformType</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>PlatformType represents the category the system belongs to<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3}<br/>Values={Mobile, Desktop, Server, Workstation}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="UserSegmentType"><!-- --></A><H3>
+UserSegmentType </H3>
+<PRE>
+public uint32 <B>UserSegmentType</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>UserSegmentType represents the market segment the system belongs to<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1}<br/>Values={Corporate, Consumer}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="ManageabilityMode"><!-- --></A><H3>
+ManageabilityMode </H3>
+<PRE>
+public uint32 <B>ManageabilityMode</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>ManageabilityMode represents the manageability mode. Every mode supports a different set of capabilities<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3, 4, 5}<br/>Values={None, Unknown, Intel(R) vPro (TM), Intel(R) Standard Manageability, Intel(R) Level 3 Manageability Upgrade, Intel(R) Small Business Technology}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="CryptoFuseEnabled"><!-- --></A><H3>
+CryptoFuseEnabled </H3>
+<PRE>
+public boolean <B>CryptoFuseEnabled</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Represents the status of the chipset CryptoFuse, when disabled, Intel(R) ME will not perform any encryption operations<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="getFwUpdateOverrideParams"><!-- --></A>
+<H3>getFwUpdateOverrideParams</H3>
+<PRE>
+public uint32 <B>getFwUpdateOverrideParams</B>([OUT]uint32 Counter, [OUT]uint32 OverrideQualifier)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Receives local  FW Update counters (In Intel(R) AMT version 7.0 and later this function is not supported and always returns NOT SUPPORTED error)<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>Counter</b><DD><b>General Information:</b><br/>FW Update override counter. When 255 refer to always<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1...254, 255}<br/><br/><DT><b>OverrideQualifier</b><DD><b>General Information:</b><br/>FW Update override qualifier<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2}<br/>Values={ALWAYS, NEVER, RESTRICTED}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getLastMEResetReason"><!-- --></A>
+<H3>getLastMEResetReason</H3>
+<PRE>
+public uint32 <B>getLastMEResetReason</B>([OUT]uint32 ReasonCode)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Returns the cause for the last Intel(R) ME Reset operation<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>ReasonCode</b><DD><b>General Information:</b><br/>A description of the last Intel(R) ME reset reason<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/>ValueMap={0, 1, 2, 3}<br/>Values={Power-Up, FW-Reset, System-Reset, Unknown}<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getCurrentPowerPolicy"><!-- --></A>
+<H3>getCurrentPowerPolicy</H3>
+<PRE>
+public uint32 <B>getCurrentPowerPolicy</B>([OUT]string PowerPolicy)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Specifies the list of ACPI states Intel(R) ME is operational in<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>PowerPolicy</b><DD><b>General Information:</b><br/>A description of the power policy<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="IsFirmwareUpdateEnabled"><!-- --></A>
+<H3>IsFirmwareUpdateEnabled</H3>
+<PRE>
+public uint32 <B>IsFirmwareUpdateEnabled</B>([OUT]boolean enabled)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Indicates whether the Firmware Update capability is currently enabled<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>enabled</b><DD><b>General Information:</b><br/>Indicates whether the Firmware Update capability is currently enabled<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getCapabilities"><!-- --></A>
+<H3>getCapabilities</H3>
+<PRE>
+public uint32 <B>getCapabilities</B>([OUT]string Capabilities[], [OUT]string EnabledCapabilities[])</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Specifies the list of supported features on this system<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>Capabilities</b><DD><b>General Information:</b><br/>An array of strings defining system capabilities. Should match the bitvalues of the system Capabilities<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/><DT><b>EnabledCapabilities</b><DD><b>General Information:</b><br/>An array of strings defining system capabilities. Should match the bitvalues of the system Enabled Capabilities<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]ME_System Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

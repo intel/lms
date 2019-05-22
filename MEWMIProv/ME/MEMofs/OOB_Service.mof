@@ -1,0 +1,144 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.4" ), 
+    Description ( "A class for handling Intel(R) ME's OOB activation(aka Intel(R) AMT provisioning) and for "
+    		"reporting the OOB configuration" ):Amended, LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+class OOB_Service : CIM_Service {
+
+
+   [Description ("Returns the current provisioning (activation) mode of the device. " 
+	"This command is deprecated since Intel(R) AMT 7.0"), 
+	InternalOnly("Check Intel(R) AMT 6.0 support"): Amended, static, implemented]
+   uint32 GetAMTProvisioningMode(
+	[OUT, Description ("Provisioning mode"), 
+	 ValueMap { "0", "1", "2", "3" }, 
+	 Values { "None", "Enterprise", "Small-Business", 
+	 "Remote Connectivity_Service" }]
+      	uint8 mode);
+
+
+   [Description ( 
+	"Indicates if Remote Configuration is enabled in the MEBx" ): Amended, static, implemented]
+   uint32 isRemoteConfigEnabled(
+	[OUT, Description ("Indicates if Remote Configuration is enabled in the MEBx")]
+	boolean enabled);
+
+   [Description ("Indicates whether the device is using TLS-PSK or TLS-PKI activation mode"): Amended, static, implemented] 
+   uint32 GetActivationTLSMode(
+	[OUT, Description ("TLS activation mode"),
+	 ValueMap { "0", "1", "2"},  
+	 Values { "NOT READY", "PSK", "PKI" }]
+	uint8 mode);
+	   
+
+   [Description ("When the device is configured in TLS-PSK mode, "
+	"this functions returns the PID value of the device, this can be used "
+      	"by Provisioning servers to associate a PSK value"): Amended, static, implemented]
+   uint32 GetPID(
+	[OUT, Description ("PID value")] 
+	 string PID);
+
+   [Description ( 
+	"Returns the information about the server which Intel(R) AMT will send Hello packets to. "
+	"The OOB server (aka Intel(R) AMT) sends 'Hello packet' messages to this address as"
+	" a mean to trigger remote configuration"): Amended, static, implemented]
+   uint32 GetHelloPacketDestInfo( 
+	[OUT, Description ("returns the address information (IPv4, IPv6 or FQDN) of the configuration "
+	 "server"),
+	 InternalOnly ("if not configured return 'provisionserver'")]
+	string Address,
+	[OUT, Description ( 
+         "TCP Port of the configuration server to send Hello packets to")
+	 , InternalOnly ("if not configured return '9971'")]
+        uint16 ConfigServerListeningPort);
+
+  
+   [Description ( "Intel(R) AMT\'s configured Fully Qualified Domain Name" ): Amended, static, implemented]
+   uint32 GetAMTFQDN(
+	[OUT, Description ("Intel(R) AMT\'s configured Fully Qualified Domain Name")]
+	 string FQDN);
+
+  
+   [Description (
+	"Activate Intel(R) AMT using Remote Configuration"
+	): Amended, static, implemented] 
+   uint32 Activate(
+	[IN, Description ("Optional One-Time-Password value the remote configuration service can use to authenticate the device")]
+	string OTP, 
+        [IN, Description ("Optional DNSSuffix to match")]
+	string PKIDNSSuffix,
+	[OUT, Description ("Intel(R) AMT\'s TLS activation mode"),
+	 ValueMap { "0", "1", "2"},
+	 Values {  "NOT READY", "PSK", "PKI" }]
+	uint8 provTLSMode);
+
+
+   [Description ("Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation"): Amended, static, implemented]
+   uint32 CancelActivation ();
+
+   
+   [Description ("GetProvisioningState"): Amended, static, implemented]
+   uint32 GetProvisioningState(
+	[OUT, Description ("Provisioning state"),
+	 ValueMap { "0", "1", "2"},
+	 Values { "PRE-Provisioning", "IN-Provisioning", 
+	 "POST-Provisioning" }]
+	uint8 state);
+
+     
+   [Description ("GetProvisioningInfo returns the FQDN of configuration server and the PKI FQDN suffix"): Amended, static, implemented]
+   uint32 GetProvisioningInfo(
+	[OUT, Description ("PKIDNSSuffix Specified")]
+	string PKIDNSSuffix, 
+	[OUT, Description ("The ConfigurationServerFQDN, set to null if not specified")]
+	string ConfigServerFQDN);
+
+ 
+   [Description ("Specifies whether Intel(R) AMT TLS port is enabled"),
+	InternalOnly("consider modifying the API to specify all open ports"): Amended, static, implemented]
+   uint32 isTLSEnabled(
+	[OUT, Description ("Specifies whether Intel(R) AMT TLS port is enabled")]
+	boolean enabled);
+
+
+   [Description ("CIRA: User request to initiate a CIRA connection"): Amended, static, implemented]
+   uint32 OpenUserInitiatedConnection();
+
+
+   [Description ("CIRA: Request Intel(R) ME to close an existing CIRA connection"): Amended, static, implemented]
+   uint32 CloseUserInitiatedConnection();
+
+
+   [Description ("CIRA: Retrieves information of an active CIRA connection"): Amended, static, implemented]
+   uint32 GetRemoteAccessConnectionStatus(
+	[OUT, Description("Indicates the network connection status from Intel(R) AMT standpoint. Starting in v7.0, if the network cable is unplugged, an Unknown value appears."),
+	 ValueMap{"0","1","2","3"},
+	 Values {"Direct","VPN","Outside Enterprise","Unknown"}] 
+	uint32 NetworkConStatus,
+	[OUT, Description("Indicates the trigger for the remote access establishment in case a connection status is connected/connecting"),
+	 ValueMap{"0","1","2","3"},
+	 Values {"User Initiated","Alert","Periodic","Provisioning"}] 
+	uint32 ConnectionTrigger,
+        [OUT, Description ("The MPS hostname that Intel(R) AMT is connected or trying to connect to")]
+	string MPshostName,
+        [OUT, ValueMap{"0","1","2"}, Values {"not connected", "connecting", "connected"}, Description ("The status of the CIRA connection (not connected, connecting, connected). Starting in v7.0, this value indicates the CIRA connection.")]
+	uint32 RemoteAccessConStatus);
+   [Description("Un-configure the AMT system"), static, implemented] 
+   uint32 Unconfigure();
+
+	
+   [Description("Get the AMT local Administrator credentials. A local application or a service running as a Windows local administrator, can use this method to retrieve credentials from AMT. This application can use these credentials to authenticate to AMT during WSMAN commands. "), Static, Implemented] 
+   uint32 GetLocalAdminCredentials(
+	[OUT, Description ("Local administrator username")]
+	string Username, 
+	[OUT, Description ("Local administrator password")]
+	string Password);
+		
+};

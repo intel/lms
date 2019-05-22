@@ -1,0 +1,508 @@
+<!DOCTYPE node PUBLIC
+    "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd" >
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+<!--
+    com.intel.amt.lms:
+    @short_description: Intel(r) Local Manageability Service DBus interface.
+
+    Interface for interaction with Intel(R) Local Manageability Service.
+-->
+<interface name='com.intel.amt.lms'>
+<!--
+    Alert:
+    @Category: Alert category
+    @ID: Alert ID
+    @Message: Alert message.
+    @MessageArgument: Aler message arguments string.
+    @MessageID: Alert message type.
+    @DateTime: Timestamp.
+
+    Emitted to inform clients about FW or service events.
+-->
+<signal name='Alert' >
+<arg name='Category' type='u'/>
+<arg name='ID' type='u'/>
+<arg name='Message' type='s'/>
+<arg name='MessageArgument' type='s'/>
+<arg name='MessageID' type='s'/>
+<arg name='DateTime' type='s'/>
+</signal>
+<!--
+    com.intel.amt.lms.Manageability:
+    @short_description: Manageability DBus interface subsystem
+
+    Interface for interaction with Intel(R) Local Manageability Service,
+    Manageability part.
+-->
+</interface>
+<interface name='com.intel.amt.lms.Manageability'>
+<!--
+    GetTheFeatureState:
+    @Feature: 0 = AMT, 1 = IRWT, 2 = QST, 3 = TDT, 4 = SOFTCREEK, 5 = VE, 7 = NAND, 9 = ICC_OVER_CLOCK_IN, 10 = PAV, 11 = SPK, 12 = RCA, 13 = RPAT, 14 = IPV6, 15 = KVM, 16 = OCH, 17 = DAL, 18 = TLS, 19 = CILA, 20 = LAKEHOUSTON
+    @State: 0 = NOT_PRESENT, 1 = DISABLED, 2 = ENABLED, 3 = AVAILABLE
+
+    Retrieves feature state by feature id.
+    If @Feat is unknown to server, a
+    #org.freedesktop.DBus.Error.InvalidArgs error is returned.
+-->
+<method name="GetTheFeatureState">
+<arg name="Feature" type="u" direction="in" />
+<arg name="State" type="u" direction="out" />
+</method>
+<!--
+    GetFeaturesState:
+    @States: Feature states array (0 = NOT_PRESENT, 1 = DISABLED, 2 = ENABLED, 3 = AVAILABLE).
+
+    Retrieves all feature states in array.
+
+    Feature by array position:(0 = AMT, 1 = IRWT, 2 = QST, 3 = TDT, 4 = SOFTCREEK, 5 = VE, 6 = DT, 7 = NAND, 8 = MPC, 9 = ICC_OVER_CLOCK_IN, 10 = PAV, 11 = SPK, 12 = RCA, 13 = RPAT, 14 = IPV6, 15 = KVM, 16 = OCH, 17 = DAL, 18 = TLS, 19 = CILA, 20 = LAKEHOUSTON).
+-->
+<method name="GetFeaturesState">
+<arg name="States" type="au" direction="out" />
+</method>
+<!--
+    GetCustomerType:
+    @CustomerType: 0 = CORPORATE, 1 = CONSUMER, 2 = WRONG_CUSTOMER_TYPE
+
+    Retrieves customer type.
+-->
+<method name="GetCustomerType">
+<arg name="CustomerType" type="u" direction="out" />
+</method>
+<!--
+    GetPlatformType:
+    @PlatformType: 0 = MOBILE, 1 = DESKTOP, 2 = SERVER, 3 = WORKSTATION
+
+    Retrieves platform type.
+-->
+<method name="GetPlatformType">
+<arg name="PlatformType" type="u" direction="out" />
+</method>
+<!--
+    GetMenageabiltyMode:
+    @MenageabiltyMode: 0 = NONE, 1 = NOT_KNOWN, 2 = VPRO, 3 = STANDARD, 4 = L3, 5 = SBT
+
+    Retrieves manageability mode.
+-->
+<method name="GetMenageabiltyMode">
+<arg name="MenageabiltyMode" type="u" direction="out" />
+</method>
+<!--
+    GetFWInfo:
+    @MEBxVersion: MEBx version string
+    @BiosBootState: Bios boot state
+    @CryptoFuseEnable: Is crypto fuse enabled
+    @LocalFWupdateEnable : Is local FW update enabled
+
+    Retrieves basic FW info.
+-->
+<method name="GetFWInfo">
+<arg name="MEBxVersion" type="s" direction="out" />
+<arg name="BiosBootState" type="u" direction="out" />
+<arg name="CryptoFuseEnable" type="b" direction="out" />
+<arg name="LocalFWupdateEnable" type="b" direction="out" />
+</method>
+<!--
+    GetPMCVersion:
+    @Version: PMC version string
+
+    Retrieves PMC version.
+-->
+<method name="GetPMCVersion">
+<arg name="Version" type="s" direction="out" />
+</method>
+</interface>
+<!--
+    com.intel.amt.lms.PTHI:
+    @short_description: PTHI DBus interface subsystem
+
+    Interface for interaction with Intel(R) Local Manageability Service,
+    AMTHI (PTHI) part.
+-->
+<interface name='com.intel.amt.lms.PTHI'>
+<!--
+    GetAMTVersion:
+    @Version: AMT version string
+
+    Retrieves AMT version.
+-->
+<method name="GetAMTVersion">
+<arg name="Version" type="s" direction="out" />
+</method>
+<!--
+    GetLMSVersion:
+    @Version: LMS version string
+
+    Retrieves Local Manageability Serice version.
+-->
+<method name="GetLMSVersion">
+<arg name="Version" type="s" direction="out" />
+</method>
+<!--<method name="GetHeciVersion">
+<arg name="Version" type="s" direction="out" />
+</method>-->
+<!--
+    GetProvisioningMode:
+    @ProvisioningMode: 0 = NONE, 1 = ENTERPRISE, 2 = SMALL_BUSINESS, 3 = REMOTE_CONNECTIVITY_SERVICE
+
+    Retrieves FW provisioning mode.
+-->
+<method name="GetProvisioningMode">
+<arg name="ProvisioningMode" type="u" direction="out" />
+</method>
+<!--
+    GetProvisioningTlsMode:
+    @ProvisioningTlsMode: 0 = UNKNOWN, 1 = PSK, 2 = PKI
+
+    Retrieves available provision TLS mode.
+-->
+<method name="GetProvisioningTlsMode">
+<arg name="ProvisioningTlsMode" type="u" direction="out" />
+</method>
+<!--
+    GetProvisioningState:
+    @ProvisioningState: 0 = PRE, 1 = IN, 2 = POST
+
+    Retrieves FW provisioning state.
+-->
+<method name="GetProvisioningState">
+<arg name="ProvisioningState" type="u" direction="out" />
+</method>
+<!--
+    GetNetworkConnectionStatus:
+    @Status: 0 = NOT_CONNECTED, 1 = CONNECTING, 2 = CONNECTED
+    @ConnectionType: 0 = DIRECT, 1 = VPN, 2 = OUTSIDE_ENTERPRISE, 3 = UNKNOWN
+    @ConnectionTrigger: 0 = USER_INITIATED, 1 = ALERT, 2 = PROVISIONING, 3 = PERIODIC
+
+    Retrieves network connection status.
+-->
+<method name="GetNetworkConnectionStatus">
+<arg name="Status" type="u" direction="out" />
+<arg name="ConnectionType" type="u" direction="out" />
+<arg name="ConnectionTrigger" type="u" direction="out" />
+</method>
+<!--
+    GetUserInitiatedEnabled:
+    @Status: 0 = DIABLED, 1 = ENABLED
+
+    Retrieves status of user initiated connection enablement.
+-->
+<method name="GetUserInitiatedEnabled">
+<arg name="Status" type="u" direction="out" />
+</method>
+<!--
+    getWebUIState:
+    @State: 0 = ENABLED_TLS, 1 = NOT_TLS, 2 = DISABLED
+
+    Retrieves state of WebUI enablement.
+-->
+<method name="getWebUIState">
+<arg name="State" type="u" direction="out" />
+</method>
+<!--
+    GetPowerPolicy:
+    @PowerPolicy: Power policy string
+
+    Retrieves status of power policy.
+-->
+<method name="GetPowerPolicy">
+<arg name="PowerPolicy" type="s" direction="out" />
+</method>
+<!--
+    GetLastResetReason:
+    @LastResetReason: 0 = NONE, 1 = ME, 2 = GLOBAL, 3 = EXCEPTION
+
+    Retrieves reason of last reset.
+-->
+<method name="GetLastResetReason">
+<arg name="LastResetReason" type="u" direction="out" />
+</method>
+<!--
+    GetRedirectionStatus:
+    @SOL: 0 = CLOSED, 1 = OPEN
+    @IDER: 0 = CLOSED, 1 = OPEN
+
+    Retrieves status of redirection interfaces.
+-->
+<method name="GetRedirectionStatus">
+<arg name="SOL" type="u" direction="out" />
+<arg name="IDER" type="u" direction="out" />
+</method>
+<!--
+    GetSystemDefenseStatus:
+    @SystemDefenseStatus: 0 = DISABLED, 1 = ENABLED
+
+    Retrieves status of system defense.
+-->
+<method name="GetSystemDefenseStatus">
+<arg name="SystemDefenseStatus" type="u" direction="out" />
+</method>
+<!--
+    GetNetworkSettings:
+    @ConnectionType: 0 = WIRED, 1 = WIRELESS
+    @DhcpEnabled: 0 = DISABLED, 1 = ENABLED
+    @IpAddress: IP address string
+    @MacAddress: MAC address string
+    @LinkStatus: 0 = DOWN, 1 = UP
+    @WirelessControl: Wireless only 1 = ACTIVE, 2 = PASSIVE, 5 = NOT_APPLICABLE
+    @WirelessConfEnabled: Wireless only 0 = DISABLED, 1 = ENABLED, 5 = NOT_APPLICABLE
+
+    Retrieves network interface settings.
+-->
+<method name="GetNetworkSettings">
+<arg name="ConnectionType" type="u" direction="in" />
+<arg name="DhcpEnabled" type="u" direction="out" />
+<arg name="IpAddress" type="s" direction="out" />
+<arg name="MacAddress" type="s" direction="out" />
+<arg name="LinkStatus" type="u" direction="out" />
+<arg name="WirelessControl" type="u" direction="out" />
+<arg name="WirelessConfEnabled" type="u" direction="out" />
+</method>
+<!--
+    GetIPv6NetworkSettings:
+    @ConnectionType: 0 = WIRED, 1 = WIRELESS
+    @IPv6DefaultRouter: Default router IP address string
+    @PrimaryDNS: Primary DNS IP address string
+    @SecondaryDNS: Secondary DNS IP address string
+    @Response: Interface IPv6 addresses string array
+    @Ipv6Enable: 0 = DISABLED, 1 = ENABLED
+
+    Retrieves network interface IPv6 settings.
+-->
+<method name="GetIPv6NetworkSettings">
+<arg name="ConnectionType" type="u" direction="in" />
+<arg name="IPv6DefaultRouter" type="s" direction="out" />
+<arg name="PrimaryDNS" type="s" direction="out" />
+<arg name="SecondaryDNS" type="s" direction="out" />
+<arg name="Response" type="as" direction="out" />
+<arg name="Ipv6Enable" type="b" direction="out" />
+</method>
+<!--
+    GetSystemUUID:
+    @SystemUUID: UUID as string
+
+    Retrieves the system UUID.
+-->
+<method name="GetSystemUUID">
+<arg name="SystemUUID" type="s" direction="out" />
+</method>
+<!--
+    OpenUserInitiatedConnection:
+
+    Send command to initiate a user request for helpdesk services.
+-->
+<method name="OpenUserInitiatedConnection">
+</method>
+<!--
+    CloseUserInitiatedConnection:
+
+    Send command to close a previously open connection.
+-->
+<method name="CloseUserInitiatedConnection">
+</method>
+<!--
+    TerminateKVMSession:
+
+    Sent command to terminate an active KVM session.
+-->
+<method name="TerminateKVMSession">
+</method>
+<!--
+    GetKVMRedirectionState:
+    @Enabled: 0 = DISABLED, 1 = ENABLED
+    @Connected: 0 = DISCONNECTED, 1 = CONNECTED
+
+    Retrive KVM redirection state.
+-->
+<method name="GetKVMRedirectionState">
+<arg name="Enabled" type="b" direction="out" />
+<arg name="Connected" type="b" direction="out" />
+</method>
+<!--
+    SetSpriteLanguage:
+    @SpriteLanguage: 0 = English, 1 = French, 2 = German, 3 = Chinese_Traditional, 4 = Japanese, 5 = Russian, 6 = Italian, 7 = Spanish, 8 = Portuguese_Brazil, 9 = Korean, 10 = Chinese_Simplified, 11 = Arabic, 12 = Czech, 13 = Danish, 14 = Greek, 15 = Finnish, 16 = Hebrew, 17 = Hungarian, 18 = Dutch, 19 = Norwegian, 20 = Polish, 21 = Portuguese_Portugal, 22 = Slovak, 23 = Slovenian, 24 = Swedish, 25 = Thai, 26 = Turkish, 65535 = DefaultEnglish
+
+    Set current sprite language.
+-->
+<method name="SetSpriteLanguage">
+<arg name="SpriteLanguage" type="u" direction="in" />
+</method>
+<!--
+    SetSpriteZoom:
+    @SpriteZoom: 1 = NO_ZOOM, 2 = ZOOM_X2, 65535 = AUTO
+
+    Set current sprite zoom level.
+-->
+<method name="SetSpriteZoom">
+<arg name="SpriteZoom" type="u" direction="in" />
+</method>
+<!--
+    GetSpriteParameters:
+    @SpriteLanguage: 0 = English, 1 = French, 2 = German, 3 = Chinese_Traditional, 4 = Japanese, 5 = Russian, 6 = Italian, 7 = Spanish, 8 = Portuguese_Brazil, 9 = Korean, 10 = Chinese_Simplified, 11 = Arabic, 12 = Czech, 13 = Danish, 14 = Greek, 15 = Finnish, 16 = Hebrew, 17 = Hungarian, 18 = Dutch, 19 = Norwegian, 20 = Polish, 21 = Portuguese_Portugal, 22 = Slovak, 23 = Slovenian, 24 = Swedish, 25 = Thai, 26 = Turkish, 100 = NotSet, 65535 = DefaultEnglish
+    @SpriteZoom: 1 = NO_ZOOM, 2 = ZOOM_X2, 65535 = AUTO
+
+    Retrive current sprite language and zoom.
+-->
+<method name="GetSpriteParameters">
+<arg name="SpriteLanguage" type="u" direction="out" />
+<arg name="SpriteZoom" type="u" direction="out" />
+</method>
+<!--
+    GetConfigurationInfo:
+    @ControlMode: 0 = NOT_PROVISIONED, 1 = CLIENT, 2 = ADMIN, 3 = RESERVED
+    @ProvisioningMethod: 0 = UNKNOWNPROV, 1 = RESERVED1, 2 = UNPROVISIONED, 3 = REMOTE, 4 = REMOTE_TLSPKI, 5 = HOST, 6 = MANUAL, 7 = RESERVED2, 100 = NOTSUPPORTED
+    @CreationTimeStamp: Provison time stamp string
+    @CertHash: Certificate hash string array
+
+    Retrive AMT configuration parameters.
+-->
+<method name="GetConfigurationInfo">
+<arg name="ControlMode" type="u" direction="out" />
+<arg name="ProvisioningMethod" type="u" direction="out" />
+<arg name="CreationTimeStamp" type="s" direction="out" />
+<arg name="CertHash" type="ay" direction="out" />
+</method>
+<!--
+    TerminateRemedySessions:
+
+    Request to all remedy sessions (SOL, IDER, KVM, etc.) to terminate.
+-->
+<method name="TerminateRemedySessions">
+</method>
+<!--
+    GetUserConsentState:
+    @State:0 = NOT STARTED, 1 = REQUESTED, 2 = DISPLAYED, 3 = RECEIVED, 4 = IN_SESSION, 5 = RESERVED
+    @Policy: 0 = NOT_REQUIRED, 1 = KVM_ONLY, 4294967295 = ALL_SESSIONS
+
+    Retrive user consent status.
+-->
+<method name="GetUserConsentState">
+<arg name="State" type="u" direction="out" />
+<arg name="Policy" type="u" direction="out" />
+</method>
+<!--
+    GetWLANLinkInfo:
+    @Preference: 1 = ME, 2 = HOST, 3 = Reserved
+    @Control: 1 = ME, 2 = HOST, 3 = Reserved
+    @Protection: 0 = OVERRIDE, 1 = NONE, 2 = PASSIVE, 3 = HIGH, 4 = RESERVED
+
+    Retrive WLAN link information.
+-->
+<method name="GetWLANLinkInfo">
+<arg name="Preference" type="u" direction="out" />
+<arg name="Control" type="u" direction="out" />
+<arg name="Protection" type="u" direction="out" />
+</method>
+<!--
+    SetLinkPreferenceToHost:
+
+    Request to set the link preferred owner entity to host.
+-->
+<method name="SetLinkPreferenceToHost">
+</method>
+<!--
+    InitiateUserConnection:
+    @Status: Operation result status
+
+    Send command to initiate a user request for helpdesk services.
+-->
+<method name="InitiateUserConnection">
+<arg name="Status" type="u" direction="out" />
+</method>
+<!--
+    userInitiatedPolicyRuleExists:
+    @Exists: 0 = NOT_EXISTS, 1 = EXISTS
+
+    Checks if user initiated policy rule exists in the FW.
+-->
+<method name="userInitiatedPolicyRuleExists">
+<arg name="Exists" type="u" direction="out" />
+</method>
+<!--
+    userInitiatedPolicyRuleForLocalMpsExists:
+    @Exists: 0 = NOT_EXISTS, 1 = EXISTS
+
+    Checks if user initiated policy rule for local MPS exists in the FW.
+-->
+<method name="userInitiatedPolicyRuleForLocalMpsExists">
+<arg name="Exists" type="u" direction="out" />
+</method>
+<!--
+    snmpEventSubscriberExists:
+    @Exists: 0 = NOT_EXISTS, 1 = EXISTS
+
+    Checks if event subscriber exists in the FW.
+-->
+<method name="snmpEventSubscriberExists">
+<arg name="Exists" type="u" direction="out" />
+</method>
+<!--
+    CILAFilterCollectionSubscriptionExists:
+    @Exists: 0 = NOT_EXISTS, 1 = EXISTS
+
+    Checks if CILA filter collection subscription exists in the FW.
+-->
+<method name="CILAFilterCollectionSubscriptionExists">
+<arg name="Exists" type="u" direction="out" />
+</method>
+<!--
+    UpdateScreenSettings2:
+    @DisplayParameters: array of (IsActive: screen is present, UpperLeftX: Upper left X coordinate of screen, UpperLeftY: Upper left Y coordinate of screen, SizeX: X resolution of screen, SizeY: Y resolution of screen, Pipe: Display index)
+    @numOfDisplays: Number of displays in array (1-4)
+
+    Put new screen topology to FW.
+-->
+<method name="UpdateScreenSettings2">
+<arg name="DisplayParameters" type="a(biiuuu)" direction="in" />
+<arg name="numOfDisplays" type="u" direction="in" />
+</method>
+<!--
+    GetRedirectionSessionLinkTechnology:
+    @sessionType: 0 = SOL, 1 = IDER, 2 = KVM
+    @LinkTechnology: 0 = WIRED, 1 = WIRELESS
+
+    Retrives underlining link technology for given session type.
+-->
+<method name="GetRedirectionSessionLinkTechnology">
+<arg name="sessionType" type="u" direction="in" />
+<arg name="LinkTechnology" type="u" direction="out" />
+</method>
+</interface>
+<!--
+    com.intel.amt.lms.AT_Device:
+    @short_description: AT_Device DBus interface subsystem
+
+    Interface for interaction with Intel(R) Local Manageability Service,
+    AT_Device part.
+-->
+<interface name='com.intel.amt.lms.AT_Device'>
+<!--
+    GetAuditLogs:
+    @AuditLogs: logs as XML string
+
+    Retrives audit logs from the FW.
+-->
+<method name="GetAuditLogs">
+<arg name="AuditLogs" type="s" direction="out" />
+</method>
+</interface>
+<!--
+    com.intel.amt.lms.UNSAlert:
+    @short_description: UNSAlert DBus interface subsystem
+
+    Interface for interaction with Intel(R) Local Manageability Service,
+    UNSAlert part.
+-->
+<interface name='com.intel.amt.lms.UNSAlert'>
+<!--
+    GetIMSSEventHistory:
+    @EventHistory: event history string
+
+    Retrives IMSS event history from LMS.
+-->
+<method name="GetIMSSEventHistory">
+<arg name="EventHistory" type="s" direction="out" />
+</method>
+</interface>
+</node>

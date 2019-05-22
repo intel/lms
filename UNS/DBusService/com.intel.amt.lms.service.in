@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.intel.amt.lms
+Exec=@LMS_BINPATH@
+SystemdService=lms.service

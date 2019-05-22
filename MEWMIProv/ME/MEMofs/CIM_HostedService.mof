@@ -1,0 +1,21 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+//**************************************************************************
+//* Class: CIM_HostedService
+//* Derived from: CIM_Dependency
+//**************************************************************************
+[Association, Locale(1033): ToInstance, dynamic: ToInstance, provider("IntelMEProv")]
+class CIM_HostedService : CIM_Dependency
+{
+	[read: ToSubClass, Max(1): ToSubClass, Min(1): ToSubClass, Override("Antecedent")] CIM_System ref Antecedent = NULL;
+	[read: ToSubClass, Override("Dependent"), Weak: ToSubClass] CIM_Service ref Dependent = NULL;
+};
+
+//* EOF CIM_Dependency.mof

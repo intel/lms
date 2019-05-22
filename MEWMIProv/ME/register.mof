@@ -1,0 +1,39 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma AUTORECOVER
+#pragma classflags("forceupdate")
+
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+
+
+
+/////////////////////////////////////////////////////////////////////
+//					Provider registration                          //
+/////////////////////////////////////////////////////////////////////
+
+instance of __Win32Provider as $P
+{
+    Name    = "IntelMEProv" ;
+    ClsId   = "{73C0325A-D3BF-48af-9F37-1589CC58E788}" ;
+    HostingModel="LocalSystemHost";
+};    
+
+instance of __MethodProviderRegistration
+{
+    Provider = $P;
+};
+
+instance of __InstanceProviderRegistration
+{
+    Provider = $P;
+    SupportsGet = TRUE;
+    SupportsEnumeration = TRUE;
+};
+
+

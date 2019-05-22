@@ -1,0 +1,13 @@
+[Unit]
+Description=Local Manageability Service
+BindsTo=dev-mei.device
+After=dev-mei.device
+
+[Service]
+Type=dbus
+BusName=com.intel.amt.lms
+#Environment=LMS_ENABLE_DEBUG=1
+ExecStart=@LMS_BINPATH@
+
+[Install]
+WantedBy=multi-user.target

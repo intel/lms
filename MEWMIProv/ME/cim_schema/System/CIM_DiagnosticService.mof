@@ -1,0 +1,66 @@
+// Copyright (c) 2005 DMTF.  All rights reserved.
+// <change cr="ArchCR00066.004" type="add">Add UmlPackagePath
+// qualifier values to CIM Schema.</change>
+// ==================================================================
+//  CIM_DiagnosticService 
+// ==================================================================
+   [Abstract, Version ( "2.9.0" ), 
+    UMLPackagePath ( "CIM::System::Diagnostics" ), 
+    Description ( 
+       "The CIM_DiagnosticService class provides the ability to start "
+       "a service that functions to participate in a problem "
+       "determination process. Specific diagnostic services SHOULD be "
+       "defined by subclassing this class. Examples of a diagnostic "
+       "service are tests, information retrievers, exercisers, and "
+       "ports to external executives." )]
+class CIM_DiagnosticService : CIM_Service {
+
+
+      [Description ( 
+          "The RunDiagnostic method executes this test for the "
+          "specified ManagedSystemElement (defined using the "
+          "SystemElement input parameter). The capabilities for the "
+          "diagnostic service indicate where the results from the "
+          "test job are stored. How the test should execute, i.e. "
+          "its settings, is defined in a DiagnosticSetting object "
+          "(or by a subclass of DiagnosticSetting). A reference to "
+          "a Setting object is specified using the Setting input "
+          "parameter. If a reference is not passed into the method, "
+          "then a default DiagnosticSetting SHALL be used. \n"
+          "When RunDiagnostic starts execution, the settings, which "
+          "are time sensitive, SHOULD be evaluated and captured. "
+          "This is suggested since the DiagnosticSetting object MAY "
+          "be modified at any time, and therefore the current test "
+          "settings could be lost. \n"
+          "If 0 is returned, the function completed successfully "
+          "and no ConcreteJob instance is created. If 0x1000 a "
+          "ConcreteJob will be started." ), 
+       ValueMap { "0", "1", "2", "3", "4", "5", "..", "0x1000", 
+          "..", "0x8000.." }, 
+       Values { "Job completed with no error", "Not Supported", 
+          "Unknown", "Timeout", "Failed", "Invalid Parameter", 
+          "DMTF Reserved", 
+          "Method parameters checked - job started", 
+          "Method Reserved", "Vendor Specific" }]
+   uint32 RunDiagnostic(
+         [IN, Description ( 
+             "Specifies the element upon which the "
+             "DiagnosticService SHOULD be run." )]
+      CIM_ManagedElement REF ManagedElement, 
+         [IN, Description ( 
+             "Specifies the desired settings that SHOULD be "
+             "applied to the Diagnostic. If null, then the "
+             "Diagnostic\'s defaults MAY be used." )]
+      CIM_DiagnosticSetting REF DiagSetting, 
+         [IN, Description ( 
+             "Specifies the desired settings that SHOULD be "
+             "applied to the resulting Job. If null and a "
+             "resulting Job is required (i.e., the Diagnostic is "
+             "long running), then the test\'s defaults MAY be "
+             "used." )]
+      CIM_JobSettingData REF JobSetting, 
+         [IN ( false ), OUT, Description ( 
+             "Returns a handle to the resulting Job." )]
+      CIM_ConcreteJob REF Job);
+
+};

@@ -1,0 +1,46 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+   [Version ( "0.0.3" ), 
+    Description ( 
+       "A class derived from Credential that describes provisioning "
+       "certificate hash entry." ):Amended, dynamic: ToInstance, provider("IntelMEProv"):ToInstance]
+class AMT_ProvisioningCertificateHash : CIM_Credential {
+      [Override ( "Description" ), 
+       Description ( "The Certificate friendly-name." )]
+   string Description;
+
+      [Key, Description ( 
+          "Within the scope of the instantiating Namespace, "
+          "InstanceID opaquely and uniquely identifies an instance "
+          "of this class." )]
+   string InstanceID;
+
+      [Description ( 
+          "Indicates whether this entry is a factory default." )]
+   boolean IsDefault;
+
+      [Description ( "The hash type." ), 
+       ValueMap { "0", "1", "2", "3" }, 
+       Values { "a 16-byte hash created by MD-5",
+       "a 20-byte hash created by SHA-1",
+       "a 32-byte hash created by SHA-256",
+       "a 48-byte hash created by SHA-384 / a 64-byte hash created by SHA-512 (Intel(R) AMT 2.0->5.x)" }]
+   uint8 HashType;
+
+      [Description ( "Hash value (length depending on hash type)" ), 
+       OctetString]
+   uint8 HashData[];
+
+      [Description ( 
+          "Indicates whether this certificate hash is in use" )]
+   boolean Enabled;
+
+
+};

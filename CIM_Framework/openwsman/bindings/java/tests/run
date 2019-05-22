@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# run script for Java tests
+#
+# Usage: run <bindir> <jarname> <file>
+#
+(cd $1;
+ f=`dirname $0`;
+ LD_LIBRARY_PATH=$f/../../../build/src/lib java -Djava.library.path=`pwd` -cp ../$2:$1 $3)

@@ -1,0 +1,24 @@
+HKCR
+{
+	UNS.Manageability_Commands.1 = s 'Manageability_Commands Class'
+	{
+		CLSID = s '{7CABC14E-7C51-4AAA-AE3F-CFEB42D5016A}'
+	}
+	UNS.Manageability_Commands = s 'Manageability_Commands Class'
+	{
+		CLSID = s '{7CABC14E-7C51-4AAA-AE3F-CFEB42D5016A}'
+		CurVer = s 'UNS.Manageability_Commands.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7CABC14E-7C51-4AAA-AE3F-CFEB42D5016A} = s 'Manageability_Commands Class'
+		{
+			ProgID = s 'UNS.Manageability_Commands.1'
+			VersionIndependentProgID = s 'UNS.Manageability_Commands'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{9853D245-3E9D-4946-895A-F30D6396DEA6}'
+		}
+	}
+}

@@ -1,0 +1,81 @@
+x220:
+  scheme: http
+  host: 10.160.5.88
+  port: 16992
+  path: /wsman
+  username: admin
+  password: P4ssw0rd!
+
+server2012:
+  scheme: http
+  host: 10.160.67.78
+  port: 5985
+  path: /wsman
+  username: wsman
+  password: secret
+  auth: basic
+
+server2003sp2:
+  scheme: http
+  host: 10.10.4.227
+  port: 5985
+  path: /wsman
+  username: wsman
+  password: secret
+  auth: basic
+
+microsoft:
+  scheme: http
+  host: wsman.msft.net
+  port: 80
+  path: /wsman
+  username: 
+  password: 
+
+windows8:
+  scheme: https
+  host: 10.10.103.88
+  port: 5985
+  path: /wsman
+  username: wsman
+  password: secret
+
+xp:
+  scheme: http
+  host: 10.10.100.66
+  port: 80
+  path: /wsman
+  username: wsman
+  password: secret
+  
+localhost:
+  scheme: http
+  host: localhost
+  port: 5985
+  path: /wsman
+  username: wsman
+  password: secret
+
+heron:
+  scheme: http
+  host: heron.suse.de
+  port: 5985
+  path: /wsman
+  username: wsman
+  password: secret
+
+pegasus:
+  scheme: http
+  host: localhost
+  port: 5985
+  path: /wsman
+  username: pegasus
+  password: secret
+
+virtualbox:
+  scheme: http
+  host: 10.10.100.66
+  port: 80
+  path: /wsman
+  username: wsman
+  password: secret

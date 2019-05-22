@@ -1,0 +1,7 @@
+Configuration files:
+com.intel.amt.lms.conf
+- Access configuration stub. Everyone have access to all interfaces.
+- Copy to /etc/dbus-1/system.d/
+com.intel.amt.lms.service
+- Service definition, created at build time from com.intel.amt.lms.service.in
+- Copy to /usr/share/dbus-1/system-services/

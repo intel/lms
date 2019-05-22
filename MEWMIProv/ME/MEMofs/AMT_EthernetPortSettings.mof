@@ -1,0 +1,45 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.3" ), Description("This class contains all Intel(R) AMT specific settings (IP, DHCP) for one network interface in the system."):Amended,
+ LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv"),
+InternalOnly("This class is taken from the ME CIM schema ")]
+
+class AMT_EthernetPortSettings : CIM_SettingData { 
+   
+    
+   [Description("The MAC address used by Intel(R) AMT in a string format. "
+   	"For Example: 01-02-3f-b0-99-99. (This property can only be read and can't be changed.)")]
+   string   MACAddress;
+   
+   [Description("Indicates whether the network link is up")]
+   boolean     LinkIsUp;
+     
+   [Description("Indicates whether DHCP is in use. When this parameter is set to true these parameters will be ignored: SubnetMask, DefaultGAteway, IPAddress, PrimaryDNS, SecondaryDNS.")]
+   boolean     DHCPEnabled;
+   
+   [Description("String representation of IP address. "
+                "Get operation - reports the acquired IP address (whether in static or DHCP mode). "
+                "Put operation - sets the IP address (in static mode only).")]
+   string   IPAddress;
+   
+   [Description("Subnet mask in a string format. For example: 255.255.0.0")]
+   string   SubnetMask;
+   
+   [Description("Default Gateway in a string format. For example: 10.12.232.1")]
+   string   DefaultGateway;
+   
+   [Description("Primary DNS in a string format. For example: 10.12.232.1")]
+   string   PrimaryDNS;
+   
+   [Description("Secondary DNS in a string format. For example: 10.12.232.1")]   
+   string   SecondaryDNS;
+
+};
+

@@ -1,0 +1,29 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/*
+ * Copyright (C) 2009-2019 Intel Corporation
+ */
+/*++
+
+@file: WsmanClientDllExport.h
+
+--*/
+
+
+#ifndef _WSMAN_CLIENT_DLL_EXPORT_H
+#define _WSMAN_CLIENT_DLL_EXPORT_H
+
+#ifdef WIN32
+#ifdef WSMAN_DLL_EXPORT
+#define WSMAN_DLL_API __declspec(dllexport)
+#else
+#define WSMAN_DLL_API __declspec(dllimport)
+#endif // WSMAN_DLL_EXPORT
+#else // WIN32
+#ifdef WSMAN_DLL_EXPORT
+#define WSMAN_DLL_API __attribute__((__visibility__("default")))
+#else
+#define WSMAN_DLL_API
+#endif // WSMAN_DLL_EXPORT
+#endif // WIN32
+
+#endif // _WSMAN_CLIENT_DLL_EXPORT_H

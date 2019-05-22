@@ -1,0 +1,24 @@
+HKCR
+{
+	UNS.UNSAlert.1 = s 'UNSAlert Class'
+	{
+		CLSID = s '{64417EAE-2E0E-45E8-A8C1-03284E3D3587}'
+	}
+	UNS.UNSAlert = s 'UNSAlert Class'
+	{
+		CLSID = s '{64417EAE-2E0E-45E8-A8C1-03284E3D3587}'
+		CurVer = s 'UNS.UNSAlert.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {64417EAE-2E0E-45E8-A8C1-03284E3D3587} = s 'UNSAlert Class'
+		{
+			ProgID = s 'UNS.UNSAlert.1'
+			VersionIndependentProgID = s 'UNS.UNSAlert'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{9853D245-3E9D-4946-895A-F30D6396DEA6}'
+		}
+	}
+}

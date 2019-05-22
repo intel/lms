@@ -1,0 +1,7 @@
+#!/bin/bash
+##############
+# LMS prerm hook
+##############
+
+systemctl stop -q lms
+systemctl disable -q lms

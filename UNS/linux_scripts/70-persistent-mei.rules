@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="mei", DEVPATH=="*/0000:00:??.0/mei/*", SYMLINK+="mei", TAG+="systemd"

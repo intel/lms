@@ -1,0 +1,155 @@
+
+
+<SCRIPT LANGUAGE="JavaScript">
+function ExpCol(node)
+{
+	if (node.nextSibling.style.display == 'none')
+	{
+		if (node.childNodes.length > 0)
+		{
+			if (node.childNodes.item(0).nodeName == "IMG")
+			{
+				node.childNodes.item(0).src = "minus.gif";
+			}
+		}
+		node.nextSibling.style.display = 'block';
+	}
+	else
+	{
+		if (node.childNodes.length > 0)
+		{
+			if (node.childNodes.item(0).nodeName == "IMG")
+			{
+				node.childNodes.item(0).src = "plus.gif";
+			}
+		}
+		node.nextSibling.style.display = 'none';
+	}
+}
+</SCRIPT>
+<A HREF="cover.html" target="classFrame">About</A>
+<br/>
+<br/>
+<b>Intel&reg; ME WMI Provider Classes</b>
+<TABLE BORDER=0>
+   <TR><TD>
+      <TABLE BORDER=0><TR><TD><A onClick="ExpCol(this)"><img src="plus.gif"><b>  All</b></A><DIV style='display:none'>
+      <UL>
+ <LI><A HREF="AMT_EthernetPortSettings.html" target="classFrame">AMT_EthernetPortSettings</A></LI>
+	 <LI><A HREF="AMT_ProvisioningCertificateHash.html" target="classFrame">AMT_ProvisioningCertificateHash</A></LI>
+	 <LI><A HREF="AMT_Service.html" target="classFrame">AMT_Service</A></LI>
+	 <LI><A HREF="AMT_SetupAuditRecord.html" target="classFrame">AMT_SetupAuditRecord</A></LI>
+	 <LI><A HREF="CIM_Component.html" target="classFrame">CIM_Component</A></LI>
+	 <LI><A HREF="CIM_ComputerSystem.html" target="classFrame">CIM_ComputerSystem</A></LI>
+	 <LI><A HREF="CIM_ConcreteComponent.html" target="classFrame">CIM_ConcreteComponent</A></LI>
+	 <LI><A HREF="CIM_ConcreteDependency.html" target="classFrame">CIM_ConcreteDependency</A></LI>
+	 <LI><A HREF="CIM_ConcreteJob.html" target="classFrame">CIM_ConcreteJob</A></LI>
+	 <LI><A HREF="CIM_Credential.html" target="classFrame">CIM_Credential</A></LI>
+	 <LI><A HREF="CIM_Dependency.html" target="classFrame">CIM_Dependency</A></LI>
+	 <LI><A HREF="CIM_EnabledLogicalElement.html" target="classFrame">CIM_EnabledLogicalElement</A></LI>
+	 <LI><A HREF="CIM_HostedService.html" target="classFrame">CIM_HostedService</A></LI>
+	 <LI><A HREF="CIM_Job.html" target="classFrame">CIM_Job</A></LI>
+	 <LI><A HREF="CIM_LogEntry.html" target="classFrame">CIM_LogEntry</A></LI>
+	 <LI><A HREF="CIM_LogicalElement.html" target="classFrame">CIM_LogicalElement</A></LI>
+	 <LI><A HREF="CIM_ManagedElement.html" target="classFrame">CIM_ManagedElement</A></LI>
+	 <LI><A HREF="CIM_ManagedSystemElement.html" target="classFrame">CIM_ManagedSystemElement</A></LI>
+	 <LI><A HREF="CIM_RecordForLog.html" target="classFrame">CIM_RecordForLog</A></LI>
+	 <LI><A HREF="CIM_Service.html" target="classFrame">CIM_Service</A></LI>
+	 <LI><A HREF="CIM_SettingData.html" target="classFrame">CIM_SettingData</A></LI>
+	 <LI><A HREF="CIM_System.html" target="classFrame">CIM_System</A></LI>
+	 <LI><A HREF="ME_Event.html" target="classFrame">ME_Event</A></LI>
+	 <LI><A HREF="ME_System.html" target="classFrame">ME_System</A></LI>
+	 <LI><A HREF="OOB_Service.html" target="classFrame">OOB_Service</A></LI>
+	
+	  </UL>
+      </DIV></TD></TR></TABLE>
+
+      <TABLE BORDER=0><TR><TD><A onClick="ExpCol(this)"><img src="plus.gif"><b>  CIM Schema inheritance classes</b></A><DIV style='display:none'>
+      <UL> <LI><A HREF="CIM_Schema_inheritance_classes_Diagram.jpg" target="classFrame"><B>Instance Diagram</B></A></LI>	
+
+	
+	
+	
+	
+	
+	 <LI><A HREF="CIM_Component.html" target="classFrame">CIM_Component</A></LI>
+	 <LI><A HREF="CIM_ComputerSystem.html" target="classFrame">CIM_ComputerSystem</A></LI>
+		
+	 <LI><A HREF="CIM_ConcreteDependency.html" target="classFrame">CIM_ConcreteDependency</A></LI>
+		
+	 <LI><A HREF="CIM_ConcreteJob.html" target="classFrame">CIM_ConcreteJob</A></LI>
+		
+	 <LI><A HREF="CIM_Credential.html" target="classFrame">CIM_Credential</A></LI>
+		
+	 <LI><A HREF="CIM_Dependency.html" target="classFrame">CIM_Dependency</A></LI>
+		
+	 <LI><A HREF="CIM_EnabledLogicalElement.html" target="classFrame">CIM_EnabledLogicalElement</A></LI>
+		
+	 <LI><A HREF="CIM_Job.html" target="classFrame">CIM_Job</A></LI>
+		
+	 <LI><A HREF="CIM_LogEntry.html" target="classFrame">CIM_LogEntry</A></LI>
+		
+	 <LI><A HREF="CIM_LogicalElement.html" target="classFrame">CIM_LogicalElement</A></LI>
+		
+	 <LI><A HREF="CIM_ManagedElement.html" target="classFrame">CIM_ManagedElement</A></LI>
+		
+	 <LI><A HREF="CIM_ManagedSystemElement.html" target="classFrame">CIM_ManagedSystemElement</A></LI>
+		
+	 <LI><A HREF="CIM_RecordForLog.html" target="classFrame">CIM_RecordForLog</A></LI>
+		
+	 <LI><A HREF="CIM_Service.html" target="classFrame">CIM_Service</A></LI>
+		
+	 <LI><A HREF="CIM_SettingData.html" target="classFrame">CIM_SettingData</A></LI>
+		
+	 <LI><A HREF="CIM_System.html" target="classFrame">CIM_System</A></LI>
+		
+	
+	
+	
+	
+	  </UL>
+      </DIV></TD></TR></TABLE>
+
+      <TABLE BORDER=0><TR><TD><A onClick="ExpCol(this)"><img src="plus.gif"><b>  Intel&reg; ME defined Classes</b></A><DIV style='display:none'>
+      <UL> <LI><A HREF="Intel_ME_defined_Classes_Diagram.jpg" target="classFrame"><B>Instance Diagram</B></A></LI>	
+ <LI><A HREF="AMT_EthernetPortSettings.html" target="classFrame">AMT_EthernetPortSettings</A></LI>
+		
+	
+	 <LI><A HREF="AMT_ProvisioningCertificateHash.html" target="classFrame">AMT_ProvisioningCertificateHash</A></LI>
+		
+	 <LI><A HREF="AMT_Service.html" target="classFrame">AMT_Service</A></LI>
+		
+	 <LI><A HREF="AMT_SetupAuditRecord.html" target="classFrame">AMT_SetupAuditRecord</A></LI>
+		
+	
+	
+	
+	 <LI><A HREF="CIM_ConcreteComponent.html" target="classFrame">CIM_ConcreteComponent</A></LI>
+	
+	
+	
+	
+	 <LI><A HREF="CIM_HostedService.html" target="classFrame">CIM_HostedService</A></LI>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	 <LI><A HREF="ME_Event.html" target="classFrame">ME_Event</A></LI>
+		
+	 <LI><A HREF="ME_System.html" target="classFrame">ME_System</A></LI>
+		
+	 <LI><A HREF="OOB_Service.html" target="classFrame">OOB_Service</A></LI>
+		
+	
+	  </UL>
+      </DIV></TD></TR></TABLE>
+		
+   </TR></TD>
+
+</TABLE>
+

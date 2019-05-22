@@ -1,0 +1,335 @@
+
+
+<HTML>
+<HEAD>
+<TITLE>
+AMT_ProvisioningCertificateHash
+</TITLE>
+<META NAME="keywords" CONTENT="AMT_ProvisioningCertificateHash class">
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="AMT_ProvisioningCertificateHash";
+}
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="white" onload="windowTitle();">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->                
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+Class AMT_ProvisioningCertificateHash</H2>
+
+	<b>Used in features:</b>  Intel(R) ME defined Classes 
+
+	
+		
+<PRE>
+
+<A HREF="CIM_ManagedElement.html">CIM_ManagedElement</A>
+   <IMG SRC="inherit.gif" ALT="extended by "><A HREF="CIM_Credential.html">CIM_Credential</A>
+      <IMG SRC="inherit.gif" ALT="extended by "><A HREF="AMT_ProvisioningCertificateHash.html">AMT_ProvisioningCertificateHash</A>
+
+</PRE>
+<DL>
+
+</DL>
+
+<HR>
+<DL>
+<DT><PRE>
+
+class <B>AMT_ProvisioningCertificateHash</B><DT> extends <A HREF="CIM_Credential.html">CIM_Credential</A></DL>
+
+</PRE>
+<P>
+<b>General Information:</b><br/>A class derived from Credential that describes provisioning certificate hash entry.<br/><br/><b>Qualifiers:</b><br>-------------<br>Version=0.0.3<br/>dynamic<br/>provider=IntelMEProv<br/><br/>
+
+<HR>
+</P>        
+<!-- =========== FIELD SUMMARY =========== -->
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Supported Fields Summary</B></FONT></TH>
+</TR>
+
+
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#ElementName">ElementName</A></B> </CODE>
+<BR>
+A user-friendly name for the object . . .<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#Description">Description</A></B> </CODE>
+<BR>
+The Certificate friendly-name.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;string </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#InstanceID">InstanceID</A></B> <IMG SRC="key.gif" ALT="Key "></CODE>
+<BR>
+Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#IsDefault">IsDefault</A></B> </CODE>
+<BR>
+Indicates whether this entry is a factory default.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8 </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#HashType">HashType</A></B> </CODE>
+<BR>
+The hash type.<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint8[] </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#HashData">HashData</A></B> </CODE>
+<BR>
+Hash value (length depending on hash type)<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="left" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean </CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#Enabled">Enabled</A></B> </CODE>
+<BR>
+Indicates whether this certificate hash is in use<br/>
+</TD>
+</TD>
+</TR>
+</TABLE>
+<br/>
+<!-- ========== METHOD SUMMARY =========== -->
+<A NAME="method_summary"><!-- --></A>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Methods Summary</B></FONT></TH>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#Get">Get</A></B>(Instance)</CODE>
+<BR>
+Gets the representation of the instance<br/>
+</TD>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="AMT_ProvisioningCertificateHash.html#Enumerate">Enumerate</A></B>()</CODE>
+<BR>
+Enumerates the instances of this class<br/>
+</TD>
+
+
+
+</TD>
+</TABLE>
+<br/>
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+
+<A NAME="ElementName"><!-- --></A><H3>
+ElementName </H3>
+<PRE>
+public string <B>ElementName</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>A user-friendly name for the object. This property allows each instance to define a user-friendly name in addition to its key properties, identity data, and description information. <br>Note that the Name property of ManagedSystemElement is also defined as a user-friendly name. But, it is often subclassed to be a Key. It is not reasonable that the same property can convey both identity and a user-friendly name, without inconsistencies. Where Name exists and is not a Key (such as for instances of LogicalDevice), the same information can be present in both the Name and ElementName properties.<br/><br/><b>Qualifiers:</b><br>-------------<br>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Description"><!-- --></A><H3>
+Description </H3>
+<PRE>
+public string <B>Description</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The Certificate friendly-name.<br/><br/><b>Qualifiers:</b><br>-------------<br>Override=Description<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="InstanceID"><!-- --></A><H3>
+InstanceID <IMG SRC="key.gif" ALT="Key "></H3>
+<PRE>
+public string <B>InstanceID</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class.<br/><br/><b>Qualifiers:</b><br>-------------<br>Key<br/>MaxLen=256<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="IsDefault"><!-- --></A><H3>
+IsDefault </H3>
+<PRE>
+public boolean <B>IsDefault</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether this entry is a factory default.<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="HashType"><!-- --></A><H3>
+HashType </H3>
+<PRE>
+public uint8 <B>HashType</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>The hash type.<br/><br/><b>Qualifiers:</b><br>-------------<br>ValueMap={0, 1, 2, 3}<br/>Values={a 16-byte hash created by MD-5, a 20-byte hash created by SHA-1, a 32-byte hash created by SHA-256, a 48-byte hash created by SHA-384 / a 64-byte hash created by SHA-512 (Intel(R) AMT 2.0-&gt;5.x)}<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="HashData"><!-- --></A><H3>
+HashData </H3>
+<PRE>
+public uint8[] <B>HashData</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Hash value (length depending on hash type)<br/><br/><b>Qualifiers:</b><br>-------------<br>OctetString<br/><br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+<A NAME="Enabled"><!-- --></A><H3>
+Enabled </H3>
+<PRE>
+public boolean <B>Enabled</B></PRE>
+
+<DL>
+<DD>
+
+<b>General Information:</b><br/>Indicates whether this certificate hash is in use<br/>
+<P>
+<DL>
+</DL>
+</DL>
+<HR>            
+
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#FFCCCC" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="Get"><!-- --></A>
+<H3>Get</H3>
+<PRE>
+public  <B>Get</B>([OUT]AMT_ProvisioningCertificateHash Instance)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Gets the representation of the instance<br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="Enumerate"><!-- --></A>
+<H3>Enumerate</H3>
+<PRE>
+public  <B>Enumerate</B>()</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />All users permitted to use method<br/><br/>
+<b>General Information:</b><br/>Enumerates the instances of this class<br/>
+</DD>
+</DL>
+<HR>
+         
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  <TR/><TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+
+</BODY>
+</HTML>

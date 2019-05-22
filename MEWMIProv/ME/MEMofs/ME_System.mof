@@ -1,0 +1,91 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.4" ), 
+    Description ( "A class Representing Intel(R) Manageability Engine (Intel(R) ME) information" ):Amended, dynamic: ToInstance, provider("IntelMEProv"):ToInstance]
+class ME_System : CIM_ComputerSystem {
+   
+   [ Description ("Intel(R) ME firmware version in format: Major.Minor.Revision.build")]
+   string FWVersion; 
+
+	[Description ("Capabilities represents the supported features on this system"),
+      bitValues { "Intel(R) Active Management Technology", "NA", "NA", "Intel(R) Anti-Theft Technology",
+		"Intel(R) Upgrade Service", "Intel(R) Virtualization Engine", "NA",
+		"Please Contact Intel For More Details", "NA", "Intel(R) Integrated Clock Controler", "Intel(R) Protected Audio Video Path",
+		"NA", "NA", "NA", "IPv6", "Keyboard Video Mouse", "Please Contact Intel For More Details", 
+		"NA", "Transport Layer Security", "Please Contact Intel For More Details", 
+		"Intel(R) Standard Manageability", "Intel(R) Level 3 Manageability Upgrade", 
+		"Intel(R) Dynamic Application Loader", "Intel(R) Small Business Technology"}]
+   uint32 Capabilities;	
+
+
+	[Description ("EnabledCapabilities represents the enabled features on this system"),
+      bitValues { "Intel(R) Active Management Technology", "NA", "NA", "Intel(R) Anti-Theft Technology",
+		"Intel(R) Upgrade Service", "Intel(R) Virtualization Engine", "NA",
+		"Please Contact Intel For More Details", "NA", "Intel(R) Integrated Clock Controler", "Intel(R) Protected Audio Video Path",
+		"NA", "NA", "NA", "IPv6", "Keyboard Video Mouse", "Please Contact Intel For More Details", 
+		"NA", "Transport Layer Security", "Please Contact Intel For More Details", 
+		"Intel(R) Standard Manageability", "Intel(R) Level 3 Manageability Upgrade",
+		"Intel(R) Dynamic Application Loader", "Intel(R) Small Business Technology" }]
+
+   uint32 EnabledCapabilities;	
+
+	[Description ("PlatformType represents the category the system belongs to"),
+      	ValueMap { "0", "1", "2", "3"},
+		Values { "Mobile", "Desktop", "Server", "Workstation" }]
+   uint32 PlatformType;
+
+	[Description ("UserSegmentType represents the market segment the system belongs to"),
+		ValueMap { "0", "1"},
+		Values { "Corporate", "Consumer" }]
+   uint32 UserSegmentType;
+
+	[Description ("ManageabilityMode represents the manageability mode. Every mode supports a different set of capabilities"),
+		ValueMap { "0", "1", "2", "3", "4", "5"},
+		Values { "None", "Unknown", "Intel(R) vPro (TM)", "Intel(R) Standard Manageability", "Intel(R) Level 3 Manageability Upgrade", "Intel(R) Small Business Technology" }]
+   uint32 ManageabilityMode;
+	
+
+      [Description ( "Represents the status of the chipset CryptoFuse, when disabled, Intel(R) ME will not perform any encryption operations" )]
+   boolean CryptoFuseEnabled;
+   
+   [Description ( "Receives local  FW Update counters (In Intel(R) AMT version 7.0 and later this function is not supported and always returns NOT SUPPORTED error)")  : Amended, static, implemented]
+   uint32 getFwUpdateOverrideParams(
+   		[OUT, Description ("FW Update override counter. When 255 refer to always"),
+		ValueMap {"0", "1...254", "255"}] uint32 Counter, 
+   		[OUT, Description ("FW Update override qualifier"),
+   		ValueMap { "0", "1", "2" }, 
+	        Values { "ALWAYS", "NEVER", "RESTRICTED"}] uint32 OverrideQualifier); 
+   
+   [Description("Returns the cause for the last Intel(R) ME Reset operation"): Amended, static, implemented]
+   uint32 getLastMEResetReason(
+	[OUT, Description("A description of the last Intel(R) ME reset reason"), 
+	ValueMap { "0", "1", "2", "3" }, 
+       Values { "Power-Up", "FW-Reset", "System-Reset", "Unknown" }]
+	uint32 ReasonCode);
+   
+	[Description ("Specifies the list of ACPI states Intel(R) ME is operational in"): Amended, static, implemented]  
+   uint32 getCurrentPowerPolicy(
+	   [OUT, Description("A description of the power policy")]
+	   string PowerPolicy);
+
+ [Description ("Indicates whether the Firmware Update capability is currently enabled"): Amended, static, implemented]
+  uint32 IsFirmwareUpdateEnabled(
+		[OUT, Description("Indicates whether the Firmware Update capability is currently enabled")]
+		boolean enabled);
+
+[Description ("Specifies the list of supported features on this system"): Amended, static, implemented]  
+   uint32 getCapabilities(
+	   [OUT, Description("An array of strings defining system capabilities. Should match the bitvalues of the system Capabilities")]
+	   string Capabilities[],
+	   [OUT, Description("An array of strings defining system capabilities. Should match the bitvalues of the system Enabled Capabilities")]
+	   string EnabledCapabilities[]);
+
+	  	
+};

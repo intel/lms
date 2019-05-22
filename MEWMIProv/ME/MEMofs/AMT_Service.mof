@@ -1,0 +1,67 @@
+ //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+ #pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+  [Version ( "0.0.1" ), 
+    Description ( "A class providing access to Intel(R) AMT Features configuration, such as KVM and IDE-Redirect" )
+:Amended, LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+class AMT_Service : CIM_Service {
+	[Description ("Indicates whether the WebUI capability is currently enabled"): Amended, static, implemented]
+	uint32 isWebUIEnabled(
+		[OUT, Description("Indicates whether the WebUI capability is currently enabled")]
+		 boolean enabled);
+	[Description ("Indicates whether SOL is currently enabled / active"): Amended, static, implemented]
+	uint32 getSOLState(
+		[OUT, Description("Indicates whether SOL is enabled by MEBX"), 
+		ValueMap { "0", "1", "2"},  
+		Values { "Enabled", "Disabled", "UNKNOWN" }] 
+		UINT32 hardEnabled, 
+		[OUT, Description("Indicates whether SOL is enabled by WS-Management interface (using AMT_RedirectionService class)"), 
+		ValueMap { "0", "1", "2"},  
+		Values { "Enabled", "Disabled", "UNKNOWN" }] 
+		UINT32 softEnabled, 
+		[OUT, Description("Indicates whether SOL session is currently open")] 
+		boolean active);
+	[Description ("Indicates whether IDER is currently enabled / active"): Amended, static, implemented]
+	uint32 getIDERState(
+		[OUT, Description("Indicates whether IDER is enabled by MEBX"), 
+		ValueMap { "0", "1", "2"},  
+		Values { "Enabled", "Disabled", "UNKNOWN" }] 
+		UINT32 hardEnabled, 
+		[OUT, Description("Indicates whether IDER is enabled by WS-Management interface (using AMT_RedirectionService class)"), 
+		ValueMap { "0", "1", "2"},  
+		Values { "Enabled", "Disabled", "UNKNOWN" }] 
+		UINT32 softEnabled, 
+		[OUT, Description("Indicates whether IDER session is currently open")] 
+		boolean active);
+	[Description ("Indicates whether KVM is currently enabled / active"): Amended, static, implemented]
+	uint32 getKVMState(
+		[OUT, Description("Indicates whether KVM is enabled by MEBX"), 
+		ValueMap { "0", "1", "2"},  
+		Values { "Enabled", "Disabled", "UNKNOWN" }] 
+		UINT32 hardEnabled, 
+		[OUT, Description("Indicates whether KVM is enabled by WS-Management interface (using CIM_KVMRedirectionSAP class)"),
+		ValueMap { "0", "1", "2"},  
+		Values { "Enabled", "Disabled", "UNKNOWN" }] 	
+		UINT32 softEnabled, 
+		[OUT, Description("Indicates whether KVM session is currently open")] 
+		boolean active);
+	[Description ("Terminates KVM session"): Amended, static, implemented]
+	uint32 TerminateKVMSession();
+	[Description("Allows user to specify Sprite zoom level"): Amended, static, implemented]
+	uint32 setSpriteZoom(
+		[IN, Description("Zoom level"), 
+		ValueMap { "1", "2"}, 
+		Values { "No zoom", "Zoom x2"} ] 
+		uint8 zoom);
+	[Description("Allows user to specify Sprite locale"): Amended, static, implemented]
+	uint32 setSpriteLocale(
+		[IN, Description("Sprite locale"), 
+		ValueMap {"0","1","2","3","4","5","6","7","8","9","10"}, 
+		Values { "English", "French", "German", "Chinese Traditional", "Japanese", "Russian","Italian", "Spanish", "Portuguese Brazil", "Korean", "Chinese Simplified"}] 
+		uint8 locale);
+};
