@@ -7,6 +7,7 @@
 #include "EventManagment.h"
 #include "CimToEventTranslator.h"
 #include "GmsService.h"
+#include "servicesNames.h"
 
 // Constructor
 SOAP_Handler::SOAP_Handler(void) : buf(), event_sent(false)

@@ -15,6 +15,7 @@
 #endif // WIN32
 #include "StringsDefinitions.h"
 
+#include "servicesNames.h"
 #include "EventManagment.h"
 #include "GMSExternalLogger.h"
 #include <sstream>

@@ -13,6 +13,7 @@
 #include "global.h"
 #include "heci.h"
 
+#include <memory>
 #include <mutex>
 #include <string>
 #include <vector>

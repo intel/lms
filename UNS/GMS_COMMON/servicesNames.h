@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #ifndef SERVICES_NAMES
 #define SERVICES_NAMES
-#include "ace/Stream.h"
+#include <ace/SString.h>
 
 static const ACE_TString EVENT_MANAGER(ACE_TEXT("EventManager"));
 static const ACE_TString WINLOG_EVENT_HANDLER(ACE_TEXT("WinLogEventHandler"));

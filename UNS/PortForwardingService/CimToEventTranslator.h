@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2008-2018 Intel Corporation
+ * Copyright (C) 2008-2019 Intel Corporation
  */
 /*++
 
@@ -17,7 +17,8 @@
 
 
 #include "EventManagment.h"
-#include "ace/Map_Manager.h"
+#include <ace/Map_Manager.h>
+#include <ace/Null_Mutex.h>
 #include <string>
 
 class CimToEventTranslator

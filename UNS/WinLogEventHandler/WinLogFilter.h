@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #ifndef __WIN_LOG_FILTER_H_
 #define __WIN_LOG_FILTER_H_
 
 #include "EventManagment.h"
-#include "ace/Map_Manager.h"
+#include <ace/Map_Manager.h>
+#include <ace/Null_Mutex.h>
 #include "GMSConfig.h"
 
 class WinLogFilter: public EventsFilter

@@ -8,6 +8,7 @@
 #include <ace/OS_NS_string.h>
 #include <ace/OS_NS_dirent.h>
 #include <ace/Dirent_Selector.h>
+#include <ace/Containers_T.h>
 #include "EventManagment.h"
 #include "Tools.h"
 
@@ -83,11 +84,6 @@ bool PartialFWUpdateEventsFilter::defaultInitialization(std::shared_ptr<PartialF
 	UNS_DEBUG(L"filter initialization failed", L"\n");
 	return false;
 }
-
-
-
-extern "C" FILE* gLogFileHandle = NULL;
-
 
 void FlowLog(const wchar_t * pref, const wchar_t * func) 
 {

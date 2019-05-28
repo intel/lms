@@ -18,8 +18,7 @@
 //===================================================
 #define _WIN32_WINNT _WIN32_WINNT_VISTA 
 
-#include "ace/config.h"
-#include "servicesNames.h"
+#include <ace/Log_Msg.h>
 
 //===================================================
 //  DEFINES 

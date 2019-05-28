@@ -1,12 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 #ifndef __WMI_FILTER_H_
 #define __WMI_FILTER_H_
 
 #include "EventManagment.h"
-#include "ace/Condition_T.h"
+#include <ace/Containers_T.h>
 #include "UNSEventsDefinition.h"
 #include <memory>
 #include "WMIEVENTHANDLER_export.h"

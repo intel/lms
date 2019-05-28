@@ -9,6 +9,7 @@
 --*/
 #include <netlink/route/route.h>
 #include <netlink/route/addr.h>
+#include <net/if.h>
 #include <resolv.h>
 #include "SyncNetworkData.h"
 #include "SyncIpClient.h"

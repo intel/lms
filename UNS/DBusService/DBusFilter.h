@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 #ifndef __DBUS_FILTER_H_
 #define __DBUS_FILTER_H_
 
 #include "EventManagment.h"
+#include <ace/Containers_T.h>
 #include "UNSEventsDefinition.h"
 #include <memory>
 

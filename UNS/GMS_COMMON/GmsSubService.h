@@ -10,6 +10,7 @@
 #include "ace/Reactor_Notification_Strategy.h"
 #include "ace/Reactor.h"
 #include "EventManagment.h"
+#include "servicesNames.h"
 #include <memory>
 #include "GMSCommonDllExport.h"
 

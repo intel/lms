@@ -4,7 +4,7 @@
  */
 #ifndef __EVENTMANAGER_H_
 #define __EVENTMANAGER_H_
-#include "global.h"
+
 #include "ace/Map_Manager.h"
 #include "ace/Null_Mutex.h"
 #include "MessageBlockPtr.h"
