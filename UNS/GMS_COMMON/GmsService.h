@@ -1,18 +1,17 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #ifndef _GMS_SERVICE
 #define _GMS_SERVICE
 
 #include "ace/NT_Service.h"
-#include "ace/Singleton.h"
 #include "ace/Mutex.h"
 #include "MessageBlockPtr.h"
 #include "ace/streams.h"
 #include "IServicesManager.h"
 #include "ACEInitializer.h"
-#include <memory>
+
 #define ACTIVE_MESSAGEID ACE_TEXT("iAMT0080")
 
 typedef void (*HeciEventCallBack) (void *param);

@@ -11,7 +11,6 @@
 #include "ace/Reactor.h"
 #include "EventManagment.h"
 #include "servicesNames.h"
-#include <memory>
 #include "GMSCommonDllExport.h"
 
 class GMS_COMMON_EXPORT GmsSubService : public ACE_Task<ACE_MT_SYNCH>
