@@ -1,5 +1,5 @@
 ;//  SPDX-License-Identifier: Apache-2.0
-;//  Copyright (C) Intel Corporation, 2003 - 2018.
+;//  Copyright (C) Intel Corporation, 2003 - 2019.
 ;//
 ;//  File:       UNSEventsCnf.mc 
 ;//
@@ -27,13 +27,6 @@ LanguageNames=(All=0x000:MSG00001)
 
 
 ;//**********************Category Definitions***********************
-MessageId=0
-Facility=Application
-Severity=Success
-SymbolicName=UNS_ATL
-Language=All
-%1
-.
 
 MessageId=1
 Facility=Application
@@ -68,14 +61,6 @@ Language=All
 System Defense
 .
 
-MessageId=5
-Facility=Application
-Severity=Success
-SymbolicName=UNS_EAC
-Language=All
-EAC
-.
-
 MessageId=6
 Facility=Application
 Severity=Success
@@ -83,40 +68,6 @@ SymbolicName=UNS_REMOTE_PWR
 Language=All
 Remote Power Operation
 .
-
-
-MessageId=7
-Facility=Application
-Severity=Success
-SymbolicName=AMT_INFO
-Language=All
-Intel(R) AMT info
-.
-
-;//MessageId=6
-;//Facility=Application
-;//Severity=Success
-;//SymbolicName=TPM_INFO
-;//Language=All
-;//Intel(R) TPM information
-;//.
-
-;//MessageId=8
-;//Facility=Application
-;//Severity=Success
-;//SymbolicName=RCS_NOTIFY
-;//Language=All
-;//Intel(R) RPAT notification
-;//.
-
-
-;//MessageId=14
-;//Facility=Application
-;//Severity=Success
-;//SymbolicName=PFW_UPDATE
-;//Language=All
-;//Intel(R) Partial FW Update
-;//.
 
 ;//********************End of Category Definitions*******************
 
@@ -245,46 +196,6 @@ Language=All
 Remote USB-Redirection session finished. User control was restored.
 .
 
-MessageId=1205
-Facility=Application
-Severity=Informational
-SymbolicName=AMT_PROVISIONED_EVENT
-Language=All
-Intel(R) AMT provisioned.
-.
-
-MessageId=1206
-Facility=Application
-Severity=Informational
-SymbolicName=AMT_UNPROVISION_EVENT
-Language=All
-Intel(R) AMT unprovisioned.
-.
-
-MessageId=1207
-Facility=Application
-Severity=Informational
-SymbolicName=SYSTEM_DEFENSE_STARTED_EVENT
-Language=All
-A system defense policy has been activated.
-.
-
-MessageId=1208
-Facility=Application
-Severity=Informational
-SymbolicName=SYSTEM_DEFENSE_ENDED_EVENT
-Language=All
-There is no system defense policy.
-.
-
-MessageId=1209
-Facility=Application
-Severity=Informational
-SymbolicName=REMOTE_CONTROL_EVENT
-Language=All
-Intel(R) AMT remote reboot has occurred.
-.
-	
 MessageId=1210
 Facility=Application
 Severity=Informational
@@ -331,14 +242,6 @@ Severity=Error
 SymbolicName=UNS_ERROR_MESSAGE
 Language=All
 %1
-.
-
-MessageId=2003
-Facility=Application
-Severity=Error
-SymbolicName=UNS_EAC_MESSAGE
-Language=All
-EAC Pet Alert received.
 .
 
 MessageId=2050
