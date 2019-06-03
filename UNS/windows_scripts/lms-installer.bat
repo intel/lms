@@ -14,7 +14,7 @@ for %%A in (%*) do call :ParseArgs %%A
 if /i %ACTION%=="" (
 	call :PrintUsage
 	exit /b 1
-)      
+)
 
 set LMS_INSTALL_PATH32=C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\LMS
 set LMS_INSTALL_PATH=C:\Program Files\Intel\Intel(R) Management Engine Components\LMS
@@ -75,7 +75,7 @@ set LMS_FILES=ACE.dll ComEventHandler.dll Common.dll Configurator.dll EventManag
 
 set EXTERNAL_FILES=1100_PP_PFU.BIN 1105_PP_PFU.BIN 1106_PP_PFU.BIN 1108_PP_PFU.BIN 1200_PP_PFU.BIN 1300_PP_PFU.BIN FWUpdateLib_10.dll FWUpdateLib_11.dll FWUpdateLib_12.dll
 
-echo Verify installation files consistency 
+echo Verify installation files consistency
 call :VerifyLmsFilesExists %LMS_FILES%
 IF %ERRORLEVEL%==1 (
 	echo.
@@ -85,7 +85,7 @@ IF %ERRORLEVEL%==1 (
 echo SUCCESS
 
 echo Stopping LMS service
-call :StopLmsService 
+call :StopLmsService
 IF %ERRORLEVEL%==1 (
 	echo Error: failed to stop LMS Service. aborting.
 	goto EXIT_FAILURE
@@ -93,7 +93,7 @@ IF %ERRORLEVEL%==1 (
 echo SUCCESS
 
 echo Uninstall LMS service
-call :UninstallLmsService 
+call :UninstallLmsService
 IF %ERRORLEVEL%==1 (
 	echo Error: failed to unregister LMS Service. aborting.
 	goto EXIT_FAILURE
@@ -102,7 +102,7 @@ echo SUCCESS
 
 
 echo Remove LMS directories
-call :RemoveLmsDirectories 
+call :RemoveLmsDirectories
 IF %ERRORLEVEL%==1 (
 	echo Error: Error: failed to remove LMS directories. aborting.
 	goto EXIT_FAILURE
@@ -110,7 +110,7 @@ IF %ERRORLEVEL%==1 (
 echo SUCCESS
 
 echo Create LMS directories
-call :CreateLmsDirectories 
+call :CreateLmsDirectories
 IF %ERRORLEVEL%==1 (
 	echo Error: failed to create LMS directories. aborting.
 	goto EXIT_FAILURE
@@ -134,7 +134,7 @@ IF %ERRORLEVEL%==1 (
 echo SUCCESS
 
 echo Installing LMS service
-call :InstallLMSService 
+call :InstallLMSService
 IF %ERRORLEVEL%==1 (
 	echo Error: failed register LMS Service. aborting.
 	goto EXIT_FAILURE
@@ -142,14 +142,14 @@ IF %ERRORLEVEL%==1 (
 echo SUCCESS
 
 echo Starting LMS service
-call :StartLMSService 
+call :StartLMSService
 IF %ERRORLEVEL%==1 (
 	echo Error: failed starting LMS Service. aborting.
 	goto EXIT_FAILURE
 )
 echo SUCCESS
 
-echo Install completed successfuly.
+echo Install completed successfully.
 echo.
 goto EXIT_SUCCESS
 
@@ -163,7 +163,7 @@ IF %ERRORLEVEL%==1 EXIT /B 1
 echo SUCCESS
 
 echo Stopping LMS service
-call :StopLMSService 
+call :StopLMSService
 IF %ERRORLEVEL%==1 (
 	echo Error: failed to stop LMS Service. aborting.
 	goto EXIT_FAILURE
@@ -171,28 +171,28 @@ IF %ERRORLEVEL%==1 (
 echo SUCCESS
 
 echo Uninstall LMS service
-call :UninstallLMSService 
+call :UninstallLMSService
 IF %ERRORLEVEL%==1 (
 	echo Error: failed to unregister LMS Service. aborting.
 	goto EXIT_FAILURE
 )
 echo SUCCESS
 
-call :RemoveRegistryKeys 
+call :RemoveRegistryKeys
 IF %ERRORLEVEL%==1 (
 	echo Error: failed remove LMS keys from registry. aborting.
 	goto EXIT_FAILURE
 )
 
 echo Remove LMS directories
-call:RemoveLMSDirectories 
+call:RemoveLMSDirectories
 IF %ERRORLEVEL%==1 (
-	echo Error: failed to remove LMS directories.  
+	echo Error: failed to remove LMS directories.
 	goto EXIT_FAILURE
 )
 echo SUCCESS
 
-echo Uninstall completed successfuly.
+echo Uninstall completed successfully.
 echo.
 echo.
 
@@ -205,7 +205,7 @@ echo.
 call :VerifyAdminPrivileges
 IF %ERRORLEVEL%==1 EXIT /B 1
 
-call :StartLMSService 
+call :StartLMSService
 IF %ERRORLEVEL% EQU 0 goto EXIT_SUCCESS
 goto EXIT_FAILURE
 
@@ -216,7 +216,7 @@ echo.
 call:VerifyAdminPrivileges
 IF %ERRORLEVEL%==1 EXIT /B 1
 
-call:StopLMSService 
+call:StopLMSService
 IF %ERRORLEVEL% EQU 0 goto EXIT_SUCCESS
 goto EXIT_FAILURE
 
@@ -297,7 +297,7 @@ goto :eof
 
 :RemoveRegistryKeys
 set TempRegistryFile=lms-remove-%RANDOM%.reg
-IF EXIST %TempRegistryFile% DEL /Q /F %TempRegistryFile% 
+IF EXIST %TempRegistryFile% DEL /Q /F %TempRegistryFile%
 
 echo Windows Registry Editor Version 5.00 >> %TempRegistryFile%
 echo. >> %TempRegistryFile%
@@ -315,7 +315,7 @@ goto :eof
 :AddRegistryKeys
 set TempRegistryFile=lms-remove-%RANDOM%.reg
 
-IF EXIST %TempRegistryFile% DEL /Q /F %TempRegistryFile% 
+IF EXIST %TempRegistryFile% DEL /Q /F %TempRegistryFile%
 
 echo Windows Registry Editor Version 5.00 >> %TempRegistryFile%
 echo. >> %TempRegistryFile%
@@ -388,18 +388,18 @@ goto :eof
 NET SESSION > NUL
 IF NOT %ERRORLEVEL% EQU 0 (
    echo.
-   echo ######## ########  ########   #######  ########  
-   echo ##       ##     ## ##     ## ##     ## ##     ## 
-   echo ##       ##     ## ##     ## ##     ## ##     ## 
-   echo ######   ########  ########  ##     ## ########  
-   echo ##       ##   ##   ##   ##   ##     ## ##   ##   
-   echo ##       ##    ##  ##    ##  ##     ## ##    ##  
-   echo ######## ##     ## ##     ##  #######  ##     ## 
+   echo ######## ########  ########   #######  ########
+   echo ##       ##     ## ##     ## ##     ## ##     ##
+   echo ##       ##     ## ##     ## ##     ## ##     ##
+   echo ######   ########  ########  ##     ## ########
+   echo ##       ##   ##   ##   ##   ##     ## ##   ##
+   echo ##       ##    ##  ##    ##  ##     ## ##    ##
+   echo ######## ##     ## ##     ##  #######  ##     ##
    echo.
    echo.
    echo ############### ERROR: ADMINISTRATOR PRIVILEGES REQUIRED ################
    echo #
-   echo #  This script must be run as administrator to work properly!  
+   echo #  This script must be run as administrator to work properly!
    echo #  If you're seeing this after clicking on the install.bat file,
    echo #  then right click on the file and select "Run As Administrator".
    echo #
@@ -414,14 +414,14 @@ goto:eof
 @echo off
 cls
 echo.
-echo. 
-echo #       #     #  #####   
-echo #       ##   ## #     #  
-echo #       # # # # #        
-echo #       #  #  #  #####   
-echo #       #     #       #  
-echo #       #     # #     #  
-echo ####### #     #  #####   
+echo.
+echo #       #     #  #####
+echo #       ##   ## #     #
+echo #       # # # # #
+echo #       #  #  #  #####
+echo #       #     #       #
+echo #       #     # #     #
+echo ####### #     #  #####
 echo.
 goto:eof
 
@@ -435,6 +435,6 @@ echo 	install    - install the LMS service using current directory files
 echo 	uninstall  - remove the LMS service and all it components
 echo 	start      - starts the LMS service
 echo 	stop       - stops the LMS service
-echo.       
-pause 
+echo.
+pause
 goto:eof

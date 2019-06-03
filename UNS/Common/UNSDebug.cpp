@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -19,15 +19,15 @@
 #include "UNSDebug.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
 
 /*
 ** DbgPrint - Print Format Output to Debug Console (using Output Debug String)
-** 
-** Paramters:
+**
+** Parameters:
 **	format - printf style format string
 */
 #ifdef _DEBUGPRINT
@@ -65,16 +65,16 @@ void DbgPrintW(const wchar_t *fmt, ...)
 #else
 void DbgPrint(const char *format, ...)
 {
-	va_list args;
+    va_list args;
     int     len;
     char    *buffer;
 
     // retrieve the variable arguments
     va_start( args, format );
-    
+
     len = _vscprintf( format, args ) // _vscprintf doesn't count
                                 + 1; // terminating '\0'
-    
+
     buffer = (char*)malloc( len * sizeof(char) );
 	if (buffer == NULL)
 	{
@@ -82,7 +82,7 @@ void DbgPrint(const char *format, ...)
 	}
 
     vsprintf_s( buffer, len * sizeof(char), format, args ); // C4996
-    
+
 #ifdef OUTPUT_STDOUT
 	fputs(buffer, stdout;
 #endif
@@ -101,10 +101,10 @@ void DbgPrintW(const wchar_t *format, ...)
 
     // retrieve the variable arguments
     va_start( args, format );
-    
+
     len = _vscwprintf( format, args ) // _vscprintf doesn't count
                                 + 1; // terminating '\0'
-    
+
     buffer = (wchar_t*)malloc( len * sizeof(wchar_t) );
 	if (buffer == NULL)
 	{
@@ -112,7 +112,7 @@ void DbgPrintW(const wchar_t *format, ...)
 	}
 
     vswprintf_s( buffer, len * sizeof(char), format, args ); // C4996
-    
+
 #ifdef OUTPUT_STDOUT
 	fputs(buffer, stdout);
 #endif

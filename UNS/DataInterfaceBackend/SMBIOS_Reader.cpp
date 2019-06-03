@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2007-2018 Intel Corporation
+ * Copyright (C) 2007-2019 Intel Corporation
  */
  /**
  * @file smbios_tables.cpp
- * 
+ *
  * Implements functions to read settings & flags set by OEM in SMBIOS table
- * 
- * 
+ *
+ *
  */
 #include "SMBIOS_Reader.h"
 #include "UNSDebug.h"
@@ -20,7 +20,7 @@
 #include <iterator>
 #endif // WIN32
 
-// Returns the length of the formatted section of a table beginning at the specified index within the smb buffer.									
+// Returns the length of the formatted section of a table beginning at the specified index within the smb buffer.
 uint32_t SMBIOS_Reader::formatted_table_len(unsigned char *smbios_table_data, uint32_t index, uint32_t smbios_table_len)
 {
 	unsigned int length = (unsigned int) smbios_table_data[index+1];
@@ -31,8 +31,8 @@ uint32_t SMBIOS_Reader::formatted_table_len(unsigned char *smbios_table_data, ui
 		return length;
 }
 
-// Returns the length of the unformatted section of a table	(string table) beginning at the specified 
-// index within the smb buffer.	
+// Returns the length of the unformatted section of a table (string table) beginning at the specified
+// index within the smb buffer.
 uint32_t SMBIOS_Reader::unformatted_table_len(unsigned char *smbios_table_data, uint32_t index, uint32_t smbios_table_len)
 {
 	unsigned int start_point = index;
@@ -54,7 +54,7 @@ uint32_t SMBIOS_Reader::unformatted_table_len(unsigned char *smbios_table_data, 
 	return 0;
 }
 
-// Returns in the SM_BIOS_CAPABILITIES all the relevant setings or false on error related table structure
+// Returns in the SM_BIOS_CAPABILITIES all the relevant settings or false on error related table structure
 bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t smbios_table_len, SM_BIOS_CAPABILITIES *pCapabilities)
 {
 	unsigned int index = 0;
@@ -68,12 +68,12 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 		table_len1 = SMBIOS_Reader::formatted_table_len(smbios_table_data, index, smbios_table_len);
 		table_len2 = SMBIOS_Reader::unformatted_table_len(smbios_table_data, index, smbios_table_len);
 		current_table_length = table_len1 + table_len2;
-		
+
 		if (current_table_length == 0) break;
 
 		SM_table = (struct SMBIOS_Type131 *) &smbios_table_data[index];
 
-		if (SM_table->Header.Type == SMBIOS_INTEL_OEM_TYPE 
+		if (SM_table->Header.Type == SMBIOS_INTEL_OEM_TYPE
 			&& strncmp((char *)SM_table->vProSig, VPRO_STRING, sizeof(VPRO_STRING)) == 0)
 		{
 			DbgPrintW(L"areSmbiosFlagsSet:: Found vPRO table\n");
@@ -83,45 +83,45 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 				return false;
 			}
 			else
-			{				
+			{
 				// MEBx version defined as such:
 				pCapabilities->MEBx_Major = SM_table->MebxVer[0]; // MebxVer[1] -> Mebx Major version
 				pCapabilities->MEBx_Minor = SM_table->MebxVer[1]; // MebxVer[0] -> Mebx Minor version
 				pCapabilities->MEBx_Hotfix = SM_table->MebxVer[2];// MebxVer[3] -> Mebx Hotfix number
 				pCapabilities->MEBx_Build = SM_table->MebxVer[3]; // MebxVer[2] -> Mebx Build number
-				DbgPrintW(L"areSmbiosFlagsSet:: MEBx version %d.%d.%d.%d\n",pCapabilities->MEBx_Major,pCapabilities->MEBx_Minor,pCapabilities->MEBx_Hotfix,pCapabilities->MEBx_Build );				
-				
+				DbgPrintW(L"areSmbiosFlagsSet:: MEBx version %d.%d.%d.%d\n",pCapabilities->MEBx_Major,pCapabilities->MEBx_Minor,pCapabilities->MEBx_Hotfix,pCapabilities->MEBx_Build );
+
 				// ME version defined as such:
 				pCapabilities->ME_Major = SM_table->MeVer[1]; // MeVer[1] -> Me Major version
 				pCapabilities->ME_Minor = SM_table->MeVer[0]; // MeVer[0] -> Me Minor version
 				pCapabilities->ME_Hotfix = SM_table->MeVer[3];// MeVer[3] -> Me Hotfix number
 				pCapabilities->ME_Build = SM_table->MeVer[2]; // MeVer[2] -> Me Build number
-				DbgPrintW(L"areSmbiosFlagsSet:: ME version %d.%d.%d.%d\n",pCapabilities->ME_Major,pCapabilities->ME_Minor,pCapabilities->ME_Hotfix,pCapabilities->ME_Build );				
-				
+				DbgPrintW(L"areSmbiosFlagsSet:: ME version %d.%d.%d.%d\n",pCapabilities->ME_Major,pCapabilities->ME_Minor,pCapabilities->ME_Hotfix,pCapabilities->ME_Build );
+
 				// AT properties are defined as such:
-				if (SM_table->MeCap.AtpSupported) 
+				if (SM_table->MeCap.AtpSupported)
 				{
-					DbgPrintW(L"areSmbiosFlagsSet:: TDT supported %d !\n",SM_table->MeCap.AtpSupported);						
-					pCapabilities->AT_Allowed = SM_table->MeCap.AtpSupported;				
+					DbgPrintW(L"areSmbiosFlagsSet:: TDT supported %d !\n",SM_table->MeCap.AtpSupported);
+					pCapabilities->AT_Allowed = SM_table->MeCap.AtpSupported;
 					at_info1* AtInfo1 = (struct at_info1*)&SM_table->Rerserve[0];
-					DbgPrintW(L"areSmbiosFlagsSet:: AT enrolled: %d\n", AtInfo1->atEnrolled);					
-					pCapabilities->AT_Enrolled = AtInfo1->atEnrolled;					
+					DbgPrintW(L"areSmbiosFlagsSet:: AT enrolled: %d\n", AtInfo1->atEnrolled);
+					pCapabilities->AT_Enrolled = AtInfo1->atEnrolled;
 				}
 				else
 				{
 					pCapabilities->AT_Allowed = 0;
 					pCapabilities->AT_Enrolled = 0;
-					DbgPrintW(L"areSmbiosFlagsSet:: AT not supported !\n");					
+					DbgPrintW(L"areSmbiosFlagsSet:: AT not supported !\n");
 				}
 				return true;
-			}				
+			}
 		}
 		else if (SM_table->Header.Type == SMBIOS_END_OF_TABLE_TYPE)
 		{
 			DbgPrintW(L"areSmbiosFlagsSet:: Type ==  SMBIOS_END_OF_TABLE_TYPE --> returning false\n");
 			return false;
 		}
-		
+
 		index += current_table_length;
 
 	}
@@ -149,22 +149,22 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	else if (hr != RPC_E_CHANGED_MODE)
     {
 		ret = ERROR_COINITIALIZE;
-        return ret;     
+        return ret;
     }
 
-    // WMI intreface locator for host 
+    // WMI interface locator for host
 
 	IWbemLocator* ploc = 0;
 
     hr = CoCreateInstance(
 		__uuidof(WbemLocator),
-        0, 
-        CLSCTX_INPROC_SERVER, 
+        0,
+        CLSCTX_INPROC_SERVER,
 		__uuidof(IWbemLocator), (LPVOID *) &ploc);
- 
+
     if (hr<0)
     {
-		DbgPrintW(L"CheckForSmbiosFlags:: Error during IWbemLocator intialization\n");
+		DbgPrintW(L"CheckForSmbiosFlags:: Error during IWbemLocator initialization\n");
 		ret = ERROR_COCREATEINSTANCE;
 		goto comfailure;
     }
@@ -174,26 +174,26 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
     // Now connect to the wmi namespace to make call for IWbemServices
 
     bstrMsg = SysAllocString(L"ROOT\\WMI");
-    hr = ploc->ConnectServer(bstrMsg,  NULL,  NULL, 0, NULL, 0, 0, &psvc );                              
-    SysFreeString(bstrMsg); 
+    hr = ploc->ConnectServer(bstrMsg,  NULL,  NULL, 0, NULL, 0, 0, &psvc );
+    SysFreeString(bstrMsg);
     if (hr<0)
     {
 		DbgPrintW(L"CheckForSmbiosFlags:: Error during connection to WMI namespace\n");
-        ploc->Release();     
+        ploc->Release();
 		ret = ERROR_WMI_CONNECT;
 		goto comfailure;
     }
 
-    // Using IWbemServices proxy 
-    
-    hr = CoSetProxyBlanket( psvc,  RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,                       
+    // Using IWbemServices proxy
+
+    hr = CoSetProxyBlanket( psvc,  RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,
        RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );
 
     if (hr<0)
     {
 		DbgPrintW(L"CheckForSmbiosFlags:: Error in set up WMI proxy\n");
         psvc->Release();
-        ploc->Release();     
+        ploc->Release();
 		ret = ERROR_WMI_SET_PROXY;
 		goto comfailure;
     }
@@ -201,12 +201,12 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
     IEnumWbemClassObject* penum = NULL;
 	bstrMsg = SysAllocString(L"MSSMBios_RawSMBiosTables");
     hr = psvc->CreateInstanceEnum(bstrMsg, 0, NULL, &penum);
-	SysFreeString(bstrMsg);    
+	SysFreeString(bstrMsg);
     if ((hr < 0) || (penum == NULL))
     {
 		DbgPrintW(L"CheckForSmbiosFlags:: Error during SMBIOS tables enumration\n");
         psvc->Release();
-        ploc->Release();     
+        ploc->Release();
 		ret = ERROR_SMBIOS_ENUMERATION;
 		goto comfailure;
     }
@@ -215,7 +215,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
         IWbemClassObject* pinst = NULL;
         ULONG dword_repeat = NULL;
 
-        hr = penum->Next(WBEM_INFINITE, 1, &pinst, &dword_repeat);      
+        hr = penum->Next(WBEM_INFINITE, 1, &pinst, &dword_repeat);
         //adding check for (pinst != NULL) when bios doesn't respond
 		if ((hr >= 0) && (pinst != NULL))
 		{
@@ -282,16 +282,16 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 			pinst->Release();
 			break;
 		}
-    
+
     } while (hr == WBEM_S_NO_ERROR);
 
 	penum->Release();
     psvc->Release();
-    ploc->Release(); 
+    ploc->Release();
 
 comfailure:
 	if (uninitCom)
-	{		
+	{
 		CoUninitialize();
 	}
 
@@ -368,13 +368,13 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 #endif //WIN32
 
 void testSMBIOS()
-{		 
+{
 	SMBIOS_Reader sm_reader;
-	
+
 	DbgPrintW(L"\n CheckSmbiosFlags return %d\n",sm_reader.CheckForSmbiosFlags());
 
 	DbgPrintW(L"\n MEBx version %d.%d.%d.%d\n",sm_reader.pCapabilities.MEBx_Major,sm_reader.pCapabilities.MEBx_Minor,
-		sm_reader.pCapabilities.MEBx_Hotfix,sm_reader.pCapabilities.MEBx_Build);					
+		sm_reader.pCapabilities.MEBx_Hotfix,sm_reader.pCapabilities.MEBx_Build);
 	DbgPrintW(L"\n ME version %d.%d.%d.%d\n",sm_reader.pCapabilities.ME_Major,sm_reader.pCapabilities.ME_Minor,
 		sm_reader.pCapabilities.ME_Hotfix,sm_reader.pCapabilities.ME_Build);
 	DbgPrintW(L"\n AT capable %d <> AT enrolled %d\n",sm_reader.pCapabilities.AT_Allowed,sm_reader.pCapabilities.AT_Enrolled);

@@ -47,7 +47,7 @@ static inline int closesocket(int fd) {return close(fd);}
 
 #define FQDN_MAX_SIZE 256
 
-const LMEProtocolVersionMessage Protocol::MIN_PROT_VERSION(1, 0); 
+const LMEProtocolVersionMessage Protocol::MIN_PROT_VERSION(1, 0);
 const LMEProtocolVersionMessage Protocol::MAX_PROT_VERSION(1, 0);
 
 using std::vector;
@@ -103,7 +103,7 @@ bool Protocol::Init(InitParameters & params)
 {
 	bool res = false;
 	FuncEntryExit<decltype(res)> fee(L"Init", res);
-	
+
 	_eventLogWrn = params.evtLogCbWrn_;
 	_eventLogDbg = params.evtLogCbDbg_;
 	_eventLogParam = params.evtLogParam_;
@@ -187,7 +187,7 @@ void Protocol::_TCPCleanup()
 	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0)) == NO_ERROR) {
 		LMS_DEBUG_VAR(L"\tNumber of entries: %d", (int) pTcpTable->dwNumEntries);
 		for (i = 0; i < (int) pTcpTable->dwNumEntries; i++) {
-			if ((pid == pTcpTable->table[i].dwOwningPid) && 
+			if ((pid == pTcpTable->table[i].dwOwningPid) &&
 				(pTcpTable->table[i].dwState == MIB_TCP_STATE_FIN_WAIT2)) {
 					MIB_TCPROW row;
 					row.dwLocalAddr = pTcpTable->table[i].dwLocalAddr;
@@ -207,7 +207,7 @@ void Protocol::_TCPCleanup()
 	delete []pTcpTable;
 	pTcpTable = NULL;
 
-	return;    
+	return;
 
 }
 #else
@@ -254,9 +254,9 @@ void Protocol::_TCPCleanup()
 //	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0)) == NO_ERROR) {
 //		UNS_DEBUG("\tNumber of entries: %d", (int) pTcpTable->dwNumEntries, L"\n");
 //		for (i = 0; i < (int) pTcpTable->dwNumEntries; i++) {
-//			if ((pid == pTcpTable->table[i].dwOwningPid) && 
+//			if ((pid == pTcpTable->table[i].dwOwningPid) &&
 //				(pTcpTable->table[i].dwState == MIB_TCP_STATE_FIN_WAIT2)) {
-//					MIB_TCPROW row; // Need to be MIB_TCP6ROW 
+//					MIB_TCPROW row; // Need to be MIB_TCP6ROW
 //					row.dwLocalAddr = pTcpTable->table[i].dwLocalAddr;
 //					row.dwLocalPort = pTcpTable->table[i].dwLocalPort;
 //					row.dwRemoteAddr = pTcpTable->table[i].dwRemoteAddr;
@@ -274,7 +274,7 @@ void Protocol::_TCPCleanup()
 //	delete []pTcpTable;
 //	pTcpTable = NULL;
 //
-//	return;    
+//	return;
 //
 //}
 
@@ -302,7 +302,7 @@ void Protocol::Deinit()
 			ChannelMap::iterator it = _openChannels.begin();
 
 			for (; it != _openChannels.end(); it++) {
-				_closeSocket(it->second->GetSocket());	
+				_closeSocket(it->second->GetSocket());
 				delete it->second;
 			}
 
@@ -323,7 +323,7 @@ void Protocol::Deinit()
 					PortForwardRequestList::iterator it2 = it->second.begin();
 
 					for (; it2 != it->second.end(); it2++) {
-						delete *it2;	
+						delete *it2;
 					}
 					it->second.clear();
 				}
@@ -333,7 +333,7 @@ void Protocol::Deinit()
 
 		{
 			std::lock_guard<std::mutex> l(_deleteLock);
-			if (_rxSocketBuffer != NULL) 
+			if (_rxSocketBuffer != NULL)
 			{
 				delete []_rxSocketBuffer;
 				_rxSocketBuffer = NULL;
@@ -360,10 +360,10 @@ void Protocol::Deinit()
 #endif
 }
 
-unsigned int GetLocalPort(SOCKET s) 
+unsigned int GetLocalPort(SOCKET s)
 {
 
-	sockaddr_storage addrIn; 
+	sockaddr_storage addrIn;
 	socklen_t addrLen = sizeof(sockaddr_storage);
 
 	if( getsockname(s,(sockaddr*)&addrIn, &addrLen) != 0 ) {
@@ -476,8 +476,8 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 	hints.ai_flags = AI_NUMERICHOST | AI_PASSIVE;
-	
-	std::stringstream ss; 
+
+	std::stringstream ss;
 	ss << port;
 
 	// Resolve the local address and port to be used by the server
@@ -488,18 +488,18 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 	}
 
 	// Using resultCopy in order to free later the original allocated result pointer
-	for (resultCopy = result;  resultCopy != NULL; resultCopy = resultCopy->ai_next) 
+	for (resultCopy = result;  resultCopy != NULL; resultCopy = resultCopy->ai_next)
 	{
 		SOCKET s = _createSocket(resultCopy, status);
-		if (s == INVALID_SOCKET) 
+		if (s == INVALID_SOCKET)
 		{
 			LMS_DEBUG_VAR(L"Failed to create a server socket for addr=%C", addr2str(* (sockaddr_storage*)resultCopy->ai_addr).c_str());
 			error = true;
 			break;
 		}
-		if (::bind(s, resultCopy->ai_addr, (int)resultCopy->ai_addrlen) == SOCKET_ERROR) 
+		if (::bind(s, resultCopy->ai_addr, (int)resultCopy->ai_addrlen) == SOCKET_ERROR)
 		{
-			LMS_DEBUG_VAR(L"Error %d in binding server socket.", WSAGetLastError()); 
+			LMS_DEBUG_VAR(L"Error %d in binding server socket.", WSAGetLastError());
 			_closeSocket(s);
 			status = NOT_BINDED;
 			error = true;
@@ -516,7 +516,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 					status = CONDITIONAL_ACCEPT_ERROR;
 					error = true;
 					break;
-				
+
 			}
 		}
 #endif // WIN32
@@ -573,7 +573,7 @@ bool Protocol::_setNonBlocking(SOCKET s, bool enable)
 #endif // WIN32
 
 SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long timeOut)
-{	
+{
 	SOCKET s = INVALID_SOCKET;
 	vector<SOCKET> sockets;
 	FuncEntryExit<SOCKET> fee(L"_connect", s);
@@ -581,7 +581,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 
 	for (addr; addr != NULL; addr = addr->ai_next) {
 
-		SS_PORT(addr->ai_addr) = htons(port); 
+		SS_PORT(addr->ai_addr) = htons(port);
 		addr->ai_socktype = type;
 
 		SOCKET_STATUS status;
@@ -589,7 +589,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 		addrinfo *result = NULL;
 
 
-		std::stringstream localss; 
+		std::stringstream localss;
 		localss << 0;
 
 		// Resolve the local address and port to be used by the server
@@ -644,7 +644,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 
 		for (unsigned int i = 0; i < sockets.size(); i++) {
 
-			SOCKET tempSock = sockets[i]; 
+			SOCKET tempSock = sockets[i];
 			FD_SET(tempSock, &fdSet);
 			FD_SET(tempSock, &fdExpSet);
 
@@ -659,7 +659,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 		s = INVALID_SOCKET;
 		for (unsigned int i = 0; i < sockets.size(); i++) {
 
-			SOCKET tempSock = sockets[i]; 
+			SOCKET tempSock = sockets[i];
 
 			if ((s == INVALID_SOCKET) && (FD_ISSET(tempSock, &fdSet))) {
 				s = tempSock;
@@ -681,27 +681,27 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	sockaddr_storage addr;
 	socklen_t addrLen = sizeof(addr);
 	FuncEntryExit<void> fee(L"_acceptConnection");
-	
+
 	ConnectionAcceptCB cb_params(this, port);
 
 #ifdef WIN32
-	//Accept an incoming connnection request on the listening socket and transfer 
-	//control to the accepting socket.	
+	//Accept an incoming connection request on the listening socket and transfer
+	//control to the accepting socket.
 	SOCKET s_new = WSAAccept(s, (sockaddr *)&addr, &addrLen,&ConditionAcceptFunc,(DWORD_PTR)&cb_params);
 #else
 	SOCKET s_new = accept(s, (sockaddr *)&addr, &addrLen);
 #endif // WIN32
 	if (s_new == INVALID_SOCKET) {
 		int err = GetLastError();
-	
+
 		UNS_DEBUG(L"New connection denied (%d): %W ", L"\n", err, getErrMsg(err).c_str());
 		_closeSocket(s_new);
 		return false;
-	}	
+	}
 
 	PortForwardRequest *portForwardRequest = NULL;
 
-	if (cb_params._PFReq == NULL)	//further detect test need to be done here (now we have the socket and we can pull the locall address)
+	if (cb_params._PFReq == NULL)	//further detect test need to be done here (now we have the socket and we can pull the local address)
 									// (more details in checkAcceptLogic() )
 	{
 		portForwardRequest = _findFWReq(s_new,port,NULL);
@@ -715,7 +715,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	else {
 		portForwardRequest = cb_params._PFReq;
 	}
-	
+
 	if(addr.ss_family == AF_INET)
 	{
 		UNS_DEBUG(L"AF_INET", L"\n");
@@ -724,7 +724,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	{
 		UNS_DEBUG(L"AF_INET6", L"\n");
 	}
-	
+
 	//get address as a string:
 	int originator_port = SS_PORT(&addr);
 	SS_PORT(&addr) = 0;
@@ -749,7 +749,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 
 	if (!_lme.ChannelOpenForwardedRequest((uint32_t)s_new, connectedIP, port, address,ntohs(originator_port)))
 	{
-		LMS_DEBUG_VAR(L"ERROR: failed to send channel open request to LME. Sender %d. Address: %C:%d ", (int)s_new, 
+		LMS_DEBUG_VAR(L"ERROR: failed to send channel open request to LME. Sender %d. Address: %C:%d ", (int)s_new,
 			address.c_str(), ntohs(originator_port));
 
 		_closeSocket(s_new);
@@ -757,7 +757,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 		return false;
 	}
 	_openChannels[s_new] = c;
-	LMS_DEBUG_VAR(L"Send channel open request to LME. Sender %d, Address: %C:%d ", (int)s_new, 
+	LMS_DEBUG_VAR(L"Send channel open request to LME. Sender %d, Address: %C:%d ", (int)s_new,
 		address.c_str(), ntohs(originator_port));
 
 	return true;
@@ -778,40 +778,39 @@ int CALLBACK ConditionAcceptFunc(
 
 	if ((dwCallbackData == NULL) ||(((ConnectionAcceptCB *)dwCallbackData)->_protocol == NULL))
 	{
-		UNS_DEBUG(L"Error: callback: ConditionAcceptFunc with illegall data", L"\n");
+		UNS_DEBUG(L"Error: callback: ConditionAcceptFunc with illegal data", L"\n");
 		return CF_REJECT;
 	}
 	Protocol *protocol	= ((ConnectionAcceptCB *)dwCallbackData)->_protocol;
 	unsigned int port	= ((ConnectionAcceptCB *)dwCallbackData)->_port;
-	
+
 	sockaddr_storage caller_addr;
 	memcpy_s(&caller_addr, sizeof(sockaddr_storage), lpCallerId->buf, lpCallerId->len);
 
 	LMS_DEBUG_VAR(L"received new connection from %C", addr2str(caller_addr).c_str());
-	
+
 	return protocol->checkAcceptLogic(caller_addr, port,((ConnectionAcceptCB *)dwCallbackData)->_PFReq);
 }
 
 //------------------------------------------------------------------
 // The LMS conditional accept logic is as follow:
 // If hostVPNDisabled--> perform conditional accept:
-//         if connection is from Local - accept 
- //        if from remote - dont accept (since remoteVPN is disabled)
+//        if connection is from Local - accept
+//        if from remote - don't accept (since the remote VPN is disabled)
 // Else- accept connection(ack will be send), and only after then check environment detection:
-//         if connection is from Local - accept and send to fw
-//         if from remote - check environment detection:
-//					if connection src adddr is inside org - send data to fw
-//					outside org - close the socket
+//        if connection is from Local - accept and send to fw
+//        if from remote - check environment detection:
+//               if connection src address is inside org - send data to fw
+//               outside org - close the socket
 //------------------------------------------------------------------
 int Protocol::checkAcceptLogic(sockaddr_storage& caller_addr, unsigned int port, PortForwardRequest* PW_req)
 {
-
 	int ret = CF_REJECT;
 
 	if (_remoteAccessEnabledInAMT)
 	{
-		ret = CF_ACCEPT;	//(remote VPN) the detection test will be done after accepting the connection.
-							//(maybe LMS will close the connection later)
+		ret = CF_ACCEPT;	// (remote VPN) the detection test will be done after accepting the connection.
+					// (maybe LMS will close the connection later)
 	}
 	else{
 		PW_req = _findFWReq(NULL,port,&caller_addr);
@@ -825,9 +824,9 @@ PortForwardRequest* Protocol::_findFWReq(SOCKET sock, unsigned int port, sockadd
 {
 	PortForwardRequest* ret = NULL;
 
-	//_portsLock is already aquired by the calling function: Select().
+	//_portsLock is already acquired by the calling function: Select().
 	PortMap::iterator it = _openPorts.find(port);
-	if (it != _openPorts.end()) {	
+	if (it != _openPorts.end()) {
 		PortForwardRequestList::iterator it2 = it->second.begin();
 
 		for (; it2 != it->second.end(); it2++) {
@@ -846,11 +845,6 @@ PortForwardRequest* Protocol::_findFWReq(SOCKET sock, unsigned int port, sockadd
 
 int Protocol::Select()
 {
-
-	//timeval tv;
-	//tv.tv_sec = 1;
-	//tv.tv_usec = 0;
-
 	int res;
 	int fdCount = 0;
 	unsigned int fdMin = UINT_MAX;
@@ -859,7 +853,7 @@ int Protocol::Select()
 	FD_ZERO(&rset);
 
 	int _serverSignalSocket = (int)_signalPipe.read_handle();
-	
+
 	FD_SET(_serverSignalSocket, &rset);
 	if ((int)_serverSignalSocket > fdCount) {
 		fdCount = (int)_serverSignalSocket;
@@ -869,14 +863,14 @@ int Protocol::Select()
 		//add "acceptors" sockets to select vector
 		std::lock_guard<std::mutex> l(_portsLock);
 		PortMap::iterator it = _openPorts.begin();
-		
+
 		for (; it != _openPorts.end(); it++) {
 			if (it->second.size() > 0) {
 				vector<SOCKET> vs = it->second[0]->GetListeningSockets();
 				for (size_t i = 0; i < vs.size(); i++) {
-					SOCKET serverSocket = vs[i]; 
+					SOCKET serverSocket = vs[i];
 					FD_SET(serverSocket, &rset);
-					
+
 					if ((int)serverSocket > fdCount) {
 						fdCount = (int)serverSocket;
 					}
@@ -884,13 +878,13 @@ int Protocol::Select()
 			}
 		}
 	}
-	
+
 	{
 		std::lock_guard<std::mutex> l(_channelsLock);
-		
+
 		//add "channels" sockets to select vector
 		ChannelMap::iterator it = _openChannels.begin();
-		
+
 		for (; it != _openChannels.end(); it++) {
 			if ((it->second->GetStatus() == Channel::OPEN) &&
 				(it->second->GetTxWindow() > 0) &&
@@ -903,7 +897,7 @@ int Protocol::Select()
 				if ((int)socket < fdMin) {
 					fdMin = (int)socket;
 				}
-				
+
 			}
 		}
 	}
@@ -913,7 +907,7 @@ int Protocol::Select()
 	res = select(fdCount, &rset, NULL, NULL, NULL);
 	if (res == -1) {
 		int err = GetLastError();
-	
+
 		UNS_DEBUG(L"Select error (%d): %W", L"\n", err, getErrMsg(err).c_str());
 		return -1;
 	}
@@ -932,14 +926,14 @@ int Protocol::Select()
 	{
 		std::lock_guard<std::mutex> l(_portsLock);
 		PortMap::iterator it = _openPorts.begin();
-		
+
 		for (; it != _openPorts.end(); it++) {
 			if (it->second.size() > 0) {
 				vector<SOCKET> vs = it->second[0]->GetListeningSockets();
 				for (unsigned int i = 0; i < vs.size(); i++) {
-					SOCKET serverSocket = vs[i]; 
+					SOCKET serverSocket = vs[i];
 					if (FD_ISSET(serverSocket, &rset)) {
-						
+
 						UNS_DEBUG(L"Connection requested on port %d", L"\n", it->first);
 						_acceptConnection(serverSocket, it->first);
 						FD_CLR(serverSocket, &rset);
@@ -953,7 +947,7 @@ int Protocol::Select()
 	int i;
 	for (i = fdMin/*0*/; (fdMin != UINT_MAX) && (res > 0) && (i < fdCount); i++) { // TBD Better way?
 		if (FD_ISSET(i, &rset)) {
-			_rxFromSocket(i);	
+			_rxFromSocket(i);
 			res--;
 		}
 	}
@@ -968,7 +962,7 @@ int Protocol::_rxFromSocket(SOCKET s)
 		std::lock_guard<std::mutex> l(_channelsLock);
 
 		ChannelMap::iterator it = _openChannels.find(s);;
-		
+
 		if (it == _openChannels.end()) {
 			// Data received from a socket that is not in the map.
 			// Since we only select on our sockets, this means it was
@@ -982,7 +976,7 @@ int Protocol::_rxFromSocket(SOCKET s)
 			return 0;
 		}
 		c = new SocketChannel(*tmp);
-		
+
 	}
 
 	int res = 0;
@@ -1000,15 +994,15 @@ int Protocol::_rxFromSocket(SOCKET s)
 			time ( &rawtime );
 			timeinfo = localtime(&rawtime);
 			fprintf(file, "-----------------------From application---------------------------\n"
-				"%s: Data received from socket %d. Sender %d, Receiver %d\n", 
-				asctime(timeinfo), (int)s, 
+				"%s: Data received from socket %d. Sender %d, Receiver %d\n",
+				asctime(timeinfo), (int)s,
 				c->GetSenderChannel(), c->GetRecipientChannel());
 			fwrite(_rxSocketBuffer, sizeof(char), res, file);
 			fprintf(file, "-----------------------End from application---------------------------\n");
 			fclose(file);
 		}
 #endif
-		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);	
+		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);
 		goto out;
 	} else if (res == 0) {
 		// connection closed
@@ -1025,7 +1019,7 @@ out:
 		std::lock_guard<std::mutex> l(_channelsLock);
 
 		ChannelMap::iterator it = _openChannels.find(s);;
-		
+
 		if (it == _openChannels.end()) {
 			// Data received from a socket that is not in the map.
 			// Since we only select on our sockets, this means it was
@@ -1043,12 +1037,12 @@ out:
 		}
 	}
 	delete c;
-	
+
 	return 0;
 }
 
-int VersionCompare(const uint32_t FirstMajorVersion, const uint32_t FirstMinorVersion, 
-									const uint32_t SecondMajorVersion, const uint32_t SecondMinorVersion) 
+int VersionCompare(const uint32_t FirstMajorVersion, const uint32_t FirstMinorVersion,
+									const uint32_t SecondMajorVersion, const uint32_t SecondMinorVersion)
 {
 	int diff =  FirstMajorVersion - SecondMajorVersion;
 	diff = (diff != 0) ? diff: FirstMinorVersion - SecondMinorVersion;
@@ -1062,13 +1056,13 @@ void Protocol::SignalSelect()
 	}
 }
 
-	
+
 void Protocol::_signalSelect()
 {
 	_signalPipe.send("s", 1); //Enforce a new execution of Select()
 }
 
-void Protocol::_closePortForwardRequest(PortForwardRequest *p) 
+void Protocol::_closePortForwardRequest(PortForwardRequest *p)
 {
 
 	PortMap::iterator it = _openPorts.find(p->GetPort());
@@ -1090,7 +1084,7 @@ void Protocol::_closePortForwardRequest(PortForwardRequest *p)
 		UNS_DEBUG(L"Failed finding the closed port forward tunnel", L"\n");
 		return;
 	}
-	
+
 	if ((*it2)->GetStatus() == PortForwardRequest::NOT_ACTIVE) {
 
 		vector<SOCKET> serverSockets = (*it2)->GetListeningSockets();
@@ -1150,13 +1144,13 @@ void Protocol::_LmeCallback(void *param, void *buffer, unsigned int len, int *st
 	prot->_LmeReceive(buffer, len, status);
 }
 
-//callback for waking the service from the Select() to allow re-initilization 
-void Protocol::_SignalSelectCallback(void *protocol) 
+// callback for waking the service from the Select() to allow re-initialization
+void Protocol::_SignalSelectCallback(void *protocol)
 {
 	((Protocol *)protocol)->SignalSelect();
 }
 
-void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)  
+void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 {
 	bool failure =false;
 	if (len < sizeof(LMEMessage)) {
@@ -1177,11 +1171,11 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
+
 				LMEDisconnectMessage *disconnectMessage = (LMEDisconnectMessage *)message;
 				UNS_DEBUG(L"LME requested to disconnect with reason code 0x%08x", L"\n", disconnectMessage->ReasonCode);
 				Deinit();
-				return;	
+				return;
 			}
 			break;
 
@@ -1196,8 +1190,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
-				LMEServiceRequestMessage *serviceRequestMessage = 
+
+				LMEServiceRequestMessage *serviceRequestMessage =
 					(LMEServiceRequestMessage *)message;
 
 				if ((serviceRequestMessage->ServiceName.compare(APF_SERVICE_AUTH) == 0) ||
@@ -1211,11 +1205,11 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					}
 				}
 				else {
-					LMS_DEBUG_VAR(L"Requesting to disconnect from LME with reason code 0x%08x", 
+					LMS_DEBUG_VAR(L"Requesting to disconnect from LME with reason code 0x%08x",
 						APF_DISCONNECT_SERVICE_NOT_AVAILABLE);
 					_lme.Disconnect(APF_DISCONNECT_SERVICE_NOT_AVAILABLE);
 					Deinit();
-					return;	
+					return;
 				}
 			}
 			break;
@@ -1231,12 +1225,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-					
+
 				UNS_DEBUG(L"Sending Userauth success message", L"\n");
 				_lme.UserAuthSuccess();
 			}
 			break;
-		
+
 		case APF_PROTOCOLVERSION:
 			{
 				if (len < sizeof(LMEProtocolVersionMessage)) {
@@ -1256,7 +1250,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						if (VersionCompare(MIN_PROT_VERSION.MajorVersion, MIN_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
 
-							UNS_DEBUG(L"Version %d.%d is not supported.", L"\n", versionMessage->MajorVersion, 
+							UNS_DEBUG(L"Version %d.%d is not supported.", L"\n", versionMessage->MajorVersion,
 							versionMessage->MinorVersion);
 							_lme.Disconnect(APF_DISCONNECT_PROTOCOL_VERSION_NOT_SUPPORTED);
 							Deinit();
@@ -1267,7 +1261,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 							_AmtProtVersion.MajorVersion = versionMessage->MajorVersion;
 							_AmtProtVersion.MinorVersion = versionMessage->MinorVersion;
-						}		
+						}
 						else {
 							_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
 							_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
@@ -1282,7 +1276,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 			}
 			break;
-	
+
 
 		case APF_GLOBAL_REQUEST:
 			{
@@ -1297,10 +1291,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				}
 
 				LMEGlobalRequestMessage *globalMessage = (LMEGlobalRequestMessage *)message;
-				
+
 				UNS_DEBUG(L"Global Request type 0x%02x", L"\n", globalMessage->RequestType);
 				switch (globalMessage->RequestType) {
-					
+
 					case LMEGlobalRequestMessage::TCP_FORWARD_REQUEST:
 						{
 							if (len < sizeof(LMETcpForwardRequestMessage)) {
@@ -1309,17 +1303,17 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								return;
 							}
 
-							LMETcpForwardRequestMessage *tcpForwardRequestMessage = 
+							LMETcpForwardRequestMessage *tcpForwardRequestMessage =
 															(LMETcpForwardRequestMessage *)globalMessage;
-							
+
 							IsConnectionPermittedCallback cb = NULL;
 #ifdef _REMOTE_SUPPORT
-							//"0.0.0.0" means remote interface also for IPv6 
+							//"0.0.0.0" means remote interface also for IPv6
 								if (_isRemoteAPFAddress(tcpForwardRequestMessage->Address)) {
 									LMS_DEBUG_VAR(L"--------->FW request to open remote tunnel- %C",tcpForwardRequestMessage->Address.c_str());
 									cb = _isRemoteCallback;
 								}
-								else 
+								else
 #endif
 							{
 								cb = _isLocalCallback;
@@ -1329,9 +1323,9 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								std::lock_guard<std::mutex> l(_portsLock);
 								vector<SOCKET> serverSockets;
 								PortMap::iterator it = _openPorts.find(tcpForwardRequestMessage->Port);
-								if (it != _openPorts.end()) {	
+								if (it != _openPorts.end()) {
 									if (it->second.size() > 0) {
-										
+
 										serverSockets = it->second[0]->GetListeningSockets();
 
 										PortForwardRequestList::iterator it2 = it->second.begin();
@@ -1346,11 +1340,11 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 										if (exists) {
 											// Log in Event Log
-										
-											std::stringstream ss; 
-											ss << "LMS already accepted a request at " << tcpForwardRequestMessage->Address 
+
+											std::stringstream ss;
+											ss << "LMS already accepted a request at " << tcpForwardRequestMessage->Address
 											<< ":" << tcpForwardRequestMessage->Port;
-											
+
 											_eventLogWrn(_eventLogParam, ss.str().c_str());
 											LMS_DEBUG_VAR(L"%C", ss.str().c_str());
 											// Send Failure replay to LME
@@ -1361,23 +1355,23 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								}
 								else {
 									PortForwardRequestList portForwardRequestList;
-									_openPorts[tcpForwardRequestMessage->Port] = portForwardRequestList;	
+									_openPorts[tcpForwardRequestMessage->Port] = portForwardRequestList;
 									UNS_DEBUG(L"New port %d", L"\n", tcpForwardRequestMessage->Port);
 								}
 
 								if (serverSockets.size() == 0) {
 									SOCKET_STATUS socketStatus;
 
-									serverSockets = _createServerSocket(AF_UNSPEC, tcpForwardRequestMessage->Port, 
+									serverSockets = _createServerSocket(AF_UNSPEC, tcpForwardRequestMessage->Port,
 										socketStatus,true);
 
 									if ((serverSockets.size() == 0) || (socketStatus != Protocol::ACTIVE)) {
 										// Log in Event Log
 										UNS_DEBUG(L"Cannot listen at port %d", L"\n", tcpForwardRequestMessage->Port);
-										
+
 										if (_failureReported[tcpForwardRequestMessage->Port] == false)
 										{
-											std::stringstream ss; 
+											std::stringstream ss;
 											_eventLogWrn(_eventLogParam, ss.str().c_str());
 											_failureReported[tcpForwardRequestMessage->Port] = true;
 										}
@@ -1390,19 +1384,19 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								if (failure != true)
 								{
 
-									LMS_DEBUG_VAR(L"Listening at port %d at %C interface.", tcpForwardRequestMessage->Port, 
+									LMS_DEBUG_VAR(L"Listening at port %d at %C interface.", tcpForwardRequestMessage->Port,
 										(cb == _isLocalCallback)?"local":"remote");
-									
+
 									// Log in Event Log
 									if (_failureReported[tcpForwardRequestMessage->Port] == true)
 									{
-										std::stringstream ss; 
+										std::stringstream ss;
 										ss << "Listening at port " << tcpForwardRequestMessage->Port << "";
 										_eventLogDbg(_eventLogParam,  ss.str().c_str());
 									}
 
-									PortForwardRequest *portForwardRequest = 
-										new PortForwardRequest(tcpForwardRequestMessage->Address, tcpForwardRequestMessage->Port, 
+									PortForwardRequest *portForwardRequest =
+										new PortForwardRequest(tcpForwardRequestMessage->Address, tcpForwardRequestMessage->Port,
 										serverSockets, cb, (cb == _isLocalCallback));
 
 									UNS_DEBUG(L"Add forward request to port:  %d", L"\n", tcpForwardRequestMessage->Port);
@@ -1413,7 +1407,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 									portForwardRequest->SetStatus(
 										(cb == _isLocalCallback)?
-										PortForwardRequest::LISTENING : 
+										PortForwardRequest::LISTENING :
 									PortForwardRequest::PENDING_REQUEST);
 									_failureReported[tcpForwardRequestMessage->Port] = false;
 
@@ -1444,7 +1438,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							if (!failure) {
 								if (cb == _isLocalCallback) {
 
-									LMS_DEBUG_VAR(L"Listening at port %d addr:%C at %C interface.", tcpForwardRequestMessage->Port, 
+									LMS_DEBUG_VAR(L"Listening at port %d addr:%C at %C interface.", tcpForwardRequestMessage->Port,
 										tcpForwardRequestMessage->Address.c_str(),
 										(cb == _isLocalCallback)?L"local":L"remote");
 
@@ -1467,19 +1461,19 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								return;
 							}
 
-							LMETcpForwardCancelRequestMessage *tcpForwardCancelRequestMessage = 
+							LMETcpForwardCancelRequestMessage *tcpForwardCancelRequestMessage =
 															(LMETcpForwardCancelRequestMessage *)globalMessage;
 
 							std::lock_guard<std::mutex> l(_portsLock);
 							UNS_DEBUG(L"--------->FW request to CLOSE tunnel", L"\n");
 							PortMap::iterator it = _openPorts.find(tcpForwardCancelRequestMessage->Port);
 							if (it == _openPorts.end()) {
-								LMS_DEBUG_VAR(L"Previous request on address %C and port %d doesn't exist.", 
-									tcpForwardCancelRequestMessage->Address.c_str(), tcpForwardCancelRequestMessage->Port); 
+								LMS_DEBUG_VAR(L"Previous request on address %C and port %d doesn't exist.",
+									tcpForwardCancelRequestMessage->Address.c_str(), tcpForwardCancelRequestMessage->Port);
 								_lme.TcpForwardCancelReplyFailure();
 								return;
 							}
-							
+
 							if (_isRemoteAPFAddress(tcpForwardCancelRequestMessage->Address))
 							{
 								LMS_DEBUG_VAR(L"--------->FW request to CLOSE remote tunnel - %C",tcpForwardCancelRequestMessage->Address.c_str());
@@ -1488,7 +1482,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							bool found = false;
 							PortForwardRequestList::iterator it2 = it->second.begin();
 							for (; it2 != it->second.end(); it2++) {
-								if (((*it2)->GetBindedAddress().compare(tcpForwardCancelRequestMessage->Address) == 0) && 
+								if (((*it2)->GetBindedAddress().compare(tcpForwardCancelRequestMessage->Address) == 0) &&
 									//((*it2)->GetPort() == tcpForwardCancelRequestMessage->Port)) {
 									((*it2)->GetStatus() != PortForwardRequest::NOT_ACTIVE)) {
 										found = true;
@@ -1497,7 +1491,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							}
 
 							if (found) {
-							
+
 								(*it2)->SetStatus(PortForwardRequest::NOT_ACTIVE);
 
 								if ((*it2)->GetChannelCount() == 0) {
@@ -1509,18 +1503,18 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 									_checkRemoteAccessStatus();
 								}
 
-								_lme.TcpForwardCancelReplySuccess();							
+								_lme.TcpForwardCancelReplySuccess();
 								return;
 							}
 							else {
-								LMS_DEBUG_VAR(L"Previous request on address %C and port %d doesn't exist.", 
-									tcpForwardCancelRequestMessage->Address.c_str(), tcpForwardCancelRequestMessage->Port); 
+								LMS_DEBUG_VAR(L"Previous request on address %C and port %d doesn't exist.",
+									tcpForwardCancelRequestMessage->Address.c_str(), tcpForwardCancelRequestMessage->Port);
 								_lme.TcpForwardCancelReplyFailure();
 								return;
-							}		
+							}
 						}
 						break;
-					
+
 					case LMEGlobalRequestMessage::UDP_SEND_TO:
 						{
 							if (len < sizeof(LMEUdpSendToMessage)) {
@@ -1530,7 +1524,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							}
 
 							LMEUdpSendToMessage *udpSendToMessage = (LMEUdpSendToMessage *)globalMessage;
-							
+
 							addrinfo *info = NULL;
 							addrinfo hint;
 
@@ -1540,27 +1534,27 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							hint.ai_protocol = IPPROTO_UDP;
 
 							if (getaddrinfo(udpSendToMessage->Address.c_str(), NULL, &hint, &info) != 0) {
-								UNS_DEBUG(L"Unable to send UDP data.", L"\n"); 
+								UNS_DEBUG(L"Unable to send UDP data.", L"\n");
 								return;
 							}
 
 							if (info == NULL) {
-								UNS_DEBUG(L"Unable to send UDP data.", L"\n"); 
+								UNS_DEBUG(L"Unable to send UDP data.", L"\n");
 								return;
 							}
-							
+
 							//NOTE: Connect Time out is 8 Sec as Defined from AMT FW IMPELEMENTION, Be Careful when Changing!!!
-							SOCKET s = _connect(info, udpSendToMessage->Port, SOCK_DGRAM);							
-							
+							SOCKET s = _connect(info, udpSendToMessage->Port, SOCK_DGRAM);
+
 							freeaddrinfo(info);
 
 							if (s == INVALID_SOCKET) {
-								UNS_DEBUG(L"Unable to send UDP data.", L"\n"); 
+								UNS_DEBUG(L"Unable to send UDP data.", L"\n");
 								return;
 							}
 
 							int count = send(s, (char *)udpSendToMessage->Data.data(), udpSendToMessage->Data.size(), 0);
-							LMS_DEBUG_VAR(L"Sent UDP data: %d bytes of %d.", count, udpSendToMessage->Data.size()); 
+							LMS_DEBUG_VAR(L"Sent UDP data: %d bytes of %d.", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
 							FILE *file = fopen("c:\\lms.log","a");
 							if (file != NULL) {
@@ -1569,8 +1563,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								time ( &rawtime );
 								timeinfo = localtime(&rawtime);
 								fprintf(file, "-----------------------From FW UDP---------------------------\n"
-									"%s: Data received from FW. Address %s, Port %d\n", 
-									asctime(timeinfo), udpSendToMessage->Address.c_str(), 
+									"%s: Data received from FW. Address %s, Port %d\n",
+									asctime(timeinfo), udpSendToMessage->Address.c_str(),
 									udpSendToMessage->Port);
 								fwrite(udpSendToMessage->Data.data(), sizeof(char), udpSendToMessage->Data.size(), file);
 								fprintf(file, "-----------------------End from application---------------------------\n");
@@ -1587,10 +1581,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						break;
 
 				}
-			
+
 			}
 			break;
-		
+
 		case APF_CHANNEL_OPEN:
 			{
 				if (!_checkProtocolFlow(message)) {
@@ -1602,10 +1596,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
+
 				LMEChannelOpenRequestMessage *channelOpenMessage = (LMEChannelOpenRequestMessage *)message;
-				
-				LMS_DEBUG_VAR(L"Got channel request from AMT.  Recipient channel %d for address %C, port %d.", 
+
+				LMS_DEBUG_VAR(L"Got channel request from AMT.  Recipient channel %d for address %C, port %d.",
 					channelOpenMessage->SenderChannel, channelOpenMessage->Address.c_str(), channelOpenMessage->Port);
 
 				Channel *c;
@@ -1686,8 +1680,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
-				LMEChannelOpenReplaySuccessMessage *channelOpenSuccessMessage = 
+
+				LMEChannelOpenReplaySuccessMessage *channelOpenSuccessMessage =
 																(LMEChannelOpenReplaySuccessMessage *)message;
 
 				std::lock_guard<std::mutex> l(_channelsLock);
@@ -1700,7 +1694,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				}
 
 				_signalSelect();
-			
+
 			}
 			break;
 
@@ -1715,10 +1709,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
-				LMEChannelOpenReplayFailureMessage *channelFailureMessage = 
+
+				LMEChannelOpenReplayFailureMessage *channelFailureMessage =
 																(LMEChannelOpenReplayFailureMessage *)message;
-		
+
 				PortForwardRequest *closePortForwardRequest = NULL;
 				{
 					std::lock_guard<std::mutex> l(_channelsLock);
@@ -1733,7 +1727,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 						delete it->second;
 						_openChannels.erase(it);
-						LMS_DEBUG_VAR(L"Channel open request was refused. Reason code: 0x%02x reason.", 
+						LMS_DEBUG_VAR(L"Channel open request was refused. Reason code: 0x%02x reason.",
 							channelFailureMessage->ReasonCode);
 					}
 				}
@@ -1742,7 +1736,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					std::lock_guard<std::mutex> l(_portsLock);
 					_closePortForwardRequest(closePortForwardRequest);
 				}
-				
+
 			}
 			break;
 
@@ -1757,9 +1751,9 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
+
 				LMEChannelCloseMessage *channelCloseMessage = (LMEChannelCloseMessage *)message;
-				
+
 				PortForwardRequest *closePortForwardRequest = NULL;
 				{
 					std::lock_guard<std::mutex> l(_channelsLock);
@@ -1773,7 +1767,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								LMS_DEBUG_VAR(L"Channel %d was closed by AMT.", c->GetSenderChannel());
 								break;
 							case Channel::WAITING_CLOSE:
-								LMS_DEBUG_VAR(L"Received reply by AMT on closing channel %d.", c->GetSenderChannel());		
+								LMS_DEBUG_VAR(L"Received reply by AMT on closing channel %d.", c->GetSenderChannel());
 								break;
 						}
 						_closeSocket(c->GetSocket());
@@ -1783,7 +1777,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						}
 
 						_openChannels.erase(it);
-						delete c;	
+						delete c;
 					}
 				}
 
@@ -1791,7 +1785,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					std::lock_guard<std::mutex> l(_portsLock);
 					_closePortForwardRequest(closePortForwardRequest);
 				}
-			
+
 			}
 			break;
 
@@ -1806,7 +1800,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
+
 				LMEChannelDataMessage *channelDataMessage = (LMEChannelDataMessage *)message;
 
 				std::lock_guard<std::mutex> l(_channelsLock);
@@ -1814,14 +1808,14 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				ChannelMap::iterator it = _openChannels.find(channelDataMessage->RecipientChannel);
 				if (it != _openChannels.end()) {
 					if ((it->second->GetStatus() == Channel::OPEN) || (it->second->GetStatus() == Channel::WAITING_CLOSE)) {
-						
+
 						if (it->second->GetRxWindow() < channelDataMessage->Data.size()) {
 							return;
 						}
 
 						bool request_close = false;
 						int count = it->second->ProcessRx((char *)channelDataMessage->Data.data(), channelDataMessage->Data.size(), request_close);
-						UNS_DEBUG(L"Sent %d bytes of %d from AMT to channel %d with socket %d.", L"\n", 
+						UNS_DEBUG(L"Sent %d bytes of %d from AMT to channel %d with socket %d.", L"\n",
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG
@@ -1832,16 +1826,16 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							time ( &rawtime );
 							timeinfo = localtime(&rawtime);
 							fprintf(file, "-----------------------From FW TCP---------------------------\n"
-								"%s: Data received from FW to socket %d. Sender %d, Receiver %d\n", 
-								asctime(timeinfo), (int)it->second->GetSocket(), 
+								"%s: Data received from FW to socket %d. Sender %d, Receiver %d\n",
+								asctime(timeinfo), (int)it->second->GetSocket(),
 								it->second->GetSenderChannel(), it->second->GetRecipientChannel());
-							fwrite(channelDataMessage->Data.data(), sizeof(char), 
+							fwrite(channelDataMessage->Data.data(), sizeof(char),
 								channelDataMessage->Data.size(), file);
 							fprintf(file, "-----------------------End from application---------------------------\n");
 							fclose(file);
 						}
 #endif
-						
+
 						_lme.ChannelWindowAdjust(it->second->GetRecipientChannel(), channelDataMessage->Data.size());
 						if (request_close)
 						{
@@ -1854,7 +1848,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							}
 						}
 					}
-				}	
+				}
 			}
 			break;
 
@@ -1869,7 +1863,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-				
+
 				LMEChannelWindowAdjustMessage *channelWindowMessage = (LMEChannelWindowAdjustMessage *)message;
 
 				std::lock_guard<std::mutex> l(_channelsLock);
@@ -1877,8 +1871,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				ChannelMap::iterator it = _openChannels.find(channelWindowMessage->RecipientChannel);
 				if (it != _openChannels.end()) {
 					it->second->AddBytesTxWindow(channelWindowMessage->BytesToAdd);
-					_signalSelect();	
-				}	
+					_signalSelect();
+				}
 			}
 			break;
 
@@ -1928,7 +1922,7 @@ void Protocol::_AdapterCallback(void *param, SuffixMap &localDNSSuffixes)
 	Protocol *prot = (Protocol *)param;
 	if (prot && prot->IsInitialized())
 		prot->_updateEnterpriseAccessStatus(localDNSSuffixes);
-	
+
 }
 
 bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
@@ -1966,11 +1960,11 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 	}
 
 	_updateEnterpriseAccessStatus(AdapterListInfo::GetLocalDNSSuffixList(), true);
-	
-	return true; 
+
+	return true;
 }
 
-void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay) 
+void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay)
 {
 	FuncEntryExit<void> fee(L"_updateEnterpriseAccessStatus");
 
@@ -2141,7 +2135,7 @@ int Protocol:: _isLocal(SOCKET s, sockaddr_storage* caller_addr) const
 		result = 1; // found
 		goto out;
 	}
-	
+
 	// not found
 	result = 0;
 
@@ -2175,9 +2169,9 @@ int Protocol::_isRemote(SOCKET s) const
 	int result = 0;
 
 	std::lock_guard<std::mutex> l(_remoteAccessLock);
-	
-	if (_remoteAccessEnabledInAMT) {	
-		
+
+	if (_remoteAccessEnabledInAMT) {
+
 		string dnsSuffix = AdapterListInfo::GetDNSSuffixFromLocalIP(localAddr);
 
 		if (dnsSuffix.empty()) {
@@ -2186,7 +2180,7 @@ int Protocol::_isRemote(SOCKET s) const
 
 		std::lock_guard<std::mutex> dns_lock(_AMTDNSLock);
 
-		std::vector<std::string>::const_iterator it = 
+		std::vector<std::string>::const_iterator it =
 			std::find_if(_AMTDNSSuffixes.begin(), _AMTDNSSuffixes.end(),
 				[dnsSuffix](const std::string &a) { return CompareSuffix(a, dnsSuffix); });
 		result = (it != _AMTDNSSuffixes.end());
@@ -2258,7 +2252,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 				tmp << line << std::endl;
 				continue;
 			}
-			hasOldFqdn = true; 
+			hasOldFqdn = true;
 
 			if (strncmp(fqdn, oldFqdn, FQDN_MAX_SIZE) == 0) {
 				// copy the old LMS line too, since it's up to date
@@ -2269,7 +2263,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 	}
 
 	// If there is already correct FQDN line
-	// or we got empty fqdn and hosts file doesn't contain 
+	// or we got empty fqdn and hosts file doesn't contain
 	// old fqdn entry then there's nothing to update
 	if (hasFqdn || (!hasOldFqdn && fqdn[0] == 0)) {
 		return 0;
@@ -2317,13 +2311,13 @@ int Protocol::_updateIPFQDN(const string &fqdn)
 {
 	FuncEntryExit<void> fee(L"_updateIPFQDN");
 	// When fqdn is empty, _handleFQDNChange() will remove LMS line from hosts file.
-	
-	if (fqdn != _AMTFQDN) 
+
+	if (fqdn != _AMTFQDN)
 	{
 		std::string localName;
 		bool res = GetLocalFQDN(localName); // res is zero if failed to get a local FQDN
 		size_t fqdnLen = fqdn.size();
-		
+
 		// If AMT FQDN is equal to local FQDN than we don't do anything
 		if (localName.size() > fqdnLen)
 			localName.resize(fqdnLen);

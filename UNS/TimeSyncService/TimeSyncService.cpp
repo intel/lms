@@ -15,9 +15,9 @@ const unsigned long TimeSyncService::ms_Interval = ms_FifteenMinutes;
 #ifndef _DEBUG
 const unsigned long TimeSyncService::ms_Interval = ms_SecondsInDay;
 #endif
-const unsigned long TimeSyncService::ms_MaxDiff = 30; //max differance in seconds between the UTC time to AMT time.
-const unsigned int	TimeSyncService::ms_SizeOfTimeString = 26;
-unsigned int	TimeSyncService::ms_LastTimeSync = 0;
+const unsigned long TimeSyncService::ms_MaxDiff = 30; //max difference in seconds between the UTC time to AMT time.
+const unsigned int  TimeSyncService::ms_SizeOfTimeString = 26;
+unsigned int TimeSyncService::ms_LastTimeSync = 0;
 
 int
 TimeSyncService::init (int argc, ACE_TCHAR *argv[])
@@ -31,7 +31,7 @@ TimeSyncService::init (int argc, ACE_TCHAR *argv[])
 
 		return retVal;
 	}
-	
+
 	m_needToSyncOnResume = false;
 	m_syncRequiredButNoPfw = false;
 	ACE_Time_Value interval (ms_Interval);
@@ -62,7 +62,7 @@ ACE_FACTORY_DEFINE (TIMESYNCSERVICE, TimeSyncService)
 
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int TimeSyncService::handle_event (MessageBlockPtr mbPtr )
-{	
+{
 	UNS_DEBUG(L"%s::handle_event", L"\n", name().c_str());
 
 	int type = mbPtr->msg_type();
@@ -120,7 +120,7 @@ int TimeSyncService::handlePublishEvent(const GMS_AlertIndication & alert)
 }
 
 
-int 
+int
 TimeSyncService::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
 	UNS_DEBUG(L"%s handle_timeout",L"\n",name().c_str());
@@ -129,14 +129,14 @@ TimeSyncService::handle_timeout (const ACE_Time_Value &current_time,const void *
 	mbPtr->data_block(new ACE_Data_Block());
 	mbPtr->msg_type(MB_TIMER_EXPIRED);
 	this->putq(mbPtr->duplicate());
-	
+
 	return 0;
 }
 
 
 #ifdef _DEBUG
 //This function prints the message given, appended with the time (given as unsigned int)
-void 
+void
 TimeSyncService::printTime(std::wstring message, unsigned int time)
 {
 	//creates a time_t object from the unsigned int
@@ -156,10 +156,10 @@ TimeSyncService::printTime(std::wstring message, unsigned int time)
 }
 #endif
 
-//This function returns the current UTC time, or -1 if failes.
+// This function returns the current UTC time, or -1 if fails.
 
 //change to bool return value...
-bool 
+bool
 TimeSyncService::GetUTCTime(unsigned int & UTCTime)
 {
 	time_t rawtime;
@@ -173,9 +173,9 @@ TimeSyncService::GetUTCTime(unsigned int & UTCTime)
 	return true;
 }
 
-int TimeSyncService::resume() 
+int TimeSyncService::resume()
 {
-	GmsSubService::resume();	
+	GmsSubService::resume();
 	if (m_needToSyncOnResume)
 	{
 		m_needToSyncOnResume = false;
@@ -186,7 +186,7 @@ int TimeSyncService::resume()
 }
 
 
-void 
+void
 TimeSyncService::PerformSync()
 {
 	UNS_DEBUG(L"%s::PerformSync", L"\n", name().c_str());
@@ -202,7 +202,7 @@ TimeSyncService::PerformSync()
 	//Check if LocalTimeSyncEnable = DEFAULT_TRUE or CONFIGURED_TRUE
 	TimeSynchronizationClient timeClient;
 	if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncState))//error getting the Time Sync state.
-	{ 
+	{
 		m_needToSyncOnResume = true;//update the bool to true if sync should be performed
 		UNS_DEBUG(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation",L"\n", name().c_str());
 		return;

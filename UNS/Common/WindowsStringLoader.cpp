@@ -8,17 +8,6 @@
 
 --*/
 
-//-------------------------------------------------------------------------------------------
-//
-//  Copyright (C) Intel Corporation, 2012.
-//
-//  File:       WindowsStringLoader.cpp
-//
-//  Contents:   defenition to the string loader for Windows(R)  - used to load strings of correct language
-//              from embedded rc file in Windows 
-//
-//--------------------------------------------------------------------------------------------
-
 #include <map>
 #include <windows.h>
 #include "WindowsStringLoader.h"

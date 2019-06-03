@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2006-2019 Intel Corporation
  */
 /*++
 
@@ -10,12 +10,8 @@
 
 //*****************************************************************************
 //
-// Class:			EventLogging
-// Author:			Assaf Weiner (assaf.weiner@intel.com)
-// Date created:	5 May 2006
 // Description:		The class EventLogger provide methods to access the Windows 
-//					Event Log (Application partition).
-//
+//		 	Event Log (Application partition).
 //*****************************************************************************
 
 #pragma once

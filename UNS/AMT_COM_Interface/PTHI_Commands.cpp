@@ -40,16 +40,16 @@ BOOL ReadPermissionsFromReg(DATA_NAME funcName, std::set<std::wstring>& groups)
 
 	groups.clear();
 	memset(val,0,sizeof(WCHAR)*1024);
-	
+
 	std::wstring storageVal;
 	if (DSinstance().GetDataValue(funcName, storageVal, true) == TRUE)
-	{		
+	{
 		if (storageVal.size() >= valSz)
 		{
 			return FALSE;
 		}
 		rc = TRUE;
-		if (storageVal.size() > 0) 
+		if (storageVal.size() > 0)
 		{
 			wcscpy_s(val, valSz, storageVal.c_str());
 			token = wcstok( val, seps );
@@ -57,12 +57,12 @@ BOOL ReadPermissionsFromReg(DATA_NAME funcName, std::set<std::wstring>& groups)
 			while( token != NULL )
 			{
 				std::wstring group = token;
-				// Remove leading and trailing whitespace
+				// Remove leading and trailing white space
 				static const WCHAR whitespace[] = L" ";
 				group.erase( 0, group.find_first_not_of(whitespace) );
 				group.erase( group.find_last_not_of(whitespace) + 1U );
 				groups.insert(group);
-				token = wcstok( NULL, seps ); 
+				token = wcstok( NULL, seps );
 			}
 		}
 	}
@@ -73,7 +73,7 @@ BOOL ReadPermissionsFromReg(DATA_NAME funcName, std::set<std::wstring>& groups)
 bool HasAccessByBuiltinGroup(WELL_KNOWN_SID_TYPE WinBuiltinSid,TOKEN_GROUPS * groups, std::set<std::wstring>& GroupsSet)
 {
 	// check if user in the WinBuiltinSid group
-	
+
 	bool bHasAccess = false;
 	DWORD SidSize;
 	PSID AdministratorsSid = NULL;
@@ -82,7 +82,7 @@ bool HasAccessByBuiltinGroup(WELL_KNOWN_SID_TYPE WinBuiltinSid,TOKEN_GROUPS * gr
 	// Allocate enough memory for the largest possible SID.
 	AdministratorsSid = LocalAlloc(LMEM_FIXED, SidSize);
 	if(!(AdministratorsSid))
-	{    
+	{
 		return false;
 	}
 	// Create a SID on the local computer.
@@ -91,9 +91,9 @@ bool HasAccessByBuiltinGroup(WELL_KNOWN_SID_TYPE WinBuiltinSid,TOKEN_GROUPS * gr
 		LocalFree(AdministratorsSid);
 		return false;
 	}
-	
+
 	//LPTSTR lpBuffWellKnownSid;
-	//ConvertSidToStringSid(TheSID,&lpBuffWellKnownSid);		
+	//ConvertSidToStringSid(TheSID,&lpBuffWellKnownSid);
 	WCHAR szGrpName[MAX_BUFFER_LENGTH + 1],gszDomainName[15+1];
 	SID_NAME_USE snu;
 	for (WORD i= 0 ; i < groups->GroupCount; i++)
@@ -117,7 +117,7 @@ bool HasAccessByBuiltinGroup(WELL_KNOWN_SID_TYPE WinBuiltinSid,TOKEN_GROUPS * gr
 					bHasAccess = true;
 					break;
 				}
-				
+
 				/* ADD INCLUDING GROUPS ?????????????????
 				string DomainAndGroup;
 				if (_tcscmp(gszDomainName,_T("BUILTIN"))==0)
@@ -148,7 +148,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 {
 	std::set<std::wstring> UserGroupsSet;
 	BOOL rc = ReadPermissionsFromReg(funcName,UserGroupsSet);
-	if (rc==0) 
+	if (rc==0)
 	{
 		return S_FALSE;
 	}
@@ -189,7 +189,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 
 	bRes = GetTokenInformation(
 		hThreadTok,
-		TokenImpersonationLevel, 
+		TokenImpersonationLevel,
 		&dwImp,
 		sizeof(DWORD),
 		&dwBytesReturned
@@ -212,7 +212,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	}
 
 
-	bRes =::GetTokenInformation(hThreadTok, TokenUser, 
+	bRes =::GetTokenInformation(hThreadTok, TokenUser,
 		NULL, 0, &dwBytesReturned);
 
 	if (bRes == 0)
@@ -253,11 +253,11 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 
 	//DBGTRACE(_T("Connect User is %s ,szDomainName %s"),szUserName,szDomainName);
 
-	bRes =::GetTokenInformation(hThreadTok, TokenGroups, 
+	bRes =::GetTokenInformation(hThreadTok, TokenGroups,
 		NULL, 0, &dwBytesReturned);
-	
+
 	TOKEN_GROUPS * groups;
-	
+
 	groups =(TOKEN_GROUPS*) new unsigned char[dwBytesReturned];
 
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups,
@@ -268,10 +268,10 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 		//DBGERROR(LOCATION, _T("Unable to GetTokenInformation - TokenUser (0x%x)"), GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
-		delete [] groups; 
+		delete [] groups;
 		return hr;
 	}
-	
+
 	CloseHandle(hThreadTok);
 
 	hr = CoRevertToSelf();
@@ -279,7 +279,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	{
 		//DBGERROR(LOCATION, _T("CoRevertToSelf (0x%x)"), hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
-		delete [] groups; 
+		delete [] groups;
 		return hr;
 	}
 
@@ -288,11 +288,11 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	GroupsSet.clear();
 	bHasAccess = HasAccessByBuiltinGroup(WinBuiltinAdministratorsSid,groups, GroupsSet);
 
-	if (!bHasAccess && (funcName >= 0)) // if user is admin or system there is no need to check for other groups 
+	if (!bHasAccess && (funcName >= 0)) // if user is admin or system there is no need to check for other groups
 	{
 		if (rc)
 		{
-			// Usergroup empty case is handled at the begining of the function - due bug 192098
+			// Usergroup empty case is handled at the beginning of the function - due bug 192098
 			//if (UserGroupsSet.empty())
 			//{
 			//	GroupsSet.clear();
@@ -321,14 +321,14 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	else
 		hr = S_FALSE;
 
-	delete [] groups; 
+	delete [] groups;
 
 
-	return hr;	
+	return hr;
 }
 
 STDMETHODIMP CPTHI_Commands::GetAMTVersion(BSTR* AMTVersion)
-{	
+{
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"AMTVersion", AMTVersion) == true)
 	{
@@ -481,7 +481,7 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 }
 
 STDMETHODIMP CPTHI_Commands::GetNetworkConnectionStatus(SHORT* pStatus,SHORT* pConnectionType,SHORT* pConnectionTrigger)
-{	
+{
 	/*
 	AMT_STATUS_NOT_PERMITTED	Entity has no permission to get connection status.
 	*/
@@ -550,7 +550,7 @@ STDMETHODIMP CPTHI_Commands::getWebUIState(SHORT* pState)
 		return S_OK;
 	}
 #endif
-	
+
 	if (CheckCredentials(getWebUIState_F) != S_OK)
 		return E_ACCESSDENIED;
 
@@ -653,7 +653,7 @@ STDMETHODIMP CPTHI_Commands::GetSystemDefenseStatus(SHORT* pStatus)
 		return S_OK;
 	}
 #endif
-	
+
 	if (CheckCredentials(GetSystemDefenseStatus_F) != S_OK)
 		return E_ACCESSDENIED;
 
@@ -788,7 +788,7 @@ AMT_STATUS_INTERFACE_DOES_NOT_EXIST	The network interface that is being referred
 	CComBSTR bstr2(sSecondaryDNS.c_str());
 	*SecondaryDNS = bstr2.Detach();
 	*pIpv6Enable = Ipv6Enable ? TRUE : FALSE;
-			
+
 	SAFEARRAY *pSar;
 	VariantInit(pResponse);
 	BSTR bstrTmp;
@@ -804,11 +804,11 @@ AMT_STATUS_INTERFACE_DOES_NOT_EXIST	The network interface that is being referred
 		pResponse->vt = VT_ARRAY | VT_BSTR;
 		pResponse->parray = pSar;
 	}
-	catch(_com_error &err) 
+	catch(_com_error &err)
 	{
 		const TCHAR* reason =  err.ErrorMessage();
 		DbgPrintW(L"com error %wC\n", reason);
-	}				
+	}
 	return S_OK;
 }
 
@@ -942,7 +942,7 @@ STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT* pLanguage)
 STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 {
 #ifdef _DEBUG
-	//PartFWUpdateThread::instance(Language,MANUAL_MODE).actNow();	
+	//PartFWUpdateThread::instance(Language,MANUAL_MODE).actNow();
 	//return S_OK;
 #endif
 	if (CheckCredentials(SetSpriteLanguage_F) != S_OK)
@@ -1041,7 +1041,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,SHORT* pPr
 				hashdata[i]=Data[i];
 			}
 			*ppCertHash = hashdata.Detach();
-			
+
 		}
 		return S_OK;
 	}
@@ -1337,7 +1337,7 @@ STDMETHODIMP CPTHI_Commands::IsRebootAfterProvisioningNeeded(VARIANT_BOOL *pNeed
 		return E_ACCESSDENIED;
 
 	bool isNeeded;
-	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).IsRebootAfterProvisioningNeeded(isNeeded); 
+	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).IsRebootAfterProvisioningNeeded(isNeeded);
 	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
 		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
@@ -1349,7 +1349,7 @@ STDMETHODIMP CPTHI_Commands::IsRebootAfterProvisioningNeeded(VARIANT_BOOL *pNeed
 	return S_OK;
 }
 
-STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR		proxy_fqdn, 
+STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR		proxy_fqdn,
 												USHORT		proxy_port,
 												SAFEARRAY*	gateway_mac_address,
 												BSTR		network_dns_suffix)

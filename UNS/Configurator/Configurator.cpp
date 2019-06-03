@@ -661,7 +661,7 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new StopServiceDataBlock(m_meiEnabled));
 		mbPtr->msg_type(MB_STOP_SERVICE);
-		mbPtr->msg_priority(5);//This message sould be with the highest priority
+		mbPtr->msg_priority(5); //This message should be with the highest priority
 		return m_mainService->sendMessage(serviceName,mbPtr);
 	}
 
@@ -681,7 +681,7 @@ bool Configurator::SuspendAceService(const ACE_TString &serviceName)
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new ACE_Data_Block());
 		mbPtr->msg_type(MB_SUSPEND_SERVICE);
-		mbPtr->msg_priority(5);//This message sould be with the highest priority
+		mbPtr->msg_priority(5); //This message should be with the highest priority
 		return m_mainService->sendMessage(serviceName,mbPtr);
 	}
 
@@ -1338,7 +1338,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					}
 					else
 					{
-						// LMS resume flow will not happen immediatelly
+						// LMS resume flow will not happen immediately
 						// It will happen after some timeout
 
 						// Reason: Calling ResumeAllServices causes to all of LMS component refresh their state

@@ -35,7 +35,7 @@ typedef enum _PT_RESET_TYPE
 	ME_RESET_REQUIRED,      // ME-Reset is required
 	GLOBAL_RESET_REQUIRED,  // Global reset is required (reset both host and ME). Note that HOST will probably
 							// not seeing this GLOBAL_RESET_REQUIRED. If it is needed Host will receive HOST_RESET_REQUIRED
-							// and ME will promote it to Psuedo Global reset on the next boot.
+							// and ME will promote it to Pseudo Global reset on the next boot.
 }PT_RESET_TYPE;
 
 
@@ -52,7 +52,7 @@ PFWUpdateDllWrapperME10::PFWUpdateDllWrapperME10(void)
 
 	if (loadDllState != LFDS_INITIAL)
 	{
-		if (loadDllState != LFDS_SUCCESS) 
+		if (loadDllState != LFDS_SUCCESS)
 		{
 			throw std::exception("Dll state: " + loadDllState);
 		}
@@ -92,7 +92,7 @@ PFWUpdateDllWrapperME10::PFWUpdateDllWrapperME10(void)
 		UNS_DEBUG(L"Could not find %C API", L"\n", GETLASTUPDATERESETTYPE_DLL_NAME_str);
 		throw std::exception("Could not find GetLastUpdateResetType API");
 	}
-	
+
 	decltype(FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME) *FWUpdate_QueryStatus_Get_ResponseDLL = (decltype(FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME) *)GetProcAddress(dllHandle, FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME_str);
 	if (FWUpdate_QueryStatus_Get_ResponseDLL == nullptr)
 	{
@@ -222,7 +222,7 @@ uint32_t PFWUpdateDllWrapperME10::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 
 uint32_t PFWUpdateDllWrapperME10::performPFWU(uint32_t partialID, const std::wstring& imagePath)
 {
-	// Lock the FWUpdate client in order to asure that it is used just once each time
+	// Lock the FWUpdate client in order to assure that it is used just once each time
 	std::lock_guard<std::mutex> lock(Intel::MEI_Client::FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 
 	unsigned int retcode = 8707;

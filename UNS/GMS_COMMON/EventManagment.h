@@ -69,11 +69,11 @@ public:
 	// Data members
 	unsigned short	category;  // event category
 	unsigned long	id;      // event id
-	std::string	  Datetime;   // event date time as standart ctime string
+	std::string	  Datetime;   // event date time as standard ctime string
 	ACE_TString   MessageID;  // event messageID
 	ACE_TString   Message;    // event message description
 	//currently just one argument is supported and is appended to Message
-	std::vector<ACE_TString>  MessageArguments; // addition to message 	
+	std::vector<ACE_TString>  MessageArguments; // addition to message
 };
 
 class GMS_COMMON_EXPORT EventsFilter
@@ -94,7 +94,7 @@ public:
 	virtual ~SubscribeEventHandler(){} // Destructor
 	SubscribeEventHandler &operator=(const SubscribeEventHandler &other) = delete;
 
-	const ACE_TString   serviceName_;   // event date time as standart ctime string	
+	const ACE_TString   serviceName_;   // event date time as standard ctime string
 	std::shared_ptr<EventsFilter>	   filter_;
 };
 
@@ -108,7 +108,7 @@ public:
 	virtual ~UnSubscribeEventHandler(){} // Destructor
 	UnSubscribeEventHandler &operator=(const UnSubscribeEventHandler &other) = delete;
 
-	const ACE_TString   serviceName_;   
+	const ACE_TString   serviceName_;
 	bool meiEnabled_;
 };
 
@@ -117,7 +117,7 @@ typedef enum
 	ME_ENABLE_CONF,
 	AMT_ENABLE_CONF,
 	IP_SYNC_CONF,
-	TIME_SYNC_CONF, 
+	TIME_SYNC_CONF,
 	PFW_ENABLE_CONF,
 	WIFI_PROFILE_SYNC_CONF,
 	WRONG_CONFIGURATION_TYPE
@@ -137,7 +137,7 @@ public:
 
 	// Data members
 	CONFIGURATION_TYPE	type;  // type of changed configuration
-	int 	value;      // the new configuration 	
+	int 	value;      // the new configuration
 };
 
 class GMS_COMMON_EXPORT StartPFWUP: public ACE_Data_Block
@@ -158,7 +158,7 @@ class GMS_COMMON_EXPORT DeviceEventDataBlock : public ACE_Data_Block
 {
 public:
 	DeviceEventDataBlock() : eventType(0), wasOnOurGuid(false) {};// Default constructor
-	DeviceEventDataBlock(const DeviceEventDataBlock& other) : 
+	DeviceEventDataBlock(const DeviceEventDataBlock& other) :
 		eventType(other.eventType), wasOnOurGuid(other.wasOnOurGuid){}// Copy constructor
 	DeviceEventDataBlock(unsigned long o_eventType, bool o_wasOnOurGuid) :
 		eventType(o_eventType), wasOnOurGuid(o_wasOnOurGuid) {}
@@ -205,7 +205,7 @@ public:
 
 	// Data members
 	const ACE_TString   serviceName;
-	SERVICE_STATUS_TYPE 	status;      // the new status 	
+	SERVICE_STATUS_TYPE 	status;      // the new status
 };
 
 

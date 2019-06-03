@@ -35,7 +35,7 @@ typedef enum _PT_RESET_TYPE
 	ME_RESET_REQUIRED,      // ME-Reset is required
 	GLOBAL_RESET_REQUIRED,  // Global reset is required (reset both host and ME). Note that HOST will probably
 							// not seeing this GLOBAL_RESET_REQUIRED. If it is needed Host will receive HOST_RESET_REQUIRED
-							// and ME will promote it to Psuedo Global reset on the next boot.
+							// and ME will promote it to Pseudo Global reset on the next boot.
 }PT_RESET_TYPE;
 
 

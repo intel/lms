@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -14,7 +14,7 @@
 #include "LMS_if_constants.h"
 
 // disable the "zero-sized array" warning
-#ifdef WIN32 
+#ifdef WIN32
 #pragma warning(disable:4200)
 #endif
 
@@ -29,11 +29,11 @@ typedef struct
 /**
  * APF_GENERIC_HEADER - generic request header (note that its not complete header per protocol (missing WantReply)
  *
- * @MessageType: 
+ * @MessageType:
  * @RequestStringLength: length of the string identifies the request
  * @RequestString: the string that identifies the request
  **/
-  
+
 typedef struct
 {
    uint8_t MessageType;
@@ -139,7 +139,7 @@ typedef struct
 /**
  * Used to request a service identified by name
  * @ServiceNameLength -  The length of the service name string.
- * @ServiceName - The name of the service being requested. 
+ * @ServiceName - The name of the service being requested.
  **/
 typedef struct
 {
@@ -151,7 +151,7 @@ typedef struct
 /**
  * Used to send a service accept identified by name
  * @ServiceNameLength -  The length of the service name string.
- * @ServiceName - The name of the service being requested. 
+ * @ServiceName - The name of the service being requested.
  **/
 typedef struct
 {
@@ -180,7 +180,7 @@ typedef struct
 /**
  * holds the user authentication request.
  * @UsernameLength - The length of the user name string.
- * @Username - The name of the user in ASCII encoding. Maximum allowed size is 64 bytes. 
+ * @Username - The name of the user in ASCII encoding. Maximum allowed size is 64 bytes.
  * @ServiceNameLength - The length of the service name string.
  * @ServiceName - The name of the service to authorize.
  * @MethodNameLength - The length of the method name string.
@@ -198,10 +198,10 @@ typedef struct
 //} APF_USERAUTH_REQUEST_MESSAGE;
 
 /**
- * holds the user authentication request failure reponse.
+ * holds the user authentication request failure response.
  * @MethodNameListLength - The length of the methods list string.
- * @MethodNameList - A comma seperated string of authentication 
- *					 methods supported by the server in ASCII.
+ * @MethodNameList - A comma separated string of authentication
+ *                   methods supported by the server in ASCII.
  **/
 //typedef struct
 //{
@@ -212,7 +212,7 @@ typedef struct
 //} APF_USERAUTH_FAILURE_MESSAGE;
 
 /**
- * holds the user authentication request success reponse.
+ * holds the user authentication request success response.
  **/
 typedef struct
 {
@@ -222,4 +222,3 @@ typedef struct
 #pragma pack()
 
 #endif
-

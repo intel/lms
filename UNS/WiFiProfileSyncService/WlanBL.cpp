@@ -39,7 +39,7 @@ wlanps::WlanBL::~WlanBL()
 	int index;
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]", L"\n");
-	
+
 	for (index = 0; index < MAX_OS_USER_PROFILES; index++)
 	{
 		if (m_wlanOsProfiles[index] != nullptr)
@@ -87,7 +87,7 @@ void wlanps::WlanBL::CleanOsProfileList()
 int wlanps::WlanBL::Init(HANDLE hwlan)
 {
 	std::lock_guard<std::mutex> lock(_updateMutex);
-	
+
 	int ret = m_osProfiles.Init(hwlan);
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_osProfiles.Init ret = %d", L"\n", ret);
 
@@ -194,7 +194,7 @@ int wlanps::WlanBL::CleanupProfilesInMe()
 	bool status;
 	WlanWSManClient wsmanClient;
 	Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings profileWifiSettings;
-	
+
 	try
 	{
 		numOsProfiles = m_numOsUserProfiles > MAX_USER_PROFILES ? MAX_USER_PROFILES : m_numOsUserProfiles;
@@ -229,7 +229,7 @@ int wlanps::WlanBL::CleanupProfilesInMe()
 					meProfilesIndex, profileWifiSettings.ElementName().c_str());
 				status = wsmanClient.DeleteProfile(profileWifiSettings);
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  DeleteProfile completed %C", L"\n",
-					meProfilesIndex, profileWifiSettings.ElementName().c_str(), status == true ? "succesfully" : "with Exception");
+					meProfilesIndex, profileWifiSettings.ElementName().c_str(), status == true ? "successfully" : "with Exception");
 			}
 		}
 	}
@@ -290,7 +290,7 @@ int wlanps::WlanBL::AddMissingProfilesToMe()
 				{
 					wsmanStatus = wsmanClient.AddProfile(wifiSettings);
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C AddProfile completed %C [ret = %d]", L"\n",
-						osProfilesIndex, currentOsProfile.c_str(), wsmanStatus == true ? "succesfully" : "with Error", ret);
+						osProfilesIndex, currentOsProfile.c_str(), wsmanStatus == true ? "successfully" : "with Error", ret);
 				}
 				else
 				{
@@ -360,7 +360,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	try
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Getting ME Profiles list", L"\n");
-		
+
 		// Get Profile list from ME
 		wsmanStatus = wsmanClient.Enumerate(m_MeProfileList);
 
@@ -401,7 +401,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 
 		if ((MAX_USER_PROFILES == numMEPRofiles) && (bFound == false))
 		{
-			// TODO FW DB is full, delete the appropriate user profile 
+			// TODO FW DB is full, delete the appropriate user profile
 			for (meProfilesIndex = 0; meProfilesIndex < numMEPRofiles; meProfilesIndex++)
 			{
 				bFoundMatch = false;
@@ -419,7 +419,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 						break;
 					}
 				}
-				
+
 				if (bFoundMatch == false)
 				{
 					profileWifiSettings = *(m_MeProfileList[meProfilesIndex]);
@@ -440,14 +440,14 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 			// Profile exists in ME Profile list -> Update Profile
 			wsmanStatus = wsmanClient.UpdateProfile(wifiSettings);
 			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] completed %C", L"\n",
-				profileData->profile, wsmanStatus == true ? "succesfully" : "with Exception");
+				profileData->profile, wsmanStatus == true ? "successfully" : "with Exception");
 		}
 		else
 		{
 			// Profile not exists in ME Profile list -> Add Profile
 			wsmanStatus = wsmanClient.AddProfile(wifiSettings);
 			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] completed %C", L"\n",
-				profileData->profile, wsmanStatus == true ? "succesfully" : "with Exception");
+				profileData->profile, wsmanStatus == true ? "successfully" : "with Exception");
 		}
 	}
 	catch (std::exception* e)
@@ -469,7 +469,7 @@ int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabil
 	int encr = 1;
 	int priority = 8;
 
-	// translate to CIM_WiFiEndpointSettings 
+	// translate to CIM_WiFiEndpointSettings
 	static const str_int_map_t authMap = {
 		{ L"open",    AuthenticationMethodOpenSystem },
 		{ L"WPAPSK",  AuthenticationMethodWPAPSK },
@@ -492,13 +492,13 @@ int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabil
 	wifiSettings.ElementName(WStringToString(profileData->profile));
 	wifiSettings.SSID(WStringToString(profileData->SSID));
 
-	try 
+	try
 	{
 		auth = authMap.at(profileData->auth);
 		encr = encrMap.at(profileData->encr);
 		priority = priorityMap.at(profileData->encr);
 	}
-	catch (...) 
+	catch (...)
 	{
 		UNS_DEBUG(L"[ProfileSync] Fix the auth or encr map", L"\n");
 		return -1;

@@ -604,7 +604,7 @@ namespace Intel {
 				catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
-				if (errNo == AMT_STATUS_IPV6_INTERFACE_DISABLED) //this is not a faliure
+				if (errNo == AMT_STATUS_IPV6_INTERFACE_DISABLED) //this is not a failure
 				{
 					IPv6DefaultRouter = "";
 					PrimaryDNS = "";

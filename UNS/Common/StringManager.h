@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -10,8 +10,8 @@
 
 //-------------------------------------------------------------------------------------------
 //
-//  Contents:   defenition to the string manager - used to load strings of correct language
-//              from embedded rc file 
+//  Contents:   definition to the string manager - used to load strings of correct language
+//              from embedded rc file
 //
 //--------------------------------------------------------------------------------------------
 #ifndef _STRING_MANAGER_H_
@@ -49,7 +49,7 @@ class COMMON_EXPORT CStringManager
 public:
 	//get string by it's ID
 	//returns : the string if was loaded, empty string otherwise
-	const STRING_TYPE getString(unsigned int id) const; 
+	const STRING_TYPE getString(unsigned int id) const;
 	//load the strings with the IDs in the given vector from resource file using given StringLoader, throws exception on failure
 	void loadStrings(StringLoader& loader,std::vector<unsigned int>& ids) {loader.loadStrings(ids,m_stringMap);}
 	virtual ~CStringManager() {}
@@ -67,7 +67,5 @@ private:
 	static std::shared_ptr<CStringManager> m_instance;
 	StringManager() {} //private constructor
 };
-
-
 
 #endif //_STRING_MANAGER_H_

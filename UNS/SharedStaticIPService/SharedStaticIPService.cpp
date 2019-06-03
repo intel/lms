@@ -22,9 +22,9 @@ const ACE_TString SYNC_VALIDATION_FAILED(ACE_TEXT("Failed to verify that the new
 
 // TODO Revert values to original
 const unsigned long SharedStaticIPService::CheckDNSInterval = 150 * GMS_ACE_SECOND;
-const unsigned long SharedStaticIPService::RetryInterval = 10 * GMS_ACE_SECOND; 
+const unsigned long SharedStaticIPService::RetryInterval = 10 * GMS_ACE_SECOND;
 
-const unsigned long Immediatelly = 0; 
+const unsigned long Immediately = 0;
 
 const unsigned int	MAX_SyncRetries = 10;
 
@@ -91,7 +91,7 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 
 	m_HandleStateRequiredButNoPfw = false;
 	m_SharedStaticIP = false;
-	m_SyncStaticIPStateOnce = true;	
+	m_SyncStaticIPStateOnce = true;
 	m_SyncStaticIP = false;
 	m_SyncRetries = 0;
 
@@ -110,7 +110,7 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 			m_hand = NULL;
 			free_event();
 			return -1;
-		}										
+		}
 	}
 	if ((ret = ACE_Reactor::instance()->register_handler(this, m_event)) != 0)
 	{
@@ -164,7 +164,7 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 	}
 #endif // WIN32
 
-	ACE_Time_Value interval (CheckDNSInterval); 
+	ACE_Time_Value interval (CheckDNSInterval);
 	if (ACE_Reactor::instance()->schedule_timer(this, (void*)(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE), interval, interval) == -1)
 	{
 		UNS_DEBUG(L"failed to schedule timer first time",L"\n");
@@ -185,14 +185,14 @@ SharedStaticIPService::fini (void)
 
 
 // handle close
-int 
+int
 SharedStaticIPService::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 {
 	FuncEntryExit<void> fee(L"handle_close");
-	
+
 	int ret = 0;
 	if ((ret = ACE_Reactor::instance()->remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
-																ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close	
+																ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close
 		UNS_DEBUG(L"Remove handler error...%d",L"\n", ret);
 	free_event();
 	if (ACE_Reactor::instance()->cancel_timer(this) != 1)
@@ -213,12 +213,12 @@ SharedStaticIPService::handle_signal (int, siginfo_t *, ucontext_t *)
 		int err = WSAGetLastError();
 		if (err != WSA_IO_PENDING)
 		{
-			UNS_DEBUG(L"NotifyRouteChange error...%d",L"\n", WSAGetLastError());			
+			UNS_DEBUG(L"NotifyRouteChange error...%d",L"\n", WSAGetLastError());
 			m_hand = NULL;
 			return 0;
-		}										
+		}
 	}
-	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediatelly);
+	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
 	return 0;
 }
 #else
@@ -227,7 +227,7 @@ int SharedStaticIPService::handle_input(ACE_HANDLE)
 	FuncEntryExit<void> fee(L"handle_input");
 
 	nl_recvmsgs_default(m_sock);
-	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediatelly);
+	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
 	return 0;
 }
 #endif // WIN32
@@ -244,7 +244,7 @@ int SharedStaticIPService::handle_timeout (const ACE_Time_Value &current_time, c
 {
 	FuncEntryExit<void> fee(L"handle_timeout");
 	size_t state = (size_t)arg;
-	UNS_DEBUG(L"%d",L"\n", (ACE_UINT32_MAX & state));			
+	UNS_DEBUG(L"%d",L"\n", (ACE_UINT32_MAX & state));
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new SSIP_Message_Block((SSIP_Message_Block::SSIP_STATE) (0xFFFFFFFF & state)));
 	mbPtr->msg_type(MB_TIMER_EXPIRED);
@@ -256,7 +256,7 @@ int SharedStaticIPService::handle_timeout (const ACE_Time_Value &current_time, c
 void SharedStaticIPService::MoveToState(SSIP_Message_Block::SSIP_STATE State, unsigned long Interval)
 {
 	FuncEntryExit<void> fee(L"MoveTo");
-	UNS_DEBUG(L"%d %d",L"\n", Interval, State);			
+	UNS_DEBUG(L"%d %d",L"\n", Interval, State);
 
 	if (Interval == 0)
 	{
@@ -273,12 +273,12 @@ void SharedStaticIPService::MoveToState(SSIP_Message_Block::SSIP_STATE State, un
 void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 {
 	FuncEntryExit<void> fee(L"HandleState");
-	UNS_DEBUG(L"%d",L"\n", State);	
+	UNS_DEBUG(L"%d",L"\n", State);
 	bool enabled = false;
 	unsigned long TimerInterval = 0;
 	//bool dataChanged = false; //, isEmptyAddress = false, IPv4Enabled = false;
-	
-	
+
+
 	if (!m_mainService->GetPortForwardingStarted()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting HandleState operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE", L"\n", name().c_str());
 		m_HandleStateRequiredButNoPfw = true;
@@ -288,13 +288,13 @@ void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 	switch (State)
 			{
 			case SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE:
-				
+
 				if (GetSharedStaticIpState(&enabled))
 				{
-					MoveToState(enabled ? 
+					MoveToState(enabled ?
 										SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_ENABLED :
-										SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_DISABLED, 
-								Immediatelly);
+										SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_DISABLED,
+								Immediately);
 				}
 				else
 				{
@@ -335,7 +335,7 @@ void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int SharedStaticIPService::handle_event (MessageBlockPtr mbPtr )
-{	
+{
 	UNS_DEBUG(L"%s::handle_event", L"\n", name().c_str());
 
 	int type = mbPtr->msg_type();
@@ -384,7 +384,7 @@ int SharedStaticIPService::handlePublishEvent(const GMS_AlertIndication & alert)
 			if (m_HandleStateRequiredButNoPfw)
 			{
 				m_HandleStateRequiredButNoPfw = false;
-				MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediatelly);
+				MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
 				return 1;
 			}
 			break;
@@ -402,7 +402,7 @@ int SharedStaticIPService::handlePublishEvent(const GMS_AlertIndication & alert)
 	return 1;
 }
 
-void 
+void
 SharedStaticIPService::PreStop(int type, bool meiEnabled)
 {
 	this->handle_close(0, 0);
@@ -411,20 +411,20 @@ SharedStaticIPService::PreStop(int type, bool meiEnabled)
 bool SharedStaticIPService::GetSharedStaticIpState(bool * isEnabled)
 {
 	FuncEntryExit<void> fee(L"GetSharedStaticIpState");
-	if (m_syncNetData.getSharedStaticIpState(isEnabled)) 
+	if (m_syncNetData.getSharedStaticIpState(isEnabled))
 	{
 		//TimerInterval = CheckDNSInterval;
 		m_SyncRetries = 0;
-		m_SyncStaticIP = true;	// Need to sync the settings for the first time			
+		m_SyncStaticIP = true;	// Need to sync the settings for the first time
 	}
 
 	if (m_syncNetData.m_MacAddress.empty())
 	{
-		if (!UpdateMacAddress())		
+		if (!UpdateMacAddress())
 		{
 			return false;
 		}
-	}	
+	}
 	UNS_DEBUG(L"%d",L"\n", *isEnabled);
 	return true;
 
@@ -446,7 +446,7 @@ bool SharedStaticIPService::NetworkSettingsChanged()
 		return res;
 	}
 
-	UNS_DEBUG(L"Change: %d Empty: %d IPv4: %d",L"\n", dataChanged, isEmptyAddress, IPv4Enabled);		
+	UNS_DEBUG(L"Change: %d Empty: %d IPv4: %d",L"\n", dataChanged, isEmptyAddress, IPv4Enabled);
 
 	if (!dataChanged)
 	{
@@ -485,7 +485,7 @@ bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 			m_SyncRetries = 0;
 		}
 		else
-		{					
+		{
 			m_SyncRetries++;
 			UNS_DEBUG(L"Failed to sync network configuration %d times", L"\n", m_SyncRetries);
 			TimerInterval = RetryInterval;
@@ -494,7 +494,7 @@ bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 		res = true;
 		return res;
 	}
-				
+
 	if (m_syncNetData.m_ValidationFailed)
 	{
 		UNS_DEBUG(L"Failed to validate the network configuration - stop syncing after passing the MAX retries",L"\n");
@@ -502,7 +502,7 @@ bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 	}
 	else
 	{
-		UNS_DEBUG(L"Failed to sync network configuration - stop syncing after passing the MAX retries",L"\n");					
+		UNS_DEBUG(L"Failed to sync network configuration - stop syncing after passing the MAX retries",L"\n");
 		SyncFwUpdateFailed();
 	}
 
@@ -519,13 +519,13 @@ bool SharedStaticIPService::setTimer(unsigned long Interval, SSIP_Message_Block:
 {
 	FuncEntryExit<void> fee(L"setTimer");
 	UNS_DEBUG(L"%d %d",L"\n", Interval, State);
-	
+
 	if ((ACE_Reactor::instance()->cancel_timer(this)) != 1)
 	{
 		UNS_DEBUG(L"failed to cancel timer",L"\n");
 		return false;
 	}
-	ACE_Time_Value interval (Interval); 
+	ACE_Time_Value interval (Interval);
 	if (ACE_Reactor::instance()->schedule_timer(this, (void*)State, interval, interval) == -1)
 	{
 		UNS_DEBUG(L"failed to schedule timer",L"\n");
@@ -564,18 +564,18 @@ bool SharedStaticIPService::UpdateMacAddress()
 		in_addr addr;
 		AMTHI_Client::GetLanInterfaceSettingsCommand getLanInterfaceSettingsCommand(AMTHI_Client::WIRED);
 		AMTHI_Client::LAN_SETTINGS lanSettings = getLanInterfaceSettingsCommand.getResponse();
-		addr.s_addr = lanSettings.Ipv4Address;	
-		
+		addr.s_addr = lanSettings.Ipv4Address;
+
 		std::string wiredMacAddress = MacAddressToString(lanSettings.MacAddress,6);
 		m_syncNetData.m_MacAddress.assign(wiredMacAddress);
 
-		UNS_DEBUG(L"DhcpEnabled=%d IpAddress=%C MacAddress=%C LinkStatus=%d",L"\n",lanSettings.DhcpEnabled,inet_ntoa(addr),m_syncNetData.m_MacAddress.c_str(),lanSettings.LinkStatus);		
+		UNS_DEBUG(L"DhcpEnabled=%d IpAddress=%C MacAddress=%C LinkStatus=%d",L"\n",lanSettings.DhcpEnabled,inet_ntoa(addr),m_syncNetData.m_MacAddress.c_str(),lanSettings.LinkStatus);
 		res = true;
 	}
 	catch (std::exception& e)
 	{
 		UNS_DEBUG(L"Exception: %C",L"\n", e.what());
-	}	
+	}
 	catch(...)
 	{
 		UNS_DEBUG(L"Unknown exception",L"\n");

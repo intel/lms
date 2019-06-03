@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -10,8 +10,8 @@
 
 //-------------------------------------------------------------------------------------------
 //
-//  Contents:   defenition to the string loader for Windows(R)  - used to load strings of correct language
-//              from embedded rc file in Windows 
+//  Contents:   definition to the string loader for Windows(R)  - used to load strings of correct language
+//              from embedded rc file in Windows
 //
 //--------------------------------------------------------------------------------------------
 #ifndef _WIN_STRING_LOADER_H_
@@ -19,7 +19,7 @@
 
 #include "StringManager.h"
 
-//StringLoader for windows  
+//StringLoader for windows
 class COMMON_EXPORT WindowsStringLoader : public StringLoader
 {
 public:

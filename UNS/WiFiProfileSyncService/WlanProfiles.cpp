@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
@@ -9,7 +9,7 @@
 wlanps::WlanProfiles::WlanProfiles() : m_hwlan(nullptr), m_lastConnSSID(L"")
 {
 }
-	
+
 int wlanps::WlanProfiles::Init(HANDLE hwlan)
 {
 	m_hwlan = hwlan;
@@ -22,12 +22,12 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 	unsigned long  flags = WLAN_PROFILE_GET_PLAINTEXT_KEY;
 	unsigned long  dwGrantedAccess = 0;
 	unsigned long  dwResult = ERROR_SUCCESS;
-	
+
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": profile: [%W]", L"\n", profileData->profile);
 
 	// Get Wlan Profile
 	dwResult = WlanGetProfile(m_hwlan, &(profileData->ifGuid), profileData->profile, nullptr, &pProfileXml, &flags, &dwGrantedAccess);
-	
+
 	if (dwResult != ERROR_SUCCESS)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfile Failed %d", L"\n", dwResult);
@@ -105,7 +105,7 @@ bool wlanps::WlanProfiles::isLegalProfileName(const std::wstring &profileName)
 	size_t endOfTagPosition = profileName.find(endOfTag, 0);
 	size_t ampersandPosition = profileName.find(ampersand, 0);
 
-	if ((startOfTagPosition == std::wstring::npos) &&  
+	if ((startOfTagPosition == std::wstring::npos) &&
 		(endOfTagPosition == std::wstring::npos) &&
 		(ampersandPosition == std::wstring::npos))
 	{
@@ -113,7 +113,7 @@ bool wlanps::WlanProfiles::isLegalProfileName(const std::wstring &profileName)
 	}
 	else
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Bad charachters in profile name", L"\n");
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Bad characters in profile name", L"\n");
 	}
 	return isLegal;
 }
@@ -169,7 +169,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList num of items: %d", L"\n", pProfileList->dwNumberOfItems);
 
-				// Loop over all OS profiles or until MAX_OS_USER_PROFILES User Profiles were found 
+				// Loop over all OS profiles or until MAX_OS_USER_PROFILES User Profiles were found
 				for (j = 0; (j < pProfileList->dwNumberOfItems) && (numUserProfiles < MAX_OS_USER_PROFILES); j++)
 				{
 					std::wstring auth = L"";

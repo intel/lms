@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "IPRefreshService.h"
 #include "Tools.h"
@@ -89,7 +89,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 			UNS_DEBUG(L"IPRefresh - rtnl_link_get_name failed\n");
 			status = false;
 		} else {
-			runDHClient(name, false); //release - not really interesting if succeded
+			runDHClient(name, false); //release - not really interesting if succeeded
 			status = runDHClient(name, true); //renew
 			if (status) {
 				UNS_DEBUG(L"IP renew succeeded.\n");

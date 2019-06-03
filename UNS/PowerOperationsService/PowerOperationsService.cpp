@@ -44,7 +44,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 	bool ret;
 	unsigned long err;
 
-	//get privileges (do not exit in faliure, since not always needed)
+	//get privileges (do not exit in failure, since not always needed)
 	//TODO -  : check when needed
 
 	HANDLE hToken;
@@ -327,7 +327,7 @@ int PowerOperationsService::suspend()
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int
 PowerOperationsService::handle_event (MessageBlockPtr mbPtr )
-{	
+{
 	int type=mbPtr->msg_type();
 	switch (type)
 	{
@@ -343,7 +343,7 @@ PowerOperationsService::handle_event (MessageBlockPtr mbPtr )
 			pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
 			if (pGMS_AlertIndication != nullptr)
 			{
-				
+
 				switch (pGMS_AlertIndication->category)
 				{
 
@@ -433,17 +433,17 @@ void PowerOperationsService::addPowerCapabilities()
 
 ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 {
-	PowerOperationsService::CallSetSuspendStateArgs* args = (PowerOperationsService::CallSetSuspendStateArgs*)voidArgs; 
+	PowerOperationsService::CallSetSuspendStateArgs* args = (PowerOperationsService::CallSetSuspendStateArgs*)voidArgs;
 
 	bool success = true;
 
 
 	/*
-	This "if" is due to a bug in WIN API - if hibernate became unfunctioning after LMS rise, 
+	This "if" is due to a bug in WIN API - if hibernate became non functional after LMS rise,
 	calling hibernate will make the system *sleep*, rather than return an error.
 	Thus, we shall make sure hibernate is still supported in the system
 	*/
-	bool hibernate_disabled = false; //insidcates whether hibernate became disabled
+	bool hibernate_disabled = false; // indicates whether hibernate became disabled
 	if(args->hibernate){
 		bool sleep, hibernate;
 		getPowerCapabilities(sleep, hibernate);
@@ -478,7 +478,7 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 			UNS_DEBUG(L"%C  GetLastError: %u",L"\n",dbgMsg.c_str(),err);
 			ss<<err;
 		}
-		
+
 		//send failed event to event log
 		unsigned long eventID = (args->hibernate) ?  EVENT_REMOTE_HIBERNATE_FAILED : EVENT_REMOTE_SLEEP_FAILED;
 		ACE_TString msgStr = (args->hibernate) ?  EVENT_REMOTE_HIBERNATE_FAILED_MSG : EVENT_REMOTE_SLEEP_FAILED_MSG;
@@ -489,7 +489,7 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 	}
 	else
 	{ //success
-		
+
 		//debug message
 		dbgMsg = "remote " + action + " API call succeed";
 		UNS_DEBUG(L"%C , returned %d",L"\n",dbgMsg.c_str(),(int)success);
@@ -506,9 +506,9 @@ int PowerOperationsService::handleRemoteGracefulPowerEvents(GMS_AlertIndication 
 	{
 		case EVENT_REMOTE_GRACEFUL_SHUTDOWN_REQUESTED:
 		case EVENT_REMOTE_GRACEFUL_REBOOT_REQUESTED:
-			return initiateShutDown ((OrgEvent.id==EVENT_REMOTE_GRACEFUL_REBOOT_REQUESTED),1); 
+			return initiateShutDown ((OrgEvent.id==EVENT_REMOTE_GRACEFUL_REBOOT_REQUESTED),1);
 			break;
-		//FW blocks any request which is not supported by the capabilities 
+		//FW blocks any request which is not supported by the capabilities
 		case EVENT_REMOTE_SLEEP:
 			{
 				CallSetSuspendStateArgs* args = new CallSetSuspendStateArgs;
@@ -589,7 +589,7 @@ int PowerOperationsService::initiateShutDown(bool reboot, int attempt)
 	}
 }
 
-int 
+int
 PowerOperationsService::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
 	UNS_DEBUG(L"%s service handle timeout",L"\n",name().c_str());

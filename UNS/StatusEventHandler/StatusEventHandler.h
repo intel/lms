@@ -31,7 +31,7 @@ enum DATA_NAME : unsigned int;
 class STATUSEVENTHANDLER_Export StatusEventHandler : public EventHandler
 {
 	public:
-					
+
 		StatusEventHandler();
 typedef enum _PUBLISHEVENTS
 {
@@ -102,7 +102,7 @@ typedef enum _WLAN_PROTECTION_STATE
 	void PublishWlanProtectionEvent(WLAN_PROTECTION_STATE state);
 	void PublishWlanControlEvent(WLAN_CONTROL_STATE state);
 	//returns true if there is a current need for reboot after provisioning
-	static bool getRebootAfterProvisioningNeed(); 
+	static bool getRebootAfterProvisioningNeed();
 
 
 protected:
@@ -116,7 +116,7 @@ protected:
 
 	virtual int handle_event (MessageBlockPtr mbPtr);
 
-		
+
 	virtual const ACE_TString name();
 
 	virtual std::shared_ptr<EventsFilter> getFilter()
@@ -137,7 +137,7 @@ protected:
 	void CheckForStatusChange(DATA_NAME storageName,KVM_STATE state);
 	void CheckForStatusChange(DATA_NAME storageName, WLAN_PROTECTION_STATE state);
 	void CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state);
-		
+
 	bool GetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE& ProvState);
 	bool GetAMTEnableState(bool& AMTState);
 	bool GetSolIderState(bool& SOLState, bool& IDERState);
@@ -175,7 +175,7 @@ protected:
 	Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE UpdatePrevProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State);
 	bool GetUserConsentState(short* pState, USER_CONSENT_POLICY* pPolicy);
 	bool GetLocalProfileSynchronizationEnabled();
-	void firstPullForEvents(); 
+	void firstPullForEvents();
 	void checkForBootReason();
 
 	int handleStatusChanged(const GMS_AlertIndication *alert);
@@ -206,14 +206,14 @@ protected:
 	// Get the network settings (need for populate the MAC address)
 	bool GetEACEnabled(bool& enable);
 	bool GetKVMRedirectionState(bool& enable,KVM_STATE& connected);
-	void requestDisplaySettings(); 
+	void requestDisplaySettings();
 
 	//check if reboot is required after provisioning for current FW and SKU
 	bool isRebootAfterProvisioningRequired();
-	//indiates that the system needs a reboot due to provisioning
-	static bool s_rebootAfterProvsioningNeeded;	
+	//indicates that the system needs a reboot due to provisioning
+	static bool s_rebootAfterProvsioningNeeded;
 	//semaphore for s_rebootAfterProvsioningNeeded (can be accessed by the service and IMSS)
-	static std::mutex s_rebootAfterProvsioningSemaphore; 
+	static std::mutex s_rebootAfterProvsioningSemaphore;
 	//sets the current state for reboot after provisioning
 	void setRebootAfterProvisioningNeed(bool needed);
 

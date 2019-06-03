@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2018 Intel Corporation
+ * Copyright (C) 2013-2019 Intel Corporation
  */
 #ifndef _TOOLS_H
 #define _TOOLS_H
@@ -11,7 +11,7 @@
 
 std::string COMMON_EXPORT getDateTime();
 
-// Parse the MAC address from IP_ADAPTER_INFO Address field to human readble string
+// Parse the MAC address from IP_ADAPTER_INFO Address field to human readable string
 std::string COMMON_EXPORT MacAddressToString(unsigned char addr[], unsigned int addrLen);
 
 std::wstring COMMON_EXPORT StringToWString(const std::string& s);

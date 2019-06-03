@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #ifndef __POWEROPERATIONSSERVICE_H_
 #define __POWEROPERATIONSSERVICE_H_
@@ -9,7 +9,6 @@
 #include "POWEROPERATIONSSERVICE_export.h"
 #include "PowerEventFilter.h"
 
- 
 
 class POWEROPERATIONSSERVICE_Export PowerOperationsService : public EventHandler
 {
@@ -27,8 +26,8 @@ protected:
 		return m_filter;
 	}
 private:
-	//get system's power capabilities from OS
-	//returns false on faliure. sleep/hibernate parameters are filled according to OS API results.
+	// get system's power capabilities from OS
+	// returns false on failure. Sleep/hibernate parameters are filled according to OS API results.
 	void addPowerCapabilities();
 	int initiateShutDown(bool reboot, int attempt);
 	void loadStrings();
