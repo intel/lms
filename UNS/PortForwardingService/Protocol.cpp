@@ -987,21 +987,10 @@ int Protocol::_rxFromSocket(SOCKET s)
 		// send data to LME
 		UNS_DEBUG(L"Socket[%d] ==>: %d bytes", L"\n", (int)s, res);
 #ifdef _DEBUG
-		FILE *file = fopen("c:\\lms.log","a");
-		if (file != NULL) {
-			time_t rawtime;
-			tm * timeinfo;
-			time ( &rawtime );
-			timeinfo = localtime(&rawtime);
-			fprintf(file, "-----------------------From application---------------------------\n"
-				"%s: Data received from socket %d. Sender %d, Receiver %d\n",
-				asctime(timeinfo), (int)s,
-				c->GetSenderChannel(), c->GetRecipientChannel());
-			fwrite(_rxSocketBuffer, sizeof(char), res, file);
-			fprintf(file, "-----------------------End from application---------------------------\n");
-			fclose(file);
-		}
-#endif
+		std::string tmp(_rxSocketBuffer, _rxSocketBuffer + res);
+		UNS_DEBUG(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n", L"\n",
+			tmp.c_str());
+#endif // _DEBUG
 		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);
 		goto out;
 	} else if (res == 0) {
@@ -1556,20 +1545,9 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							int count = send(s, (char *)udpSendToMessage->Data.data(), udpSendToMessage->Data.size(), 0);
 							LMS_DEBUG_VAR(L"Sent UDP data: %d bytes of %d.", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
-							FILE *file = fopen("c:\\lms.log","a");
-							if (file != NULL) {
-								time_t rawtime;
-								tm * timeinfo;
-								time ( &rawtime );
-								timeinfo = localtime(&rawtime);
-								fprintf(file, "-----------------------From FW UDP---------------------------\n"
-									"%s: Data received from FW. Address %s, Port %d\n",
-									asctime(timeinfo), udpSendToMessage->Address.c_str(),
-									udpSendToMessage->Port);
-								fwrite(udpSendToMessage->Data.data(), sizeof(char), udpSendToMessage->Data.size(), file);
-								fprintf(file, "-----------------------End from application---------------------------\n");
-								fclose(file);
-							}
+							std::string tmp(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
+							UNS_DEBUG(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n", L"\n",
+								tmp.c_str());
 #endif
 							_closeSocket(s);
 						}
@@ -1819,21 +1797,9 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG
-						FILE *file = fopen("c:\\lms.log","a");
-						if (file != NULL) {
-							time_t rawtime;
-							tm * timeinfo;
-							time ( &rawtime );
-							timeinfo = localtime(&rawtime);
-							fprintf(file, "-----------------------From FW TCP---------------------------\n"
-								"%s: Data received from FW to socket %d. Sender %d, Receiver %d\n",
-								asctime(timeinfo), (int)it->second->GetSocket(),
-								it->second->GetSenderChannel(), it->second->GetRecipientChannel());
-							fwrite(channelDataMessage->Data.data(), sizeof(char),
-								channelDataMessage->Data.size(), file);
-							fprintf(file, "-----------------------End from application---------------------------\n");
-							fclose(file);
-						}
+						std::string tmp(channelDataMessage->Data.begin(), channelDataMessage->Data.end());
+						UNS_DEBUG(L"-----------------------From FW TCP---------------------------\n%C\n-----------------------End from FW TCP---------------------------\n", L"\n",
+							tmp.c_str());
 #endif
 
 						_lme.ChannelWindowAdjust(it->second->GetRecipientChannel(), channelDataMessage->Data.size());
