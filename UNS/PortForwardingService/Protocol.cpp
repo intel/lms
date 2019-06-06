@@ -970,12 +970,12 @@ int Protocol::_rxFromSocket(SOCKET s)
 			// an End Connection message from the HECI.
 			return 0;
 		}
-		SocketChannel *tmp = dynamic_cast<SocketChannel*>(it->second);
-		if (!tmp)
+		SocketChannel *sock_chan = dynamic_cast<SocketChannel*>(it->second);
+		if (!sock_chan)
 		{// Should not happen, we can't receive data from unconnected SOAP socket...
 			return 0;
 		}
-		c = new SocketChannel(*tmp);
+		c = new SocketChannel(*sock_chan);
 
 	}
 
@@ -987,9 +987,9 @@ int Protocol::_rxFromSocket(SOCKET s)
 		// send data to LME
 		UNS_DEBUG(L"Socket[%d] ==>: %d bytes", L"\n", (int)s, res);
 #ifdef _DEBUG
-		std::string tmp(_rxSocketBuffer, _rxSocketBuffer + res);
+		std::string dbg_dump(_rxSocketBuffer, _rxSocketBuffer + res);
 		UNS_DEBUG(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n", L"\n",
-			tmp.c_str());
+			dbg_dump.c_str());
 #endif // _DEBUG
 		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);
 		goto out;
@@ -1545,9 +1545,9 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							int count = send(s, (char *)udpSendToMessage->Data.data(), udpSendToMessage->Data.size(), 0);
 							LMS_DEBUG_VAR(L"Sent UDP data: %d bytes of %d.", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
-							std::string tmp(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
+							std::string dbg_dump(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
 							UNS_DEBUG(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n", L"\n",
-								tmp.c_str());
+								dbg_dump.c_str());
 #endif
 							_closeSocket(s);
 						}
@@ -1797,9 +1797,9 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG
-						std::string tmp(channelDataMessage->Data.begin(), channelDataMessage->Data.end());
+						std::string dbg_dump(channelDataMessage->Data.begin(), channelDataMessage->Data.end());
 						UNS_DEBUG(L"-----------------------From FW TCP---------------------------\n%C\n-----------------------End from FW TCP---------------------------\n", L"\n",
-							tmp.c_str());
+							dbg_dump.c_str());
 #endif
 
 						_lme.ChannelWindowAdjust(it->second->GetRecipientChannel(), channelDataMessage->Data.size());
