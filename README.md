@@ -34,9 +34,10 @@ the Intel Management Engine Interface (MEI).
 
 #### MeTee library
 CMake script downloads the MeTee library sources from [GitHub](https://github.com/intel/metee)
-if library is not found in the system paths.
-One can set environment variable METEE_LIB_PATH to pre-compiled library and METEE_HEADER_PATH for headers to
-help CMake in library search.
+if the library is not found in the system paths (git installation and correct proxy setup are required).
+Alternatively, in order to use pre-compiled MeTee one can set the following environment variables:
+ * METEE_LIB_PATH to pre-compiled library path
+ * METEE_HEADER_PATH to headers path
 
 #### OpenWsman library
 The in-tree copy of OpenWsman library is located at CIM_Framework/openwsman/ directory.
@@ -94,9 +95,17 @@ In Yocto the desired service should be configured in the recipe.
 
 ### Linux
 
+#### Debian-base distributions
+
+1. Create `build` directory
+2. Run `cmake -DCMAKE_INSTALL_PREFIX=/usr <srcdir>` from the `build` directory
+3. Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb)
+
+#### Other distributions
+
 1. Create `build` directory
 2. Run `cmake <srcdir>` from the `build` directory
-3. Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb)
+3. Run `make -j$(nproc)` from the `build` directory to build project
 
 ## Install
 
@@ -107,4 +116,10 @@ In Yocto the desired service should be configured in the recipe.
 
 ### Linux
 
+#### Debian-base distributions
+
 1. `sudo dpkg -i <generated .deb package>`
+
+#### Other distributions
+
+1. `make install` from the `build` directory
