@@ -47,17 +47,17 @@ static ErrData gErrorData[ERROR_CODES_COUNT+1] =
 
 const char* GetErrorString(const ErrorCodes errorId)
 {
-    ErrData errDataSturct;
+    ErrData errDataStruct;
     if (ERROR_CODES_COUNT < errorId)
     {
         // unexpected
-        errDataSturct = gErrorData[INTERNAL_ERROR];
+        errDataStruct = gErrorData[INTERNAL_ERROR];
     }
     else
     {
-        errDataSturct = gErrorData[errorId];
+        errDataStruct = gErrorData[errorId];
     }
-    return errDataSturct.ErrStr;
+    return errDataStruct.ErrStr;
 }
 
 unsigned char GetErrorCategory(const ErrorCodes errorId)

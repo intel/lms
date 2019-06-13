@@ -21,8 +21,10 @@ Abstract:
 
 #ifdef _FWUPDATE_DLL
 #define DllExport __declspec(dllexport)
+#define CALL_CONV __cdecl
 #else
 #define DllExport
+#define CALL_CONV 
 #endif
 
 #define FPT_PARTITION_NAME_FTPR         0x52505446
@@ -38,9 +40,12 @@ Abstract:
 #define FPT_PARTITION_NAME_IOMP         0x504D4F49
 #define FPT_PARTITION_NAME_NPHY         0x5948504E
 #define FPT_PARTITION_NAME_TBTP         0x50544254
-#define FPT_PARTITION_NAME_DPHY         0x59485044
+#define FPT_PARTITION_NAME_SPHY         0x59485053
 #define FPT_PARTITION_NAME_ISIF         0x46495349
 #define FPT_PARTITION_NAME_ISIC         0x43495349
+#define FPT_PARTITION_NAME_SAMF         0x464D4153
+#define FPT_PARTITION_NAME_PPHY         0x59485050
+#define FPT_PARTITION_NAME_GBST         0x54534247
 
 #define MFT_PART_INFO_EXT_UPDATE_ACTION_NONE         0
 #define MFT_PART_INFO_EXT_UPDATE_ACTION_HOST_RESET   1
@@ -86,10 +91,10 @@ typedef struct __UUID
 * @return SUCCESS  If Update started successfully. Error code otherwise.
 */
 DllExport
-UINT32 FwuFullUpdateFromBuffer(IN  UINT8 *buffer,
-                               IN  UINT32 bufferLength,
-                               IN  _UUID *oemId,
-                               IN  void(*func)(UINT32, UINT32));
+UINT32 CALL_CONV FwuFullUpdateFromBuffer(IN  UINT8 *buffer,
+                                         IN  UINT32 bufferLength,
+                                         IN  _UUID *oemId,
+                                         IN  void(*func)(UINT32, UINT32));
 
 /**
 * @brief Starting a Partial FW Update from a buffer.
@@ -104,10 +109,10 @@ UINT32 FwuFullUpdateFromBuffer(IN  UINT8 *buffer,
 * @return SUCCESS  If Update started successfully. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartialUpdateFromBuffer(IN  UINT8 *buffer,
-                                  IN  UINT32 bufferLength,
-                                  IN  UINT32 partitionId,
-                                  IN  void(*func)(UINT32, UINT32));
+UINT32 CALL_CONV FwuPartialUpdateFromBuffer(IN  UINT8 *buffer,
+                                            IN  UINT32 bufferLength,
+                                            IN  UINT32 partitionId,
+                                            IN  void(*func)(UINT32, UINT32));
 
 /**
 * @brief Check for Update progress.
@@ -127,10 +132,10 @@ UINT32 FwuPartialUpdateFromBuffer(IN  UINT8 *buffer,
 * @return SUCCESS  If Update is still in progress, or finished successfully. Error code otherwise.
 */
 DllExport
-UINT32 FwuCheckUpdateProgress(OUT BOOL *inProgress,
-                              OUT UINT32 *currentPercent,
-                              OUT UINT32 *fwUpdateStatus,
-                              OUT UINT32 *neededResetType);
+UINT32 CALL_CONV FwuCheckUpdateProgress(OUT BOOL *inProgress,
+                                        OUT UINT32 *currentPercent,
+                                        OUT UINT32 *fwUpdateStatus,
+                                        OUT UINT32 *neededResetType);
 
 /**
 * @brief Get FW Update enabling state: enabled, disabled.
@@ -142,7 +147,7 @@ UINT32 FwuCheckUpdateProgress(OUT BOOL *inProgress,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuEnabledState(OUT UINT16 *enabledState);
+UINT32 CALL_CONV FwuEnabledState(OUT UINT16 *enabledState);
 
 /**
 * @brief Get OEM ID from flash.
@@ -152,7 +157,7 @@ UINT32 FwuEnabledState(OUT UINT16 *enabledState);
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuOemId(OUT _UUID *oemId);
+UINT32 CALL_CONV FwuOemId(OUT _UUID *oemId);
 
 /**
 * @brief Get FW Type.
@@ -167,8 +172,8 @@ UINT32 FwuOemId(OUT _UUID *oemId);
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuFwType(OUT UINT32 *fwType);
-
+UINT32 CALL_CONV FwuFwType(OUT UINT32 *fwType);
+ 
 /**
 * @brief Get PCH SKU.
 *
@@ -180,7 +185,7 @@ UINT32 FwuFwType(OUT UINT32 *fwType);
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPchSku(OUT UINT32 *pchSku);
+UINT32 CALL_CONV FwuPchSku(OUT UINT32 *pchSku);
 
 /**
 * @brief Get version of a specific partition, from the flash image.
@@ -195,11 +200,11 @@ UINT32 FwuPchSku(OUT UINT32 *pchSku);
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartitionVersionFromFlash(IN  UINT32 partitionId,
-                                    OUT UINT16 *major,
-                                    OUT UINT16 *minor,
-                                    OUT UINT16 *hotfix,
-                                    OUT UINT16 *build);
+UINT32 CALL_CONV FwuPartitionVersionFromFlash(IN  UINT32 partitionId,
+                                              OUT UINT16 *major,
+                                              OUT UINT16 *minor,
+                                              OUT UINT16 *hotfix,
+                                              OUT UINT16 *build);
 
 /**
 * @brief Get version of a specific partition, from the Update Image buffer.
@@ -216,13 +221,13 @@ UINT32 FwuPartitionVersionFromFlash(IN  UINT32 partitionId,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartitionVersionFromBuffer(IN  UINT8 *buffer,
-                                     IN  UINT32 bufferLength,
-                                     IN  UINT32 partitionId,
-                                     OUT UINT16 *major,
-                                     OUT UINT16 *minor,
-                                     OUT UINT16 *hotfix,
-                                     OUT UINT16 *build);
+UINT32 CALL_CONV FwuPartitionVersionFromBuffer(IN  UINT8 *buffer,
+                                               IN  UINT32 bufferLength,
+                                               IN  UINT32 partitionId,
+                                               OUT UINT16 *major,
+                                               OUT UINT16 *minor,
+                                               OUT UINT16 *hotfix,
+                                               OUT UINT16 *build);
 
 /**
 * @brief Get vendor ID of a specific partition, from the flash image.
@@ -233,8 +238,8 @@ UINT32 FwuPartitionVersionFromBuffer(IN  UINT8 *buffer,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartitionVendorIdFromFlash(IN  UINT32 partitionId,
-                                     OUT UINT32 *vendorId);
+UINT32 CALL_CONV FwuPartitionVendorIdFromFlash(IN  UINT32 partitionId,
+                                               OUT UINT32 *vendorId);
 
 /**
 * @brief Starting a Full FW Update from a file.
@@ -248,9 +253,9 @@ UINT32 FwuPartitionVendorIdFromFlash(IN  UINT32 partitionId,
 * @return SUCCESS  If Update started successfully. Error code otherwise.
 **/
 DllExport
-UINT32 FwuFullUpdateFromFile(IN  const char *fileName,
-                             IN  _UUID *oemId,
-                             IN  void(*func)(UINT32, UINT32));
+UINT32 CALL_CONV FwuFullUpdateFromFile(IN  const char *fileName,
+                                       IN  _UUID *oemId,
+                                       IN  void(*func)(UINT32, UINT32));
 
 /**
 * @brief Starting a Partial FW Update from a file.
@@ -264,9 +269,9 @@ UINT32 FwuFullUpdateFromFile(IN  const char *fileName,
 * @return SUCCESS  If Update started successfully. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartialUpdateFromFile(IN  const char *fileName,
-                                IN  UINT32 partitionId,
-                                IN  void(*func)(UINT32, UINT32));
+UINT32 CALL_CONV FwuPartialUpdateFromFile(IN  const char *fileName,
+                                          IN  UINT32 partitionId,
+                                          IN  void(*func)(UINT32, UINT32));
 
 /**
 * @brief Get version of a specific partition, from the Update Image file.
@@ -282,12 +287,12 @@ UINT32 FwuPartialUpdateFromFile(IN  const char *fileName,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartitionVersionFromFile(IN  const char *fileName,
-                                   IN  UINT32 partitionId,
-                                   OUT UINT16 *major,
-                                   OUT UINT16 *minor,
-                                   OUT UINT16 *hotfix,
-                                   OUT UINT16 *build);
+UINT32 CALL_CONV FwuPartitionVersionFromFile(IN  const char *fileName,
+                                             IN  UINT32 partitionId,
+                                             OUT UINT16 *major,
+                                             OUT UINT16 *minor,
+                                             OUT UINT16 *hotfix,
+                                             OUT UINT16 *build);
 
 /**
 * @brief Get the current instance ID and the expected instance ID of an IUP partition in the FW.
@@ -299,9 +304,9 @@ UINT32 FwuPartitionVersionFromFile(IN  const char *fileName,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartitionInstances(IN  UINT32 partitionId,
-                             OUT UINT32 *currentInstanceId,
-                             OUT UINT32 *expectedInstanceId);
+UINT32 CALL_CONV FwuPartitionInstances(IN  UINT32 partitionId,
+                                       OUT UINT32 *currentInstanceId,
+                                       OUT UINT32 *expectedInstanceId);
 
 /**
 * @brief Starting a Partial FW Update to a specific instance ID, from a buffer.
@@ -317,11 +322,11 @@ UINT32 FwuPartitionInstances(IN  UINT32 partitionId,
 * @return SUCCESS  If Update started successfully. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartialUpdateWithInstanceIdFromBuffer(IN  UINT8 *buffer,
-                                                IN  UINT32 bufferLength,
-                                                IN  UINT32 partitionId,
-                                                IN  UINT32 instanceId,
-                                                IN  void(*func)(UINT32, UINT32));
+UINT32 CALL_CONV FwuPartialUpdateWithInstanceIdFromBuffer(IN  UINT8 *buffer,
+                                                          IN  UINT32 bufferLength,
+                                                          IN  UINT32 partitionId,
+                                                          IN  UINT32 instanceId,
+                                                          IN  void(*func)(UINT32, UINT32));
 
 /**
 * @brief Starting a Partial FW Update to a specific instance ID, from a file.
@@ -336,10 +341,10 @@ UINT32 FwuPartialUpdateWithInstanceIdFromBuffer(IN  UINT8 *buffer,
 * @return SUCCESS  If Update started successfully. Error code otherwise.
 */
 DllExport
-UINT32 FwuPartialUpdateWithInstanceIdFromFile(IN  const char *fileName,
-                                              IN  UINT32 partitionId,
-                                              IN  UINT32 instanceId,
-                                              IN  void(*func)(UINT32, UINT32));
+UINT32 CALL_CONV FwuPartialUpdateWithInstanceIdFromFile(IN  const char *fileName,
+                                                        IN  UINT32 partitionId,
+                                                        IN  UINT32 instanceId,
+                                                        IN  void(*func)(UINT32, UINT32));
 
 /**
 * @brief Get the the current image from the flash - Restore Point Image, and save it to buffer.
@@ -353,8 +358,8 @@ UINT32 FwuPartialUpdateWithInstanceIdFromFile(IN  const char *fileName,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuSaveRestorePointToBuffer(OUT UINT8 **buffer,
-                                   OUT UINT32 *bufferLength);
+UINT32 CALL_CONV FwuSaveRestorePointToBuffer(OUT UINT8 **buffer,
+                                             OUT UINT32 *bufferLength);
 
 /**
 * @brief Get the the current image from the flash - Restore Point Image, and save it to file.
@@ -364,7 +369,7 @@ UINT32 FwuSaveRestorePointToBuffer(OUT UINT8 **buffer,
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuSaveRestorePointToFile(IN  const char *fileName);
+UINT32 CALL_CONV FwuSaveRestorePointToFile(IN  const char *fileName);
 
 /**
 * @brief Check if the power source is AC or DC.
@@ -377,7 +382,7 @@ UINT32 FwuSaveRestorePointToFile(IN  const char *fileName);
 * @return SUCCESS  If succeeded. Error code otherwise.
 */
 DllExport
-UINT32 FwuPowerSource(OUT UINT32 *powerSource);
+UINT32 CALL_CONV FwuPowerSource(OUT UINT32 *powerSource);
 
 #ifdef __cplusplus
     }

@@ -140,7 +140,7 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (NVAR_SKU_DEP_SUPPORT_FAILED_VAR,                       CATEGORY_CSE_FILE_READ_ERROR,                "The variable \"%s\" is supported on Corporate SKU only.") \
     ERROR_DEFINE_HELPER (PLAT_INFO_NO_MATCHED_LOCL,                             CATEGORY_INTERNAL_ERROR,                     "Unable to find matching LOCL.") \
     ERROR_DEFINE_HELPER (CANNOT_READ_PCI,                                       CATEGORY_PCI_ACCESS_ERROR,                   "Could not access PCI device.") \
-    ERROR_DEFINE_HELPER (OS_STATUS_LOAD_LIB_FAILURE,                            CATEGORY_SYSTEM_API_NOT_FOUND,               "Unable to load library.") \
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_NOT_SUPPORTED,                  CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection of UFS device not supported ") \
     ERROR_DEFINE_HELPER (OS_STATUS_NOT_PERMITTED,                               CATEGORY_SYSTEM_API_CALL_ERROR,              "Unable to change permission.") \
     ERROR_DEFINE_HELPER (OS_STATUS_PERMISSION_FAILURE,                          CATEGORY_SYSTEM_API_CALL_ERROR,              "Unable to perform request due to permission failure.") \
     ERROR_DEFINE_HELPER (DEVICE_NOT_FOUND,                                      CATEGORY_OS_DEVICE_COMMUNICATION_FAILURE,    "Cannot find requested device.") \
@@ -229,12 +229,13 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_EOPCHECK,                            CATEGORY_MEMANUF_EOL_TEST_FAILED,            "End-Of-Post message is not sent.") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_FOVLOCKCHECK_UNKNOWN,                CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Unable to determine Intel(R) ME Manufacturing Mode status.") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_FOVLOCKCHECK_NOT_EOM,                CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Intel(R) ME is still in Manufacturing Mode.") \
-    ERROR_DEFINE_HELPER (MEMANUF_ERROR_CHECK_FRACC_ACCESSLOCK,                  CATEGORY_MEMANUF_EOL_TEST_FAILED,            "BIOS has granted Intel(R) Gbe and/or ME access to its region.") \
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMC_FUSE_EN_DISABLED,               CATEGORY_MEMANUF_EOL_TEST_FAILED,            "RPMC enablement fuse is not set.\n" \
+                                                                                                                             "RPMC manufacturing process is not complete.") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_MISMATCH,                            CATEGORY_MEMANUF_EOL_TEST_FAILED,            "%s mismatch, actual value is - %s.") \
     ERROR_DEFINE_HELPER (FPROG_SYSTEM_FOLDER_WRITE_ACCESS,                      CATEGORY_IO_ERROR,                           "Generating file in System Folder is not allowed") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_NO_AMT,                                  CATEGORY_MEMANUF_TEST_RUN_ERROR,             "Cannot run the command since Intel(R) AMT is not available.") \
     ERROR_DEFINE_HELPER (MEMANUF_MFS_CORRUPTED_ERROR,                           CATEGORY_MEMANUF_TEST_RUN_ERROR,             "MFS is corrupted.") \
-    ERROR_DEFINE_HELPER (MEMANUF_PCH_ID_MISMATCH_ERROR,                         CATEGORY_MEMANUF_BIST_TEST_FAILED,           "Using wrong PCH SKU Emulation via Intel (R) FIT vs whats the actual HW Type.") \
+    ERROR_DEFINE_HELPER (MEMANUF_PCH_ID_MISMATCH_ERROR,                         CATEGORY_MEMANUF_BIST_TEST_FAILED,           "Using wrong PCH SKU Emulation via Intel (R) FIT vs what's the actual HW Type.") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_FAILED_HIBERNATION,                      CATEGORY_MEMANUF_TEST_RUN_ERROR,             "Cannot perform hibernation. Please manually reboot the system.") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_TEST_FAILED,                             CATEGORY_MEMANUF_OPERATION_FAILED,           "MEManuf Test Failed.") \
     ERROR_DEFINE_HELPER (MEMANUF_ERROR_TEST_NOT_RUN,                            CATEGORY_MEMANUF_TEST_RUN_ERROR,             "Test is enabled by the user but is unknown by the platform - %s.") \
@@ -315,11 +316,11 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (FPROG_ERROR_READ_BASE_LIMIT,                           CATEGORY_SPI_ACCESS_ERROR,                   "An error occurred reading the flash region base/limit data.") \
     ERROR_DEFINE_HELPER (FPROG_ERROR_READ_MASTER_ACCESS_DATA,                   CATEGORY_SPI_ACCESS_ERROR,                   "An error occurred reading the flash master access data.") \
     ERROR_DEFINE_HELPER (FPROG_FLASH_NOT_BLANK,                                 CATEGORY_SPI_ACCESS_ERROR,                   "Flash is not blank.") \
-    ERROR_DEFINE_HELPER (NVAR_MCA_WRONG_PAVP_EDP_CONFIG_VALUE,                  CATEGORY_CSE_FILE_UPDATE_ERROR,              "PAVP oem config data: invalid edp port valu.e") \
+    ERROR_DEFINE_HELPER (NVAR_MCA_WRONG_PAVP_EDP_CONFIG_VALUE,                  CATEGORY_CSE_FILE_UPDATE_ERROR,              "PAVP oem config data: invalid edp port value.") \
     ERROR_DEFINE_HELPER (FPT_SETTING_GLOBAL_RESET_FAILED,                       CATEGORY_TOOL_FEATURE_EXECUTION_ERROR,       "Setting Global Reset Failed.") \
     ERROR_DEFINE_HELPER (ME_DISABLE_NOT_NEEDED,                                 CATEGORY_INTERNAL_ERROR,                     "ME disable not needed.") \
     ERROR_DEFINE_HELPER (ME_ALREADY_DISABLED,                                   CATEGORY_INTERNAL_ERROR,                     "ME already disabled.") \
-    ERROR_DEFINE_HELPER (FPT_ME_DISABLE_FAILURE,                                CATEGORY_TOOL_FEATURE_EXECUTION_ERROR,       "The request to disable the ME failed.") \
+    ERROR_DEFINE_HELPER (FPT_ME_DISABLE_FAILURE,                                CATEGORY_TOOL_FEATURE_EXECUTION_ERROR,       "Unable to detect if the request to disable ME succeeded.") \
     ERROR_DEFINE_HELPER (FPT_GBE_ERROR_SAVING_GBE_DATA,                         CATEGORY_SPI_ACCESS_ERROR,                   "There is a problem with the GbE binary which prevents saving the data.") \
     ERROR_DEFINE_HELPER (FPT_MISSING_REQUIRED_PARAMETER,                        CATEGORY_TOOL_FEATURE_EXECUTION_ERROR,       "A required parameter is missing.") \
     ERROR_DEFINE_HELPER (FPF_COMMIT_NOT_ALLOWED,                                CATEGORY_CSE_FILE_UPDATE_ERROR,              "Committing the FPF is not allowed at this time.") \
@@ -616,11 +617,11 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (FWU_ERROR_NVM_FAILED,                                  CATEGORY_FWU_FW_ERROR,                       "Firmware update failed due to an internal error 465.") \
     ERROR_DEFINE_HELPER (FWU_ERROR_UFS_EOP,                                     CATEGORY_FWU_FW_ERROR,                       "FW Update is not possible on UFS Flash after End Of Post (after the OS is running).\n" \
                                                                                                                              "It is possible only before the OS is running using Bios Capsule Update.") \
-    ERROR_DEFINE_HELPER (FWU_ERROR_API_VER_MAJOR_DPHY,                          CATEGORY_FWU_FW_ERROR,                       "DPHY must have the same major API version as the version inside the list in FTPR,\n" \
+    ERROR_DEFINE_HELPER (FWU_ERROR_API_VER_MAJOR_SPHY,                          CATEGORY_FWU_FW_ERROR,                       "SPHY must have the same major API version as the version inside the list in FTPR,\n" \
                                                                                                                              "in the Update Image for Full Update, in the Flash Image for Partial Update.") \
-    ERROR_DEFINE_HELPER (FWU_ERROR_INTEGRITY_FAILED_DPHY,                       CATEGORY_FWU_FW_ERROR,                       "DPHY partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.") \
-    ERROR_DEFINE_HELPER (FWU_ERROR_GET_EXT_FAILED_DPHY,                         CATEGORY_FWU_FW_ERROR,                       "Some manifest extension is missing in DPHY. Wrong MEU Tool was used to create the partition.") \
-    ERROR_DEFINE_HELPER (FWU_ERROR_VER_MAN_FAILED_DPHY,                         CATEGORY_FWU_FW_ERROR,                       "Loader failed to verify manifest signature of DPHY.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_INTEGRITY_FAILED_SPHY,                       CATEGORY_FWU_FW_ERROR,                       "SPHY partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_GET_EXT_FAILED_SPHY,                         CATEGORY_FWU_FW_ERROR,                       "Some manifest extension is missing in SPHY. Wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_VER_MAN_FAILED_SPHY,                         CATEGORY_FWU_FW_ERROR,                       "Loader failed to verify manifest signature of SPHY.") \
     ERROR_DEFINE_HELPER (FWU_ERROR_SVN_TCB_ARB,                                 CATEGORY_FWU_FW_ERROR,                       "Update to higher TCB SVN must be also to higher ARB SVN.") \
     ERROR_DEFINE_HELPER (FWU_INVALID_PARTID_ALL,                                CATEGORY_INVALID_CLI_OPTIONS,                "Invalid Partition ID. Use a Partition ID which is on the Flash Image.") \
     ERROR_DEFINE_HELPER (FWU_DISPLAY_PART_VENDOR_ID,                            CATEGORY_FWU_OPERATION_FAILED,               "Display Partition Vendor ID failed.") \
@@ -633,7 +634,7 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (FWU_ERROR_DATA_LENGTH_INVALID,                         CATEGORY_FWU_FW_ERROR,                       "FWU_DATA Heci command has invalid data length (too big).") \
     ERROR_DEFINE_HELPER (FWU_INVALID_HECI_CMD,                                  CATEGORY_FWU_FW_ERROR,                       "FW Update process received Heci command message with unknown command type.") \
     ERROR_DEFINE_HELPER (HECI_STATUS_CANNOT_DETECT_ME_STATE,                    CATEGORY_ME_COMMUNICATION_FAILURE,           "Cannot obtain ME Mode.") \
-    ERROR_DEFINE_HELPER (RESERVED_483,                                          CATEGORY_INTERNAL_ERROR,                     "") \
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_NOT_POST_BIND,                  CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection of UFS device is in Pre-Bind status .") \
     ERROR_DEFINE_HELPER (ERROR_DROP_SHIP_NOT_SUPPORTED,                         CATEGORY_MEMANUF_BIST_TEST_FAILED,           "BIOS does not support TDS.") \
     ERROR_DEFINE_HELPER (ERROR_SETUP_LOCK_NOT_SUPPORTED,                        CATEGORY_MEMANUF_BIST_TEST_FAILED,           "BIOS lock is not supported.") \
     ERROR_DEFINE_HELPER (SLIM_SKU_UNSUPPORTED_COMMAND,                          CATEGORY_INVALID_CLI_OPTIONS,                "This command is not supported on Slim SKU.") \
@@ -673,7 +674,7 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
                                                                                                                              "Read file failed.") \
     ERROR_DEFINE_HELPER (FWU_PG_IN_PROGRESS,                                    CATEGORY_FWU_FW_ERROR,                       "Firmware update failed due to an internal error 518.") \
     ERROR_DEFINE_HELPER (FWU_ALLOWSV_RS_MISSING,                                CATEGORY_INVALID_CLI_OPTIONS,                "Full FW Update using same version is not allowed. Include /s in command line to allow it.") \
-    ERROR_DEFINE_HELPER (RESERVED_520,                                          CATEGORY_INTERNAL_ERROR,                     "") \
+    ERROR_DEFINE_HELPER (ICC_INVALID_MPHY_LENGTH,                               CATEGORY_INVALID_USER_INPUT,                 "Invalid MPHY length.") \
     ERROR_DEFINE_HELPER (FWU_FW_ISH_CFG,                                        CATEGORY_FWU_FW_ERROR,                       "FW failed to set ISH configuration file.") \
     ERROR_DEFINE_HELPER (ERROR_LAN_PCIE_NOT_READY,                              CATEGORY_MEMANUF_BIST_TEST_FAILED,           "PCIe connectivity failure. Unable to connect to vPro NIC through designated bus.")\
     ERROR_DEFINE_HELPER (ERROR_LAN_SMBUS_NOT_READY,                             CATEGORY_MEMANUF_BIST_TEST_FAILED,           "SMBUS connectivity failure. Unable to connect to vPro NIC through designated bus.")\
@@ -723,16 +724,17 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_NO_PROFILES_EXIST,                        CATEGORY_ICC_FW_ERROR,                       "No profile exists.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_AUTH_FAILURE,                             CATEGORY_ICC_FW_ERROR,                       "Authentication failure.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_ERROR_READING_FILE,                       CATEGORY_ICC_FW_ERROR,                       "Pending file.")\
-    ERROR_DEFINE_HELPER (RESERVED_570,                                          CATEGORY_INTERNAL_ERROR,                     "")\
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_REBINDING_NOT_ALLOWED,          CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection rebinding of UFS device is not allowed.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_FREQ_TOO_HIGH,                            CATEGORY_ICC_FW_ERROR,                       "Frequency is too high.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_PENDING_REVERT_TO_DEFAULT,                CATEGORY_ICC_FW_ERROR,                       "Pending to revert to default.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_PENDING_SET_PROFILE,                      CATEGORY_ICC_FW_ERROR,                       "Pending to set profile.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_UNVALID_PROFILE,                          CATEGORY_ICC_FW_ERROR,                       "Invalid profile")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_UNVALID_OEM_DATA,                         CATEGORY_ICC_FW_ERROR,                       "Invalid OEM data.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_ERROR_READING_DYNAMIC_RECORD,             CATEGORY_ICC_FW_ERROR,                       "Failed to read dynamic record.")\
-    ERROR_DEFINE_HELPER (RESERVED_577,                                          CATEGORY_INTERNAL_ERROR,                     "")\
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_FATAL_ERROR,                    CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection of UFS device reported fatal error.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_FREQ_TOO_LOW,                             CATEGORY_ICC_FW_ERROR,                       "Frequency is too low.")\
-    ERROR_DEFINE_HELPER (RESERVED_579,                                          CATEGORY_INTERNAL_ERROR,                     "")\
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_FUSE_DISABLED,                  CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection disablement fuse is set.\n" \
+                                                                                                                             "RPMB manufacturing process is not complete.") \
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_SSC_MODE_CHANGE_NOT_SUPPORTED,            CATEGORY_ICC_FW_ERROR,                       "SSC mode change is not supported.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_RANGE_VIOLATION_SSC_TOO_HIGH,             CATEGORY_ICC_FW_ERROR,                       "Range Violation: SSC is too high.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_SURVIVABILITY_SYNC_DISABLED,              CATEGORY_ICC_FW_ERROR,                       "Survivability sync disabled.")\
@@ -740,7 +742,8 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_NO_SUCH_TARGET_ID,                        CATEGORY_ICC_FW_ERROR,                       "Specified target ID does not exist.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_NO_SUCH_REGISTER,                         CATEGORY_ICC_FW_ERROR,                       "Specified register does not exist.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_INVALIDATE_SUCCESSFUL,                    CATEGORY_ICC_FW_ERROR,                       "Invalidate successful.")\
-    ERROR_DEFINE_HELPER (RESERVED_587,                                          CATEGORY_INTERNAL_ERROR,                     "")\
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_FUSE_RB_DISABLED,               CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection RB fuse is not set.\n" \
+                                                                                                                             "RPMB manufacturing process is not complete.") \
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_VALID_UOB_ALREADY_PRESENT,                CATEGORY_ICC_FW_ERROR,                       "Valid UOB already present.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_WAITING_FOR_POWER_CYCLE,                  CATEGORY_ICC_FW_ERROR,                       "Waiting for power cycle.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_SURVIVABILITY_TABLE_ACCESS_VIOLATION,     CATEGORY_ICC_FW_ERROR,                       "Survivability table access violation.")\
@@ -765,8 +768,9 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_PLL_UNSUPPORTED,                          CATEGORY_ICC_FW_ERROR,                       "Specified PLL is not supported")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_DATA_ITEM_UNSUPPORTED,                    CATEGORY_ICC_FW_ERROR,                       "Data item unsupported.")\
     ERROR_DEFINE_HELPER (ICC_FW_ERROR_OEM_PROFILE_CRDR_VIOLATION,               CATEGORY_ICC_FW_ERROR,                       "Oem profile card violation.")\
-    ERROR_DEFINE_HELPER (RESERVED_610,                                          CATEGORY_INTERNAL_ERROR,                     "")\
-    ERROR_DEFINE_HELPER (RESERVED_611,                                          CATEGORY_INTERNAL_ERROR,                     "")\
+    ERROR_DEFINE_HELPER (MEMANUF_ERROR_EOL_RPMB_RB_DISABLED,                    CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Replay protection rebinding is disabled.\n" \
+                                                                                                                             "RPMB manufacturing process is not complete.") \
+    ERROR_DEFINE_HELPER (ICC_SW_INVALID_BUF_LEN,                                CATEGORY_INVALID_USER_INPUT,                 "Invalid buffer length.")\
     ERROR_DEFINE_HELPER (ICC_SW_INVALID_ARG,                                    CATEGORY_INVALID_USER_INPUT,                 "Invalid argument.")\
     ERROR_DEFINE_HELPER (AMT_IPV6_DISABLED,                                     CATEGORY_TOOL_FEATURE_EXECUTION_ERROR,       "AMT Ipv4 Interface is disabled.")\
     ERROR_DEFINE_HELPER (AMT_INTERFACE_DOES_NOT_EXIST,                          CATEGORY_TOOL_FEATURE_EXECUTION_ERROR,       "Interface does not exists.")\
@@ -789,8 +793,27 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (FWU_ERROR_GET_EXT_FAILED_ISIC,                         CATEGORY_FWU_FW_ERROR,                       "Some manifest extension is missing in ISIC. Wrong MEU Tool was used to create the partition.") \
     ERROR_DEFINE_HELPER (FWU_ERROR_VER_MAN_FAILED_ISIC,                         CATEGORY_FWU_FW_ERROR,                       "Loader failed to verify manifest signature of ISIC.") \
     ERROR_DEFINE_HELPER (FWU_ERROR_FW_TYPE_FTPR,                                CATEGORY_FWU_FW_ERROR,                       "Update FTPR must have the same FW Type and Sub-Type as Flash FTPR.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_API_VER_MAJOR_SAMF,                          CATEGORY_FWU_FW_ERROR,                       "SAMF must have the same major API version as the version inside the list in FTPR,\n" \
+                                                                                                                             "in the Update Image for Full Update, in the Flash Image for Partial Update.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_INTEGRITY_FAILED_SAMF,                       CATEGORY_FWU_FW_ERROR,                       "SAMF partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_GET_EXT_FAILED_SAMF,                         CATEGORY_FWU_FW_ERROR,                       "Some manifest extension is missing in SAMF. Wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_VER_MAN_FAILED_SAMF,                         CATEGORY_FWU_FW_ERROR,                       "Loader failed to verify manifest signature of SAMF.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_API_VER_MAJOR_PPHY,                          CATEGORY_FWU_FW_ERROR,                       "PPHY must have the same major API version as the version inside the list in FTPR,\n" \
+                                                                                                                             "in the Update Image for Full Update, in the Flash Image for Partial Update.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_INTEGRITY_FAILED_PPHY,                       CATEGORY_FWU_FW_ERROR,                       "PPHY partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_GET_EXT_FAILED_PPHY,                         CATEGORY_FWU_FW_ERROR,                       "Some manifest extension is missing in PPHY. Wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_VER_MAN_FAILED_PPHY,                         CATEGORY_FWU_FW_ERROR,                       "Loader failed to verify manifest signature of PPHY.") \
+    ERROR_DEFINE_HELPER (DRVLESS_MODE_PCI,                                      CATEGORY_PCI_ACCESS_ERROR,                   "Using driverless mode. Not initializing PCI.") \
+    ERROR_DEFINE_HELPER (DRVLESS_MODE_SPI,                                      CATEGORY_SPI_ACCESS_ERROR,                   "Using driverless mode. Not initializing SPI.") \
+    ERROR_DEFINE_HELPER( ICC_SW_UNSUPPORTED,                                    CATEGORY_INVALID_USER_INPUT,                 "This command is not supported on SPS platforms.")\
+    ERROR_DEFINE_HELPER (FWU_ERROR_API_VER_MAJOR_GBST,                          CATEGORY_FWU_FW_ERROR,                       "GBST must have the same major API version as the version inside the list in FTPR,\n" \
+                                                                                                                             "in the Update Image for Full Update, in the Flash Image for Partial Update.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_INTEGRITY_FAILED_GBST,                       CATEGORY_FWU_FW_ERROR,                       "GBST partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_GET_EXT_FAILED_GBST,                         CATEGORY_FWU_FW_ERROR,                       "Some manifest extension is missing in GBST. Wrong MEU Tool was used to create the partition.") \
+    ERROR_DEFINE_HELPER (FWU_ERROR_VER_MAN_FAILED_GBST,                         CATEGORY_FWU_FW_ERROR,                       "Loader failed to verify manifest signature of GBST.") \
 \
     ERROR_DEFINE_HELPER (ERROR_CODES_COUNT,                                     CATEGORY_INTERNAL_ERROR,                     "")
+    
 
 
 
