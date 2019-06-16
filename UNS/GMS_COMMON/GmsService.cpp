@@ -2,6 +2,8 @@
 /*
  * Copyright (C) 2010-2019 Intel Corporation
  */
+
+#include "global.h"
 #include "GmsService.h"
 #include "ace/Reactor.h"
 #include "ace/Service_Config.h"

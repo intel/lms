@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -12,10 +12,9 @@
 // WindowsEventLog.cpp: implementation of the WindowsEventLog class.
 //
 //*****************************************************************************
-#include "WindowsEventLog.h"
-#include "UNSDebug.h"
 #include "global.h"
-#include "ace/Stream.h"
+#include "WindowsEventLog.h"
+#include <ace/SString.h>
 //*****************************************************************************
 // Construct with a specified event source name.
 //*****************************************************************************

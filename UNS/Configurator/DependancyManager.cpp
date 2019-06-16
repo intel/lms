@@ -2,10 +2,11 @@
 /*
  * Copyright (C) 2010-2019 Intel Corporation
  */
+
+#include "global.h"
 #include "DependancyManager.h"
 #include "servicesNames.h"
 #include "LoadedServices.h"
-#include "global.h"
 
 DependencyManager::DependencyManager() : m_alreadyReadDependencies(false)
 { 

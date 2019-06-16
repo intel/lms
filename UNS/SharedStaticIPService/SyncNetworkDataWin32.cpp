@@ -7,12 +7,12 @@
 @file: SyncNetworkDataWin32.cpp
 
 --*/
+
 #include <winsock2.h>
 #include <iphlpapi.h>
+#include "global.h"
 #include "SyncNetworkData.h"
 #include "Tools.h"
-
-#include "global.h" 
 #include <FuncEntryExit.h>
 
 // Check if the DNS values changed and update the latest ones

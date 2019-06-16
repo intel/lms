@@ -5,25 +5,12 @@
 #ifndef __PARTIALFWUPDATESERVICE_H_
 #define __PARTIALFWUPDATESERVICE_H_
 
-#include "ace/Acceptor.h"
-#include "ace/INET_Addr.h"
-#include "ace/Containers.h"
-#include "ace/Map_Manager.h"
-#include "ace/Synch.h"
-#include "ace/Reactor_Notification_Strategy.h"
-#include "ace/Message_Block.h"
-#include "MessageBlockPtr.h"
-#include "ace/Log_Msg.h"
 #include "GmsSubService.h"
 #include "EventHandler.h"
-
 #include <memory>
 #include <windows.h>
 #include <string>
-
-
 #include "PFWUpdateDllWrapper.h"
-
 #include "PARTIALFWUPDATESERVICE_export.h"
 
 #define DEFAULT_LANG_ID				100

@@ -1,16 +1,16 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
 @file: GMSConfig.cpp
 
 --*/
+#include "global.h"
 #include "UNSMessageFile.h"
 #include "GMSConfig.h"
 #include "UNSRegistry.h"
-#include "global.h"
 
 /*Constants*/
 //Constants for configuration parameters names

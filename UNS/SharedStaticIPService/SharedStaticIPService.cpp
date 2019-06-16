@@ -2,13 +2,12 @@
 /*
  * Copyright (C) 2010-2019 Intel Corporation
  */
-#include <ace/OS_NS_stdio.h>
-#include <ace/OS_NS_string.h>
 
 #include "SharedStaticIPService.h"
 #include "GetLanInterfaceSettingsCommand.h"
 #include "Tools.h"
 #include "UNSEventsDefinition.h"
+#include <ace/SString.h>
 #ifdef WIN32
 #include <iphlpapi.h>
 #else

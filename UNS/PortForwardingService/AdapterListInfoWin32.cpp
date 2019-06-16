@@ -8,9 +8,8 @@
 
 --*/
 
-#include "AdapterListInfo.h"
 #include "global.h"
-
+#include "AdapterListInfo.h"
 #include <windows.h>
 #include <iphlpapi.h>
 

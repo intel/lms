@@ -5,11 +5,11 @@
 #ifndef __EVENTMANAGER_H_
 #define __EVENTMANAGER_H_
 
+#include "GmsSubService.h"
 #include "ace/Map_Manager.h"
 #include "ace/Null_Mutex.h"
 #include "MessageBlockPtr.h"
 #include "EVENTMANAGER_export.h"
-#include "GmsSubService.h"
 
 class EventMapManager : public ACE_Map_Manager <ACE_TString , EventsFilter*, ACE_Null_Mutex>
 {

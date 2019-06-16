@@ -2,8 +2,9 @@
 /*
  * Copyright (C) 2010-2019 Intel Corporation
  */
-#include "ace/Get_Opt.h"
+
 #include "GmsSubService.h"
+#include <ace/Get_Opt.h>
 #include "Tools.h"
 
 #include <sstream>

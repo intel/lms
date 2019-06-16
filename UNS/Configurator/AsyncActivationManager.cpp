@@ -2,10 +2,11 @@
 /*
  * Copyright (C) 2010-2019 Intel Corporation
  */
+
+#include "global.h"
 #include "AsyncActivationManager.h"
 #include "DependancyManager.h"
 #include "LoadedServices.h"
-#include "global.h"
 
 AsyncActivationManager::AsyncActivationManager(int loadTimeout, int unloadTimeout):
 m_loadTimeout(loadTimeout),

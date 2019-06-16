@@ -1,11 +1,10 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #ifndef SOAP_HANDLER
 #define SOAP_HANDLER
 
-#include "ace/ACE.h"
 #include <vector>
 #include <string>
 

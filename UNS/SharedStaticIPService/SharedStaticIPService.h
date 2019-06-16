@@ -5,11 +5,6 @@
 #ifndef __SHAREDSTATICIPSERVICE_H_
 #define __SHAREDSTATICIPSERVICE_H_
 
-#include <ace/Acceptor.h>
-#include <ace/INET_Addr.h>
-#include <ace/SOCK_Stream.h>
-#include <ace/SOCK_Acceptor.h>
-
 #include "EventHandler.h"
 #include "SharedStaticIPEventFilter.h"
 #include "SHAREDSTATICIPSERVICE_export.h"
