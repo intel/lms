@@ -15,17 +15,16 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-typedef 
-enum ENABLED_STATE
-{	
-	DEFAULT_TRUE = 0,
-	CONFIGURED_TRUE,
-	TIMESYNC_DISABLED //These is FALSE value if the LocalTimeSyncEnabled FW property.
-}ENABLED_STATE;
-
 class WSMAN_DLL_API TimeSynchronizationClient : public BaseWSManClient
 {
 public:
+	enum ENABLED_STATE
+	{
+		DEFAULT_TRUE = 0,
+		CONFIGURED_TRUE,
+		TIMESYNC_DISABLED //These is FALSE value if the LocalTimeSyncEnabled FW property.
+	};
+
 	TimeSynchronizationClient();
 	TimeSynchronizationClient(const std::string &User, const std::string &Password);
 	virtual ~TimeSynchronizationClient();

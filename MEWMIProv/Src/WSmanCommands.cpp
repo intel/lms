@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -179,7 +179,7 @@ UINT32 WSmanCommands::GetPortSettings(
 			ethernetPortList.push_back(entry);
 		}
 	}
-	if (response == ERROR_UNKNOWN_ERROR)
+	if (response == EthernetSettingsWSManClient::ERROR_UNKNOWN_ERROR)
 	{
 		response = ERR_UKNOWN_CONNECTION_ERROR;
 	}

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -17,27 +17,27 @@
 #include <string>
 #include <vector>
 
-#define MAX_DISPLAY_NUMBER_LATEST  4 
-
-struct ScreenSettings
-{
-	bool isActive;
-	int UpperLeftX,UpperLeftY;
-	unsigned int ResolutionX,ResolutionY;
-	unsigned int Pipe;
-};
-
-struct ExtendedDisplayParameters 
-{
-	ScreenSettings screenSettings[MAX_DISPLAY_NUMBER_LATEST];
-};
-
 class WSMAN_DLL_API KVMScreenSettingClient : public BaseWSManClient
 {
 public:
+	static const unsigned int MAX_DISPLAY_NUMBER = 4;
+
 	KVMScreenSettingClient();
 	KVMScreenSettingClient(const std::string &User, const std::string &Password);
 	virtual ~KVMScreenSettingClient();
+
+	struct ScreenSettings
+	{
+		bool isActive;
+		int UpperLeftX, UpperLeftY;
+		unsigned int ResolutionX, ResolutionY;
+		unsigned int Pipe;
+	};
+
+	struct ExtendedDisplayParameters
+	{
+		ScreenSettings screenSettings[MAX_DISPLAY_NUMBER];
+	};
 
 	/*Actual soap actions!*/
 	

@@ -1012,7 +1012,7 @@ namespace Intel {
 				return ERROR_NOT_AVAILABLE_NOW;
 
 			KVMScreenSettingClient Client;
-			ExtendedDisplayParameters extendedDisplayParameters;
+			KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
 
 			for (int i = 0; i < numOfDisplays; ++i)
 			{

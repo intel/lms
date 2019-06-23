@@ -15,11 +15,11 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-#define ERROR_UNKNOWN_ERROR 1000
-
 class WSMAN_DLL_API EthernetSettingsWSManClient : public BaseWSManClient
 {
 public:
+	static const unsigned int ERROR_UNKNOWN_ERROR = 1000;
+
 	EthernetSettingsWSManClient();
 	EthernetSettingsWSManClient(const std::string &userName, const std::string &password);
 	virtual ~EthernetSettingsWSManClient();
