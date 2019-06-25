@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "eventManager.h"
 
 void 
 EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 {
-	UNS_DEBUG(L"EventManager::HandleAceMessage type:%d",L"\n", type);
+	UNS_DEBUG(L"EventManager::HandleAceMessage type:%d\n", type);
 
 	switch (type) 
 	{
@@ -20,7 +20,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}
 			else
 			{
-				UNS_DEBUG(L"Invalid data block.", L"\n");
+				UNS_DEBUG(L"Invalid data block.\n");
 			}
 		}
 		break;
@@ -34,7 +34,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}
 			else
 			{
-				UNS_DEBUG(L"Invalid data block.", L"\n");
+				UNS_DEBUG(L"Invalid data block.\n");
 			}
 		}
 		break;
@@ -48,7 +48,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}
 			else
 			{
-				UNS_DEBUG(L"Invalid data block.", L"\n");
+				UNS_DEBUG(L"Invalid data block.\n");
 			}
 		}
 		break;
@@ -67,21 +67,21 @@ EventManager::publishEvent(MessageBlockPtr &eventMsg, const GMS_AlertIndication 
 	{
 		ACE_Map_Entry< ACE_TString, EventsFilter*> entry = *iter;
 
-		UNS_DEBUG(L"Event manager post event to %s",L"\n",entry.ext_id_.c_str());
+		UNS_DEBUG(L"Event manager post event to %s\n", entry.ext_id_.c_str());
 		if (entry.int_id_->toSubscribe(pGMS_AlertIndication))
 		{
 			m_mainService->sendMessage(entry.ext_id_,eventMsg);
-			UNS_DEBUG(L"EventManager::publish event %s  to %s", L"\n", pGMS_AlertIndication->Message.c_str(), entry.ext_id_.c_str());
+			UNS_DEBUG(L"EventManager::publish event %s to %s\n", pGMS_AlertIndication->Message.c_str(), entry.ext_id_.c_str());
 		}
 		else
-			UNS_DEBUG(L"EventManager:: Filter blocked Subscribe %s for event",L"\n",entry.ext_id_.c_str());
+			UNS_DEBUG(L"EventManager:: Filter blocked Subscribe %s for event\n", entry.ext_id_.c_str());
 	}
 }
 
 int
 EventManager::subscribeForEvents(SubscribeEventHandler* eventHandler)
 {
-	UNS_DEBUG(L"EventManager::subscribe %s for events",L"\n",eventHandler->serviceName_.c_str());
+	UNS_DEBUG(L"EventManager::subscribe %s for events\n", eventHandler->serviceName_.c_str());
 	
 
 	// we need to pass to the map a regular pointer since the delayed memory management is
@@ -94,7 +94,7 @@ EventManager::subscribeForEvents(SubscribeEventHandler* eventHandler)
 	}
 	if(i==1)
 	{
-		UNS_DEBUG(L"EventManager::eventHandler already registered",L"\n");	
+		UNS_DEBUG(L"EventManager::eventHandler already registered\n");	
 	}
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new SubscribeEventHandler());
@@ -108,11 +108,11 @@ EventManager::subscribeForEvents(SubscribeEventHandler* eventHandler)
 int
 EventManager::unSubscribeForEvents(UnSubscribeEventHandler* eventHandler)
 {
-	UNS_DEBUG(L"EventManager::unSubscribe %s for events",L"\n",eventHandler->serviceName_.c_str());
+	UNS_DEBUG(L"EventManager::unSubscribe %s for events\n", eventHandler->serviceName_.c_str());
 	int i=handlers.unbind(eventHandler->serviceName_);
 	if (i==-1)
 	{
-		 UNS_DEBUG(L"Unsubscribe error:\n");
+		UNS_DEBUG(L"Unsubscribe error:\n");
 		return -1;
 	}
 	if (handlers.current_size() == 0)

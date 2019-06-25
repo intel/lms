@@ -76,7 +76,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func) 
@@ -94,7 +94,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"STEH: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 StatusEventHandler::StatusEventHandler(): m_prevTDTState(NOT_PRESENT), filter_(new StatusEventFilter)
@@ -129,7 +129,7 @@ namespace
 			
 			if (FAILED(hres))
 			{
-				UNS_DEBUG(L"SolDevicePresent: CoCreateInstance() failed %d", L"\n", hres);
+				UNS_DEBUG(L"SolDevicePresent: CoCreateInstance() failed %d\n", hres);
 				return false;
 			}
 
@@ -138,7 +138,7 @@ namespace
 
 			if (FAILED(hres))
 			{
-				UNS_DEBUG(L"SolDevicePresent: ConnectServer failed %d", L"\n", hres);
+				UNS_DEBUG(L"SolDevicePresent: ConnectServer failed %d\n", hres);
 				return false;
 			}
 
@@ -148,7 +148,7 @@ namespace
 
 			if (FAILED(hres))
 			{
-				UNS_DEBUG(L"SolDevicePresent: ExecQuery failed %d", L"\n", hres);
+				UNS_DEBUG(L"SolDevicePresent: ExecQuery failed %d\n", hres);
 				return false;
 			}
 
@@ -163,7 +163,7 @@ namespace
 
 				if (!SUCCEEDED(hRes))
 				{
-					UNS_DEBUG(L"SolDevicePresent: Next() failed %d %d", L"\n", hres, oReturned);
+					UNS_DEBUG(L"SolDevicePresent: Next() failed %d %d\n", hres, oReturned);
 					continue;
 				}
 				if (oReturned != 1)
@@ -175,7 +175,7 @@ namespace
 				auto res = obj->Get(L"HardwareID", 0, &vt_HW_ids, 0, 0);
 				if (WBEM_S_NO_ERROR != res)
 				{
-					UNS_DEBUG(L"SolDevicePresent: Get1() failed %d", L"\n", res);
+					UNS_DEBUG(L"SolDevicePresent: Get1() failed %d\n", res);
 					continue;
 				}
 				CComSafeArray<BSTR> hw_ids(vt_HW_ids.parray);
@@ -191,10 +191,10 @@ namespace
 					res = obj->Get(L"Status", 0, &vt_status, 0, 0);
 					if (WBEM_S_NO_ERROR != res)
 					{
-						UNS_DEBUG(L"SolDevicePresent: Get2() failed %d", L"\n", res);
+						UNS_DEBUG(L"SolDevicePresent: Get2() failed %d\n", res);
 						return false;
 					}
-					UNS_DEBUG(L"SolDevicePresent: SOL device status %W", L"\n", vt_status.bstrVal);
+					UNS_DEBUG(L"SolDevicePresent: SOL device status %W\n", vt_status.bstrVal);
 					return (wcscmp(vt_status.bstrVal, L"OK") == 0);
 
 				}
@@ -237,7 +237,7 @@ bool StatusEventHandler::isRebootAfterProvisioningRequired()
 #ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in IsRebootAfterProvisioningNeeded %C",L"\n", e.what());
+		UNS_DEBUG(L"\nException in IsRebootAfterProvisioningNeeded %C\n", e.what());
 	}
 #else
 	catch (std::exception&)
@@ -269,7 +269,7 @@ int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed", L"\n");
+		UNS_DEBUG(L"EventHandler::init failed\n");
 		return retVal;
 	}
 
@@ -283,7 +283,7 @@ int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 
 int StatusEventHandler::fini (void)
 {
-	UNS_DEBUG(L"StatusEventHandler service finalized",L"\n");
+	UNS_DEBUG(L"StatusEventHandler service finalized\n");
 	ACE_Reactor::instance()->cancel_timer (this);
 	return 0;
 }
@@ -351,7 +351,7 @@ const ACE_TString
 int StatusEventHandler::handleStatusChanged(const GMS_AlertIndication *alert)
 {
 	FuncEntryExit<void> fee(L"handleStatusChanged");
-	UNS_DEBUG(L"category=%d id=%d",L"\n", alert->category, alert->id);
+	UNS_DEBUG(L"category=%d id=%d\n", alert->category, alert->id);
 	switch (alert->category)
 	{
 	case CATEGORY_GENERAL:
@@ -500,7 +500,7 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 		}
 		break;
 	default:
-		UNS_DEBUG(L"StatusEventHandler::handleProvisioningEvents - invalid OrgEvent.id",L"\n");
+		UNS_DEBUG(L"StatusEventHandler::handleProvisioningEvents - invalid OrgEvent.id\n");
 		return;
 	}
 	SaveCurrentStatus(curProvState, AMT_PROVISIONING_STATE_S);
@@ -630,11 +630,11 @@ void  StatusEventHandler::handleIPSyncEvents(const GMS_AlertIndication *alert)
 		NotifyConfigurator(1,IP_SYNC_CONF);
 		break;
 	case EVENT_IP_REFRESH_LAN:						
-		UNS_DEBUG(L"IPRefresh LAN", L"\n");
+		UNS_DEBUG(L"IPRefresh LAN\n");
 		NotifyIPRefresh(MB_IPREFRESH_LAN);
 		break;
 	case EVENT_IP_REFRESH_WLAN:
-		UNS_DEBUG(L"IPRefresh WLAN", L"\n");
+		UNS_DEBUG(L"IPRefresh WLAN\n");
 		NotifyIPRefresh(MB_IPREFRESH_WLAN);
 		break;
 	}
@@ -646,7 +646,7 @@ void  StatusEventHandler::handleUserConsentEvents(const GMS_AlertIndication *ale
 	case EVENT_USER_CONSENT_GRANTED:
 		SaveCurrentStatus(UC_GRANTED,USER_CONSENT_S);
 		m_prevUserConsentState = OPT_IN_STATE_RECEIVED;
-		UNS_DEBUG(L"ExtendEvent EVENT_USER_CONSENT_GRANTED", L"\n");
+		UNS_DEBUG(L"ExtendEvent EVENT_USER_CONSENT_GRANTED\n");
 		break;
 	case EVENT_USER_CONSENT_REQUESTED:
 		SaveCurrentStatus(UC_REQUESTED,USER_CONSENT_S);
@@ -654,12 +654,12 @@ void  StatusEventHandler::handleUserConsentEvents(const GMS_AlertIndication *ale
 	case EVENT_USER_CONSENT_ENDED:
 		SaveCurrentStatus(UC_ENDED,USER_CONSENT_S);
 		m_prevUserConsentState = OPT_IN_STATE_NOT_STARTED;
-		UNS_DEBUG(L"ExtendEvent EVENT_USER_CONSENT_ENDED", L"\n");
+		UNS_DEBUG(L"ExtendEvent EVENT_USER_CONSENT_ENDED\n");
 		break;
 	case EVENT_USER_CONSENT_CONFIGURATION_CHANGED:   
 
 		if (!m_mainService->GetPortForwardingStarted()) {
-			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GenerateUCEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE", L"\n", name().c_str());
+			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GenerateUCEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 			break;
 		}
 
@@ -837,7 +837,7 @@ void StatusEventHandler::GenerateEvents()
 	}
 	else
 	{
-		UNS_DEBUG(L"Failure", L"\n");
+		UNS_DEBUG(L"Failure\n");
 		// assume that it is FWreset or HECI disabled
 		// nothing to do without HECI
 		return;
@@ -854,7 +854,7 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 	FuncEntryExit<void> fee(L"GeneratePortFwrdRelatedEvents");
 
 	if (!m_mainService->GetPortForwardingStarted()) {
-		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GeneratePortFwrdRelatedEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE", L"\n", name().c_str());
+		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GeneratePortFwrdRelatedEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		return;
 	}
 
@@ -863,7 +863,7 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 	CUSTOMER_TYPE CustomerType=CORPORATE;
 	if (!GetManageabiltyAndFeaturesState(&ManageMode,&CustomerType,&AMTState,&RpatState,&KvmState,&TDTState))
 	{
-		UNS_DEBUG(L"Failure", L"\n");
+		UNS_DEBUG(L"Failure\n");
 		// assume that it is FWreset or HECI disabled
 		// nothing to do without HECI
 		return;
@@ -1055,7 +1055,7 @@ namespace
 		}
 		catch (std::exception& e)
 		{
-			UNS_DEBUG(L"Could not get FW version %C",L"\n", e.what());
+			UNS_DEBUG(L"Could not get FW version %C\n", e.what());
 		}
 
 		if (isME11)
@@ -1082,10 +1082,10 @@ namespace
 				return CONSUMER;
 			}
 
-			UNS_DEBUG(L"Wrong Customer type", L"\n");
+			UNS_DEBUG(L"Wrong Customer type\n");
 
 		}
-		UNS_DEBUG(L"Wrong Customer type %d", L"\n", Platform->Data);
+		UNS_DEBUG(L"Wrong Customer type %d\n", Platform->Data);
 		return WRONG_CUSTOMER_TYPE;
 	}
 }
@@ -1107,7 +1107,7 @@ bool StatusEventHandler::GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pMan
 		MEFWCAPS_SKU_MKHI CapabilityData = getCapabilitiesCommand.getResponse();
 		MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
 		MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
-		UNS_DEBUG(L"Capability=0x%X State=0x%X platform=0x%X",L"\n",CapabilityData,StateData,Platform);
+		UNS_DEBUG(L"Capability=0x%X State=0x%X platform=0x%X\n",CapabilityData,StateData,Platform);
 		MenageabiltyModeLogic( Platform, pManageMode);
 		rc = true;
 		*pAmtState=FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt); 
@@ -1120,21 +1120,21 @@ bool StatusEventHandler::GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pMan
 		{
 			*pType = CORPORATE;
 		}
-		UNS_DEBUG(L"AmtState=%d RpatState=%d KvmState=%d TDTState=%d CustomerType=%d ManageMode=%d",L"\n",
+		UNS_DEBUG(L"AmtState=%d RpatState=%d KvmState=%d TDTState=%d CustomerType=%d ManageMode=%d\n",
 			*pAmtState,*pRpatState,*pKvmState,*pTDTState,*pType,*pManageMode);
 	}
 #ifdef _DEBUG
 	catch (MKHIErrorException& e)
 	{	
-		UNS_DEBUG(L"GetManageabiltyAndFeaturesState failed %C",L"\n",e.what());
+		UNS_DEBUG(L"GetManageabiltyAndFeaturesState failed %C\n",e.what());
 	}
 	catch (MEIClientException& e)
 	{	
-		UNS_DEBUG(L"GetManageabiltyAndFeaturesState failed %C",L"\n",e.what());
+		UNS_DEBUG(L"GetManageabiltyAndFeaturesState failed %C\n",e.what());
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in GetManageabiltyAndFeaturesState %C",L"\n", e.what());
+		UNS_DEBUG(L"\nException in GetManageabiltyAndFeaturesState %C\n", e.what());
 	}
 #else
 	catch(...){}
@@ -1165,12 +1165,12 @@ bool StatusEventHandler::GetAMTEnableState(bool& AMTState)
 #ifdef _DEBUG
 	catch(MEIClientException& e)
 	{
-		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed %C",L"\n", e.what());
+		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed %C\n", e.what());
 		AMTState = false;
 	}
 	catch(AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed, ret=%d",L"\n", e.getErr());
+		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed, ret=%d\n", e.getErr());
 		AMTState = false;
 	}	
 #else
@@ -1192,17 +1192,17 @@ bool StatusEventHandler::GetSolIderState(bool& SOLState, bool& IDERState)
 		AMTHI_Client::GetRedirectionSessionsStateCommand getRedirectionState;
 		SOLState = getRedirectionState.getResponse().SolOpen;
 		IDERState = getRedirectionState.getResponse().IderOpen;		 	
-		UNS_DEBUG(L"SOL=%d \t IDER=%d",L"\n",SOLState,IDERState);
+		UNS_DEBUG(L"SOL=%d \t IDER=%d\n",SOLState,IDERState);
 		res = true;			
 	}
 #ifdef _DEBUG
 	catch(MEIClientException& e)
 	{
-		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed %C",L"\n", e.what());
+		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed %C\n", e.what());
 	}
 	catch(AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed, ret=%d",L"\n", e.getErr());
+		UNS_DEBUG(L"GetRedirectionSessionsStateCommand failed, ret=%d\n", e.getErr());
 	}
 #else
 	catch(...){}
@@ -1217,17 +1217,17 @@ bool StatusEventHandler::GetSystemDefenseState(bool& SysDefState)
 	{
 		AMTHI_Client::GetSystemDefenseStateCommand getSystemDefenseState;
 		SysDefState = getSystemDefenseState.getResponse().SystemDefenseActivated;
-		UNS_DEBUG(L"SystemDefense=%d ",L"\n",SysDefState);
+		UNS_DEBUG(L"SystemDefense=%d \n",SysDefState);
 		return true;
 	}
 #ifdef _DEBUG
 	catch(MEIClientException& e)
 	{
-		UNS_DEBUG(L"GetSystemDefenseState failed %C",L"\n", e.what());
+		UNS_DEBUG(L"GetSystemDefenseState failed %C\n", e.what());
 	}
 	catch(AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"GetSystemDefenseState failed, ret=%d",L"\n", e.getErr());
+		UNS_DEBUG(L"GetSystemDefenseState failed, ret=%d\n", e.getErr());
 	}
 #else
 	catch(...){}
@@ -1250,11 +1250,11 @@ bool StatusEventHandler::GetMEState(bool& MEState)
 #ifdef _DEBUG
 	catch (MEIClientException& e)
 	{	
-		UNS_DEBUG(L"GetMEState failed %C",L"\n",e.what());
+		UNS_DEBUG(L"GetMEState failed %C\n",e.what());
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in GetMEState %C",L"\n", e.what());
+		UNS_DEBUG(L"\nException in GetMEState %C\n", e.what());
 	}		
 #else
 	catch(...){}
@@ -1444,7 +1444,7 @@ bool StatusEventHandler::GetUserConsentState(short* pState, USER_CONSENT_POLICY*
 	if (!_CancelOptInClient.GetUserConsentState(pState,&UserConsentPolicy))
 		return false;
 	*pPolicy = (USER_CONSENT_POLICY)UserConsentPolicy;
-	UNS_DEBUG(L"GetUserConsentState State=%d, Policy=%d",L"\n",*pState,*pPolicy);
+	UNS_DEBUG(L"GetUserConsentState State=%d, Policy=%d\n",*pState,*pPolicy);
 	return true;
 }
 
@@ -1484,7 +1484,7 @@ void StatusEventHandler::publishProvisioningEvent(Intel::MEI_Client::AMTHI_Clien
 		ProvisioningEventStr = ACE_TEXT("POST");
 		break;
 	default:
-		UNS_DEBUG(L"Wrong PROVISIONING_STATE=%d ",L"\n",state);
+		UNS_DEBUG(L"Wrong PROVISIONING_STATE=%d \n",state);
 		return;
 	} 
 	raiseGMS_AlertIndication(CATEGORY_GENERAL,ProvisioningEvent,getDateTime(),ACTIVE_MESSAGEID,PROVISIONING+ProvisioningEventStr);
@@ -1504,17 +1504,17 @@ bool StatusEventHandler::GetProvisioningState(Intel::MEI_Client::AMTHI_Client::A
 #ifdef _DEBUG
 	catch (MEIClientException& e) //original error handling was just returning "false"
 	{	
-		UNS_DEBUG(L"GetProvisioningStateCommand failed %C",L"\n",e.what());
+		UNS_DEBUG(L"GetProvisioningStateCommand failed %C\n",e.what());
 		return false;
 	}
 	catch (AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"GetProvisioningStateCommand failed ret=%C",L"\n",e.getErr());
+		UNS_DEBUG(L"GetProvisioningStateCommand failed ret=%C\n",e.getErr());
 		return false;
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in GetProvisioningStateCommand %C",L"\n", e.what());
+		UNS_DEBUG(L"\nException in GetProvisioningStateCommand %C\n", e.what());
 		return false;
 	}
 #else
@@ -1613,11 +1613,11 @@ void StatusEventHandler::checkForBootReason()
 #ifdef _DEBUG
 	catch(MEIClientException& e)
 	{
-		UNS_DEBUG(L"GetLastHostResetReasonCommand failed %C",L"\n", e.what());
+		UNS_DEBUG(L"GetLastHostResetReasonCommand failed %C\n", e.what());
 	}
 	catch(AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"GetLastHostResetReasonCommand failed, ret=%d",L"\n", e.getErr());
+		UNS_DEBUG(L"GetLastHostResetReasonCommand failed, ret=%d\n", e.getErr());
 	}	
 #else
 	catch(...){}
@@ -1686,17 +1686,17 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 #ifdef _DEBUG
 	catch (MEIClientException& e)
 	{	
-		UNS_DEBUG(L"GetEACStateCommand failed %C",L"\n",e.what());
+		UNS_DEBUG(L"GetEACStateCommand failed %C\n",e.what());
 		return false;
 	}
 	catch (AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"GetEACStateCommand failed ret=%d",L"\n",e.getErr());
+		UNS_DEBUG(L"GetEACStateCommand failed ret=%d\n",e.getErr());
 		return false;
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in GetEACStateCommand %C",L"\n", e.what());
+		UNS_DEBUG(L"\nException in GetEACStateCommand %C\n", e.what());
 		return false;
 	}
 #else
@@ -1733,7 +1733,7 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 	short state;
 	if (Client.KVMRedirectionState((unsigned short*)&state))
 	{
-		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%d ",L"\n",state);
+		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%d \n",state);
 		switch (state)
 		{
 		case KVM_ENABLED_AND_CONNECTED: 
@@ -1752,7 +1752,7 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 			connected=KVM_STOPPED;
 			return true;
 		default:
-			UNS_DEBUG(L"Wrong KVMRedirectionState=%d",L"\n",state);
+			UNS_DEBUG(L"Wrong KVMRedirectionState=%d\n",state);
 			return false;
 		}
 	}
@@ -1834,7 +1834,7 @@ void StatusEventHandler::requestDisplaySettings()
 	unsigned long state;
 	if (!ds.GetDataValue(KVM_ENABLE_S, state, true))
 	{
-		UNS_DEBUG (L"Failed to get KVM status",L"\n");
+		UNS_DEBUG(L"Failed to get KVM status\n");
 		return;
 	}
 	if (state==false)
@@ -1842,13 +1842,13 @@ void StatusEventHandler::requestDisplaySettings()
 
 	if (!ds.GetDataValue(AMT_PROVISIONING_STATE_S, state, true))
 	{
-		UNS_DEBUG (L"Failed to get provisioning state",L"\n");
+		UNS_DEBUG(L"Failed to get provisioning state\n");
 		return;
 	}
 	if (state!=Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_POST)
 		return;
 	raiseGMS_AlertIndication(CATEGORY_KVM,EVENT_KVM_SCREEN_SETTING_UPDATE,getDateTime(),ACTIVE_MESSAGEID, ACE_TEXT(""));
-	UNS_DEBUG(L"Sending request for display settings",L"\n");
+	UNS_DEBUG(L"Sending request for display settings\n");
 }
 
 bool StatusEventHandler::s_rebootAfterProvsioningNeeded = false;	

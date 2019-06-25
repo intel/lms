@@ -15,7 +15,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func) 
@@ -33,7 +33,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"GMSC: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 int GmsSubService::init (int argc, ACE_TCHAR *argv[])
@@ -80,7 +80,7 @@ int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 	this->notifier_.event_handler(this);
 	this->msg_queue()->notification_strategy(&this->notifier_);
 	m_serviceIsClosed=false;
-	UNS_DEBUG(L"%s",L"\n",name().c_str());
+	UNS_DEBUG(L"%s\n",name().c_str());
 	return 0;
 }
 
@@ -92,7 +92,7 @@ int GmsSubService::closeSubService()
 	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
 	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
 
-	UNS_DEBUG(L"%s",L"\n",name().c_str());
+	UNS_DEBUG(L"%s\n",name().c_str());
 	return 0;
 }
 
@@ -104,7 +104,7 @@ int GmsSubService::suspendSubService()
 	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
 	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
 
-	UNS_DEBUG(L"%s suspendSubService()",L"\n",name().c_str());
+	UNS_DEBUG(L"%s suspendSubService()\n",name().c_str());
 	return 0;
 }
 
@@ -116,19 +116,19 @@ int GmsSubService::startSubService()
 	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
 	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
 
-	UNS_DEBUG(L"%s, 0x%X", L"\n",name().c_str(), this);
+	UNS_DEBUG(L"%s, 0x%X\n",name().c_str(), this);
 	return 0;
 }
 
 int GmsSubService::fini (void)
 {
-	UNS_DEBUG(L"%s service finalized",L"\n",name().c_str());
+	UNS_DEBUG(L"%s service finalized\n",name().c_str());
 	return 0;
 }
 
 int GmsSubService::suspend() 
 {
-	UNS_DEBUG(L"%s service suspended",L"\n",name().c_str());
+	UNS_DEBUG(L"%s service suspended\n",name().c_str());
 	return 0;
 }
 
@@ -139,14 +139,14 @@ int GmsSubService::resume()
 	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
 	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
 
-	UNS_DEBUG(L"%s service Resumed",L"\n",name().c_str());
+	UNS_DEBUG(L"%s service Resumed\n",name().c_str());
 	return 0;
 }
 
 int GmsSubService::handle_output(ACE_HANDLE fd)
 {
 	FuncEntryExit<void> fee(L"handle_output");
-	UNS_DEBUG(L"handle_output: %s",L"\n",name().c_str());
+	UNS_DEBUG(L"handle_output: %s\n",name().c_str());
 
 	ACE_Message_Block *mb = 0;
 	while (! this->msg_queue()->is_empty() && ShouldPass())
@@ -184,7 +184,7 @@ void GmsSubService::HandleAceMessage( int type, MessageBlockPtr &mbPtr )
 			break;
 		}
 	default:
-		UNS_DEBUG(L"%s Error: Unexpected message type: %d ", L"\n", name().c_str(), type);
+		UNS_DEBUG(L"%s Error: Unexpected message type: %d \n", name().c_str(), type);
 		break;
 	}
 }

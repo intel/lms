@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -60,7 +60,7 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	bool needToSync = false;	
 	if (m_DHCPEnabled != DHCPEnabled)
 	{			
-		UNS_DEBUG(L"DHCPEnabled changed %d <--> %d", L"\n", DHCPEnabled, m_DHCPEnabled);			
+		UNS_DEBUG(L"DHCPEnabled changed %d <--> %d\n", DHCPEnabled, m_DHCPEnabled);			
 		DHCPEnabled = m_DHCPEnabled;			
 		needToSync = true;
 	}		
@@ -70,35 +70,35 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	{
 		if (m_IpAddress != IPAddress)
 		{			
-			UNS_DEBUG(L"IPAddress changed %C <--> %C", L"\n", IPAddress.c_str(), m_IpAddress.c_str());			
+			UNS_DEBUG(L"IPAddress changed %C <--> %C\n", IPAddress.c_str(), m_IpAddress.c_str());			
 			IPAddress.assign(m_IpAddress);
 			needToSync = true;
 			needToValidateConnectivity = true;
 		}
 		if (m_SubnetMask != SubNet)
 		{			
-			UNS_DEBUG(L"SubnetMask changed  %C <--> %C", L"\n", SubNet.c_str(), m_SubnetMask.c_str());			
+			UNS_DEBUG(L"SubnetMask changed  %C <--> %C\n", SubNet.c_str(), m_SubnetMask.c_str());			
 			SubNet.assign(m_SubnetMask);
 			needToSync = true;
 			needToValidateConnectivity = true;
 		}		
 		if (m_DefaultGateway != GateWay)
 		{			
-			UNS_DEBUG(L"DefaultGateway changed  %C <--> %C",L"\n", GateWay.c_str(), m_DefaultGateway.c_str());			
+			UNS_DEBUG(L"DefaultGateway changed  %C <--> %C\n", GateWay.c_str(), m_DefaultGateway.c_str());			
 			GateWay.assign(m_DefaultGateway);
 			needToSync = true;
 			needToValidateConnectivity = true;
 		}		
 		if (m_PrimaryDNS != PrimaryDNS)
 		{
-			UNS_DEBUG(L"PrimaryDNS changed  %C <--> %C",L"\n", PrimaryDNS.c_str(), m_PrimaryDNS.c_str());			
+			UNS_DEBUG(L"PrimaryDNS changed  %C <--> %C\n", PrimaryDNS.c_str(), m_PrimaryDNS.c_str());			
 			PrimaryDNS.assign(m_PrimaryDNS);			
 			needToValidateConnectivity = true;
 			needToSync = true;
 		}		
 		if (m_SecondaryDNS != SecondaryDNS)
 		{			
-			UNS_DEBUG(L"SecondaryDNS changed  %C <--> %C",L"\n", SecondaryDNS.c_str(), m_SecondaryDNS.c_str());			
+			UNS_DEBUG(L"SecondaryDNS changed  %C <--> %C\n", SecondaryDNS.c_str(), m_SecondaryDNS.c_str());			
 			SecondaryDNS.assign(m_SecondaryDNS);
 			needToValidateConnectivity = true;
 			needToSync = true;
@@ -107,7 +107,7 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	if (!needToSync)
 	{
 		res = true;
-		UNS_DEBUG(L"no sync needed - all settings remains the same",L"\n");			
+		UNS_DEBUG(L"no sync needed - all settings remains the same\n");
 		return res;
 	}
 
@@ -115,15 +115,15 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	// Sync the SharedStaticIp configuration
 	if (needToValidateConnectivity)
 	{
-		UNS_DEBUG(L"Need to validate the new network settings",L"\n");	
+		UNS_DEBUG(L"Need to validate the new network settings\n");
 		if (ValidateLinkStatus())
 		{
-			UNS_DEBUG(L"New network settings are validated",L"\n");
+			UNS_DEBUG(L"New network settings are validated\n");
 			m_ValidationFailed = false;
 		}
 		else
 		{
-			UNS_DEBUG(L"New network settings are not validated",L"\n");	
+			UNS_DEBUG(L"New network settings are not validated\n");
 			m_ValidationFailed = true;
 			return res; // false
 		}				
@@ -139,7 +139,7 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	}
 	
 	res = syncIpClient.SetNetworkData(DHCPEnabled, IPAddress, SubNet, GateWay, PrimaryDNS, SecondaryDNS);
-	UNS_DEBUG(L"SetNetworkData %d",L"\n", res);	
+	UNS_DEBUG(L"SetNetworkData %d\n", res);	
 
 	return res;
 }

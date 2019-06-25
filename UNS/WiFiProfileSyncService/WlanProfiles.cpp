@@ -23,14 +23,14 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 	unsigned long  dwGrantedAccess = 0;
 	unsigned long  dwResult = ERROR_SUCCESS;
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": profile: [%W]", L"\n", profileData->profile);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": profile: [%W]\n", profileData->profile);
 
 	// Get Wlan Profile
 	dwResult = WlanGetProfile(m_hwlan, &(profileData->ifGuid), profileData->profile, nullptr, &pProfileXml, &flags, &dwGrantedAccess);
 
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfile Failed %d", L"\n", dwResult);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfile Failed %d\n", dwResult);
 
 		if (pProfileXml != nullptr)
 		{
@@ -44,7 +44,7 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 
 	if (!isLegalProfileName(profileData->profile))
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR", L"\n", profileData->profile);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR\n", profileData->profile);
 
 		return -1;
 	}
@@ -61,7 +61,7 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 		// Key
 		wcsncpy_s(profileData->keyMaterial,	xmlRead(pProfileXml, L"keyMaterial").c_str(), sizeof(profileData->keyMaterial) / sizeof(profileData->keyMaterial[0]));
 
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": \n  auth: %W\n  encr: %W\n  key:  %W\n Flags: %d", L"\n",
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": \n  auth: %W\n  encr: %W\n  key:  %W\n Flags: %d\n",
 			profileData->auth, profileData->encr, profileData->keyMaterial, flags);
 
 		// Set Profile Flags
@@ -113,7 +113,7 @@ bool wlanps::WlanProfiles::isLegalProfileName(const std::wstring &profileName)
 	}
 	else
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Bad characters in profile name", L"\n");
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Bad characters in profile name\n");
 	}
 	return isLegal;
 }
@@ -134,21 +134,21 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 	if (nullptr == m_hwlan)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": handle is not opened", L"\n");
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": handle is not opened\n");
 		return 1;
 	}
 
 	dwResult = WlanEnumInterfaces(m_hwlan, nullptr, &pIfList);
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanEnumInterfaces failed with error: %d", L"\n", dwResult);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanEnumInterfaces failed with error: %d\n", dwResult);
 		return 1;
 	}
 	else
 	{
 		if (pIfList != nullptr)
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WLAN_INTERFACE_INFO_LIST Entries: %d Index: %d", L"\n",
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WLAN_INTERFACE_INFO_LIST Entries: %d Index: %d\n",
 				pIfList->dwNumberOfItems, pIfList->dwIndex);
 
 			// Loop over Wlan Interfaces
@@ -156,18 +156,18 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 			{
 				pIfInfo = (WLAN_INTERFACE_INFO *)&pIfList->InterfaceInfo[i];
 
-				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": [%d] Interface Description: %W  Interface State: %d, dwNumberOfItems = %d", L"\n",
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": [%d] Interface Description: %W  Interface State: %d, dwNumberOfItems = %d\n",
 					i, pIfInfo->strInterfaceDescription, pIfInfo->isState, pIfList->dwNumberOfItems);
 
 				dwResult = WlanGetProfileList(m_hwlan, &pIfInfo->InterfaceGuid, nullptr, &pProfileList);
 
 				if (dwResult != ERROR_SUCCESS)
 				{
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList error: %u", L"\n", dwResult);
+					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList error: %u\n", dwResult);
 					continue;
 				}
 
-				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList num of items: %d", L"\n", pProfileList->dwNumberOfItems);
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList num of items: %d\n", pProfileList->dwNumberOfItems);
 
 				// Loop over all OS profiles or until MAX_OS_USER_PROFILES User Profiles were found
 				for (j = 0; (j < pProfileList->dwNumberOfItems) && (numUserProfiles < MAX_OS_USER_PROFILES); j++)
@@ -187,19 +187,19 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 					if (dwResult != ERROR_SUCCESS)
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: WlanGetProfile failed with %d", L"\n", dwResult);
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: WlanGetProfile failed with %d\n", dwResult);
 						continue;
 					}
 
 					if (pProfile->dwFlags & WLAN_PROFILE_GROUP_POLICY)
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %W is a Group Policy Profile", L"\n", pProfile->strProfileName);
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %W is a Group Policy Profile\n", pProfile->strProfileName);
 						continue; // skip
 					}
 
 					if (!isLegalProfileName(pProfile->strProfileName))
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: illegal profile name %W", L"\n", pProfile->strProfileName);
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: illegal profile name %W\n", pProfile->strProfileName);
 						continue;
 					}
 
@@ -217,14 +217,14 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 					if (!isSupportedEncription(enc, supportedEncription ))
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: encription unsupported by LMS-PS %W for Profile %W", L"\n",
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: encription unsupported by LMS-PS %W for Profile %W\n",
 							enc.c_str(), pProfile->strProfileName);
 						continue;
 					}
 
 					if (!isSupportedAuthentication(auth, supportedAuthentication) )
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported by LMS-PS %W for Profile %W", L"\n",
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported by LMS-PS %W for Profile %W\n",
 							auth.c_str(), pProfile->strProfileName);
 						continue;
 					}
@@ -250,7 +250,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 					}
 					else
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Failed to allocate memory for new Profile -> Get out of the loop", L"\n");
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Failed to allocate memory for new Profile -> Get out of the loop\n");
 						break;
 					}
 				}
@@ -258,7 +258,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 		}
 	}
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": numUserProfiles %d", L"\n", numUserProfiles);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": numUserProfiles %d\n", numUserProfiles);
 
 	// Return the number of OS User Profiles
 	*numOsUserProfiles = numUserProfiles;

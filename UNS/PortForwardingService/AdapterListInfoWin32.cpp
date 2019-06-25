@@ -96,7 +96,7 @@ int AdapterListInfo::UpdateAdapterListInfo()
 					std::unique_ptr<char[]> localDnsSuffix(new char[length]);
 					if (!wcstombs_s(&retCnt, localDnsSuffix.get(), length, Adapter->DnsSuffix, length)) {
 
-						LMS_DEBUG_VAR(L"Local DNS suffix: %C", localDnsSuffix.get());
+						UNS_DEBUG(L"Local DNS suffix: %C\n", localDnsSuffix.get());
 						localDnsSuffixStr = localDnsSuffix.get();
 					}
 				}
@@ -109,7 +109,7 @@ int AdapterListInfo::UpdateAdapterListInfo()
 						uniAddr->Address.iSockaddrLength,
 						NULL,
 						addressStr, &len)) {
-						LMS_DEBUG_VAR(L"\tIP Address %C", addressStr);
+						UNS_DEBUG(L"\tIP Address %C\n", addressStr);
 					}
 
 					sockaddr_storage addr;
@@ -129,7 +129,7 @@ int AdapterListInfo::UpdateAdapterListInfo()
 
 out:
 	if (result) {
-		LMS_DEBUG_SIMPLE(L"Error in getting local DNS suffixes...");
+		UNS_DEBUG(L"Error in getting local DNS suffixes...\n");
 	}
 
 	return result;
@@ -153,7 +153,7 @@ std::string AdapterListInfo::GetDNSSuffixFromLocalIP(const sockaddr_storage &ip)
 
 bool AdapterListInfo::PerformUpdate(void *params)
 {
-	LMS_DEBUG_SIMPLE(L"---> Check for update in Adapter ...");
+	UNS_DEBUG(L"---> Check for update in Adapter ...\n");
 	if (UpdateAdapterListInfo() != 0)
 		return false;
 	if (_cb != NULL) {

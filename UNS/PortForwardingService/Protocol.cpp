@@ -163,7 +163,7 @@ void Protocol::_TCPCleanup()
 
 	pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCPTABLE_OWNER_PID)];
 	if (pTcpTable == NULL) {
-		UNS_DEBUG(L"Error allocating memory", L"\n");
+		UNS_DEBUG(L"Error allocating memory\n");
 		return;
 	}
 
@@ -177,7 +177,7 @@ void Protocol::_TCPCleanup()
 			pTcpTable = NULL;
 			pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[dwSize];
 			if (pTcpTable == NULL) {
-				UNS_DEBUG(L"Error allocating memory", L"\n");
+				UNS_DEBUG(L"Error allocating memory\n");
 				return;
 			}
 	}
@@ -185,7 +185,7 @@ void Protocol::_TCPCleanup()
 	// Make a second call to GetExtendedTcpTable to get
 	// the actual data we require
 	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0)) == NO_ERROR) {
-		LMS_DEBUG_VAR(L"\tNumber of entries: %d", (int) pTcpTable->dwNumEntries);
+		UNS_DEBUG(L"\tNumber of entries: %d\n", (int) pTcpTable->dwNumEntries);
 		for (i = 0; i < (int) pTcpTable->dwNumEntries; i++) {
 			if ((pid == pTcpTable->table[i].dwOwningPid) &&
 				(pTcpTable->table[i].dwState == MIB_TCP_STATE_FIN_WAIT2)) {
@@ -199,7 +199,7 @@ void Protocol::_TCPCleanup()
 			}
 		}
 	} else {
-		LMS_DEBUG_VAR(L"\tGetTcpTable failed with %d", dwRetVal);
+		UNS_DEBUG(L"\tGetTcpTable failed with %d\n", dwRetVal);
 		delete []pTcpTable;
 		return;
 	}
@@ -230,7 +230,7 @@ void Protocol::_TCPCleanup()
 //
 //	pTcpTable = (MIB_TCP6TABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCP6TABLE_OWNER_PID)];
 //	if (pTcpTable == NULL) {
-//		UNS_DEBUG("Error allocating memory", L"\n");
+//		//UNS_DEBUG_NO_ARG("Error allocating memory");
 //		return;
 //	}
 //
@@ -244,7 +244,7 @@ void Protocol::_TCPCleanup()
 //			pTcpTable = NULL;
 //			pTcpTable = (MIB_TCP6TABLE_OWNER_PID *) new unsigned char[dwSize];
 //			if (pTcpTable == NULL) {
-//				UNS_DEBUG("Error allocating memory", L"\n");
+//				//UNS_DEBUG_NO_ARG("Error allocating memory");
 //				return;
 //			}
 //	}
@@ -252,7 +252,7 @@ void Protocol::_TCPCleanup()
 //	// Make a second call to GetExtendedTcpTable to get
 //	// the actual data we require
 //	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0)) == NO_ERROR) {
-//		UNS_DEBUG("\tNumber of entries: %d", (int) pTcpTable->dwNumEntries, L"\n");
+//		//UNS_DEBUG("\tNumber of entries: %d", (int) pTcpTable->dwNumEntries);
 //		for (i = 0; i < (int) pTcpTable->dwNumEntries; i++) {
 //			if ((pid == pTcpTable->table[i].dwOwningPid) &&
 //				(pTcpTable->table[i].dwState == MIB_TCP_STATE_FIN_WAIT2)) {
@@ -266,7 +266,7 @@ void Protocol::_TCPCleanup()
 //			}
 //		}
 //	} else {
-//		UNS_DEBUG("\tGetTcpTable failed with %d", dwRetVal, L"\n");
+//		//UNS_DEBUG("\tGetTcpTable failed with %d", dwRetVal);
 //		delete []pTcpTable;
 //		return;
 //	}
@@ -353,7 +353,7 @@ void Protocol::Deinit()
 #ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"Exception in Protocol::Deinit() %C",L"\n", e.what());
+		UNS_DEBUG_NO_ARG(L"Exception in Protocol::Deinit() %C", e.what());
 	}
 #else
 	catch(std::exception&){}
@@ -385,7 +385,7 @@ bool Protocol::CreateSockets()
 {
 	int ret = _signalPipe.open();
 	if (ret)
-		UNS_DEBUG(L"Error: Can't open signalPipe %d", L"\n", ret);
+		UNS_DEBUG(L"Error: Can't open signalPipe %d\n", ret);
 
 	_sockets_active = (ret) ? false : true;
 	return _sockets_active;
@@ -403,7 +403,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	int optval = 1;
 	if (setsockopt(s, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
 		       (char *)&optval, sizeof(optval)) == SOCKET_ERROR) {
-		UNS_DEBUG(L"Error: Can't bind socket using exclusive address", L"\n");
+		UNS_DEBUG(L"Error: Can't bind socket using exclusive address\n");
 		status = NOT_EXCLUSIVE_ADDRESS;
 		return false;
 	}
@@ -426,7 +426,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	int optval = 1; // allow reuse of local addresses
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
-		UNS_DEBUG(L"Error: Can't set SO_REUSEADDR option %d", L"\n", errno);
+		UNS_DEBUG(L"Error: Can't set SO_REUSEADDR option %d\n", errno);
 		status = CANT_REUSE_ADDRESS;
 		return false;
 	}
@@ -437,7 +437,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	optval = 1; // the socket is restricted to sending and receiving IPv6 packets only
 	if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
-		UNS_DEBUG(L"Error: Can't set IPV6_V6ONLY option %d", L"\n", errno);
+		UNS_DEBUG(L"Error: Can't set IPV6_V6ONLY option %d\n", errno);
 		status = NO_IPV6_V6ONLY;
 		return false;
 	}
@@ -493,13 +493,13 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 		SOCKET s = _createSocket(resultCopy, status);
 		if (s == INVALID_SOCKET)
 		{
-			LMS_DEBUG_VAR(L"Failed to create a server socket for addr=%C", addr2str(* (sockaddr_storage*)resultCopy->ai_addr).c_str());
+			UNS_DEBUG(L"Failed to create a server socket for addr=%C\n", addr2str(* (sockaddr_storage*)resultCopy->ai_addr).c_str());
 			error = true;
 			break;
 		}
 		if (::bind(s, resultCopy->ai_addr, (int)resultCopy->ai_addrlen) == SOCKET_ERROR)
 		{
-			LMS_DEBUG_VAR(L"Error %d in binding server socket.", WSAGetLastError());
+			UNS_DEBUG(L"Error %d in binding server socket.\n", WSAGetLastError());
 			_closeSocket(s);
 			status = NOT_BINDED;
 			error = true;
@@ -511,7 +511,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 			int optval = 1;
 			if (setsockopt(s, SOL_SOCKET,  SO_CONDITIONAL_ACCEPT,
 				(char *)&optval, sizeof(optval)) == SOCKET_ERROR) {
-					UNS_DEBUG(L"Error: Can't bind socket using exclusive address", L"\n");
+					UNS_DEBUG(L"Error: Can't bind socket using exclusive address\n");
 					_closeSocket(s);
 					status = CONDITIONAL_ACCEPT_ERROR;
 					error = true;
@@ -577,7 +577,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 	SOCKET s = INVALID_SOCKET;
 	vector<SOCKET> sockets;
 	FuncEntryExit<SOCKET> fee(L"_connect", s);
-	UNS_DEBUG(L"Port: %d", L"\n", port);
+	UNS_DEBUG(L"Port: %d\n", port);
 
 	for (addr; addr != NULL; addr = addr->ai_next) {
 
@@ -667,7 +667,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 			}
 			if(FD_ISSET(tempSock, &fdExpSet))
 			{
-				LMS_DEBUG_VAR(L"connection attempt was failed on socket:%d",tempSock);
+				UNS_DEBUG(L"connection attempt was failed on socket:%d\n", tempSock);
 			}
 			_closeSocket(tempSock);
 		}
@@ -694,7 +694,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	if (s_new == INVALID_SOCKET) {
 		int err = GetLastError();
 
-		UNS_DEBUG(L"New connection denied (%d): %W ", L"\n", err, getErrMsg(err).c_str());
+		UNS_DEBUG(L"New connection denied (%d): %W \n", err, getErrMsg(err).c_str());
 		_closeSocket(s_new);
 		return false;
 	}
@@ -707,7 +707,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 		portForwardRequest = _findFWReq(s_new,port,NULL);
 		if (portForwardRequest == NULL)
 		{
-			UNS_DEBUG(L"New connection denied ", L"\n");
+			UNS_DEBUG(L"New connection denied \n");
 			_closeSocket(s_new);
 			return false;
 		}
@@ -718,11 +718,11 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 
 	if(addr.ss_family == AF_INET)
 	{
-		UNS_DEBUG(L"AF_INET", L"\n");
+		UNS_DEBUG(L"AF_INET\n");
 	}
 	else if(addr.ss_family == AF_INET6)
 	{
-		UNS_DEBUG(L"AF_INET6", L"\n");
+		UNS_DEBUG(L"AF_INET6\n");
 	}
 
 	//get address as a string:
@@ -749,7 +749,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 
 	if (!_lme.ChannelOpenForwardedRequest((uint32_t)s_new, connectedIP, port, address,ntohs(originator_port)))
 	{
-		LMS_DEBUG_VAR(L"ERROR: failed to send channel open request to LME. Sender %d. Address: %C:%d ", (int)s_new,
+		UNS_DEBUG(L"ERROR: failed to send channel open request to LME. Sender %d. Address: %C:%d \n", (int)s_new,
 			address.c_str(), ntohs(originator_port));
 
 		_closeSocket(s_new);
@@ -757,7 +757,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 		return false;
 	}
 	_openChannels[s_new] = c;
-	LMS_DEBUG_VAR(L"Send channel open request to LME. Sender %d, Address: %C:%d ", (int)s_new,
+	UNS_DEBUG(L"Send channel open request to LME. Sender %d, Address: %C:%d \n", (int)s_new,
 		address.c_str(), ntohs(originator_port));
 
 	return true;
@@ -778,7 +778,7 @@ int CALLBACK ConditionAcceptFunc(
 
 	if ((dwCallbackData == NULL) ||(((ConnectionAcceptCB *)dwCallbackData)->_protocol == NULL))
 	{
-		UNS_DEBUG(L"Error: callback: ConditionAcceptFunc with illegal data", L"\n");
+		UNS_DEBUG(L"Error: callback: ConditionAcceptFunc with illegal data\n");
 		return CF_REJECT;
 	}
 	Protocol *protocol	= ((ConnectionAcceptCB *)dwCallbackData)->_protocol;
@@ -787,7 +787,7 @@ int CALLBACK ConditionAcceptFunc(
 	sockaddr_storage caller_addr;
 	memcpy_s(&caller_addr, sizeof(sockaddr_storage), lpCallerId->buf, lpCallerId->len);
 
-	LMS_DEBUG_VAR(L"received new connection from %C", addr2str(caller_addr).c_str());
+	UNS_DEBUG(L"received new connection from %C\n", addr2str(caller_addr).c_str());
 
 	return protocol->checkAcceptLogic(caller_addr, port,((ConnectionAcceptCB *)dwCallbackData)->_PFReq);
 }
@@ -908,7 +908,7 @@ int Protocol::Select()
 	if (res == -1) {
 		int err = GetLastError();
 
-		UNS_DEBUG(L"Select error (%d): %W", L"\n", err, getErrMsg(err).c_str());
+		UNS_DEBUG(L"Select error (%d): %W\n", err, getErrMsg(err).c_str());
 		return -1;
 	}
 
@@ -934,7 +934,7 @@ int Protocol::Select()
 					SOCKET serverSocket = vs[i];
 					if (FD_ISSET(serverSocket, &rset)) {
 
-						UNS_DEBUG(L"Connection requested on port %d", L"\n", it->first);
+						UNS_DEBUG(L"Connection requested on port %d\n", it->first);
 						_acceptConnection(serverSocket, it->first);
 						FD_CLR(serverSocket, &rset);
 						res--;
@@ -985,21 +985,21 @@ int Protocol::_rxFromSocket(SOCKET s)
 	res = recv(s, _rxSocketBuffer, len, 0);
 	if (res > 0) {
 		// send data to LME
-		UNS_DEBUG(L"Socket[%d] ==>: %d bytes", L"\n", (int)s, res);
+		UNS_DEBUG(L"Socket[%d] ==>: %d bytes\n", (int)s, res);
 #ifdef _DEBUG
 		std::string dbg_dump(_rxSocketBuffer, _rxSocketBuffer + res);
-		UNS_DEBUG(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n", L"\n",
+		UNS_DEBUG(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n\n",
 			dbg_dump.c_str());
 #endif // _DEBUG
 		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);
 		goto out;
 	} else if (res == 0) {
 		// connection closed
-		UNS_DEBUG(L"Socket[%d] ==>: 0 bytes", L"\n", (int)s);
+		UNS_DEBUG(L"Socket[%d] ==>: 0 bytes\n", (int)s);
 		goto out;
 	} else {
 		int err = GetLastError();
-		UNS_DEBUG(L"Socket[%d]: Error (%d): %W", L"\n", (int)s, err, getErrMsg(err).c_str());
+		UNS_DEBUG(L"Socket[%d]: Error (%d): %W\n", (int)s, err, getErrMsg(err).c_str());
 		goto out;
 	}
 
@@ -1070,7 +1070,7 @@ void Protocol::_closePortForwardRequest(PortForwardRequest *p)
 
 	if (found == false)
 	{
-		UNS_DEBUG(L"Failed finding the closed port forward tunnel", L"\n");
+		UNS_DEBUG(L"Failed finding the closed port forward tunnel\n");
 		return;
 	}
 
@@ -1162,7 +1162,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				}
 
 				LMEDisconnectMessage *disconnectMessage = (LMEDisconnectMessage *)message;
-				UNS_DEBUG(L"LME requested to disconnect with reason code 0x%08x", L"\n", disconnectMessage->ReasonCode);
+				UNS_DEBUG(L"LME requested to disconnect with reason code 0x%08x\n", disconnectMessage->ReasonCode);
 				Deinit();
 				return;
 			}
@@ -1187,14 +1187,14 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					(serviceRequestMessage->ServiceName.compare(APF_SERVICE_PFWD) == 0)) {
 
 					_lme.ServiceAccept(serviceRequestMessage->ServiceName);
-					LMS_DEBUG_VAR(L"Accepting service: %C", serviceRequestMessage->ServiceName.c_str());
+					UNS_DEBUG(L"Accepting service: %C\n", serviceRequestMessage->ServiceName.c_str());
 					if (serviceRequestMessage->ServiceName.compare(APF_SERVICE_PFWD) == 0){
 						std::lock_guard<std::mutex> l(_versionLock);
 						_pfwdService = STARTED;
 					}
 				}
 				else {
-					LMS_DEBUG_VAR(L"Requesting to disconnect from LME with reason code 0x%08x",
+					UNS_DEBUG(L"Requesting to disconnect from LME with reason code 0x%08x\n", 
 						APF_DISCONNECT_SERVICE_NOT_AVAILABLE);
 					_lme.Disconnect(APF_DISCONNECT_SERVICE_NOT_AVAILABLE);
 					Deinit();
@@ -1215,7 +1215,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					return;
 				}
 
-				UNS_DEBUG(L"Sending Userauth success message", L"\n");
+				UNS_DEBUG(L"Sending Userauth success message\n");
 				_lme.UserAuthSuccess();
 			}
 			break;
@@ -1239,7 +1239,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						if (VersionCompare(MIN_PROT_VERSION.MajorVersion, MIN_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
 
-							UNS_DEBUG(L"Version %d.%d is not supported.", L"\n", versionMessage->MajorVersion,
+							UNS_DEBUG(L"Version %d.%d is not supported.\n", versionMessage->MajorVersion,
 							versionMessage->MinorVersion);
 							_lme.Disconnect(APF_DISCONNECT_PROTOCOL_VERSION_NOT_SUPPORTED);
 							Deinit();
@@ -1281,7 +1281,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				LMEGlobalRequestMessage *globalMessage = (LMEGlobalRequestMessage *)message;
 
-				UNS_DEBUG(L"Global Request type 0x%02x", L"\n", globalMessage->RequestType);
+				UNS_DEBUG(L"Global Request type 0x%02x\n", globalMessage->RequestType);
 				switch (globalMessage->RequestType) {
 
 					case LMEGlobalRequestMessage::TCP_FORWARD_REQUEST:
@@ -1299,7 +1299,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 #ifdef _REMOTE_SUPPORT
 							//"0.0.0.0" means remote interface also for IPv6
 								if (_isRemoteAPFAddress(tcpForwardRequestMessage->Address)) {
-									LMS_DEBUG_VAR(L"--------->FW request to open remote tunnel- %C",tcpForwardRequestMessage->Address.c_str());
+									UNS_DEBUG(L"--------->FW request to open remote tunnel- %C\n",tcpForwardRequestMessage->Address.c_str());
 									cb = _isRemoteCallback;
 								}
 								else
@@ -1335,7 +1335,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 											<< ":" << tcpForwardRequestMessage->Port;
 
 											_eventLogWrn(_eventLogParam, ss.str().c_str());
-											LMS_DEBUG_VAR(L"%C", ss.str().c_str());
+											UNS_DEBUG(L"%C\n", ss.str().c_str());
 											// Send Failure replay to LME
 											_lme.TcpForwardReplyFailure();
 											return;
@@ -1345,7 +1345,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								else {
 									PortForwardRequestList portForwardRequestList;
 									_openPorts[tcpForwardRequestMessage->Port] = portForwardRequestList;
-									UNS_DEBUG(L"New port %d", L"\n", tcpForwardRequestMessage->Port);
+									UNS_DEBUG(L"New port %d\n", tcpForwardRequestMessage->Port);
 								}
 
 								if (serverSockets.size() == 0) {
@@ -1356,7 +1356,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 									if ((serverSockets.size() == 0) || (socketStatus != Protocol::ACTIVE)) {
 										// Log in Event Log
-										UNS_DEBUG(L"Cannot listen at port %d", L"\n", tcpForwardRequestMessage->Port);
+										UNS_DEBUG(L"Cannot listen at port %d\n", tcpForwardRequestMessage->Port);
 
 										if (_failureReported[tcpForwardRequestMessage->Port] == false)
 										{
@@ -1373,7 +1373,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								if (failure != true)
 								{
 
-									LMS_DEBUG_VAR(L"Listening at port %d at %C interface.", tcpForwardRequestMessage->Port,
+									UNS_DEBUG(L"Listening at port %d at %C interface.\n", tcpForwardRequestMessage->Port, 
 										(cb == _isLocalCallback)?"local":"remote");
 
 									// Log in Event Log
@@ -1388,7 +1388,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 										new PortForwardRequest(tcpForwardRequestMessage->Address, tcpForwardRequestMessage->Port,
 										serverSockets, cb, (cb == _isLocalCallback));
 
-									UNS_DEBUG(L"Add forward request to port:  %d", L"\n", tcpForwardRequestMessage->Port);
+									UNS_DEBUG(L"Add forward request to port:  %d\n", tcpForwardRequestMessage->Port);
 									_openPorts[tcpForwardRequestMessage->Port].push_back(portForwardRequest);
 
 									// Send Success replay to LME
@@ -1427,7 +1427,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							if (!failure) {
 								if (cb == _isLocalCallback) {
 
-									LMS_DEBUG_VAR(L"Listening at port %d addr:%C at %C interface.", tcpForwardRequestMessage->Port,
+									UNS_DEBUG(L"Listening at port %d addr:%C at %C interface.\n", tcpForwardRequestMessage->Port, 
 										tcpForwardRequestMessage->Address.c_str(),
 										(cb == _isLocalCallback)?L"local":L"remote");
 
@@ -1435,7 +1435,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 									_updateIPFQDN(tcpForwardRequestMessage->Address);
 
 								} else {
-									UNS_DEBUG(L"--------->remote tunnel created - going to check remote support", L"\n");
+									UNS_DEBUG(L"--------->remote tunnel created - going to check remote support\n");
 									_checkRemoteSupport(true);
 								}
 							}
@@ -1454,10 +1454,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 															(LMETcpForwardCancelRequestMessage *)globalMessage;
 
 							std::lock_guard<std::mutex> l(_portsLock);
-							UNS_DEBUG(L"--------->FW request to CLOSE tunnel", L"\n");
+							UNS_DEBUG(L"--------->FW request to CLOSE tunnel\n");
 							PortMap::iterator it = _openPorts.find(tcpForwardCancelRequestMessage->Port);
 							if (it == _openPorts.end()) {
-								LMS_DEBUG_VAR(L"Previous request on address %C and port %d doesn't exist.",
+								UNS_DEBUG(L"Previous request on address %C and port %d doesn't exist.\n",
 									tcpForwardCancelRequestMessage->Address.c_str(), tcpForwardCancelRequestMessage->Port);
 								_lme.TcpForwardCancelReplyFailure();
 								return;
@@ -1465,7 +1465,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 							if (_isRemoteAPFAddress(tcpForwardCancelRequestMessage->Address))
 							{
-								LMS_DEBUG_VAR(L"--------->FW request to CLOSE remote tunnel - %C",tcpForwardCancelRequestMessage->Address.c_str());
+								UNS_DEBUG(L"--------->FW request to CLOSE remote tunnel - %C\n",tcpForwardCancelRequestMessage->Address.c_str());
 							}
 
 							bool found = false;
@@ -1496,7 +1496,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								return;
 							}
 							else {
-								LMS_DEBUG_VAR(L"Previous request on address %C and port %d doesn't exist.",
+								UNS_DEBUG(L"Previous request on address %C and port %d doesn't exist.\n", 
 									tcpForwardCancelRequestMessage->Address.c_str(), tcpForwardCancelRequestMessage->Port);
 								_lme.TcpForwardCancelReplyFailure();
 								return;
@@ -1523,12 +1523,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							hint.ai_protocol = IPPROTO_UDP;
 
 							if (getaddrinfo(udpSendToMessage->Address.c_str(), NULL, &hint, &info) != 0) {
-								UNS_DEBUG(L"Unable to send UDP data.", L"\n");
+								UNS_DEBUG(L"Unable to send UDP data.\n");
 								return;
 							}
 
 							if (info == NULL) {
-								UNS_DEBUG(L"Unable to send UDP data.", L"\n");
+								UNS_DEBUG(L"Unable to send UDP data.\n");
 								return;
 							}
 
@@ -1538,15 +1538,15 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							freeaddrinfo(info);
 
 							if (s == INVALID_SOCKET) {
-								UNS_DEBUG(L"Unable to send UDP data.", L"\n");
+								UNS_DEBUG(L"Unable to send UDP data.\n");
 								return;
 							}
 
 							int count = send(s, (char *)udpSendToMessage->Data.data(), udpSendToMessage->Data.size(), 0);
-							LMS_DEBUG_VAR(L"Sent UDP data: %d bytes of %d.", count, udpSendToMessage->Data.size());
+							UNS_DEBUG(L"Sent UDP data: %d bytes of %d.\n", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
 							std::string dbg_dump(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
-							UNS_DEBUG(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n", L"\n",
+							UNS_DEBUG(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n\n",
 								dbg_dump.c_str());
 #endif
 							_closeSocket(s);
@@ -1577,7 +1577,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				LMEChannelOpenRequestMessage *channelOpenMessage = (LMEChannelOpenRequestMessage *)message;
 
-				LMS_DEBUG_VAR(L"Got channel request from AMT.  Recipient channel %d for address %C, port %d.",
+				UNS_DEBUG(L"Got channel request from AMT.  Recipient channel %d for address %C, port %d.\n", 
 					channelOpenMessage->SenderChannel, channelOpenMessage->Address.c_str(), channelOpenMessage->Port);
 
 				Channel *c;
@@ -1591,7 +1591,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					hint.ai_protocol = IPPROTO_TCP;
 
 					if (getaddrinfo((char *)channelOpenMessage->Address.c_str(), NULL, &hint, &info) != 0) {
-						LMS_DEBUG_VAR(L"Unable to open direct channel to address %C.",
+						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1599,7 +1599,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					}
 
 					if (info == NULL) {
-						LMS_DEBUG_VAR(L"Unable to open direct channel to address %C.",
+						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1611,7 +1611,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					freeaddrinfo(info);
 
 					if (s == INVALID_SOCKET) {
-						LMS_DEBUG_VAR(L"Unable to open direct channel to address %C.",
+						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1625,7 +1625,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				else {// SOAP message, no real socket
 					SOCKET s = socket(AF_LOCAL, SOCK_STREAM, 0); // Dummy socket for a map
 					if (s == INVALID_SOCKET) {
-						LMS_DEBUG_VAR(L"Unable to open direct channel to address %C.",
+						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1705,7 +1705,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 						delete it->second;
 						_openChannels.erase(it);
-						LMS_DEBUG_VAR(L"Channel open request was refused. Reason code: 0x%02x reason.",
+						UNS_DEBUG(L"Channel open request was refused. Reason code: 0x%02x reason.\n", 
 							channelFailureMessage->ReasonCode);
 					}
 				}
@@ -1742,10 +1742,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							case Channel::OPEN:
 								c->SetStatus(Channel::CLOSED);
 								_lme.ChannelClose(c->GetRecipientChannel());
-								LMS_DEBUG_VAR(L"Channel %d was closed by AMT.", c->GetSenderChannel());
+								UNS_DEBUG(L"Channel %d was closed by AMT.\n", c->GetSenderChannel());
 								break;
 							case Channel::WAITING_CLOSE:
-								LMS_DEBUG_VAR(L"Received reply by AMT on closing channel %d.", c->GetSenderChannel());
+								UNS_DEBUG(L"Received reply by AMT on closing channel %d.\n", c->GetSenderChannel());
 								break;
 						}
 						_closeSocket(c->GetSocket());
@@ -1793,12 +1793,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 						bool request_close = false;
 						int count = it->second->ProcessRx((char *)channelDataMessage->Data.data(), channelDataMessage->Data.size(), request_close);
-						UNS_DEBUG(L"Sent %d bytes of %d from AMT to channel %d with socket %d.", L"\n",
+						UNS_DEBUG(L"Sent %d bytes of %d from AMT to channel %d with socket %d.\n", 
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG
 						std::string dbg_dump(channelDataMessage->Data.begin(), channelDataMessage->Data.end());
-						UNS_DEBUG(L"-----------------------From FW TCP---------------------------\n%C\n-----------------------End from FW TCP---------------------------\n", L"\n",
+						UNS_DEBUG(L"-----------------------From FW TCP---------------------------\n%C\n-----------------------End from FW TCP---------------------------\n\n",
 							dbg_dump.c_str());
 #endif
 
@@ -1807,7 +1807,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						{
 							if (it->second->GetStatus() == Channel::OPEN)
 							{
-								UNS_DEBUG(L"[%u:%u] closing socket, as requested", L"\n",
+								UNS_DEBUG(L"[%u:%u] closing socket, as requested\n",	
 									it->second->GetSenderChannel(), it->second->GetRecipientChannel());
 								it->second->SetStatus(Channel::WAITING_CLOSE);
 								_lme.ChannelClose(it->second->GetRecipientChannel());
@@ -1921,7 +1921,7 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 		}
 		catch(Intel::MEI_Client::MEIClientException e)
 		{
-			LMS_DEBUG_VAR(L"_checkRemoteSupport: GetDNSSuffixListCommand failed: %C", e.what());
+			UNS_DEBUG(L"_checkRemoteSupport: GetDNSSuffixListCommand failed: %C\n", e.what());
 		}
 	}
 
@@ -1967,10 +1967,10 @@ void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 
 		if (!raccess)
 		{
-			UNS_DEBUG(L"didn't find any shared suffix - Host VPN is DISABLED", L"\n");
+			UNS_DEBUG(L"didn't find any shared suffix - Host VPN is DISABLED\n");
 		}
 		else {
-			LMS_DEBUG_VAR(L"found shared suffix:%C - Host VPN is enabled", suffix.c_str());
+			UNS_DEBUG(L"found shared suffix:%C - Host VPN is enabled\n", suffix.c_str());
 		}
 	}
 
@@ -2020,27 +2020,27 @@ void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 			{
 			case PT_STATUS_REMOTE_ACCESS_NOT_GRANTED:
 				UNS_DEBUG(L"Remote access is denied because AMT is directly connected "
-					L"to enterprise network.");
+					L"to enterprise network.\n");
 				break;
 			case PT_STATUS_REMOTE_ACCESS_HOST_VPN_IS_DISABLED:
-				UNS_DEBUG(L"Remote access is disabled.", L"\n");
+				UNS_DEBUG(L"Remote access is disabled.\n");
 				break;
 			case PT_STATUS_REMOTE_ACCESS_GRANTED_WITHOUT_DDNS:
 				_remoteAccessEnabledInAMT = true;
-				UNS_DEBUG(L"Remote access is allowed. No DNS update will be executed.", L"\n");
+				UNS_DEBUG(L"Remote access is allowed. No DNS update will be executed.\n");
 				break;
 			case PT_STATUS_REMOTE_ACCESS_GRANTED_WITH_DDNS:
 				_remoteAccessEnabledInAMT = true;
-				UNS_DEBUG(L"Remote access is allowed. DNS update may be executed", L"\n");
+				UNS_DEBUG(L"Remote access is allowed. DNS update may be executed\n");
 				break;
 			default:
-				UNS_DEBUG(L"Remote access is disabled.", L"\n");
+				UNS_DEBUG(L"Remote access is disabled.\n");
 				break;
 			}
 		}
 		catch (Intel::MEI_Client::MEIClientException e)
 		{
-			LMS_DEBUG_VAR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C", e.what());
+			UNS_DEBUG(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
 		}
 	}
 }
@@ -2170,7 +2170,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 
 	getenv_s(&requiredSize, NULL, 0, "SystemRoot");
 	if (requiredSize > MAX_PATH) {
-		UNS_DEBUG(L"getenv_s asks for too much memory %d", L"\n", requiredSize);
+		UNS_DEBUG(L"getenv_s asks for too much memory %d\n", requiredSize);
 		return -1;
 	}
 
@@ -2193,7 +2193,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 	char lastChar;
 
 	if (!ifp.is_open()) {
-		UNS_DEBUG(L"failed to open hosts file for reading", L"\n");
+		UNS_DEBUG(L"failed to open hosts file for reading\n");
 		goto HOSTS_FILE_ERR;
 	}
 
@@ -2253,7 +2253,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 	{
 		std::ofstream ofp(inFileName);
 		if (!ofp.is_open()) {
-			UNS_DEBUG(L"failed to open hosts file for writing", L"\n");
+			UNS_DEBUG(L"failed to open hosts file for writing\n");
 
 			goto HOSTS_FILE_ERR;
 		}
@@ -2293,13 +2293,13 @@ int Protocol::_updateIPFQDN(const string &fqdn)
 			(_strnicmp(fqdn.c_str(), localName.c_str(), fqdn.length()) != 0))
 		{
 			if (_handleFQDNChange(fqdn.c_str()) < 0) {
-				UNS_DEBUG(L"Error: failed to update FQDN info", L"\n");
+				UNS_DEBUG(L"Error: failed to update FQDN info\n");
 				return -1;
 			}
 		}
 		else {
 			if (_handleFQDNChange("") < 0) {
-				UNS_DEBUG(L"Error: failed to update FQDN info", L"\n");
+				UNS_DEBUG(L"Error: failed to update FQDN info\n");
 				return -1;
 			}
 		}
@@ -2307,7 +2307,7 @@ int Protocol::_updateIPFQDN(const string &fqdn)
 
 	_AMTFQDN = fqdn;
 
-	LMS_DEBUG_VAR(L"Got FQDN: %C", _AMTFQDN.c_str());
+	UNS_DEBUG(L"Got FQDN: %C\n", _AMTFQDN.c_str());
 
 	return 0;
 }

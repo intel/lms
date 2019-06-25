@@ -60,21 +60,21 @@ PFWUpdateDllWrapperME12::PFWUpdateDllWrapperME12(void)
 	decltype(FWUPATITIONINSTANCES_DLL_NAME)*FwuPartitionInstancesDLL = (decltype(FWUPATITIONINSTANCES_DLL_NAME) *)GetProcAddress(dllHandle, FWUPATITIONINSTANCES_DLL_NAME_str);
 	if (FwuPartitionInstancesDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API", L"\n", FWUPATITIONINSTANCES_DLL_NAME_str);
+		UNS_DEBUG(L"Could not find %C API\n", FWUPATITIONINSTANCES_DLL_NAME_str);
 		throw std::exception("Could not find FwuPartitionInstances API");
 	}
 
 	decltype(FWUPARTIALUPDATEFROMFILE_DLL_NAME) *FwuPartialUpdateFromFileDLL = (decltype(FWUPARTIALUPDATEFROMFILE_DLL_NAME) *)GetProcAddress(dllHandle, FWUPARTIALUPDATEFROMFILE_DLL_NAME_str);
 	if (FwuPartialUpdateFromFileDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API", L"\n", FWUPARTIALUPDATEFROMFILE_DLL_NAME_str);
+		UNS_DEBUG(L"Could not find %C API\n", FWUPARTIALUPDATEFROMFILE_DLL_NAME_str);
 		throw std::exception("Could not find FwuPartialUpdateFromFile API");
 	}
 
 	decltype(FWUCHECKUPDATEPROGRESS_DLL_NAME) *FwuCheckUpdateProgressDLL = (decltype(FWUCHECKUPDATEPROGRESS_DLL_NAME) *)GetProcAddress(dllHandle, FWUCHECKUPDATEPROGRESS_DLL_NAME_str);
 	if (FwuCheckUpdateProgressDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API", L"\n", FWUCHECKUPDATEPROGRESS_DLL_NAME_str);
+		UNS_DEBUG(L"Could not find %C API\n", FWUCHECKUPDATEPROGRESS_DLL_NAME_str);
 		throw std::exception("Could not find FwuCheckUpdateProgress API");
 	}
 
@@ -101,7 +101,7 @@ static void displaySendStatus(uint32_t bytesSentToFw, uint32_t totalBytesToSendT
 
 	if (value != 100)
 	{
-		UNS_DEBUG(L"Sending the update image to FW for verification:  [ %u%% ]", L"\n", value);
+		UNS_DEBUG(L"Sending the update image to FW for verification:  [ %u%% ]\n", value);
 	}
 	else
 	{
@@ -210,7 +210,7 @@ uint32_t PFWUpdateDllWrapperME12::performPFWU(uint32_t partialID, const std::wst
 			}
 
 			// update progress
-			UNS_DEBUG(L"FW Update:  [ %3u%% ]", L"\n", currentPercent);
+			UNS_DEBUG(L"FW Update:  [ %3u%% ]\n", currentPercent);
 
 			Sleep(250); // wait 250 milliseconds before polling again
 			if (timer >= 30000) // if 30 seconds passed
@@ -257,7 +257,7 @@ uint32_t PFWUpdateDllWrapperME12::performPFWU(uint32_t partialID, const std::wst
 	catch (...)
 	{
 		status = INTERNAL_ERROR;
-		UNS_DEBUG(L"performPFWU throwed error", L"\n");
+		UNS_DEBUG(L"performPFWU throwed error\n");
 	}
 
 End:
@@ -267,5 +267,5 @@ End:
 
 void PFWUpdateDllWrapperME12::printPfwuReturnCode(const uint32_t status)
 {
-	UNS_DEBUG("PFWUpdate Return Code %u: %C", L"\n", status, GetErrorString((ErrorCodes)status));
+	UNS_DEBUG("PFWUpdate Return Code %u: %C\n", status, GetErrorString((ErrorCodes)status));
 }

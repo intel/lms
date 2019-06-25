@@ -41,58 +41,29 @@ static inline int WSAGetLastError() {return errno;}
 //===================================================
 
 //log:
-#define DEBUG_PREFIX       ACE_TEXT ("(%t)[%D] [%M] %I ")
-#define INFO_PREFIX        ACE_TEXT ("(%t)[%D] [%M] %I ")
-#define NOTICE_PREFIX      ACE_TEXT ("[%D] %M%I ")
-#define WARNING_PREFIX     ACE_TEXT ("[%D] %M%I ")
-#define ERROR_PREFIX       ACE_TEXT ("[%D] %M%I %p %I")
-#define CRITICAL_PREFIX    ACE_TEXT ("[%D] %M %p")
-#define ALERT_PREFIX       ACE_TEXT ("[%D] %M %p")
-#define EMERGENCY_PREFIX   ACE_TEXT ("[%D] %M %p")
+#define UNS_PREFIX       ACE_TEXT("(%t)[%D][%-11M] %I ")
 
-#define UNS_DEBUG(FMT, ...)     \
+
+
+#define UNS_TRACE(...)     \
+        ACE_DEBUG(( LM_TRACE,  \
+                    UNS_PREFIX __VA_ARGS__))
+
+#define UNS_DEBUG(...)     \
         ACE_DEBUG(( LM_DEBUG,  \
-                    DEBUG_PREFIX FMT  \
-					__VA_ARGS__))
+                    UNS_PREFIX __VA_ARGS__))
 
-
-#define LMS_DEBUG_VAR(FMT, ...)     \
-	ACE_DEBUG(( LM_DEBUG,  \
-	DEBUG_PREFIX L"LMS: " FMT  \
-	L"\n", __VA_ARGS__))
-
-#define LMS_DEBUG_SIMPLE(FMT)     \
-	ACE_DEBUG(( LM_DEBUG,  \
-	DEBUG_PREFIX L"LMS: " FMT L"\n"))
-
-
-#define UNS_INFO(FMT, ...)     \
-        ACE_DEBUG(( LM_INFO,  \
-                    INFO_PREFIX FMT \
-                    __VA_ARGS__))
-#define UNS_NOTICE(FMT, ...)     \
-        ACE_DEBUG(( LM_NOTICE,  \
-                    NOTICE_PREFIX FMT \
-                    __VA_ARGS__))
-#define UNS_WARNING(FMT, ...)     \
+#define UNS_WARNING(...)     \
         ACE_DEBUG(( LM_WARNING,  \
-                    WARNING_PREFIX FMT \
-                    __VA_ARGS__))
-#define UNS_ERROR(FMT, ...)     \
+                    UNS_PREFIX __VA_ARGS__))
+
+#define UNS_ERROR(...)     \
         ACE_DEBUG(( LM_ERROR,  \
-                    ERROR_PREFIX FMT \
-                    __VA_ARGS__))
-#define UNS_CRITICAL(FMT, ...)     \
+                    UNS_PREFIX __VA_ARGS__))
+
+#define UNS_CRITICAL(...)     \
         ACE_DEBUG(( LM_CRITICAL,  \
-                    CRITICAL_PREFIX FMT \
-                    __VA_ARGS__))
-#define UNS_ALERT(FMT, ...)     \
-        ACE_DEBUG(( LM_ALERT,  \
-                    ALERT_PREFIX FMT \
-                    __VA_ARGS__))
-#define UNS_EMERGENCY(FMT, ...)     \
-        ACE_DEBUG(( LM_EMERGENCY,  \
-                    EMERGENCY_PREFIX FMT \
-                    __VA_ARGS__))
+                    UNS_PREFIX __VA_ARGS__))
+
 
 #endif		//_GMS_GLOBAL__H__

@@ -39,7 +39,7 @@ bool VerifyFile::Init()
 
 	if (!GetAppVersion(m_UNSFilePath.c_str(), &m_MajorVersion, &m_MinorVersion, &m_BuildNumber, &m_RevisionNumber))
 	{
-		UNS_DEBUG(L"Could not get file version for LMS.exe.",L"\n");
+		UNS_DEBUG(L"Could not get file version for LMS.exe.\n");
 		return false;
 	}
 
@@ -59,7 +59,7 @@ bool VerifyFile::VerifyService(std::wstring serviceName)
 
 	if(!checkFileExist(filepath))
 	{
-		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened",L"\n", serviceName.c_str());
+		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());
 		return false;
 	}
 	if (!VerifyFileVersionAndSignature(serviceName))
@@ -78,7 +78,7 @@ const HMODULE VerifyFile::SafeLoadDll(const std::wstring & wcName)
 
 	if(!checkFileExist(filepath))
 	{
-		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened",L"\n", wcName.c_str());
+		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened\n", wcName.c_str());
 		return nullptr;
 	}
 
@@ -107,7 +107,7 @@ bool VerifyFile::GetAppVersion(const wchar_t *LibName, uint16_t *MajorVersion, u
 	auto lastErr = GetLastError();
 	if (!dwLen) 
 	{
-		UNS_DEBUG(L"GetAppVersion: GetFileVersionInfoSize for file %s returned with %d error.",L"\n", LibName, lastErr);
+		UNS_DEBUG(L"GetAppVersion: GetFileVersionInfoSize for file %s returned with %d error.\n", LibName, lastErr);
 		return FALSE;
 	}
 
@@ -117,13 +117,13 @@ bool VerifyFile::GetAppVersion(const wchar_t *LibName, uint16_t *MajorVersion, u
 	}
 	catch (std::bad_alloc&)
 	{
-		UNS_DEBUG(L"GetAppVersion: Failed to alloc memory",L"\n");
+		UNS_DEBUG(L"GetAppVersion: Failed to alloc memory\n");
 		return FALSE;
 	}
 	
 	if(!GetFileVersionInfo( LibName, dwHandle, dwLen, lpData ))
 	{
-		UNS_DEBUG(L"GetAppVersion: GetFileVersionInfo return with %d error.",L"\n", GetLastError());		
+		UNS_DEBUG(L"GetAppVersion: GetFileVersionInfo return with %d error.\n", GetLastError());		
 		delete [] lpData;
 		return FALSE;
 	}
@@ -135,20 +135,20 @@ bool VerifyFile::GetAppVersion(const wchar_t *LibName, uint16_t *MajorVersion, u
 		*RevisionNumber = LOWORD(pFileInfo->dwFileVersionLS);
 		delete [] lpData;
 
-		if ((*MajorVersion==0) || (*MajorVersion>9999) || (*MinorVersion>9999) ||(*BuildNumber>9999) || (*RevisionNumber>9999))
+		if ((*MajorVersion == 0) || (*MajorVersion > 9999) || (*MinorVersion > 9999) || (*BuildNumber > 9999) || (*RevisionNumber > 9999))
 		{
-			UNS_DEBUG(L"GetAppVersion: Got out of bound values.",L"\n");
+			UNS_DEBUG(L"GetAppVersion: Got out of bound values.\n");
 			return FALSE;
 		}
 		else
 		{
-			UNS_DEBUG(L"GetAppVersion: Got version: %d.%d.%d.%d",L"\n",*MajorVersion,*MinorVersion,*BuildNumber,*RevisionNumber);
+			UNS_DEBUG(L"GetAppVersion: Got version: %d.%d.%d.%d\n", *MajorVersion, *MinorVersion, *BuildNumber, *RevisionNumber);
 			return TRUE;
 		}
 	}
 	else
 	{
-		UNS_DEBUG(L"GetAppVersion: VerQueryValue return with %d error.",L"\n", GetLastError());
+		UNS_DEBUG(L"GetAppVersion: VerQueryValue return with %d error.\n", GetLastError());
 		delete [] lpData;
 		return FALSE;
 	}
@@ -163,7 +163,7 @@ bool VerifyFile::CompareVersions(std::wstring &filepath)
 	uint16_t MajorVersion, MinorVersion, BuildNumber, RevisionNumber;
 	if (!GetAppVersion(filepath.c_str(), &MajorVersion, &MinorVersion, &BuildNumber, &RevisionNumber))
 	{
-		UNS_DEBUG(L"CompareVersions: Could not get file version.",L"\n");
+		UNS_DEBUG(L"CompareVersions: Could not get file version.\n");
 		return false;
 	}
 	if ((m_MajorVersion < MajorVersion) || 
@@ -171,10 +171,10 @@ bool VerifyFile::CompareVersions(std::wstring &filepath)
 		((m_MajorVersion == MajorVersion) && (m_MinorVersion == MinorVersion) && (m_BuildNumber < BuildNumber))|| 
 		((m_MajorVersion == MajorVersion) && (m_MinorVersion == MinorVersion) && (m_BuildNumber == BuildNumber) && (m_RevisionNumber <= RevisionNumber)))
 	{
-		UNS_DEBUG(L"CompareVersions: %s version is equal or newer than LMS.",L"\n", filepath.c_str());
+		UNS_DEBUG(L"CompareVersions: %s version is equal or newer than LMS.\n", filepath.c_str());
 		return true;
 	}
-	UNS_DEBUG(L"CompareVersions: %s version is older than LMS.",L"\n",filepath.c_str());
+	UNS_DEBUG(L"CompareVersions: %s version is older than LMS.\n",filepath.c_str());
 	return false;
 }
 
@@ -213,21 +213,21 @@ bool VerifyFile::VerifyFileVersionAndSignature(const std::wstring &filename, boo
 	std::wstring path(m_UNSPath);
 	path.append(filename);
 	std::wstring wpath(path.begin(), path.end());
-	UNS_DEBUG(L"Checking signature for configuration file %s",L"\n", filename.c_str());
+	UNS_DEBUG(L"Checking signature for configuration file %s\n", filename.c_str());
 
 	bool ret = true;
 
-	UNS_DEBUG(L"Verifying signature",L"\n");
+	UNS_DEBUG(L"Verifying signature\n");
 	ret = VerifyFileSignature(wpath);	
 
 	if (ret)
 	{
-		UNS_DEBUG(L"Verifying certificate name",L"\n");
+		UNS_DEBUG(L"Verifying certificate name\n");
 		ret = VerifyCertificateName(wpath);
 	}
 	if (!ret)
 	{
-		UNS_DEBUG(L"Could not verify signature for configuration file %s",L"\n", filename.c_str());
+		UNS_DEBUG(L"Could not verify signature for configuration file %s\n", filename.c_str());
 // PREPROCESSOR variable that enable signing on production releases 
 #if SIGNING > 0			
 		return false;
@@ -235,12 +235,12 @@ bool VerifyFile::VerifyFileVersionAndSignature(const std::wstring &filename, boo
 	}
 	if (compareVersions) 
 	{
-		UNS_DEBUG(L"Checking version for configuration file %s", L"\n", filename.c_str());
+		UNS_DEBUG(L"Checking version for configuration file %s\n", filename.c_str());
 		if (!CompareVersions(path))
 		{
 			return false;
 		}
-		UNS_DEBUG(L"Version is valid", L"\n");
+		UNS_DEBUG(L"Version is valid\n");
 	}
 	return true;
 }
@@ -299,7 +299,7 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath)
 					- UI was disabled in dwUIChoice. No publisher or time stamp chain errors.
 					- UI was enabled in dwUIChoice and the user clicked "Yes" when asked to install and run the signed subject.
 				*/
-				UNS_DEBUG(L"VerifyFileSignature: The file is signed and the signature was verified.",L"\n");
+			UNS_DEBUG(L"VerifyFileSignature: The file is signed and the signature was verified.\n");
 
 				status = true;
 				break;   
@@ -310,18 +310,18 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath)
 	        dwLastError = GetLastError();
 			// The signature was not valid or there was an error opening the file.
 			// The file was not signed.
-			UNS_DEBUG(L"VerifyFileSignature: The file is not signed, reason %d",L"\n", dwLastError);
+			UNS_DEBUG(L"VerifyFileSignature: The file is not signed, reason %d\n", dwLastError);
 	        break;
 
         case TRUST_E_EXPLICIT_DISTRUST:
             // The hash that represents the subject or the publisher 
             // is not allowed by the admin or user.
-			UNS_DEBUG(L"VerifyFileSignature: The signature is present, but specifically disallowed.",L"\n");
+			UNS_DEBUG(L"VerifyFileSignature: The signature is present, but specifically disallowed.\n");
             break;
 
         case TRUST_E_SUBJECT_NOT_TRUSTED:
             // The user clicked "No" when asked to install and run.
-			UNS_DEBUG(L"VerifyFileSignature: The signature is present, but not trusted.",L"\n");
+			UNS_DEBUG(L"VerifyFileSignature: The signature is present, but not trusted.\n");
             break;
 
         case CRYPT_E_SECURITY_SETTINGS:
@@ -331,7 +331,7 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath)
             admin policy has disabled user trust. No signature, 
             publisher or time stamp errors.
 			*/
-			UNS_DEBUG(L"VerifyFileSignature: CRYPT_E_SECURITY_SETTINGS - The hash representing the subject or the publisher wasn't explicitly trusted by the admin and admin policy has disabled user trust. No signature, publisher or timestamp errors.",L"\n");
+			UNS_DEBUG(L"VerifyFileSignature: CRYPT_E_SECURITY_SETTINGS - The hash representing the subject or the publisher wasn't explicitly trusted by the admin and admin policy has disabled user trust. No signature, publisher or timestamp errors.\n");
 			break;
 
         default:
@@ -438,7 +438,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 
 		if(!fResult)
 		{
-			UNS_DEBUG(L"VerifyCertificateName: CryptQueryObject Error",L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: CryptQueryObject Error\n");
 			break;
 		}
 		// Get signer information size.
@@ -452,7 +452,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 
 		if (!fResult)
 		{
-			UNS_DEBUG(L"VerifyCertificateName: CryptMsgGetParam: Error",L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: CryptMsgGetParam: Error\n");
 			break;
 		}
 
@@ -460,7 +460,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 		pSignerInfo = new CMSG_SIGNER_INFO[dwSignerInfo];
 		if (!pSignerInfo)
 		{
-			UNS_DEBUG(L"VerifyCertificateName: CryptQueryObject Error",L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: CryptQueryObject Error\n");
 			break;
 		}
 		// Get Signer Information.
@@ -473,7 +473,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 
 		if (!fResult)
 		{
-			UNS_DEBUG(L"VerifyCertificateName: CryptMsgGetParam: Error",L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: CryptMsgGetParam: Error\n");
 			break;
 		}
 
@@ -492,7 +492,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 
 		if (!pCertContext)
 		{
-			UNS_DEBUG(L"VerifyCertificateName: CertFindCertificateInStore: Invalid pCertContext",L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: CertFindCertificateInStore: Invalid pCertContext\n");
 			break;
 		}
 
@@ -502,7 +502,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 		// Get Subject name size.
 		if ( (certNameLen = CertGetNameString(pCertContext, CERT_NAME_SIMPLE_DISPLAY_TYPE, 0, NULL, NULL, 0) ) == 0)
 		{
-			UNS_DEBUG(L"VerifyCertificateName: CertGetNameString: Empty Certificate Name",L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: CertGetNameString: Empty Certificate Name\n");
 			break;
 		}
 		
@@ -512,24 +512,24 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 			// Get subject name.
 			if ( (CertGetNameString(pCertContext, CERT_NAME_SIMPLE_DISPLAY_TYPE, 0, NULL, certNameMem.get(), certNameLen)) != certNameLen )
 			{
-				UNS_DEBUG(L"VerifyCertificateName: CertGetNameString: Wrong buffer size",L"\n");
+				UNS_DEBUG(L"VerifyCertificateName: CertGetNameString: Wrong buffer size\n");
 				break;
 			} 
 			std::wstring certName(certNameMem.get());
 
 			if (certName == IntelCertificateName)
 			{
-				UNS_DEBUG(L"VerifyCertificateName: File is signed by Intel",L"\n");
+				UNS_DEBUG(L"VerifyCertificateName: File is signed by Intel\n");
 				ret = true;
 			}
 			else
 			{
-				UNS_DEBUG(L"VerifyCertificateName: File is not signed by Intel",L"\n");
+				UNS_DEBUG(L"VerifyCertificateName: File is not signed by Intel\n");
 			}
 		}
 		catch (std::bad_alloc & )
 		{
-			UNS_DEBUG(L"VerifyCertificateName: new failed", L"\n");
+			UNS_DEBUG(L"VerifyCertificateName: new failed\n");
 		}
 
 

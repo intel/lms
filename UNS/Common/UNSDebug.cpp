@@ -32,8 +32,6 @@ extern "C"
 */
 #ifdef _DEBUGPRINT
 #ifdef _ACEPRINT
-#define DEBUG_PREFIX ACE_TEXT ("(%t)[%D] [%M] %I ")
-#define UNS_DEBUG(FMT, ...) ACE_DEBUG(( LM_DEBUG, DEBUG_PREFIX FMT __VA_ARGS__))
 const int BUF_SIZE = 2048;
 void DbgPrint(const char *fmt, ...)
 {
@@ -45,7 +43,7 @@ void DbgPrint(const char *fmt, ...)
 #else
 	vsnprintf(out, BUF_SIZE, fmt, args);
 #endif // WIN32
-	UNS_DEBUG(L"UNS: %C", L"\n", out);
+	UNS_DEBUG(L"UNS: %C\n", out);
 	va_end(args);
 }
 
@@ -59,7 +57,7 @@ void DbgPrintW(const wchar_t *fmt, ...)
 #else
 	vswprintf(out, BUF_SIZE, fmt, args);
 #endif // WIN32
-	UNS_DEBUG(L"UNS: %W", L"\n", out);
+	UNS_DEBUG(L"UNS: %W\n", out);
 	va_end(args);
 }
 #else

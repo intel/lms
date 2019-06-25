@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "Tools.h"
 #include "time.h"
@@ -73,7 +73,7 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	LONG RetValue = RegOpenKeyEx( HKEY_LOCAL_MACHINE, ServiceKey, 0, KEY_QUERY_VALUE, &hKey );
 	if( RetValue != ERROR_SUCCESS )
 	{
-		//UNS_DEBUG("GetServiceDirectory:RegOpenKeyEx failed err=%d","\n",RetValue );
+		//UNS_DEBUG("GetServiceDirectory:RegOpenKeyEx failed err=%d\n",RetValue );
 		return retVal;
 	}
 	WCHAR TempFilePath[MAX_PATH];
@@ -81,7 +81,7 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	RetValue = RegQueryValueEx( hKey, L"ImagePath", NULL, NULL, (LPBYTE)TempFilePath, &pathLength);
 	if( (RetValue != ERROR_SUCCESS) || (pathLength > MAX_PATH) )
 	{
-		//UNS_DEBUG("GetServiceDirectory:RegQueryValueEx failed err=%d","\n",RetValue);
+		//UNS_DEBUG("GetServiceDirectory:RegQueryValueEx failed err=%d\n",RetValue);
 		RegCloseKey( hKey );
 		return retVal;
 	}
@@ -91,12 +91,12 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	bufCount = ExpandEnvironmentStrings(TempFilePath, expandedFilePath, MAX_PATH);
 	if (bufCount > MAX_PATH)
 	{
-		//UNS_DEBUG("ExpandEnvironmentStrings: Too small buffer for expanding %s", "\n", TempFilePath);
+		//UNS_DEBUG("ExpandEnvironmentStrings: Too small buffer for expanding %s\n", TempFilePath);
 		return ERROR_SUCCESS;
 	}
 	else if (!bufCount)
 	{
-		//UNS_DEBUG("ExpandEnvironmentStrings failed.", "\n");
+		//UNS_DEBUG("ExpandEnvironmentStrings failed.\n");
 		return ERROR_SUCCESS;
 	}
 
@@ -115,7 +115,7 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	{
 		serviceFilePath.assign(expandedFilePath);
 	}
-	//UNS_DEBUG("GetServiceDirectory:Success - got %s","\n",serviceFilePath.c_str());
+	//UNS_DEBUG("GetServiceDirectory:Success - got %s\n", serviceFilePath.c_str());
 	return true;
 }
 

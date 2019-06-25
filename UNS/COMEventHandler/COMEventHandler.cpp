@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "COMEventHandler.h"
 #include <atlbase.h>
@@ -25,7 +25,7 @@
 		int retVal = EventHandler::init(argc, argv);
 		if (retVal != 0)
 		{
-			UNS_DEBUG(L"EventHandler::init failed. retVal: %d", L"\n", retVal);
+			UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
 			return retVal;
 		}
 
@@ -38,7 +38,7 @@
 		GMS_AlertIndication *pGMS_AlertIndication = nullptr;
 		int type = mbPtr->msg_type();
 
-		UNS_DEBUG(L"COMEventHandler::handle_event", L"\n");
+		UNS_DEBUG(L"COMEventHandler::handle_event\n");
 
 		switch (type) {
 		case MB_PUBLISH_EVENT:
@@ -62,11 +62,11 @@
 	COMEventHandler::COMLogging(GMS_AlertIndication* alert)
 	{
 		
-		UNS_DEBUG(L"COMEventHandler::COMLogging", L"\n");
+		UNS_DEBUG(L"COMEventHandler::COMLogging\n");
 
 		if (m_mainService->GetStopped())
 		{
-			UNS_DEBUG(L"LMS was stopped, canceling COM operataion.", L"\n"); //In order to avoid failure in LMS stop
+			UNS_DEBUG(L"LMS was stopped, canceling COM operataion.\n"); //In order to avoid failure in LMS stop
 			return -1;
 		}
 
@@ -75,20 +75,20 @@
 		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 		if (hr != S_OK && hr != S_FALSE)
 		{
-			UNS_DEBUG(L"COMEventHandler::COMLogging - CoInitializeEx failed %d", L"\n", hr);
+			UNS_DEBUG(L"COMEventHandler::COMLogging - CoInitializeEx failed %d\n", hr);
 			return -1;
 		}
-		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoInitializeEx",L"\n");
+		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoInitializeEx\n");
 		{
 			CComPtr<IUnknown> pUnk;
 			rc=pUnk.CoCreateInstance(uiid);	
-			UNS_DEBUG(L"COMEventHandler::COMLogging - after CoCreateInstance" ,L"\n");
+			UNS_DEBUG(L"COMEventHandler::COMLogging - after CoCreateInstance\n");
 			static char* emptyStr = "";
 			if ((rc==S_OK) && (pUnk!=NULL))
 			{
 				CComPtr<IUNSAlert> pI;
 				rc=pUnk.QueryInterface(&pI);
-				UNS_DEBUG(L"COMEventHandler::COMLogging - after QueryInterface" ,L"\n");
+				UNS_DEBUG(L"COMEventHandler::COMLogging - after QueryInterface\n");
 				if ((rc==S_OK) && (pI!=NULL))
 				{
 					BSTR bstrMessage, bstrMessageArgument, bstrMessageID, bstrDatetime;
@@ -99,7 +99,7 @@
 						bstrMessageArgument=A2BSTR(emptyStr);
 					bstrMessageID = W2BSTR(alert->MessageID.c_str());
 					bstrDatetime = A2BSTR(alert->Datetime.c_str());
-					UNS_DEBUG(L"Sending RiseAlert, alert id: %d, message: %s" ,L"\n", alert->id, alert->Message.c_str());
+					UNS_DEBUG(L"Sending RiseAlert, alert id: %d, message: %s\n", alert->id, alert->Message.c_str());
 					pI->RiseAlert(alert->category,alert->id, bstrMessage,	bstrMessageArgument,bstrMessageID,bstrDatetime);
 					UNS_DEBUG(L"RiseAlert sent\n");
 					SysFreeString(bstrMessage);
@@ -109,16 +109,16 @@
 				}
 				else
 				{
-					UNS_DEBUG(L"QueryInterface failed rc=%x", L"\n", rc);
+					UNS_DEBUG(L"QueryInterface failed rc=%x\n", rc);
 				}
 			}
 			else
 			{
-				UNS_DEBUG(L"CoCreateInstance failed rc=%x", L"\n", rc);
+				UNS_DEBUG(L"CoCreateInstance failed rc=%x\n", rc);
 			}
 		}
 		CoUninitialize();
-		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoUninitialize", L"\n");
+		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoUninitialize\n");
 		return (rc==S_OK);
 	}
 

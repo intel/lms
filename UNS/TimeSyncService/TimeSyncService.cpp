@@ -22,12 +22,12 @@ unsigned int TimeSyncService::ms_LastTimeSync = 0;
 int
 TimeSyncService::init (int argc, ACE_TCHAR *argv[])
 {
-	UNS_DEBUG(L"TimeSyncService::init", L"\n");
+	UNS_DEBUG(L"TimeSyncService::init\n");
 
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d", L"\n", retVal);
+		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
 
 		return retVal;
 	}
@@ -45,7 +45,7 @@ TimeSyncService::init (int argc, ACE_TCHAR *argv[])
 int
 TimeSyncService::fini (void)
 {
-	UNS_DEBUG(L"TimeSync service stopped",L"\n");
+	UNS_DEBUG(L"TimeSync service stopped\n");
 	ACE_Reactor::instance()->cancel_timer (this);
 	return 0;
 }
@@ -63,7 +63,7 @@ ACE_FACTORY_DEFINE (TIMESYNCSERVICE, TimeSyncService)
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int TimeSyncService::handle_event (MessageBlockPtr mbPtr )
 {
-	UNS_DEBUG(L"%s::handle_event", L"\n", name().c_str());
+	UNS_DEBUG(L"%s::handle_event\n", name().c_str());
 
 	int type = mbPtr->msg_type();
 	switch (type)
@@ -97,7 +97,7 @@ int TimeSyncService::handlePublishEvent(const GMS_AlertIndication & alert)
 		switch (alert.id)
 		{
 		case EVENT_PORT_FORWARDING_SERVICE_AVAILABLE:
-			UNS_DEBUG(L"%s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE. m_syncRequiredButNoPfw: %d", L"\n", name().c_str(), m_syncRequiredButNoPfw);
+			UNS_DEBUG(L"%s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE. m_syncRequiredButNoPfw: %d\n", name().c_str(), m_syncRequiredButNoPfw);
 			if (m_syncRequiredButNoPfw)
 			{
 				PerformSync();
@@ -123,7 +123,7 @@ int TimeSyncService::handlePublishEvent(const GMS_AlertIndication & alert)
 int
 TimeSyncService::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
-	UNS_DEBUG(L"%s handle_timeout",L"\n",name().c_str());
+	UNS_DEBUG(L"%s handle_timeout\n",name().c_str());
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ACE_Data_Block());
@@ -151,7 +151,7 @@ TimeSyncService::printTime(std::wstring message, unsigned int time)
 	//convert the tm into a string
 	char time_s[ms_SizeOfTimeString];
 	strftime(time_s, ms_SizeOfTimeString, "%c", &time_tm);
-	UNS_DEBUG(L"%s:: %W\t%C", L"\n", name().c_str(), message.c_str(), time_s);
+	UNS_DEBUG(L"%s:: %W\t%C\n", name().c_str(), message.c_str(), time_s);
 
 }
 #endif
@@ -166,7 +166,7 @@ TimeSyncService::GetUTCTime(unsigned int & UTCTime)
 	rawtime = time(NULL);
 	if (rawtime == -1)
 	{
-		UNS_DEBUG(L"%s:: Get local time failed, aborting sync operation",L"\n", name().c_str());
+		UNS_DEBUG(L"%s:: Get local time failed, aborting sync operation\n", name().c_str());
 		return false;
 	}
 	UTCTime = (unsigned int)rawtime;
@@ -189,10 +189,10 @@ int TimeSyncService::resume()
 void
 TimeSyncService::PerformSync()
 {
-	UNS_DEBUG(L"%s::PerformSync", L"\n", name().c_str());
+	UNS_DEBUG(L"%s::PerformSync\n", name().c_str());
 
 	if (!m_mainService->GetPortForwardingStarted()) {
-		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting sync operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE", L"\n", name().c_str());
+		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting sync operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		m_syncRequiredButNoPfw = true;
 		return;
 	}
@@ -204,12 +204,12 @@ TimeSyncService::PerformSync()
 	if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncState))//error getting the Time Sync state.
 	{
 		m_needToSyncOnResume = true;//update the bool to true if sync should be performed
-		UNS_DEBUG(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation",L"\n", name().c_str());
+		UNS_DEBUG(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation\n", name().c_str());
 		return;
 	}
 	else if(!timeSyncState) // The FW LocalTimeSyncEnable field is FALSE
 	{
-		UNS_DEBUG(L"%s:: FW LocalTimeSyncEnable is FALSE, aborting sync operation",L"\n", name().c_str());
+		UNS_DEBUG(L"%s:: FW LocalTimeSyncEnable is FALSE, aborting sync operation\n", name().c_str());
 		return;
 	}
 	unsigned int AMTTime, UTCTime;
@@ -217,7 +217,7 @@ TimeSyncService::PerformSync()
 	bool ret = timeClient.GetAMTTime(AMTTime);
 	if (!ret)
 	{
-		UNS_DEBUG(L"%s:: GetAMTTime failed, aborting sync operation",L"\n", name().c_str());
+		UNS_DEBUG(L"%s:: GetAMTTime failed, aborting sync operation\n", name().c_str());
 		return;
 	}
 #ifdef _DEBUG
@@ -227,7 +227,7 @@ TimeSyncService::PerformSync()
 	//Get the UTC time
 	if (!GetUTCTime(UTCTime))
 	{
-		UNS_DEBUG(L"%s:: Cannot get UTC time. aborting sync operation",L"\n", name().c_str());
+		UNS_DEBUG(L"%s:: Cannot get UTC time. aborting sync operation\n", name().c_str());
 		return;
 	}
 #ifdef _DEBUG
@@ -238,11 +238,11 @@ TimeSyncService::PerformSync()
 	double diff = difftime(UTCTime, AMTTime);
 	if (std::abs(diff) > ms_MaxDiff)
 	{
-		UNS_DEBUG(L"%s:: Difference is more than %d seconds, time sync will be performed",L"\n", name().c_str(), ms_MaxDiff);
+		UNS_DEBUG(L"%s:: Difference is more than %d seconds, time sync will be performed\n", name().c_str(), ms_MaxDiff);
 		ret = timeClient.SetAMTTime(UTCTime);
 		if (!ret)
 		{
-			UNS_DEBUG(L"%s:: SetAMTTime failed, aborting sync operation",L"\n", name().c_str());
+			UNS_DEBUG(L"%s:: SetAMTTime failed, aborting sync operation\n", name().c_str());
 			return;
 		}
 #ifdef _DEBUG
@@ -250,7 +250,7 @@ TimeSyncService::PerformSync()
 		ret = timeClient.GetAMTTime(AMTTime);
 		if (!ret)
 		{
-			UNS_DEBUG(L"%s:: GetAMTTime failed.",L"\n", name().c_str());
+			UNS_DEBUG(L"%s:: GetAMTTime failed.\n", name().c_str());
 			return;
 		}
 		printTime(L"Time in FW is now: ", AMTTime);
@@ -258,9 +258,9 @@ TimeSyncService::PerformSync()
 	}
 	else
 	{
-		UNS_DEBUG(L"%s:: Difference is less than %d seconds, time sync will not be performed",L"\n", name().c_str(), ms_MaxDiff);
+		UNS_DEBUG(L"%s:: Difference is less than %d seconds, time sync will not be performed\n", name().c_str(), ms_MaxDiff);
 	}
 	ms_LastTimeSync = UTCTime;//update the ms_LastTimeSync value to hold the synchronization time.
-	UNS_DEBUG(L"%s:: ms_LastTimeSync set to %d",L"\n", name().c_str(), ms_LastTimeSync);
+	UNS_DEBUG(L"%s:: ms_LastTimeSync set to %d\n", name().c_str(), ms_LastTimeSync);
 }
 

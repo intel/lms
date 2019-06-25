@@ -65,7 +65,7 @@ bool AsyncActivationManager::RefreshOnOperation( ServiceNamesList &services, OpT
 	if (waiting.empty())
 		return ret;
 
-	UNS_DEBUG(L"AsyncActivationManager: refreshing on operation, waiting %d", L"\n", waiting.size());
+	UNS_DEBUG(L"AsyncActivationManager: refreshing on operation, waiting %d\n", waiting.size());
 
 	NamesList toErase;
 

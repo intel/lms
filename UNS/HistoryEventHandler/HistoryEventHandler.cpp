@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2018 Intel Corporation
+ * Copyright (C) 2013-2019 Intel Corporation
  */
 #include "HistoryEventHandler.h"
 #include "DataStorageGenerator.h"
@@ -13,7 +13,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func) 
@@ -31,7 +31,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"HEVH: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
@@ -51,14 +51,14 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 			//This means registry is not exist and should be created
 			if (!DSinstance().SetDataValue(IMSSHistoryStorage_, defaultValue))
 			{
-				UNS_DEBUG(L"HistoryEventHandler::createHistoryRegistry failed err=%d",L"\n",GetLastError());
+				UNS_DEBUG(L"HistoryEventHandler::createHistoryRegistry failed err=%d\n", GetLastError());
 			}			
 		}
 		
 		int retVal = EventHandler::init(argc, argv);
 		if (retVal != 0)
 		{
-			UNS_DEBUG(L"EventHandler::init failed. retVal: %d", L"\n", retVal);
+			UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
 			return retVal;
 		}
 
@@ -134,7 +134,7 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 		time_t t;
 		if (time (&t) == -1)
 			{
-				UNS_DEBUG(L"time failed", L"\n");
+			UNS_DEBUG(L"time failed\n");
 				return -1;
 			}
 		std::wstringstream ss;
@@ -146,7 +146,7 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 		eventList.append(newEventStr);
 		if (!DSinstance().SetDataValue(storageName, eventList))
 		{
-			UNS_DEBUG(L"SetDataValue failed", L"\n");
+			UNS_DEBUG(L"SetDataValue failed\n");
 			return -1;
 		}
 		

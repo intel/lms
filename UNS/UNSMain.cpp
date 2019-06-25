@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2004-2006, 2009-2018 Intel Corporation
+ * Copyright (C) 2004-2006, 2009-2019 Intel Corporation
  */
 /*++
 
@@ -21,7 +21,7 @@
 
 int RunUNSService(GmsService** gmsSrv)
 {
-	UNS_DEBUG(L"Starting LMS Service",L"\n");
+	UNS_DEBUG(L"Starting LMS Service\n");
 
 #ifdef WIN32
 	 SetDllDirectory(L"");

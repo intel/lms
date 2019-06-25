@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 #include "DBusService.h"
 #include "AT_Device.h"
@@ -14,7 +14,7 @@ namespace AT_Device {
 				   GDBusMethodInvocation *invocation,
 				   gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_audit_logs", L"\n");
+		UNS_DEBUG(L"on_get_audit_logs\n");
 		DBusService *th = (DBusService *)user_data;
 		std::string logs;
 

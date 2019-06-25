@@ -19,7 +19,7 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d", L"\n", retVal);
+		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
 		return retVal;
 	}
 
@@ -35,12 +35,12 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 #ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"Exception with HTMGetFatalErrorsCommand: %C",L"\n", e.what());
+		UNS_DEBUG(L"Exception with HTMGetFatalErrorsCommand: %C\n", e.what());
 	}
 #else
 	catch(...)
 	{
-		UNS_DEBUG(L"Exception with HTMGetFatalErrorsCommand",L"\n");
+		UNS_DEBUG(L"Exception with HTMGetFatalErrorsCommand\n");
 	}
 #endif	
 
@@ -49,7 +49,7 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 	if (DSinstance().GetDataValue(FLogSize, registrySize, false) == true && currentSize != registrySize || //if current log's size is greater than previos one (of when we got up) = there was a fatal error. Even if it is lower than the current - it may be after reset of FLog
 		DSinstance().GetDataValue(FLogSize, registrySize, false) == false ) // no value is saved in the registry
 	{	
-		UNS_DEBUG(L"Intel(R) Management Engine (Intel(R) ME) error(s) occurred. Please review Intel(R) ME logs.", L"\n"); 
+		UNS_DEBUG(L"Intel(R) Management Engine (Intel(R) ME) error(s) occurred. Please review Intel(R) ME logs.\n");
 			
 		//notify in the Event Viewer
 		sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_FW_FATAL_ERROR, ACE_TEXT("Fatal Error in FW log"));
@@ -102,7 +102,7 @@ WinLogEventHandler::winLogging(GMS_AlertIndication* alert)
 		bool subscribe = filter_->toSubscribe (alert,et);
 		if (!subscribe)
 		{
-			UNS_DEBUG(L"WinLogEventHandler: not subscribed", L"\n");
+			UNS_DEBUG(L"WinLogEventHandler: not subscribed\n");
 			return 0;
 		}
 		 
@@ -134,8 +134,7 @@ WinLogEventHandler::winLogging(GMS_AlertIndication* alert)
 		}
 	}
 		
-	UNS_DEBUG(L"WinLogEventHandler: sent event to logger",L"\n");
-	//ACE_DEBUG ((GMS_DEBUG ACE_TEXT ("WinLogEventHandler: sent event to logger\n")));
+	UNS_DEBUG(L"WinLogEventHandler: sent event to logger\n");
 	return 0;
 }
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -134,6 +134,6 @@ ComFilter::defaultInitialization(std::shared_ptr<ComFilter> filter)
 		filter->addEvent(EVENT_TIME_SYNC_ENABLE)
 	) //if
 		return true;
-	UNS_DEBUG(L"filter initialization failed",L"\n");
+	UNS_DEBUG(L"filter initialization failed\n");
 	return false;
 }

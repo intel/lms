@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -189,7 +189,7 @@ bool
 CimToEventTranslator::translate(const std::string &cimMessageID, const std::string &cimMessageArg, const std::string &cimMessageText, GMS_AlertIndication &unsEvent)
 {
 
-	UNS_DEBUG(L"CimToEventTranslator:translate", L"\n");
+	UNS_DEBUG(L"CimToEventTranslator:translate\n");
 
 	// Uniq string ID
 	ACE_TString uniqStrID;
@@ -210,7 +210,7 @@ CimToEventTranslator::translate(const std::string &cimMessageID, const std::stri
 		if (cimMessageArg.size() > 0)
 		{
 			unsEvent.MessageArguments.push_back(ACE_TEXT_CHAR_TO_TCHAR(cimMessageArg.c_str()));
-			UNS_DEBUG(L"CimToEventTranslator: MessageArguments=%C", L"\n", cimMessageArg.c_str());
+			UNS_DEBUG(L"CimToEventTranslator: MessageArguments=%C\n", cimMessageArg.c_str());
 
 		}
 	}
@@ -219,18 +219,18 @@ CimToEventTranslator::translate(const std::string &cimMessageID, const std::stri
 		//if fail to find we try to append first argument to the event (assuming event in the format of iAMT00## - *) where * is a unique value hold in MessageArguments[0] 
 		ACE_TString sep = SEPERATOR;
 		uniqStrID.append(sep.c_str(), sep.length());
-		UNS_DEBUG(L"  CimToEventTranslator: MessageID=%C", L"\n", cimMessageID.c_str() );
+		UNS_DEBUG(L"  CimToEventTranslator: MessageID=%C\n", cimMessageID.c_str() );
 		// We copy only the first arg - the Message IS
 		if (cimMessageArg.size() > 0) {
 
 			//The next line logic - in order to indentify the Event in the map it uses the messageID and the first argument (if exist)
 			uniqStrID.append(ACE_TEXT_CHAR_TO_TCHAR(cimMessageArg.c_str()), cimMessageArg.length());
-			UNS_DEBUG(L"  CimToEventTranslator: MessageArgument=%C", L"\n", (cimMessageArg).c_str());
+			UNS_DEBUG(L"  CimToEventTranslator: MessageArgument=%C\n", (cimMessageArg).c_str());
 		}
 		if (m_eventsMap.find(uniqStrID, et) != 0)
 		{
 			// The event is not in the map
-			UNS_DEBUG(L"CimToEventTranslator: uniqStrID [%s] not found in map", L"\n", uniqStrID.c_str());
+			UNS_DEBUG(L"CimToEventTranslator: uniqStrID [%s] not found in map\n", uniqStrID.c_str());
 			return false;
 		}
 	}
@@ -239,7 +239,7 @@ CimToEventTranslator::translate(const std::string &cimMessageID, const std::stri
 	unsEvent.id = et.id;
 	unsEvent.Message = setMessage(unsEvent, cimMessageText, et);
 
-	UNS_DEBUG(L"    CimToEventTranslator: unsEvent category=%d id=%d Message=%s", L"\n",
+	UNS_DEBUG(L"    CimToEventTranslator: unsEvent category=%d id=%d Message=%s\n",
 		unsEvent.category, unsEvent.id, unsEvent.Message.c_str());
 	return true;
 }
@@ -279,7 +279,7 @@ CimToEventTranslator::setMessage(GMS_AlertIndication &unsEvent, const std::strin
 		message = ACE_TEXT_CHAR_TO_TCHAR(cimMessageText.c_str());
 		if (message.compare(ACE_TEXT("")) == 0 && !et.message.empty())
 			message = ACE_TEXT_CHAR_TO_TCHAR(et.message.c_str());
-		UNS_DEBUG(L"    CimToEventTranslator::setMessage category=%d id=%d cimEventMessage=%s message=%s", L"\n",
+		UNS_DEBUG(L"    CimToEventTranslator::setMessage category=%d id=%d cimEventMessage=%s message=%s\n",
 			unsEvent.category, unsEvent.id, unsEvent.Message.c_str(), message.c_str());
 
 		break;

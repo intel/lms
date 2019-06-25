@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 #include "DBusService.h"
 #include "PTHI_Commands.h"
@@ -14,7 +14,7 @@ namespace PTHI {
 	gboolean on_get_amtversion(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_amtversion", L"\n");
+		UNS_DEBUG(L"on_get_amtversion\n");
 		DBusService *th = (DBusService *)user_data;
 		std::string version;
 
@@ -29,7 +29,7 @@ namespace PTHI {
 	gboolean on_get_lmsversion(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_lmsversion", L"\n");
+		UNS_DEBUG(L"on_get_lmsversion\n");
 		DBusService *th = (DBusService *)user_data;
 		std::string version;
 
@@ -44,7 +44,7 @@ namespace PTHI {
 	gboolean on_get_provisioning_mode(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_provisioning_mode", L"\n");
+		UNS_DEBUG(L"on_get_provisioning_mode\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t mode = 0;
 
@@ -59,7 +59,7 @@ namespace PTHI {
 	gboolean on_get_provisioning_tls_mode(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_provisioning_tls_mode", L"\n");
+		UNS_DEBUG(L"on_get_provisioning_tls_mode\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t mode = 0;
 
@@ -74,7 +74,7 @@ namespace PTHI {
 	gboolean on_get_provisioning_state(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_provisioning_state", L"\n");
+		UNS_DEBUG(L"on_get_provisioning_state\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t state = 0;
 
@@ -89,7 +89,7 @@ namespace PTHI {
 	gboolean on_get_network_connection_status(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_network_connection_status", L"\n");
+		UNS_DEBUG(L"on_get_network_connection_status\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t status = 0, connection_type = 0, connection_trigger = 0;
 
@@ -105,7 +105,7 @@ namespace PTHI {
 	gboolean on_get_user_initiated_enabled(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_user_initiated_enabled", L"\n");
+		UNS_DEBUG(L"on_get_user_initiated_enabled\n");
 		DBusService *th = (DBusService *)user_data;
 		short int state = 0;
 
@@ -120,7 +120,7 @@ namespace PTHI {
 	gboolean on_get_web_uistate(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_web_uistate", L"\n");
+		UNS_DEBUG(L"on_get_web_uistate\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t state = 0;
 
@@ -135,7 +135,7 @@ namespace PTHI {
 	gboolean on_get_power_policy(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_power_policy", L"\n");
+		UNS_DEBUG(L"on_get_power_policy\n");
 		DBusService *th = (DBusService *)user_data;
 		std::string policy;
 
@@ -150,7 +150,7 @@ namespace PTHI {
 	gboolean on_get_last_reset_reason(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_last_reset_reason", L"\n");
+		UNS_DEBUG(L"on_get_last_reset_reason\n");
 		DBusService *th = (DBusService *)user_data;
 		short int reason = 0;
 
@@ -165,7 +165,7 @@ namespace PTHI {
 	gboolean on_get_redirection_status(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_redirection_status", L"\n");
+		UNS_DEBUG(L"on_get_redirection_status\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t SOL = 0, IDER = 0;
 
@@ -180,7 +180,7 @@ namespace PTHI {
 	gboolean on_get_system_defense_status(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_system_defense_status", L"\n");
+		UNS_DEBUG(L"on_get_system_defense_status\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t status = 0;
 
@@ -195,7 +195,7 @@ namespace PTHI {
 	gboolean on_get_network_settings(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				guint ConnectionType, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_network_settings %d", L"\n", ConnectionType);
+		UNS_DEBUG(L"on_get_network_settings %d\n", ConnectionType);
 		DBusService *th = (DBusService *)user_data;
 		uint32_t DhcpEnabled = 0;
 		std::string IpAddress;
@@ -223,7 +223,7 @@ namespace PTHI {
 	gboolean on_get_ipv6_network_settings(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				guint ConnectionType, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_ipv6_network_settings %d", L"\n", ConnectionType);
+		UNS_DEBUG(L"on_get_ipv6_network_settings %d\n", ConnectionType);
 		DBusService *th = (DBusService *)user_data;
 		std::string IPv6DefaultRouter;
 		std::string PrimaryDNS;
@@ -259,7 +259,7 @@ namespace PTHI {
 	gboolean on_get_system_uuid(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_system_uuid", L"\n");
+		UNS_DEBUG(L"on_get_system_uuid\n");
 		DBusService *th = (DBusService *)user_data;
 	 	std::string uuid;
 
@@ -274,7 +274,7 @@ namespace PTHI {
 	gboolean on_open_user_initiated_connection(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_open_user_initiated_connection", L"\n");
+		UNS_DEBUG(L"on_open_user_initiated_connection\n");
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).OpenUserInitiatedConnection();
@@ -288,7 +288,7 @@ namespace PTHI {
 	gboolean on_close_user_initiated_connection(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_close_user_initiated_connection", L"\n");
+		UNS_DEBUG(L"on_close_user_initiated_connection\n");
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).CloseUserInitiatedConnection();
@@ -302,7 +302,7 @@ namespace PTHI {
 	gboolean on_terminate_kvmsession(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_terminate_kvmsession", L"\n");
+		UNS_DEBUG(L"on_terminate_kvmsession\n");
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).TerminateKVMSession();
@@ -316,7 +316,7 @@ namespace PTHI {
 	gboolean on_get_kvmredirection_state(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_kvmredirection_state", L"\n");
+		UNS_DEBUG(L"on_get_kvmredirection_state\n");
 		DBusService *th = (DBusService *)user_data;
 		bool Enabled = false, Connected = false;
 
@@ -331,7 +331,7 @@ namespace PTHI {
 	gboolean on_set_sprite_language(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				guint Language, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_set_sprite_language %d", L"\n", Language);
+		UNS_DEBUG(L"on_set_sprite_language %d\n", Language);
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).SetSpriteLanguage(Language);
@@ -345,7 +345,7 @@ namespace PTHI {
 	gboolean on_get_sprite_parameters(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_sprite_parameters", L"\n");
+		UNS_DEBUG(L"on_get_sprite_parameters\n");
 		DBusService *th = (DBusService *)user_data;
 		unsigned short int Language = 0;
 		unsigned short int Zoom = 0;
@@ -361,7 +361,7 @@ namespace PTHI {
 	gboolean on_set_sprite_zoom(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				guint Zoom, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_set_sprite_zoom %d", L"\n", Zoom);
+		UNS_DEBUG(L"on_set_sprite_zoom %d\n", Zoom);
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).SetSpriteZoom(Zoom);
@@ -375,7 +375,7 @@ namespace PTHI {
 	gboolean on_get_configuration_info(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_configuration_info", L"\n");
+		UNS_DEBUG(L"on_get_configuration_info\n");
 		DBusService *th = (DBusService *)user_data;
 		short ControlMode = 0;
 		short ProvisioningMethod = 0;
@@ -409,7 +409,7 @@ namespace PTHI {
 	gboolean on_terminate_remedy_sessions(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_terminate_remedy_sessions", L"\n");
+		UNS_DEBUG(L"on_terminate_remedy_sessions\n");
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).TerminateRemedySessions();
@@ -423,7 +423,7 @@ namespace PTHI {
 	gboolean on_get_user_consent_state(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_user_consent_state", L"\n");
+		UNS_DEBUG(L"on_get_user_consent_state\n");
 		DBusService *th = (DBusService *)user_data;
 		short int State = 0;
 		USER_CONSENT_POLICY Policy = NOT_REQUIRED;
@@ -439,7 +439,7 @@ namespace PTHI {
 	gboolean on_get_wlanlink_info(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_wlanlink_info", L"\n");
+		UNS_DEBUG(L"on_get_wlanlink_info\n");
 		DBusService *th = (DBusService *)user_data;
 		uint32_t Preference = 0, Control = 0, Protection = 0;
 
@@ -454,7 +454,7 @@ namespace PTHI {
 	gboolean on_set_link_preference_to_host(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_set_link_preference_to_host", L"\n");
+		UNS_DEBUG(L"on_set_link_preference_to_host\n");
 		DBusService *th = (DBusService *)user_data;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).SetLinkPreferenceToHost();
@@ -468,7 +468,7 @@ namespace PTHI {
 	gboolean on_initiate_user_connection(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_initiate_user_connection", L"\n");
+		UNS_DEBUG(L"on_initiate_user_connection\n");
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
@@ -483,7 +483,7 @@ namespace PTHI {
 	gboolean on_user_initiated_policy_rule_exists(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_user_initiated_policy_rule_exists", L"\n");
+		UNS_DEBUG(L"on_user_initiated_policy_rule_exists\n");
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
@@ -498,7 +498,7 @@ namespace PTHI {
 	gboolean on_user_initiated_policy_rule_for_local_mps_exists(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_user_initiated_policy_rule_for_local_mps_exists", L"\n");
+		UNS_DEBUG(L"on_user_initiated_policy_rule_for_local_mps_exists\n");
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
@@ -513,7 +513,7 @@ namespace PTHI {
 	gboolean on_snmp_event_subscriber_exists(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_snmp_event_subscriber_exists", L"\n");
+		UNS_DEBUG(L"on_snmp_event_subscriber_exists\n");
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
@@ -528,7 +528,7 @@ namespace PTHI {
 	gboolean on_cilafilter_collection_subscription_exists(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_cilafilter_collection_subscription_exists", L"\n");
+		UNS_DEBUG(L"on_cilafilter_collection_subscription_exists\n");
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
@@ -545,13 +545,13 @@ namespace PTHI {
 				GVariant *ExtendedDisplayParameters, guint numOfDisplays,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_update_screen_settings2", L"\n");
+		UNS_DEBUG(L"on_update_screen_settings2\n");
 		DBusService *th = (DBusService *)user_data;
 		EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters;
 
 		if (numOfDisplays > MAX_DISPLAY_NUMBER_LATEST)
 		{
-			UNS_DEBUG(L"on_update_screen_settings2 numOfDisplays %d>%d", L"\n",
+			UNS_DEBUG(L"on_update_screen_settings2 numOfDisplays %d>%d\n",
 				  numOfDisplays, MAX_DISPLAY_NUMBER_LATEST);
 			send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
 			return TRUE;
@@ -569,7 +569,7 @@ namespace PTHI {
 			if (i >= numOfDisplays)
 			{
 				g_variant_unref(child);
-				UNS_DEBUG(L"on_update_screen_settings2 actual numOfDisplays > %d", L"\n",
+				UNS_DEBUG(L"on_update_screen_settings2 actual numOfDisplays > %d\n",
 					  numOfDisplays);
 				send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
 				return TRUE;
@@ -599,7 +599,7 @@ namespace PTHI {
 					eExtendedDisplayParameters.DisplayParameters[i].Pipe = g_variant_get_uint32(child1);
 					break;
 				default:
-					UNS_DEBUG(L"on_update_screen_settings2 more then 6 params in line", L"\n");
+					UNS_DEBUG(L"on_update_screen_settings2 more then 6 params in line\n");
 					break;
 				}
 				g_variant_unref(child1);
@@ -610,7 +610,7 @@ namespace PTHI {
 		}
 		if (i != numOfDisplays)
 		{
-			UNS_DEBUG(L"on_update_screen_settings2 wrong actual numOfDisplays %d != %d", L"\n",
+			UNS_DEBUG(L"on_update_screen_settings2 wrong actual numOfDisplays %d != %d\n",
 				  numOfDisplays, i);
 			send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
 			return TRUE;
@@ -627,7 +627,7 @@ namespace PTHI {
 	gboolean on_get_redirection_session_link_technology(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 							guint sessionType, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_redirection_session_link_technology %d", L"\n", sessionType);
+		UNS_DEBUG(L"on_get_redirection_session_link_technology %d\n", sessionType);
 		DBusService *th = (DBusService *)user_data;
 		short LinkTechnology = 0;
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "TimeSyncEventFilter.h"
@@ -8,7 +8,7 @@
 bool 
 TimeSyncEventFilter::toSubscribe(const GMS_AlertIndication *alert) const
 {
-	UNS_DEBUG(L"TimeSyncEventFilter::toSubscribe", L"\n");
+	UNS_DEBUG(L"TimeSyncEventFilter::toSubscribe\n");
 
 	switch (alert->category)
 	{

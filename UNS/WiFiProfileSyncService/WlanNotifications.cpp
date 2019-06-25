@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 #include <string>
 #include "global.h"
@@ -33,7 +33,7 @@ int wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncService *servic
 		nullptr                     // dwPrevNotifSource - A pointer to the previously registered notification sources.
 	);
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanRegisterNotification retVal=%d", L"\n", retVal);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanRegisterNotification retVal=%d\n", retVal);
 
 	return 0;
 }
@@ -60,12 +60,12 @@ VOID WINAPI wlanps::WlanNotifications::WlanNotificationCbk(PWLAN_NOTIFICATION_DA
 	wlanps::WlanNotifications *pWlanNotif = (wlanps::WlanNotifications*)(pContext);
 	PWLAN_CONNECTION_NOTIFICATION_DATA pConnNotifData =	(PWLAN_CONNECTION_NOTIFICATION_DATA)pWlanNotificationData->pData;
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Got WLAN Notification. Source = %d", L"\n", pWlanNotificationData->NotificationSource);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Got WLAN Notification. Source = %d\n", pWlanNotificationData->NotificationSource);
 
 	if (pWlanNotificationData->NotificationSource == WLAN_NOTIFICATION_SOURCE_ACM && 
 		pWlanNotificationData->NotificationCode == wlan_notification_acm_connection_complete)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": acm_connection_complete", L"\n");
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": acm_connection_complete\n");
 			
 		if (pConnNotifData->wlanReasonCode == WLAN_REASON_CODE_SUCCESS)
 		{
@@ -84,7 +84,7 @@ VOID WINAPI wlanps::WlanNotifications::WlanNotificationCbk(PWLAN_NOTIFICATION_DA
 		}
 		else
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": connection failed", L"\n");
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": connection failed\n");
 		}
 	}
 }

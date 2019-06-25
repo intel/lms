@@ -56,14 +56,14 @@ bool ADDR_Data::getIPString(std::string &IP)
 
 		if(0 == WSAAddressToStringA((LPSOCKADDR)&_addr, sizeof(_addr), NULL, addressStr, &addressStrlen)) 
 		{
-			//LMS_DEBUG_SIMPLE("\tIP Address %s", IP.c_str());
+			//UNS_DEBUG("\tIP Address %s\n", IP.c_str());
 			IP = addressStr;
 			return true;
 		}
 	}
 	else
 	{
-		LMS_DEBUG_SIMPLE(L"ADDR_Data::getANSI - illegal address ");
+		UNS_DEBUG(L"ADDR_Data::getANSI - illegal address \n");
 		return false;
 	}
 	return false;
@@ -75,7 +75,7 @@ bool ADDR_Data::getIPString(std::string &IP)
 
 	if (len == -1)
 	{
-		LMS_DEBUG_SIMPLE(L"ADDR_Data::getIPString - illegal len");
+		UNS_DEBUG(L"ADDR_Data::getIPString - illegal len\n");
 		return false;
 	}
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "PortForwardingService.h"
 
@@ -33,7 +33,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func) 
@@ -51,7 +51,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"PFWS: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void _SEventLogCallbackWrn(void *param, const char* message)
@@ -128,7 +128,7 @@ public:
 	ACE_Event m_initProtStop;
 	virtual int svc()
 	{
-		LMS_DEBUG_SIMPLE(L"Main LMS Thread started");
+		UNS_DEBUG(L"Main LMS Thread started\n");
 		ACE_Thread_Manager *mgr = this->thr_mgr();
 
 		
@@ -168,7 +168,7 @@ public:
 						if (!warningMessageWasShown && !m_prot.GetLMEConnection().IsSelfDisconnect())
 						{
 							secondTryConnectionLost = true; //give another chance before sending the warning
-							LMS_DEBUG_SIMPLE(L"first time connection lost");
+							UNS_DEBUG(L"first time connection lost\n");
 							m_father->BroadcastFailure(false);
 						}
 					}
@@ -188,19 +188,19 @@ public:
 							if (secondTryConnectionLost)
 							{
 								m_father->AddWarningToMessageLog("LMS lost connection to Intel(R) MEI driver");
-								LMS_DEBUG_SIMPLE(L"second time connection lost");
+								UNS_DEBUG(L"second time connection lost\n");
 							}
 							else
 							{
 								m_father->AddWarningToMessageLog("LMS cannot connect to Intel(R) MEI driver");
-								LMS_DEBUG_SIMPLE(L"second time connection failed");
+								UNS_DEBUG(L"second time connection failed\n");
 							}
 							warningMessageWasShown = true;
 						} 
 						else
 						{
 							secondTryConnectionFailed = true; //give another chance before sending the warning
-							LMS_DEBUG_SIMPLE(L"first time connection failed");
+							UNS_DEBUG(L"first time connection failed\n");
 						}
 					}
 
@@ -213,7 +213,7 @@ public:
 					{
 						if (counter >= MAX_CONNECT_RETRIES)
 						{
-							LMS_DEBUG_SIMPLE(L"Too many failures. Will break, broadcast failure and log to Event Viewer.");
+							UNS_DEBUG(L"Too many failures. Will break, broadcast failure and log to Event Viewer.\n");
 							publishFailure = true;
 							break;
 						}
@@ -240,7 +240,7 @@ public:
 				}
 
 
-				LMS_DEBUG_SIMPLE(L"Connected to HECI driver");
+				UNS_DEBUG(L"Connected to HECI driver\n");
 			}
 
 			if (!m_prot.SocketsCreated())
@@ -311,7 +311,7 @@ PortForwardingService::PortForwardingService()
 int
 PortForwardingService::init (int argc, ACE_TCHAR *argv[])
 {
-	LMS_DEBUG_SIMPLE(L"PFWS: started");
+	UNS_DEBUG(L"PFWS: started\n");
 	initSubService(argc, argv);
 
 	m_lmsMainThread = new LMS_Thread_Impl(this);
@@ -328,7 +328,7 @@ int
 PortForwardingService::fini (void)
 {
 	delete m_lmsMainThread;
-	LMS_DEBUG_SIMPLE(L"PFWS: finalized");
+	UNS_DEBUG(L"PFWS: finalized\n");
 	return 0;
 }
 
@@ -337,14 +337,14 @@ int PortForwardingService::suspend()
 	GmsSubService::suspend();
 	m_lmsMainThread->OnHeciDisable();
 	m_needBroadcastResumed = true;
-	LMS_DEBUG_SIMPLE(L"PFWS: suspended");
+	UNS_DEBUG(L"PFWS: suspended\n");
 	return 0;
 }
 
 int PortForwardingService::resume() 
 {
 	m_lmsMainThread->OnHeciEnable();
-	LMS_DEBUG_SIMPLE(L"PFWS: started resume");
+	UNS_DEBUG(L"PFWS: started resume\n");
 	GmsSubService::resume();
 	return 0;
 }
@@ -360,19 +360,19 @@ void PortForwardingService::BroadcastActive()
 	if (m_needBroadcastStarted)
 	{
 		m_needBroadcastStarted = false;
-		LMS_DEBUG_SIMPLE(L"PFWS: BroadcastActive - signalled start");
+		UNS_DEBUG(L"PFWS: BroadcastActive - signalled start\n");
 	}
 
 	if (m_needBroadcastResumed)
 	{
 		m_needBroadcastResumed = false;
-		LMS_DEBUG_SIMPLE(L"PFWS: BroadcastActive - signalled resume");
+		UNS_DEBUG(L"PFWS: BroadcastActive - signalled resume\n");
 	}
 
 	if (m_needBroadcastPfwActivated)
 	{
 		m_needBroadcastPfwActivated = false;
-		LMS_DEBUG_SIMPLE(L"PFWS: BroadcastActive - signalled PFW activated");
+		UNS_DEBUG(L"PFWS: BroadcastActive - signalled PFW activated\n");
 	}
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
@@ -383,7 +383,7 @@ void PortForwardingService::BroadcastActive()
 
 void PortForwardingService::BroadcastFailure(bool publishFailure)
 {
-	LMS_DEBUG_SIMPLE(L"PFWS: BroadcastFailure");
+	UNS_DEBUG(L"PFWS: BroadcastFailure\n");
 
 	if (m_needBroadcastPfwActivated) //When this is not the first time we fail and the flag is still on
 	{
@@ -412,7 +412,7 @@ ACE_FACTORY_DEFINE (PORTFORWARDINGSERVICE, PortForwardingService)
 void 
 PortForwardingService::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 {
-	UNS_DEBUG(L"PortForwardingService::HandleAceMessage, type: %d", L"\n", type);
+	UNS_DEBUG(L"PortForwardingService::HandleAceMessage, type: %d\n", type);
 
 	switch (type) 
 	{
@@ -423,11 +423,11 @@ PortForwardingService::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 		suspendSubService();
 		break;
 	case MB_MEI_DISABLE_FAILED:			
-		LMS_DEBUG_SIMPLE(L"Got MEI remove failed Notification");
+		UNS_DEBUG(L"Got MEI remove failed Notification\n");
 		m_lmsMainThread->OnHeciEnable();
 		break;
 	default:
-		LMS_DEBUG_VAR(L"SubService:%s got invalid message", name().c_str());				
+		UNS_DEBUG(L"SubService:%s got invalid message\n", name().c_str());				
 	}
 }
 
@@ -489,7 +489,7 @@ HDEVNOTIFY PortForwardingService::_registerDeviceNotifications(HANDLE drvHandle)
 	if (notifyHandle == NULL) {
 		if (!alreadyLoggedFailure) {
 
-			LMS_DEBUG_SIMPLE(L"failed to register LME notification");
+			UNS_DEBUG(L"failed to register LME notification\n");
 
 			alreadyLoggedFailure = true;
 		}
@@ -508,7 +508,7 @@ void PortForwardingService::_unregisterDeviceNotifications(HDEVNOTIFY notifyHand
 		if (!UnregisterDeviceNotification(notifyHandle)) {
 			if (!alreadyLoggedFailure) 
 			{
-				LMS_DEBUG_SIMPLE(L"failed to unregister LME notification");
+				UNS_DEBUG(L"failed to unregister LME notification\n");
 				alreadyLoggedFailure = true;
 			}
 		}

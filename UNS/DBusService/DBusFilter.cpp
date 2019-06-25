@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 /*++
 
@@ -125,6 +125,6 @@ bool DBusFilter::defaultInitialization(std::shared_ptr<DBusFilter> filter)
 	) //if
 		return true;
 
-	UNS_DEBUG(L"filter initialization failed",L"\n");
+	UNS_DEBUG(L"filter initialization failed\n");
 	return false;
 }

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 #include <gio/gio.h>
 #include <sstream>
@@ -14,7 +14,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func)
@@ -32,7 +32,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"DBUS: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 DBusThread::DBusThread(DBusService *father) : m_father(father),
@@ -52,13 +52,13 @@ DBusThread::~DBusThread()
 
 int DBusThread::svc()
 {
-	UNS_DEBUG(L"Main DBus Thread started", L"\n");
+	UNS_DEBUG(L"Main DBus Thread started\n");
 
 	guint owner_id;
 
 	if (!m_loop)
 	{
-		UNS_DEBUG(L"Main DBus Thread m_loop is NULL", L"\n");
+		UNS_DEBUG(L"Main DBus Thread m_loop is NULL\n");
 		return 0;
 	}
 	owner_id = g_bus_own_name(G_BUS_TYPE_SYSTEM,
@@ -69,12 +69,12 @@ int DBusThread::svc()
 				  on_name_lost,
 				  this,
 				  NULL);
-	UNS_DEBUG(L"Main DBus Thread owner_id %d", L"\n", owner_id);
+	UNS_DEBUG(L"Main DBus Thread owner_id %d\n", owner_id);
 
 	g_main_loop_run(m_loop);
 
 	g_bus_unown_name(owner_id);
-	UNS_DEBUG(L"Main DBus Thread stopped", L"\n");
+	UNS_DEBUG(L"Main DBus Thread stopped\n");
 
 	return 0;
 }
@@ -100,7 +100,7 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 {
 	DBusThread *th = (DBusThread *)user_data;
 
-	UNS_DEBUG(L"Main DBus Thread on_bus_acquired", L"\n");
+	UNS_DEBUG(L"Main DBus Thread on_bus_acquired\n");
 	th->m_skeleton = lms_skeleton_new();
 	gboolean ret = g_dbus_interface_skeleton_export(G_DBUS_INTERFACE_SKELETON (th->m_skeleton),
 							connection,
@@ -110,7 +110,7 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 	Intel::DBus::PTHI::on_bus_acquired(connection, &th->m_skeleton_pthi, th->m_father);
 	Intel::DBus::AT_Device::on_bus_acquired(connection, &th->m_skeleton_device, th->m_father);
 	Intel::DBus::UNSAlert::on_bus_acquired(connection, &th->m_skeleton_alert, th->m_father);
-	UNS_DEBUG(L"Main DBus Thread on_bus_acquired %d", L"\n", ret);
+	UNS_DEBUG(L"Main DBus Thread on_bus_acquired %d\n", ret);
 }
 
 void DBusThread::on_name_lost(GDBusConnection *connection,
@@ -118,7 +118,7 @@ void DBusThread::on_name_lost(GDBusConnection *connection,
 {
 	DBusThread *th = (DBusThread *)user_data;
 
-	UNS_DEBUG(L"Main DBus Thread on_name_lost", L"\n");
+	UNS_DEBUG(L"Main DBus Thread on_name_lost\n");
 
 	g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(th->m_skeleton));
 	g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(th->m_skeleton_manageability));
@@ -145,7 +145,7 @@ int DBusService::init(int argc, ACE_TCHAR *argv[])
 
 int DBusService::fini (void)
 {
-	UNS_DEBUG(L"DBusService service stopped", L"\n");
+	UNS_DEBUG(L"DBusService service stopped\n");
 
 	m_DBusThread.stop();
 	m_DBusThread.thr_mgr()->wait_task(&m_DBusThread);
@@ -166,7 +166,7 @@ void DBusService::SendAlarm(GMS_AlertIndication* alert)
 	     ACE_TEXT_ALWAYS_CHAR(alert->Message.c_str()),
 	     (alert->MessageArguments.size() > 0) ? ACE_TEXT_ALWAYS_CHAR(alert->MessageArguments[0].c_str()) : "",
 	     ACE_TEXT_ALWAYS_CHAR(alert->MessageID.c_str()), alert->Datetime.c_str()))
-		UNS_DEBUG(L"DBusService can't send alarm", L"\n");
+		UNS_DEBUG(L"DBusService can't send alarm\n");
 }
 
 int DBusService::handle_event(MessageBlockPtr mbPtr)

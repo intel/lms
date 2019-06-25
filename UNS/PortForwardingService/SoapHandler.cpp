@@ -61,49 +61,49 @@ int SOAP_Handler::parse_message(const std::string &xmlMessage, std::string &Test
 	start = xmlMessage.find(mesIdStartTag);
 	if (start == std::string::npos)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesIdStartTag", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesIdStartTag\n");
 		return -1;
 	}
 	start += mesIdStartTag.size();
 	stop = xmlMessage.find(mesIdEndTag, start);
 	if (stop == std::string::npos || stop <= start)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesIdEndTag", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesIdEndTag\n");
 		return -1;
 	}
 	TestMessageId = xmlMessage.substr(start, stop - start);
-	UNS_DEBUG(L"SOAP_Server_Handler::read_and_parse_input TestMessageId '%C'", L"\n", TestMessageId.c_str());
+	UNS_DEBUG(L"SOAP_Server_Handler::read_and_parse_input TestMessageId '%C'\n", TestMessageId.c_str());
 	if (TestMessageId.size() != std::string("iAMTxxxx").size() ||
 		TestMessageId.substr(0, 4) != std::string("iAMT"))
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message: wrong mesIdStartTag '%C'", L"\n", TestMessageId.c_str());
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message: wrong mesIdStartTag '%C'\n", TestMessageId.c_str());
 		return -1;
 	}
 	start = xmlMessage.find(mesArgStartTag);
 	if (start == std::string::npos)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesArgStartTag", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesArgStartTag\n");
 		return -1;
 	}
 	start += mesArgStartTag.size();
 	stop = xmlMessage.find(mesArgEndTag, start);
 	if (stop == std::string::npos || stop <= start)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesArgEndTag", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesArgEndTag\n");
 		return -1;
 	}
 	TestMessageArg = xmlMessage.substr(start, stop - start);
-	UNS_DEBUG(L"SOAP_Server_Handler::parse_message TestMessageArg '%C'", L"\n", TestMessageArg.c_str());
+	UNS_DEBUG(L"SOAP_Server_Handler::parse_message TestMessageArg '%C'\n", TestMessageArg.c_str());
 	if (TestMessageArg.size() > 2)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message: wrong TestMessageArg '%C'", L"\n", TestMessageArg.c_str());
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message: wrong TestMessageArg '%C'\n", TestMessageArg.c_str());
 		return -1;
 	}
 
 	start = xmlMessage.find(mesStartTag);
 	if (start == std::string::npos)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesStartTag", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesStartTag\n");
 		return -1;
 	}
 	start += mesStartTag.size();
@@ -111,14 +111,14 @@ int SOAP_Handler::parse_message(const std::string &xmlMessage, std::string &Test
 	// message can be empty string
 	if (stop == std::string::npos || stop < start)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesEndTag", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::parse_message cannot find mesEndTag\n");
 		return -1;
 	}
 	if (stop == start)
 		TestMessageText = "";
 	else
 		TestMessageText = xmlMessage.substr(start, stop - start);
-	UNS_DEBUG(L"SOAP_Server_Handler::parse_message TestMessageText '%C'", L"\n", TestMessageText.c_str());
+	UNS_DEBUG(L"SOAP_Server_Handler::parse_message TestMessageText '%C'\n", TestMessageText.c_str());
 	// when we successfully parsed the message we can close the connection - we do not expect anything else coming from there
 	*finished = true;
 	return 0;
@@ -133,7 +133,7 @@ bool SOAP_Handler::handle_input(const char *data, size_t size)
 	std::string TestMessageId, TestMessageArg, TestMessageText;
 	if (read_and_parse_input(data, size, TestMessageId, TestMessageArg, TestMessageText, &finished) != 0)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::read_and_parse_input failed", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::read_and_parse_input failed\n");
 	}
 	else
 	{
@@ -153,11 +153,11 @@ bool SOAP_Handler::handle_input(const char *data, size_t size)
 //*****************************************************************************
 bool SOAP_Handler::HandleCimAlert(const std::string &TestMessageId, const std::string &TestMessageArg, const std::string &TestMessageText)
 {
-	UNS_DEBUG(L"SOAP_Server_Handler::HandleCimAlert started", L"\n");
+	UNS_DEBUG(L"SOAP_Server_Handler::HandleCimAlert started\n");
 
 	if (event_sent)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::HandleCimAlert message is already out", L"\n");
+		UNS_DEBUG(L"SOAP_Server_Handler::HandleCimAlert message is already out\n");
 		return true;
 	}
 
@@ -170,14 +170,14 @@ bool SOAP_Handler::HandleCimAlert(const std::string &TestMessageId, const std::s
 
 	if (!CimToEventTranslator::instance().translate(TestMessageId, TestMessageArg, TestMessageText, *alert))
 	{
-		UNS_DEBUG(L"Soapserver:: Failed to parse CIM event!", L"\n");
+		UNS_DEBUG(L"Soapserver:: Failed to parse CIM event!\n");
 		delete alert;
 		return false;
 	}
 	mbPtr->data_block(alert);
 	mbPtr->msg_type(MB_PUBLISH_EVENT);
 	theService::instance()->sendMessage(EVENT_MANAGER, mbPtr);
-	UNS_DEBUG(L"Soapserver:: publish LMS Event(category %d,Id %d, message %s", L"\n", alert->category, alert->id, alert->Message.c_str());
+	UNS_DEBUG(L"Soapserver:: publish LMS Event(category %d,Id %d, message %s\n", alert->category, alert->id, alert->Message.c_str());
 	event_sent = true;
 	return true;
 

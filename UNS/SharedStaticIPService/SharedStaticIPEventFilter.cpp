@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "SharedStaticIPEventFilter.h"
@@ -8,7 +8,7 @@
 bool 
 SharedStaticIPEventFilter::toSubscribe(const GMS_AlertIndication *alert) const
 {
-	UNS_DEBUG(L"SharedStaticIPEventFilter::toSubscribe", L"\n");
+	UNS_DEBUG(L"SharedStaticIPEventFilter::toSubscribe\n");
 
 	switch (alert->category)
 	{

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "IPRefreshService.h"
 #include "Tools.h"
@@ -33,34 +33,34 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
       pInfo = (IP_INTERFACE_INFO *) MALLOC (ulOutBufLen);
 	  if(pInfo == NULL)
 	  {
-		UNS_DEBUG(L"IPRefresh failed - indufficient memory.\n");
+		  UNS_DEBUG(L"IPRefresh failed - indufficient memory.\n");
 		return false;
 	  }
     }
     // Make a second call to GetInterfaceInfo to get the actual data we want
     if ((dwRetVal = GetInterfaceInfo(pInfo, &ulOutBufLen)) == NO_ERROR ) 
 	{
-		UNS_DEBUG(L"\tNum Adapters: %d",L"\n", pInfo->NumAdapters);
+		UNS_DEBUG(L"\tNum Adapters: %d\n", pInfo->NumAdapters);
 
 		if (pInfo->NumAdapters ==0 ) return false;
 
 		for (int i = 0; i < pInfo->NumAdapters; i++)
 		{
-			UNS_DEBUG(L"\tAdapter Name: %ws,",L"\n", pInfo->Adapter[i].Name);		
-			UNS_DEBUG(L"\tAdapter Index: %d",L"\n", pInfo->Adapter[i].Index);		
+			UNS_DEBUG(L"\tAdapter Name: %ws,\n", pInfo->Adapter[i].Name);		
+			UNS_DEBUG(L"\tAdapter Index: %d\n", pInfo->Adapter[i].Index);		
 		  
 		}
     }
     else if (dwRetVal == ERROR_NO_DATA) 
 	{
-      UNS_DEBUG(L"There are no network adapters with IPv4 enabled on the local system\n");
+		UNS_DEBUG(L"There are no network adapters with IPv4 enabled on the local system\n");
       FREE(pInfo);
       pInfo = NULL;
       return false;
     }
     else 
 	{
-      UNS_DEBUG(L"GetInterfaceInfo failed.\n");
+		UNS_DEBUG(L"GetInterfaceInfo failed.\n");
       LPVOID lpMsgBuf;
 		// to remove                
       if (FormatMessage( 
@@ -73,7 +73,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
         (LPTSTR) &lpMsgBuf,
         0,
         NULL )) {
-        UNS_DEBUG(L"\tError: %C",L"\n", lpMsgBuf);
+        UNS_DEBUG(L"\tError: %C\n", lpMsgBuf);
       }
       LocalFree( lpMsgBuf );
 	  // to remove
@@ -91,14 +91,14 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 	for (int i = 0; i<pInfo->NumAdapters; i++)
 	{
 		if (pInfo->Adapter[i].Index != adaptorID) continue;
-		if ((dwRetVal = IpRenewAddress(&pInfo->Adapter[i])) == NO_ERROR) 
+		if ((dwRetVal = IpRenewAddress(&pInfo->Adapter[i])) == NO_ERROR)
 		{
-		  UNS_DEBUG(L"IP renew succeeded.\n");
-		  publishIPRefreshEvent(nicType==1);
+			UNS_DEBUG(L"IP renew succeeded.\n");
+			publishIPRefreshEvent(nicType == 1);
 		}
 		else 
 		{
-		  UNS_DEBUG(L"IP renew failed.\n");
+			UNS_DEBUG(L"IP renew failed.\n");
 		}
 	}
     /* Free allocated memory no longer needed */
@@ -120,7 +120,7 @@ bool IPRefreshService::FillAdaptorIDs()
 	pAdapterList = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
 	if (pAdapterList == NULL) 
 	{
-		UNS_DEBUG(L"GetAdaptorIDs - Can't allocate memory",L"\n");
+		UNS_DEBUG(L"GetAdaptorIDs - Can't allocate memory\n");
 		return false;
 	}
 	if (GetAdaptersInfo(pAdapterList, &ulBufLen) == ERROR_BUFFER_OVERFLOW) 
@@ -129,14 +129,14 @@ bool IPRefreshService::FillAdaptorIDs()
 		pAdapterList = (IP_ADAPTER_INFO *) malloc(ulBufLen);
 		if (pAdapterList == NULL) 
 		{
-			UNS_DEBUG(L"GetAdaptorIDs - Error allocating memory needed to call GetAdaptersinfo",L"\n");
+			UNS_DEBUG(L"GetAdaptorIDs - Error allocating memory needed to call GetAdaptersinfo\n");
 			return false;
 		}
 	}
 	ret = GetAdaptersInfo(pAdapterList, &ulBufLen);
 	if (ret != NO_ERROR)
 	{
-		UNS_DEBUG(L"GetAdaptorIDs - GetAdaptersInfo failed with error: %d",L"\n", ret);
+		UNS_DEBUG(L"GetAdaptorIDs - GetAdaptersInfo failed with error: %d\n", ret);
 		if (pAdapterList)
 			free(pAdapterList);
 		return false; //(ret == ERROR_NO_DATA); --> cause it happens each request and not periodic...

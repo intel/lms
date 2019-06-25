@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 #include "DBusService.h"
 #include "UNSAlert.h"
@@ -16,7 +16,7 @@ namespace UNSAlert {
 	gboolean on_get_imssevent_history(LmsUNSAlert *skeleton, GDBusMethodInvocation *invocation,
 					  gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_imssevent_history", L"\n");
+		UNS_DEBUG(L"on_get_imssevent_history\n");
 		DBusService *th = (DBusService *)user_data;
 		std::wstring str;
 

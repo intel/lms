@@ -12,12 +12,12 @@
 
 int WiFiProfileSyncService::init(int argc, ACE_TCHAR *argv[])
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::init", L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::init\n");
 
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::init failed. retVal: %d", L"\n", retVal);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::init failed. retVal: %d\n", retVal);
 
 		return retVal;
 	}
@@ -29,7 +29,7 @@ int WiFiProfileSyncService::init(int argc, ACE_TCHAR *argv[])
 
 void WiFiProfileSyncService::InitAndPerformSync()
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService:: Initialize WLAN...", L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService:: Initialize WLAN...\n");
 
 	if (InitWlan() != 0)
 	{
@@ -37,13 +37,13 @@ void WiFiProfileSyncService::InitAndPerformSync()
 		return;
 	}
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Calling PerformSync...", L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Calling PerformSync...\n");
 	PerformSync();
 }
 
 int WiFiProfileSyncService::InitWlan()
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService:: Open Handle...", L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService:: Open Handle...\n");
 
 	unsigned long dwMaxClientVer = 2;
 	unsigned long dwCurVersion = 0;
@@ -51,11 +51,11 @@ int WiFiProfileSyncService::InitWlan()
 
 	// open wlan handle
 	dwResult = WlanOpenHandle(dwMaxClientVer, NULL, &dwCurVersion, &m_wlanHandle);
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle dwResult=%d", L"\n", dwResult);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle dwResult=%d\n", dwResult);
 
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle error", L"\n");
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle error\n");
 		return dwResult;
 	}
 
@@ -64,7 +64,7 @@ int WiFiProfileSyncService::InitWlan()
 	int retVal = wlanBL.Init(m_wlanHandle);
 	if (retVal)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error %d", L"\n", retVal);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error %d\n", retVal);
 		return retVal;
 	}
 
@@ -73,7 +73,7 @@ int WiFiProfileSyncService::InitWlan()
 	retVal = wlanNotifications.Init(m_wlanHandle, this); // _hEvents, 
 	if (retVal)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  wlanNotifications.Init error %d", L"\n", retVal);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  wlanNotifications.Init error %d\n", retVal);
 		return retVal;
 	}
 
@@ -83,7 +83,7 @@ int WiFiProfileSyncService::InitWlan()
 
 int WiFiProfileSyncService::handle_timeout(const ACE_Time_Value &current_time, const void *arg)
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  Init Timer #%d", L"\n", m_initNum);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  Init Timer #%d\n", m_initNum);
 
 	if (m_initNum < NUM_RETRIES)
 	{
@@ -100,7 +100,7 @@ int WiFiProfileSyncService::handle_timeout(const ACE_Time_Value &current_time, c
 
 int WiFiProfileSyncService::fini(void)
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSync service stopped",L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSync service stopped\n");
 	WlanCloseHandle(m_wlanHandle, nullptr);
 	ACE_Reactor::instance()->cancel_timer(this);
 	return 0;
@@ -118,7 +118,7 @@ ACE_FACTORY_DEFINE (WIFIPROFILESYNCSERVICE, WiFiProfileSyncService)
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 {	
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: %s::handle_event", L"\n", name().c_str());
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: %s::handle_event\n", name().c_str());
 
 	int type = mbPtr->msg_type();
 	switch (type)
@@ -131,7 +131,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 		break;
 		case MB_PUBLISH_EVENT:
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Got MB_PUBLISH_EVENT", L"\n");
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Got MB_PUBLISH_EVENT\n");
 			GMS_AlertIndication * pGMS_AlertIndication = nullptr;
 			pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
 			if (pGMS_AlertIndication != nullptr)
@@ -142,7 +142,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 		break;
 		case MB_WPFS_SYNC:
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Got MB_WPFS_SYNC", L"\n");
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Got MB_WPFS_SYNC\n");
 			WPFS_Message_Block * message = nullptr;
 			message = dynamic_cast<WPFS_Message_Block*>(mbPtr->data_block());
 			if (message != nullptr)
@@ -161,7 +161,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 
 		default:
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Invalid message. Return ERROR", L"\n");
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Invalid message. Return ERROR\n");
 		}
 		break;
 	}
@@ -171,7 +171,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 
 int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert)
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: handlePublishEvent --->", L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: handlePublishEvent --->\n");
 
 	switch (alert.category)
 	{
@@ -181,10 +181,10 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 			{
 				case EVENT_PORT_FORWARDING_SERVICE_AVAILABLE:
 				{
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: %s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE", L"\n", name().c_str());
+					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: %s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 					if (m_syncRequiredButNoPfw)
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: m_syncRequiredButNoPfw is true -> PerformSync...", L"\n");
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: m_syncRequiredButNoPfw is true -> PerformSync...\n");
 
 						wlanps::WlanBL::getInstance().SyncProfiles();
 						m_syncRequiredButNoPfw = false;
@@ -192,7 +192,7 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 					}
 					else
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: m_syncRequiredButNoPfw is false -> Do nothing...", L"\n");
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: m_syncRequiredButNoPfw is false -> Do nothing...\n");
 					}
 				}
 				break;
@@ -208,7 +208,7 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 
 		default:
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Invalid category. Return ERROR", L"\n");
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Invalid category. Return ERROR\n");
 
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message category.\n")), -1);
 		}
@@ -220,16 +220,16 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 
 void WiFiProfileSyncService::PerformSync()
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"...", L"\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"...\n");
 
 	if (!m_mainService->GetPortForwardingStarted()) 
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %s: Port Forwarding did not start yet, aborting sync operation. ", L"\n", name().c_str());
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %s: Port Forwarding did not start yet, aborting sync operation. \n", name().c_str());
 		m_syncRequiredButNoPfw = true;
 	}
 	else
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Port Forwarding started -> Call PerformSync...", L"\n");
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Port Forwarding started -> Call PerformSync...\n");
 
 		wlanps::WlanBL::getInstance().SyncProfiles();
 		m_syncRequiredButNoPfw = false;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -27,7 +27,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 	// Before calling AddIPAddress we use GetIpAddrTable to get an adapter to which we can add the IP.
 	pIPAddrTable = (MIB_IPADDRTABLE *) malloc(sizeof (MIB_IPADDRTABLE));
 	if (pIPAddrTable == NULL) {
-		UNS_DEBUG(L"malloc 1 failed",L"\n");
+		UNS_DEBUG(L"malloc 1 failed\n");
 		return res;
 	}
 	if (pIPAddrTable) {
@@ -37,7 +37,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 			free(pIPAddrTable);
 			pIPAddrTable = (MIB_IPADDRTABLE *) malloc(dwSize);
 			if (pIPAddrTable == NULL) {
-				UNS_DEBUG(L"malloc 2 failed",L"\n");
+				UNS_DEBUG(L"malloc 2 failed\n");
 				return res;
 			}
 		}
@@ -47,21 +47,21 @@ bool SyncNetworkData::ValidateLinkStatus()
 	{
 		Sleep(1000); // otherwise, GetIpAddrTable function will not achieve all the adapters. (in case of Symc IP and changing the IP address of the adapter, the API will not avhieve the updated adapter. Bug 1304805284)
 	
-		UNS_DEBUG(L"Trial # %d",L"\n", trialsCounter);
+		UNS_DEBUG(L"Trial # %d\n", trialsCounter);
 
 		memset(pIPAddrTable, 0x0, dwSize);
 		// Make a second call to GetIpAddrTable to get the actual data we want
 		if ( (ret = GetIpAddrTable( pIPAddrTable, &dwSize, 0 )) != NO_ERROR ) { 
-			UNS_DEBUG(L"GetIpAddrTable failed with error %d",L"\n", ret);
+			UNS_DEBUG(L"GetIpAddrTable failed with error %d\n", ret);
 			free(pIPAddrTable);
 			return res;
 		}
 
-		UNS_DEBUG(L"Num Entries: %d",L"\n", pIPAddrTable->dwNumEntries);
+		UNS_DEBUG(L"Num Entries: %d\n", pIPAddrTable->dwNumEntries);
 		for (int i=0; i < (int) pIPAddrTable->dwNumEntries; i++) {
 
-			UNS_DEBUG(L"Interface Index[%d]:\t%d %d",L"\n", i, pIPAddrTable->table[i].dwIndex, m_NICindex);
-			UNS_DEBUG(L"Type: %u",L"\n", pIPAddrTable->table[i].wType);
+			UNS_DEBUG(L"Interface Index[%d]:\t%d %d\n", i, pIPAddrTable->table[i].dwIndex, m_NICindex);
+			UNS_DEBUG(L"Type: %u\n", pIPAddrTable->table[i].wType);
 
 			if (pIPAddrTable->table[i].dwIndex != m_NICindex)
 				continue;	
@@ -69,18 +69,18 @@ bool SyncNetworkData::ValidateLinkStatus()
 			if (pIPAddrTable->table[i].wType & (MIB_IPADDR_PRIMARY|MIB_IPADDR_DYNAMIC))
 			{			
 				res = true;
-				UNS_DEBUG(L"Address is on Primary or Dynamic interface",L"\n");			
+				UNS_DEBUG(L"Address is on Primary or Dynamic interface\n");
 			}
 
 			if (pIPAddrTable->table[i].wType & MIB_IPADDR_DISCONNECTED)
 			{
 				res = false;
-				UNS_DEBUG(L"Address is on disconected interface",L"\n");
+				UNS_DEBUG(L"Address is on disconected interface\n");
 			}
 			else if (pIPAddrTable->table[i].wType & MIB_IPADDR_DELETED)
 			{
 				res = false;
-				UNS_DEBUG(L"Address is deleted",L"\n");
+				UNS_DEBUG(L"Address is deleted\n");
 			}
 			goto end;
 		}
@@ -115,7 +115,7 @@ bool SyncNetworkData::SyncDNSData()
 
 	if (pPerAdapterInfo == NULL) 
 	{
-		UNS_DEBUG(L"Can't allocate memory on heap for DNS server list (%d bytes): EnumDnsServers",L"\n", ulBufLen);
+		UNS_DEBUG(L"Can't allocate memory on heap for DNS server list (%d bytes): EnumDnsServers\n", ulBufLen);
 		return res;
 	}
 
@@ -123,29 +123,29 @@ bool SyncNetworkData::SyncDNSData()
 
 	if (dnsServerList != NULL && strlen(dnsServerList->IpAddress.String)>0)
 	{
-		UNS_DEBUG(L"Primary DNS Server - exists", L"\n");
+		UNS_DEBUG(L"Primary DNS Server - exists\n");
 		if (m_PrimaryDNS.compare(dnsServerList->IpAddress.String) != 0)// && (strcmp(dnsServerList->IpAddress.String,"0.0.0.0")))
 		{
-			UNS_DEBUG(L"Primary DNS Server - update required", L"\n");
+			UNS_DEBUG(L"Primary DNS Server - update required\n");
 			m_PrimaryDNS.assign(dnsServerList->IpAddress.String);		  
 			res = true;
 		}	  
 		if ((dnsServerList = dnsServerList->Next)!= NULL)
 		{			
-			UNS_DEBUG(L"Secondary DNS Server - exists", L"\n");
+			UNS_DEBUG(L"Secondary DNS Server - exists\n");
 			if (m_SecondaryDNS.compare(dnsServerList->IpAddress.String)!= 0)//&& (strcmp(dnsServerList->IpAddress.String,"0.0.0.0")))
 			{	
-				UNS_DEBUG(L"Secondary DNS Server - update required", L"\n");
+				UNS_DEBUG(L"Secondary DNS Server - update required\n");
 				m_SecondaryDNS.assign(dnsServerList->IpAddress.String);				  
 				res = true;
 			}						
 		}
 		else
 		{
-			UNS_DEBUG(L"Secondary DNS Server - empty", L"\n");
+			UNS_DEBUG(L"Secondary DNS Server - empty\n");
 			if (!m_SecondaryDNS.empty())
 			{	
-				UNS_DEBUG(L"Secondary DNS Server - update required", L"\n");
+				UNS_DEBUG(L"Secondary DNS Server - update required\n");
 				m_SecondaryDNS.clear();
 				res = true;
 			}						
@@ -153,17 +153,17 @@ bool SyncNetworkData::SyncDNSData()
 	}
 	else 
 	{
-		UNS_DEBUG(L"Primary DNS Server - empty", L"\n", m_PrimaryDNS.empty(), m_PrimaryDNS.c_str());
+		UNS_DEBUG(L"Primary DNS Server - empty\n", m_PrimaryDNS.empty(), m_PrimaryDNS.c_str());
 		if (!m_PrimaryDNS.empty())
 		{
-			UNS_DEBUG(L"Primary DNS Server - update required", L"\n");
+			UNS_DEBUG(L"Primary DNS Server - update required\n");
 			m_PrimaryDNS.clear();
 			res = true;
 		}
 	}
 	
 	HeapFree(GetProcessHeap(), 0, pPerAdapterInfo);
-	UNS_DEBUG(L"DNS Settings:: PrimaryDNS %C, SecondaryDNS %C, return %d",L"\n", m_PrimaryDNS.c_str(), m_SecondaryDNS.c_str(),res);
+	UNS_DEBUG(L"DNS Settings:: PrimaryDNS %C, SecondaryDNS %C, return %d\n", m_PrimaryDNS.c_str(), m_SecondaryDNS.c_str(),res);
 	return res;
 }
 
@@ -177,7 +177,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 	needSync = false;
 	IPv4Enabled = false;
 
-	UNS_DEBUG(L"DhcpEnabled=%d IpAddress=%C SubnetMask=%C MacAddress=%C DefaultGateway=%C",L"\n", m_DHCPEnabled, m_IpAddress.c_str(), m_SubnetMask.c_str(), m_MacAddress.c_str(), m_DefaultGateway.c_str());		
+	UNS_DEBUG(L"DhcpEnabled=%d IpAddress=%C SubnetMask=%C MacAddress=%C DefaultGateway=%C\n", m_DHCPEnabled, m_IpAddress.c_str(), m_SubnetMask.c_str(), m_MacAddress.c_str(), m_DefaultGateway.c_str());		
 
 	if (m_MacAddress.empty()) 
 	{
@@ -192,7 +192,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 	pAdapterList = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
 	if (pAdapterList == NULL) 
 	{
-		UNS_DEBUG(L"malloc 1 failed",L"\n");
+		UNS_DEBUG(L"malloc 1 failed\n");
 		return res;
 	}
 	if (GetAdaptersInfo(pAdapterList, &ulBufLen) == ERROR_BUFFER_OVERFLOW) 
@@ -201,7 +201,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 		pAdapterList = (IP_ADAPTER_INFO *) malloc(ulBufLen);
 		if (pAdapterList == NULL) 
 		{
-			UNS_DEBUG(L"malloc 2 failed",L"\n");
+			UNS_DEBUG(L"malloc 2 failed\n");
 			return res;
 		}
 	}
@@ -209,7 +209,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 	DWORD ret = GetAdaptersInfo(pAdapterList, &ulBufLen);
 	if (ret != NO_ERROR)
 	{
-		UNS_DEBUG(L"GetAdaptersInfo returned error: %d",L"\n", ret);
+		UNS_DEBUG(L"GetAdaptersInfo returned error: %d\n", ret);
 		if (pAdapterList)
 			free(pAdapterList);
 		return (ret == ERROR_NO_DATA);
@@ -262,7 +262,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 				isEmptyAddress = true;
 			}
 
-			UNS_DEBUG(L"new settings updated::  DhcpEnabled=%d IpAddress=%C SubnetMask=%C MacAddress=%C DefaultGateway=%C",L"\n", m_DHCPEnabled, m_IpAddress.c_str(), m_SubnetMask.c_str(), m_MacAddress.c_str(), m_DefaultGateway.c_str());
+			UNS_DEBUG(L"new settings updated::  DhcpEnabled=%d IpAddress=%C SubnetMask=%C MacAddress=%C DefaultGateway=%C\n", m_DHCPEnabled, m_IpAddress.c_str(), m_SubnetMask.c_str(), m_MacAddress.c_str(), m_DefaultGateway.c_str());
 			break;
 		}
 		// go on to the next adapter item
@@ -280,12 +280,12 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 	{
 		if (SyncDNSData())
 		{
-			UNS_DEBUG(L"SyncDNSData update DNS records",L"\n");
+			UNS_DEBUG(L"SyncDNSData update DNS records\n");
 			needSync = true;
 		}
 		else
 		{
-			UNS_DEBUG(L"No new DNS servers",L"\n");
+			UNS_DEBUG(L"No new DNS servers\n");
 		}
 	}		
 	return res;

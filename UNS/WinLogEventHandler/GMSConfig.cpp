@@ -181,7 +181,7 @@ bool GMSConfig::CheckEventToPublish(unsigned long EventID) const
 	int i = m_EventsToPublish.find(EventID,publish);
 	if (i ==-1) { 
 		// The event is not in the map
-		UNS_DEBUG(L"Event [%d] does not need to publish",L"\n",EventID);
+		UNS_DEBUG(L"Event [%d] does not need to publish\n", EventID);
 		return false;
 	}
 	return (publish == 1);

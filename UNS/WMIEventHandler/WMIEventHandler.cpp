@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 #include "WMIEventHandler.h"
 #include <atlbase.h>
@@ -27,7 +27,7 @@
 		int retVal = EventHandler::init(argc, argv);
 		if (retVal != 0)
 		{
-			UNS_DEBUG(L"EventHandler::init failed. retVal: %d", L"\n", retVal);
+			UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
 			return retVal;
 		}
 
@@ -77,7 +77,7 @@
 	int 
 	WMIEventHandler::WMILogging(GMS_AlertIndication* alert)
 	{
-		UNS_DEBUG(L"WMIEventHandler::handleEvent",L"\n");
+		UNS_DEBUG(L"WMIEventHandler::handleEvent\n");
 		HRESULT hr = WBEM_S_NO_ERROR;
 		hr  = CoInitializeEx(NULL, COINIT_MULTITHREADED );
 		{
@@ -110,14 +110,14 @@
 							hr = spEvent->Put(L"ID", 0, &varEventID, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"ID\" failed, hr=%x err=%d",L"\n",hr,err);
+								UNS_DEBUG(L"spEvent->Put(L\"ID\" failed, hr=%x err=%d\n", hr, err);
 							}
 							CComVariant	varEventCategory(alert->category);
 							varEventCategory.ChangeType(VT_UI1);
 							hr = spEvent->Put(L"Category", 0, &varEventCategory, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"Category\" failed, hr=%x err=%d",L"\n",hr,err);
+								UNS_DEBUG(L"spEvent->Put(L\"Category\" failed, hr=%x err=%d\n", hr, err);
 							}
 							ACE_WString message(ACE_TEXT_ALWAYS_WCHAR(alert->Message));
 							if (alert->MessageArguments.size() && shouldAppendMessageArgToEnd(alert->id))
@@ -128,7 +128,7 @@
 							hr = spEvent->Put(L"Message", 0, &varEventMessage, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"Message\" failed, hr=%x err=%d",L"\n",hr,err);
+								UNS_DEBUG(L"spEvent->Put(L\"Message\" failed, hr=%x err=%d\n", hr, err);
 							}
 						
 							//
@@ -144,7 +144,7 @@
 							hr = spEvent->Put(L"CreationTime", 0, &varCreationTime, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"CreationTime\" failed, hr=%x err=%d",L"\n",hr,err);
+								UNS_DEBUG(L"spEvent->Put(L\"CreationTime\" failed, hr=%x err=%d\n", hr, err);
 							}
 						
 							// Ask WMI for an event sink so we can publish events
@@ -154,34 +154,35 @@
 							{
 								// Publish the __InstanceCreationEvent
 								hr = spEventSink->Indicate(1, &spEvent.p);
-								UNS_DEBUG(L"spEventSink->Indicate return, hr=%x",L"\n",hr);
+								UNS_DEBUG(L"spEventSink->Indicate return, hr=%x\n", hr);
 
 								if (hr!=S_OK){
 									DWORD err=GetLastError();
-									UNS_DEBUG(L"spEventSink->Indicate failed, hr=%x err=%d",L"\n",hr,err);
-								}else{
-									UNS_DEBUG(L"spEventSink->Indicate succeed !!!",L"\n");
+									UNS_DEBUG(L"spEventSink->Indicate failed, hr=%x err=%d\n", hr, err);
+								}
+								else {
+									UNS_DEBUG(L"spEventSink->Indicate succeed !!!\n");
 									hr = spEventSink->SetStatus(WBEM_STATUS_COMPLETE,S_OK,NULL,NULL);
 								}
 							}
 							else
 							{
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spServices->QueryObjectSink failed, hr=%x err=%d",L"\n",hr,err);
+								UNS_DEBUG(L"spServices->QueryObjectSink failed, hr=%x err=%d\n", hr, err);
 
 							}
 						}
 						else
-							UNS_DEBUG(L"WMIEventHandler::handleEvent SpawnInstance failed, hr=%x",L"\n",hr);
+							UNS_DEBUG(L"WMIEventHandler::handleEvent SpawnInstance failed, hr=%x\n", hr);
 					}
 					else
-						UNS_DEBUG(L"WMIEventHandler::handleEvent GetObject failed, hr=%x",L"\n",hr);
+						UNS_DEBUG(L"WMIEventHandler::handleEvent GetObject failed, hr=%x\n", hr);
 				}
 				else
-					UNS_DEBUG(L"WMIEventHandler::handleEvent ConnectServer failed, hr=%x",L"\n",hr);
+					UNS_DEBUG(L"WMIEventHandler::handleEvent ConnectServer failed, hr=%x\n", hr);
 			}
 			else
-				UNS_DEBUG(L"WMIEventHandler::handleEvent CoCreateInstance failed, hr=%x",L"\n",hr);
+				UNS_DEBUG(L"WMIEventHandler::handleEvent CoCreateInstance failed, hr=%x\n", hr);
 		}
 		CoUninitialize();
 		return (hr == WBEM_S_NO_ERROR);

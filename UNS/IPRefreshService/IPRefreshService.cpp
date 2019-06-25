@@ -16,7 +16,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func)
@@ -34,14 +34,14 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"IPR: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 const ACE_TString IPREFRESHEVENT(ACE_TEXT("IP Renew request performed for Intel(R) ME synchronization"));
 
 int IPRefreshService::init (int argc, ACE_TCHAR *argv[])
 {
-	UNS_DEBUG(L"IPRefresh service started",L"\n");
+	UNS_DEBUG(L"IPRefresh service started\n");
 	initSubService(argc,argv);
 	wiredMacAddress_exisits	= false;
 	wirelessMacAddress_exisits = false;
@@ -66,7 +66,7 @@ ACE_FACTORY_DEFINE (IPREFRESHSERVICE , IPRefreshService)
 void 
 IPRefreshService::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 {
-	UNS_DEBUG(L"IPRefreshService::HandleAceMessage",L"\n");
+	UNS_DEBUG(L"IPRefreshService::HandleAceMessage\n");
 
 	switch (type) 
 	{
@@ -101,30 +101,30 @@ bool IPRefreshService::GetMacAddresses(unsigned short adaptorType)
 		if (adaptorType == AMTHI_Client::WIRED)
 		{
 			wiredMacAddress = MacAddressToString(lanSettings.MacAddress,6);
-			UNS_DEBUG(L"UpdateMacAddress successfully - MacAddress=%C",L"\n",wiredMacAddress.c_str());
+			UNS_DEBUG(L"UpdateMacAddress successfully - MacAddress=%C\n",wiredMacAddress.c_str());
 		}
 		else
 		{		
 			wirelessMacAddress = MacAddressToString(lanSettings.MacAddress,6);
-			UNS_DEBUG(L"UpdateMacAddress successfully - MacAddress=%C",L"\n",wirelessMacAddress.c_str());
+			UNS_DEBUG(L"UpdateMacAddress successfully - MacAddress=%C\n",wirelessMacAddress.c_str());
 		}		
 		res = true;
 	}
 #ifdef _DEBUG
 	catch (MEIClientException& e)
 	{	
-		UNS_DEBUG(L"UpdateMacAddress failed",L"\n");
-		UNS_DEBUG(L"GetLanInterfaceSettingsCommand failed %C",L"\n",e.what());
+		UNS_DEBUG(L"UpdateMacAddress failed\n");
+		UNS_DEBUG(L"GetLanInterfaceSettingsCommand failed %C\n",e.what());
 	}
 	catch (AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"UpdateMacAddress failed",L"\n");
-		UNS_DEBUG(L"GetLanInterfaceSettingsCommand failed ret=%d",L"\n",e.getErr());
+		UNS_DEBUG(L"UpdateMacAddress failed\n");
+		UNS_DEBUG(L"GetLanInterfaceSettingsCommand failed ret=%d\n",e.getErr());
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"UpdateMacAddress failed",L"\n");
-		UNS_DEBUG(L"\nException in GetLanInterfaceSettingsCommand %C",L"\n", e.what());
+		UNS_DEBUG(L"UpdateMacAddress failed\n");
+		UNS_DEBUG(L"\nException in GetLanInterfaceSettingsCommand %C\n", e.what());
 	}		
 #else
 	catch(...){}

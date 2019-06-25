@@ -68,7 +68,7 @@ void GmsService::NotifyHeciEnable()
 #ifdef WIN32
 void GmsService::handle_control(DWORD control_code, DWORD dwEventType, bool wasOnOurGUID)
 {
-	UNS_DEBUG(L"GmsService::handle_control %d", L"\n", control_code);
+	UNS_DEBUG(L"GmsService::handle_control %d\n", control_code);
 	switch (control_code)
 	{
 	case SERVICE_CONTROL_SHUTDOWN:
@@ -103,7 +103,7 @@ void GmsService::handle_control(DWORD control_code, DWORD dwEventType, bool wasO
 		}
 		else
 		{
-			UNS_DEBUG(L"Unsupported event type: %d",L"\n", dwEventType);
+			UNS_DEBUG(L"Unsupported event type: %d\n", dwEventType);
 		}
 		break;
 	case SERVICE_CONTROL_DEVICEEVENT:
@@ -150,7 +150,7 @@ void GmsService::powerEvent_requested(DWORD ,DWORD dwEventType)
 			this->resume ();
 			break;
 		default:
-			UNS_DEBUG(L"_ServiceCtrlHandler SERVICE_CONTROL_POWEREVENT EventType=0x%X",L"\n",dwEventType);
+			UNS_DEBUG(L"_ServiceCtrlHandler SERVICE_CONTROL_POWEREVENT EventType=0x%X\n",dwEventType);
 	}
 }
 #endif // WIN32
@@ -204,12 +204,12 @@ bool GmsService::StartAceService(const ACE_TString &serviceName)
 	int i=ACE_Service_Config::process_directive(directive.c_str());
 	if (i==-1)
 	{
-		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened",L"\n", serviceName.c_str());
+		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());
 		return false;
 	}
 	if (i>0)
 	{
-		UNS_DEBUG(L"Couldn't start service: %s %d", L"\n", serviceName.c_str(), i);
+		UNS_DEBUG(L"Couldn't start service: %s %d\n", serviceName.c_str(), i);
 		return false;
 	}
 
@@ -256,7 +256,7 @@ int GmsService::svc(void)
 	}
 #endif // WIN32
 
-	UNS_DEBUG(L"GmsService:Starting service", L"\n");
+	UNS_DEBUG(L"GmsService:Starting service\n");
 	 
 	reactor()->owner(ACE_Thread::self());
 #ifdef WIN32
@@ -264,11 +264,11 @@ int GmsService::svc(void)
 	HANDLE hUNSstarted=CreateEvent(NULL,TRUE,TRUE,L"Global\\UNSstarted");
 	if (hUNSstarted==NULL)
 	{
-		UNS_DEBUG(L"CreateEvent UNSstarted failed, err=%d",L"\n",GetLastError());
+		UNS_DEBUG(L"CreateEvent UNSstarted failed, err=%d\n",GetLastError());
 	}
 	if (!SetEvent(hUNSstarted))
 	{
-		UNS_DEBUG(L"SetEvent UNSstarted failed, err=%d",L"\n",GetLastError());
+		UNS_DEBUG(L"SetEvent UNSstarted failed, err=%d\n",GetLastError());
 	}
 	//*************************
 #endif // WIN32
@@ -279,12 +279,12 @@ int GmsService::svc(void)
 	if (!VerifyFile::Init())
 	{
 		stopped = loading = true;
-		UNS_DEBUG(L"VerifyFile::Init failed, Shutting down.",L"\n");
+		UNS_DEBUG(L"VerifyFile::Init failed, Shutting down.\n");
 		return 0;
 	}
 
 
-	UNS_DEBUG(L"loading strings",L"\n");
+	UNS_DEBUG(L"loading strings\n");
 	WindowsStringLoader loader;
 	std::vector<unsigned int> ids(strings,strings+numOfStrings);
 	try
@@ -293,7 +293,7 @@ int GmsService::svc(void)
 	}
 	catch(...)
 	{
-		UNS_DEBUG(L"GmsService::svc - loadStrings failed, will use default strings",L"\n");
+		UNS_DEBUG(L"GmsService::svc - loadStrings failed, will use default strings\n");
 	}
 #endif // WIN32
 
@@ -301,7 +301,7 @@ int GmsService::svc(void)
 	if (!StartAceService(GMS_CONFIGURATOR))
 	{
 		stopped = loading = true;
-		UNS_DEBUG(L"StartAceService failed, Shutting down.",L"\n");
+		UNS_DEBUG(L"StartAceService failed, Shutting down.\n");
 		return 0;
 	}
 	
@@ -318,13 +318,13 @@ int GmsService::svc(void)
 	}
 	catch (std::exception &e)
 	{
-		UNS_DEBUG(L"Exception %C", L"\n", e.what());
+		UNS_DEBUG(L"Exception %C\n", e.what());
 		SetStopped(true);
 		ret = -1;
 	}
 	catch(...)
 	{
-		UNS_DEBUG(L"Exception", L"\n");
+		UNS_DEBUG(L"Exception\n");
 		SetStopped(true);
 		ret=-1;
 	}
@@ -333,20 +333,20 @@ int GmsService::svc(void)
 	
 
 	// Cleanly terminate connections, terminate threads.
-	UNS_DEBUG(L"Shutting down", L"\n");
+	UNS_DEBUG(L"Shutting down\n");
 	return ret;
 }
 
 void GmsService::SetSuspend()
 {
-	UNS_DEBUG(L"GmsService::SetSuspend()", L"\n");
+	UNS_DEBUG(L"GmsService::SetSuspend()\n");
 	SuspendAceService(GMS_CONFIGURATOR);
 	reactor()->suspend_handlers();
 }
 
 void GmsService::SetStop()
 {
-	UNS_DEBUG(L"GmsService::SetStop()", L"\n");
+	UNS_DEBUG(L"GmsService::SetStop()\n");
 	reactor()->end_reactor_event_loop();
 }
 
@@ -367,20 +367,20 @@ void GmsService::SetStopped(bool stop)
 
 int GmsService::suspend()
 {	
-	UNS_DEBUG(L"gms_suspend", L"\n");
+	UNS_DEBUG(L"gms_suspend\n");
 	// we are sending a special message to configurator
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ChangeConfiguration());
 	mbPtr->msg_type(MB_CONFIGURATION_SUSPEND);
 	sendMessage(GMS_CONFIGURATOR, mbPtr);
 	
-	UNS_DEBUG(L"end of gms_suspend", L"\n");
+	UNS_DEBUG(L"end of gms_suspend\n");
 	return 0;
 }
 
 int GmsService::stop()
 {
-	UNS_DEBUG(L"GmsService::stop SIGNALLED", L"\n");
+	UNS_DEBUG(L"GmsService::stop SIGNALLED\n");
 	
 	// we are sending a special message to configurator
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
@@ -392,7 +392,7 @@ int GmsService::stop()
 
 int GmsService::resume()
 {	
-	UNS_DEBUG(L"gms_resume", L"\n");
+	UNS_DEBUG(L"gms_resume\n");
 
 	//enable messaging inside reactor. 
 	reactor()->resume_handlers();
@@ -404,30 +404,30 @@ int GmsService::resume()
 	sendMessage(GMS_CONFIGURATOR, mbPtr);
 
 
-	UNS_DEBUG(L"end of gms resume", L"\n");
+	UNS_DEBUG(L"end of gms resume\n");
 	
 	return 0;
 }
 
 bool GmsService::sendMessage(const ACE_TString dest,MessageBlockPtr mb) const
 {
-	UNS_DEBUG(L"GmsService: sending message to %s", L"\n", dest.c_str());
+	UNS_DEBUG(L"GmsService: sending message to %s\n", dest.c_str());
 	const ACE_Service_Type *svc_rec;
 	int i=ACE_Service_Repository::instance ()->find (dest.c_str(), &svc_rec);
 	if (i != 0)
 	{
 		if (i == -2) // the subService is suspended
 		{
-			UNS_DEBUG(L"The desired service is suspended", L"\n");
+			UNS_DEBUG(L"The desired service is suspended\n");
 		}
 		else
-			UNS_DEBUG(L"The desired service doesn't exists", L"\n");
+			UNS_DEBUG(L"The desired service doesn't exists\n");
 		
 		return false;
 	}
 
 	//the subService is active
-	UNS_DEBUG(L"GmsService: sending message - found destination service", L"\n");
+	UNS_DEBUG(L"GmsService: sending message - found destination service\n");
 	const ACE_Service_Type_Impl *type = svc_rec->type (); 
 	if (type == 0) return false; 
 

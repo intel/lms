@@ -193,11 +193,11 @@ void DependencyManager::RemoveDummyDependencies(const ACE_TString &service)
 	if ((it = m_orderDependents.find(service)) == m_orderDependents.end())
 		return;
 
-	UNS_DEBUG(L"DependencyManager::RemoveDummyDependencies for %s",L"\n",service.c_str());
+	UNS_DEBUG(L"DependencyManager::RemoveDummyDependencies for %s\n", service.c_str());
 
 	for (NamesList::const_iterator itr = m_dummeyServicesToRemove.begin(); itr!= m_dummeyServicesToRemove.end(); ++itr)
 	{
-		UNS_DEBUG(L"DependencyManager::RemoveDummyDependencies removing %s",L"\n",itr->c_str());
+		UNS_DEBUG(L"DependencyManager::RemoveDummyDependencies removing %s\n", itr->c_str());
 		it->second.remove(*itr);
 	}
 }
@@ -212,11 +212,11 @@ void DependencyManager::AddDummyDependencies(const ACE_TString &service)
 	if ((it = m_orderDependents.find(service)) == m_orderDependents.end())
 		return;
 
-	UNS_DEBUG(L"DependencyManager::ReturnDummyDependencies for %s",L"\n",service.c_str());
+	UNS_DEBUG(L"DependencyManager::ReturnDummyDependencies for %s\n", service.c_str());
 
 	for (NamesList::const_iterator itr = m_dummeyServicesToRemove.begin(); itr!= m_dummeyServicesToRemove.end(); ++itr)
 	{
-		UNS_DEBUG(L"DependencyManager::ReturnDummyDependencies adding %s",L"\n",itr->c_str());
+		UNS_DEBUG(L"DependencyManager::ReturnDummyDependencies adding %s\n", itr->c_str());
 		it->second.push_back(*itr);
 	}
 }

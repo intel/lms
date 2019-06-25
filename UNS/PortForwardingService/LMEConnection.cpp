@@ -85,7 +85,7 @@ bool LMEConnection::Init(InitParameters & params)
 			_clientNotFound = true;
 			_heci->Deinit();
 			_initState = INIT_STATE_DISCONNECTED;
-			UNS_DEBUG(L"Heci init failed. Error: %C", L"\n", e.what());
+			UNS_DEBUG(L"Heci init failed. Error: %C\n", e.what());
 			return res;
 		}
 		catch (HECIException& e)
@@ -93,7 +93,7 @@ bool LMEConnection::Init(InitParameters & params)
 			_clientNotFound = false;
 			_heci->Deinit();
 			_initState = INIT_STATE_DISCONNECTED;
-			UNS_DEBUG(L"Heci init failed. Error: %C", L"\n", e.what());
+			UNS_DEBUG(L"Heci init failed. Error: %C\n", e.what());
 			return res;
 		}
 
@@ -113,7 +113,7 @@ bool LMEConnection::Init(InitParameters & params)
 		auto spawn_res = aceMgr_->spawn((ACE_THR_FUNC)_rxThreadFunc, this, THR_CANCEL_ENABLE, &_rxThread);
 		if (spawn_res == -1)
 		{
-			UNS_DEBUG(L"mgr->spawn spawn failure", L"\n");
+			UNS_DEBUG(L"mgr->spawn spawn failure\n");
 			DeinitInternal();
 			return res;
 		}
@@ -122,12 +122,12 @@ bool LMEConnection::Init(InitParameters & params)
 		int wait = _threadStartedEvent.wait(&till, 0);
 		_threadStartedEvent.reset();
 		if (wait) {
-			UNS_DEBUG(L"_threadStartedEvent was not set", L"\n");
+			UNS_DEBUG(L"_threadStartedEvent was not set\n");
 			DeinitInternal();
 			return res;
 		}
 		else {
-			UNS_DEBUG(L"_threadStartedEvent was set", L"\n");
+			UNS_DEBUG(L"_threadStartedEvent was set\n");
 		}
 		_initState = INIT_STATE_CONNECTED;
 	}
@@ -136,12 +136,12 @@ bool LMEConnection::Init(InitParameters & params)
 	int wait = _portIsOk.wait(&till, 0);
 	_portIsOk.reset();
 	if (wait) {
-		UNS_DEBUG(L"_portIsOk was not set", L"\n");
+		UNS_DEBUG(L"_portIsOk was not set\n");
 		Deinit(false);
 		return res;
 	}
 	else {
-		UNS_DEBUG(L"_portIsOk was set", L"\n");
+		UNS_DEBUG(L"_portIsOk was set\n");
 	}
 
 	res = true;
@@ -192,7 +192,7 @@ bool LMEConnection::Disconnect(APF_DISCONNECT_REASON_CODE reasonCode)
 	disconnectMessage->MessageType = APF_DISCONNECT;
 	disconnectMessage->ReasonCode = htonl(reasonCode);
 
-	UNS_DEBUG(L"==>LME: Disconnect.", L"\n");
+	UNS_DEBUG(L"==>LME: Disconnect.\n");
 	int res = _sendMessage(buf, sizeof(buf));
 
 	_selfDisconnect = true;
@@ -206,7 +206,7 @@ bool LMEConnection::ServiceAccept(const std::string &serviceName)
 
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -219,7 +219,7 @@ bool LMEConnection::ServiceAccept(const std::string &serviceName)
 	// The apfSam allocate with enough place for serviceName
 	std::copy(serviceName.begin(), serviceName.end(), apfSam->ServiceName);
 
-	UNS_DEBUG(L"==>LME: Service accept: %C", L"\n", serviceName.c_str());
+	UNS_DEBUG(L"==>LME: Service accept: %C\n", serviceName.c_str());
 	int res = _sendMessage(buf.data(), messageLen);
 	return (res == messageLen);
 }
@@ -229,13 +229,13 @@ bool LMEConnection::UserAuthSuccess()
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
 	unsigned char buf = APF_USERAUTH_SUCCESS;
 
-	UNS_DEBUG(L"==>LME: User authentication success.", L"\n");
+	UNS_DEBUG(L"==>LME: User authentication success.\n");
 	int res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
@@ -246,7 +246,7 @@ bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage versionMessa
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -258,7 +258,7 @@ bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage versionMessa
 	protVersion.MinorVersion = htonl(versionMessage.MinorVersion);
 	protVersion.TriggerReason = htonl(versionMessage.TriggerReason);
 
-	UNS_DEBUG(L"==>LME: Protocol version: %d.%d.%d", L"\n", versionMessage.MajorVersion, versionMessage.MinorVersion, versionMessage.TriggerReason);
+	UNS_DEBUG(L"==>LME: Protocol version: %d.%d.%d\n", versionMessage.MajorVersion, versionMessage.MinorVersion, versionMessage.TriggerReason);
 	int res = _sendMessage((unsigned char *)&protVersion, sizeof(protVersion));
 
 	return (res == sizeof(protVersion));
@@ -269,7 +269,7 @@ bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -278,7 +278,7 @@ bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
 	message.MessageType = APF_REQUEST_SUCCESS;
 	message.PortBound = htonl(port);
 
-	UNS_DEBUG(L"==>LME: TCP forward replay success, Port %d.", L"\n", port);
+	UNS_DEBUG(L"==>LME: TCP forward replay success, Port %d.\n", port);
 	int res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
@@ -290,13 +290,13 @@ bool LMEConnection::TcpForwardReplyFailure() {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
 	unsigned char buf = APF_REQUEST_FAILURE;
 
-	UNS_DEBUG(L"==>LME: TCP forward replay failure.", L"\n");
+	UNS_DEBUG(L"==>LME: TCP forward replay failure.\n");
 	int res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
@@ -308,13 +308,13 @@ bool LMEConnection::TcpForwardCancelReplySuccess() {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
 	unsigned char buf = APF_REQUEST_SUCCESS;
 
-	UNS_DEBUG(L"==>LME: TCP forward cancel replay success.", L"\n");
+	UNS_DEBUG(L"==>LME: TCP forward cancel replay success.\n");
 	int res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
@@ -326,13 +326,13 @@ bool LMEConnection::TcpForwardCancelReplyFailure() {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
 	unsigned char buf = APF_REQUEST_FAILURE;
 
-	UNS_DEBUG(L"==>LME: TCP forward cancel replay failure", L"\n");
+	UNS_DEBUG(L"==>LME: TCP forward cancel replay failure\n");
 	int res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
@@ -342,7 +342,7 @@ bool LMEConnection::TcpForwardCancelReplyFailure() {
 #define CHECK_BUFFER_OVERFLOW(nbytes) \
 																if (bufferEnd <= (pCurrent + nbytes)) \
 																{ \
-																	UNS_DEBUG(L"Buffer overflow %d %d %d", L"\n", pCurrent, bufferEnd, nbytes); \
+																	UNS_DEBUG(L"Buffer overflow %d %d %d\n", pCurrent, bufferEnd, nbytes); \
 																	return false; \
 																}
 
@@ -352,7 +352,7 @@ bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const st
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -402,7 +402,7 @@ bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const st
 	CHECK_BUFFER_OVERFLOW(sizeof(uint32_t));
 	*((uint32_t *)pCurrent) = htonl(originatorPort); pCurrent += sizeof(uint32_t);
 
-	UNS_DEBUG(L"==>LME: OPEN_CHANNEL_REQUEST, Address: %C:%d.", L"\n", originatorIP.c_str(), connectedPort);
+	UNS_DEBUG(L"==>LME: OPEN_CHANNEL_REQUEST, Address: %C:%d.\n", originatorIP.c_str(), connectedPort);
 
 	int actualLen = (int)(pCurrent - buf);
 	int res = _sendMessage(buf, actualLen);
@@ -417,7 +417,7 @@ bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -429,7 +429,7 @@ bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t
 	message.InitialWindowSize = htonl(RX_WINDOW_SIZE);
 	message.Reserved = 0xFFFFFFFF;
 
-	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_CONFIRMATION", L"\n", recipientChannel);
+	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_CONFIRMATION\n", recipientChannel);
 	int res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
@@ -441,7 +441,7 @@ bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -453,7 +453,7 @@ bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t
 	message.Reserved = 0x00000000;
 	message.Reserved2 = 0x00000000;
 
-	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_FAILURE, Reason: %d", L"\n", recipientChannel, reason);
+	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_FAILURE, Reason: %d\n", recipientChannel, reason);
 	int res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
@@ -465,7 +465,7 @@ bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -474,7 +474,7 @@ bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
 	message.MessageType = APF_CHANNEL_CLOSE;
 	message.RecipientChannel = htonl(recipientChannel);
 
-	UNS_DEBUG(L"==>LME[%d]: Channel close", L"\n", recipientChannel);
+	UNS_DEBUG(L"==>LME[%d]: Channel close\n", recipientChannel);
 	int res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
@@ -486,7 +486,7 @@ int LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -503,7 +503,7 @@ int LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned
 	// Data have at least len places, checked above
 	std::copy_n(buffer, len, message->Data);
 
-	UNS_DEBUG(L"==>LME[%d]: %d bytes", L"\n", recipientChannel, len);
+	UNS_DEBUG(L"==>LME[%d]: %d bytes\n", recipientChannel, len);
 
 	return _sendMessage((unsigned char *)message, sizeof(APF_CHANNEL_DATA_MESSAGE) + len);
 
@@ -514,7 +514,7 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
 	}
 
@@ -524,7 +524,7 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 	message.RecipientChannel = htonl(recipientChannel);
 	message.BytesToAdd = htonl(len);
 
-	UNS_DEBUG(L"==>LME[%d]: Window Adjust with %d bytes", L"\n", recipientChannel, len);
+	UNS_DEBUG(L"==>LME[%d]: Window Adjust with %d bytes\n", recipientChannel, len);
 	int res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
@@ -536,7 +536,7 @@ int LMEConnection::_receiveMessage(unsigned char *buffer, int len)
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return -1;
 	}
 
@@ -546,7 +546,7 @@ int LMEConnection::_receiveMessage(unsigned char *buffer, int len)
 	}
 	catch (HECIException& e)
 	{
-		UNS_DEBUG(L"Error receiving data from HECI. Error: %C", L"\n", e.what());
+		UNS_DEBUG(L"Error receiving data from HECI. Error: %C\n", e.what());
 		return -1;
 	}
 }
@@ -556,7 +556,7 @@ int LMEConnection::_sendMessage(unsigned char *buffer, int len)
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
-		UNS_DEBUG(L"State: not connected to HECI.", L"\n");
+		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return -1;
 	}
 
@@ -570,7 +570,7 @@ int LMEConnection::_sendMessage(unsigned char *buffer, int len)
 	}
 	catch (HECIException& e)
 	{
-		UNS_DEBUG(L"Error sending data to HECI. Error: %C", L"\n", e.what());
+		UNS_DEBUG(L"Error sending data to HECI. Error: %C\n", e.what());
 	}
 
 	return result;
@@ -585,7 +585,7 @@ void LMEConnection::_rxThreadFunc(void *param)
 	}
 
 	catch (...) {
-		UNS_DEBUG(L"LMEConnection do RX exception", L"\n");
+		UNS_DEBUG(L"LMEConnection do RX exception\n");
 	}
 }
 
@@ -612,7 +612,7 @@ void LMEConnection::_doRX()
 
 		if (aceMgr_->testcancel(aceMgr_->thr_self()))
 		{
-			UNS_DEBUG(L"_doRX thread shutdown", L"\n");
+			UNS_DEBUG(L"_doRX thread shutdown\n");
 			break;
 		}
 
@@ -623,7 +623,7 @@ void LMEConnection::_doRX()
 		}
 
 
-		UNS_DEBUG(L"==>LME: %d bytes, message type %02d", L"\n", bytesRead, rxBuffer[0]);
+		UNS_DEBUG(L"==>LME: %d bytes, message type %02d\n", bytesRead, rxBuffer[0]);
 
 		uint32_t posBytesRead = (uint32_t) bytesRead;
 
@@ -634,7 +634,7 @@ void LMEConnection::_doRX()
 
 
 					if (posBytesRead < sizeof(APF_DISCONNECT_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -656,7 +656,7 @@ void LMEConnection::_doRX()
 					if ((posBytesRead < sizeof(APF_SERVICE_REQUEST)) ||
 						(posBytesRead < sizeof(APF_SERVICE_REQUEST) +
 														ntohl(pMessage->ServiceNameLength))) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -678,39 +678,39 @@ void LMEConnection::_doRX()
 					LMEUserAuthRequestMessage userAuthRequest;
 
 					if ((posBytesRead - (pCurrent - rxBuffer)) < sizeof(uint32_t)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 					uint32_t len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
 					if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 					userAuthRequest.Username.append((char *)pCurrent, len); pCurrent += len;
 
 					if ((posBytesRead - (pCurrent - rxBuffer)) < sizeof(uint32_t)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 					len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
 					if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 					userAuthRequest.ServiceName.append((char *)pCurrent, len); pCurrent += len;
 
 					if ((posBytesRead - (pCurrent - rxBuffer)) < sizeof(uint32_t)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 					len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
 					if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -722,7 +722,7 @@ void LMEConnection::_doRX()
 						) {
 
 							if ((posBytesRead - (pCurrent - rxBuffer)) < sizeof(uint32_t) + 1) {
-								UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+								UNS_DEBUG(L"Error receiving data from HECI\n");
 								Deinit(true);
 								return;
 							}
@@ -730,7 +730,7 @@ void LMEConnection::_doRX()
 
 							len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
 							if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
-								UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+								UNS_DEBUG(L"Error receiving data from HECI\n");
 								Deinit(true);
 								return;
 							}
@@ -751,7 +751,7 @@ void LMEConnection::_doRX()
 
 					if (posBytesRead < sizeof(APF_GENERIC_HEADER) + ntohl(pHeader->StringLength) + sizeof(uint8_t)) {
 						// TBD Do we want to deinit?
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -764,7 +764,7 @@ void LMEConnection::_doRX()
 
 						//if (bytesRead < (unsigned char)pCurrent - rxBuffer + sizeof(uint32_t) +) {
 						//	// TBD Do we want to deinit?
-						//	/*UNS_DEBUG("Error receiving data from HECI", L"\n");
+						//	/*UNS_DEBUG_NO_ARG("Error receiving data from HECI");
 						//	Deinit();
 						//	return;*/
 						//}
@@ -780,7 +780,7 @@ void LMEConnection::_doRX()
 
 						if (tcpForwardRequest.Port == AMT_NON_SECURE_PORT && status == 0)
 						{
-							UNS_DEBUG(L"_portIsOk", L"\n");
+							UNS_DEBUG(L"_portIsOk\n");
 							_portIsOk.signal();
 						}
 					}
@@ -832,7 +832,7 @@ void LMEConnection::_doRX()
 					APF_GENERIC_HEADER *pHeader = (APF_GENERIC_HEADER *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_GENERIC_HEADER) + ntohl(pHeader->StringLength)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -868,7 +868,7 @@ void LMEConnection::_doRX()
 					APF_CHANNEL_OPEN_CONFIRMATION_MESSAGE *pMessage = (APF_CHANNEL_OPEN_CONFIRMATION_MESSAGE *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_CHANNEL_OPEN_CONFIRMATION_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -889,7 +889,7 @@ void LMEConnection::_doRX()
 					APF_CHANNEL_OPEN_FAILURE_MESSAGE *pMessage = (APF_CHANNEL_OPEN_FAILURE_MESSAGE *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_CHANNEL_OPEN_FAILURE_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -910,7 +910,7 @@ void LMEConnection::_doRX()
 					APF_CHANNEL_CLOSE_MESSAGE *pMessage = (APF_CHANNEL_CLOSE_MESSAGE *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_CHANNEL_CLOSE_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -928,13 +928,13 @@ void LMEConnection::_doRX()
 					APF_CHANNEL_DATA_MESSAGE *pMessage = (APF_CHANNEL_DATA_MESSAGE *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_CHANNEL_DATA_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 
 					if (posBytesRead < sizeof(APF_CHANNEL_DATA_MESSAGE) + ntohl(pMessage->DataLength)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -953,7 +953,7 @@ void LMEConnection::_doRX()
 					APF_WINDOW_ADJUST_MESSAGE *pMessage = (APF_WINDOW_ADJUST_MESSAGE *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_WINDOW_ADJUST_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
@@ -972,7 +972,7 @@ void LMEConnection::_doRX()
 					APF_PROTOCOL_VERSION_MESSAGE *pMessage = (APF_PROTOCOL_VERSION_MESSAGE *)rxBuffer;
 
 					if (posBytesRead < sizeof(APF_PROTOCOL_VERSION_MESSAGE)) {
-						UNS_DEBUG(L"Error receiving data from HECI", L"\n");
+						UNS_DEBUG(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}

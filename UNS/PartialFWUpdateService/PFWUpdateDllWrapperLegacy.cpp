@@ -88,5 +88,5 @@ void PFWUpdateDllWrapperLegacy::printPfwuReturnCode(uint32_t status)
 	case   8787: dbgStr = L"Password exceeded maximum number of retries";	break;
 	default: dbgStr = L"Unknown error";	break;
 	}
-	UNS_DEBUG(L"Decode error:: %u -> %W", L"\n", status, dbgStr.c_str());
+	UNS_DEBUG(L"Decode error:: %u -> %W\n", status, dbgStr.c_str());
 }

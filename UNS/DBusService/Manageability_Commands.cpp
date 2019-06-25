@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2019 Intel Corporation
  */
 #include "DBusService.h"
 #include "Manageability_Commands.h"
@@ -14,7 +14,7 @@ namespace Manageability {
 	gboolean on_get_features_state(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 				       gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_features_state", L"\n");
+		UNS_DEBUG(L"on_get_features_state\n");
 		DBusService *th = (DBusService *)user_data;
 		std::vector<FEATURE_STATE> states;
 
@@ -41,7 +41,7 @@ namespace Manageability {
 	gboolean on_get_the_feature_state(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
                                           guint Feat, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_the_feature_state %d", L"\n", Feat);
+		UNS_DEBUG(L"on_get_the_feature_state %d\n", Feat);
 		DBusService *th = (DBusService *)user_data;
 		FEATURE_STATE state = NOT_PRESENT;
 
@@ -56,7 +56,7 @@ namespace Manageability {
 	gboolean on_get_customer_type(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 				      gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_customer_type", L"\n");
+		UNS_DEBUG(L"on_get_customer_type\n");
 		DBusService *th = (DBusService *)user_data;
 		CUSTOMER_TYPE customer_type = WRONG_CUSTOMER_TYPE;
 
@@ -71,7 +71,7 @@ namespace Manageability {
 	gboolean on_get_platform_type(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 				      gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_platform_type", L"\n");
+		UNS_DEBUG(L"on_get_platform_type\n");
 		DBusService *th = (DBusService *)user_data;
 		PLATFORM_TYPE platform_type = DESKTOP;
 
@@ -86,7 +86,7 @@ namespace Manageability {
 	gboolean on_get_menageabilty_mode(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 					  gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_menageabilty_mode", L"\n");
+		UNS_DEBUG(L"on_get_menageabilty_mode\n");
 		DBusService *th = (DBusService *)user_data;
 		MENAGEABILTY_MODE menageabilty_mode = NOT_KNOWN;
 
@@ -101,7 +101,7 @@ namespace Manageability {
 	gboolean on_get_fwinfo(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 			       gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_fwinfo", L"\n");
+		UNS_DEBUG(L"on_get_fwinfo\n");
 		DBusService *th = (DBusService *)user_data;
 		std::string MEBxVersion;
 		unsigned long BiosBootState = 0;
@@ -119,7 +119,7 @@ namespace Manageability {
 	gboolean on_get_pmc_version(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 				    gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_pmc_version", L"\n");
+		UNS_DEBUG(L"on_get_pmc_version\n");
 		DBusService *th = (DBusService *)user_data;
 		std::string version;
 

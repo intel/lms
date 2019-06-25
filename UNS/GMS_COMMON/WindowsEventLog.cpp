@@ -39,8 +39,7 @@ WindowsEventLog::WindowsEventLog(	const wchar_t * pszLogName,
 	_hEventLinker = RegisterEventSource(NULL,pszSrcName);
     if (_hEventLinker == NULL) 
     {
-		UNS_DEBUG(L"Could not register the event source",L"\n");
-		//ACE_DEBUG ((GMS_DEBUG ACE_TEXT ("Could not register the event source.\n")));
+		UNS_DEBUG(L"Could not register the event source\n");
         return;
     }
 }
@@ -109,8 +108,7 @@ void WindowsEventLog::LogEvent(	unsigned short	CategoryID,
 				RawData);					// lpRawData 
 	if (!rc)
 	{
-		//UNS_ERROR("ReportEvent failed","\n",GetLastError());
-		//ACE_ERROR((GMS_ERROR, ACE_TEXT ("ReportEvent failed, lasterr=%d\n"),GetLastError()));
+		//UNS_ERROR("ReportEvent failed, Last Error %d\n", GetLastError());
 	}
 }
 
@@ -157,8 +155,7 @@ void WindowsEventLog::AddEventSource(	const wchar_t * pszLogName,
 		_RegistryKey.Close();
 	}else
 	{
-		UNS_DEBUG(L"_RegistryKey.Create %s failed",L"\n",szBuf);
-		//ACE_DEBUG ((GMS_DEBUG ACE_TEXT ("_RegistryKey.Create %s failed\n"),szBuf));
+		UNS_DEBUG(L"_RegistryKey.Create %s failed\n",szBuf);
 	}
 	
 }

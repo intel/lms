@@ -69,7 +69,7 @@ static ACE_THR_FUNC_RETURN _detectAddrChange(void *params)
 		return ACE_THR_FUNC_RETURN(-ENOMEM);
 	ret = nl_connect(sock, NETLINK_ROUTE);
 	if (ret) {
-		UNS_DEBUG(L"AdapterListInfo nl_connect failed %d", L"\n", ret);
+		UNS_DEBUG(L"AdapterListInfo nl_connect failed %d\n", ret);
 		goto out;
 	}
 	nl_socket_add_memberships(sock, RTNLGRP_LINK,
@@ -95,15 +95,15 @@ static ACE_THR_FUNC_RETURN _detectAddrChange(void *params)
 
 		ret = select(fdcount, &fdset, NULL, NULL, NULL);
 		if (ret == -1) {
-			UNS_DEBUG(L"AdapterListInfo select failed %d", L"\n", errno);
+			UNS_DEBUG(L"AdapterListInfo select failed %d\n", errno);
 			break;
 		} else {
 			if (FD_ISSET(nlfd, &fdset)) {
-				LMS_DEBUG_SIMPLE(L"AdapterListInfo IP Address table changed..");
+				UNS_DEBUG(L"AdapterListInfo IP Address table changed...\n");
 				nl_recvmsgs_default(sock);
 			}
 			if (FD_ISSET(selectAlarm.getFD(), &fdset)) {
-				LMS_DEBUG_SIMPLE(L"AdapterListInfo alarm...");
+				UNS_DEBUG(L"AdapterListInfo alarm...\n");
 				selectAlarm.clean();
 				break;
 			}
@@ -131,7 +131,7 @@ bool AdapterListInfo::Init(AdapterCallback cb, void *params)
 					 THR_NEW_LWP | THR_JOINABLE,
 					 &_thread) == 0);
 	} else {
-		UNS_DEBUG(L"AdapterListInfo we already have thread %u!\n", L"\n", _thread);
+		UNS_DEBUG(L"AdapterListInfo we already have thread %u!\n", _thread);
 		res = true;
 	}
 
@@ -173,13 +173,13 @@ int AdapterListInfo::UpdateAdapterListInfo()
 		return -ENOMEM;
 	result = nl_connect(sock, NETLINK_ROUTE);
 	if (result) {
-		UNS_DEBUG(L"AdapterListInfo nl_connect failed %d", L"\n", result);
+		UNS_DEBUG(L"AdapterListInfo nl_connect failed %d\n", result);
 		goto out;
 	}
 
 	result = rtnl_addr_alloc_cache(sock, &addr_cache);
 	if (result) {
-		UNS_DEBUG(L"AdapterListInfo rtnl_link_alloc_cache failed %d", L"\n", result);
+		UNS_DEBUG(L"AdapterListInfo rtnl_link_alloc_cache failed %d\n", result);
 		goto out;
 	}
 
@@ -208,7 +208,7 @@ int AdapterListInfo::UpdateAdapterListInfo()
 			_localDNSSuffixes[saddr] = localDnsSuffixStr;
 			char buf[INET6_ADDRSTRLEN];
 			nl_addr2str(ip, buf, INET6_ADDRSTRLEN);
-			UNS_DEBUG(L"AdapterListInfo DnsSuffix %C '%C'", L"\n", buf, localDnsSuffixStr.c_str());
+			UNS_DEBUG(L"AdapterListInfo DnsSuffix %C '%C'\n", buf, localDnsSuffixStr.c_str());
 
 			obj = nl_cache_get_next(obj);
 		}
@@ -249,7 +249,7 @@ static void get_domains(const char *path, const char* iface, domains_map_t &doma
 					       "org.freedesktop.NetworkManager.IP4Config",
 					       NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy\n");
 		return;
 	}
 
@@ -258,7 +258,7 @@ static void get_domains(const char *path, const char* iface, domains_map_t &doma
 		g_variant_get(ret, "as", &iter);
 		while (g_variant_iter_loop(iter, "s", &str)) {
 			domains[iface] = str;
-			LMS_DEBUG_VAR(L"Local DNS suffix: %C", str);
+			UNS_DEBUG(L"Local DNS suffix: %C\n", str);
 		}
 		g_variant_iter_free(iter);
 		g_variant_unref(ret);
@@ -283,7 +283,7 @@ static void get_device_ip4(const char *obj_path, domains_map_t &domains)
 					      "org.freedesktop.DBus.Properties",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy\n");
 		return;
 	}
 
@@ -297,7 +297,7 @@ static void get_device_ip4(const char *obj_path, domains_map_t &domains)
 					   NULL, &error);
 	if (!ret_iface) {
 		g_dbus_error_strip_remote_error (error);
-		UNS_DEBUG(L"AdapterListInfo Failed to get Interface property: %C", L"\n",
+		UNS_DEBUG(L"AdapterListInfo Failed to get Interface property: %C\n",
 			  error->message);
 		g_error_free(error);
 		goto out;
@@ -315,7 +315,7 @@ static void get_device_ip4(const char *obj_path, domains_map_t &domains)
 					    NULL, &error);
 	if (!ret_ip4cfg) {
 		g_dbus_error_strip_remote_error (error);
-		UNS_DEBUG(L"AdapterListInfo Failed to get Ip4Config property: %C", L"\n",
+		UNS_DEBUG(L"AdapterListInfo Failed to get Ip4Config property: %C\n",
 			  error->message);
 		g_error_free(error);
 		goto out;
@@ -323,7 +323,7 @@ static void get_device_ip4(const char *obj_path, domains_map_t &domains)
 
 	g_variant_get(ret_ip4cfg, "(v)", &path_value);
 	if (!g_variant_is_of_type (path_value, G_VARIANT_TYPE_OBJECT_PATH)) {
-		UNS_DEBUG(L"AdapterListInfo Unexpected type returned getting Connection property: %C", L"\n",
+		UNS_DEBUG(L"AdapterListInfo Unexpected type returned getting Connection property: %C\n",
 			  g_variant_get_type_string (path_value));
 		goto out;
 	}
@@ -355,7 +355,7 @@ static void get_devices(GDBusProxy *proxy, domains_map_t &domains)
 				      NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"AdapterListInfo Failed to get Devices property: %C\n", L"\n", error->message);
+		UNS_DEBUG(L"AdapterListInfo Failed to get Devices property: %C\n", error->message);
 		g_error_free(error);
 		return;
 	}
@@ -363,14 +363,14 @@ static void get_devices(GDBusProxy *proxy, domains_map_t &domains)
 	g_variant_get(ret, "(v)", &value);
 
 	if (!g_variant_is_of_type (value, G_VARIANT_TYPE ("ao"))) {
-		UNS_DEBUG(L"AdapterListInfo Unexpected type returned getting Devices: %C", L"\n",
+		UNS_DEBUG(L"AdapterListInfo Unexpected type returned getting Devices: %C\n",
 			  g_variant_get_type_string(value));
 		goto out;
 	}
 
 	paths = g_variant_dup_objv(value, NULL);
 	if (!paths) {
-		UNS_DEBUG(L"AdapterListInfo Could not retrieve active connections property", L"\n");
+		UNS_DEBUG(L"AdapterListInfo Could not retrieve active connections property\n");
 		goto out;
 	}
 
@@ -395,7 +395,7 @@ static int get_domains_map(domains_map_t &domains)
 					      "org.freedesktop.DBus.Properties",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy\n");
 		return -EFAULT;
 	}
 	get_devices(proxy, domains);
@@ -421,7 +421,7 @@ static void connman_get_data(GDBusProxy *proxy, domains_map_t &domains)
 				     NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"AdapterListInfo Failed to call GetServices: %C\n", L"\n", error->message);
+		UNS_DEBUG(L"AdapterListInfo Failed to call GetServices: %C\n", error->message);
 		g_error_free(error);
 		return;
 	}
@@ -460,7 +460,7 @@ static void connman_get_data(GDBusProxy *proxy, domains_map_t &domains)
 			}
 		}
 
-		UNS_DEBUG(L"AdapterListInfo get_devices '%C' %d domains", L"\n",
+		UNS_DEBUG(L"AdapterListInfo get_devices '%C' %d domains\n",
 			  interface_name.c_str(), iface_domains.size());
 		if (!interface_name.empty() && !iface_domains.empty()) {
 			std::vector<std::string>::const_iterator it;
@@ -487,7 +487,7 @@ static int get_domains_map(domains_map_t &domains)
 					      "net.connman.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"AdapterListInfo can't have dbus proxy\n");
 		return -EFAULT;
 	}
 	connman_get_data(proxy, domains);
@@ -516,19 +516,19 @@ int AdapterListInfo::UpdateAdapterListInfo()
 		return -ENOMEM;
 	result = nl_connect(sock, NETLINK_ROUTE);
 	if (result) {
-		UNS_DEBUG(L"AdapterListInfo nl_connect failed %d", L"\n", result);
+		UNS_DEBUG(L"AdapterListInfo nl_connect failed %d\n", result);
 		goto out;
 	}
 
 	result = rtnl_addr_alloc_cache(sock, &addr_cache);
 	if (result) {
-		UNS_DEBUG(L"AdapterListInfo rtnl_link_alloc_cache failed %d", L"\n", result);
+		UNS_DEBUG(L"AdapterListInfo rtnl_link_alloc_cache failed %d\n", result);
 		goto out;
 	}
 
 	result = rtnl_link_alloc_cache(sock, AF_UNSPEC, &link_cache);
 	if (result) {
-		UNS_DEBUG(L"AdapterListInfo rtnl_link_alloc_cache failed %d", L"\n", result);
+		UNS_DEBUG(L"AdapterListInfo rtnl_link_alloc_cache failed %d\n", result);
 		nl_cache_free(addr_cache);
 		goto out;
 	}
@@ -560,14 +560,14 @@ int AdapterListInfo::UpdateAdapterListInfo()
 			char buf[std::max(INET6_ADDRSTRLEN, IFNAMSIZ)];
 			char *ptr = rtnl_link_i2name(link_cache, rtnl_addr_get_ifindex(addr), buf, sizeof(buf));
 			if (ptr) {
-				UNS_DEBUG(L"AdapterListInfo link name '%C'", L"\n", ptr);
+				UNS_DEBUG(L"AdapterListInfo link name '%C'\n", ptr);
 				domains_it = domains.find(ptr);
 				if (domains_it != domains.end())
 					localDnsSuffixStr = domains_it->second;
 			}
 
 			nl_addr2str(ip, buf, sizeof(buf));
-			UNS_DEBUG(L"AdapterListInfo DnsSuffix %C '%C'", L"\n", buf, localDnsSuffixStr.c_str());
+			UNS_DEBUG(L"AdapterListInfo DnsSuffix %C '%C'\n", buf, localDnsSuffixStr.c_str());
 
 			_localDNSSuffixes[saddr] = localDnsSuffixStr;
 		}
@@ -603,7 +603,7 @@ std::string AdapterListInfo::GetDNSSuffixFromLocalIP(const sockaddr_storage &ip)
 
 bool AdapterListInfo::PerformUpdate(void *params)
 {
-	LMS_DEBUG_SIMPLE(L"---> Check for update in Adapter ...");
+	UNS_DEBUG(L"---> Check for update in Adapter ...\n");
 	if (UpdateAdapterListInfo() != 0)
 		return false;
 	if (_cb != NULL) {

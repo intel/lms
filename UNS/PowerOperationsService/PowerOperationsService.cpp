@@ -53,14 +53,14 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 	ret = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 	if (!ret)
 	{
-		UNS_DEBUG(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %lu", L"\n", GetLastError());
+		UNS_DEBUG(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %lu\n", GetLastError());
 	}
 	else
 	{
 		ret = LookupPrivilegeValue(NULL,SE_SHUTDOWN_NAME, &prv.Privileges[0].Luid);
 		if (!ret)
 		{
-			UNS_DEBUG(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %lu", L"\n", GetLastError());
+			UNS_DEBUG(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %lu\n", GetLastError());
 		}
 		else
 		{
@@ -68,7 +68,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			prv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 			ret = AdjustTokenPrivileges(hToken, FALSE, &prv, 0, (PTOKEN_PRIVILEGES)NULL, 0);
 			if (!ret)
-				UNS_DEBUG(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %lu", L"\n", GetLastError());
+				UNS_DEBUG(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %lu\n", GetLastError());
 		}
 		CloseHandle(hToken);
 	}
@@ -89,7 +89,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			return 0;
 		}
 		ss<<err;
-		UNS_DEBUG(L"remote graceful getLastError %lu",L"\n",err);
+		UNS_DEBUG(L"remote graceful getLastError %lu\n",err);
 	}
 	return ret;
 }
@@ -102,7 +102,7 @@ void getPowerCapabilities(bool& sleep,bool& hibernate)
 	SYSTEM_POWER_CAPABILITIES systemCaps;
 	if (!GetPwrCapabilities(&systemCaps))
 	{
-		UNS_DEBUG(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu",L"\n",GetLastError());
+		UNS_DEBUG(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu\n",GetLastError());
 		sleep = hibernate = false;
 	}
 	//systemCaps.HiberFilePresent shows if hibernation was enabled/disabled (such as using "powercfg.exe /h off")
@@ -123,7 +123,7 @@ bool dbusPowerIsEnabledOne(GDBusProxy *proxy, const char* op, bool &res)
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C", L"\n",
+		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
 			 error->message);
 		g_error_free(error);
 		return false;
@@ -131,7 +131,7 @@ bool dbusPowerIsEnabledOne(GDBusProxy *proxy, const char* op, bool &res)
 
 	g_variant_get(ret, "(&s)", &str);
 
-	UNS_DEBUG(L"op=%C rsp=%C", L"\n", op, str);
+	UNS_DEBUG(L"op=%C rsp=%C\n", op, str);
 	res = (std::string(str) == std::string("yes"));
 	g_variant_unref(ret);
 	return true;
@@ -150,7 +150,7 @@ bool dbusPowerIsEnabled(bool &suspend, bool &hibernate)
 					      "org.freedesktop.login1.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"can't have dbus proxy\n");
 		return false;
 	}
 
@@ -185,7 +185,7 @@ bool PowerOperationsService::suspendOp(bool hibernate)
 					      "org.freedesktop.login1.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"can't have dbus proxy\n");
 		return false;
 	}
 
@@ -195,7 +195,7 @@ bool PowerOperationsService::suspendOp(bool hibernate)
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C", L"\n",
+		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
 			  error->message);
 		g_error_free(error);
 		result = false;
@@ -225,12 +225,12 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 
 	if (::gettimeofday(&tv, NULL))
 	{
-		UNS_DEBUG(L"gettimeofday failed %d", L"\n", errno);
+		UNS_DEBUG(L"gettimeofday failed %d\n", errno);
 		return false;
 	}
 	if (tv.tv_sec > (UINT64_MAX - tv.tv_usec) / USEC_PER_SEC - SHUTDOWN_TIMEOUT)
 	{
-		UNS_DEBUG(L"Wrong timeofday %d %d", L"\n", tv.tv_sec, tv.tv_usec);
+		UNS_DEBUG(L"Wrong timeofday %d %d\n", tv.tv_sec, tv.tv_usec);
 		return false;
 	}
 	when = USEC_PER_SEC * tv.tv_sec + tv.tv_usec + SHUTDOWN_TIMEOUT * USEC_PER_SEC;
@@ -243,7 +243,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 					      "org.freedesktop.login1.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy", L"\n");
+		UNS_DEBUG(L"can't have dbus proxy\n");
 		return false;
 	}
 
@@ -253,7 +253,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C", L"\n",
+		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
 			  error->message);
 		g_error_free(error);
 		result = false;
@@ -267,7 +267,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C", L"\n",
+		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
 			  error->message);
 		g_error_free(error);
 		result = false;
@@ -295,7 +295,7 @@ int PowerOperationsService::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d", L"\n", retVal);
+		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
 		return retVal;
 	}
 
@@ -313,7 +313,7 @@ int PowerOperationsService::init (int argc, ACE_TCHAR *argv[])
 
 int PowerOperationsService::fini (void)
 {
-	UNS_DEBUG(L"PowerOperationsService finalized",L"\n");
+	UNS_DEBUG(L"PowerOperationsService finalized\n");
 	ACE_Reactor::instance()->cancel_timer (this);
 	return 0;
 }
@@ -377,7 +377,7 @@ int PowerOperationsService::handlePublishEvent(const GMS_AlertIndication & alert
 	switch (alert.id)
 	{
 	case EVENT_PORT_FORWARDING_SERVICE_AVAILABLE:
-		UNS_DEBUG(L"%s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE. m_addCapabilitiesRequiredButNoPfw: %d", L"\n", name().c_str(), m_addCapabilitiesRequiredButNoPfw);
+		UNS_DEBUG(L"%s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE. m_addCapabilitiesRequiredButNoPfw: %d\n", name().c_str(), m_addCapabilitiesRequiredButNoPfw);
 		if (m_addCapabilitiesRequiredButNoPfw)
 		{
 			addPowerCapabilities();
@@ -423,10 +423,10 @@ void PowerOperationsService::addPowerCapabilities()
 	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient;
 	bool sleep,hibernate;
 	getPowerCapabilities(sleep,hibernate);
-	UNS_DEBUG(L"adding graceful power operations %d %d", L"\n", sleep,hibernate);
+	UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep,hibernate);
 	if (!powerManagementCapabilitiesClient.addGracefulOperations(sleep,hibernate))
 	{
-		UNS_DEBUG(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu",L"\n",GetLastError());
+		UNS_DEBUG(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu\n",GetLastError());
 		return;
 	}
 }
@@ -469,13 +469,13 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 		std::wstringstream ss;
 		if(hibernate_disabled) //if the error was that hibernate no longer valid - the error.
 		{
-			UNS_DEBUG(L"%C  Hibernate no longer supported in the system",L"\n", dbgMsg.c_str());
+			UNS_DEBUG(L"%C  Hibernate no longer supported in the system\n", dbgMsg.c_str());
 			ss<<L" ";
 		}
 		else
 		{
 			unsigned long err = GetLastError();
-			UNS_DEBUG(L"%C  GetLastError: %u",L"\n",dbgMsg.c_str(),err);
+			UNS_DEBUG(L"%C  GetLastError: %u\n",dbgMsg.c_str(),err);
 			ss<<err;
 		}
 
@@ -492,7 +492,7 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 
 		//debug message
 		dbgMsg = "remote " + action + " API call succeed";
-		UNS_DEBUG(L"%C , returned %d",L"\n",dbgMsg.c_str(),(int)success);
+		UNS_DEBUG(L"%C , returned %d\n",dbgMsg.c_str(),(int)success);
 	}
 
 	delete args;
@@ -548,7 +548,7 @@ int PowerOperationsService::initiateShutDown(bool reboot, int attempt)
 	ret = shutdownOp(reboot, attempt, ss);
 	if (!reboot)
 	{//shut down
-		UNS_DEBUG(L"remote graceful shutdown, returned %d ",L"\n",(int)ret);
+		UNS_DEBUG(L"remote graceful shutdown, returned %d \n",(int)ret);
 		if (!ret)
 		{//shutdown failed
 			msgStr = EVENT_REMOTE_GRACEFUL_SHUTDOWN_FAILED_MSG;
@@ -562,7 +562,7 @@ int PowerOperationsService::initiateShutDown(bool reboot, int attempt)
 	}
 	else //reboot
 	{
-		UNS_DEBUG(L"remote graceful reboot, returned %d",L"\n",(int)ret);
+		UNS_DEBUG(L"remote graceful reboot, returned %d\n",(int)ret);
 		if (!ret)
 		{//reboot failed
 			msgStr = EVENT_REMOTE_GRACEFUL_REBOOT_FAILED_MSG;
@@ -592,9 +592,9 @@ int PowerOperationsService::initiateShutDown(bool reboot, int attempt)
 int
 PowerOperationsService::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
-	UNS_DEBUG(L"%s service handle timeout",L"\n",name().c_str());
+	UNS_DEBUG(L"%s service handle timeout\n",name().c_str());
 
-	UNS_DEBUG(L"retrying graceful power operation, reboot=%d,attempt=%d",L"\n",m_retryReboot,m_retryAttempt);
+	UNS_DEBUG(L"retrying graceful power operation, reboot=%d,attempt=%d\n",m_retryReboot,m_retryAttempt);
 	initiateShutDown(m_retryReboot, m_retryAttempt);
 
 	return 0;

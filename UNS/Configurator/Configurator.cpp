@@ -56,7 +56,7 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	std::wstringstream ss;
 	ss << pref << func;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void FuncEntry(const wchar_t * func) 
@@ -73,7 +73,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	std::wstringstream ss;
 	ss << L"CONF: <-- " << func << L" Status: " << status;
 	auto l = ss.str();
-	UNS_DEBUG(L"%W", L"\n", l.c_str());
+	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 /********************************** Help functions **********************************/
@@ -173,7 +173,7 @@ bool IsLMEExists()
 
 	for (int i = 1; i <= NUM_RETRIES; i++)
 	{
-		UNS_DEBUG(L"Trial # %d", L"\n", i);
+		UNS_DEBUG(L"Trial # %d\n", i);
 
 		try
 		{
@@ -185,7 +185,7 @@ bool IsLMEExists()
 		catch (Intel::MEI_Client::HeciNoClientException& e)
 		{
 			heci->Deinit();
-			UNS_DEBUG(L"Heci init failed, LME doesn't exist. %C", L"\n", e.what());
+			UNS_DEBUG(L"Heci init failed, LME doesn't exist. %C\n", e.what());
 			res = false;
 			return res;
 		}
@@ -193,13 +193,13 @@ bool IsLMEExists()
 		{
 			// heci init failed with another error than missing LME - retry a few times before defining as failure
 			heci->Deinit();
-			UNS_DEBUG(L"Heci init failed. %C", L"\n", e.what());
+			UNS_DEBUG(L"Heci init failed. %C\n", e.what());
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(LME_EXISTS_LOOP_DELAY));
 	}
 
 	// heci init failed with another error than missing LME
-	UNS_DEBUG(L"LME doesn't exist - too many Heci init retries.", L"\n");
+	UNS_DEBUG(L"LME doesn't exist - too many Heci init retries.\n");
 	res = false;
 	return res;
 }
@@ -261,17 +261,17 @@ bool MEIEnabled()
 				}
 				else
 				{
-					UNS_DEBUG(L"isMEIEnabled() failed to connect to exec WMI query \n");
+					UNS_DEBUG(L"isMEIEnabled() failed to connect to exec WMI query\n");
 				}
 		}
 		else
 		{
-			UNS_DEBUG(L"isMEIEnabled() failed to connect to WMI server \n");
+			UNS_DEBUG(L"isMEIEnabled() failed to connect to WMI server\n");
 		}
 	}
 	else 
 	{
-		UNS_DEBUG(L"isMEIEnabled() failed in CoCreateInstance() \n");
+		UNS_DEBUG(L"isMEIEnabled() failed in CoCreateInstance()\n");
 	}
 	if (svc!= NULL) svc->Release();
 	if (loc!= NULL) loc->Release();
@@ -377,7 +377,7 @@ bool CheckWiFiProfileSyncRequired()
 	if (!ret)
 		UNS_DEBUG(L"Configurator:: WifiPort failed to receive current state\n");
 
-	UNS_DEBUG(L"Configurator:: WifiPort found %d ports", L"\n", ports);
+	UNS_DEBUG(L"Configurator:: WifiPort found %d ports\n", ports);
 	if (ports == 0) {
 		enabled = false;
 		return enabled;
@@ -494,7 +494,7 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 
 	initSubService(argc, argv);
 
-	UNS_DEBUG(L"Configurator, 0x%x", L"\n", this);
+	UNS_DEBUG(L"Configurator, 0x%x\n", this);
 
 	//add to the map, services that demand special test before loading
 	//the test will be performed in the start of the service (is StartAceService())
@@ -507,28 +507,28 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 	LoadedServices *svc = theLoadedServices::instance();
 	if (svc == NULL)
 	{
-		UNS_DEBUG(L"Configurator couldn't initialize LoadedServices, FATAL ERROR!!", L"\n");
+		UNS_DEBUG(L"Configurator couldn't initialize LoadedServices, FATAL ERROR!!\n");
 		return -1;
 	}
 
 	AsyncActivationManager *mng = theAsyncActivationManager::instance();
 	if (mng == NULL)
 	{
-		UNS_DEBUG(L"Configurator couldn't initialize AsyncActivationManager, FATAL ERROR!!", L"\n");
+		UNS_DEBUG(L"Configurator couldn't initialize AsyncActivationManager, FATAL ERROR!!\n");
 		return -1;
 	}
 
 	DependencyManager* depMan = theDependencyManager::instance();
 	if(depMan == NULL)
 	{
-		UNS_DEBUG(L"Configurator couldn't initialize DependancyManager, FATAL ERROR!!",L"\n");
+		UNS_DEBUG(L"Configurator couldn't initialize DependancyManager, FATAL ERROR!!\n");
 		return -1;
 	}
 	depMan->ReadDependencies();
 
 	ServicesBatchCommand::SetServicesManager(this);
 
-	UNS_DEBUG(L"Success", L"\n");
+	UNS_DEBUG(L"Success\n");
 	return 0;
 }
 
@@ -551,38 +551,38 @@ void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 	switch (type) {
 			case MB_ME_CONFIGURED:
 			{
-				UNS_DEBUG(L"ME_CONFIGURED", L"\n");
+				UNS_DEBUG(L"ME_CONFIGURED\n");
 				CreateIMSSShortcut();
 				sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_PROVISIONING, ACE_TEXT("Intel(R) ME configured"));
 			}
 			break;
 		case MB_SERVICE_STATUS_CHANGED:
 			{
-				UNS_DEBUG(L"SERVICE_STATUS_CHANGED", L"\n");
+				UNS_DEBUG(L"SERVICE_STATUS_CHANGED\n");
 				ServiceStatus* statusMChangeMsg = dynamic_cast<ServiceStatus*> (mbPtr->data_block());
 				if (statusMChangeMsg == NULL)
 				{
-					UNS_DEBUG(L"Invalid Status Change Message",L"\n");
+					UNS_DEBUG(L"Invalid Status Change Message\n");
 					return;
 				}
 				ACE_TString serviceName = statusMChangeMsg->serviceName;
 				SERVICE_STATUS_TYPE status = statusMChangeMsg->status;
 				statusMChangeMsg->release();//TODO::to remove it when we use GMS_COMMON dll
 				mbPtr->replace_data_block(new ACE_Data_Block());
-				UNS_DEBUG(L"serviceName: %s, status: %d", L"\n", serviceName.c_str(), status);
+				UNS_DEBUG(L"serviceName: %s, status: %d\n", serviceName.c_str(), status);
 				ChangeServiceState(serviceName, status);
 			}break;
 		case MB_TASK_COMPLETED:
 			{
 				//Add the dummy services dependency which was removed back 
-				UNS_DEBUG(L"TASK_COMPLETED", L"\n");
+				UNS_DEBUG(L"TASK_COMPLETED\n");
 				if (m_onToggleService)
 				{
 					theDependencyManager::instance()->AddDummyDependencies(m_toggeledService);
 					m_toggeledService.clear();
 				}
 
-				UNS_DEBUG(L"Message type %d process completed", L"\n", m_inProcessType);
+				UNS_DEBUG(L"Message type %d process completed\n", m_inProcessType);
 				m_onToggleService = m_inProcess = false;
 				if(!m_nextTasks.empty())
 				{
@@ -604,11 +604,11 @@ const ACE_TString Configurator::name()
 bool Configurator::StartAceService(const ACE_TString &serviceName)
 {
 	FuncEntryExit<void> fee(L"StartAceService");
-	UNS_DEBUG(L"StartAceService: %s", L"\n", serviceName.c_str());
+	UNS_DEBUG(L"StartAceService: %s\n", serviceName.c_str());
 
 	if (theLoadedServices::instance()->IsLoaded(serviceName))
 	{
-		UNS_DEBUG(L"Trying to start already started service %s", L"\n", serviceName.c_str());
+		UNS_DEBUG(L"Trying to start already started service %s\n", serviceName.c_str());
 		return false;
 	}
 
@@ -617,10 +617,10 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 
 	if (needSpecialCheck)
 	{
-		UNS_DEBUG(L"%s: needSpecialCheck", L"\n", serviceName.c_str());
+		UNS_DEBUG(L"%s: needSpecialCheck\n", serviceName.c_str());
 
 		if (!m_mainService->GetPortForwardingStarted()) {
-			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting StartAceService operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE", L"\n", serviceName.c_str());
+			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting StartAceService operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", serviceName.c_str());
 			theLoadedServices::instance()->RemoveServiceToLoad(serviceName);
 			theLoadedServices::instance()->UnlockService(serviceName);
 			theLoadedServices::instance()->AddServiceToWaitForPfw(serviceName);
@@ -633,7 +633,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 				return false;
 			else
 			{
-				UNS_DEBUG(L"the requested service %s should not start.", L"\n", serviceName.c_str());
+				UNS_DEBUG(L"the requested service %s should not start.\n", serviceName.c_str());
 				theLoadedServices::instance()->RemoveServiceToLoad(serviceName);
 				theLoadedServices::instance()->UnlockService(serviceName);
 				return true;
@@ -650,13 +650,13 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
-		UNS_DEBUG(L"Trying to stop not running service %s", L"\n", serviceName.c_str());
+		UNS_DEBUG(L"Trying to stop not running service %s\n", serviceName.c_str());
 		return false;
 	}
 
 	if (theLoadedServices::instance()->IsActive(serviceName))
 	{
-		UNS_DEBUG(L"Deactivating %s", L"\n", serviceName.c_str());
+		UNS_DEBUG(L"Deactivating %s\n", serviceName.c_str());
 			
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new StopServiceDataBlock(m_meiEnabled));
@@ -676,7 +676,7 @@ bool Configurator::SuspendAceService(const ACE_TString &serviceName)
 	FuncEntryExit<void> fee(L"SuspendAceService");
 	if (theLoadedServices::instance()->IsActive(serviceName))
 	{
-		UNS_DEBUG(L"Deactivating %s", L"\n", serviceName.c_str());
+		UNS_DEBUG(L"Deactivating %s\n", serviceName.c_str());
 			
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new ACE_Data_Block());
@@ -696,7 +696,7 @@ bool Configurator::ResumeAceService(const ACE_TString &serviceName)
 int Configurator::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
 	FuncEntryExit<void> fee(L"handle_timeout");
-	UNS_DEBUG(L"%s service  arg=%lu",L"\n",name().c_str(), arg);
+	UNS_DEBUG(L"%s service  arg=%lu\n",name().c_str(), arg);
 	if (arg == &deferredResumeTimerId_)
 	{
 		deferredResumeTimerId_ = -1;
@@ -739,7 +739,7 @@ void Configurator::StopAllServices(bool stopMainService)
 
 	m_mainService->SetStopped(stopMainService);
 
-	UNS_DEBUG(L"StopAll done", L"\n");
+	UNS_DEBUG(L"StopAll done\n");
 
 	if(remainingServices.empty())
 		TaskCompleted();
@@ -782,12 +782,12 @@ namespace
 		{
 			Intel::MEI_Client::MKHI_Client::GetFWVersionCommand getFWVersionCommand;
 			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE res = getFWVersionCommand.getResponse();
-			UNS_DEBUG(L"FW Version %d.%d.%d.%d", L"\n", res.FTMajor, res.FTMinor, res.FTHotFix, res.FTBuildNo);
+			UNS_DEBUG(L"FW Version %d.%d.%d.%d\n", res.FTMajor, res.FTMinor, res.FTHotFix, res.FTBuildNo);
 			return res;
 		}
 		catch (std::exception& e)
 		{
-			UNS_DEBUG(L"Could not get FW version. %C",L"\n", e.what());
+			UNS_DEBUG(L"Could not get FW version. %C\n",e.what());
 			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer = { 0 };
 			return emptyFwVer;
 		}
@@ -805,18 +805,18 @@ namespace
 		if(!DSinstance().GetDataValue(OverrideProsetAdapterSwitching, prosetOverride))
 			return;
 
-		UNS_DEBUG(L"OverrideProsetAdapterSwitching value=%d",L"\n", prosetOverride);
+		UNS_DEBUG(L"OverrideProsetAdapterSwitching value=%d\n", prosetOverride);
 		
 		try
 		{
 			using namespace Intel::MEI_Client::AMTHI_Client;			
 			CFG_SetOverrideProsetAdapterSwitchingCommand cmd(prosetOverride);
 			AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE res = cmd.getResponse();
-			UNS_DEBUG(L"Set Proset status %d", L"\n", res.Status);
+			UNS_DEBUG(L"Set Proset status %d\n", res.Status);
 		}
 		catch (std::exception& e)
 		{
-			UNS_DEBUG(L"Could not set Proset override. %C",L"\n", e.what());
+			UNS_DEBUG(L"Could not set Proset override. %C\n", e.what());
 		}
 	}
 #else
@@ -837,7 +837,7 @@ void Configurator::ScanConfiguration()
 		if (!m_SkuAndBrandScanned)
 		{
 			GetSkuAndBrand(m_platform, m_stateData, m_LME_exists);
-			UNS_DEBUG(L"platform=0x%X FWCaps=0x%X LME_exists=%d" , L"\n", m_platform, m_stateData, m_LME_exists);
+			UNS_DEBUG(L"platform=0x%X FWCaps=0x%X LME_exists=%d\n" , m_platform, m_stateData, m_LME_exists);
 		}
 		m_SkuAndBrandScanned = true;
 
@@ -896,7 +896,7 @@ void Configurator::ScanConfiguration()
 #ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in EnvironmentScanning. %C",L"\n", e.what());
+		UNS_DEBUG(L"\nException in EnvironmentScanning. %C\n", e.what());
 #else
 	catch (std::exception&)
 	{
@@ -1034,7 +1034,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		default:
-			UNS_DEBUG(L"Invalid Service State",L"\n");
+			UNS_DEBUG(L"Invalid Service State\n");
 	}
 
 	if(m_onToggleService)
@@ -1049,21 +1049,21 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 	switch(conf->type)
 	{
 		case IP_SYNC_CONF:
-			UNS_DEBUG(L"Got Static IP Status: %d", L"\n", conf->value);
+			UNS_DEBUG(L"Got Static IP Status: %d\n", conf->value);
 			OnToggleService(GMS_SHAREDSTATICIPSERVICE, (bool) conf->value);
 			break;
 		case WIFI_PROFILE_SYNC_CONF:
-			UNS_DEBUG(L"Got WiFi Profile Sync Status: %d", L"\n", conf->value);
+			UNS_DEBUG(L"Got WiFi Profile Sync Status: %d\n",  conf->value);
 			OnToggleService(GMS_WIFIPROFILESYNCSERVICE, conf->value != 0);
 			break;
 		case TIME_SYNC_CONF: //Handles the changes in the LocalTimeSyncEnable field in the FW
-			UNS_DEBUG(L"Got Time Sync Status: %d", L"\n", conf->value);
+			UNS_DEBUG(L"Got Time Sync Status: %d\n",  conf->value);
 			//Starts or stops the service according to the configuration change
 			OnToggleService(GMS_TIMESYNCSERVICE, (bool) conf->value);
 			break;
 		case AMT_ENABLE_CONF:
 			{
-				UNS_DEBUG(L"Got AMT Status: %d", L"\n", conf->value);
+				UNS_DEBUG(L"Got AMT Status: %d\n", conf->value);
 				
 				if(conf->value != 0)
 				{
@@ -1090,7 +1090,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 
 		case PFW_ENABLE_CONF:
 		{
-			UNS_DEBUG(L"Got Port Forwarding Status: %d", L"\n", conf->value);
+			UNS_DEBUG(L"Got Port Forwarding Status: %d\n", conf->value);
 
 			if (conf->value != 0)
 			{		
@@ -1113,7 +1113,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				ServicesBatchStartCommand batch;
 				if (!batch.Execute(servicesNames))
 				{
-					UNS_DEBUG(L"Starting the services that waited for Port forwarding to start - Failed.", L"\n");
+					UNS_DEBUG(L"Starting the services that waited for Port forwarding to start - Failed.\n");
 					TaskCompleted();
 				}
 
@@ -1126,7 +1126,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			break;
 		}
 		default:
-			UNS_DEBUG(L"Invalid Message",L"\n");
+			UNS_DEBUG(L"Invalid Message\n");
 			return -1;
 	}
 	return 0;
@@ -1135,10 +1135,10 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 void Configurator::FiniAceService(const ACE_TString &serviceName)
 {
 	FuncEntryExit<void> fee(L"FiniAceService");
-	UNS_DEBUG(L"%s", L"\n", serviceName.c_str());
+	UNS_DEBUG(L"%s\n", serviceName.c_str());
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
-		UNS_DEBUG(L"trying to stop not running service", L"\n");
+		UNS_DEBUG(L"trying to stop not running service\n");
 		return;
 	}
 	
@@ -1150,7 +1150,7 @@ void Configurator::FiniAceService(const ACE_TString &serviceName)
 
 	if(services.empty())
 	{
-		UNS_DEBUG(L"LAST ONE", L"\n");
+		UNS_DEBUG(L"LAST ONE\n");
 		theLoadedServices::instance()->ClearServicesToLoad();
 
 		if (m_needToStop)
@@ -1164,12 +1164,12 @@ bool Configurator::CompleteSuspendAceService(const ACE_TString &serviceName)
 {
 	FuncEntryExit<void> fee(L"CompleteSuspendAceService");
 	bool ret = m_mainService->SuspendAceService(serviceName);
-	UNS_DEBUG(L"COMPLETING SUSPEND for %s", L"\n", serviceName.c_str());
+	UNS_DEBUG(L"COMPLETING SUSPEND for %s\n", serviceName.c_str());
 	NamesList services;
 	theLoadedServices::instance()->GetAllActiveServices(services);
 	if (services.empty())
 	{
-		UNS_DEBUG(L"LAST ONE TO SUSPEND", L"\n");
+		UNS_DEBUG(L"LAST ONE TO SUSPEND\n");
 		m_mainService->SetSuspend();
 	}
 
@@ -1182,7 +1182,7 @@ void Configurator::DeviceEventRequested(uint32_t dwEventType, bool wasOnOurGUID)
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	MessageBlockPtr mbEventPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 
-	UNS_DEBUG(L"Event %d", L"\n", dwEventType);
+	UNS_DEBUG(L"Event %d\n", dwEventType);
 	
 	switch(dwEventType)
 	{
@@ -1202,7 +1202,7 @@ void Configurator::DeviceEventRequested(uint32_t dwEventType, bool wasOnOurGUID)
 		case DBT_DEVICEARRIVAL:
 			if (wasOnOurGUID)
 			{
-				UNS_DEBUG(L"LMS connected to Intel(R) MEI driver", L"\n");
+				UNS_DEBUG(L"LMS connected to Intel(R) MEI driver\n");
 				GMSExternalLogger::instance().DebugLog(ACE_TEXT("LMS connected to Intel(R) MEI driver"));
 				m_gotMeiEnabled = true;
 				m_meiEnabled = true;
@@ -1212,7 +1212,7 @@ void Configurator::DeviceEventRequested(uint32_t dwEventType, bool wasOnOurGUID)
 		case DBT_DEVICEREMOVECOMPLETE:
 			if (wasOnOurGUID)
 			{
-				UNS_DEBUG(L"LMS lost connection to Intel(R) MEI driver", L"\n");
+				UNS_DEBUG(L"LMS lost connection to Intel(R) MEI driver\n");
 				GMSExternalLogger::instance().WarningLog(ACE_TEXT("LMS lost connection to Intel(R) MEI driver"));
 				m_meiEnabled = false;
 
@@ -1248,14 +1248,14 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 	int type=mbPtr->msg_type();
 	if (m_serviceIsClosed || m_needToStop)
 	{
-		UNS_DEBUG(L"We already closed, come back tomorrow. %d", L"\n", type);
+		UNS_DEBUG(L"We already closed, come back tomorrow. %d\n", type);
 		TaskCompleted();
 		return;
 	}
 
 	if(!m_inProcess)
 	{
-		UNS_DEBUG(L"Message type %d process started",L"\n", type);
+		UNS_DEBUG(L"Message type %d process started\n", type);
 
 
 		m_inProcess = true;
@@ -1271,12 +1271,12 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					}
 					else
 					{
-						UNS_DEBUG(L"Invalid data block.", L"\n");
+						UNS_DEBUG(L"Invalid data block.\n");
 					}
 				}break;
 				case MB_CONFIGURATION_CHANGE:
 				{
-					UNS_DEBUG(L"got ongoing event", L"\n");
+					UNS_DEBUG(L"got ongoing event\n");
 					ChangeConfiguration *event = dynamic_cast<ChangeConfiguration*>(mbPtr->data_block());
 					if (event != nullptr)
 					{
@@ -1284,22 +1284,22 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					}
 					else
 					{
-						UNS_DEBUG(L"Invalid data block.", L"\n");
+						UNS_DEBUG(L"Invalid data block.\n");
 					}
 				}break;
 			case MB_CONFIGURATION_START:
 				{
-					UNS_DEBUG(L"got start event", L"\n");
+					UNS_DEBUG(L"got start event\n");
 					ScanConfiguration(); 
 				}break;
 			case MB_CONFIGURATION_STOP:
 				{
-					UNS_DEBUG(L"got stop event", L"\n");
+					UNS_DEBUG(L"got stop event\n");
 					CancelDeferredResumeTimer();
 					StopAllServices();
 				}break;
 			case MB_WTS_SESSION_UNLOCK:
-				UNS_DEBUG(L"got unlock event", L"\n");
+				UNS_DEBUG(L"got unlock event\n");
 
 				if (m_fwVer.FTMajor == 0) { //not initialized  yet
 					m_fwVer = GetFwVersion();
@@ -1317,13 +1317,13 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 				TaskCompleted();
 				break;
 			case MB_DEFERRED_RESUME: // deferredResumeTimerId_ is timed-out (before login)
-				UNS_DEBUG(L"deferred resume event", L"\n");
+				UNS_DEBUG(L"deferred resume event\n");
 				ResumeAllServices();
 				TaskCompleted();
 				break;
 			case MB_CONFIGURATION_RESUME:
 				{
-					UNS_DEBUG(L"got resume event", L"\n");
+					UNS_DEBUG(L"got resume event\n");
 
 					if (m_fwVer.FTMajor == 0) { //not initialized  yet
 						m_fwVer = GetFwVersion();
@@ -1354,14 +1354,14 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 				}break;
 			case MB_CONFIGURATION_SUSPEND:
 				{
-					UNS_DEBUG(L"got suspend event", L"\n");
+					UNS_DEBUG(L"got suspend event\n");
 					CancelDeferredResumeTimer();
 					SuspendAllServices();
 					TaskCompleted();
 				}break;
 			case MB_PORT_FORWARDING_STARTED:
 				{
-					UNS_DEBUG(L"got PORT_FORWARDING_STARTED event", L"\n");
+					UNS_DEBUG(L"got PORT_FORWARDING_STARTED event\n");
 
 					m_mainService->SetPortForwardingStarted(true);
 
@@ -1376,17 +1376,17 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 				}break;
 			case MB_PORT_FORWARDING_STOPPED: 
 				{
-					UNS_DEBUG(L"got PORT_FORWARDING_STOPPED event", L"\n");
+					UNS_DEBUG(L"got PORT_FORWARDING_STOPPED event\n");
 
 					PortForwardingStoppedBlock* pfwStoppedMsg = dynamic_cast<PortForwardingStoppedBlock*> (mbPtr->data_block());
 					if (pfwStoppedMsg == NULL)
 					{
-						UNS_DEBUG(L"Invalid Port Forwarding Stopped Message", L"\n");
+						UNS_DEBUG(L"Invalid Port Forwarding Stopped Message\n");
 						TaskCompleted();
 						return;
 					}
 					bool publishFailure = pfwStoppedMsg->m_publishFailure;
-					UNS_DEBUG(L"Publish Failure: %d", L"\n", publishFailure);
+					UNS_DEBUG(L"Publish Failure: %d\n", publishFailure);
 
 					m_mainService->SetPortForwardingStarted(false);
 
@@ -1419,7 +1419,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 		}
 		taskMbPtr->msg_type(type);
 		m_nextTasks.push(taskMbPtr);
-		UNS_DEBUG(L"Message type %d in process, defer %d",L"\n", m_inProcessType, type);
+		UNS_DEBUG(L"Message type %d in process, defer %d\n", m_inProcessType, type);
 	}
 }
 
@@ -1427,7 +1427,7 @@ void Configurator::TaskCompleted()
 {
 	FuncEntryExit<void> fee(L"TaskCompleted");
 
-	UNS_DEBUG(L"Message type %d scheduled to complete", L"\n", m_inProcessType);
+	UNS_DEBUG(L"Message type %d scheduled to complete\n", m_inProcessType);
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ACE_Data_Block());

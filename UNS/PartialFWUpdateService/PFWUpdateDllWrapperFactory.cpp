@@ -9,7 +9,7 @@
 
 std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t fwVersion)
 {
-	UNS_DEBUG(L"PFWUpdateDllWrapperFactory Create wrapper for %u", L"\n", fwVersion);
+	UNS_DEBUG(L"PFWUpdateDllWrapperFactory Create wrapper for %u\n", fwVersion);
 
 	switch (fwVersion)
 	{
@@ -22,7 +22,7 @@ std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t
 	case 12:
 		return std::make_unique<PFWUpdateDllWrapperME12>();
 	default:
-		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got unsupported version: %u. Loading ME12 DLL.", L"\n", fwVersion);
+		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got unsupported version: %u. Loading ME12 DLL.\n", fwVersion);
 		return std::make_unique<PFWUpdateDllWrapperME12>();
 	}
 }
