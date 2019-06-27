@@ -113,7 +113,10 @@ unsigned int HECI::SendHeciMessage(const unsigned char *buffer, int len, unsigne
 
 void* HECI::GetHandle()
 {
-	return &_handle;
+	if (!_initialized)
+		throw HECIException("Not initialized");
+
+	return reinterpret_cast<void*>(TeeGetDeviceHandle(&_handle));
 }
 
 void HECI::GetHeciDriverVersion(teeDriverVersion_t *heciVersion)
