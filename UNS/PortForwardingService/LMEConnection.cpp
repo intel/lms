@@ -503,7 +503,7 @@ int LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned
 	// Data have at least len places, checked above
 	std::copy_n(buffer, len, message->Data);
 
-	UNS_DEBUG(L"==>LME[%d]: %d bytes\n", recipientChannel, len);
+	UNS_TRACE(L"==>LME[%d]: %d bytes\n", recipientChannel, len);
 
 	return _sendMessage((unsigned char *)message, sizeof(APF_CHANNEL_DATA_MESSAGE) + len);
 
@@ -524,7 +524,7 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 	message.RecipientChannel = htonl(recipientChannel);
 	message.BytesToAdd = htonl(len);
 
-	UNS_DEBUG(L"==>LME[%d]: Window Adjust with %d bytes\n", recipientChannel, len);
+	UNS_TRACE(L"==>LME[%d]: Window Adjust with %d bytes\n", recipientChannel, len);
 	int res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
@@ -623,7 +623,7 @@ void LMEConnection::_doRX()
 		}
 
 
-		UNS_DEBUG(L"==>LME: %d bytes, message type %02d\n", bytesRead, rxBuffer[0]);
+		UNS_TRACE(L"==>LME: %d bytes, message type %02d\n", bytesRead, rxBuffer[0]);
 
 		uint32_t posBytesRead = (uint32_t) bytesRead;
 
@@ -764,7 +764,7 @@ void LMEConnection::_doRX()
 
 						//if (bytesRead < (unsigned char)pCurrent - rxBuffer + sizeof(uint32_t) +) {
 						//	// TBD Do we want to deinit?
-						//	/*UNS_DEBUG_NO_ARG("Error receiving data from HECI");
+						//	/*UNS_DEBUG("Error receiving data from HECI\n");
 						//	Deinit();
 						//	return;*/
 						//}

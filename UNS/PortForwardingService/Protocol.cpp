@@ -230,7 +230,7 @@ void Protocol::_TCPCleanup()
 //
 //	pTcpTable = (MIB_TCP6TABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCP6TABLE_OWNER_PID)];
 //	if (pTcpTable == NULL) {
-//		//UNS_DEBUG_NO_ARG("Error allocating memory");
+//		UNS_DEBUG("Error allocating memory\n");
 //		return;
 //	}
 //
@@ -244,7 +244,7 @@ void Protocol::_TCPCleanup()
 //			pTcpTable = NULL;
 //			pTcpTable = (MIB_TCP6TABLE_OWNER_PID *) new unsigned char[dwSize];
 //			if (pTcpTable == NULL) {
-//				//UNS_DEBUG_NO_ARG("Error allocating memory");
+//				UNS_DEBUG("Error allocating memory\n");
 //				return;
 //			}
 //	}
@@ -252,7 +252,7 @@ void Protocol::_TCPCleanup()
 //	// Make a second call to GetExtendedTcpTable to get
 //	// the actual data we require
 //	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0)) == NO_ERROR) {
-//		//UNS_DEBUG("\tNumber of entries: %d", (int) pTcpTable->dwNumEntries);
+//		UNS_DEBUG("\tNumber of entries: %d\n", (int) pTcpTable->dwNumEntries);
 //		for (i = 0; i < (int) pTcpTable->dwNumEntries; i++) {
 //			if ((pid == pTcpTable->table[i].dwOwningPid) &&
 //				(pTcpTable->table[i].dwState == MIB_TCP_STATE_FIN_WAIT2)) {
@@ -266,7 +266,7 @@ void Protocol::_TCPCleanup()
 //			}
 //		}
 //	} else {
-//		//UNS_DEBUG("\tGetTcpTable failed with %d", dwRetVal);
+//		UNS_DEBUG("\tGetTcpTable failed with %d\n", dwRetVal);
 //		delete []pTcpTable;
 //		return;
 //	}
@@ -353,7 +353,7 @@ void Protocol::Deinit()
 #ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG_NO_ARG(L"Exception in Protocol::Deinit() %C", e.what());
+		UNS_DEBUG(L"Exception in Protocol::Deinit() %C\n", e.what());
 	}
 #else
 	catch(std::exception&){}
@@ -718,11 +718,11 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 
 	if(addr.ss_family == AF_INET)
 	{
-		UNS_DEBUG(L"AF_INET\n");
+		UNS_TRACE(L"AF_INET\n");
 	}
 	else if(addr.ss_family == AF_INET6)
 	{
-		UNS_DEBUG(L"AF_INET6\n");
+		UNS_TRACE(L"AF_INET6\n");
 	}
 
 	//get address as a string:
@@ -757,7 +757,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 		return false;
 	}
 	_openChannels[s_new] = c;
-	UNS_DEBUG(L"Send channel open request to LME. Sender %d, Address: %C:%d \n", (int)s_new,
+	UNS_TRACE(L"Send channel open request to LME. Sender %d, Address: %C:%d \n", (int)s_new,
 		address.c_str(), ntohs(originator_port));
 
 	return true;
@@ -787,7 +787,7 @@ int CALLBACK ConditionAcceptFunc(
 	sockaddr_storage caller_addr;
 	memcpy_s(&caller_addr, sizeof(sockaddr_storage), lpCallerId->buf, lpCallerId->len);
 
-	UNS_DEBUG(L"received new connection from %C\n", addr2str(caller_addr).c_str());
+	UNS_TRACE(L"received new connection from %C\n", addr2str(caller_addr).c_str());
 
 	return protocol->checkAcceptLogic(caller_addr, port,((ConnectionAcceptCB *)dwCallbackData)->_PFReq);
 }
@@ -934,7 +934,7 @@ int Protocol::Select()
 					SOCKET serverSocket = vs[i];
 					if (FD_ISSET(serverSocket, &rset)) {
 
-						UNS_DEBUG(L"Connection requested on port %d\n", it->first);
+						UNS_TRACE(L"Connection requested on port %d\n", it->first);
 						_acceptConnection(serverSocket, it->first);
 						FD_CLR(serverSocket, &rset);
 						res--;
@@ -985,7 +985,7 @@ int Protocol::_rxFromSocket(SOCKET s)
 	res = recv(s, _rxSocketBuffer, len, 0);
 	if (res > 0) {
 		// send data to LME
-		UNS_DEBUG(L"Socket[%d] ==>: %d bytes\n", (int)s, res);
+		UNS_TRACE(L"Socket[%d] ==>: %d bytes\n", (int)s, res);
 #ifdef _DEBUG
 		std::string dbg_dump(_rxSocketBuffer, _rxSocketBuffer + res);
 		UNS_DEBUG(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n\n",
@@ -995,11 +995,11 @@ int Protocol::_rxFromSocket(SOCKET s)
 		goto out;
 	} else if (res == 0) {
 		// connection closed
-		UNS_DEBUG(L"Socket[%d] ==>: 0 bytes\n", (int)s);
+		UNS_TRACE(L"Socket[%d] ==>: 0 bytes\n", (int)s);
 		goto out;
 	} else {
 		int err = GetLastError();
-		UNS_DEBUG(L"Socket[%d]: Error (%d): %W\n", (int)s, err, getErrMsg(err).c_str());
+		UNS_TRACE(L"Socket[%d]: Error (%d): %W\n", (int)s, err, getErrMsg(err).c_str());
 		goto out;
 	}
 
@@ -1281,7 +1281,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				LMEGlobalRequestMessage *globalMessage = (LMEGlobalRequestMessage *)message;
 
-				UNS_DEBUG(L"Global Request type 0x%02x\n", globalMessage->RequestType);
+				UNS_TRACE(L"Global Request type 0x%02x\n", globalMessage->RequestType);
 				switch (globalMessage->RequestType) {
 
 					case LMEGlobalRequestMessage::TCP_FORWARD_REQUEST:
@@ -1345,7 +1345,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								else {
 									PortForwardRequestList portForwardRequestList;
 									_openPorts[tcpForwardRequestMessage->Port] = portForwardRequestList;
-									UNS_DEBUG(L"New port %d\n", tcpForwardRequestMessage->Port);
+									UNS_TRACE(L"New port %d\n", tcpForwardRequestMessage->Port);
 								}
 
 								if (serverSockets.size() == 0) {
@@ -1373,7 +1373,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								if (failure != true)
 								{
 
-									UNS_DEBUG(L"Listening at port %d at %C interface.\n", tcpForwardRequestMessage->Port, 
+									UNS_TRACE(L"Listening at port %d at %C interface.\n", tcpForwardRequestMessage->Port, 
 										(cb == _isLocalCallback)?"local":"remote");
 
 									// Log in Event Log
@@ -1388,7 +1388,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 										new PortForwardRequest(tcpForwardRequestMessage->Address, tcpForwardRequestMessage->Port,
 										serverSockets, cb, (cb == _isLocalCallback));
 
-									UNS_DEBUG(L"Add forward request to port:  %d\n", tcpForwardRequestMessage->Port);
+									UNS_TRACE(L"Add forward request to port:  %d\n", tcpForwardRequestMessage->Port);
 									_openPorts[tcpForwardRequestMessage->Port].push_back(portForwardRequest);
 
 									// Send Success replay to LME
@@ -1427,7 +1427,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							if (!failure) {
 								if (cb == _isLocalCallback) {
 
-									UNS_DEBUG(L"Listening at port %d addr:%C at %C interface.\n", tcpForwardRequestMessage->Port, 
+									UNS_TRACE(L"Listening at port %d addr:%C at %C interface.\n", tcpForwardRequestMessage->Port, 
 										tcpForwardRequestMessage->Address.c_str(),
 										(cb == _isLocalCallback)?L"local":L"remote");
 
@@ -1543,7 +1543,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							}
 
 							int count = send(s, (char *)udpSendToMessage->Data.data(), udpSendToMessage->Data.size(), 0);
-							UNS_DEBUG(L"Sent UDP data: %d bytes of %d.\n", count, udpSendToMessage->Data.size());
+							UNS_TRACE(L"Sent UDP data: %d bytes of %d.\n", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
 							std::string dbg_dump(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
 							UNS_DEBUG(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n\n",
@@ -1742,10 +1742,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							case Channel::OPEN:
 								c->SetStatus(Channel::CLOSED);
 								_lme.ChannelClose(c->GetRecipientChannel());
-								UNS_DEBUG(L"Channel %d was closed by AMT.\n", c->GetSenderChannel());
+								UNS_TRACE(L"Channel %d was closed by AMT.\n", c->GetSenderChannel());
 								break;
 							case Channel::WAITING_CLOSE:
-								UNS_DEBUG(L"Received reply by AMT on closing channel %d.\n", c->GetSenderChannel());
+								UNS_TRACE(L"Received reply by AMT on closing channel %d.\n", c->GetSenderChannel());
 								break;
 						}
 						_closeSocket(c->GetSocket());
@@ -1793,7 +1793,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 						bool request_close = false;
 						int count = it->second->ProcessRx((char *)channelDataMessage->Data.data(), channelDataMessage->Data.size(), request_close);
-						UNS_DEBUG(L"Sent %d bytes of %d from AMT to channel %d with socket %d.\n", 
+						UNS_TRACE(L"Sent %d bytes of %d from AMT to channel %d with socket %d.\n", 
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG
