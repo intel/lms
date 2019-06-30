@@ -22,3 +22,7 @@ target_link_libraries (WsmanClientTest
   ACELIB
   LmsMEIClient
 )
+
+install (TARGETS WsmanClientTest
+  RUNTIME DESTINATION ${LMS_TESTDIR}
+)

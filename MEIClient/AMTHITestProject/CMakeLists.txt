@@ -10,3 +10,7 @@ target_link_libraries (AMTHITestProject
   gtest_main
   LmsMEIClient
 )
+
+install (TARGETS AMTHITestProject
+  RUNTIME DESTINATION ${LMS_TESTDIR}
+)

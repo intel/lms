@@ -125,22 +125,34 @@ class PTHITestCase(unittest.TestCase):
         '''GetSystemDefenseStatus test method'''
         self.iface.GetSystemDefenseStatus()
 
-    def test_GetNetworkSettings(self):
-        '''GetNetworkSettings test method'''
-        for i in (0, 1):
-            with self.subTest(i=i):
-                self.iface.GetNetworkSettings(i)
+    def test_GetNetworkSettingsWired(self):
+        '''GetNetworkSettings test method (wired)'''
+        self.iface.GetNetworkSettings(0)
+
+    @unittest.skip("Requires wireless card")
+    def test_GetNetworkSettingsWireless(self):
+        '''GetNetworkSettings test method (wireless)'''
+        self.iface.GetNetworkSettings(1)
+
+    def test_GetNetworkSettingsFail(self):
+        '''GetNetworkSettings test method (wrong parameters)'''
         for i in (2, 100000000):
             with self.subTest(i=i):
                 with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
                     self.iface.GetNetworkSettings(i)
                 self.assertEqual(the_exp.exception.get_dbus_message(), 'Invalid argument')
 
-    def test_GetIPv6NetworkSettings(self):
-        '''GetIPv6NetworkSettings test method'''
-        for i in (0, 1):
-            with self.subTest(i=i):
-                self.iface.GetIPv6NetworkSettings(i)
+    def test_GetIPv6NetworkSettingsWired(self):
+        '''GetIPv6NetworkSettings test method (wired)'''
+        self.iface.GetIPv6NetworkSettings(0)
+
+    @unittest.skip("Requires wireless card")
+    def test_GetIPv6NetworkSettingsWireless(self):
+        '''GetIPv6NetworkSettings test method (wireless)'''
+        self.iface.GetIPv6NetworkSettings(1)
+
+    def test_GetIPv6NetworkSettingsFail(self):
+        '''GetIPv6NetworkSettings test method (wrong parameters)'''
         for i in (2, 100000000):
             with self.subTest(i=i):
                 with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
@@ -222,14 +234,17 @@ class PTHITestCase(unittest.TestCase):
             self.iface.UpdateScreenSettings2([(True, 1, 2, 3, 4, 5), (False, 98, 99, 100, 44, 55)], 1)
         self.assertEqual(the_exp.exception.get_dbus_message(), 'Invalid argument')
 
+    @unittest.skip("Requires specially configured FW")
     def test_GetRedirectionSessionLinkTechnology_SOL(self):
         '''GetRedirectionSessionLinkTechnology SOL test method'''
         self.iface.GetRedirectionSessionLinkTechnology(0)
 
+    @unittest.skip("Requires specially configured FW")
     def test_GetRedirectionSessionLinkTechnology_IDER(self):
         '''GetRedirectionSessionLinkTechnology IDER test method'''
         self.iface.GetRedirectionSessionLinkTechnology(1)
 
+    @unittest.skip("Requires specially configured FW")
     def test_GetRedirectionSessionLinkTechnology_KVM(self):
         '''GetRedirectionSessionLinkTechnology KVM test method'''
         self.iface.GetRedirectionSessionLinkTechnology(2)
