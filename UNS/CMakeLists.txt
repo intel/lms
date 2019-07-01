@@ -118,23 +118,23 @@ if (UNIX)
   )
 
   if (BUILD_TESTS)
-    install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/dbus_ut.py
+    install (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/tests/dbus_ut.py
       DESTINATION ${LMS_TESTDIR}
       RENAME lms_dbus_ut.py
     )
-    install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/lms_webui_curl.sh
+    install (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/tests/lms_webui_curl.sh
       DESTINATION ${LMS_TESTDIR}
     )
-    install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/lms_webui_wget.sh
+    install (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/tests/lms_webui_wget.sh
       DESTINATION ${LMS_TESTDIR}
     )
   endif (BUILD_TESTS)
 else (UNIX)
-  install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/windows_scripts/lms-installer.bat
+  install (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/windows_scripts/lms-installer.bat
     DESTINATION ${LMS_LIBDIR}
   )
   if (BUILD_TESTS)
-    install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/lms_webui_vbs.vbs
+    install (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/tests/lms_webui_vbs.vbs
       DESTINATION ${LMS_TESTDIR}
     )
   endif (BUILD_TESTS)
