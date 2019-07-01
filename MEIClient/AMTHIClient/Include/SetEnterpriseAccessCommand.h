@@ -34,9 +34,9 @@ namespace Intel
 			{
 			public:
 
-				SetEnterpriseAccessCommand(uint8_t Flags, uint8_t HostIPAddress[HOST_IP_ADDRESS_SIZE], uint8_t EnterpiseAccess);
+				SetEnterpriseAccessCommand(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess);
 				virtual ~SetEnterpriseAccessCommand() {}
-				virtual void reTransact(uint8_t Flags, uint8_t HostIPAddress[HOST_IP_ADDRESS_SIZE], uint8_t EnterpiseAccess);
+				virtual void reTransact(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess);
 				SetEnterpriseAccess_RESPONSE getResponse();
 
 			private:
@@ -50,7 +50,9 @@ namespace Intel
 			class SetEnterpriseAccessRequest : public AMTHICommandRequest
 			{
 			public:
-				SetEnterpriseAccessRequest(uint8_t Flags, uint8_t HostIPAddress[HOST_IP_ADDRESS_SIZE], uint8_t EnterpiseAccess);
+				SetEnterpriseAccessRequest(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess);
+				SetEnterpriseAccessRequest(const SetEnterpriseAccessRequest&) = delete;
+				SetEnterpriseAccessRequest& operator = (const SetEnterpriseAccessRequest&) = delete;
 				virtual ~SetEnterpriseAccessRequest() {}
 
 			private:
@@ -68,7 +70,7 @@ namespace Intel
 				virtual std::vector<uint8_t> SerializeData();
 
 				uint8_t _Flags;
-				uint8_t _HostIPAddress[HOST_IP_ADDRESS_SIZE];
+				std::vector<uint8_t> _HostIPAddress;
 				uint8_t _EnterpiseAccess;
 			};
 		} // namespace AMTHI_Client

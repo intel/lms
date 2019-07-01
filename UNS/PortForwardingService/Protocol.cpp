@@ -1990,27 +1990,27 @@ void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 	}
 
 	uint8_t Flags;
-	std::vector<uint8_t> HostIPAddress;
+	// This will initialize the vector with zeroes
+	std::vector<uint8_t> HostIPAddress(Intel::MEI_Client::AMTHI_Client::HOST_IP_ADDRESS_SIZE);
 	uint8_t EnterpriseAccess = raccess ? 1 : 0;
-	memset(&HostIPAddress, 0, sizeof(HostIPAddress));
 	if(localIp.ss_family == AF_INET6)
 	{
 		Flags = 1;
 		uint8_t *addr = reinterpret_cast<uint8_t*>(&(((sockaddr_in6*)(&localIp))->sin6_addr));
-		HostIPAddress.assign(addr, addr + sizeof(in6_addr));
+		std::copy_n(addr, sizeof(in6_addr), HostIPAddress.begin());
 	}
 	else
 	{
 		Flags = 0;
 		uint8_t *addr = reinterpret_cast<uint8_t*>(&(((sockaddr_in*)(&localIp))->sin_addr));
-		HostIPAddress.assign(addr, addr + sizeof(in_addr));
+		std::copy_n(addr, sizeof(in_addr), HostIPAddress.begin());
 	}
 
 	{
 		std::lock_guard<std::mutex> l(_remoteAccessLock);
 		_remoteAccessEnabledInAMT = false;
 		try {
-			Intel::MEI_Client::AMTHI_Client::SetEnterpriseAccessCommand setEnterpriseAccessCommand(Flags, HostIPAddress.data(), EnterpriseAccess);
+			Intel::MEI_Client::AMTHI_Client::SetEnterpriseAccessCommand setEnterpriseAccessCommand(Flags, HostIPAddress, EnterpriseAccess);
 			_remoteAccessEnabledInAMT = true;
 			printf("Remote access is allowed. This state is deprecated.\n");
 		}
