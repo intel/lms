@@ -163,6 +163,7 @@ class PTHITestCase(unittest.TestCase):
         '''GetSystemUUID test method'''
         self.iface.GetSystemUUID()
 
+    @unittest.skip("Requires provisioned FW")
     def test_UserInitiatedConnection(self):
         '''*UserInitiatedConnection test method'''
         self.iface.InitiateUserConnection()
@@ -200,6 +201,7 @@ class PTHITestCase(unittest.TestCase):
         '''GetUserConsentState test method'''
         self.iface.GetUserConsentState()
 
+    @unittest.skip("Requires wireless card")
     def test_GetWLANLinkInfo(self):
         '''GetWLANLinkInfo test method'''
         self.iface.GetWLANLinkInfo()
@@ -224,6 +226,7 @@ class PTHITestCase(unittest.TestCase):
         '''CILAFilterCollectionSubscriptionExists test method'''
         self.iface.CILAFilterCollectionSubscriptionExists()
 
+    @unittest.skip("Requires provisioned FW")
     def test_UpdateScreenSettings2(self):
         '''UpdateScreenSettings2 test method'''
         self.iface.UpdateScreenSettings2([(True, 1, 2, 3, 4, 5), (False, 98, 99, 100, 44, 55)], 2)
