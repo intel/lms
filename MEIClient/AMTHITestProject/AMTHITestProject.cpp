@@ -535,7 +535,7 @@ TEST(instantiate, testSetEnterpriseAccessCommand)
 	vector<uint8_t> arr(ip.begin(), ip.end());
 	arr.push_back('\0');
 	EXPECT_THROW( //we expect AMT_STATUS_REMOTE_ACCESS_HOST_VPN_IS_DISABLED/AMT_STATUS_SUCCESS_WITHOUT_DDNS/AMT_STATUS_SUCCESS_WITH_DDNS
-		SetEnterpriseAccessCommand setEnterpriseAccessCommand(0,&arr[0],1),AMTHIErrorException
+		SetEnterpriseAccessCommand setEnterpriseAccessCommand(0, arr, 1), AMTHIErrorException
 	);
 }
 
