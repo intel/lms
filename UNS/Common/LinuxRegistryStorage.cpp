@@ -77,9 +77,10 @@ static bool SetRegistryData(const void* value, unsigned long valsz, unsigned lon
 			    const std::string &key, const std::string &valuename)
 {
 	std::string path(GetLmsRegPosition());
+	const mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 
 	//create path
-	if (mkdir(path.c_str(), S_IRWXU | S_IRGRP | S_IROTH) == -1) {
+	if (mkdir(path.c_str(), mode) == -1) {
 		if (errno != EEXIST)
 			return false;
 	}
@@ -87,7 +88,7 @@ static bool SetRegistryData(const void* value, unsigned long valsz, unsigned lon
 	path += key;
 
 	//create path
-	if (mkdir(path.c_str(), S_IRWXU | S_IRGRP | S_IROTH) == -1) {
+	if (mkdir(path.c_str(), mode) == -1) {
 		if (errno != EEXIST)
 			return false;
 	}
