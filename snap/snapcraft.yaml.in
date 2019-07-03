@@ -21,8 +21,6 @@ apps:
         - intel-mei
     slots:
         - dbus-svc
-    #environment:
-       #LMS_ENABLE_DEBUG: 1
 
 slots:
   dbus-svc:

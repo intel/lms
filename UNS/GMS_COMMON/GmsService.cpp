@@ -16,6 +16,7 @@
 #include <syslog.h>
 #endif // WIN32
 #include "StringsDefinitions.h"
+#include "DataStorageGenerator.h"
 
 #include "servicesNames.h"
 #include "EventManagment.h"
@@ -25,6 +26,17 @@
 //Localized strings to load
 unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
 #define numOfStrings 2
+
+
+typedef enum _LOGGINGSEVERITY
+{
+	LMS_TRACE=1,
+	LMS_DEBUG,
+	LMS_WARNING,
+	LMS_ERROR,
+	LMS_CRITICAL
+} LOGGINGSEVERITY;
+
 
 GmsService::GmsService(void) : stopped(false), loading(false), 
 #ifdef WIN32
@@ -249,12 +261,44 @@ int GmsService::svc(void)
 #endif // _DEBUG
 	ACE_LOG_MSG->open(0, flags, 0);
 	openlog("lms_svc", LOG_CONS, LOG_DAEMON);
-	if (!getenv("LMS_ENABLE_DEBUG"))
-	{
-		u_long mask = ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS);
-		ACE_LOG_MSG->priority_mask(mask & ~LM_DEBUG, ACE_Log_Msg::PROCESS);
-	}
 #endif // WIN32
+
+	u_long mask = ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS);
+
+#ifdef WIN32
+	u_long requiredLoggingMask = mask & ~LM_TRACE; // Default Logging value is Debug
+#else // WIN32
+	u_long requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG; // Default Logging value is Warning
+#endif // WIN32
+
+	DataStorageWrapper& ds = DSinstance();
+	unsigned long severity;
+	if (ds.GetDataValue(LMSLoggingSeverity, severity, true))
+	{
+		UNS_DEBUG(L"Logging Severity from Registry: %d\n", severity);
+		switch (severity)
+		{
+		case LMS_TRACE:
+			requiredLoggingMask = mask;
+			break;
+		case LMS_DEBUG:
+			requiredLoggingMask = mask & ~LM_TRACE;
+			break;
+		case LMS_WARNING:
+			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG;
+			break;
+		case LMS_ERROR:
+			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING;
+			break;
+		case LMS_CRITICAL:
+			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING & ~LM_ERROR;
+			break;
+		default:
+			break;
+		}
+
+	}
+	ACE_LOG_MSG->priority_mask(requiredLoggingMask, ACE_Log_Msg::PROCESS);
 
 	UNS_DEBUG(L"GmsService:Starting service\n");
 	 

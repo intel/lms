@@ -6,7 +6,6 @@ After=dev-mei.device
 [Service]
 Type=dbus
 BusName=com.intel.amt.lms
-#Environment=LMS_ENABLE_DEBUG=1
 ExecStart=@LMS_BINPATH@
 
 [Install]
