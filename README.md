@@ -123,3 +123,21 @@ In Yocto the desired service should be configured in the recipe.
 #### Other distributions
 
 1. `make install` from the `build` directory
+
+## Debug
+
+### Linux
+
+LMS prints debug logs to syslog with prefix "lms_svc". If syslog filter is installed, messages are routed to /var/log/lms.log
+
+Messages with level WARNING and up are logged by default. Use UNS/linux_scripts/lms_enable_logging_severity.sh script to set desired log level.
+
+LMS service should be restarted to pick up a new log level.
+
+### Windows
+
+LMS prints debug logs to the file, located at C:\Windows\SysWOW64\Gms.log. The file is trimmed at service start.
+
+Messages with level DEBUG and up are logged by default. Use UNS/windows_scripts/lms_enable_logging_severity.bat script to set desired log level.
+
+LMS service should be restarted to pick up a new log level.
