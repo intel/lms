@@ -90,6 +90,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetPMCVersion_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetPMCVersion"));
 	regMap->at(WIFI_PROFILE_SYNC_ENABLE_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE, LMS_REG_TEXT("WIFI_PROFILE_SYNC_ENABLE"));
 	regMap->at(LMSLoggingSeverity) = RegEntry(LMS_REG, LMS_REG_TEXT("LMSLoggingSeverity"));
+	regMap->at(RebootAfterProvsioningNeeded_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE, LMS_REG_TEXT("RebootAfterProvsioningNeeded"));
 	//When adding to this regMap - add to the same place you added to the DataStorageGenerator.h!!!!
 	return regMap;
 }

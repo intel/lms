@@ -99,6 +99,7 @@ enum DATA_NAME : unsigned int
 	GetPMCVersion_F,
 	WIFI_PROFILE_SYNC_ENABLE_S,
 	LMSLoggingSeverity,
+	RebootAfterProvsioningNeeded_S,
 
 	DATA_NAME_MAX_SENTINEL
 };

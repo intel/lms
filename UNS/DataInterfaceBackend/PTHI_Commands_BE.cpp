@@ -7,13 +7,13 @@
 @file: PTHI_Commands_BE.cpp
 
 --*/
-
-#include "StatusEventHandler.h"
 #include <sstream>
 #include <string>
 #include <iomanip>
 #include <chrono>
 #include <thread>
+#include "global.h"
+#include "GmsService.h"
 #include "SIOWSManClient.h"
 #include "HBPWSManClient.h"
 #include "KVMWSManClient.h"
@@ -52,6 +52,7 @@
 #include "AddProxyTableEntryCommand.h"
 #include "PTHI_Commands_BE.h"
 #include "version.h"
+#include "servicesNames.h"
 
 namespace Intel {
 	namespace LMS {
@@ -113,7 +114,7 @@ namespace Intel {
 
 			for (int i = 0; i < 16; ++i)
 			{
-				uuidStr << std::setfill('0') << std::setw(2) << hex << (int)uuid[guid_index[i]];
+				uuidStr << std::setfill('0') << std::setw(2) << std::hex << (int)uuid[guid_index[i]];
 				if ((i == 3) || (i == 5) || (i == 7) || (i == 9))
 				{
 					uuidStr << "-";
@@ -1072,7 +1073,12 @@ namespace Intel {
 
 		LMS_ERROR PTHI_Commands_BE::IsRebootAfterProvisioningNeeded(bool &pNeeded)
 		{
-			pNeeded = StatusEventHandler::getRebootAfterProvisioningNeed();
+			unsigned long needed = 0;
+			if (!DSinstance().GetDataValue(RebootAfterProvsioningNeeded_S, needed, true)) {
+				DbgPrintW(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded GetDataValue failed");
+				return ERROR_FAIL;
+			}
+			pNeeded = (needed != 0);
 			DbgPrintW(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded, got from StatusEventHandler %d", L"\n", pNeeded);
 			return ERROR_OK;
 		}

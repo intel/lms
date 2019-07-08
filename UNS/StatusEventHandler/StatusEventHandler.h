@@ -101,9 +101,6 @@ typedef enum _WLAN_PROTECTION_STATE
 
 	void PublishWlanProtectionEvent(WLAN_PROTECTION_STATE state);
 	void PublishWlanControlEvent(WLAN_CONTROL_STATE state);
-	//returns true if there is a current need for reboot after provisioning
-	static bool getRebootAfterProvisioningNeed();
-
 
 protected:
 	virtual int init(int argc, ACE_TCHAR *argv[]);
@@ -210,12 +207,10 @@ protected:
 
 	//check if reboot is required after provisioning for current FW and SKU
 	bool isRebootAfterProvisioningRequired();
-	//indicates that the system needs a reboot due to provisioning
-	static bool s_rebootAfterProvsioningNeeded;
-	//semaphore for s_rebootAfterProvsioningNeeded (can be accessed by the service and IMSS)
-	static std::mutex s_rebootAfterProvsioningSemaphore;
 	//sets the current state for reboot after provisioning
 	void setRebootAfterProvisioningNeed(bool needed);
+	//returns true if there is a current need for reboot after provisioning
+	bool getRebootAfterProvisioningNeed();
 
 	short m_KVM;
 	short m_SOL;

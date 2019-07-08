@@ -21,7 +21,6 @@ target_link_libraries (DataInterfaceBackend
   ACELIB
   LmsMEIClient
   LmsWsmanClient
-  LmsStatusEventHandler
 )
 
 target_include_directories (DataInterfaceBackend PUBLIC

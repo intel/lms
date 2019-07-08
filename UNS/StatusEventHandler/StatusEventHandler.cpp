@@ -249,18 +249,21 @@ bool StatusEventHandler::isRebootAfterProvisioningRequired()
 }
 
 
-//returns true if there is a current need for reboot after provisioning (public static method) 
+//returns true if there is a current need for reboot after provisioning 
 bool StatusEventHandler::getRebootAfterProvisioningNeed()
 {
-	std::lock_guard<std::mutex> lock(s_rebootAfterProvsioningSemaphore);
-	return s_rebootAfterProvsioningNeeded;
+	unsigned long needed = 0;
+
+	if (!DSinstance().GetDataValue(RebootAfterProvsioningNeeded_S, needed, true))
+		UNS_DEBUG(L"getRebootAfterProvisioningNeed GetDataValue failed\n");
+	return (needed != 0);
 } 
 
 //sets the current state for reboot after provisioning
 void StatusEventHandler::setRebootAfterProvisioningNeed(bool needed)
 {
-	std::lock_guard<std::mutex> lock(s_rebootAfterProvsioningSemaphore);
-	s_rebootAfterProvsioningNeeded = needed;
+	if (!DSinstance().SetDataValue(RebootAfterProvsioningNeeded_S, static_cast<unsigned long>(needed), true))
+		UNS_DEBUG(L"setRebootAfterProvisioningNeed SetDataValue failed\n");
 }
 
 
@@ -277,6 +280,8 @@ int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 	mbPtr->data_block(new ACE_Data_Block());
 	mbPtr->msg_type(MB_SRVICE_UP);
 	this->putq(mbPtr->duplicate());
+
+	setRebootAfterProvisioningNeed(false);
 
 	return 0;
 }
@@ -1850,9 +1855,6 @@ void StatusEventHandler::requestDisplaySettings()
 	raiseGMS_AlertIndication(CATEGORY_KVM,EVENT_KVM_SCREEN_SETTING_UPDATE,getDateTime(),ACTIVE_MESSAGEID, ACE_TEXT(""));
 	UNS_DEBUG(L"Sending request for display settings\n");
 }
-
-bool StatusEventHandler::s_rebootAfterProvsioningNeeded = false;	
-std::mutex StatusEventHandler::s_rebootAfterProvsioningSemaphore;
 
 ACE_FACTORY_DEFINE (STATUSEVENTHANDLER, StatusEventHandler)
 
