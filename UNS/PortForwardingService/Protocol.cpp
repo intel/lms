@@ -163,7 +163,7 @@ void Protocol::_TCPCleanup()
 
 	pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCPTABLE_OWNER_PID)];
 	if (pTcpTable == NULL) {
-		UNS_DEBUG(L"Error allocating memory\n");
+		UNS_ERROR(L"Error allocating memory\n");
 		return;
 	}
 
@@ -177,7 +177,7 @@ void Protocol::_TCPCleanup()
 			pTcpTable = NULL;
 			pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[dwSize];
 			if (pTcpTable == NULL) {
-				UNS_DEBUG(L"Error allocating memory\n");
+				UNS_ERROR(L"Error allocating memory\n");
 				return;
 			}
 	}
@@ -199,7 +199,7 @@ void Protocol::_TCPCleanup()
 			}
 		}
 	} else {
-		UNS_DEBUG(L"\tGetTcpTable failed with %d\n", dwRetVal);
+		UNS_ERROR(L"\tGetTcpTable failed with %d\n", dwRetVal);
 		delete []pTcpTable;
 		return;
 	}
@@ -230,7 +230,7 @@ void Protocol::_TCPCleanup()
 //
 //	pTcpTable = (MIB_TCP6TABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCP6TABLE_OWNER_PID)];
 //	if (pTcpTable == NULL) {
-//		UNS_DEBUG("Error allocating memory\n");
+//		UNS_ERROR("Error allocating memory\n");
 //		return;
 //	}
 //
@@ -244,7 +244,7 @@ void Protocol::_TCPCleanup()
 //			pTcpTable = NULL;
 //			pTcpTable = (MIB_TCP6TABLE_OWNER_PID *) new unsigned char[dwSize];
 //			if (pTcpTable == NULL) {
-//				UNS_DEBUG("Error allocating memory\n");
+//				UNS_ERROR("Error allocating memory\n");
 //				return;
 //			}
 //	}
@@ -266,7 +266,7 @@ void Protocol::_TCPCleanup()
 //			}
 //		}
 //	} else {
-//		UNS_DEBUG("\tGetTcpTable failed with %d\n", dwRetVal);
+//		UNS_ERROR("\tGetTcpTable failed with %d\n", dwRetVal);
 //		delete []pTcpTable;
 //		return;
 //	}
@@ -350,14 +350,10 @@ void Protocol::Deinit()
 		_TCPCleanup();
 		//_TCPCleanupIPv6();
 	}
-#ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"Exception in Protocol::Deinit() %C\n", e.what());
+		UNS_ERROR(L"Exception in Protocol::Deinit() %C\n", e.what());
 	}
-#else
-	catch(std::exception&){}
-#endif
 }
 
 unsigned int GetLocalPort(SOCKET s)
@@ -385,7 +381,7 @@ bool Protocol::CreateSockets()
 {
 	int ret = _signalPipe.open();
 	if (ret)
-		UNS_DEBUG(L"Error: Can't open signalPipe %d\n", ret);
+		UNS_ERROR(L"Error: Can't open signalPipe %d\n", ret);
 
 	_sockets_active = (ret) ? false : true;
 	return _sockets_active;
@@ -403,7 +399,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	int optval = 1;
 	if (setsockopt(s, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
 		       (char *)&optval, sizeof(optval)) == SOCKET_ERROR) {
-		UNS_DEBUG(L"Error: Can't bind socket using exclusive address\n");
+		UNS_ERROR(L"Error: Can't bind socket using exclusive address\n");
 		status = NOT_EXCLUSIVE_ADDRESS;
 		return false;
 	}
@@ -426,7 +422,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	int optval = 1; // allow reuse of local addresses
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
-		UNS_DEBUG(L"Error: Can't set SO_REUSEADDR option %d\n", errno);
+		UNS_ERROR(L"Error: Can't set SO_REUSEADDR option %d\n", errno);
 		status = CANT_REUSE_ADDRESS;
 		return false;
 	}
@@ -437,7 +433,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	optval = 1; // the socket is restricted to sending and receiving IPv6 packets only
 	if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
-		UNS_DEBUG(L"Error: Can't set IPV6_V6ONLY option %d\n", errno);
+		UNS_ERROR(L"Error: Can't set IPV6_V6ONLY option %d\n", errno);
 		status = NO_IPV6_V6ONLY;
 		return false;
 	}
@@ -493,13 +489,13 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 		SOCKET s = _createSocket(resultCopy, status);
 		if (s == INVALID_SOCKET)
 		{
-			UNS_DEBUG(L"Failed to create a server socket for addr=%C\n", addr2str(* (sockaddr_storage*)resultCopy->ai_addr).c_str());
+			UNS_ERROR(L"Failed to create a server socket for addr=%C\n", addr2str(* (sockaddr_storage*)resultCopy->ai_addr).c_str());
 			error = true;
 			break;
 		}
 		if (::bind(s, resultCopy->ai_addr, (int)resultCopy->ai_addrlen) == SOCKET_ERROR)
 		{
-			UNS_DEBUG(L"Error %d in binding server socket.\n", WSAGetLastError());
+			UNS_ERROR(L"Error %d in binding server socket.\n", WSAGetLastError());
 			_closeSocket(s);
 			status = NOT_BINDED;
 			error = true;
@@ -509,14 +505,13 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 		if (cond_accept)
 		{
 			int optval = 1;
-			if (setsockopt(s, SOL_SOCKET,  SO_CONDITIONAL_ACCEPT,
-				(char *)&optval, sizeof(optval)) == SOCKET_ERROR) {
-					UNS_DEBUG(L"Error: Can't bind socket using exclusive address\n");
-					_closeSocket(s);
-					status = CONDITIONAL_ACCEPT_ERROR;
-					error = true;
-					break;
-
+			if (setsockopt(s, SOL_SOCKET, SO_CONDITIONAL_ACCEPT, (char *)&optval, sizeof(optval)) == SOCKET_ERROR)
+			{
+				UNS_ERROR(L"Error: Can't bind socket using exclusive address\n");
+				_closeSocket(s);
+				status = CONDITIONAL_ACCEPT_ERROR;
+				error = true;
+				break;
 			}
 		}
 #endif // WIN32
@@ -667,7 +662,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 			}
 			if(FD_ISSET(tempSock, &fdExpSet))
 			{
-				UNS_DEBUG(L"connection attempt was failed on socket:%d\n", tempSock);
+				UNS_ERROR(L"connection attempt was failed on socket: %d\n", tempSock);
 			}
 			_closeSocket(tempSock);
 		}
@@ -694,7 +689,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	if (s_new == INVALID_SOCKET) {
 		int err = GetLastError();
 
-		UNS_DEBUG(L"New connection denied (%d): %W \n", err, getErrMsg(err).c_str());
+		UNS_ERROR(L"New connection denied (%d): %W \n", err, getErrMsg(err).c_str());
 		_closeSocket(s_new);
 		return false;
 	}
@@ -707,7 +702,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 		portForwardRequest = _findFWReq(s_new,port,NULL);
 		if (portForwardRequest == NULL)
 		{
-			UNS_DEBUG(L"New connection denied \n");
+			UNS_ERROR(L"New connection denied \n");
 			_closeSocket(s_new);
 			return false;
 		}
@@ -749,7 +744,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 
 	if (!_lme.ChannelOpenForwardedRequest((uint32_t)s_new, connectedIP, port, address,ntohs(originator_port)))
 	{
-		UNS_DEBUG(L"ERROR: failed to send channel open request to LME. Sender %d. Address: %C:%d \n", (int)s_new,
+		UNS_ERROR(L"ERROR: failed to send channel open request to LME. Sender %d. Address: %C:%d \n", (int)s_new,
 			address.c_str(), ntohs(originator_port));
 
 		_closeSocket(s_new);
@@ -778,7 +773,7 @@ int CALLBACK ConditionAcceptFunc(
 
 	if ((dwCallbackData == NULL) ||(((ConnectionAcceptCB *)dwCallbackData)->_protocol == NULL))
 	{
-		UNS_DEBUG(L"Error: callback: ConditionAcceptFunc with illegal data\n");
+		UNS_ERROR(L"Error: callback: ConditionAcceptFunc with illegal data\n");
 		return CF_REJECT;
 	}
 	Protocol *protocol	= ((ConnectionAcceptCB *)dwCallbackData)->_protocol;
@@ -908,7 +903,7 @@ int Protocol::Select()
 	if (res == -1) {
 		int err = GetLastError();
 
-		UNS_DEBUG(L"Select error (%d): %W\n", err, getErrMsg(err).c_str());
+		UNS_ERROR(L"Select error (%d): %W\n", err, getErrMsg(err).c_str());
 		return -1;
 	}
 
@@ -1070,7 +1065,7 @@ void Protocol::_closePortForwardRequest(PortForwardRequest *p)
 
 	if (found == false)
 	{
-		UNS_DEBUG(L"Failed finding the closed port forward tunnel\n");
+		UNS_ERROR(L"Failed finding the closed port forward tunnel\n");
 		return;
 	}
 
@@ -1356,7 +1351,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 									if ((serverSockets.size() == 0) || (socketStatus != Protocol::ACTIVE)) {
 										// Log in Event Log
-										UNS_DEBUG(L"Cannot listen at port %d\n", tcpForwardRequestMessage->Port);
+										UNS_ERROR(L"Cannot listen at port %d\n", tcpForwardRequestMessage->Port);
 
 										if (_failureReported[tcpForwardRequestMessage->Port] == false)
 										{
@@ -1523,12 +1518,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							hint.ai_protocol = IPPROTO_UDP;
 
 							if (getaddrinfo(udpSendToMessage->Address.c_str(), NULL, &hint, &info) != 0) {
-								UNS_DEBUG(L"Unable to send UDP data.\n");
+								UNS_ERROR(L"Unable to send UDP data.\n");
 								return;
 							}
 
 							if (info == NULL) {
-								UNS_DEBUG(L"Unable to send UDP data.\n");
+								UNS_ERROR(L"Unable to send UDP data.\n");
 								return;
 							}
 
@@ -1538,7 +1533,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							freeaddrinfo(info);
 
 							if (s == INVALID_SOCKET) {
-								UNS_DEBUG(L"Unable to send UDP data.\n");
+								UNS_ERROR(L"Unable to send UDP data.\n");
 								return;
 							}
 
@@ -1591,7 +1586,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					hint.ai_protocol = IPPROTO_TCP;
 
 					if (getaddrinfo((char *)channelOpenMessage->Address.c_str(), NULL, &hint, &info) != 0) {
-						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
+						UNS_ERROR(L"Unable to open direct channel to address %C.\n",
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1599,7 +1594,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					}
 
 					if (info == NULL) {
-						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
+						UNS_ERROR(L"Unable to open direct channel to address %C.\n",
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1611,7 +1606,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					freeaddrinfo(info);
 
 					if (s == INVALID_SOCKET) {
-						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
+						UNS_ERROR(L"Unable to open direct channel to address %C.\n",
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1625,7 +1620,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 				else {// SOAP message, no real socket
 					SOCKET s = socket(AF_LOCAL, SOCK_STREAM, 0); // Dummy socket for a map
 					if (s == INVALID_SOCKET) {
-						UNS_DEBUG(L"Unable to open direct channel to address %C.\n", 
+						UNS_ERROR(L"Unable to open direct channel to address %C.\n",
 							channelOpenMessage->Address.c_str());
 						_lme.ChannelOpenReplayFailure(channelOpenMessage->SenderChannel,
 							OPEN_FAILURE_REASON_CONNECT_FAILED);
@@ -1921,7 +1916,7 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 		}
 		catch(Intel::MEI_Client::MEIClientException e)
 		{
-			UNS_DEBUG(L"_checkRemoteSupport: GetDNSSuffixListCommand failed: %C\n", e.what());
+			UNS_ERROR(L"_checkRemoteSupport: GetDNSSuffixListCommand failed: %C\n", e.what());
 		}
 	}
 
@@ -2040,7 +2035,7 @@ void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 		}
 		catch (Intel::MEI_Client::MEIClientException e)
 		{
-			UNS_DEBUG(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
+			UNS_ERROR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
 		}
 	}
 }
@@ -2170,7 +2165,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 
 	getenv_s(&requiredSize, NULL, 0, "SystemRoot");
 	if (requiredSize > MAX_PATH) {
-		UNS_DEBUG(L"getenv_s asks for too much memory %d\n", requiredSize);
+		UNS_ERROR(L"getenv_s asks for too much memory %d\n", requiredSize);
 		return -1;
 	}
 
@@ -2193,7 +2188,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 	char lastChar;
 
 	if (!ifp.is_open()) {
-		UNS_DEBUG(L"failed to open hosts file for reading\n");
+		UNS_ERROR(L"failed to open hosts file for reading\n");
 		goto HOSTS_FILE_ERR;
 	}
 
@@ -2253,7 +2248,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 	{
 		std::ofstream ofp(inFileName);
 		if (!ofp.is_open()) {
-			UNS_DEBUG(L"failed to open hosts file for writing\n");
+			UNS_ERROR(L"failed to open hosts file for writing\n");
 
 			goto HOSTS_FILE_ERR;
 		}
@@ -2293,13 +2288,13 @@ int Protocol::_updateIPFQDN(const string &fqdn)
 			(_strnicmp(fqdn.c_str(), localName.c_str(), fqdn.length()) != 0))
 		{
 			if (_handleFQDNChange(fqdn.c_str()) < 0) {
-				UNS_DEBUG(L"Error: failed to update FQDN info\n");
+				UNS_ERROR(L"Error: failed to update FQDN info\n");
 				return -1;
 			}
 		}
 		else {
 			if (_handleFQDNChange("") < 0) {
-				UNS_DEBUG(L"Error: failed to update FQDN info\n");
+				UNS_ERROR(L"Error: failed to update FQDN info\n");
 				return -1;
 			}
 		}

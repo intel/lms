@@ -63,7 +63,7 @@ bool ADDR_Data::getIPString(std::string &IP)
 	}
 	else
 	{
-		UNS_DEBUG(L"ADDR_Data::getANSI - illegal address \n");
+		UNS_ERROR(L"ADDR_Data::getANSI - illegal address \n");
 		return false;
 	}
 	return false;
@@ -75,7 +75,7 @@ bool ADDR_Data::getIPString(std::string &IP)
 
 	if (len == -1)
 	{
-		UNS_DEBUG(L"ADDR_Data::getIPString - illegal len\n");
+		UNS_ERROR(L"ADDR_Data::getIPString - illegal len\n");
 		return false;
 	}
 

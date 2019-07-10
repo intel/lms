@@ -30,7 +30,7 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfile Failed %d\n", dwResult);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfile Failed %d\n", dwResult);
 
 		if (pProfileXml != nullptr)
 		{
@@ -44,7 +44,7 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 
 	if (!isLegalProfileName(profileData->profile))
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR\n", profileData->profile);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR\n", profileData->profile);
 
 		return -1;
 	}
@@ -113,7 +113,7 @@ bool wlanps::WlanProfiles::isLegalProfileName(const std::wstring &profileName)
 	}
 	else
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Bad characters in profile name\n");
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Bad characters in profile name\n");
 	}
 	return isLegal;
 }
@@ -134,14 +134,14 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 	if (nullptr == m_hwlan)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": handle is not opened\n");
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": handle is not opened\n");
 		return 1;
 	}
 
 	dwResult = WlanEnumInterfaces(m_hwlan, nullptr, &pIfList);
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanEnumInterfaces failed with error: %d\n", dwResult);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanEnumInterfaces failed with error: %d\n", dwResult);
 		return 1;
 	}
 	else
@@ -163,7 +163,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 				if (dwResult != ERROR_SUCCESS)
 				{
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList error: %u\n", dwResult);
+					UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList error: %u\n", dwResult);
 					continue;
 				}
 
@@ -187,7 +187,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 
 					if (dwResult != ERROR_SUCCESS)
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: WlanGetProfile failed with %d\n", dwResult);
+						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: WlanGetProfile failed with %d\n", dwResult);
 						continue;
 					}
 
@@ -250,7 +250,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 					}
 					else
 					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Failed to allocate memory for new Profile -> Get out of the loop\n");
+						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Failed to allocate memory for new Profile -> Get out of the loop\n");
 						break;
 					}
 				}

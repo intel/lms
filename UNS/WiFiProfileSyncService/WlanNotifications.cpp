@@ -84,7 +84,7 @@ VOID WINAPI wlanps::WlanNotifications::WlanNotificationCbk(PWLAN_NOTIFICATION_DA
 		}
 		else
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": connection failed\n");
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": connection failed\n");
 		}
 	}
 }

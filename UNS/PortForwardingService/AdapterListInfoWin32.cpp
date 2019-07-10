@@ -129,7 +129,7 @@ int AdapterListInfo::UpdateAdapterListInfo()
 
 out:
 	if (result) {
-		UNS_DEBUG(L"Error in getting local DNS suffixes...\n");
+		UNS_ERROR(L"Error in getting local DNS suffixes...\n");
 	}
 
 	return result;

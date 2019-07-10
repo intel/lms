@@ -81,7 +81,7 @@ bool PartialFWUpdateEventsFilter::defaultInitialization(std::shared_ptr<PartialF
 		filter->addEvent(EVENT_PORT_FORWARDING_SERVICE_AVAILABLE)
 		) //if
 		return true;
-	UNS_DEBUG(L"filter initialization failed\n");
+	UNS_ERROR(L"filter initialization failed\n");
 	return false;
 }
 
@@ -132,7 +132,7 @@ int PartialFWUpdateService::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+		UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 		return retVal;
 	}
 
@@ -405,7 +405,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 	
 	if (GetServiceDirectory(L"LMS", lmsPath) != true)
 	{
-		UNS_DEBUG("PartialFWUpdateService::checkImageFileExist Failed getting LMS path\n");
+		UNS_ERROR("PartialFWUpdateService::checkImageFileExist Failed getting LMS path\n");
 		return retVal;
 	}
 	lmsPath = lmsPath.substr(0, lmsPath.length() - 7); // 7 is length of "LMS.exe", we need the directory, not the file.
@@ -473,7 +473,7 @@ bool PartialFWUpdateService::LoadFwUpdateLibDll()
 	}
 	catch (std::exception e)
 	{
-		UNS_DEBUG(L"LoadFwUpdateLibDll failed. Error: %C\n", e.what());
+		UNS_ERROR(L"LoadFwUpdateLibDll failed. Error: %C\n", e.what());
 	}
 	catch (...) {}
 	return false;
@@ -511,7 +511,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 		std::wstring lmsPath;
 		if (GetServiceDirectory(L"LMS", lmsPath) != true)
 		{
-			UNS_DEBUG("PartialFWUpdateService::getImageFileNameByFwVersion Failed getting LMS path\n");
+			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed getting LMS path\n");
 			return false;
 		}
 		lmsPath = lmsPath.substr(0, lmsPath.length() - 7); // 7 is length of "LMS.exe", we need the directory, not the file.
@@ -524,7 +524,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 		int status = lmsDir.open(lmsPath.c_str(), selector, ACE_SCANDIR_COMPARATOR(ACE_OS::alphasort));
 		if (status == -1)
 		{
-			UNS_DEBUG("PartialFWUpdateService::getImageFileNameByFwVersion Failed opening: %s\n", lmsPath.c_str());
+			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed opening: %s\n", lmsPath.c_str());
 			return false;
 		}
 
@@ -537,7 +537,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 		status = lmsDir.close();
 		if (status == -1)
 		{
-			UNS_DEBUG("PartialFWUpdateService::getImageFileNameByFwVersion Failed closing: %s\n", lmsPath.c_str());
+			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed closing: %s\n", lmsPath.c_str());
 			return false;
 		}
 
@@ -554,7 +554,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 			minorInt--;
 			if (minorInt < 0) //No matching bin file was found
 			{
-				UNS_DEBUG(L"PartialFWUpdateService::getImageFileNameByFwVersion Could not find matching bin file. Required bin file: %s. Returning false\n", requiredBestName);
+				UNS_WARNING(L"PartialFWUpdateService::getImageFileNameByFwVersion Could not find matching bin file. Required bin file: %s. Returning false\n", requiredBestName);
 				return false;
 			}
 			swprintf_s(requiredName, 16, L"%02d%02d_%2s_PFU.BIN", fwVersion.FTMajor, minorInt, isProduction ? L"PD" : L"PP");
@@ -575,23 +575,22 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 		fileName = requiredName;
 		return true;
 	}
-#ifdef _DEBUG
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
 	{	
-		UNS_DEBUG(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n",e.what());
+		UNS_ERROR(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n", e.what());
 	}
 	catch (Intel::MEI_Client::MEIClientException& e)
 	{	
-		UNS_DEBUG(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n",e.what());
+		UNS_ERROR(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"Exception in PartialFWUpdateService::getImageFileNameByFwVersion: %C\n", e.what());
+		UNS_ERROR(L"Exception in PartialFWUpdateService::getImageFileNameByFwVersion: %C\n", e.what());
 	}
-
-#else
-	catch(...){}
-#endif
+	catch(...)
+	{
+		UNS_ERROR(L"Exception in PartialFWUpdateService::getImageFileNameByFwVersion\n");
+	}
 	return false;
 
 }
@@ -613,25 +612,19 @@ bool PartialFWUpdateService::isMESKU()
 		UNS_DEBUG(L"FW ImageType=%d\n",Platform.Fields.ImageType);
 		res = (Platform.Fields.ImageType == MKHI_Client::ME_FULL_8MB);		
 	}
-#ifdef _DEBUG
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
 	{	
-		UNS_DEBUG(L"GetPlatformTypeCommand failed %C\n",e.what());
+		UNS_ERROR(L"GetPlatformTypeCommand failed %C\n", e.what());
 	}
 	catch (Intel::MEI_Client::MEIClientException& e)
 	{	
-		UNS_DEBUG(L"GetPlatformTypeCommand %C\n",e.what());
+		UNS_ERROR(L"GetPlatformTypeCommand %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in GetPlatformTypeCommand %C\n", e.what());
+		UNS_ERROR(L"\nException in GetPlatformTypeCommand %C\n", e.what());
 	}
-#else
-	catch (std::exception& e)
-	{
-		UNS_DEBUG(L"\nException in GetPlatformTypeCommand %C\n", e.what());
-	}
-#endif
+
 	return res;
 }
 
@@ -660,7 +653,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 	UINT32 expectedLang = 0;
 	if(!client.GetExpectedLanguage((unsigned short*)&expectedLang))
 	{
-		UNS_DEBUG(L"Failed to get expected language\n");
+		UNS_ERROR(L"Failed to get expected language\n");
 		publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to get FW status", 8725);
 		return res;
 	} 
@@ -669,7 +662,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 	{
 		if (!client.SetExpectedLanguage((unsigned short)languageID))
 		{
-			UNS_DEBUG(L"failed to set expected language %d\n", languageID);
+			UNS_ERROR(L"failed to set expected language %d\n", languageID);
 			publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to set FW status", 8725);
 			return res;
 		}
@@ -719,7 +712,7 @@ bool PartialFWUpdateService::invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module
 	std::wstring imagePath;
 	if (!checkImageFileExist(imagePath))
 	{
-		UNS_DEBUG(L"File is missing: %s\n", imagePath.c_str());
+		UNS_ERROR(L"File is missing: %s\n", imagePath.c_str());
 		publishMissingImageFile(module);
 		return res;
 	}
@@ -757,7 +750,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 
 	if (!LoadFwUpdateLibDll())
 	{
-		UNS_DEBUG(L"Failed to load FwUpdateLib_Dll\n");
+		UNS_ERROR(L"Failed to load FwUpdateLib_Dll\n");
 		if(_toPublishFailure)
 			publishPartialFWUpgrade_failed(module, L"- Failed to load FwUpdateLib_Dll", 2);
 		return res;
@@ -787,7 +780,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	// TODO: do nothing with failure?
 	if (!SetExpectedWithLocalOSLanguage())
 	{
-		UNS_DEBUG(L"updateLanguageChangeCode - cause LANG PFWU - failed to set expected language\n");
+		UNS_ERROR(L"updateLanguageChangeCode - cause LANG PFWU - failed to set expected language\n");
 	}
 
 	bool isLoclPfuNeeded = false, isWcodPfuNeeded = false;
@@ -829,7 +822,7 @@ bool SetExpectedWithLocalOSLanguage()
 
 		if (!wsman.GetExpectedLanguage((unsigned short*)&expectedLang))
 		{
-			UNS_DEBUG(L"GetExpectedLanguage failure - lang %d\n",expectedLang);
+			UNS_ERROR(L"GetExpectedLanguage failure - lang %d\n",expectedLang);
 			return res;
 		}
 		UNS_DEBUG(L"eL: %d\n", expectedLang);
@@ -842,7 +835,7 @@ bool SetExpectedWithLocalOSLanguage()
 			}
 			else  
 			{
-				UNS_DEBUG(L"SetExpectedLanguage failure - set lang %d\n",lang);
+				UNS_ERROR(L"SetExpectedLanguage failure - set lang %d\n",lang);
 				return res;
 			}
 		}

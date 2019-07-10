@@ -230,7 +230,7 @@ CimToEventTranslator::translate(const std::string &cimMessageID, const std::stri
 		if (m_eventsMap.find(uniqStrID, et) != 0)
 		{
 			// The event is not in the map
-			UNS_DEBUG(L"CimToEventTranslator: uniqStrID [%s] not found in map\n", uniqStrID.c_str());
+			UNS_ERROR(L"CimToEventTranslator: uniqStrID [%s] not found in map\n", uniqStrID.c_str());
 			return false;
 		}
 	}

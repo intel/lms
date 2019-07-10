@@ -96,7 +96,7 @@ int SOAP_Handler::parse_message(const std::string &xmlMessage, std::string &Test
 	UNS_DEBUG(L"SOAP_Server_Handler::parse_message TestMessageArg '%C'\n", TestMessageArg.c_str());
 	if (TestMessageArg.size() > 2)
 	{
-		UNS_DEBUG(L"SOAP_Server_Handler::parse_message: wrong TestMessageArg '%C'\n", TestMessageArg.c_str());
+		UNS_ERROR(L"SOAP_Server_Handler::parse_message: wrong TestMessageArg '%C'\n", TestMessageArg.c_str());
 		return -1;
 	}
 

@@ -213,7 +213,7 @@ public:
 					{
 						if (counter >= MAX_CONNECT_RETRIES)
 						{
-							UNS_DEBUG(L"Too many failures. Will break, broadcast failure and log to Event Viewer.\n");
+							UNS_ERROR(L"Too many failures. Will break, broadcast failure and log to Event Viewer.\n");
 							publishFailure = true;
 							break;
 						}
@@ -427,7 +427,7 @@ PortForwardingService::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 		m_lmsMainThread->OnHeciEnable();
 		break;
 	default:
-		UNS_DEBUG(L"SubService:%s got invalid message\n", name().c_str());				
+		UNS_ERROR(L"SubService:%s got invalid message\n", name().c_str());
 	}
 }
 
@@ -489,7 +489,7 @@ HDEVNOTIFY PortForwardingService::_registerDeviceNotifications(HANDLE drvHandle)
 	if (notifyHandle == NULL) {
 		if (!alreadyLoggedFailure) {
 
-			UNS_DEBUG(L"failed to register LME notification\n");
+			UNS_ERROR(L"failed to register LME notification\n");
 
 			alreadyLoggedFailure = true;
 		}
@@ -508,7 +508,7 @@ void PortForwardingService::_unregisterDeviceNotifications(HDEVNOTIFY notifyHand
 		if (!UnregisterDeviceNotification(notifyHandle)) {
 			if (!alreadyLoggedFailure) 
 			{
-				UNS_DEBUG(L"failed to unregister LME notification\n");
+				UNS_ERROR(L"failed to unregister LME notification\n");
 				alreadyLoggedFailure = true;
 			}
 		}

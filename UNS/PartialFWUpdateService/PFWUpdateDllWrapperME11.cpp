@@ -68,35 +68,35 @@ PFWUpdateDllWrapperME11::PFWUpdateDllWrapperME11(void)
 	decltype(GETFWUPDATEINFOSTATUS_DLL_NAME)*GetFwUpdateInfoStatusDLL = (decltype(GETFWUPDATEINFOSTATUS_DLL_NAME) *)GetProcAddress(dllHandle, GETFWUPDATEINFOSTATUS_DLL_NAME_str);
 	if (GetFwUpdateInfoStatusDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", GETFWUPDATEINFOSTATUS_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", GETFWUPDATEINFOSTATUS_DLL_NAME_str);
 		throw std::exception("Could not find GetFwUpdateInfoStatus API");
 	}
 
 	decltype(GETIPUPARTITIONATTRIBUTES_DLL_NAME)*GetIpuPartitionAttributesDLL = (decltype(GETIPUPARTITIONATTRIBUTES_DLL_NAME) *)GetProcAddress(dllHandle, GETIPUPARTITIONATTRIBUTES_DLL_NAME_str);
 	if (GetIpuPartitionAttributesDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", GETIPUPARTITIONATTRIBUTES_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", GETIPUPARTITIONATTRIBUTES_DLL_NAME_str);
 		throw std::exception("Could not find GetIpuPartitionAttributes API");
 	}
 
 	decltype(FWUPDATEPARTIAL_DLL_NAME) *FwUpdatePartialDLL = (decltype(FWUPDATEPARTIAL_DLL_NAME) *)GetProcAddress(dllHandle, FWUPDATEPARTIAL_DLL_NAME_str);
 	if (FwUpdatePartialDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", FWUPDATEPARTIAL_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", FWUPDATEPARTIAL_DLL_NAME_str);
 		throw std::exception("Could not find FwUpdatePartial API");
 	}
 
 	decltype(GETLASTUPDATERESETTYPE_DLL_NAME)*GetLastUpdateResetTypeDLL = (decltype(GETLASTUPDATERESETTYPE_DLL_NAME) *)GetProcAddress(dllHandle, GETLASTUPDATERESETTYPE_DLL_NAME_str);
 	if (GetLastUpdateResetTypeDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", GETLASTUPDATERESETTYPE_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", GETLASTUPDATERESETTYPE_DLL_NAME_str);
 		throw std::exception("Could not find GetLastUpdateResetType API");
 	}
 	
 	decltype(FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME) *FWUpdate_QueryStatus_Get_ResponseDLL = (decltype(FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME) *)GetProcAddress(dllHandle, FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME_str);
 	if (FWUpdate_QueryStatus_Get_ResponseDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", FWUPDATE_QUERYSTATUS_GET_RESPONSE_DLL_NAME_str);
 		throw std::exception("Could not find FWUpdate_QueryStatus_Get_Response API");
 	}
 
@@ -134,7 +134,7 @@ uint32_t PFWUpdateDllWrapperME11::waitForFwInitDone() //this is W/A for ME10 and
 		//Timeout After 5sec, if don't get FWInit Done
 		if (!fwInitDone && loopCount > 5)
 		{
-			UNS_DEBUG(L"Wait for FwInitDone got Timeout, partialFWUpdate failed\n");
+			UNS_ERROR(L"Wait for FwInitDone got Timeout, partialFWUpdate failed\n");
 			return 8707;
 		}
 
@@ -160,7 +160,7 @@ uint32_t PFWUpdateDllWrapperME11::isFwInitDone(bool* isFwInitDone)
 	catch (...)
 	{
 		retcode = 8707;
-		UNS_DEBUG(L"GetFwUpdateInfoStatus throwed error\n");
+		UNS_ERROR(L"GetFwUpdateInfoStatus throwed error\n");
 	}
 
 	printPfwuReturnCode(retcode);
@@ -207,14 +207,14 @@ uint32_t PFWUpdateDllWrapperME11::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 			}
 			else
 			{
-				UNS_DEBUG(L"Found mismatch on an unknown partition #%u 0x%X\n", i, info.PtAttribute[i].PtNameId);
+				UNS_ERROR(L"Found mismatch on an unknown partition #%u 0x%X\n", i, info.PtAttribute[i].PtNameId);
 			}
 		}
 	}
 	catch (...)
 	{
 		retcode = 8707;
-		UNS_DEBUG(L"GetIpuPartitionAttributes throwed error\n");
+		UNS_ERROR(L"GetIpuPartitionAttributes throwed error\n");
 	}
 
 	printPfwuReturnCode(retcode);
@@ -254,12 +254,12 @@ uint32_t PFWUpdateDllWrapperME11::performPFWU(uint32_t partialID, const std::wst
 	catch (...)
 	{
 		retcode = 8707;
-		UNS_DEBUG(L"FwUpdatePartial throwed error\n");
+		UNS_ERROR(L"FwUpdatePartial throwed error\n");
 	}
 	printPfwuReturnCode(retcode);
 	if (retcode != 0)
 	{
-		UNS_DEBUG(L"FwUpdatePartial - failed\n");
+		UNS_ERROR(L"FwUpdatePartial - failed\n");
 		return retcode;
 	}
 
@@ -278,7 +278,7 @@ uint32_t PFWUpdateDllWrapperME11::performPFWU(uint32_t partialID, const std::wst
 		catch (...)
 		{
 			retcode = 8707;
-			UNS_DEBUG(L"FWUpdate_QueryStatus_Get_Response throwed error\n");
+			UNS_ERROR(L"FWUpdate_QueryStatus_Get_Response throwed error\n");
 		}
 		printPfwuReturnCode(retcode);
 		UNS_DEBUG(L"currentStageNew %u, totalStageNew %u, progressNew %u, lastUpdateStatusNew %u, lastResetTypeNew %u, done %d\n", currentStageNew, totalStageNew, progressNew, lastUpdateStatusNew, lastResetTypeNew, done);
@@ -286,7 +286,7 @@ uint32_t PFWUpdateDllWrapperME11::performPFWU(uint32_t partialID, const std::wst
 		{
 			if (errCounter >= PFWU_RETRIES_LOOP)
 			{
-				UNS_DEBUG(L"getFWUpdateStatus error\n");
+				UNS_ERROR(L"getFWUpdateStatus error\n");
 				return retcode;
 			}
 			UNS_DEBUG(L"getFWUpdateStatus intermediate error : %u - sleeping, error #%d\n", retcode, errCounter);

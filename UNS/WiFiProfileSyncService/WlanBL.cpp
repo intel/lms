@@ -235,7 +235,7 @@ int wlanps::WlanBL::CleanupProfilesInMe()
 	}
 	catch (std::exception* e)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
 		return -1;
 	}
 
@@ -301,7 +301,7 @@ int wlanps::WlanBL::AddMissingProfilesToMe()
 	}
 	catch (std::exception* e)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
 		return -1;
 	}
 
@@ -452,8 +452,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	}
 	catch (std::exception* e)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Exception %C\n", e->what());
-
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Exception %C\n", e->what());
 		return;
 	}
 }
@@ -500,7 +499,7 @@ int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabil
 	}
 	catch (...)
 	{
-		UNS_DEBUG(L"[ProfileSync] Fix the auth or encr map\n");
+		UNS_ERROR(L"[ProfileSync] Fix the auth or encr map\n");
 		return -1;
 	}
 

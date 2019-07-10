@@ -60,21 +60,21 @@ PFWUpdateDllWrapperME12::PFWUpdateDllWrapperME12(void)
 	decltype(FWUPATITIONINSTANCES_DLL_NAME)*FwuPartitionInstancesDLL = (decltype(FWUPATITIONINSTANCES_DLL_NAME) *)GetProcAddress(dllHandle, FWUPATITIONINSTANCES_DLL_NAME_str);
 	if (FwuPartitionInstancesDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", FWUPATITIONINSTANCES_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", FWUPATITIONINSTANCES_DLL_NAME_str);
 		throw std::exception("Could not find FwuPartitionInstances API");
 	}
 
 	decltype(FWUPARTIALUPDATEFROMFILE_DLL_NAME) *FwuPartialUpdateFromFileDLL = (decltype(FWUPARTIALUPDATEFROMFILE_DLL_NAME) *)GetProcAddress(dllHandle, FWUPARTIALUPDATEFROMFILE_DLL_NAME_str);
 	if (FwuPartialUpdateFromFileDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", FWUPARTIALUPDATEFROMFILE_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", FWUPARTIALUPDATEFROMFILE_DLL_NAME_str);
 		throw std::exception("Could not find FwuPartialUpdateFromFile API");
 	}
 
 	decltype(FWUCHECKUPDATEPROGRESS_DLL_NAME) *FwuCheckUpdateProgressDLL = (decltype(FWUCHECKUPDATEPROGRESS_DLL_NAME) *)GetProcAddress(dllHandle, FWUCHECKUPDATEPROGRESS_DLL_NAME_str);
 	if (FwuCheckUpdateProgressDLL == nullptr)
 	{
-		UNS_DEBUG(L"Could not find %C API\n", FWUCHECKUPDATEPROGRESS_DLL_NAME_str);
+		UNS_ERROR(L"Could not find %C API\n", FWUCHECKUPDATEPROGRESS_DLL_NAME_str);
 		throw std::exception("Could not find FwuCheckUpdateProgress API");
 	}
 
@@ -152,7 +152,7 @@ uint32_t PFWUpdateDllWrapperME12::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 	catch (...)
 	{
 		status = INTERNAL_ERROR;
-		UNS_DEBUG(L"FwuPartitionInstances throwed error\n");
+		UNS_ERROR(L"FwuPartitionInstances throwed error\n");
 	}
 
 End:
@@ -257,7 +257,7 @@ uint32_t PFWUpdateDllWrapperME12::performPFWU(uint32_t partialID, const std::wst
 	catch (...)
 	{
 		status = INTERNAL_ERROR;
-		UNS_DEBUG(L"performPFWU throwed error\n");
+		UNS_ERROR(L"performPFWU throwed error\n");
 	}
 
 End:

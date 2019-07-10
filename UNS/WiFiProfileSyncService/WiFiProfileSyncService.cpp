@@ -17,7 +17,7 @@ int WiFiProfileSyncService::init(int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::init failed. retVal: %d\n", retVal);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::init failed. retVal: %d\n", retVal);
 
 		return retVal;
 	}
@@ -55,7 +55,7 @@ int WiFiProfileSyncService::InitWlan()
 
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle error\n");
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle error\n");
 		return dwResult;
 	}
 
@@ -64,7 +64,7 @@ int WiFiProfileSyncService::InitWlan()
 	int retVal = wlanBL.Init(m_wlanHandle);
 	if (retVal)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error %d\n", retVal);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error %d\n", retVal);
 		return retVal;
 	}
 
@@ -73,7 +73,7 @@ int WiFiProfileSyncService::InitWlan()
 	retVal = wlanNotifications.Init(m_wlanHandle, this); // _hEvents, 
 	if (retVal)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__":  wlanNotifications.Init error %d\n", retVal);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanNotifications.Init error %d\n", retVal);
 		return retVal;
 	}
 
@@ -161,7 +161,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 
 		default:
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Invalid message. Return ERROR\n");
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: Invalid message. Return ERROR\n");
 		}
 		break;
 	}
@@ -208,7 +208,7 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 
 		default:
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Invalid category. Return ERROR\n");
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Invalid category. Return ERROR\n");
 
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message category.\n")), -1);
 		}
