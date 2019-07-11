@@ -216,12 +216,12 @@ bool GmsService::StartAceService(const ACE_TString &serviceName)
 	int i=ACE_Service_Config::process_directive(directive.c_str());
 	if (i==-1)
 	{
-		UNS_DEBUG(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());
+		UNS_ERROR(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());
 		return false;
 	}
 	if (i>0)
 	{
-		UNS_DEBUG(L"Couldn't start service: %s %d\n", serviceName.c_str(), i);
+		UNS_ERROR(L"Couldn't start service: %s %d\n", serviceName.c_str(), i);
 		return false;
 	}
 
@@ -308,11 +308,11 @@ int GmsService::svc(void)
 	HANDLE hUNSstarted=CreateEvent(NULL,TRUE,TRUE,L"Global\\UNSstarted");
 	if (hUNSstarted==NULL)
 	{
-		UNS_DEBUG(L"CreateEvent UNSstarted failed, err=%d\n",GetLastError());
+		UNS_ERROR(L"CreateEvent UNSstarted failed, err=%d\n", GetLastError());
 	}
 	if (!SetEvent(hUNSstarted))
 	{
-		UNS_DEBUG(L"SetEvent UNSstarted failed, err=%d\n",GetLastError());
+		UNS_ERROR(L"SetEvent UNSstarted failed, err=%d\n", GetLastError());
 	}
 	//*************************
 #endif // WIN32
@@ -323,7 +323,7 @@ int GmsService::svc(void)
 	if (!VerifyFile::Init())
 	{
 		stopped = loading = true;
-		UNS_DEBUG(L"VerifyFile::Init failed, Shutting down.\n");
+		UNS_ERROR(L"VerifyFile::Init failed, Shutting down.\n");
 		return 0;
 	}
 
@@ -337,7 +337,7 @@ int GmsService::svc(void)
 	}
 	catch(...)
 	{
-		UNS_DEBUG(L"GmsService::svc - loadStrings failed, will use default strings\n");
+		UNS_ERROR(L"GmsService::svc - loadStrings failed, will use default strings\n");
 	}
 #endif // WIN32
 
@@ -345,7 +345,7 @@ int GmsService::svc(void)
 	if (!StartAceService(GMS_CONFIGURATOR))
 	{
 		stopped = loading = true;
-		UNS_DEBUG(L"StartAceService failed, Shutting down.\n");
+		UNS_ERROR(L"StartAceService failed, Shutting down.\n");
 		return 0;
 	}
 	
@@ -362,13 +362,13 @@ int GmsService::svc(void)
 	}
 	catch (std::exception &e)
 	{
-		UNS_DEBUG(L"Exception %C\n", e.what());
+		UNS_ERROR(L"Exception %C\n", e.what());
 		SetStopped(true);
 		ret = -1;
 	}
 	catch(...)
 	{
-		UNS_DEBUG(L"Exception\n");
+		UNS_ERROR(L"Exception\n");
 		SetStopped(true);
 		ret=-1;
 	}
@@ -465,7 +465,7 @@ bool GmsService::sendMessage(const ACE_TString dest,MessageBlockPtr mb) const
 			UNS_DEBUG(L"The desired service is suspended\n");
 		}
 		else
-			UNS_DEBUG(L"The desired service doesn't exists\n");
+			UNS_ERROR(L"The desired service doesn't exists\n");
 		
 		return false;
 	}

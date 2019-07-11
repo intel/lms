@@ -20,7 +20,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}
 			else
 			{
-				UNS_DEBUG(L"Invalid data block.\n");
+				UNS_ERROR(L"Invalid data block.\n");
 			}
 		}
 		break;
@@ -34,7 +34,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}
 			else
 			{
-				UNS_DEBUG(L"Invalid data block.\n");
+				UNS_ERROR(L"Invalid data block.\n");
 			}
 		}
 		break;
@@ -48,7 +48,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}
 			else
 			{
-				UNS_DEBUG(L"Invalid data block.\n");
+				UNS_ERROR(L"Invalid data block.\n");
 			}
 		}
 		break;
@@ -89,12 +89,12 @@ EventManager::subscribeForEvents(SubscribeEventHandler* eventHandler)
 	int i=handlers.bind(eventHandler->serviceName_, eventHandler->filter_.get());
 	if (i==-1)
 	{
-		UNS_DEBUG(L"subscribe error:\n");
+		UNS_ERROR(L"subscribe error\n");
 		return -1;
 	}
 	if(i==1)
 	{
-		UNS_DEBUG(L"EventManager::eventHandler already registered\n");	
+		UNS_WARNING(L"EventManager::eventHandler already registered\n");	
 	}
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new SubscribeEventHandler());
@@ -112,7 +112,7 @@ EventManager::unSubscribeForEvents(UnSubscribeEventHandler* eventHandler)
 	int i=handlers.unbind(eventHandler->serviceName_);
 	if (i==-1)
 	{
-		UNS_DEBUG(L"Unsubscribe error:\n");
+		UNS_ERROR(L"Unsubscribe error\n");
 		return -1;
 	}
 	if (handlers.current_size() == 0)

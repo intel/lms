@@ -184,7 +184,7 @@ void GmsSubService::HandleAceMessage( int type, MessageBlockPtr &mbPtr )
 			break;
 		}
 	default:
-		UNS_DEBUG(L"%s Error: Unexpected message type: %d \n", name().c_str(), type);
+		UNS_ERROR(L"%s Error: Unexpected message type: %d \n", name().c_str(), type);
 		break;
 	}
 }

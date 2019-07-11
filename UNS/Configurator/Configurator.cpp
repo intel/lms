@@ -185,7 +185,7 @@ bool IsLMEExists()
 		catch (Intel::MEI_Client::HeciNoClientException& e)
 		{
 			heci->Deinit();
-			UNS_DEBUG(L"Heci init failed, LME doesn't exist. %C\n", e.what());
+			UNS_WARNING(L"Heci init failed, LME doesn't exist. %C\n", e.what());
 			res = false;
 			return res;
 		}
@@ -193,13 +193,13 @@ bool IsLMEExists()
 		{
 			// heci init failed with another error than missing LME - retry a few times before defining as failure
 			heci->Deinit();
-			UNS_DEBUG(L"Heci init failed. %C\n", e.what());
+			UNS_ERROR(L"Heci init failed. %C\n", e.what());
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(LME_EXISTS_LOOP_DELAY));
 	}
 
 	// heci init failed with another error than missing LME
-	UNS_DEBUG(L"LME doesn't exist - too many Heci init retries.\n");
+	UNS_ERROR(L"LME doesn't exist - too many Heci init retries.\n");
 	res = false;
 	return res;
 }
@@ -261,17 +261,17 @@ bool MEIEnabled()
 				}
 				else
 				{
-					UNS_DEBUG(L"isMEIEnabled() failed to connect to exec WMI query\n");
+					UNS_ERROR(L"isMEIEnabled() failed to connect to exec WMI query\n");
 				}
 		}
 		else
 		{
-			UNS_DEBUG(L"isMEIEnabled() failed to connect to WMI server\n");
+			UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
 		}
 	}
 	else 
 	{
-		UNS_DEBUG(L"isMEIEnabled() failed in CoCreateInstance()\n");
+		UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
 	}
 	if (svc!= NULL) svc->Release();
 	if (loc!= NULL) loc->Release();
@@ -310,7 +310,7 @@ bool CheckSharedStaticIPLoad()
 		ret = syncIpClient.GetSharedStaticIpState(&sharedStaticIP);
 		if (ret)
 			break;
-		UNS_DEBUG(L"Configurator:: getSharedStaticIpState failed to receive current state\n");
+		UNS_ERROR(L"Configurator:: getSharedStaticIpState failed to receive current state\n");
 	}
 	return ret && sharedStaticIP;
 }
@@ -328,7 +328,7 @@ bool CheckTimeSyncStateLoad()
 		ret = timeClient.GetLocalTimeSyncEnabledState(timeSyncState);
 		if (ret)
 			break;
-		UNS_DEBUG(L"Configurator:: GetLocalTimeSyncEnabledState failed to receive current state\n");
+		UNS_ERROR(L"Configurator:: GetLocalTimeSyncEnabledState failed to receive current state\n");
 	}
 	return ret && timeSyncState;
 }
@@ -375,7 +375,7 @@ bool CheckWiFiProfileSyncRequired()
 	size_t ports = 0;
 	bool ret = WifiPort.PortsNum(ports);
 	if (!ret)
-		UNS_DEBUG(L"Configurator:: WifiPort failed to receive current state\n");
+		UNS_ERROR(L"Configurator:: WifiPort failed to receive current state\n");
 
 	UNS_DEBUG(L"Configurator:: WifiPort found %d ports\n", ports);
 	if (ports == 0) {
@@ -387,7 +387,7 @@ bool CheckWiFiProfileSyncRequired()
 	enabled = true;
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
 	if (!ret)
-		UNS_DEBUG(L"Configurator:: WlanWSMan failed to receive current state\n");
+		UNS_ERROR(L"Configurator:: WlanWSMan failed to receive current state\n");
 	if (!enabled) {
 		UNS_DEBUG(L"Configurator:: LocalProfileSynchronization disabled in FW\n");
 		return enabled;
@@ -507,21 +507,21 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 	LoadedServices *svc = theLoadedServices::instance();
 	if (svc == NULL)
 	{
-		UNS_DEBUG(L"Configurator couldn't initialize LoadedServices, FATAL ERROR!!\n");
+		UNS_CRITICAL(L"Configurator couldn't initialize LoadedServices, FATAL ERROR!!\n");
 		return -1;
 	}
 
 	AsyncActivationManager *mng = theAsyncActivationManager::instance();
 	if (mng == NULL)
 	{
-		UNS_DEBUG(L"Configurator couldn't initialize AsyncActivationManager, FATAL ERROR!!\n");
+		UNS_CRITICAL(L"Configurator couldn't initialize AsyncActivationManager, FATAL ERROR!!\n");
 		return -1;
 	}
 
 	DependencyManager* depMan = theDependencyManager::instance();
 	if(depMan == NULL)
 	{
-		UNS_DEBUG(L"Configurator couldn't initialize DependancyManager, FATAL ERROR!!\n");
+		UNS_CRITICAL(L"Configurator couldn't initialize DependancyManager, FATAL ERROR!!\n");
 		return -1;
 	}
 	depMan->ReadDependencies();
@@ -562,7 +562,7 @@ void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 				ServiceStatus* statusMChangeMsg = dynamic_cast<ServiceStatus*> (mbPtr->data_block());
 				if (statusMChangeMsg == NULL)
 				{
-					UNS_DEBUG(L"Invalid Status Change Message\n");
+					UNS_ERROR(L"Invalid Status Change Message\n");
 					return;
 				}
 				ACE_TString serviceName = statusMChangeMsg->serviceName;
@@ -608,7 +608,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 
 	if (theLoadedServices::instance()->IsLoaded(serviceName))
 	{
-		UNS_DEBUG(L"Trying to start already started service %s\n", serviceName.c_str());
+		UNS_ERROR(L"Trying to start already started service %s\n", serviceName.c_str());
 		return false;
 	}
 
@@ -650,7 +650,7 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
-		UNS_DEBUG(L"Trying to stop not running service %s\n", serviceName.c_str());
+		UNS_ERROR(L"Trying to stop not running service %s\n", serviceName.c_str());
 		return false;
 	}
 
@@ -787,7 +787,7 @@ namespace
 		}
 		catch (std::exception& e)
 		{
-			UNS_DEBUG(L"Could not get FW version. %C\n",e.what());
+			UNS_ERROR(L"Could not get FW version. %C\n",e.what());
 			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer = { 0 };
 			return emptyFwVer;
 		}
@@ -816,7 +816,7 @@ namespace
 		}
 		catch (std::exception& e)
 		{
-			UNS_DEBUG(L"Could not set Proset override. %C\n", e.what());
+			UNS_ERROR(L"Could not set Proset override. %C\n", e.what());
 		}
 	}
 #else
@@ -893,14 +893,10 @@ void Configurator::ScanConfiguration()
 
 		ACE_Reactor::instance()->cancel_timer (this);
 	}
-#ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"\nException in EnvironmentScanning. %C\n", e.what());
-#else
-	catch (std::exception&)
-	{
-#endif
+		UNS_ERROR(L"\nException in EnvironmentScanning. %C\n", e.what());
+
 		if(!MEIEnabled())
 		{
 			m_scanningNum=0;
@@ -1034,7 +1030,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		default:
-			UNS_DEBUG(L"Invalid Service State\n");
+			UNS_ERROR(L"Invalid Service State\n");
 	}
 
 	if(m_onToggleService)
@@ -1113,7 +1109,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				ServicesBatchStartCommand batch;
 				if (!batch.Execute(servicesNames))
 				{
-					UNS_DEBUG(L"Starting the services that waited for Port forwarding to start - Failed.\n");
+					UNS_ERROR(L"Starting the services that waited for Port forwarding to start - Failed.\n");
 					TaskCompleted();
 				}
 
@@ -1126,7 +1122,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			break;
 		}
 		default:
-			UNS_DEBUG(L"Invalid Message\n");
+			UNS_ERROR(L"Invalid Message\n");
 			return -1;
 	}
 	return 0;
@@ -1138,7 +1134,7 @@ void Configurator::FiniAceService(const ACE_TString &serviceName)
 	UNS_DEBUG(L"%s\n", serviceName.c_str());
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
-		UNS_DEBUG(L"trying to stop not running service\n");
+		UNS_ERROR(L"trying to stop not running service\n");
 		return;
 	}
 	
@@ -1271,7 +1267,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					}
 					else
 					{
-						UNS_DEBUG(L"Invalid data block.\n");
+						UNS_ERROR(L"Invalid data block.\n");
 					}
 				}break;
 				case MB_CONFIGURATION_CHANGE:
@@ -1284,7 +1280,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					}
 					else
 					{
-						UNS_DEBUG(L"Invalid data block.\n");
+						UNS_ERROR(L"Invalid data block.\n");
 					}
 				}break;
 			case MB_CONFIGURATION_START:
@@ -1381,7 +1377,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					PortForwardingStoppedBlock* pfwStoppedMsg = dynamic_cast<PortForwardingStoppedBlock*> (mbPtr->data_block());
 					if (pfwStoppedMsg == NULL)
 					{
-						UNS_DEBUG(L"Invalid Port Forwarding Stopped Message\n");
+						UNS_ERROR(L"Invalid Port Forwarding Stopped Message\n");
 						TaskCompleted();
 						return;
 					}

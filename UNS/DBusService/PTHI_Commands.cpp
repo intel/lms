@@ -551,7 +551,7 @@ namespace PTHI {
 
 		if (numOfDisplays > MAX_DISPLAY_NUMBER_LATEST)
 		{
-			UNS_DEBUG(L"on_update_screen_settings2 numOfDisplays %d>%d\n",
+			UNS_ERROR(L"on_update_screen_settings2 numOfDisplays %d>%d\n",
 				  numOfDisplays, MAX_DISPLAY_NUMBER_LATEST);
 			send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
 			return TRUE;
@@ -569,7 +569,7 @@ namespace PTHI {
 			if (i >= numOfDisplays)
 			{
 				g_variant_unref(child);
-				UNS_DEBUG(L"on_update_screen_settings2 actual numOfDisplays > %d\n",
+				UNS_ERROR(L"on_update_screen_settings2 actual numOfDisplays > %d\n",
 					  numOfDisplays);
 				send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
 				return TRUE;
@@ -599,7 +599,7 @@ namespace PTHI {
 					eExtendedDisplayParameters.DisplayParameters[i].Pipe = g_variant_get_uint32(child1);
 					break;
 				default:
-					UNS_DEBUG(L"on_update_screen_settings2 more then 6 params in line\n");
+					UNS_ERROR(L"on_update_screen_settings2 more then 6 params in line\n");
 					break;
 				}
 				g_variant_unref(child1);
@@ -610,7 +610,7 @@ namespace PTHI {
 		}
 		if (i != numOfDisplays)
 		{
-			UNS_DEBUG(L"on_update_screen_settings2 wrong actual numOfDisplays %d != %d\n",
+			UNS_ERROR(L"on_update_screen_settings2 wrong actual numOfDisplays %d != %d\n",
 				  numOfDisplays, i);
 			send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
 			return TRUE;

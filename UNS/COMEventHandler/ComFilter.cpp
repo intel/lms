@@ -134,6 +134,6 @@ ComFilter::defaultInitialization(std::shared_ptr<ComFilter> filter)
 		filter->addEvent(EVENT_TIME_SYNC_ENABLE)
 	) //if
 		return true;
-	UNS_DEBUG(L"filter initialization failed\n");
+	UNS_ERROR(L"filter initialization failed\n");
 	return false;
 }

@@ -39,7 +39,7 @@ WindowsEventLog::WindowsEventLog(	const wchar_t * pszLogName,
 	_hEventLinker = RegisterEventSource(NULL,pszSrcName);
     if (_hEventLinker == NULL) 
     {
-		UNS_DEBUG(L"Could not register the event source\n");
+		UNS_ERROR(L"Could not register the event source\n");
         return;
     }
 }
@@ -155,7 +155,7 @@ void WindowsEventLog::AddEventSource(	const wchar_t * pszLogName,
 		_RegistryKey.Close();
 	}else
 	{
-		UNS_DEBUG(L"_RegistryKey.Create %s failed\n",szBuf);
+		UNS_ERROR(L"_RegistryKey.Create %s failed\n",szBuf);
 	}
 	
 }

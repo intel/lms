@@ -25,7 +25,7 @@
 		int retVal = EventHandler::init(argc, argv);
 		if (retVal != 0)
 		{
-			UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+			UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 			return retVal;
 		}
 
@@ -75,7 +75,7 @@
 		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 		if (hr != S_OK && hr != S_FALSE)
 		{
-			UNS_DEBUG(L"COMEventHandler::COMLogging - CoInitializeEx failed %d\n", hr);
+			UNS_ERROR(L"COMEventHandler::COMLogging - CoInitializeEx failed %d\n", hr);
 			return -1;
 		}
 		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoInitializeEx\n");
@@ -109,12 +109,12 @@
 				}
 				else
 				{
-					UNS_DEBUG(L"QueryInterface failed rc=%x\n", rc);
+					UNS_ERROR(L"QueryInterface failed rc=%x\n", rc);
 				}
 			}
 			else
 			{
-				UNS_DEBUG(L"CoCreateInstance failed rc=%x\n", rc);
+				UNS_ERROR(L"CoCreateInstance failed rc=%x\n", rc);
 			}
 		}
 		CoUninitialize();

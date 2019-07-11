@@ -58,7 +58,7 @@ int DBusThread::svc()
 
 	if (!m_loop)
 	{
-		UNS_DEBUG(L"Main DBus Thread m_loop is NULL\n");
+		UNS_ERROR(L"Main DBus Thread m_loop is NULL\n");
 		return 0;
 	}
 	owner_id = g_bus_own_name(G_BUS_TYPE_SYSTEM,
@@ -166,7 +166,7 @@ void DBusService::SendAlarm(GMS_AlertIndication* alert)
 	     ACE_TEXT_ALWAYS_CHAR(alert->Message.c_str()),
 	     (alert->MessageArguments.size() > 0) ? ACE_TEXT_ALWAYS_CHAR(alert->MessageArguments[0].c_str()) : "",
 	     ACE_TEXT_ALWAYS_CHAR(alert->MessageID.c_str()), alert->Datetime.c_str()))
-		UNS_DEBUG(L"DBusService can't send alarm\n");
+		UNS_ERROR(L"DBusService can't send alarm\n");
 }
 
 int DBusService::handle_event(MessageBlockPtr mbPtr)
