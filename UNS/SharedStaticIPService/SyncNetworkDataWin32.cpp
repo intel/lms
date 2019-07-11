@@ -27,7 +27,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 	// Before calling AddIPAddress we use GetIpAddrTable to get an adapter to which we can add the IP.
 	pIPAddrTable = (MIB_IPADDRTABLE *) malloc(sizeof (MIB_IPADDRTABLE));
 	if (pIPAddrTable == NULL) {
-		UNS_DEBUG(L"malloc 1 failed\n");
+		UNS_ERROR(L"malloc 1 failed\n");
 		return res;
 	}
 	if (pIPAddrTable) {
@@ -37,7 +37,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 			free(pIPAddrTable);
 			pIPAddrTable = (MIB_IPADDRTABLE *) malloc(dwSize);
 			if (pIPAddrTable == NULL) {
-				UNS_DEBUG(L"malloc 2 failed\n");
+				UNS_ERROR(L"malloc 2 failed\n");
 				return res;
 			}
 		}
@@ -52,7 +52,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 		memset(pIPAddrTable, 0x0, dwSize);
 		// Make a second call to GetIpAddrTable to get the actual data we want
 		if ( (ret = GetIpAddrTable( pIPAddrTable, &dwSize, 0 )) != NO_ERROR ) { 
-			UNS_DEBUG(L"GetIpAddrTable failed with error %d\n", ret);
+			UNS_ERROR(L"GetIpAddrTable failed with error %d\n", ret);
 			free(pIPAddrTable);
 			return res;
 		}
@@ -115,7 +115,7 @@ bool SyncNetworkData::SyncDNSData()
 
 	if (pPerAdapterInfo == NULL) 
 	{
-		UNS_DEBUG(L"Can't allocate memory on heap for DNS server list (%d bytes): EnumDnsServers\n", ulBufLen);
+		UNS_ERROR(L"Can't allocate memory on heap for DNS server list (%d bytes): EnumDnsServers\n", ulBufLen);
 		return res;
 	}
 
@@ -192,7 +192,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 	pAdapterList = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
 	if (pAdapterList == NULL) 
 	{
-		UNS_DEBUG(L"malloc 1 failed\n");
+		UNS_ERROR(L"malloc 1 failed\n");
 		return res;
 	}
 	if (GetAdaptersInfo(pAdapterList, &ulBufLen) == ERROR_BUFFER_OVERFLOW) 
@@ -201,7 +201,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 		pAdapterList = (IP_ADAPTER_INFO *) malloc(ulBufLen);
 		if (pAdapterList == NULL) 
 		{
-			UNS_DEBUG(L"malloc 2 failed\n");
+			UNS_ERROR(L"malloc 2 failed\n");
 			return res;
 		}
 	}
@@ -209,7 +209,7 @@ bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, boo
 	DWORD ret = GetAdaptersInfo(pAdapterList, &ulBufLen);
 	if (ret != NO_ERROR)
 	{
-		UNS_DEBUG(L"GetAdaptersInfo returned error: %d\n", ret);
+		UNS_ERROR(L"GetAdaptersInfo returned error: %d\n", ret);
 		if (pAdapterList)
 			free(pAdapterList);
 		return (ret == ERROR_NO_DATA);

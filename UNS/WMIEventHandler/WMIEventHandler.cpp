@@ -27,7 +27,7 @@
 		int retVal = EventHandler::init(argc, argv);
 		if (retVal != 0)
 		{
-			UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+			UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 			return retVal;
 		}
 
@@ -110,14 +110,14 @@
 							hr = spEvent->Put(L"ID", 0, &varEventID, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"ID\" failed, hr=%x err=%d\n", hr, err);
+								UNS_ERROR(L"spEvent->Put(L\"ID\" failed, hr=%x err=%d\n", hr, err);
 							}
 							CComVariant	varEventCategory(alert->category);
 							varEventCategory.ChangeType(VT_UI1);
 							hr = spEvent->Put(L"Category", 0, &varEventCategory, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"Category\" failed, hr=%x err=%d\n", hr, err);
+								UNS_ERROR(L"spEvent->Put(L\"Category\" failed, hr=%x err=%d\n", hr, err);
 							}
 							ACE_WString message(ACE_TEXT_ALWAYS_WCHAR(alert->Message));
 							if (alert->MessageArguments.size() && shouldAppendMessageArgToEnd(alert->id))
@@ -128,7 +128,7 @@
 							hr = spEvent->Put(L"Message", 0, &varEventMessage, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"Message\" failed, hr=%x err=%d\n", hr, err);
+								UNS_ERROR(L"spEvent->Put(L\"Message\" failed, hr=%x err=%d\n", hr, err);
 							}
 						
 							//
@@ -144,7 +144,7 @@
 							hr = spEvent->Put(L"CreationTime", 0, &varCreationTime, 0);
 							if (hr!=S_OK){
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spEvent->Put(L\"CreationTime\" failed, hr=%x err=%d\n", hr, err);
+								UNS_ERROR(L"spEvent->Put(L\"CreationTime\" failed, hr=%x err=%d\n", hr, err);
 							}
 						
 							// Ask WMI for an event sink so we can publish events
@@ -158,7 +158,7 @@
 
 								if (hr!=S_OK){
 									DWORD err=GetLastError();
-									UNS_DEBUG(L"spEventSink->Indicate failed, hr=%x err=%d\n", hr, err);
+									UNS_ERROR(L"spEventSink->Indicate failed, hr=%x err=%d\n", hr, err);
 								}
 								else {
 									UNS_DEBUG(L"spEventSink->Indicate succeed !!!\n");
@@ -168,21 +168,21 @@
 							else
 							{
 								DWORD err=GetLastError();
-								UNS_DEBUG(L"spServices->QueryObjectSink failed, hr=%x err=%d\n", hr, err);
+								UNS_ERROR(L"spServices->QueryObjectSink failed, hr=%x err=%d\n", hr, err);
 
 							}
 						}
 						else
-							UNS_DEBUG(L"WMIEventHandler::handleEvent SpawnInstance failed, hr=%x\n", hr);
+							UNS_ERROR(L"WMIEventHandler::handleEvent SpawnInstance failed, hr=%x\n", hr);
 					}
 					else
-						UNS_DEBUG(L"WMIEventHandler::handleEvent GetObject failed, hr=%x\n", hr);
+						UNS_ERROR(L"WMIEventHandler::handleEvent GetObject failed, hr=%x\n", hr);
 				}
 				else
-					UNS_DEBUG(L"WMIEventHandler::handleEvent ConnectServer failed, hr=%x\n", hr);
+					UNS_ERROR(L"WMIEventHandler::handleEvent ConnectServer failed, hr=%x\n", hr);
 			}
 			else
-				UNS_DEBUG(L"WMIEventHandler::handleEvent CoCreateInstance failed, hr=%x\n", hr);
+				UNS_ERROR(L"WMIEventHandler::handleEvent CoCreateInstance failed, hr=%x\n", hr);
 		}
 		CoUninitialize();
 		return (hr == WBEM_S_NO_ERROR);

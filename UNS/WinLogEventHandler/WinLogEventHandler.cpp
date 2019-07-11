@@ -19,7 +19,7 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+		UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 		return retVal;
 	}
 
@@ -32,17 +32,15 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 		Intel::MEI_Client::HOTHAM_Client::HTMGetFatalErrorsCommand getFatalErrorsCommand;	
 		currentSize = getFatalErrorsCommand.getResponse().response.response;
 	}
-#ifdef _DEBUG
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"Exception with HTMGetFatalErrorsCommand: %C\n", e.what());
+		UNS_ERROR(L"Exception with HTMGetFatalErrorsCommand: %C\n", e.what());
 	}
-#else
 	catch(...)
 	{
-		UNS_DEBUG(L"Exception with HTMGetFatalErrorsCommand\n");
+		UNS_ERROR(L"Exception with HTMGetFatalErrorsCommand\n");
 	}
-#endif	
+
 
 	unsigned long registrySize; //previous FLog size from the registry
 

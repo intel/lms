@@ -81,7 +81,7 @@ void HostChangesNotificationService::Action()
 	std::string fqdn;
 	if (!GetLocalFQDN(fqdn))
 	{
-		UNS_DEBUG(L"Error in setting host FQDN.- not sending HOSTFQDN to FW\n");
+		UNS_ERROR(L"Error in setting host FQDN.- not sending HOSTFQDN to FW\n");
 		return;
 	}
 	if (m_hostFQDN != fqdn)
@@ -93,16 +93,12 @@ void HostChangesNotificationService::Action()
 		catch(Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 		{
 			int errNo = e.getErr();
-			UNS_DEBUG(L"Error in SET_HOST_FQDN. Number is: %d\n", errNo);
+			UNS_ERROR(L"Error in SET_HOST_FQDN. Number is: %d\n", errNo);
 		}
-#ifdef _DEBUG
 		catch(Intel::MEI_Client::MEIClientException& e)
 		{
-			UNS_DEBUG(L"HostChangesNotificationService::Action: SetHostFQDNCommand failed: %C\n", e.what());
+			UNS_ERROR(L"HostChangesNotificationService::Action: SetHostFQDNCommand failed: %C\n", e.what());
 		}
-#else
-		catch(Intel::MEI_Client::MEIClientException&){}
-#endif
 	}
 }
 

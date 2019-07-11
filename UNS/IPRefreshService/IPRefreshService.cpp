@@ -110,25 +110,23 @@ bool IPRefreshService::GetMacAddresses(unsigned short adaptorType)
 		}		
 		res = true;
 	}
-#ifdef _DEBUG
 	catch (MEIClientException& e)
 	{	
-		UNS_DEBUG(L"UpdateMacAddress failed\n");
-		UNS_DEBUG(L"GetLanInterfaceSettingsCommand failed %C\n",e.what());
+		UNS_ERROR(L"UpdateMacAddress: GetLanInterfaceSettingsCommand failed %C\n", e.what());
 	}
 	catch (AMTHI_Client::AMTHIErrorException& e)
 	{
-		UNS_DEBUG(L"UpdateMacAddress failed\n");
-		UNS_DEBUG(L"GetLanInterfaceSettingsCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR(L"UpdateMacAddress: GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 	}
 	catch (std::exception& e)
 	{
-		UNS_DEBUG(L"UpdateMacAddress failed\n");
-		UNS_DEBUG(L"\nException in GetLanInterfaceSettingsCommand %C\n", e.what());
+		UNS_ERROR(L"UpdateMacAddress: Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 	}		
-#else
-	catch(...){}
-#endif
+	catch(...)
+	{
+		UNS_ERROR(L"UpdateMacAddress: Exception in GetLanInterfaceSettingsCommand\n");
+	}
+
 	return res;
 }
 

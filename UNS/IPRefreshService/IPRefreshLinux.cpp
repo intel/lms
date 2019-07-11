@@ -27,19 +27,19 @@ static bool runDHClient(const char* name, bool renew)
 		int stat;
 		w = waitpid(cpid, &stat, 0);
 		if (w == -1) {
-			UNS_DEBUG(L"IPRefresh - waitpid failed %d\n", errno);
+			UNS_ERROR(L"IPRefresh - waitpid failed %d\n", errno);
 			return false;
 		} else if (WIFEXITED(stat)) {
 			if (!WEXITSTATUS(stat)) {
-				UNS_DEBUG(L"IPRefresh - dhclient succeeded.\n");
+				UNS_ERROR(L"IPRefresh - dhclient succeeded.\n");
 				return true;
 			} else {
-				UNS_DEBUG(L"IPRefresh - dhclient failed %d\n",
+				UNS_ERROR(L"IPRefresh - dhclient failed %d\n",
 					  WEXITSTATUS(stat));
 				return false;
 			}
 		} else if (WIFSIGNALED(stat)) {
-			UNS_DEBUG(L"IPRefresh - dhclient killed %d\n",
+			UNS_ERROR(L"IPRefresh - dhclient killed %d\n",
 				  WTERMSIG(stat));
 			return false;
 		}
@@ -64,19 +64,19 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 
 	sock = nl_socket_alloc();
 	if (!sock) {
-		UNS_DEBUG(L"IPRefresh - nl_socket_alloc failed\n");
+		UNS_ERROR(L"IPRefresh - nl_socket_alloc failed\n");
 		status = false;
 		return status;
 	}
 	ret = nl_connect(sock, NETLINK_ROUTE);
 	if (ret) {
-		UNS_DEBUG(L"IPRefresh - nl_connect failed %d\n", ret);
+		UNS_ERROR(L"IPRefresh - nl_connect failed %d\n", ret);
 		status = false;
 		goto out;
 	}
 	ret = rtnl_link_alloc_cache(sock, AF_UNSPEC, &link_cache);
 	if (ret) {
-		UNS_DEBUG(L"IPRefresh - rtnl_link_alloc_cache failed %d\n", ret);
+		UNS_ERROR(L"IPRefresh - rtnl_link_alloc_cache failed %d\n", ret);
 		status = false;
 		goto out;
 	}
@@ -86,7 +86,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 	if (link) {
 		const char* name = rtnl_link_get_name(link);
 		if (!name) {
-			UNS_DEBUG(L"IPRefresh - rtnl_link_get_name failed\n");
+			UNS_ERROR(L"IPRefresh - rtnl_link_get_name failed\n");
 			status = false;
 		} else {
 			runDHClient(name, false); //release - not really interesting if succeeded
@@ -98,7 +98,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 		}
 		rtnl_link_put(link);
 	} else {
-		UNS_DEBUG(L"IPRefresh - adaptor %d not found\n", adaptorID);
+		UNS_ERROR(L"IPRefresh - adaptor %d not found\n", adaptorID);
 	}
 
 	nl_cache_free(link_cache);
@@ -120,19 +120,19 @@ bool IPRefreshService::FillAdaptorIDs()
 
 	sock = nl_socket_alloc();
 	if (!sock) {
-		UNS_DEBUG(L"GetAdaptorIDs - nl_socket_alloc failed\n");
+		UNS_ERROR(L"GetAdaptorIDs - nl_socket_alloc failed\n");
 		status = false;
 		return status;
 	}
 	ret = nl_connect(sock, NETLINK_ROUTE);
 	if (ret) {
-		UNS_DEBUG(L"GetAdaptorIDs - nl_connect failed %d\n", ret);
+		UNS_ERROR(L"GetAdaptorIDs - nl_connect failed %d\n", ret);
 		status = false;
 		goto out;
 	}
 	ret = rtnl_link_alloc_cache(sock, AF_UNSPEC, &link_cache);
 	if (ret) {
-		UNS_DEBUG(L"GetAdaptorIDs - rtnl_link_alloc_cache failed %d\n", ret);
+		UNS_ERROR(L"GetAdaptorIDs - rtnl_link_alloc_cache failed %d\n", ret);
 		status = false;
 		goto out;
 	}

@@ -53,14 +53,14 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 	ret = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 	if (!ret)
 	{
-		UNS_DEBUG(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %lu\n", GetLastError());
+		UNS_ERROR(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %lu\n", GetLastError());
 	}
 	else
 	{
 		ret = LookupPrivilegeValue(NULL,SE_SHUTDOWN_NAME, &prv.Privileges[0].Luid);
 		if (!ret)
 		{
-			UNS_DEBUG(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %lu\n", GetLastError());
+			UNS_ERROR(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %lu\n", GetLastError());
 		}
 		else
 		{
@@ -68,7 +68,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			prv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 			ret = AdjustTokenPrivileges(hToken, FALSE, &prv, 0, (PTOKEN_PRIVILEGES)NULL, 0);
 			if (!ret)
-				UNS_DEBUG(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %lu\n", GetLastError());
+				UNS_ERROR(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %lu\n", GetLastError());
 		}
 		CloseHandle(hToken);
 	}
@@ -89,7 +89,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			return 0;
 		}
 		ss<<err;
-		UNS_DEBUG(L"remote graceful getLastError %lu\n",err);
+		UNS_ERROR(L"remote graceful getLastError %lu\n",err);
 	}
 	return ret;
 }
@@ -102,7 +102,7 @@ void getPowerCapabilities(bool& sleep,bool& hibernate)
 	SYSTEM_POWER_CAPABILITIES systemCaps;
 	if (!GetPwrCapabilities(&systemCaps))
 	{
-		UNS_DEBUG(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu\n",GetLastError());
+		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu\n", GetLastError());
 		sleep = hibernate = false;
 	}
 	//systemCaps.HiberFilePresent shows if hibernation was enabled/disabled (such as using "powercfg.exe /h off")
@@ -123,7 +123,7 @@ bool dbusPowerIsEnabledOne(GDBusProxy *proxy, const char* op, bool &res)
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
+		UNS_ERROR(L"failed to dbus_proxy_call_sync %C\n",
 			 error->message);
 		g_error_free(error);
 		return false;
@@ -150,7 +150,7 @@ bool dbusPowerIsEnabled(bool &suspend, bool &hibernate)
 					      "org.freedesktop.login1.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy\n");
+		UNS_ERROR(L"can't have dbus proxy\n");
 		return false;
 	}
 
@@ -185,7 +185,7 @@ bool PowerOperationsService::suspendOp(bool hibernate)
 					      "org.freedesktop.login1.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy\n");
+		UNS_ERROR(L"can't have dbus proxy\n");
 		return false;
 	}
 
@@ -195,7 +195,7 @@ bool PowerOperationsService::suspendOp(bool hibernate)
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
+		UNS_ERROR(L"failed to dbus_proxy_call_sync %C\n",
 			  error->message);
 		g_error_free(error);
 		result = false;
@@ -225,12 +225,12 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 
 	if (::gettimeofday(&tv, NULL))
 	{
-		UNS_DEBUG(L"gettimeofday failed %d\n", errno);
+		UNS_ERROR(L"gettimeofday failed %d\n", errno);
 		return false;
 	}
 	if (tv.tv_sec > (UINT64_MAX - tv.tv_usec) / USEC_PER_SEC - SHUTDOWN_TIMEOUT)
 	{
-		UNS_DEBUG(L"Wrong timeofday %d %d\n", tv.tv_sec, tv.tv_usec);
+		UNS_ERROR(L"Wrong timeofday %d %d\n", tv.tv_sec, tv.tv_usec);
 		return false;
 	}
 	when = USEC_PER_SEC * tv.tv_sec + tv.tv_usec + SHUTDOWN_TIMEOUT * USEC_PER_SEC;
@@ -243,7 +243,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 					      "org.freedesktop.login1.Manager",
 					      NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy\n");
+		UNS_ERROR(L"can't have dbus proxy\n");
 		return false;
 	}
 
@@ -253,7 +253,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
+		UNS_ERROR(L"failed to dbus_proxy_call_sync %C\n",
 			  error->message);
 		g_error_free(error);
 		result = false;
@@ -267,7 +267,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 				     -1, NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"failed to dbus_proxy_call_sync %C\n",
+		UNS_ERROR(L"failed to dbus_proxy_call_sync %C\n",
 			  error->message);
 		g_error_free(error);
 		result = false;
@@ -283,7 +283,7 @@ disconn:
 void getPowerCapabilities(bool& sleep,bool& hibernate)
 {
 	if (!dbusPowerIsEnabled(sleep, hibernate)) {
-		UNS_DEBUG(L"getPowerCapabilities - dbusPowerIsEnabled failed\n");
+		UNS_ERROR(L"getPowerCapabilities - dbusPowerIsEnabled failed\n");
 		sleep = false;
 		hibernate = false;
 	}
@@ -295,7 +295,7 @@ int PowerOperationsService::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+		UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 		return retVal;
 	}
 
@@ -426,7 +426,7 @@ void PowerOperationsService::addPowerCapabilities()
 	UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep,hibernate);
 	if (!powerManagementCapabilitiesClient.addGracefulOperations(sleep,hibernate))
 	{
-		UNS_DEBUG(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu\n",GetLastError());
+		UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu\n",GetLastError());
 		return;
 	}
 }
@@ -475,7 +475,7 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 		else
 		{
 			unsigned long err = GetLastError();
-			UNS_DEBUG(L"%C  GetLastError: %u\n",dbgMsg.c_str(),err);
+			UNS_ERROR(L"%C  GetLastError: %u\n", dbgMsg.c_str(), err);
 			ss<<err;
 		}
 

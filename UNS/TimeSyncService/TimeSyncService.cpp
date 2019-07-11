@@ -27,7 +27,7 @@ TimeSyncService::init (int argc, ACE_TCHAR *argv[])
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
 	{
-		UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+		UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 
 		return retVal;
 	}
@@ -166,7 +166,7 @@ TimeSyncService::GetUTCTime(unsigned int & UTCTime)
 	rawtime = time(NULL);
 	if (rawtime == -1)
 	{
-		UNS_DEBUG(L"%s:: Get local time failed, aborting sync operation\n", name().c_str());
+		UNS_ERROR(L"%s:: Get local time failed, aborting sync operation\n", name().c_str());
 		return false;
 	}
 	UTCTime = (unsigned int)rawtime;
@@ -204,7 +204,7 @@ TimeSyncService::PerformSync()
 	if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncState))//error getting the Time Sync state.
 	{
 		m_needToSyncOnResume = true;//update the bool to true if sync should be performed
-		UNS_DEBUG(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation\n", name().c_str());
+		UNS_ERROR(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation\n", name().c_str());
 		return;
 	}
 	else if(!timeSyncState) // The FW LocalTimeSyncEnable field is FALSE
@@ -217,7 +217,7 @@ TimeSyncService::PerformSync()
 	bool ret = timeClient.GetAMTTime(AMTTime);
 	if (!ret)
 	{
-		UNS_DEBUG(L"%s:: GetAMTTime failed, aborting sync operation\n", name().c_str());
+		UNS_ERROR(L"%s:: GetAMTTime failed, aborting sync operation\n", name().c_str());
 		return;
 	}
 #ifdef _DEBUG
@@ -227,7 +227,7 @@ TimeSyncService::PerformSync()
 	//Get the UTC time
 	if (!GetUTCTime(UTCTime))
 	{
-		UNS_DEBUG(L"%s:: Cannot get UTC time. aborting sync operation\n", name().c_str());
+		UNS_ERROR(L"%s:: Cannot get UTC time. aborting sync operation\n", name().c_str());
 		return;
 	}
 #ifdef _DEBUG
@@ -242,7 +242,7 @@ TimeSyncService::PerformSync()
 		ret = timeClient.SetAMTTime(UTCTime);
 		if (!ret)
 		{
-			UNS_DEBUG(L"%s:: SetAMTTime failed, aborting sync operation\n", name().c_str());
+			UNS_ERROR(L"%s:: SetAMTTime failed, aborting sync operation\n", name().c_str());
 			return;
 		}
 #ifdef _DEBUG
@@ -250,7 +250,7 @@ TimeSyncService::PerformSync()
 		ret = timeClient.GetAMTTime(AMTTime);
 		if (!ret)
 		{
-			UNS_DEBUG(L"%s:: GetAMTTime failed.\n", name().c_str());
+			UNS_ERROR(L"%s:: GetAMTTime failed.\n", name().c_str());
 			return;
 		}
 		printTime(L"Time in FW is now: ", AMTTime);

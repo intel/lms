@@ -51,14 +51,14 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 			//This means registry is not exist and should be created
 			if (!DSinstance().SetDataValue(IMSSHistoryStorage_, defaultValue))
 			{
-				UNS_DEBUG(L"HistoryEventHandler::createHistoryRegistry failed err=%d\n", GetLastError());
+				UNS_ERROR(L"HistoryEventHandler::createHistoryRegistry failed err=%d\n", GetLastError());
 			}			
 		}
 		
 		int retVal = EventHandler::init(argc, argv);
 		if (retVal != 0)
 		{
-			UNS_DEBUG(L"EventHandler::init failed. retVal: %d\n", retVal);
+			UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 			return retVal;
 		}
 
@@ -133,10 +133,10 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 	
 		time_t t;
 		if (time (&t) == -1)
-			{
-			UNS_DEBUG(L"time failed\n");
-				return -1;
-			}
+		{
+			UNS_ERROR(L"time failed\n");
+			return -1;
+		}
 		std::wstringstream ss;
 		ss << t;
 		std::wstring timeStr = L"";
@@ -146,7 +146,7 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 		eventList.append(newEventStr);
 		if (!DSinstance().SetDataValue(storageName, eventList))
 		{
-			UNS_DEBUG(L"SetDataValue failed\n");
+			UNS_ERROR(L"SetDataValue failed\n");
 			return -1;
 		}
 		

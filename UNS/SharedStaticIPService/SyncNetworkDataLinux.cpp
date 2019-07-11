@@ -36,19 +36,19 @@ bool SyncNetworkData::ValidateLinkStatus()
 	sock = nl_socket_alloc();
 	if (!sock) {
 		res = -ENOMEM;
-		UNS_DEBUG(L"ValidateLinkStatus nl_socket_alloc failed\n");
+		UNS_ERROR(L"ValidateLinkStatus nl_socket_alloc failed\n");
 		return false;
 	}
 
 	res = nl_connect(sock, NETLINK_ROUTE);
 	if (res) {
-		UNS_DEBUG(L"ValidateLinkStatus nl_connect failed %d\n", res);
+		UNS_ERROR(L"ValidateLinkStatus nl_connect failed %d\n", res);
 		goto out;
 	}
 
 	res = rtnl_link_alloc_cache(sock, AF_UNSPEC, &link_cache);
 	if (res) {
-		UNS_DEBUG(L"ValidateLinkStatus rtnl_link_alloc_cache failed %d\n", res);
+		UNS_ERROR(L"ValidateLinkStatus rtnl_link_alloc_cache failed %d\n", res);
 		goto out;
 	}
 
@@ -66,7 +66,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 		flags = rtnl_link_get_flags(link);
 
 		if (!(flags & IFF_RUNNING)) {
-			UNS_DEBUG(L"ValidateLinkStatus flags not IFF_RUNNING %d\n", flags);
+			UNS_ERROR(L"ValidateLinkStatus flags not IFF_RUNNING %d\n", flags);
 			res = -EFAULT;
 			break;
 		}
@@ -80,7 +80,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 
 	res = rtnl_addr_alloc_cache(sock, &addr_cache);
 	if (res) {
-		UNS_DEBUG(L"ValidateLinkStatus rtnl_addr_alloc_cache failed %d\n", res);
+		UNS_ERROR(L"ValidateLinkStatus rtnl_addr_alloc_cache failed %d\n", res);
 		goto out;
 	}
 
@@ -97,7 +97,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 
 		flags = rtnl_addr_get_flags(addr);
 		if (flags & IFA_F_SECONDARY) {
-			UNS_DEBUG(L"ValidateLinkStatus flags is IFA_F_SECONDARY %d\n", flags);
+			UNS_ERROR(L"ValidateLinkStatus flags is IFA_F_SECONDARY %d\n", flags);
 			res = -EFAULT;
 			break;
 		}
@@ -130,13 +130,13 @@ static void get_dns(const char *path, std::vector<std::string> &dns)
 					"org.freedesktop.NetworkManager.IP4Config",
 					NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy\n");
+		UNS_ERROR(L"can't have dbus proxy\n");
 		return;
 	}
 
 	ret = g_dbus_proxy_get_cached_property(proxy, "Nameservers");
 	if (!ret) {
-		UNS_DEBUG(L"can't get Nameservers\n");
+		UNS_ERROR(L"can't get Nameservers\n");
 		goto out;
 	}
 
@@ -168,7 +168,7 @@ get_device_ip4(const char *obj_path, std::vector<std::string> &dns)
 					"org.freedesktop.DBus.Properties",
 					NULL, NULL);
 	if (!proxy) {
-		UNS_DEBUG(L"can't have dbus proxy\n");
+		UNS_ERROR(L"can't have dbus proxy\n");
 		return;
 	}
 
@@ -181,7 +181,7 @@ get_device_ip4(const char *obj_path, std::vector<std::string> &dns)
 				NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error (error);
-		UNS_DEBUG(L"AdapterListInfo Failed to get Ip4Config property: %C\n",
+		UNS_ERROR(L"AdapterListInfo Failed to get Ip4Config property: %C\n",
 			  error->message);
 		g_error_free(error);
 		goto out;
@@ -189,7 +189,7 @@ get_device_ip4(const char *obj_path, std::vector<std::string> &dns)
 
 	g_variant_get(ret, "(v)", &path_value);
 	if (!g_variant_is_of_type(path_value, G_VARIANT_TYPE_OBJECT_PATH)) {
-		UNS_DEBUG(L"AdapterListInfo Unexpected type returned getting Connection property: %C\n",
+		UNS_ERROR(L"AdapterListInfo Unexpected type returned getting Connection property: %C\n",
 			  g_variant_get_type_string(path_value));
 		goto out;
 	}
@@ -219,7 +219,7 @@ get_device(GDBusProxy *proxy, const std::string &link_name, std::vector<std::str
 				     NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"Failed to %C GetDeviceByIpIface : %C\n", link_name.c_str(), error->message);
+		UNS_ERROR(L"Failed to %C GetDeviceByIpIface : %C\n", link_name.c_str(), error->message);
 		g_error_free(error);
 		return;
 	}
@@ -269,7 +269,7 @@ connman_get_data(GDBusProxy *proxy, const std::string &link_name,
 				     NULL, &error);
 	if (!ret) {
 		g_dbus_error_strip_remote_error(error);
-		UNS_DEBUG(L"AdapterListInfo Failed to call GetServices: %C\n", error->message);
+		UNS_ERROR(L"AdapterListInfo Failed to call GetServices: %C\n", error->message);
 		g_error_free(error);
 		return;
 	}
@@ -404,20 +404,20 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 
 	sock = nl_socket_alloc();
 	if (!sock) {
-		UNS_DEBUG(L"getNetParam nl_socket_alloc failed\n");
+		UNS_ERROR(L"getNetParam nl_socket_alloc failed\n");
 		res = -ENODEV;
 		return res;
 	}
 
 	res = nl_connect(sock, NETLINK_ROUTE);
 	if (res) {
-		UNS_DEBUG(L"getNetParam nl_connect failed %d\n", res);
+		UNS_ERROR(L"getNetParam nl_connect failed %d\n", res);
 		goto out;
 	}
 
 	res = rtnl_link_alloc_cache(sock, AF_UNSPEC, &link_cache);
 	if (res) {
-		UNS_DEBUG(L"getNetParam rtnl_link_alloc_cache failed %d\n", res);
+		UNS_ERROR(L"getNetParam rtnl_link_alloc_cache failed %d\n", res);
 		goto out;
 	}
 
@@ -447,14 +447,14 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 	nl_cache_free(link_cache);
 
 	if (param->udi < 0) {
-		UNS_DEBUG(L"getNetParam no MAC %C\n", m_MacAddress.c_str());
+		UNS_ERROR(L"getNetParam no MAC %C\n", m_MacAddress.c_str());
 		res = -ENOENT;
 		goto out;
 	}
 
 	res = rtnl_addr_alloc_cache(sock, &addr_cache);
 	if (res) {
-		UNS_DEBUG(L"getNetParam rtnl_adr_alloc_cache failed %d\n", res);
+		UNS_ERROR(L"getNetParam rtnl_adr_alloc_cache failed %d\n", res);
 		goto out;
 	}
 
@@ -492,7 +492,7 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 
 	res = rtnl_route_alloc_cache(sock, AF_INET, 0, &route_cache);
 	if (res) {
-		UNS_DEBUG(L"getNetParam rtnl_route_alloc_cache failed %d\n", res);
+		UNS_ERROR(L"getNetParam rtnl_route_alloc_cache failed %d\n", res);
 		goto out;
 	}
 
