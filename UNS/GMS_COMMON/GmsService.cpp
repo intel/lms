@@ -14,6 +14,7 @@
 #include "WindowsStringLoader.h"
 #else
 #include <syslog.h>
+#include "version.h"
 #endif // WIN32
 #include "StringsDefinitions.h"
 #include "DataStorageGenerator.h"
@@ -182,7 +183,10 @@ static inline ACE_TString serviceName2objectName(const ACE_TString &serviceName)
 #else
 static inline ACE_TString serviceName2objectName(const ACE_TString &serviceName)
 {
-	return ACE_TEXT("libLms") + serviceName + ACE_TEXT(".so");
+	std::stringstream str;
+	str << ".so." << MAJOR_VERSION << "." << MINOR_VERSION << "." <<
+		QUICK_FIX_NUMBER << "." << VER_BUILD;
+	return ACE_TEXT("libLms") + serviceName + ACE_TEXT(str.str().c_str());
 }
 #endif // WIN32
 
