@@ -19,7 +19,6 @@ set_target_properties (LmsHistoryEventHandler PROPERTIES CXX_VISIBILITY_PRESET h
 target_link_libraries (LmsHistoryEventHandler
   LmsGMS_COMMON
   ACELIB
-  Common
 )
 
 target_compile_definitions (LmsHistoryEventHandler PRIVATE

@@ -33,7 +33,6 @@ target_link_libraries (LmsPowerOperationsService
   LmsGMS_COMMON
   ACELIB
   LmsWsmanClient
-  Common
   ${PWR_LIBRARIES}
 )
 

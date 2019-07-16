@@ -20,7 +20,6 @@ set_target_properties (LmsWinLogEventHandler PROPERTIES CXX_VISIBILITY_PRESET hi
 target_link_libraries (LmsWinLogEventHandler
   ACELIB
   LmsMEIClient
-  Common
   LmsGMS_COMMON
 )
 

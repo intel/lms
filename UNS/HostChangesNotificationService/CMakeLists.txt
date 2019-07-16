@@ -19,7 +19,6 @@ target_link_libraries (LmsHostChangesNotificationService
   LmsGMS_COMMON
   ACELIB
   LmsMEIClient
-  Common
 )
 
 target_compile_definitions (LmsHostChangesNotificationService PRIVATE

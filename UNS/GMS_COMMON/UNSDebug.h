@@ -12,9 +12,9 @@
 #define __UNSDEBUG_H
 
 #ifndef UNSDEBUG_NO_DLL
-#include "CommonDllExport.h"
+#include "GMSCommonDllExport.h"
 #else
-#define COMMON_EXPORT
+#define GMS_COMMON_EXPORT
 #endif
 
 #ifdef __cplusplus
@@ -23,8 +23,8 @@ extern "C"
 #endif
 
 #ifdef _DEBUGPRINT
-	void COMMON_EXPORT DbgPrint(const char *format, ...);
-	void COMMON_EXPORT DbgPrintW(const wchar_t *format, ...);
+	void GMS_COMMON_EXPORT DbgPrint(const char *format, ...);
+	void GMS_COMMON_EXPORT DbgPrintW(const wchar_t *format, ...);
 #else
 #define DbgPrint(...){}
 #define DbgPrintW(...){}

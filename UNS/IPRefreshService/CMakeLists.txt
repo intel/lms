@@ -37,7 +37,6 @@ target_link_libraries (LmsIPRefreshService
   LmsGMS_COMMON
   ACELIB
   LmsMEIClient
-  Common
   ${NET_LIBRARIES}
 )
 include_directories (

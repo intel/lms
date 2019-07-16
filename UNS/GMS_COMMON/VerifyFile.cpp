@@ -183,12 +183,6 @@ bool VerifyFile::VerifyCommonDlls()
 {
 	std::wstring filename;
 
-	filename = L"Common.dll";
-	if (!VerifyFileVersionAndSignature(filename))
-	{
-		return false;
-	}
-
 	filename = L"GmsCommon.dll";
 	if (!VerifyFileVersionAndSignature(filename))
 	{

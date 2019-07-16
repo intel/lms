@@ -55,7 +55,6 @@ target_link_libraries (LmsWsmanClient
   LmsMEIClient
   CimOpenWsmanClient
   LmsGMS_COMMON
-  Common
 )
 
 target_include_directories (LmsWsmanClient PUBLIC

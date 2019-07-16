@@ -18,7 +18,6 @@ set_target_properties (LmsEventManager PROPERTIES CXX_VISIBILITY_PRESET hidden)
 target_link_libraries (LmsEventManager
   LmsGMS_COMMON
   ACELIB
-  Common
 )
 
 target_compile_definitions (LmsEventManager PRIVATE

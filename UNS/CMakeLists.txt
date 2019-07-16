@@ -46,7 +46,6 @@ add_dependencies (UNSMessageFileLib UNSMessageFile)
 
 add_subdirectory ("GMS_COMMON" "GMS_COMMON")
 add_subdirectory ("Configurator" "Configurator")
-add_subdirectory ("Common" "Common")
 add_subdirectory ("EventManager" "EventManager")
 add_subdirectory ("HistoryEventHandler" "HistoryEventHandler")
 add_subdirectory ("HostChangesNotificationService" "HostChangesNotificationService")
@@ -81,7 +80,6 @@ endif (WIN32)
 target_link_libraries (lms
   ACELIB
   LmsGMS_COMMON
-  Common
   $<$<BOOL:${WIN32}>:DataInterfaceBackend>
 )
 

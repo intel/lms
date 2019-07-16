@@ -36,7 +36,7 @@ add_library (MEProv SHARED
   Src/OOB_Service_WMI_Provider.cpp
   Src/ProvisioningCertificateHash_WMI_Provider.cpp
   Src/PTHI_Commands.cpp
-  ${TOP_DIR}/UNS/Common/UNSDebug.cpp
+  Src/UNSDebug.cpp
   Src/WindowsEventLog.cpp
   Src/WMIHelper.cpp
   Src/WSmanCommands.cpp

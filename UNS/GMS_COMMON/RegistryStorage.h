@@ -17,14 +17,14 @@
 #include <memory>
 #include <utility>
 #include <vector>
-#include "CommonDllExport.h"
+#include "GMSCommonDllExport.h"
 
 typedef std::pair<LmsRegStr /*KEY*/, LmsRegStr /*value name*/> RegEntry;
 typedef std::vector<RegEntry > RegEntryMap;
 
 typedef std::vector<LmsRegStr> MajorSubKeysList;
 
-class COMMON_EXPORT RegistryStorage : public DataStorageWrapperImpl
+class GMS_COMMON_EXPORT RegistryStorage : public DataStorageWrapperImpl
 {
 public:
 	friend DataStorageWrapper& GenerateDS(); 

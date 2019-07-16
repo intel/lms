@@ -18,9 +18,10 @@
 #define _WIN_STRING_LOADER_H_
 
 #include "StringManager.h"
+#include "GMSCommonDllExport.h"
 
 //StringLoader for windows
-class COMMON_EXPORT WindowsStringLoader : public StringLoader
+class GMS_COMMON_EXPORT WindowsStringLoader : public StringLoader
 {
 public:
 	//load the strings with IDs from given vector into the map,throws exception on failure

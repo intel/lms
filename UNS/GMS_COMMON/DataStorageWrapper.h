@@ -19,7 +19,7 @@
 
 #include <string>
 #include <memory>
-#include "CommonDllExport.h"
+#include "GMSCommonDllExport.h"
 
 enum ValueTypes {
 	VAL_NONE = 0,
@@ -44,7 +44,7 @@ public:
 	virtual bool ValueExists(DATA_NAME name) = 0;
 };
 
-class COMMON_EXPORT DataStorageWrapper
+class GMS_COMMON_EXPORT DataStorageWrapper
 {
 public:
 	friend DataStorageWrapper& GenerateDS();

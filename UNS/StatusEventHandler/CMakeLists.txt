@@ -21,7 +21,6 @@ target_link_libraries (LmsStatusEventHandler
   ACELIB
   LmsWsmanClient
   LmsMEIClient
-  Common
 )
 
 include_directories (

@@ -21,7 +21,6 @@ target_link_libraries (LmsTimeSyncService
   ACELIB
   LmsWsmanClient
   LmsMEIClient
-  Common
 )
 
 target_compile_definitions (LmsTimeSyncService PRIVATE

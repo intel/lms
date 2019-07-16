@@ -53,7 +53,6 @@ target_link_libraries (LmsSharedStaticIPService
   ACELIB
   LmsWsmanClient
   LmsMEIClient
-  Common
   ${NET_LIBRARIES}
 )
 

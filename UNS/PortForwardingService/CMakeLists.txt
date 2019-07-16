@@ -58,7 +58,6 @@ target_link_libraries (LmsPortForwardingService
   LmsWsmanClient
   ACELIB
   LmsMEIClient
-  Common
   ${NET_LIBRARIES}
 )
 

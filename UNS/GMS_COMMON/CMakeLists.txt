@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 3.1)
 
 if (UNIX)
   set (EVENTLOG_SRC LinuxEventLog.cpp)
+  set (REGISTRY_SRC LinuxRegistryStorage.cpp)
 else (UNIX)
   set (EVENTLOG_SRC WindowsEventLog.cpp)
   set (VERIFYFILE_SRC VerifyFile.cpp)
@@ -12,6 +13,10 @@ else (UNIX)
     WinTrust.lib
     version.lib
   )
+  set (REGISTRY_SRC WindowsRegistryStorage.cpp)
+  set (IS64BIT_SRC Is64BitOs.cpp)
+  set (STRINGMANAGER_SRC StringManager.cpp)
+  set (STRINGLOADER_SRC WindowsStringLoader.cpp)
 endif (UNIX)
 
 add_library (LmsGMS_COMMON SHARED
@@ -22,6 +27,15 @@ add_library (LmsGMS_COMMON SHARED
   RegistryGenerator.cpp
   GmsService.cpp
   ${VERIFYFILE_SRC}
+  Tools.cpp
+  UNSDebug.cpp
+  UNSRegistry.cpp
+  DataStorageWrapper.cpp
+  RegistryStorage.cpp
+  ${REGISTRY_SRC}
+  ${IS64BIT_SRC}
+  ${STRINGMANAGER_SRC}
+  ${STRINGLOADER_SRC}
   $<$<BOOL:${WIN32}>:GmsCommon.rc>
 )
 
@@ -35,7 +49,6 @@ set_target_properties (LmsGMS_COMMON PROPERTIES CXX_VISIBILITY_PRESET hidden)
 
 target_link_libraries (LmsGMS_COMMON
   ACELIB
-  Common
   ${SECLIBS}
   UNSMessageFileLib
 )

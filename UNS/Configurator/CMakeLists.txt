@@ -38,7 +38,6 @@ target_link_libraries (LmsConfigurator
   ACELIB
   LmsWsmanClient
   LmsMEIClient
-  Common
   ${PRW_LIB}
 )
 

@@ -8,7 +8,7 @@
 #include "Tools.h"
 
 #include <sstream>
-#include <FuncEntryExit.h>
+#include "FuncEntryExit.h"
 
 void FlowLog(const wchar_t * pref, const wchar_t * func) 
 {
