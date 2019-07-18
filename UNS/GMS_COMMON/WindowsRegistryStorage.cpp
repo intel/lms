@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -105,8 +105,6 @@ SetKeySecurity(HKEY hKey)
 	}
 	catch (std::exception&)
 	{
-		//DbgPrint("\nError: failed while calling SetKeySecurity routine\n");
-		//DbgPrint("%s\n", e.what());
 		goto Cleanup;
 	}
 

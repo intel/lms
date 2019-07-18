@@ -622,7 +622,7 @@ bool PartialFWUpdateService::isMESKU()
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"\nException in GetPlatformTypeCommand %C\n", e.what());
+		UNS_ERROR(L"Exception in GetPlatformTypeCommand %C\n", e.what());
 	}
 
 	return res;

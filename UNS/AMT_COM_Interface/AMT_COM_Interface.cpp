@@ -20,7 +20,7 @@
 #include "Winbase.h"
 #include "GmsService.h"
 #include "ACEInitializer.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "GMSExternalLogger.h"
 #include "DataStorageWrapper.h"
 
@@ -372,7 +372,7 @@ public:
 #endif
 		if (!UnregisterDeviceNotification(hDevNotify))
 		{
-			DbgPrintW(L"UnregisterDeviceNotification failed \n");
+			UNS_DEBUG(L"UnregisterDeviceNotification failed \n");
 		}
 		SetServiceStatus(SERVICE_STOPPED);
 	}
@@ -453,7 +453,7 @@ public:
 		HRESULT hr = __super::UnregisterServer(bUnRegTypeLib, pCLSID);
 		if (FAILED(DelRegKeys()))
 		{
-			DbgPrintW(L"UnregisterServer:: Failed to clean all registry values\n");
+			UNS_DEBUG(L"UnregisterServer:: Failed to clean all registry values\n");
 		}
 		return hr;
 	}

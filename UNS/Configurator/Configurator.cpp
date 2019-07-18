@@ -895,7 +895,7 @@ void Configurator::ScanConfiguration()
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"\nException in EnvironmentScanning. %C\n", e.what());
+		UNS_ERROR(L"Exception in EnvironmentScanning. %C\n", e.what());
 
 		if(!MEIEnabled())
 		{

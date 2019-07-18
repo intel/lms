@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #pragma once
-#include "UNSDebug.h"
+#include "global.h"
 
 template<class T>
 class CProxy_IUNSAlertEvents :
@@ -54,7 +54,7 @@ public:
 				hr = pConnection->Invoke(1, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, NULL, NULL, NULL);
 				if (hr!=S_OK)
 				{
-					DbgPrintW(L"Invoke (%d) returned hr=0x%X\n",iConnection,hr);
+					UNS_DEBUG(L"Invoke (%d) returned hr=0x%X\n", iConnection, hr);
 				}
 			}
 		}

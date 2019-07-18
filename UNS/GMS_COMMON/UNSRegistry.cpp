@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -12,7 +12,7 @@
 #ifdef WIN32
 #include <atlbase.h>
 #ifdef _DEBUG
-#include "UNSDebug.h"
+#include "global.h"
 #include "Is64BitOs.h"
 
 bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, WCHAR *val, size_t size)
@@ -65,12 +65,12 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, wchar_t* val
 
 	if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, szRegPath.c_str(), 0, RegSAM, &hKey) )
 	{
-		if( ERROR_SUCCESS == RegQueryValueExW(hKey, key.c_str(), NULL, &type,(LPBYTE)val, valsz))
+		if (ERROR_SUCCESS == RegQueryValueExW(hKey, key.c_str(), NULL, &type, (LPBYTE)val, valsz))
 		{
 			rc = true;
 		}
 		else
-			DbgPrintW(L"RegQueryValueEx %s failed lastErr=%d\n",key.c_str(),GetLastError());
+			UNS_ERROR(L"RegQueryValueEx %W failed lastErr=%d\n", key.c_str(), GetLastError());
 
 		RegCloseKey(hKey);
 	}
@@ -81,12 +81,12 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, wchar_t* val
 			rc = true;
 		}
 		else
-			DbgPrintW(L"RegQueryValueEx %s failed lastErr=%d\n", key.c_str(), GetLastError());
+			UNS_ERROR(L"RegQueryValueEx %W failed lastErr=%d\n", key.c_str(), GetLastError());
 
 		RegCloseKey(hKey);
 	}
 	else
-		DbgPrintW(L"RegOpenKeyEx %s failed lastErr=%d\n", key.c_str(), GetLastError());
+		UNS_ERROR(L"RegOpenKeyEx %W failed lastErr=%d\n", key.c_str(), GetLastError());
 	return rc;
 }
 
@@ -105,7 +105,7 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, BSTR* val)
 	{
 		if (_RegistryKey.QueryStringValue(key.c_str(), szBuf, &nchars) == ERROR_SUCCESS )
 		{
-			DbgPrintW (L"Value for %s is %s\n",key.c_str(), szBuf);
+			UNS_DEBUG(L"Value for %W is %W\n", key.c_str(), szBuf);
 			CComBSTR bstr(szBuf);
 			*val=bstr.Detach();
 			return true;
@@ -115,7 +115,7 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, BSTR* val)
 	{
 		if (_RegistryKey.QueryStringValue(key.c_str(), szBuf, &nchars) == ERROR_SUCCESS)
 		{
-			DbgPrintW(L"Value for %s is %s\n", key.c_str(), szBuf);
+			UNS_DEBUG(L"Value for %W is %W\n", key.c_str(), szBuf);
 			CComBSTR bstr(szBuf);
 			*val = bstr.Detach();
 			return true;
@@ -139,7 +139,7 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, SHORT* val)
 	{
 		if (_RegistryKey.QueryDWORDValue(key.c_str(), dwVal) == ERROR_SUCCESS )
 		{
-			DbgPrintW (L"Value for %s is %d\n",key.c_str(), dwVal);
+			UNS_DEBUG(L"Value for %W is %d\n", key.c_str(), dwVal);
 			*val=(SHORT) dwVal;
 			return true;
 		}
@@ -148,7 +148,7 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, SHORT* val)
 	{
 		if (_RegistryKey.QueryDWORDValue(key.c_str(), dwVal) == ERROR_SUCCESS)
 		{
-			DbgPrintW(L"Value for %s is %d\n", key.c_str(), dwVal);
+			UNS_DEBUG(L"Value for %W is %d\n", key.c_str(), dwVal);
 			*val = (SHORT)dwVal;
 			return true;
 		}

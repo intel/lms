@@ -9,7 +9,7 @@
 --*/
 
 #include "Manageability_Commands_BE.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "FWUGetInfoCommand.h"
 #include "GetFWCapsCommand.h"
 #include "GetFWVersionCommand.h"
@@ -23,47 +23,34 @@
 
 namespace Intel {
 	namespace LMS {
-#ifdef _DEBUG
+
 #define CATCH_MEIClientException(func) \
 	catch (Intel::MEI_Client::MEIClientException& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(func L" failed %hs\n", reason); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_MKHIErrorException(func) \
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(func L" failed %hs\n", reason); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_FWUpdateErrorException(func) \
 	catch (Intel::MEI_Client::FWUpdate_Client::FWUpdateErrorException& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(func L" failed %hs\n", reason); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(L"\nException in " func L" %hs\n", reason); \
+		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
 	}
-#else
-#define CATCH_MEIClientException(func) \
-		catch (Intel::MEI_Client::MEIClientException&) {}
-
-#define CATCH_MKHIErrorException(func) \
-	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException&) {}
-
-#define CATCH_FWUpdateErrorException(func) \
-	catch (Intel::MEI_Client::FWUpdate_Client::FWUpdateErrorException&) {}
-
-#define CATCH_exception(func) \
-	catch (std::exception&) {}
-#endif // _DEBUG
 
 		//MEBx version
 		struct MEBX_BIOS_VER
@@ -135,7 +122,7 @@ namespace Intel {
 				Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
 				auto AvailData = getFeaturesAvailabilityCommand.getResponse();
 
-				DbgPrintW(L"CManageability_Commands::GetTheFeatureState Capability=0x%X State=0x%X Availability=0x%X\n", CapabilityData, StateData, AvailData);
+				UNS_DEBUG(L"CManageability_Commands::GetTheFeatureState Capability=0x%X State=0x%X Availability=0x%X\n", CapabilityData, StateData, AvailData);
 
 				switch (feat)
 				{
@@ -227,7 +214,7 @@ namespace Intel {
 				Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
 				auto AvailData = getFeaturesAvailabilityCommand.getResponse();
 
-				DbgPrintW(L"CManageability_Commands::GetTheFeatureState Capability=0x%X State=0x%X Availability=0x%X\n", CapabilityData, StateData, AvailData);
+				UNS_DEBUG(L"CManageability_Commands::GetTheFeatureState Capability=0x%X State=0x%X Availability=0x%X\n", CapabilityData, StateData, AvailData);
 
 				ppStates.resize(FEATURES_NUM);
 
@@ -314,7 +301,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
 				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
-				DbgPrintW(L"CManageability_Commands::GetCustomerType: Platform=0x%X \n", Platform.Data);
+				UNS_DEBUG(L"CManageability_Commands::GetCustomerType: Platform=0x%X \n", Platform.Data);
 
 				pType = GetPlatformTypeExt(&Platform);
 				if (pType == WRONG_CUSTOMER_TYPE)
@@ -334,7 +321,7 @@ namespace Intel {
 				Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
 				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
 
-				DbgPrintW(L"CManageability_Commands::GetPlatformType: Platform=0x%X \n", Platform.Data);
+				UNS_DEBUG(L"CManageability_Commands::GetPlatformType: Platform=0x%X \n", Platform.Data);
 				if (Platform.Fields.Desktop)
 					pType = DESKTOP;
 				else
@@ -364,7 +351,7 @@ namespace Intel {
 				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
 
 				MenageabiltyModeLogic(Platform, pMode);
-				DbgPrintW(L"CManageability_Commands::GetMenageabiltyMode platform=0x%X MenageabilityMode=%d\n", Platform, pMode);
+				UNS_DEBUG(L"CManageability_Commands::GetMenageabiltyMode platform=0x%X MenageabilityMode=%d\n", Platform, pMode);
 				return ERROR_OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeCommand")
@@ -468,7 +455,7 @@ namespace Intel {
 			CATCH_MKHIErrorException(L"GetFWUpdateStateCommand")
 			CATCH_MEIClientException(L"GetFWUpdateStateCommand")
 			CATCH_exception(L"GetFWUpdateStateCommand")
-			DbgPrintW(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
+				UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
 				pMEBxVersion.c_str(), pBiosBootState, pCryptoFuseEnable, pLocalFWupdateEnable);
 			return ERROR_OK;
 		}
@@ -500,7 +487,7 @@ namespace Intel {
 
 					if (res.NumOfModules != 1)
 					{
-						DbgPrintW(L"GetFWVersionCommand returned wrong number of modules %d", res.NumOfModules);
+						UNS_DEBUG(L"GetFWVersionCommand returned wrong number of modules %d\n", res.NumOfModules);
 						return ERROR_FAIL;
 					}
 

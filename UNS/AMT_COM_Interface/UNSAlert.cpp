@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -9,13 +9,14 @@
 --*/
 
 // UNSAlert.cpp : Implementation of CUNSAlert
-
+#include "global.h"
 #include "stdafx.h"
 #include "UNSAlert.h"
 #include "UNSAlert_BE.h"
 #include "resource.h"
 #include "DataStorageGenerator.h"
 #include "UNSRegistry.h"
+
 
 // CUNSAlert
 STDMETHODIMP CUNSAlert::RiseAlert(USHORT category,
@@ -25,7 +26,7 @@ STDMETHODIMP CUNSAlert::RiseAlert(USHORT category,
 				BSTR messageID, 
 				BSTR dateTime)
 {
-	DbgPrintW(L"CUNSAlert::RiseAlert\n");
+	UNS_DEBUG(L"CUNSAlert::RiseAlert\n");
 	Fire_Alert(category,id,message,messageArg,messageID,dateTime);
 	return S_OK;
 }
@@ -44,7 +45,7 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	if (CheckCredentials(GetIMSSEventHistory_F) != S_OK)
 		return E_ACCESSDENIED;
 
-	DbgPrintW(L"CUNSAlert::GetIMSSEventHistory\n");
+	UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
 	std::wstring EventHistory;
 	Intel::LMS::LMS_ERROR err = Intel::LMS::UNSAlert_BE(GetGmsPortForwardingStarted()).GetIMSSEventHistory(EventHistory);
 	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
@@ -59,11 +60,11 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 
 STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()
 {
-	DbgPrintW(L"CUNSAlert::ResetUNSstartedEvent\n");
+	UNS_DEBUG(L"CUNSAlert::ResetUNSstartedEvent\n");
 	HANDLE hUNSstarted=OpenEvent(EVENT_MODIFY_STATE,FALSE,L"Global\\UNSstarted");
 	if (hUNSstarted==NULL)
 	{
-		DbgPrintW(L"CUNSAlert::OpenEvent UNSstarted failed, err=%d\n",GetLastError());
+		UNS_DEBUG(L"CUNSAlert::OpenEvent UNSstarted failed, err=%d\n",GetLastError());
 		if (GetLastError()==5)
 			return E_ACCESSDENIED;
 		else
@@ -71,7 +72,7 @@ STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()
 	}
 	if (!ResetEvent(hUNSstarted))
 	{
-		DbgPrintW(L"CUNSAlert::ResetEvent UNSstarted failed, err=%d\n",GetLastError());
+		UNS_DEBUG(L"CUNSAlert::ResetEvent UNSstarted failed, err=%d\n",GetLastError());
 		CloseHandle(hUNSstarted);
 		return E_FAIL;
 	}

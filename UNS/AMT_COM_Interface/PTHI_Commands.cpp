@@ -10,13 +10,12 @@
 
 // PTHI_Commands.cpp : Implementation of CPTHI_Commands
 #pragma once
-
+#include "global.h"
 #include "stdafx.h"
 #include "PTHI_Commands.h"
 #include "atlsafe.h"
 #include <string>
 #include "comdef.h"
-#include "UNSDebug.h"
 #include "UNSRegistry.h"
 #include "DataStorageGenerator.h"
 #include "PTHI_Commands_BE.h"
@@ -109,7 +108,6 @@ bool HasAccessByBuiltinGroup(WELL_KNOWN_SID_TYPE WinBuiltinSid,TOKEN_GROUPS * gr
 			{
 				LPTSTR lpBuff;
 				ConvertSidToStringSid(groups->Groups[i].Sid,&lpBuff);
-				//DbgPrint ("Group %s ,szDomainName %s , Attrib %d, SID_NAME_USE %d sid is %s\n",szGrpName,gszDomainName,groups->Groups[i].Attributes,snu,lpBuff);
 				LocalFree(lpBuff);
 				GroupsSet.insert(szGrpName);
 				if (EqualSid(groups->Groups[i].Sid,AdministratorsSid))
@@ -234,7 +232,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 
 	if (!bRes)
 	{
-		DbgPrintW(L"Unable to GetTokenInformation - TokenUser (0x%x)\n", GetLastError());
+		UNS_DEBUG(L"Unable to GetTokenInformation - TokenUser (0x%x)\n", GetLastError());
 		CloseHandle(hThreadTok);
 		delete [] m_pUserTokenInfo;
 		return S_FALSE;
@@ -306,7 +304,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 					pFindIter = GroupsSet.find(*GroupsSetIter);
 					if ((pFindIter != GroupsSet.end( )))
 					{
-						DbgPrintW(L"The user group is found in reg GroupsSet!!!\n");
+						UNS_DEBUG(L"The user group is found in reg GroupsSet!!!\n");
 						bHasAccess = true;
 						break;
 					}
@@ -807,7 +805,7 @@ AMT_STATUS_INTERFACE_DOES_NOT_EXIST	The network interface that is being referred
 	catch(_com_error &err)
 	{
 		const TCHAR* reason =  err.ErrorMessage();
-		DbgPrintW(L"com error %wC\n", reason);
+		UNS_DEBUG(L"com error %W\n", reason);
 	}
 	return S_OK;
 }
@@ -1071,7 +1069,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,SHORT* pPr
 
 STDMETHODIMP CPTHI_Commands::TerminateRemedySessions(void)
 {
-	DbgPrintW(L"CPTHI_Commands::TerminateRemedySessions\n");
+	UNS_DEBUG(L"CPTHI_Commands::TerminateRemedySessions\n");
 #ifdef _DEBUG
 	SHORT result;
 	if (GetFromRegistry(L"DebugData", L"TerminateRemedySessions", &result) == true)
@@ -1144,7 +1142,7 @@ STDMETHODIMP CPTHI_Commands::GetWLANLinkInfo(UINT* pPreference, UINT* pControl, 
 
 STDMETHODIMP CPTHI_Commands::SetLinkPreferenceToHost(void)
 {
-	DbgPrintW(L"CPTHI_Commands::SetLinkPreferenceToHost\n");
+	UNS_DEBUG(L"CPTHI_Commands::SetLinkPreferenceToHost\n");
 #ifdef _DEBUG
 	SHORT result;
 	if (GetFromRegistry(L"DebugData", L"SetLinkPreferenceToHost", &result) == true)
@@ -1329,7 +1327,7 @@ STDMETHODIMP CPTHI_Commands::IsRebootAfterProvisioningNeeded(VARIANT_BOOL *pNeed
 #ifdef _DEBUG
 	if ((GetFromRegistry(L"DebugData", L"IsRebootAfterProvisioningNeeded", (SHORT*)pNeeded) == true))
 	{
-		DbgPrintW(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded DEBUG mode, got from registry %d",L"\n",*pNeeded);
+		UNS_DEBUG(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded DEBUG mode, got from registry %d\n",*pNeeded);
 		return S_OK;
 	}
 #endif

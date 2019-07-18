@@ -9,9 +9,8 @@
 --*/
 
 #include <map>
-#include <windows.h>
+#include "global.h"
 #include "WindowsStringLoader.h"
-#include "UNSDebug.h"
 
 //load string from embedded rc file, according to OS language, returns empty string on failure
 STRING_TYPE WindowsStringLoader::loadString(unsigned int id)
@@ -20,7 +19,7 @@ STRING_TYPE WindowsStringLoader::loadString(unsigned int id)
 	ZeroMemory(&char_arr[0],sizeof(char_arr));
 	if (LoadString(GetModuleHandle(NULL),id,&char_arr[0],MAX_STRING_LEN)<=0)
 	{
-		DbgPrintW(L"WindowsStringLoader::loadString - LoadString failed with error %lu",L"\n",GetLastError());
+		UNS_ERROR(L"WindowsStringLoader::loadString - LoadString failed with error %lu\n", GetLastError());
 		return EMPTY_STR;
 	}
 

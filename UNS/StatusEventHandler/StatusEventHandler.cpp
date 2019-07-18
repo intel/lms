@@ -236,7 +236,7 @@ bool StatusEventHandler::isRebootAfterProvisioningRequired()
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"\nException in IsRebootAfterProvisioningNeeded %C\n", e.what());
+		UNS_ERROR(L"Exception in IsRebootAfterProvisioningNeeded %C\n", e.what());
 	}
 
 	return result;
@@ -1136,11 +1136,11 @@ bool StatusEventHandler::GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pMan
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"\nException in GetManageabiltyAndFeaturesState %C\n", e.what());
+		UNS_ERROR(L"Exception in GetManageabiltyAndFeaturesState %C\n", e.what());
 	}
 	catch(...)
 	{
-		UNS_ERROR(L"\nException in GetManageabiltyAndFeaturesState\n");
+		UNS_ERROR(L"Exception in GetManageabiltyAndFeaturesState\n");
 	}
 	return rc;
 }
@@ -1257,11 +1257,11 @@ bool StatusEventHandler::GetMEState(bool& MEState)
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"\nException in GetMEState %C\n", e.what());
+		UNS_ERROR(L"Exception in GetMEState %C\n", e.what());
 	}		
 	catch(...)
 	{
-		UNS_ERROR(L"\nException in GetMEState\n");
+		UNS_ERROR(L"Exception in GetMEState\n");
 	}
 
 	MEState = false;

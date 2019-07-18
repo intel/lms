@@ -17,7 +17,7 @@
 #include "SIOWSManClient.h"
 #include "HBPWSManClient.h"
 #include "KVMWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "CancelOptInClient.h"
 #include "AMTRedirectionServiceWSManClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -56,47 +56,35 @@
 
 namespace Intel {
 	namespace LMS {
-#ifdef _DEBUG
+
 #define CATCH_HECIException(func) \
 	catch (Intel::MEI_Client::HECIException& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(func L" HECIException failed %hs\n", reason); \
+		UNS_DEBUG(func L" HECIException failed %C\n", reason); \
 	}
 
 #define CATCH_MEIClientException(func) \
 	catch (Intel::MEI_Client::MEIClientException& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(func L" failed %hs\n", reason); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_AMTHIErrorException(func) \
 	catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e) \
 	{ \
 		unsigned int errNo = e.getErr(); \
-		DbgPrintW(func L" failed ret=%d\n", errNo); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	}
 
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrintW(L"\nException in " func L" %hs\n", reason); \
+		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
 	}
-#else
-#define CATCH_HECIException(func) \
-	catch (Intel::MEI_Client::HECIException&) {}
 
-#define CATCH_MEIClientException(func) \
-		catch (Intel::MEI_Client::MEIClientException&) {}
-
-#define CATCH_AMTHIErrorException(func) \
-	catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException&) {}
-
-#define CATCH_exception(func) \
-	catch (std::exception&) {}
-#endif // _DEBUG
 
 		typedef enum _EAMTWebUIState
 		{
@@ -184,13 +172,13 @@ namespace Intel {
 
 			if (RetValue != ERROR_OK)
 			{
-				DbgPrintW(L"GetServiceVersion:RegOpenKeyEx failed err=%d\n", RetValue);
+				UNS_DEBUG(L"GetServiceVersion:RegOpenKeyEx failed err=%d\n", RetValue);
 				return ERROR_FAIL;
 			}
 			RetValue = RegQueryValueEx(hKey, L"ImagePath", NULL, NULL, (LPBYTE)path, &pathBufSize);
 			if ((RetValue != ERROR_OK) || (pathBufSize > MAX_PATH))
 			{
-				DbgPrintW(L"GetServiceVersion:RegQueryValueEx failed err=%d\n", RetValue);
+				UNS_DEBUG(L"GetServiceVersion:RegQueryValueEx failed err=%d\n", RetValue);
 				RegCloseKey(hKey);
 				return ERROR_FAIL;
 			}
@@ -200,12 +188,12 @@ namespace Intel {
 			bufCount = ExpandEnvironmentStrings(path, expandedPath, MAX_PATH);
 			if (bufCount > MAX_PATH)
 			{
-				DbgPrintW(L"ExpandEnvironmentStrings: Too small buffer for expanding %s\n", path);
+				UNS_DEBUG(L"ExpandEnvironmentStrings: Too small buffer for expanding %W\n", path);
 				return ERROR_FAIL;
 			}
 			else if (!bufCount)
 			{
-				DbgPrintW(L"ExpandEnvironmentStrings failed.\n");
+				UNS_DEBUG(L"ExpandEnvironmentStrings failed.\n");
 				return ERROR_FAIL;
 			}
 
@@ -225,7 +213,7 @@ namespace Intel {
 			FileSize = GetFileVersionInfoSize((LPTSTR)formattedPath, &dwHandle);
 			if (FileSize == 0)
 			{
-				DbgPrintW(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
+				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
 				return ERROR_FAIL;
 			}
 
@@ -233,7 +221,7 @@ namespace Intel {
 			if (GetFileVersionInfo((LPTSTR)formattedPath, NULL, FileSize, FileValues) == 0)
 			{
 				delete[] FileValues;
-				DbgPrintW(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
+				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
 				return ERROR_FAIL;
 			}
 
@@ -242,7 +230,7 @@ namespace Intel {
 			if (!VerQueryValue(FileValues, TEXT("\\"), (LPVOID*)&temp_fileQuerInfo, &InfoSize) || !InfoSize)
 			{
 				delete[] FileValues;
-				DbgPrintW(L"GetServiceVersion:VerQueryValue failed err=%d\n", GetLastError());
+				UNS_DEBUG(L"GetServiceVersion:VerQueryValue failed err=%d\n", GetLastError());
 				return ERROR_FAIL;
 			}
 			char tmpServiceVerString[MAX_PATH];
@@ -253,7 +241,7 @@ namespace Intel {
 				LOWORD(temp_fileQuerInfo->dwProductVersionLS));
 			delete[] FileValues;
 
-			DbgPrintW(L"%C\n", tmpServiceVerString);
+			UNS_DEBUG(L"%C\n", tmpServiceVerString);
 
 			sVersion = tmpServiceVerString;
 			return ERROR_OK;
@@ -270,7 +258,7 @@ namespace Intel {
 				sprintf_s(tmpVerString, MAX_PATH, "%hd.%hd.%hd.%hd",
 					HeciVersion.major, HeciVersion.minor, HeciVersion.hotfix, HeciVersion.build);
 
-				DbgPrintW(L"%C\n", tmpVerString);
+				UNS_DEBUG(L"%C\n", tmpVerString);
 				sVersion = tmpVerString;
 				return ERROR_OK;
 			}
@@ -303,7 +291,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::AMTHI_Client::GetProvisioningModeCommand getProvisioningModeCommand;
 				pProvisioningMode = getProvisioningModeCommand.getResponse().ProvisioningMode;
-				DbgPrintW(L"pProvisioningMode=%d\n", pProvisioningMode);
+				UNS_DEBUG(L"pProvisioningMode=%d\n", pProvisioningMode);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetProvisioningModeCommand")
@@ -320,7 +308,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::AMTHI_Client::GetProvisioningTLSModeCommand getProvisioningTlsModeCommand;
 				pProvisioningTlsMode = getProvisioningTlsModeCommand.getResponse().ProvTLSMode;
-				DbgPrintW(L"pProvisioningTlsMode=%d\n", pProvisioningTlsMode);
+				UNS_DEBUG(L"pProvisioningTlsMode=%d\n", pProvisioningTlsMode);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetProvisioningTlsModeCommand")
@@ -339,7 +327,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::AMTHI_Client::GetProvisioningStateCommand getProvisioningStateCommand;
 				pProvisioningState = getProvisioningStateCommand.getResponse().ProvisioningState;
-				DbgPrintW(L"ProvisioningState=%d\n", pProvisioningState);
+				UNS_DEBUG(L"ProvisioningState=%d\n", pProvisioningState);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetProvisioningStateCommand")
@@ -349,12 +337,12 @@ namespace Intel {
 				if (errNo == AMT_STATUS_NOT_READY)
 				{
 					pProvisioningState = 4; // CCK enrolled (registration to CCK) - Dan:: need to align IMSS to the new definition - no more CCK
-					DbgPrintW(L"GetProvisioningStateCommand failed, but returned status=%d assume CCK enrolled let ProvisioningState=4\n", errNo);
+					UNS_DEBUG(L"GetProvisioningStateCommand failed, but returned status=%d assume CCK enrolled let ProvisioningState=4\n", errNo);
 					return ERROR_OK;
 				}
 				else
 				{
-					DbgPrintW(L"GetProvisioningStateCommand failed ret=%d\n", errNo);
+					UNS_DEBUG(L"GetProvisioningStateCommand failed ret=%d\n", errNo);
 				}
 			}
 			CATCH_exception(L"GetProvisioningStateCommand")
@@ -369,7 +357,7 @@ namespace Intel {
 				pStatus = Status.RemoteAccessConnectionStatus;
 				pConnectionType = Status.AmtNetworkConnectionStatus;
 				pConnectionTrigger = Status.RemoteAccessConnectionTrigger;
-				DbgPrintW(L"RemoteAccessConnectionStatus=%d\t AmtNetworkConnectionStatus=%d\n", pStatus, pConnectionType);
+				UNS_DEBUG(L"RemoteAccessConnectionStatus=%d\t AmtNetworkConnectionStatus=%d\n", pStatus, pConnectionType);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetRemoteAccessConnectionStatus")
@@ -384,7 +372,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::AMTHI_Client::GetUserInitiatedEnabledInterfacesCommand getUserInitiatedEnabledInterfacesCommand;
 				pStatus = getUserInitiatedEnabledInterfacesCommand.getResponse().EnabledInterfaces.OS_Agent;
-				DbgPrintW(L"GetUserInitiatedEnabled enabled=%d\n", pStatus);
+				UNS_DEBUG(L"GetUserInitiatedEnabled enabled=%d\n", pStatus);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetUserInitiatedEnabledInterfacesCommand")
@@ -429,7 +417,7 @@ namespace Intel {
 					webUIState = AMT_WEB_UI_DISABLED;
 				}
 				pState = webUIState;
-				DbgPrintW(L"WEBUI enabled=%d\n", pState);
+				UNS_DEBUG(L"WEBUI enabled=%d\n", pState);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetWebUIStateCommand")
@@ -443,7 +431,7 @@ namespace Intel {
 			try
 			{
 				Intel::MEI_Client::AMTHI_Client::GetCurrentPowerPolicyCommand getCurrentPowerPolicyCommand;
-				DbgPrintW(L"powerPolicyName=%hs\n", getCurrentPowerPolicyCommand.getResponse().c_str());
+				UNS_DEBUG(L"powerPolicyName=%C\n", getCurrentPowerPolicyCommand.getResponse().c_str());
 				bstrPolicy = getCurrentPowerPolicyCommand.getResponse().c_str();
 				return ERROR_OK;
 			}
@@ -460,7 +448,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::AMTHI_Client::GetAMTStateCommand getAMTStateCommand;
 				pReason = getAMTStateCommand.getResponse().StateData.Fields.LastMEResetType;
-				DbgPrintW(L"LastResetReason=%d\n", pReason);
+				UNS_DEBUG(L"LastResetReason=%d\n", pReason);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetAMTStateCommand")
@@ -479,7 +467,7 @@ namespace Intel {
 				Intel::MEI_Client::AMTHI_Client::GetRedirectionSessionsStateCommand getRedirectionState;
 				pSOL = getRedirectionState.getResponse().SolOpen;
 				pIDER = getRedirectionState.getResponse().IderOpen;
-				DbgPrintW(L"SOL=%d \t IDER=%d\n", pSOL, pIDER);
+				UNS_DEBUG(L"SOL=%d \t IDER=%d\n", pSOL, pIDER);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetRedirectionSessionsStateCommand")
@@ -497,7 +485,7 @@ namespace Intel {
 			{
 				Intel::MEI_Client::AMTHI_Client::GetSystemDefenseStateCommand getSystemDefenseState;
 				pStatus = getSystemDefenseState.getResponse().SystemDefenseActivated;
-				DbgPrintW(L"systemDefense=%d \n", pStatus);
+				UNS_DEBUG(L"systemDefense=%d \n", pStatus);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetSystemDefenseStatus")
@@ -519,7 +507,7 @@ namespace Intel {
 			case 0: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRED; break;
 			case 1: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRELESS; break;
 			default:
-				DbgPrintW(L"GetNetworkSettings: wrong ConnectionType\n");
+				UNS_DEBUG(L"GetNetworkSettings: wrong ConnectionType\n");
 				return ERROR_INVALIDARG;
 			}
 			try
@@ -544,7 +532,7 @@ namespace Intel {
 					pWirelessConfEnabled = 5;
 				}
 
-				DbgPrintW(L"ConnectionType=%d DhcpEnabled=%d IpAddress=%hs MacAddress=%hs LinkStatus=%d WirelessControl=%d WirelessConfEnabled=%d\n",
+				UNS_DEBUG(L"ConnectionType=%d DhcpEnabled=%d IpAddress=%C MacAddress=%C LinkStatus=%d WirelessControl=%d WirelessConfEnabled=%d\n",
 					ConnectionType, pDhcpEnabled, inet_ntoa(addr), bstrMacAddress.c_str(), pLinkStatus, pWirelessControl, pWirelessConfEnabled);
 
 				return ERROR_OK;
@@ -573,7 +561,7 @@ namespace Intel {
 			case 0: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRED; break;
 			case 1: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRELESS; break;
 			default:
-				DbgPrintW(L"GetIPv6NetworkSettings: wrong ConnectionType\n");
+				UNS_DEBUG(L"GetIPv6NetworkSettings: wrong ConnectionType\n");
 				return ERROR_INVALIDARG;
 			}
 
@@ -596,7 +584,7 @@ namespace Intel {
 					pResponse[i] = lanSettings.IPv6Addresses[i].Address;
 					ip_str << pResponse[i].c_str() << ", ";
 				}
-				DbgPrintW(L"GetLanInterfaceSettings:  IPv6DefaultRouter=%hs PrimaryDNS=%hs SecondaryDNS=%hs \n   IPv6: %hs\n, Ipv6Enablement=%d",
+				UNS_DEBUG(L"GetLanInterfaceSettings:  IPv6DefaultRouter=%C PrimaryDNS=%C SecondaryDNS=%C \t   IPv6: %C\n, Ipv6Enablement=%d",
 					IPv6DefaultRouter.c_str(), PrimaryDNS.c_str(), SecondaryDNS.c_str(), ip_str.str().c_str(), Ipv6Enablement);
 				pIpv6Enable = Ipv6Enablement;
 				return ERROR_OK;
@@ -615,7 +603,7 @@ namespace Intel {
 					return ERROR_OK;
 				}
 				else
-					DbgPrintW(L"GetIPv6LanInterfaceStatusCommand failed ret=%d\n", errNo);
+					UNS_DEBUG(L"GetIPv6LanInterfaceStatusCommand failed ret=%d\n", errNo);
 			}
 			CATCH_exception(L"GetIPv6LanInterfaceStatusCommand")
 
@@ -635,10 +623,7 @@ namespace Intel {
 				Intel::MEI_Client::AMTHI_Client::GET_UUID_RESPONSE uuid = getUUIDCommand.getResponse();
 				bstrUUID = uuidToString(uuid.UUID);
 
-				std::string str("AmtUUID=");
-				str += bstrUUID;
-				str += "\n";
-				DbgPrint(str.c_str());
+				UNS_DEBUG("AmtUUID=%C\n", bstrUUID);
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetUUIDCommand")
@@ -657,7 +642,7 @@ namespace Intel {
 			try
 			{
 				Intel::MEI_Client::AMTHI_Client::OpenUserInitiatedConnectionCommand openUserInitiatedConnection;
-				DbgPrintW(L"OpenUserInitiatedConnection opened\n");
+				UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
@@ -674,7 +659,7 @@ namespace Intel {
 			try
 			{
 				Intel::MEI_Client::AMTHI_Client::CloseUserInitiatedConnectionCommand closeUserInitiatedConnection;
-				DbgPrintW(L"CIRA closed\n");
+				UNS_DEBUG(L"CIRA closed\n");
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"CloseUserInitiatedConnection")
@@ -739,7 +724,7 @@ namespace Intel {
 				pConnected = false;
 				break;
 			default:
-				DbgPrintW(L"Wrong KVMRedirectionState=%d \n", state);
+				UNS_DEBUG(L"Wrong KVMRedirectionState=%d \n", state);
 				return ERROR_UNEXPECTED;
 			}
 			return ERROR_OK;
@@ -760,7 +745,7 @@ namespace Intel {
 		{
 			std::string sAMTVersion;
 			GetStringAMTVersion(sAMTVersion);
-			DbgPrintW(L"AMT Version: %hs\n", sAMTVersion.c_str());
+			UNS_DEBUG(L"AMT Version: %C\n", sAMTVersion.c_str());
 
 			sAMTVersion.append(".");	//So sAMTVersion[0] won't crash on empty string
 
@@ -837,7 +822,7 @@ namespace Intel {
 			if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
 				return ERROR_FAIL;
 
-			DbgPrintW(L"ControlMode=%d,ProvisioningMethod=%d,CreationTimeStampStr=%hs\n",
+			UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
 				pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
 			pCreationTimeStamp = CreationTimeStampStr;
 
@@ -894,7 +879,7 @@ namespace Intel {
 				return ERROR_FAIL;
 			pPolicy = static_cast<USER_CONSENT_POLICY>(UserConsentPolicy);
 
-			DbgPrintW(L"UserConsentState=%d, UserConsentPolicy=%d \n", pState, pPolicy);
+			UNS_DEBUG(L"UserConsentState=%d, UserConsentPolicy=%d \n", pState, pPolicy);
 
 			return ERROR_OK;
 
@@ -909,7 +894,7 @@ namespace Intel {
 			if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection))
 				return ERROR_FAIL;
 
-			DbgPrintW(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);
+			UNS_DEBUG(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);
 
 			return ERROR_OK;
 
@@ -936,7 +921,7 @@ namespace Intel {
 			try {
 				Intel::MEI_Client::AMTHI_Client::OpenUserInitiatedConnectionCommand openUserInitiatedConnection;
 				pStatus = AMT_STATUS_SUCCESS;
-				DbgPrintW(L"OpenUserInitiatedConnection opened\n");
+				UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
@@ -945,12 +930,12 @@ namespace Intel {
 				pStatus = (short)e.getErr();
 				if ((pStatus == AMT_STATUS_NOT_READY) || (pStatus == AMT_STATUS_DATA_MISSING))
 				{
-					DbgPrintW(L"OpenUserInitiatedConnection failed, but returned status=%d ", pStatus);
+					UNS_DEBUG(L"OpenUserInitiatedConnection failed, but returned status=%d\n", pStatus);
 					return ERROR_OK;
 				}
 				else
 				{
-					DbgPrintW(L"OpenUserInitiatedConnection failed, ret=%d\n", pStatus);
+					UNS_DEBUG(L"OpenUserInitiatedConnection failed, ret=%d\n", pStatus);
 				}
 			}
 			CATCH_exception(L"OpenUserInitiatedConnection")
@@ -1062,11 +1047,11 @@ namespace Intel {
 			}
 			else
 			{
-				DbgPrintW(L"GetRedirectionSessionLinkTechnology: Invalid session type %d\n", sessionType);
+				UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: Invalid session type %d\n", sessionType);
 				return ERROR_INVALIDARG;
 			}
 
-			DbgPrintW(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
+			UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
 
 			return ERROR_OK;
 		}
@@ -1075,11 +1060,11 @@ namespace Intel {
 		{
 			unsigned long needed = 0;
 			if (!DSinstance().GetDataValue(RebootAfterProvsioningNeeded_S, needed, true)) {
-				DbgPrintW(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded GetDataValue failed");
+				UNS_ERROR(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded GetDataValue failed\n");
 				return ERROR_FAIL;
 			}
 			pNeeded = (needed != 0);
-			DbgPrintW(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded, got from StatusEventHandler %d", L"\n", pNeeded);
+			UNS_DEBUG(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded, got from StatusEventHandler %d\n", pNeeded);
 			return ERROR_OK;
 		}
 
@@ -1096,7 +1081,7 @@ namespace Intel {
 					proxy_fqdn,
 					network_dns_suffix);
 
-				DbgPrintW(L"AddProxyTableEntryCommand succeed\n");
+				UNS_DEBUG(L"AddProxyTableEntryCommand succeed\n");
 
 				return ERROR_OK;
 			}

@@ -3,7 +3,7 @@
  * Copyright (C) 2009-2019 Intel Corporation
  */
 #include "AT_Device_BE.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "SMBIOS_Reader.h"
 #include "AuditLogWSManClient.h"
 #include <vector>
@@ -42,7 +42,7 @@ namespace Intel {
 					ERROR_WMI_CONNECT			6
 					ERROR_WMI_SET_PROXY			7
 					///////////////////////////////		*/
-					DbgPrintW(L"GetATInfo failed res=%d\n", res);
+					UNS_DEBUG(L"GetATInfo failed res=%d\n", res);
 				}
 			}
 			return ERROR_FAIL;
@@ -62,7 +62,7 @@ namespace Intel {
 			{
 				if (!client.readLogsFromFW(base64Records))
 					return ERROR_FAIL;
-				DbgPrintW(L"get %d logs\n", base64Records.size());
+				UNS_DEBUG(L"get %d logs\n", base64Records.size());
 				const unsigned char* tmpData;
 				unsigned int tmpLength;
 				for (unsigned int i = 0; i < base64Records.size(); i++)
@@ -79,7 +79,7 @@ namespace Intel {
 			}
 			catch (...)
 			{
-				DbgPrintW(L"Error reading from AuditLog!");
+				UNS_DEBUG(L"Error reading from AuditLog!\n");
 			}
 			return ERROR_FAIL;
 		}

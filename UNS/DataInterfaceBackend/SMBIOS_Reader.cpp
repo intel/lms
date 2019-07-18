@@ -10,7 +10,7 @@
  *
  */
 #include "SMBIOS_Reader.h"
-#include "UNSDebug.h"
+#include "global.h"
 
 #ifdef WIN32
 #include "wbemidl.h"
@@ -76,10 +76,10 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 		if (SM_table->Header.Type == SMBIOS_INTEL_OEM_TYPE
 			&& strncmp((char *)SM_table->vProSig, VPRO_STRING, sizeof(VPRO_STRING)) == 0)
 		{
-			DbgPrintW(L"areSmbiosFlagsSet:: Found vPRO table\n");
+			UNS_DEBUG(L"areSmbiosFlagsSet:: Found vPRO table\n");
 			if (current_table_length < sizeof(struct SMBIOS_Type131))
 			{
-				DbgPrintW(L"areSmbiosFlagsSet:: Incorrect current_table_length - returning false\n");
+				UNS_DEBUG(L"areSmbiosFlagsSet:: Incorrect current_table_length - returning false\n");
 				return false;
 			}
 			else
@@ -89,36 +89,36 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 				pCapabilities->MEBx_Minor = SM_table->MebxVer[1]; // MebxVer[0] -> Mebx Minor version
 				pCapabilities->MEBx_Hotfix = SM_table->MebxVer[2];// MebxVer[3] -> Mebx Hotfix number
 				pCapabilities->MEBx_Build = SM_table->MebxVer[3]; // MebxVer[2] -> Mebx Build number
-				DbgPrintW(L"areSmbiosFlagsSet:: MEBx version %d.%d.%d.%d\n",pCapabilities->MEBx_Major,pCapabilities->MEBx_Minor,pCapabilities->MEBx_Hotfix,pCapabilities->MEBx_Build );
+				UNS_DEBUG(L"areSmbiosFlagsSet:: MEBx version %d.%d.%d.%d\n",pCapabilities->MEBx_Major,pCapabilities->MEBx_Minor,pCapabilities->MEBx_Hotfix,pCapabilities->MEBx_Build );
 
 				// ME version defined as such:
 				pCapabilities->ME_Major = SM_table->MeVer[1]; // MeVer[1] -> Me Major version
 				pCapabilities->ME_Minor = SM_table->MeVer[0]; // MeVer[0] -> Me Minor version
 				pCapabilities->ME_Hotfix = SM_table->MeVer[3];// MeVer[3] -> Me Hotfix number
 				pCapabilities->ME_Build = SM_table->MeVer[2]; // MeVer[2] -> Me Build number
-				DbgPrintW(L"areSmbiosFlagsSet:: ME version %d.%d.%d.%d\n",pCapabilities->ME_Major,pCapabilities->ME_Minor,pCapabilities->ME_Hotfix,pCapabilities->ME_Build );
+				UNS_DEBUG(L"areSmbiosFlagsSet:: ME version %d.%d.%d.%d\n",pCapabilities->ME_Major,pCapabilities->ME_Minor,pCapabilities->ME_Hotfix,pCapabilities->ME_Build );
 
 				// AT properties are defined as such:
 				if (SM_table->MeCap.AtpSupported)
 				{
-					DbgPrintW(L"areSmbiosFlagsSet:: TDT supported %d !\n",SM_table->MeCap.AtpSupported);
+					UNS_DEBUG(L"areSmbiosFlagsSet:: TDT supported %d !\n",SM_table->MeCap.AtpSupported);
 					pCapabilities->AT_Allowed = SM_table->MeCap.AtpSupported;
 					at_info1* AtInfo1 = (struct at_info1*)&SM_table->Rerserve[0];
-					DbgPrintW(L"areSmbiosFlagsSet:: AT enrolled: %d\n", AtInfo1->atEnrolled);
+					UNS_DEBUG(L"areSmbiosFlagsSet:: AT enrolled: %d\n", AtInfo1->atEnrolled);
 					pCapabilities->AT_Enrolled = AtInfo1->atEnrolled;
 				}
 				else
 				{
 					pCapabilities->AT_Allowed = 0;
 					pCapabilities->AT_Enrolled = 0;
-					DbgPrintW(L"areSmbiosFlagsSet:: AT not supported !\n");
+					UNS_DEBUG(L"areSmbiosFlagsSet:: AT not supported !\n");
 				}
 				return true;
 			}
 		}
 		else if (SM_table->Header.Type == SMBIOS_END_OF_TABLE_TYPE)
 		{
-			DbgPrintW(L"areSmbiosFlagsSet:: Type ==  SMBIOS_END_OF_TABLE_TYPE --> returning false\n");
+			UNS_DEBUG(L"areSmbiosFlagsSet:: Type ==  SMBIOS_END_OF_TABLE_TYPE --> returning false\n");
 			return false;
 		}
 
@@ -126,7 +126,7 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 
 	}
 
-	DbgPrintW(L"areSmbiosFlagsSet:: returning false\n");
+	UNS_DEBUG(L"areSmbiosFlagsSet:: returning false\n");
 	return false;
 }
 
@@ -164,7 +164,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 
     if (hr<0)
     {
-		DbgPrintW(L"CheckForSmbiosFlags:: Error during IWbemLocator initialization\n");
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Error during IWbemLocator initialization\n");
 		ret = ERROR_COCREATEINSTANCE;
 		goto comfailure;
     }
@@ -178,7 +178,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
     SysFreeString(bstrMsg);
     if (hr<0)
     {
-		DbgPrintW(L"CheckForSmbiosFlags:: Error during connection to WMI namespace\n");
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Error during connection to WMI namespace\n");
         ploc->Release();
 		ret = ERROR_WMI_CONNECT;
 		goto comfailure;
@@ -191,7 +191,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 
     if (hr<0)
     {
-		DbgPrintW(L"CheckForSmbiosFlags:: Error in set up WMI proxy\n");
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Error in set up WMI proxy\n");
         psvc->Release();
         ploc->Release();
 		ret = ERROR_WMI_SET_PROXY;
@@ -204,7 +204,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	SysFreeString(bstrMsg);
     if ((hr < 0) || (penum == NULL))
     {
-		DbgPrintW(L"CheckForSmbiosFlags:: Error during SMBIOS tables enumration\n");
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Error during SMBIOS tables enumration\n");
         psvc->Release();
         ploc->Release();
 		ret = ERROR_SMBIOS_ENUMERATION;
@@ -228,7 +228,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 			SysFreeString(bstrMsg);
 			if(hr < 0)
 			{
-				DbgPrintW(L"CheckForSmbiosFlags:: Failed to read SMBIOS major version\n");
+				UNS_DEBUG(L"CheckForSmbiosFlags:: Failed to read SMBIOS major version\n");
 				VariantClear(&smbios_variant);
 			}
 			else
@@ -240,7 +240,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 				SysFreeString(bstrMsg);
 				if(hr < 0)
 				{
-					DbgPrintW(L"CheckForSmbiosFlags:: Error in reading SMBIOS minor version\n");
+					UNS_DEBUG(L"CheckForSmbiosFlags:: Error in reading SMBIOS minor version\n");
 					VariantClear(&smbios_variant);
 				}
 				else
@@ -274,7 +274,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 					}
 					else
 					{
-						DbgPrintW(L"CheckForSmbiosFlags:: Error in reading SMBIOS data\n");
+						UNS_DEBUG(L"CheckForSmbiosFlags:: Error in reading SMBIOS data\n");
 					}
 					VariantClear(&smbios_variant);
 				}
@@ -328,13 +328,13 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	std::string sm("_SM_");
 	if (!read_file(smbios_entry_point, entry_point))
 	{
-		DbgPrintW(L"CheckForSmbiosFlags:: Failed to read %hs\n", smbios_entry_point.c_str());
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Failed to read %C\n", smbios_entry_point.c_str());
 		return SMBIOS_FAILURE;
 	}
 
 	if (entry_point.size() < smbios_table_size || !std::equal(sm.begin(), sm.end(), entry_point.begin()))
 	{
-		DbgPrintW(L"CheckForSmbiosFlags:: Not an _SM_\n");
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Not an _SM_\n");
 		return SMBIOS_FAILURE;
 	}
 
@@ -343,13 +343,13 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	std::vector<uint8_t> dmi;
 	if (!read_file(smbios_dmi, dmi))
 	{
-		DbgPrintW(L"CheckForSmbiosFlags:: Failed to read %hs\n", smbios_dmi.c_str());
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Failed to read %C\n", smbios_dmi.c_str());
 		return SMBIOS_FAILURE;
 	}
 
 	if (dmi.size() != *len)
 	{
-		DbgPrintW(L"CheckForSmbiosFlags:: Wrong data size %d != %d\n", dmi.size(), *len);
+		UNS_DEBUG(L"CheckForSmbiosFlags:: Wrong data size %d != %d\n", dmi.size(), *len);
 		return SMBIOS_FAILURE;
 	}
 
@@ -371,11 +371,11 @@ void testSMBIOS()
 {
 	SMBIOS_Reader sm_reader;
 
-	DbgPrintW(L"\n CheckSmbiosFlags return %d\n",sm_reader.CheckForSmbiosFlags());
+	UNS_DEBUG(L"CheckSmbiosFlags return %d\n",sm_reader.CheckForSmbiosFlags());
 
-	DbgPrintW(L"\n MEBx version %d.%d.%d.%d\n",sm_reader.pCapabilities.MEBx_Major,sm_reader.pCapabilities.MEBx_Minor,
+	UNS_DEBUG(L"MEBx version %d.%d.%d.%d\n",sm_reader.pCapabilities.MEBx_Major,sm_reader.pCapabilities.MEBx_Minor,
 		sm_reader.pCapabilities.MEBx_Hotfix,sm_reader.pCapabilities.MEBx_Build);
-	DbgPrintW(L"\n ME version %d.%d.%d.%d\n",sm_reader.pCapabilities.ME_Major,sm_reader.pCapabilities.ME_Minor,
+	UNS_DEBUG(L"ME version %d.%d.%d.%d\n",sm_reader.pCapabilities.ME_Major,sm_reader.pCapabilities.ME_Minor,
 		sm_reader.pCapabilities.ME_Hotfix,sm_reader.pCapabilities.ME_Build);
-	DbgPrintW(L"\n AT capable %d <> AT enrolled %d\n",sm_reader.pCapabilities.AT_Allowed,sm_reader.pCapabilities.AT_Enrolled);
+	UNS_DEBUG(L"AT capable %d <> AT enrolled %d\n",sm_reader.pCapabilities.AT_Allowed,sm_reader.pCapabilities.AT_Enrolled);
 }
