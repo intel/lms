@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 /*++
 
@@ -11,25 +11,26 @@
 #ifndef _WSMAN_CLIENT_CATCH_H
 #define _WSMAN_CLIENT_CATCH_H
 
-#ifdef _DEBUG
+
 #define CATCH_exception_return(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrint("\nError: Exception in " func " %s\n", reason); \
+		UNS_ERROR("Error: Exception in " func " %C\n", reason); \
 		return false; \
 	}
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		DbgPrint("\nError: Exception in " func " %s\n", reason); \
+		UNS_ERROR("Error: Exception in " func " %C\n", reason); \
 	}
-#else
-#define CATCH_exception_return(func) \
-	catch (std::exception&) {return false;}
-#define CATCH_exception(func) \
-	catch (std::exception&) {}
-#endif // _DEBUG
+#define CATCH_exception_debug(func) \
+	catch (std::exception& e) \
+	{ \
+		const char* reason = e.what(); \
+		UNS_DEBUG("Error: Exception in " func " %C\n", reason); \
+	}
+
 
 #endif // _WSMAN_CLIENT_CATCH_H

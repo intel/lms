@@ -9,7 +9,7 @@
 --*/
 
 #include "TimeSynchronizationClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace Intel::Manageability::Cim::Typed;
@@ -74,13 +74,13 @@ bool TimeSynchronizationClient::GetLocalTimeSyncEnabledState(bool & state)
 {
 	if (!Init())
 	{
-		DbgPrint("GetLocalTimeSyncEnabledState Init return false !\n");
+		UNS_ERROR("GetLocalTimeSyncEnabledState Init return false!\n");
 		return false;
 	}
 	//recheck the update state (in case it was changed since the last init.
 	if (!UpdateTimeSyncState())
 	{
-		DbgPrint("Error: Failed to Get the time sync state in in TimeSynchronizationClient::GetLocalTimeSyncEnabledState\n");
+		UNS_ERROR("Error: Failed to Get the time sync state in in TimeSynchronizationClient::GetLocalTimeSyncEnabledState\n");
 		return false;
 	}
 
@@ -94,7 +94,7 @@ bool TimeSynchronizationClient::GetAMTTime(unsigned int & time)
 {	
 	if (!Init())
 	{
-		DbgPrint("GetAMTTime Init return false !\n");
+		UNS_ERROR("GetAMTTime Init return false!\n");
 		return false;
 	}
 
@@ -102,12 +102,12 @@ bool TimeSynchronizationClient::GetAMTTime(unsigned int & time)
 	int ret = m_service.GetLowAccuracyTimeSynch(m_time);
 	if (ret != 0)
 	{
-		DbgPrint("Error: Failed while calling GetLowAccuracyTimeSynch\n");
+		UNS_ERROR("Error: Failed while calling GetLowAccuracyTimeSynch\n");
 		return false;
 	}
 	if (!m_time.Ta0Exists())
 	{
-		DbgPrint("Error: Time object doesn't exist\n");
+		UNS_ERROR("Error: Time object doesn't exist\n");
 		return false;
 	}
 	time = m_time.Ta0();
@@ -134,7 +134,7 @@ bool TimeSynchronizationClient::SetAMTTime(unsigned int time)
 		int ret = m_service.SetHighAccuracyTimeSynch(input);
 		if (ret != 0)
 		{
-			DbgPrint("Error: failed while calling SetHighAccuracyTimeSynch\n");
+			UNS_ERROR("Error: failed while calling SetHighAccuracyTimeSynch\n");
 			return false;
 		}
 	}

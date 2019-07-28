@@ -9,8 +9,9 @@
 --*/
 
 #include "HBPWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
+#include <sstream>
 
 using namespace std;
 
@@ -59,13 +60,15 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode,short* pProvisioni
 				const unsigned char* temp_data = (m_HostProvisioningRecord.ProvCertificateHash().Data());
 				const unsigned int temp_data_length = (m_HostProvisioningRecord.ProvCertificateHash().Length());
 				ppCertHash.resize(temp_data_length);
-				DbgPrint("CertificateHash len=%d data: ",temp_data_length);
+
+				std::stringstream stream;
+				stream << "CertificateHash len = " << temp_data_length << " data: ";
 				for (unsigned short i=0; i<temp_data_length; i++)
 				{
 					ppCertHash[i]=temp_data[i];
-					DbgPrint(" %.2X",temp_data[i]);
+					stream << " " << std::hex << temp_data[i];
 				}
-				DbgPrint("\n");
+				UNS_DEBUG("%C\n", stream.str().c_str());
 			}
 			if (m_HostProvisioningRecord.CreationTimeStampExists())
 			{
@@ -86,13 +89,15 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode,short* pProvisioni
 					const unsigned char* temp_data = m_RemoteProvisioningRecord.SelectedHashData().Data();
 					const unsigned int temp_data_length = m_RemoteProvisioningRecord.SelectedHashData().Length();
 					ppCertHash.resize(temp_data_length);
-					DbgPrint("CertificateHash len=%d data: ",temp_data_length);
+					std::stringstream stream;
+					stream << "CertificateHash len = " << temp_data_length << " data: ";
 					for (unsigned short i=0; i<temp_data_length; i++)
 					{
 						ppCertHash[i]=temp_data[i];
-						DbgPrint(" %.2X",temp_data[i]);
+						stream << " " << std::hex << temp_data[i];
+
 					}
-					DbgPrint("\n");
+					UNS_DEBUG("%C\n", stream.str().c_str());
 				}
 				else
 					ppCertHash.resize(0);
@@ -117,7 +122,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode,short* pProvisioni
 							CreationTimeStamp = toUNSDateFormat(m_AdminProvisioningRecord.CreationTimeStamp().Serialize());
 						}
 						*pProvisioningMethod = Reserved1; //Admin;
-						DbgPrint("AdminProvisioningRecord CreationTimeStamp=%s !!!!!!!!!!\n",CreationTimeStamp.c_str());
+						UNS_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C !!!!!!!!!!\n", CreationTimeStamp.c_str());
 					}
 					else
 					{
@@ -171,7 +176,7 @@ bool HBPWSManClient::Init(bool forceGet)
 			m_RemoteProvisioningRecord.Get(); // for CreationTimeStamp from cast to ProvisioningAuditRecord
 			m_RemoteProvisioningRecordGot = true;
 		}
-		CATCH_exception("HBPWSManClient::Init get m_RemoteProvisioningRecord.Get -- no TLS")
+		CATCH_exception_debug("HBPWSManClient::Init get m_RemoteProvisioningRecord.Get -- no TLS")
 
 		if (!m_RemoteProvisioningRecordGot)
 		{
@@ -184,7 +189,7 @@ bool HBPWSManClient::Init(bool forceGet)
 				m_HostProvisioningRecord.Get(); 
 				m_HostProvisioningRecordGot = true;
 			}
-			CATCH_exception("HBPWSManClient::Init get m_HostProvisioningRecord.Get")
+			CATCH_exception_debug("HBPWSManClient::Init get m_HostProvisioningRecord.Get")
 
 			if (!m_HostProvisioningRecordGot)
 			{
@@ -196,7 +201,7 @@ bool HBPWSManClient::Init(bool forceGet)
 					m_ManualProvisioningRecord.Get(); 
 					m_ManualProvisioningRecordGot = true;
 				}
-				CATCH_exception("HBPWSManClient::Init get m_ManualProvisioningRecord.Get")
+				CATCH_exception_debug("HBPWSManClient::Init get m_ManualProvisioningRecord.Get")
 
 				if (!m_ManualProvisioningRecordGot)
 				{
@@ -208,9 +213,9 @@ bool HBPWSManClient::Init(bool forceGet)
 						m_AdminProvisioningRecord.WsmanClient(m_client.get());
 						m_AdminProvisioningRecord.Get(); 
 						m_AdminProvisioningRecordGot = true;
-						DbgPrint("m_AdminProvisioningRecord.Get succeed !!!!!!!!!!\n");
+						UNS_DEBUG("m_AdminProvisioningRecord.Get succeed !!!!!!!!!!\n");
 					}
-					CATCH_exception("HBPWSManClient::Init get m_AdminProvisioningRecordGet")
+					CATCH_exception_debug("HBPWSManClient::Init get m_AdminProvisioningRecordGet")
 				}
 			}
 		}

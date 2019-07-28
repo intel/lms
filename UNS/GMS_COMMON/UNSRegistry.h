@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -12,11 +12,7 @@
 #define __UNSREGISTRY_H
 #include <string>
 
-#ifndef UNSDEBUG_NO_DLL
 #include "GMSCommonDllExport.h"
-#else
-#define GMS_COMMON_EXPORT
-#endif
 
 #ifdef WIN32
 #define LMS_REG_TEXT(STRING) L##STRING

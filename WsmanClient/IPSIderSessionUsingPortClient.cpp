@@ -5,7 +5,7 @@
 #include "IPS_IderSessionUsingPort.h"
 #include "AMT_EthernetPortSettings.h"
 #include "IPSIderSessionUsingPortClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace Intel::Manageability::Cim::Typed;
@@ -56,7 +56,7 @@ bool IPSIderSessionUsingPortClient::GetSessionLinkTechnology(short *pLinkTechnol
 	if(!init())
 		return false;
 	
-	DbgPrint("GetSessionLinkTechnology LinkTechnology=%d \n", m_LinkTechnology);
+	UNS_DEBUG("GetSessionLinkTechnology LinkTechnology=%d \n", m_LinkTechnology);
 
 	*pLinkTechnology = m_LinkTechnology;
 

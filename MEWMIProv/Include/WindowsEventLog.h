@@ -18,7 +18,8 @@
 //
 //*****************************************************************************
 
-#pragma once
+#ifndef _WINDOWS_EVENT_LOG__H__
+#define _WINDOWS_EVENT_LOG__H__
 
 #include <windows.h>
 #include <stdio.h>
@@ -68,3 +69,6 @@ public:
 						const TCHAR * pszSrcName); // event source name (e.g. "Intel (R) AMT").
 
 };
+
+
+#endif		//_WINDOWS_EVENT_LOG__H__

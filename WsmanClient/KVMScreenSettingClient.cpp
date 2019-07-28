@@ -10,7 +10,7 @@
 //#define _MOCK //- for debugging
 
 #include "KVMScreenSettingClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 
@@ -57,7 +57,7 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 	
 		for (i = 0 ; i < numOfDisplays ; i++)
 		{
-			DbgPrint("adding %d, isActive:%d,UpperLeftX:%d,UpperLeftY:%d,ResolutionX:%d,ResolutionY:%d, pipe:%d \n",
+			UNS_DEBUG("adding %d, isActive:%d,UpperLeftX:%d,UpperLeftY:%d,ResolutionX:%d,ResolutionY:%d, pipe:%d \n",
 				i,displaySettings.screenSettings[i].isActive,displaySettings.screenSettings[i].UpperLeftX,
 				displaySettings.screenSettings[i].UpperLeftY,displaySettings.screenSettings[i].ResolutionX,
 				displaySettings.screenSettings[i].ResolutionY,displaySettings.screenSettings[i].Pipe);
@@ -117,7 +117,7 @@ bool  KVMScreenSettingClient::getScreenSettings (ExtendedDisplayParameters &disp
 
 bool KVMScreenSettingClient::Init(bool forceGet)
 {
-	DbgPrint("\nKVMScreenSettingClient::Init\n");
+	UNS_DEBUG("KVMScreenSettingClient::Init\n");
 	if (!forceGet && m_isInit) return true;
 	m_isInit = false;
 	
@@ -131,7 +131,7 @@ bool KVMScreenSettingClient::Init(bool forceGet)
 		m_service.WsmanClient(m_client.get());
 		m_service.Get();
 		m_isInit = true;
-		DbgPrint("\nKVMScreenSettingClient::Initialized\n");
+		UNS_DEBUG("KVMScreenSettingClient::Initialized\n");
 	}
 	CATCH_exception("KVMScreenSettingClient::Init")
 	return m_isInit;	

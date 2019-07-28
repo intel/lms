@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "FWUpdate_Commands.h"
-#include "UNSDebug.h"
+#include "DebugPrints.h"
 #include "GetFWUpdateStateCommand.h"
 
 UINT32 
@@ -22,23 +22,13 @@ FWUpdate_Commands::GetFWUpdateVersion(Intel::MEI_Client::MKHI_Client::GET_FW_VER
 		Version = command.getResponse();
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT 
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{
-		DbgPrint("GetFWVersionCommand failed %s\n",e.what());
+		UNS_ERROR("GetFWVersionCommand failed %C\n", e.what());
 	}
-
-
-#ifdef _DEBUGPRINT 
 	catch (std::exception& e)
-#else
-	catch(std::exception&)
-#endif
 	{
-		DbgPrint("\nException in FWUGetVersionCommand %s\n", e.what());
+		UNS_ERROR("Exception in FWUGetVersionCommand %C\n", e.what());
 	}
 	return rc;
 }
@@ -53,22 +43,14 @@ FWUpdate_Commands::GetFWCapabilities(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SK
 		capabilities = command.getResponse();
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT 
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{
-		DbgPrint("GetFWCapsCommand failed %s\n",e.what());
+		UNS_ERROR("GetFWCapsCommand failed %C\n", e.what());
 	}
 
-#ifdef _DEBUGPRINT 
 	catch (std::exception& e)
-#else
-	catch (std::exception&)
-#endif	
 	{
-		DbgPrint("\nException in GetFWCapsCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetFWCapsCommand %C\n", e.what());
 	}
 return rc;
 }
@@ -83,22 +65,14 @@ FWUpdate_Commands::GetFWFeaturesState(Intel::MEI_Client::MKHI_Client::MEFWCAPS_S
 		features = command.getResponse();
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT 
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{
-		DbgPrint("GetFWCapsCommand failed %s\n",e.what());
+		UNS_ERROR("GetFWCapsCommand failed %C\n", e.what());
 	}
 	
-#ifdef _DEBUGPRINT 
 	catch (std::exception& e)
-#else
-	catch (std::exception&)
-#endif
 	{
-		DbgPrint("\nException in GetFWCapsCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetFWCapsCommand %C\n", e.what());
 	}
 	return rc;
 }
@@ -113,21 +87,13 @@ FWUpdate_Commands::GetFWPlatformType(Intel::MEI_Client::MKHI_Client::MKHI_PLATFO
 		platform = command.getResponse();
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT 
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{
-	DbgPrint("GetPlatformTypeCommand failed %s\n",e.what());
+		UNS_ERROR("GetPlatformTypeCommand failed %C\n", e.what());
 	}
-#ifdef _DEBUGPRINT 
 	catch (std::exception& e)
-#else 
-	catch (std::exception&)
-#endif
 	{
-	DbgPrint("\nException in GetPlatformTypeCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetPlatformTypeCommand %C\n", e.what());
 	}
 	return rc;
 }
@@ -142,27 +108,19 @@ unsigned int FWUpdate_Commands::GetFWUpdateStateCommand(bool* enabled)
 				   (response.Data == Intel::MEI_Client::MKHI_Client::FW_UPDATE_PASSWORD_PROTECTED);
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT
 	catch (Intel::MEI_Client::MEIClientException& e)
-#else
-	catch (Intel::MEI_Client::MEIClientException&)
-#endif
 	{
-		DbgPrint("GetFWUpdateStateCommand failed %s\n", e.what());
+		UNS_ERROR("GetFWUpdateStateCommand failed %C\n", e.what());
 	}
 
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
 	{
-		DbgPrint("GetFWUpdateStateCommand failed ret=%d\n", e.getErr());
+		UNS_ERROR("GetFWUpdateStateCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (std::exception& e)
-#else
-	catch (std::exception&)
-#endif
 	{
-		DbgPrint("\nException in GetFWUpdateStateCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetFWUpdateStateCommand %C\n", e.what());
 	}
 	return rc;
 }

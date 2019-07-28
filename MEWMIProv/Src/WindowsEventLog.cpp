@@ -12,8 +12,9 @@
 // WindowsEventLog.cpp: implementation of the WindowsEventLog class.
 //
 //*****************************************************************************
+#include "DebugPrints.h"
 #include "WindowsEventLog.h"
-#include "UNSDebug.h"
+
 
 //*****************************************************************************
 // Construct with a specified event source name.
@@ -31,7 +32,7 @@ WindowsEventLog::WindowsEventLog(	const char * pszLogName,
 		return;
 	}
 
-	DbgPrint("GetModuleFileName: %s\n", szPath);
+	UNS_DEBUG("GetModuleFileName: %C\n", szPath);
     // First add a source name to the registry.
 	AddEventSource(pszLogName, pszSrcName, szPath, dwNum);
 	
@@ -39,7 +40,7 @@ WindowsEventLog::WindowsEventLog(	const char * pszLogName,
 	_hEventLinker = RegisterEventSourceA(NULL,pszSrcName);
     if (_hEventLinker == NULL) 
     {
-        DbgPrint("Could not register the event source.\n"); 
+        UNS_ERROR("Could not register the event source.\n"); 
         return;
     }
 }
@@ -111,7 +112,7 @@ void WindowsEventLog::LogEvent(	unsigned short	CategoryID,
 				RawData);					// lpRawData 
 	if (!rc)
 	{
-		DbgPrint("ReportEvent failed, lasterr=%d\n",GetLastError());
+		UNS_ERROR("ReportEvent failed, lasterr=%d\n", GetLastError());
 }
 }
 
@@ -162,7 +163,7 @@ void WindowsEventLog::AddEventSource(	const char * pszLogName,
 		_RegistryKey.Close();
 	}else
 	{
-		DbgPrint("_RegistryKey.Create %s failed\n",szBuf);
+		UNS_ERROR("_RegistryKey.Create %C failed\n", szBuf);
 	}
 	
 }

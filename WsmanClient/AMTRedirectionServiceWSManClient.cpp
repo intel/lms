@@ -9,7 +9,7 @@
 --*/
 
 #include "AMTRedirectionServiceWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 const std::string AMTRedirectionServiceWSManClient::DEFAULT_USER = "$$uns";
@@ -37,7 +37,7 @@ AMTRedirectionServiceWSManClient::~AMTRedirectionServiceWSManClient(void)
 }
 bool AMTRedirectionServiceWSManClient::TerminateSession(unsigned int SessionType)
 {
-	DbgPrint("AMTRedirectionServiceWSManClient::TerminateSession(%d)\n",SessionType);
+	UNS_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d)\n",SessionType);
 	
 	if (!Init())
 		return false;
@@ -50,7 +50,7 @@ bool AMTRedirectionServiceWSManClient::TerminateSession(unsigned int SessionType
 		request.SessionType(SessionType);
 		unsigned int returnedVal = m_service.TerminateSession(request);
 		//m_service.InvokeTerminateSession(request, response,m_client);
-		DbgPrint("AMTRedirectionServiceWSManClient::TerminateSession(%d) ReturnValue=%d\n",SessionType,returnedVal);
+		UNS_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d) ReturnValue=%d\n", SessionType, returnedVal);
 		if (returnedVal != TEMINATE_SESSION_QUALIFIER_SUCCESS && returnedVal != TEMINATE_SESSION_QUALIFIER_INVALID_STATE)  // may fail if there is no active session, in this case return true 
 		{
 			return false;

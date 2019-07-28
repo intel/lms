@@ -10,7 +10,7 @@
 
 #include "HostBootReasonClient.h"
 #include "IPS_HostBootReason.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace Intel::Manageability::Cim::Typed;
@@ -82,7 +82,7 @@ bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX
 				resetReason = (HOST_RESET_REASON)(curReason->Reason());
 				
 				previousSxState = (SX_STATES)(curReason->PreviousSxState());
-				DbgPrint("HostBootReasonClient::GetHostResetReason ended successfully");
+				UNS_DEBUG("HostBootReasonClient::GetHostResetReason ended successfully\n");
 				return true;
 			}
 			else 

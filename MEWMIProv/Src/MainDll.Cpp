@@ -34,6 +34,7 @@
 //
 //***************************************************************************
 
+#include "DebugPrints.h"
 #include <objbase.h>
 #include <initguid.h>
 #include "XMLUtils.h"
@@ -64,8 +65,6 @@ long       g_cLock=0;
 //
 //***************************************************************************
 
-
-
 //BOOL WINAPI LibMain32(HINSTANCE hInstance, ULONG ulReason
   //  , LPVOID pvReserved)
 BOOL WINAPI DllMain(HINSTANCE hInstance,  ULONG ulReason, LPVOID lpvReserved)
@@ -82,6 +81,20 @@ BOOL WINAPI DllMain(HINSTANCE hInstance,  ULONG ulReason, LPVOID lpvReserved)
 	//InitXMLLibrary();
 
     ghModule = hInstance;
+
+
+	ACE_LOG_MSG->open(0, ACE_Log_Msg::SYSLOG, 0);
+	u_long mask = ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS);
+#ifdef _DEBUG
+	u_long requiredLoggingMask = mask; // Debug Logging value is Trace
+#else //_DEBUG
+	u_long requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING; // Release Logging value is Error
+#endif //_DEBUG
+	ACE_LOG_MSG->priority_mask(requiredLoggingMask, ACE_Log_Msg::PROCESS);
+
+
+	UNS_DEBUG("WMIProvider Started\n");
+
     return TRUE;
 }
 

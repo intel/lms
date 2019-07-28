@@ -28,7 +28,6 @@ add_library (LmsGMS_COMMON SHARED
   GmsService.cpp
   ${VERIFYFILE_SRC}
   Tools.cpp
-  UNSDebug.cpp
   UNSRegistry.cpp
   DataStorageWrapper.cpp
   RegistryStorage.cpp

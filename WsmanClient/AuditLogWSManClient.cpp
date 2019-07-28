@@ -9,7 +9,7 @@
 --*/
 #define _CRT_SECURE_NO_WARNINGS
 #include "AuditLogWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "time.h"
 #include <iomanip>
 #include "WsmanClientCatch.h"
@@ -52,12 +52,12 @@ bool AuditLogWSManClient::readLogsFromFW(vector<Intel::Manageability::Cim::Utils
 			// Check Return Value.
 			if (response != 0)
 			{
-				DbgPrint("\nError: Failed Getting Audit-Log records.");
+				UNS_ERROR("Error: Failed Getting Audit-Log records.\n");
 				return false;
 			}	
 			if (!output.EventRecordsExists() || !output.TotalRecordCountExists())
 			{
-				DbgPrint("\nNo Audit-log records exist.");
+				UNS_DEBUG("No Audit-log records exist.\n");
 				return true;
 			}
 	
@@ -222,7 +222,7 @@ bool AuditLogWSManClient::AuditLogRecordFromBinaryBase64Data( BinaryData binaryR
 	}
 	catch(...)
 	{
-		DbgPrint("\nError occurs while trying to parse the record binary data!!!\n");
+		UNS_ERROR("Error occurs while trying to parse the record binary data!!!\n");
 		return false;
 	}
 	return true;
@@ -276,13 +276,13 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		}
 		catch (std::bad_alloc&)
 		{
-			DbgPrint("\nError: Can't Alloc memory.\n");
+			UNS_ERROR("Error: Can't Alloc memory.\n");
 			goto EXIT;
 		}
 
 		if (false == AuditLogRecordFromBinaryBase64Data(*rec, structedRecord))
 		{
-			DbgPrint("\nError occur while parsing audit log record from binary base 64!\n");
+			UNS_ERROR("Error occur while parsing audit log record from binary base 64!\n");
 			parsed << "<Data><Application><![CDATA[ERROR]]></Application><Event><![CDATA[NA]]></Event><InitiatorType><![CDATA[]]></InitiatorType><InitiatorData><![CDATA[]]></InitiatorData><Time><![CDATA[]]></Time><InitiatorNetAddress><![CDATA[]]></InitiatorNetAddress><ExtendedData><![CDATA[]]></ExtendedData></Data>";
 			continue;
 		}
@@ -343,7 +343,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			}
 			catch (std::bad_alloc&)
 			{
-				DbgPrint("\nError: Can't Alloc memory.\n");
+				UNS_ERROR("Error: Can't Alloc memory.\n");
 				goto EXIT;
 			}
 
@@ -372,7 +372,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			}
 			catch (std::bad_alloc&)
 			{
-				DbgPrint("\nError: Can't Alloc memory.\n");
+				UNS_ERROR("Error: Can't Alloc memory.\n");
 				goto EXIT;
 			}
 
@@ -390,7 +390,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 				parsed << "Local user" ;
 			break;
 		default:
-			DbgPrint("Unknown InitiatorType");
+			UNS_ERROR("Unknown InitiatorType\n");
 			parsed << "Unknown" ;
 			break;
 		}
@@ -402,7 +402,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		}
 		catch (std::bad_alloc&)
 		{
-			DbgPrint ("\nError allocating memory, Can't display the Audit Log records!\n");
+			UNS_ERROR("Error allocating memory, Can't display the Audit Log records!\n");
 			goto EXIT;
 		}
 
@@ -429,7 +429,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		}
 		catch (std::bad_alloc&)
 		{
-			DbgPrint("\nError: Can't Alloc memory.\n");
+			UNS_ERROR("Error: Can't Alloc memory.\n");
 			goto EXIT;
 		}
 
@@ -444,7 +444,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			parsed << netAddress;
 			break;
 		case NON:
-			DbgPrint("None net Address\n");
+			UNS_DEBUG("None net Address\n");
 			break;
 		default:
 			break;
@@ -458,7 +458,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 				structedRecord.ExtendedDataLength) ;
 		} catch( exception &e) {
 			const char* reason =  e.what();
-			DbgPrint(reason);
+			UNS_DEBUG("%C\n", reason);
 			parsed << "Exception while parsing extended data"; 
 		}
 		parsed << "]]></ExtendedData>\n</Data>\n";
@@ -520,7 +520,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 	}
 	catch (std::bad_alloc&)
 	{
-		DbgPrint ("could not allocate memory!");
+		UNS_ERROR("could not allocate memory!\n");
 		return std::string("");
 	}
 

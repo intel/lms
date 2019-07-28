@@ -11,7 +11,7 @@
 #include "AMT_EthernetPortSettings.h"
 #include "SyncIpClient.h"
 
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace std; 
@@ -93,8 +93,8 @@ bool SyncIpClient::GetNetworkData(bool& DHCPEnabled, std::string& IPAddress, std
 		DNSAddress1.assign(m_HostIpSettings.PrimaryDNS());
 	if (m_HostIpSettings.SecondaryDNSExists())
 		DNSAddress2.assign(m_HostIpSettings.SecondaryDNS());
-	//DbgPrint("GetNetworkData Network Settings::	DhcpEnabled=%d IpAddress=%s SubnetMask=%s DefaultGateway=%s\n",DHCPEnabled,IpAddress.c_str(),SubnetMask.c_str(), DefaultGateway.c_str());
-	DbgPrint("GetNetworkData DNS Settings::		PrimaryDNS %s, SecondaryDNS %s\n",DNSAddress1.c_str(),DNSAddress2.c_str());
+	UNS_DEBUG("GetNetworkData Network Settings::	DhcpEnabled=%d IpAddress=%C SubnetMask=%C DefaultGateway=%C\n", DHCPEnabled, IPAddress.c_str(), SubNet.c_str(), GateWay.c_str());
+	UNS_DEBUG("GetNetworkData DNS Settings::		PrimaryDNS %C, SecondaryDNS %C\n", DNSAddress1.c_str(), DNSAddress2.c_str());
 	return true;
 }
 
@@ -119,8 +119,8 @@ bool SyncIpClient::SetNetworkData(bool DHCPEnabled, const std::string &IPAddress
 			
 			m_HostIpSettings.SecondaryDNS(DNSAddress2);
 
-			DbgPrint("SetNetworkData Network Settings::	DhcpEnabled=%d IpAddress=%s SubnetMask=%s DefaultGateway=%s\n",m_HostIpSettings.DHCPEnabled(),m_HostIpSettings.IpAddress().c_str(),m_HostIpSettings.SubnetMask().c_str(), m_HostIpSettings.DefaultGateway().c_str());
-			DbgPrint("SetNetworkData DNS Settings::		PrimaryDNS %s, SecondaryDNS %s\n",m_HostIpSettings.PrimaryDNS().c_str(),m_HostIpSettings.SecondaryDNS().c_str());
+			UNS_DEBUG("SetNetworkData Network Settings::	DhcpEnabled=%d IpAddress=%C SubnetMask=%C DefaultGateway=%C\n", m_HostIpSettings.DHCPEnabled(), m_HostIpSettings.IpAddress().c_str(), m_HostIpSettings.SubnetMask().c_str(), m_HostIpSettings.DefaultGateway().c_str());
+			UNS_DEBUG("SetNetworkData DNS Settings::		PrimaryDNS %C, SecondaryDNS %C\n", m_HostIpSettings.PrimaryDNS().c_str(), m_HostIpSettings.SecondaryDNS().c_str());
 
 		}
 		else
@@ -146,7 +146,7 @@ bool SyncIpClient::GetSharedStaticIpState(bool* SharedStaticIpState)
 {
 	if (!Init(true))
 	{
-		DbgPrint("GetSharedStaticIpState Init return false !\n");
+		UNS_ERROR("GetSharedStaticIpState Init return false!\n");
 		return false;
 	}
 	*SharedStaticIpState = m_SharedStaticIpState;

@@ -9,7 +9,7 @@
 --*/
 
 #include "EthernetSettingsWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
@@ -51,8 +51,7 @@ unsigned int EthernetSettingsWSManClient::Enumerate(vector<shared_ptr<Intel::Man
 	{
 		const char* reason =  e.what();
 		retValue = ERROR_UNKNOWN_ERROR;
-		DbgPrint("\nError: failed while calling get AMT_EthernetPortSettings\n");
-		DbgPrint("%s\n", reason);
+		UNS_DEBUG("Error: failed while calling get AMT_EthernetPortSettings: %C\n", reason);
 		m_endpoint = false;
 	}	
 	return retValue;

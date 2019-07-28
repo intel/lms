@@ -11,7 +11,7 @@
 #include "AMTFCFHWSmanClient.h"
 #include "CIM_FilterCollection.h"
 #include "CimWsman.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "AMT_RemoteAccessPolicyAppliesToMPS.h"
 #include "CIM_FilterCollectionSubscription.h"
 #include "AMT_RemoteAccessPolicyRule.h"
@@ -86,12 +86,12 @@ bool AMTFCFHWSmanClient::userInitiatedPolicyRuleExists(short* pExist)
 				if (currRule->Trigger() == 0)
 				{
 					*pExist=true;
-					DbgPrint("userInitiatedPolicyRuleExists:  user initiated policy rule exists");
+					UNS_DEBUG("userInitiatedPolicyRuleExists:  user initiated policy rule exists\n");
 					return true;
 				}
 			}
 		}
-		DbgPrint("userInitiatedPolicyRuleExists:  user initiated policy rule doesn't exist");
+		UNS_DEBUG("userInitiatedPolicyRuleExists:  user initiated policy rule doesn't exist\n");
 		return true;
 	}
 	CATCH_exception("AMTFCFHWSmanClient::userInitiatedPolicyRuleExists")
@@ -160,10 +160,10 @@ bool AMTFCFHWSmanClient::snmpEventSubscriberExists(short* pExist)
 			 AMT_SNMPEventSubscribersIterator++)
 		{	
 				*pExist=true;
-				DbgPrint("snmpEventSubscriberExists: SNMP Event Subscriber Exists");
+				UNS_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber Exists\n");
 				return true;
 		}
-		DbgPrint("snmpEventSubscriberExists: SNMP Event Subscriber doesn't exist");
+		UNS_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber doesn't exist\n");
 		return true;
 	}
 	CATCH_exception("AMTFCFHWSmanClient::snmpEventSubscriberExists")
@@ -188,14 +188,14 @@ bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist)
 			//Check for Filter_Features subscription
 			CILAFilterCollectionSubscriptionExists(pExist,"Intel(r) AMT:Features");
 			if (!(*pExist))
-				DbgPrint("CILAFilterCollectionSubscriptionExists: CILA filter collection subscription doesn't exist");
+				UNS_DEBUG("CILAFilterCollectionSubscriptionExists: CILA filter collection subscription doesn't exist\n");
 		}
 		return true;
 	}
 	CATCH_exception_return("AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists")
 }
 
-bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist,std::string filterType)
+bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist, std::string filterType)
 {
 	try 
 	{
@@ -211,14 +211,13 @@ bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist,st
 		if (filterSubscriptions.size()>0)
 		{
 			*pExist=true;
-			DbgPrint("CILAFilterCollectionSubscriptionExists: CILA %s subscription exists\n",filterType.c_str());
+			UNS_DEBUG("CILAFilterCollectionSubscriptionExists: CILA %C subscription exists\n", filterType.c_str());
 		}
 	}
 	catch (std::exception& e)
 	{
 		const char* reason =  e.what();
-		DbgPrint("\nFilter with InstanceID=%s doesn't exist\n",filterType.c_str());
-		DbgPrint("%s\n", reason);
+		UNS_DEBUG("Filter with InstanceID=%C doesn't exist, %C\n", filterType.c_str(), reason);
 	}
 	return true;
 }

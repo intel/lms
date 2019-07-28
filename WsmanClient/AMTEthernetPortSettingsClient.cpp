@@ -10,7 +10,7 @@
 
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMT_EthernetPortSettings.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 const std::string AMTEthernetPortSettingsClient::DEFAULT_USER = "$$uns";
@@ -103,7 +103,7 @@ bool AMTEthernetPortSettingsClient::GetAMTEthernetPortSettings(unsigned int* pLi
 	if (!Init(true,true))
 		return false;
 
-	DbgPrint("GetAMTEthernetPortSettings LinkPreference=%d LinkControl=%d LinkProtection=%d \n",
+	UNS_DEBUG("GetAMTEthernetPortSettings LinkPreference=%d LinkControl=%d LinkProtection=%d\n",
 		m_LinkPreference,m_LinkControl,m_LinkProtection);
 	*pLinkPreference=m_LinkPreference;
 	*pLinkControl=m_LinkControl;

@@ -9,7 +9,7 @@
 --*/
 
 #include "SIOWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace std;

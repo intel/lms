@@ -36,7 +36,6 @@ add_library (MEProv SHARED
   Src/OOB_Service_WMI_Provider.cpp
   Src/ProvisioningCertificateHash_WMI_Provider.cpp
   Src/PTHI_Commands.cpp
-  Src/UNSDebug.cpp
   Src/WindowsEventLog.cpp
   Src/WMIHelper.cpp
   Src/WSmanCommands.cpp
@@ -49,7 +48,6 @@ target_include_directories (MEProv PRIVATE
 )
 
 target_compile_definitions (MEProv PRIVATE
-  UNSDEBUG_NO_DLL
   _CRT_SECURE_NO_DEPRECATE
 )
 

@@ -9,7 +9,7 @@
 --*/
 
 #include "CancelOptInClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace std;
@@ -35,7 +35,7 @@ CancelOptInClient::~CancelOptInClient()
 
 bool CancelOptInClient::CancelOptIn(unsigned int* pReturnValue)
 {
-	DbgPrint("CancelOptInClient::CancelOptIn\n");
+	UNS_DEBUG("CancelOptInClient::CancelOptIn\n");
 	
 
 	try 
@@ -46,7 +46,7 @@ bool CancelOptInClient::CancelOptIn(unsigned int* pReturnValue)
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		unsigned int returnVal = m_service.CancelOptIn();
-		DbgPrint("CancelOptInClient::CancelOptIn ReturnValue=%d\n",returnVal);
+		UNS_DEBUG("CancelOptInClient::CancelOptIn ReturnValue=%d\n",returnVal);
 		*pReturnValue=returnVal;
 		return true;
 	}

@@ -9,7 +9,7 @@
 --*/
 
 #include "KVMWSManClient.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace std;
@@ -46,7 +46,7 @@ bool KVMWSManClient::GetMEBxState(bool* MEBxState)
 			*MEBxState = m_service.EnabledByMEBx(); 			
 			return true;
 		}
-		DbgPrint("\nERROR: IPS_KVMRedirectionSettingData.EnabledByMEBxExists returned false !\n");
+		UNS_DEBUG("ERROR: IPS_KVMRedirectionSettingData.EnabledByMEBxExists returned false!\n");
 	}
 	CATCH_exception("KVMWSManClient::GetMEBxState")
 
@@ -64,7 +64,7 @@ bool KVMWSManClient::TerminateKVMSession(void)
 		unsigned int returnVal = m_service.TerminateSession();
 		if (returnVal != WSMAN_STATUS_SUCCESS)
 		{
-			DbgPrint("\nERROR: IPS_KVMRedirectionSettingData.TerminateSessiin returned %d\n", returnVal);
+			UNS_DEBUG("ERROR: IPS_KVMRedirectionSettingData.TerminateSessiin returned %d\n", returnVal);
 			return false;
 		}
 	}

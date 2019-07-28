@@ -10,7 +10,7 @@
 
 #include "WifiPortClient.h"
 #include "CIM_WiFiPort.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "WsmanClientCatch.h"
 
 using namespace std; 

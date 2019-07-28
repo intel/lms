@@ -10,7 +10,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "BaseWSManClient.h"
 #include "CryptUtils_w.h"
-#include "UNSDebug.h"
+#include "global.h"
 #include "CimOpenWsmanClient.h"
 #include "MEIClientException.h"
 #include "AMTHIErrorException.h"
@@ -189,25 +189,30 @@ int	BaseWSManClient::GetNetworkFQDN(std::string& fqdn)
 
 
 	// Allocate memory.
-	FixedInfo	= (FIXED_INFO *) GlobalAlloc( GPTR, sizeof( FIXED_INFO ) );
-	ulOutBufLen = sizeof( FIXED_INFO );
+	FixedInfo = (FIXED_INFO *)GlobalAlloc(GPTR, sizeof(FIXED_INFO));
+	if (FixedInfo == NULL) {
+		return -1;
+	}
+	ulOutBufLen = sizeof(FIXED_INFO);
 
 	// If GetNetworkParams returns ERROR_BUFFER_OVERFLOW, realloc the required memory.
-	if( ERROR_BUFFER_OVERFLOW == GetNetworkParams( FixedInfo, &ulOutBufLen ) ) {
-		GlobalFree( FixedInfo );
-		FixedInfo = (FIXED_INFO *) GlobalAlloc( GPTR, ulOutBufLen );
+	if (ERROR_BUFFER_OVERFLOW == GetNetworkParams(FixedInfo, &ulOutBufLen)) {
+		GlobalFree(FixedInfo);
+		FixedInfo = (FIXED_INFO *)GlobalAlloc(GPTR, ulOutBufLen);
+		if (FixedInfo == NULL) {
+			return -1;
+		}
 	}
-	dwRetVal = GetNetworkParams( FixedInfo, &ulOutBufLen );
-	if ( dwRetVal ) {
-		DbgPrint("Call to GetNetworkParams failed. Return Value: %08x\n", dwRetVal );
-		GlobalFree( FixedInfo );
-
+	dwRetVal = GetNetworkParams(FixedInfo, &ulOutBufLen);
+	if (dwRetVal) {
+		UNS_ERROR("Call to GetNetworkParams failed. Return Value: %08x\n", dwRetVal);
+		GlobalFree(FixedInfo);
 		return -1;
 	}
 
-	if ((strlen(FixedInfo -> HostName) + strlen(FixedInfo -> DomainName) + 2) > FQDN_MAX_SIZE){
-		DbgPrint("FQDN too long: %s.%s\n",  FixedInfo -> HostName, FixedInfo -> DomainName);
-		GlobalFree( FixedInfo );
+	if ((strlen(FixedInfo->HostName) + strlen(FixedInfo->DomainName) + 2) > FQDN_MAX_SIZE) {
+		UNS_ERROR("FQDN too long: %C.%C\n", FixedInfo->HostName, FixedInfo->DomainName);
+		GlobalFree(FixedInfo);
 		return -1;
 	}
 	std::string s_fqdn(FixedInfo -> HostName);
@@ -259,17 +264,17 @@ bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& pass
 	catch (MEIClientException& e)
 	{	
 		const char* reason =  e.what();
-		DbgPrint("GetLocalSystemAccountCommand failed %s\n",e.what());
+		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
 	}
 	catch (AMTHIErrorException& e)
 	{
 		unsigned int errNo =  e.getErr();
-		DbgPrint("GetLocalSystemAccountCommand failed ret=%d\n", errNo);
+		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", errNo);
 	}
 	catch (std::exception& e)
 	{
 		const char* reason =  e.what();
-		DbgPrint("\nException in GetLocalSystemAccountCommand %s\n", reason);
+		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", reason);
 	}
 	return rc;
 }
@@ -299,7 +304,7 @@ BaseWSManClient::Unlocker::Unlocker()
 //--
 BaseWSManClient::WsmanInitializer::WsmanInitializer()
 {
-	DbgPrint("BaseWSManClient::WsmanInitializer::WsmanInitializer()");
+	UNS_DEBUG("BaseWSManClient::WsmanInitializer::WsmanInitializer()\n");
 	//generate instances of singletons (generation in first function call is not thread-safe)
 	BaseWSManClient::WsManSemaphore();
 	BaseWSManClient::CtorSemaphore();

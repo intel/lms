@@ -275,9 +275,7 @@ HRESULT CMethodPro::GetObjectAsync(
 			//	break;
 			//}
 
-#ifdef _DEBUGPRINT
 			//_Module.logger.Detail(File,LOCATION, _T("GetObjectAsync"), strClass,_T("WBEM_E_ACCESS_DENIED"));
-#endif
 			if(CComBSTR(className) == L"OOB_Service")
 				OOB_Service_WMI_Provider::GetOOB_Service(m_pWbemSvcs,strClass, pCtx, pResponseHandler);
 			else if(CComBSTR(className) == L"ME_System")

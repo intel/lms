@@ -5,11 +5,12 @@
 #include <locale>
 #include <codecvt>
 #include <string>
-#include "UNSDebug.h"
+
 #include "WsmanClientCatch.h"
 #include "AMT_WiFiPortConfigurationService.h"
 #include "CIM_WiFiEndpoint.h"
 #include "WlanWSManClient.h"
+#include "global.h"
 
 const std::string WlanWSManClient::DEFAULT_USER = "$$uns";
 const std::string WlanWSManClient::DEFAULT_PASS = "$$uns";
@@ -29,7 +30,7 @@ WlanWSManClient::~WlanWSManClient(void)
 
 bool WlanWSManClient::Init(void)
 {
-	DbgPrint("WlanWSManClient::Init\n");
+	UNS_DEBUG("WlanWSManClient::Init\n");
 
 	if (m_isInit)
 	{
@@ -56,7 +57,7 @@ bool WlanWSManClient::LocalProfileSynchronizationEnabled(bool &enabled)
 	{
 		if (!Init())
 		{
-			DbgPrint("LocalProfileSynchronizationEnabled - Init return false !\n");
+			UNS_ERROR("LocalProfileSynchronizationEnabled - Init return false!\n");
 			return false;
 		}
 
@@ -65,7 +66,7 @@ bool WlanWSManClient::LocalProfileSynchronizationEnabled(bool &enabled)
 		svc.Get();
 
 		unsigned int data = svc.localProfileSynchronizationEnabled();
-		DbgPrint("WlanWSManClient::LocalProfileSynchronizationEnabled data %d\n", data);
+		UNS_DEBUG("WlanWSManClient::LocalProfileSynchronizationEnabled data %d\n", data);
 
 		enabled = data == 1 || data == 3;
 	}
@@ -76,11 +77,11 @@ bool WlanWSManClient::LocalProfileSynchronizationEnabled(bool &enabled)
 
 bool WlanWSManClient::Enumerate(MeProfileList &wifiSettings)
 {
-	DbgPrint("WlanWSManClient::Enumerate\n");
+	UNS_DEBUG("WlanWSManClient::Enumerate\n");
 
 	if (!Init())
 	{
-		DbgPrint("Enumerate - Init return false !\n");
+		UNS_ERROR("Enumerate - Init return false!\n");
 		return false;
 	}
 
@@ -97,11 +98,11 @@ bool WlanWSManClient::Enumerate(MeProfileList &wifiSettings)
 
 bool WlanWSManClient::DeleteProfile(SingleMeProfile& wifiSettings)
 {
-	DbgPrint("DeleteProfile\n");
+	UNS_DEBUG("DeleteProfile\n");
 
 	if (!Init())
 	{
-		DbgPrint("DeleteProfile - Init return false !\n");
+		UNS_ERROR("DeleteProfile - Init return false!\n");
 		return false;
 	}
 
@@ -121,11 +122,11 @@ bool WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
 {
 	unsigned int retVal;
 
-	DbgPrint("WlanWSManClient::AddProfile\n");
+	UNS_DEBUG("WlanWSManClient::AddProfile\n");
 
 	if (!Init())
 	{
-		DbgPrint("AddProfile Init return false !\n");
+		UNS_ERROR("AddProfile Init return false!\n");
 		return false;
 	}
 
@@ -144,7 +145,7 @@ bool WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
 		// InstanceID
 		wifiSettings.InstanceID(InstanceIDUser + wifiSettings.ElementName());
 
-		DbgPrint("WlanWSManClient::AddProfile Calling AddWiFiSettings...\n");
+		UNS_DEBUG("WlanWSManClient::AddProfile Calling AddWiFiSettings...\n");
 		AMT_WiFiPortConfigurationService::AddWiFiSettings_INPUT input;
 		AMT_WiFiPortConfigurationService::AddWiFiSettings_OUTPUT output;
 
@@ -152,7 +153,7 @@ bool WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
 		input.WiFiEndpointSettingsInput(wifiSettings);
 		retVal = svc.AddWiFiSettings(input, output);
 
-		DbgPrint("WlanWSManClient::AddProfile AddWiFiSettings retVal %d\n", retVal);
+		UNS_DEBUG("WlanWSManClient::AddProfile AddWiFiSettings retVal %d\n", retVal);
 	}
 	CATCH_exception_return("WlanWSManClient::AddProfile AddWiFiSettings")
 
@@ -166,7 +167,7 @@ bool WlanWSManClient::UpdateProfile(SingleMeProfile& wifiSettings)
 
 	if (!Init())
 	{
-		DbgPrint("UpdateProfile - Init return false !\n");
+		UNS_ERROR("UpdateProfile - Init return false!\n");
 		return false;
 	}
 
@@ -186,14 +187,14 @@ bool WlanWSManClient::UpdateProfile(SingleMeProfile& wifiSettings)
 		// InstanceID
 		wifiSettings.InstanceID(InstanceIDUser + wifiSettings.ElementName());
 
-		DbgPrint("WlanWSManClient::UpdateProfile Calling UpdateWiFiSettings...\n");
+		UNS_DEBUG("WlanWSManClient::UpdateProfile Calling UpdateWiFiSettings...\n");
 		AMT_WiFiPortConfigurationService::UpdateWiFiSettings_INPUT input;
 		AMT_WiFiPortConfigurationService::UpdateWiFiSettings_OUTPUT output;
 		input.WiFiEndpointSettings(wifiSettings.Reference());
 		input.WiFiEndpointSettingsInput(wifiSettings);
 		retVal = svc.UpdateWiFiSettings(input, output);
 
-		DbgPrint("WlanWSManClient::UpdateProfile UpdateWiFiSettings retVal %d\n", retVal);
+		UNS_DEBUG("WlanWSManClient::UpdateProfile UpdateWiFiSettings retVal %d\n", retVal);
 
 	}
 	CATCH_exception_return("WlanWSManClient::UpdateProfile UpdateWiFiSettings")

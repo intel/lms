@@ -53,7 +53,7 @@
 #include "StartConfigurationExCommand.h"
 #include "MNGIsChangeToAMTEnabledCommand.h"
 #include "MNGChangeToAMTCommand.h"
-#include "UNSDebug.h"
+#include "DebugPrints.h"
 #include "GetKVMSessionStateCommand.h"
 #include "CryptUtils_w.h"
 
@@ -331,30 +331,20 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 		rc = 0;
 	}
 
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{
-	DbgPrint("GetFQDNCommand failed %s\n",e.what());
+		UNS_ERROR("GetFQDNCommand failed %C\n", e.what());
 	}
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetFQDNCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetFQDNCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
 	
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-	DbgPrint("\nException in GetFQDNCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetFQDNCommand %C\n", e.what());
 	}
-
-
 	
 	return rc;
 }
@@ -371,28 +361,20 @@ unsigned int PTHI_Commands::OpenCIRA(void)
 		OpenUserInitiatedConnectionCommand command;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("OpenUserInitiatedConnectionCommand failed %s\n",e.what());
+		UNS_ERROR("OpenUserInitiatedConnectionCommand failed %C\n", e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("OpenUserInitiatedConnectionCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("OpenUserInitiatedConnectionCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in OpenUserInitiatedConnectionCommand %s\n", e.what());
+		UNS_ERROR("Exception in OpenUserInitiatedConnectionCommand %C\n", e.what());
 	}
 return rc;
 }
@@ -408,28 +390,20 @@ unsigned int PTHI_Commands::CloseCIRA(void)
 		CloseUserInitiatedConnectionCommand command;
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("CloseUserInitiatedConnectionCommand failed %s\n",e.what());
+		UNS_ERROR("CloseUserInitiatedConnectionCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("CloseUserInitiatedConnectionCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("CloseUserInitiatedConnectionCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in CloseUserInitiatedConnectionCommand %s\n", e.what());
+		UNS_ERROR("Exception in CloseUserInitiatedConnectionCommand %C\n", e.what());
 	}
 	
 	return rc;
@@ -445,28 +419,20 @@ unsigned int PTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 		*pProvisioningTlsMode = response.ProvTLSMode;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetProvisioningTlsModeCommand failed %s\n",e.what());
+		UNS_ERROR("GetProvisioningTlsModeCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetProvisioningTlsModeCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetProvisioningTlsModeCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetProvisioningTlsModeCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetProvisioningTlsModeCommand %C\n", e.what());
 	}
 
 	
@@ -483,31 +449,21 @@ unsigned int PTHI_Commands::GetTLSEnabled(bool* enabled)
 		*enabled = response.TLSEnabled;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetSecurityParametersCommand failed %s\n",e.what());
+		UNS_ERROR("GetSecurityParametersCommand failed %C\n", e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetSecurityParametersCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetSecurityParametersCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetSecurityParametersCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetSecurityParametersCommand %C\n", e.what());
 	}
-
-	
 
 	return rc;
 }
@@ -525,31 +481,23 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 		*enabled = (response.LinkStatus == 1);
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetLanInterfaceSettingsCommand failed %s\n",e.what());
+		UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetLanInterfaceSettingsCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetLanInterfaceSettingsCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 	}
-return rc;
-		////////////////////////////
+	return rc;
+
 }
 
 unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
@@ -565,28 +513,20 @@ unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
 		mode = (unsigned char)response.ProvisioningMode;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetProvisioningModeCommand failed %s\n",e.what());
+		UNS_ERROR("GetProvisioningModeCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetProvisioningModeCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetProvisioningModeCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetProvisioningModeCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetProvisioningModeCommand %C\n", e.what());
 	}
 	return rc;
 }
@@ -602,28 +542,20 @@ UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 		*pProvisioningState = (SHORT)response.ProvisioningState;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetProvisioningStateCommand failed %s\n",e.what());
+		UNS_ERROR("GetProvisioningStateCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetProvisioningStateCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetProvisioningStateCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetProvisioningStateCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetProvisioningStateCommand %C\n", e.what());
 	}
 
 	return rc;
@@ -645,28 +577,20 @@ UINT PTHI_Commands::GetPID(wstring* pPID)
 		pPID->assign(PID);
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetPIDCommand failed %s\n",e.what());
+		UNS_ERROR("GetPIDCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetPIDCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetPIDCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetPIDCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetPIDCommand %C\n", e.what());
 	}
 	
 	return rc;
@@ -681,28 +605,20 @@ unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 		*enabled = command.getResponse().ZTCEnabled;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetZeroTouchEnabledCommand failed %s\n",e.what());
+		UNS_ERROR("GetZeroTouchEnabledCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetZeroTouchEnabledCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetZeroTouchEnabledCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetZeroTouchEnabledCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetZeroTouchEnabledCommand %C\n", e.what());
 	}
 	
 	return rc;
@@ -722,28 +638,20 @@ unsigned int PTHI_Commands::GetProvisioningInfo(wstring* pPKIDNSSuffix, wstring*
 		(*pPKIDNSSuffix) = ToWStr(command.getResponse());
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("AMTHICommand failed %s\n",e.what());
+		UNS_ERROR("AMTHICommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("AMTHICommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("AMTHICommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in AMTHICommand %s\n", e.what());
+		UNS_ERROR("Exception in AMTHICommand %C\n", e.what());
 	}
 
 
@@ -765,28 +673,20 @@ unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTri
 		*RemoteAccessConStatus = response.RemoteAccessConnectionStatus;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetRemoteAccessConnectionStatusCommand failed %s\n",e.what());
+		UNS_ERROR("GetRemoteAccessConnectionStatusCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetRemoteAccessConnectionStatusCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetRemoteAccessConnectionStatusCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetRemoteAccessConnectionStatusCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetRemoteAccessConnectionStatusCommand %C\n", e.what());
 	}
 	
 	return rc;
@@ -851,7 +751,7 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 				if (tempDnsSuffix.compare(param.DnsSuffix) != 0)
 				{
 					status=AMT_STATUS_INTERNAL_ERROR;
-					DbgPrint("Error: SetDNSSuffix Failed\n");
+					UNS_ERROR("Error: SetDNSSuffix Failed\n");
 					break;
 				}
 				isDNSSet = true;
@@ -906,7 +806,7 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 						}
 						catch (...)
 						{
-							DbgPrint("Error: StartConfiguration Failed\n");
+							UNS_ERROR("Error: StartConfiguration Failed\n");
 						}
 					}
 					if(AMT_STATUS_SUCCESS  == status && PROVISIONING_STATE_IN != provstate.ProvisioningState)
@@ -920,29 +820,21 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 	
 	}while(0);
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("%s failed %s\n",lastFunction, e.what());
+		UNS_ERROR("%C failed %C\n",lastFunction, e.what());
 		status = AMT_STATUS_INTERNAL_ERROR;
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("%s failed ret=%d\n",lastFunction, e.getErr());
+		UNS_ERROR("%C failed ret=%d\n",lastFunction, e.getErr());
 		status = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in %s %s\n",lastFunction, e.what());
+		UNS_ERROR("Exception in %C %C\n",lastFunction, e.what());
 		status = AMT_STATUS_INTERNAL_ERROR;
 	}
 	
@@ -950,11 +842,11 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 	{
 		if(AMT_STATUS_SUCCESS == status)
 		{ 
-			DbgPrint("\nAMT Config Activate Succeeded\n");
+			UNS_DEBUG("AMT Config Activate Succeeded\n");
 		} 
 		else
 		{
-			DbgPrint("\nAMT Config Activate Failed\n");
+			UNS_ERROR("AMT Config Activate Failed\n");
 		}
 	}
 	return status;
@@ -993,7 +885,7 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 			}
 			else
 			{
-				DbgPrint("\nError: ChangeToAMT Failed with status %s\n", status);
+				UNS_ERROR("Error: ChangeToAMT Failed with status %C\n", status);
 				return status;
 			}
 		}
@@ -1006,31 +898,21 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 			getCodeVersionCommand.getResponse(); // There was a version parsing and usage here, but removed
 			return status;
 		}
-		#ifdef _DEBUGPRINT
-	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
-		{	
-			DbgPrint("GetCodeVersionCommand failed %s\n",e.what());
+		catch (MEIClientException& e)
+		{
+			UNS_ERROR("GetCodeVersionCommand failed %C\n", e.what());
 		}
-
-		
 		catch (AMTHIErrorException& e)
 		{
 			//in case reached here the AMTHI engine in the FW works and other problem ocured - so, no need to continue try
-			DbgPrint("GetCodeVersionCommand failed ret=%d\n",e.getErr());
+			UNS_ERROR("GetCodeVersionCommand failed ret=%d\n",e.getErr());
 			status = e.getErr();
 			return status;
 		}
-		#ifdef _DEBUGPRINT
-	catch (exception& e)
-#else
-	catch (exception&)
-#endif
+		catch (exception& e)
 		{
-			DbgPrint("\nException in GetCodeVersionCommand %s\n", e.what());
-	}
+			UNS_ERROR("Exception in GetCodeVersionCommand %C\n", e.what());
+		}
 		
 		Sleep(5000);
         
@@ -1038,7 +920,7 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
     
 	status = AMT_STATUS_INTERNAL_ERROR;
 
-	DbgPrint("\nError: ChangeToAMT Failed \n");
+	UNS_ERROR("Error: ChangeToAMT Failed \n");
 
     
     return status;
@@ -1111,28 +993,20 @@ unsigned int PTHI_Commands::GetConfigServerData(wstring* Address, unsigned short
 		*port = response.ServerPort;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetConfigServerDataCommand failed %s\n",e.what());
+		UNS_ERROR("GetConfigServerDataCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetConfigServerDataCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetConfigServerDataCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetConfigServerDataCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetConfigServerDataCommand %C\n", e.what());
 	}
 
 	
@@ -1160,28 +1034,20 @@ AMT_STATUS_UNSUPPORTED_OBJECT	StateDataIdentifier is not recognized or not suppo
 		*cryptoFuseEnabled = !(response.StateData.Fields.CryptoFuse==0);
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetAMTState failed %s\n",e.what());
+		UNS_ERROR("GetAMTState failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetAMTState failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetAMTState failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetAMTState %s\n", e.what());
+		UNS_ERROR("Exception in GetAMTState %C\n", e.what());
 	}
 
 	
@@ -1199,28 +1065,20 @@ unsigned int PTHI_Commands::GetPowerPolicy(wstring* policy)
 		*policy = ToWStr(command.getResponse());
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetPowerPolicy failed %s\n",e.what());
+		UNS_ERROR("GetPowerPolicy failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetPowerPolicy failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetPowerPolicy failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetPowerPolicy %s\n", e.what());
+		UNS_ERROR("Exception in GetPowerPolicy %C\n", e.what());
 	}
 
 	
@@ -1244,27 +1102,19 @@ unsigned int PTHI_Commands::ChangeToAMT()
 			lastFunction = "MNGChangeToAMTCommand";
 			MNGChangeToAMTCommand changeToAMTCommand;	
 			status = changeToAMTCommand.getResponse().Status;
-			DbgPrint("MNGChangeToAMTCommand status returned is %d\n", status);
+			UNS_DEBUG("MNGChangeToAMTCommand status returned is %d\n", status);
 		}
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("%s failed %s\n", lastFunction, e.what());
+		UNS_ERROR("%C failed %C\n", lastFunction, e.what());
 		status = E_FAIL;
 	}
 
 	
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in %s %s\n", lastFunction, e.what());
+		UNS_ERROR("Exception in %C %C\n", lastFunction, e.what());
 		status = E_FAIL;
 	}
 
@@ -1280,28 +1130,20 @@ unsigned int PTHI_Commands::StopConfiguration(void)
 		StopConfigurationCommand command;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("StopConfigurationCommand failed %s\n",e.what());
+		UNS_ERROR("StopConfigurationCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("StopConfigurationCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("StopConfigurationCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in StopConfigurationCommand %s\n", e.what());
+		UNS_ERROR("Exception in StopConfigurationCommand %C\n", e.what());
 	}
 
 	
@@ -1346,34 +1188,27 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 			}
 		}
 	}
-		#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetCodeVersionCommand failed %s\n",e.what());
+		UNS_ERROR("GetCodeVersionCommand failed %C\n",e.what());
 	}
 
 	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetCodeVersionCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetCodeVersionCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetCodeVersionCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetCodeVersionCommand %C\n", e.what());
 	}
 
 	
 	if (rc != 0)
 	{
-		try {
+		try 
+		{
 			Intel::MEI_Client::MKHI_Client::GetFWVersionCommand command;
 			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE response = command.getResponse();
 			wstringstream strStream(wstringstream::in | wstringstream::out);
@@ -1382,26 +1217,14 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 			strStream >> *AMTVersion;
 			rc = S_OK;
 		}
-	#ifdef _DEBUGPRINT
-	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
-		{	
-			DbgPrint("FWUGetVersionCommand failed %s\n",e.what());
-		}
-
-		
-	#ifdef _DEBUGPRINT
-	catch (exception& e)
-#else
-	catch (exception&)
-#endif
+		catch (MEIClientException& e)
 		{
-			DbgPrint("\nException in FWUGetVersionCommand %s\n", e.what());
+			UNS_ERROR("FWUGetVersionCommand failed %C\n", e.what());
 		}
-
-
+		catch (exception& e)
+		{
+			UNS_ERROR("Exception in FWUGetVersionCommand %C\n", e.what());
+		}
 	}
 	return rc;
 }
@@ -1459,28 +1282,18 @@ unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 		MEAudit->TlsStartTime.Year = response.TlsStartTime.Year;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetMESetupAuditRecordCommand failed %s\n",e.what());
+		UNS_ERROR("GetMESetupAuditRecordCommand failed %C\n",e.what());
 	}
-
-	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetMESetupAuditRecordCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetMESetupAuditRecordCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetMESetupAuditRecordCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetMESetupAuditRecordCommand %C\n", e.what());
 	}
 
 	
@@ -1500,28 +1313,18 @@ unsigned int PTHI_Commands::getWebUIState(SHORT* pState)
 		*pState = response.WebUiEnabled;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetWebUIStateCommand failed %s\n",e.what());
+		UNS_ERROR("GetWebUIStateCommand failed %C\n",e.what());
 	}
-
-	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetWebUIStateCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetWebUIStateCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetWebUIStateCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetWebUIStateCommand %C\n", e.what());
 	}
 
 	
@@ -1540,31 +1343,19 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 		*pIDER = response.IderOpen;
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetWebUIStateCommand failed %s\n",e.what());
+		UNS_ERROR("GetWebUIStateCommand failed %C\n",e.what());
 	}
-
-	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetWebUIStateCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetWebUIStateCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetWebUIStateCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetWebUIStateCommand %C\n", e.what());
 	}
-
-	
 
 	return rc;
 }
@@ -1574,14 +1365,14 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 
 unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 {
-	USES_CONVERSION; 
+	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		EnumerateHashHandlesCommand command;
 		ENUMERATE_HASH_HANDLES_RESPONSE response = command.getResponse();
 		vector<unsigned int>::iterator itr = response.HashHandles.begin();
 		vector<unsigned int>::iterator endItr = response.HashHandles.end();
-		for ( ; itr != endItr ; ++itr)
+		for (; itr != endItr; ++itr)
 		{
 			try {
 				GetCertificateHashEntryCommand command(*itr);
@@ -1594,60 +1385,36 @@ unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 				memcpy_s(entry.HashData, sizeof(entry.HashData), response.CertificateHash, sizeof(response.CertificateHash));
 				hashlist.push_back(entry);
 			}
-	#ifdef _DEBUGPRINT
-	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
-			{	
-				DbgPrint("GetCertificateHashEntryCommand failed %s\n",e.what());
+			catch (MEIClientException& e)
+			{
+				UNS_ERROR("GetCertificateHashEntryCommand failed %C\n", e.what());
 			}
-
-			
 			catch (AMTHIErrorException& e)
 			{
-				DbgPrint("GetCertificateHashEntryCommand failed ret=%d\n",e.getErr());
+				UNS_ERROR("GetCertificateHashEntryCommand failed ret=%d\n", e.getErr());
 				rc = e.getErr();
 			}
-	#ifdef _DEBUGPRINT
-	catch (exception& e)
-#else
-	catch (exception&)
-#endif
+			catch (exception& e)
 			{
-				DbgPrint("\nException in GetCertificateHashEntryCommand %s\n", e.what());
+				UNS_ERROR("Exception in GetCertificateHashEntryCommand %C\n", e.what());
 			}
-
-			
 		}
 		rc = 0;
 	}
-	#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
-	{	
-		DbgPrint("EnumerateHashHandlesCommand failed %s\n",e.what());
+	{
+		UNS_ERROR("EnumerateHashHandlesCommand failed %C\n", e.what());
 	}
-
-	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("EnumerateHashHandlesCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("EnumerateHashHandlesCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-	#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in EnumerateHashHandlesCommand %s\n", e.what());
+		UNS_ERROR("Exception in EnumerateHashHandlesCommand %C\n", e.what());
 	}
 
-
-	
 	return rc;
 }
 
@@ -1664,30 +1431,18 @@ unsigned int PTHI_Commands::GetKVMSessionActivation(bool* activated)
 			*activated = false;
 		rc = 0;
 	}
-
-
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetKVMSessionActivation failed %s\n",e.what());
+		UNS_ERROR("GetKVMSessionActivation failed %C\n",e.what());
 	}
-
-	
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetKVMSessionActivation failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetKVMSessionActivation failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetKVMSessionActivation %s\n", e.what());
+		UNS_ERROR("Exception in GetKVMSessionActivation %C\n", e.what());
 	}	
 	return rc;
 }
@@ -1705,33 +1460,25 @@ unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREna
 		*pKVMEnabled = response.KVMEnabled;
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetRedirectionState failed %s\n",e.what());
+		UNS_ERROR("GetRedirectionState failed %C\n",e.what());
 	}
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetRedirectionState failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetRedirectionState failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetRedirectionState %s\n", e.what());
+		UNS_ERROR("Exception in GetRedirectionState %C\n", e.what());
 	}	
 	return rc;
 }
 
 unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetPortList)
 {
-	USES_CONVERSION; 
+	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetTcpipParametersCommand TcpIPparametersCommand;
@@ -1746,36 +1493,27 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 			GetLanInterfaceSettingsCommand lanInterfaceCommand(WIRED);
 			LAN_SETTINGS lanSettings = lanInterfaceCommand.getResponse();
 			WCHAR sMacAddress[50];
-			swprintf_s(sMacAddress,50,L"%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
-				lanSettings.MacAddress[0],lanSettings.MacAddress[1],lanSettings.MacAddress[2],
-				lanSettings.MacAddress[3],lanSettings.MacAddress[4],lanSettings.MacAddress[5]);
+			swprintf_s(sMacAddress, 50, L"%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
+				lanSettings.MacAddress[0], lanSettings.MacAddress[1], lanSettings.MacAddress[2],
+				lanSettings.MacAddress[3], lanSettings.MacAddress[4], lanSettings.MacAddress[5]);
 			entry.MACAddress = sMacAddress;
-			entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true :  false;
+			entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true : false;
 			entry.DHCPEnabled = lanSettings.DhcpEnabled;
 			ethernetPortList.push_back(entry);
 			rc = 0;
 		}
-
-#ifdef _DEBUGPRINT
-	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
-		{	
-			DbgPrint("GetLanInterfaceSettingsCommand failed %s\n",e.what());
+		catch (MEIClientException& e)
+		{
+			UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 		}
 		catch (AMTHIErrorException& e)
 		{
-			DbgPrint("GetLanInterfaceSettingsCommand failed ret=%d\n",e.getErr());
+			UNS_ERROR("GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 			rc = e.getErr();
 		}
-#ifdef _DEBUGPRINT
-	catch (exception& e)
-#else
-	catch (exception&)
-#endif
+		catch (exception& e)
 		{
-			DbgPrint("\nException in GetLanInterfaceSettingsCommand %s\n", e.what());
+			UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 		}
 		if (rc != 0)
 		{
@@ -1783,60 +1521,43 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 				GetLanInterfaceSettingsCommand lanInterfaceCommand(WIRELESS);
 				LAN_SETTINGS lanSettings = lanInterfaceCommand.getResponse();
 				WCHAR sMacAddress[50];
-				swprintf_s(sMacAddress,50,L"%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
-					lanSettings.MacAddress[0],lanSettings.MacAddress[1],lanSettings.MacAddress[2],
-					lanSettings.MacAddress[3],lanSettings.MacAddress[4],lanSettings.MacAddress[5]);
+				swprintf_s(sMacAddress, 50, L"%.2X:%.2X:%.2X:%.2X:%.2X:%.2X",
+					lanSettings.MacAddress[0], lanSettings.MacAddress[1], lanSettings.MacAddress[2],
+					lanSettings.MacAddress[3], lanSettings.MacAddress[4], lanSettings.MacAddress[5]);
 				entry.MACAddress = sMacAddress;
-				entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true :  false;
+				entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true : false;
 				entry.DHCPEnabled = lanSettings.DhcpEnabled;
 				ethernetPortList.push_back(entry);
 				rc = 0;
 			}
-#ifdef _DEBUGPRINT
-	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
-			{	
-				DbgPrint("GetLanInterfaceSettingsCommand failed %s\n",e.what());
+			catch (MEIClientException& e)
+			{
+				UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 			}
 			catch (AMTHIErrorException& e)
 			{
-				DbgPrint("GetLanInterfaceSettingsCommand failed ret=%d\n",e.getErr());
+				UNS_ERROR("GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 				rc = e.getErr();
 			}
-#ifdef _DEBUGPRINT
-	catch (exception& e)
-#else
-	catch (exception&)
-#endif
+			catch (exception& e)
 			{
-				DbgPrint("\nException in GetLanInterfaceSettingsCommand %s\n", e.what());
+				UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 			}
 		}
 	}
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{
-		DbgPrint("GetTcpipParametersCommand failed %s\n",e.what());
+		UNS_ERROR("GetTcpipParametersCommand failed %C\n", e.what());
 	}
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetTcpipParametersCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetTcpipParametersCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetTcpipParametersCommand %s\n", e.what());
-	}	
+		UNS_ERROR("Exception in GetTcpipParametersCommand %C\n", e.what());
+	}
 
 	return (rc);
 }
@@ -1856,27 +1577,18 @@ unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAcc
 		}
 		rc = 0;	
 	}
-
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetLocalSystemAccountCommand failed %s\n",e.what());
+		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
 	}
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetLocalSystemAccountCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetLocalSystemAccountCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", e.what());
 	}	
 
 	return rc;
@@ -1889,26 +1601,18 @@ unsigned int PTHI_Commands::Unprovision()
 		UnprovisionCommand command(CFG_PROVISIONING_MODE_NONE);
 		rc = 0;
 	}
-#ifdef _DEBUGPRINT
 	catch (MEIClientException& e)
-#else
-	catch (MEIClientException&)
-#endif
 	{	
-		DbgPrint("GetLocalSystemAccountCommand failed %s\n",e.what());
+		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
 	}
 	catch (AMTHIErrorException& e)
 	{
-		DbgPrint("GetLocalSystemAccountCommand failed ret=%d\n",e.getErr());
+		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n",e.getErr());
 		rc = e.getErr();
 	}
-#ifdef _DEBUGPRINT
 	catch (exception& e)
-#else
-	catch (exception&)
-#endif
 	{
-		DbgPrint("\nException in GetLocalSystemAccountCommand %s\n", e.what());
+		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", e.what());
 	}	
 	return rc;
 }
