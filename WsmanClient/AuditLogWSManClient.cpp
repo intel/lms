@@ -387,11 +387,14 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 
 			break;
 		case LOCAL_INITIATOR:
-				parsed << "Local user" ;
+			parsed << "Local user";
+			break;
+		case KVM_DEFAULT_PORT:
+			parsed << "KVM user";
 			break;
 		default:
 			UNS_ERROR("Unknown InitiatorType\n");
-			parsed << "Unknown" ;
+			parsed << "Unknown";
 			break;
 		}
 
