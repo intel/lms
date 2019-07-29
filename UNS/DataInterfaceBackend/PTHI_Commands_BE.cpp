@@ -623,7 +623,7 @@ namespace Intel {
 				Intel::MEI_Client::AMTHI_Client::GET_UUID_RESPONSE uuid = getUUIDCommand.getResponse();
 				bstrUUID = uuidToString(uuid.UUID);
 
-				UNS_DEBUG("AmtUUID=%C\n", bstrUUID);
+				UNS_DEBUG("AmtUUID=%C\n", bstrUUID.c_str());
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetUUIDCommand")
