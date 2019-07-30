@@ -12,9 +12,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-const std::string AMTRedirectionServiceWSManClient::DEFAULT_USER = "$$uns";
-const std::string AMTRedirectionServiceWSManClient::DEFAULT_PASS = "$$uns";
-
 using namespace Intel::Manageability::Cim::Typed;
 
 
@@ -27,7 +24,7 @@ typedef enum _TEMINATE_SESSION_QUALIFIER
 	TEMINATE_SESSION_QUALIFIER_RESERVED = 0x4
 } TEMINATE_SESSION_QUALIFIER;
 
-AMTRedirectionServiceWSManClient::AMTRedirectionServiceWSManClient(void): BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+AMTRedirectionServiceWSManClient::AMTRedirectionServiceWSManClient(void)
 {
 	m_isInit = false;
 }

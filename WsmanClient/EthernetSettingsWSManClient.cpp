@@ -14,10 +14,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string EthernetSettingsWSManClient::DEFAULT_USER = "$$uns";
-const std::string EthernetSettingsWSManClient::DEFAULT_PASS = "$$uns";
-
-EthernetSettingsWSManClient::EthernetSettingsWSManClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+EthernetSettingsWSManClient::EthernetSettingsWSManClient()
 {
 	m_isInit = false;
 	

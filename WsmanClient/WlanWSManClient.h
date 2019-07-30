@@ -7,7 +7,6 @@
 
 #include "CIM_WiFiEndpointSettings.h"
 #include "BaseWSManClient.h"
-#include <string>
 #include <vector>
 #include <memory>
 
@@ -34,7 +33,4 @@ private:
 	bool Init(void);
 
 	bool m_isInit;
-
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 };

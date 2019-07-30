@@ -32,9 +32,18 @@
 #define WSMAN_HTTP_SCHEME    "http"
 #define WSMAN_AUTH_DIGEST    "digest"
 
+
+const std::string BaseWSManClient::DEFAULT_USER = "$$uns";
+const std::string BaseWSManClient::DEFAULT_PASS = "$$uns";
+
 //************************************************************************
 // Default Constructor.
 //************************************************************************
+BaseWSManClient::BaseWSManClient() : m_defaultUser(DEFAULT_USER), m_defaultPass(DEFAULT_PASS)
+{
+	Init();
+}
+
 BaseWSManClient::BaseWSManClient(const std::string &defaultUser, 
 								 const std::string &defaultPass):
 	m_defaultUser(defaultUser),

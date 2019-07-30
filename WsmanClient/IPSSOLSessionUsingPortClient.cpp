@@ -11,10 +11,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string IPSSolSessionUsingPortClient::DEFAULT_USER = "$$uns";
-const std::string IPSSolSessionUsingPortClient::DEFAULT_PASS = "$$uns";
-
-IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_LinkTechnology(0)
+IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient() : m_LinkTechnology(0)
 {
 }
 

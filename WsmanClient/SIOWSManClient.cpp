@@ -13,15 +13,12 @@
 #include "WsmanClientCatch.h"
 
 using namespace std;
-const std::string SIOWSManClient::DEFAULT_USER = "$$uns";
-const std::string SIOWSManClient::DEFAULT_PASS = "$$uns";
 
 using namespace Intel::Manageability::Cim::Typed;
 
-SIOWSManClient::SIOWSManClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+SIOWSManClient::SIOWSManClient()
 {
 	m_isInit = false;
-	
 }
 
 SIOWSManClient::~SIOWSManClient()

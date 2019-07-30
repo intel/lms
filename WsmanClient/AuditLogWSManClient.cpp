@@ -16,13 +16,10 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-const std::string AuditLogWSManClient::DEFAULT_USER = "$$uns";
-const std::string AuditLogWSManClient::DEFAULT_PASS = "$$uns";
-
 using namespace std;
 using namespace Intel::Manageability::Cim::Typed;
 
-AuditLogWSManClient::AuditLogWSManClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+AuditLogWSManClient::AuditLogWSManClient()
 {
 	m_isInit = false;	
 }

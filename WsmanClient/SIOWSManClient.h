@@ -13,7 +13,6 @@
 
 #include "IPS_SecIOService.h"
 #include "BaseWSManClient.h"
-#include <string>
 
 class WSMAN_DLL_API SIOWSManClient : public BaseWSManClient
 {
@@ -65,8 +64,7 @@ public:
 	};
 private:
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
+
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::IPS_SecIOService m_service;	
 	UNLOCK_AFTER;

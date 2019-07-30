@@ -11,10 +11,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string IPSIderSessionUsingPortClient::DEFAULT_USER = "$$uns";
-const std::string IPSIderSessionUsingPortClient::DEFAULT_PASS = "$$uns";
-
-IPSIderSessionUsingPortClient::IPSIderSessionUsingPortClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_LinkTechnology(0)
+IPSIderSessionUsingPortClient::IPSIderSessionUsingPortClient() : m_LinkTechnology(0)
 {
 }
 

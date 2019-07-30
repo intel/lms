@@ -17,7 +17,6 @@
 #include "IPS_ManualProvisioningRecord.h"
 #include "IPS_AdminProvisioningRecord.h"
 #include "BaseWSManClient.h"
-#include <string>
 #include <vector>
 
 
@@ -47,8 +46,7 @@ public:
 	bool Init(bool forceGet = false);
 private:
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
+
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::IPS_HostBasedSetupService m_HostBasedSetupService; //for CurrentFunctionalityLevel(0;1;2)
 	Intel::Manageability::Cim::Typed::IPS_ClientProvisioningRecord m_HostProvisioningRecord; //for ProvCertificateHash

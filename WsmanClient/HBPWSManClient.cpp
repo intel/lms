@@ -14,12 +14,9 @@
 #include <sstream>
 
 using namespace std;
-
-const string HBPWSManClient::DEFAULT_USER = "$$uns";
-const string HBPWSManClient::DEFAULT_PASS = "$$uns";
  
 using namespace Intel::Manageability::Cim::Typed;
-HBPWSManClient::HBPWSManClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_AdminProvisioningRecordGot(false)
+HBPWSManClient::HBPWSManClient() : m_AdminProvisioningRecordGot(false)
 {
 	m_isInit = false;
 	m_HostBasedSetupServiceGot = false;

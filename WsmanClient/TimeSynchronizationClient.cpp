@@ -15,10 +15,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string TimeSynchronizationClient::DEFAULT_USER = "$$uns";
-const std::string TimeSynchronizationClient::DEFAULT_PASS = "$$uns";
-
-TimeSynchronizationClient::TimeSynchronizationClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_TimeSyncState(DEFAULT_TRUE)
+TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(DEFAULT_TRUE)
 {
 	m_isInit = false;
 }

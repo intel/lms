@@ -15,11 +15,9 @@
 
 using namespace std; 
 
-const string WifiPortClient::DEFAULT_USER = "$$uns";
-const string WifiPortClient::DEFAULT_PASS = "$$uns";
-
 using namespace Intel::Manageability::Cim::Typed;
-WifiPortClient::WifiPortClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+
+WifiPortClient::WifiPortClient()
 {
 }
 

@@ -47,10 +47,7 @@ using namespace std;
 
 using namespace Intel::Manageability::Cim::Typed;
 
-const string PowerManagementCapabilitiesClient::DEFAULT_USER = "$$uns";
-const string PowerManagementCapabilitiesClient::DEFAULT_PASS = "$$uns";
-
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient() : BaseWSManClient( DEFAULT_USER, DEFAULT_PASS)
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient()
 {
 	m_isInit = false;
 	

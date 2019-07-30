@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -34,8 +34,6 @@ private:
 	bool SAPInit(bool forceGet = false);
 	bool m_isInit;
 	bool m_isSAPInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::IPS_KVMRedirectionSettingData m_service;

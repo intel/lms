@@ -16,10 +16,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string HostBootReasonClient::DEFAULT_USER = "$$uns";
-const std::string HostBootReasonClient::DEFAULT_PASS = "$$uns";
-
-HostBootReasonClient::HostBootReasonClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+HostBootReasonClient::HostBootReasonClient()
 {
 	m_isInit = false;
 }

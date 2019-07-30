@@ -602,8 +602,6 @@ private:
 
 
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 
 	Intel::Manageability::Cim::Typed::AMT_AuditLog m_service;
 	friend class AuditLogAccessor;

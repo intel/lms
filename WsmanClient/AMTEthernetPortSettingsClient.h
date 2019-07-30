@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -28,8 +28,6 @@ public:
 private:
 	bool Init(bool forceGet = false, bool actionGet = false);
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 
 	unsigned int	m_LinkControl;
 	unsigned int	m_LinkPreference;

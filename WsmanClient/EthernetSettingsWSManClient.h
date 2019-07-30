@@ -26,8 +26,7 @@ public:
 	unsigned int Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings);
 private:
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
+
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings m_service;
 	UNLOCK_AFTER;

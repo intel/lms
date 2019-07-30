@@ -47,6 +47,7 @@ class WSMAN_DLL_API BaseWSManClient
 public:
 
 	// Contructors and Destructor.
+	BaseWSManClient();
 	BaseWSManClient(const std::string &defaultUser, const std::string &defaultPass);
 
 	virtual ~BaseWSManClient();
@@ -99,7 +100,8 @@ private:
 	std::string							m_defaultUser;
 	std::string							m_defaultPass; //Encrypted
 
-
+	static const std::string DEFAULT_USER;
+	static const std::string DEFAULT_PASS;
 
 	BaseWSManClient& operator= (const BaseWSManClient& ){ return *this; } //to avoid misuse
 

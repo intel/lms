@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2019 Intel Corporation
  */
 #ifndef _IPS_KVM_SESSION_USING_PORT_CLIENT_H
 #define _IPS_KVM_SESSION_USING_PORT_CLIENT_H
@@ -18,9 +18,6 @@ public:
 private:
 	bool init();
 	short m_LinkTechnology; 
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
-	
 };
 
 #endif //_IPS_KVM_SESSION_USING_PORT_CLIENT_H

@@ -34,8 +34,6 @@ private:
 	bool CILAFilterCollectionSubscriptionExists(short* pExist,std::string filterType);
 
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 
 	Intel::Manageability::Cim::Typed::AMT_SNMPEventSubscriber m_service;
 };

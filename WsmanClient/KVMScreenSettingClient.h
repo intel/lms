@@ -47,8 +47,7 @@ public:
 private:
 	bool Init(bool forceGet = false);
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
+
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::IPS_ScreenSettingData m_service;
 	UNLOCK_AFTER;

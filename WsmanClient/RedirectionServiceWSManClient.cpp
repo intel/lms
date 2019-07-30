@@ -15,10 +15,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string RedirectionServiceWSManClient::DEFAULT_USER = "$$uns";
-const std::string RedirectionServiceWSManClient::DEFAULT_PASS = "$$uns";
-
-RedirectionServiceWSManClient::RedirectionServiceWSManClient(): BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+RedirectionServiceWSManClient::RedirectionServiceWSManClient()
 {
 	m_isInit = false;
 }

@@ -14,12 +14,9 @@
 
 using namespace std;
 
-const string KVMWSManClient::DEFAULT_USER = "$$uns";
-const string KVMWSManClient::DEFAULT_PASS = "$$uns";
-
 using namespace Intel::Manageability::Cim::Typed;
 
-KVMWSManClient::KVMWSManClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+KVMWSManClient::KVMWSManClient()
 {
 	m_isInit = false;
 	m_isSAPInit = false;

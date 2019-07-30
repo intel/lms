@@ -16,11 +16,8 @@
 
 using namespace std; 
 
-const string SyncIpClient::DEFAULT_USER = "$$uns";
-const string SyncIpClient::DEFAULT_PASS = "$$uns";
-
 using namespace Intel::Manageability::Cim::Typed;
-SyncIpClient::SyncIpClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_SharedStaticIpState(false)
+SyncIpClient::SyncIpClient() : m_SharedStaticIpState(false)
 {
 	m_isInit = false;
 	

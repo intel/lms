@@ -37,9 +37,6 @@ private:
 	bool Init();
 	bool UpdateTimeSyncState();
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
-
 	
 	Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService::GetLowAccuracyTimeSynch_OUTPUT m_time;
 	LOCK_BEFORE;

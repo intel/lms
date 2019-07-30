@@ -12,7 +12,6 @@
 #define  _WIFI_PORT_CLIENT_H
 
 #include "BaseWSManClient.h"
-#include <string>
 
 class WSMAN_DLL_API WifiPortClient : public BaseWSManClient
 {
@@ -21,9 +20,6 @@ public:
 	virtual ~WifiPortClient();
 
 	bool PortsNum(size_t &ports);
-private:
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 };
 
 #endif //_WIFI_PORT_CLIENT_H

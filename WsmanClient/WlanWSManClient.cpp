@@ -12,15 +12,13 @@
 #include "WlanWSManClient.h"
 #include "global.h"
 
-const std::string WlanWSManClient::DEFAULT_USER = "$$uns";
-const std::string WlanWSManClient::DEFAULT_PASS = "$$uns";
 const std::string InstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Settings ";
 
 typedef Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings CIM_WiFiEndpointSettings;
 typedef Intel::Manageability::Cim::Typed::CIM_WiFiEndpoint CIM_WiFiEndpoint;
 typedef Intel::Manageability::Cim::Typed::AMT_WiFiPortConfigurationService AMT_WiFiPortConfigurationService;
 
-WlanWSManClient::WlanWSManClient(void): BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_isInit(false)
+WlanWSManClient::WlanWSManClient(void): m_isInit(false)
 {
 }
 

@@ -11,10 +11,7 @@
 using namespace Intel::Manageability::Cim::Typed;
 using namespace std;
 
-const std::string IPSKVMSessionUsingPortClient::DEFAULT_USER = "$$uns";
-const std::string IPSKVMSessionUsingPortClient::DEFAULT_PASS = "$$uns";
-
-IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS), m_LinkTechnology(0)
+IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient() : m_LinkTechnology(0)
 {
 }
 

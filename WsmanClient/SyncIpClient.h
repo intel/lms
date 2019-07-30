@@ -31,8 +31,6 @@ public:
 private:
 
 	bool m_isInit;
-	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::IPS_HostIPSettings m_HostIpSettings;

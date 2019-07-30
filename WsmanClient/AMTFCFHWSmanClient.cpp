@@ -18,12 +18,9 @@
 #include <algorithm>
 #include "WsmanClientCatch.h"
 
-const std::string AMTFCFHWSmanClient::DEFAULT_USER = "$$uns";
-const std::string AMTFCFHWSmanClient::DEFAULT_PASS = "$$uns";
-
 using namespace Intel::Manageability::Cim::Typed;
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+AMTFCFHWSmanClient::AMTFCFHWSmanClient()
 {
 	m_isInit = false;
 	

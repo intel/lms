@@ -14,12 +14,9 @@
 
 using namespace std;
 
-const string CancelOptInClient::DEFAULT_USER = "$$uns";
-const string CancelOptInClient::DEFAULT_PASS = "$$uns";
-
 using namespace Intel::Manageability::Cim::Typed;
 
-CancelOptInClient::CancelOptInClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+CancelOptInClient::CancelOptInClient()
 {
 	m_isInit = false;
 	

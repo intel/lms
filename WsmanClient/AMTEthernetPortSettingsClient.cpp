@@ -13,10 +13,7 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-const std::string AMTEthernetPortSettingsClient::DEFAULT_USER = "$$uns";
-const std::string AMTEthernetPortSettingsClient::DEFAULT_PASS = "$$uns";
-
-AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient() : BaseWSManClient(DEFAULT_USER, DEFAULT_PASS)
+AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient()
 {
 	m_isInit = false;
 	m_LinkControl = 0;

@@ -20,10 +20,7 @@ using namespace std;
 
 using namespace Intel::Manageability::Cim::Typed;
 
-const string KVMScreenSettingClient::DEFAULT_USER = "$$uns";
-const string KVMScreenSettingClient::DEFAULT_PASS = "$$uns";
-
-KVMScreenSettingClient::KVMScreenSettingClient() : BaseWSManClient( DEFAULT_USER, DEFAULT_PASS)
+KVMScreenSettingClient::KVMScreenSettingClient()
 {
 	m_isInit = false;
 	
