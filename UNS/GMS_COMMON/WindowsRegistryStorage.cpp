@@ -181,50 +181,29 @@ bool RegDelnodeRecurse (HKEY hKeyRoot, LPTSTR lpSubKey)
     HKEY hKey;
     FILETIME ftWrite;
 
-	HMODULE hAdvapi32dll = NULL;
     // First, see if we can delete the key without having
     // to recurse.   
 	try
 	{
-		typedef LONG (WINAPI *REG_DELETE_KEY_EX_PTR)(HKEY, LPCTSTR, REGSAM, DWORD);
 		REGSAM RegSAM = KEY_ALL_ACCESS;
 		
 		/*We need to check in runtime whether we're in a 64 bit OS. If so, we're loading a special RegDeleteKeyEx()
 		function from Advapi32.dll, to enable us to delete from the 64 bit version of the registry. Otherwise, we
 		just call the normal RegDeleteKey() function.*/
-		REG_DELETE_KEY_EX_PTR RegDeleteKeyExPtr = NULL;
 		if (Is64BitOS())
 		{
 			RegSAM |= KEY_WOW64_64KEY;
-			hAdvapi32dll = SafeLoadDll(L"Advapi32.dll");
-			if (hAdvapi32dll != NULL)
-				RegDeleteKeyExPtr = (REG_DELETE_KEY_EX_PTR) GetProcAddress(hAdvapi32dll, "RegDeleteKeyExW");
 		}
 
-		if (RegDeleteKeyExPtr != NULL)
-		{
-			//If we have a pointer to this function, we're in a 64 bit OS and so we need to use it.
-			lResult = RegDeleteKeyExPtr(hKeyRoot, lpSubKey, RegSAM, 0);
-		}
-		else
-		{
-			lResult = RegDeleteKey(hKeyRoot, lpSubKey);
-		}
-
+		lResult = RegDeleteKeyEx(hKeyRoot, lpSubKey, RegSAM, 0);
 		if (lResult == ERROR_SUCCESS) 
 		{
-			if (hAdvapi32dll != NULL) 
-				FreeLibrary(hAdvapi32dll);
 			return true;
 		}
 
-		lResult = RegOpenKeyEx (hKeyRoot, lpSubKey, 0, RegSAM, &hKey);
-
+		lResult = RegOpenKeyEx(hKeyRoot, lpSubKey, 0, RegSAM, &hKey);
 		if (lResult != ERROR_SUCCESS) 
 		{
-			if (hAdvapi32dll != NULL) 
-				FreeLibrary(hAdvapi32dll);
-
 			if (lResult == ERROR_FILE_NOT_FOUND) {
 				return true;
 			} 
@@ -244,9 +223,6 @@ bool RegDelnodeRecurse (HKEY hKeyRoot, LPTSTR lpSubKey)
 
 			if ( lpSubKeyLen == ((2 * MAX_PATH)-1) )
 			{
-				if (hAdvapi32dll != NULL) 
-					FreeLibrary(hAdvapi32dll);
-
 				RegCloseKey (hKey);
 				return false;
 			}
@@ -289,30 +265,13 @@ bool RegDelnodeRecurse (HKEY hKeyRoot, LPTSTR lpSubKey)
 
 		RegCloseKey (hKey);
 
-		// Try again to delete the key.
-		if (RegDeleteKeyExPtr != NULL)
-		{
-			//If we have a pointer to this function, we're in a 64 bit OS and so we need to use it.
-			lResult = RegDeleteKeyExPtr(hKeyRoot, lpSubKey, RegSAM, 0);
-		}
-		else
-		{
-			lResult = RegDeleteKey(hKeyRoot, lpSubKey);
-		}
-
-		//Free the dll if it was loaded.
-		if (hAdvapi32dll != NULL) 
-			FreeLibrary(hAdvapi32dll);
-
-	
+		lResult = RegDeleteKeyEx(hKeyRoot, lpSubKey, RegSAM, 0);
 		if (lResult == ERROR_SUCCESS) 
 			return true;
 	}
 	catch (std::exception&)
 	{
-		if (hAdvapi32dll != NULL) 
-			FreeLibrary(hAdvapi32dll);
-		return FALSE;
+		return false;
 	}
     
 	return false;
