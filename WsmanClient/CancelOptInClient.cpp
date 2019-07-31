@@ -12,18 +12,14 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace std;
-
 using namespace Intel::Manageability::Cim::Typed;
 
-CancelOptInClient::CancelOptInClient()
+CancelOptInClient::CancelOptInClient() : m_isInit(false)
 {
-	m_isInit = false;
-	
 }
-CancelOptInClient::CancelOptInClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password)
+CancelOptInClient::CancelOptInClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_isInit(false)
 {
-	m_isInit = false;	
 }
 
 CancelOptInClient::~CancelOptInClient()
@@ -33,7 +29,6 @@ CancelOptInClient::~CancelOptInClient()
 bool CancelOptInClient::CancelOptIn(unsigned int* pReturnValue)
 {
 	UNS_DEBUG("CancelOptInClient::CancelOptIn\n");
-	
 
 	try 
 	{
@@ -62,7 +57,7 @@ bool CancelOptInClient::Init(bool forceGet)
 	try
 	{
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		m_service.WsmanClient(m_client.get());
@@ -96,4 +91,3 @@ bool CancelOptInClient::GetUserConsentState(short* pState, short* pPolicy)
 
 	return true;
 }
-

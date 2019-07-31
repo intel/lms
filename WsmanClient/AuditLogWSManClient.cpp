@@ -14,14 +14,10 @@
 #include <iomanip>
 #include "WsmanClientCatch.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-
-using namespace std;
 using namespace Intel::Manageability::Cim::Typed;
 
-AuditLogWSManClient::AuditLogWSManClient()
+AuditLogWSManClient::AuditLogWSManClient() : m_isInit(false)
 {
-	m_isInit = false;	
 }
 
 AuditLogWSManClient::~AuditLogWSManClient(){}
@@ -82,7 +78,7 @@ bool AuditLogWSManClient::Init(bool forceGet)
 	try
 	{
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
@@ -350,13 +346,13 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 
 			break;
 		case KERBEROS_SID:
-			parsed << hex << uppercase;
+			parsed << std::hex << std::uppercase;
 
 			for (unsigned int i=1 ; i<=sizeof(uint32_t) ; i++)
 			{
 				parsed << (int)((uint8_t*)(&structedRecord.KerberosInitiatorData.UserInDomain))[sizeof(uint32_t)-i] << " ";
 			}
-			parsed << dec << nouppercase;
+			parsed << std::dec << std::nouppercase;
 			if (NULL != name)
 			{
 				delete[] name;
@@ -374,13 +370,13 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			}
 
 			// Display domain data to screen
-			parsed << hex << uppercase;
+			parsed << std::hex << std::uppercase;
 			for (unsigned int i=0 ; (i<structedRecord.KerberosInitiatorData.Domain.size()) && 
 									(i<structedRecord.KerberosInitiatorData.DomainLength); i++)
 			{
 				parsed << (int)structedRecord.KerberosInitiatorData.Domain[i] << " ";
 			}
-			parsed << dec << nouppercase;
+			parsed << std::dec << std::nouppercase;
 
 			break;
 		case LOCAL_INITIATOR:
@@ -452,11 +448,14 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		
 		// Display Extended Data
 		parsed << "]]></InitiatorNetAddress>\n<ExtendedData><![CDATA[";
-		try {
+		try
+		{
 			parsed << DisplayExtendedData(structedRecord.AuditAppID, 
 				structedRecord.EventID, structedRecord.ExtendedData, 
 				structedRecord.ExtendedDataLength) ;
-		} catch( exception &e) {
+		}
+		catch(std::exception &e)
+		{
 			const char* reason =  e.what();
 			UNS_DEBUG("%C\n", reason);
 			parsed << "Exception while parsing extended data"; 
@@ -1061,14 +1060,14 @@ std::string AuditLogWSManClient::DisplayBasicUsernameSidInformation(uint8_t* ext
 		if (KERBEROS_SID == initiatorType)
 		{
 			ss << "SID";
-			ss << ":" << hex << uppercase;
+			ss << ":" << std::hex << std::uppercase;
 
 			for (size_t j=0 ; (j<sizeof(uint32_t)) && (i<extendedDataLen) ; j++)
 			{
 				ss << " " << (int)extData[i];
 				i++;
 			}
-			ss << dec << nouppercase << ". ";
+			ss << std::dec << std::nouppercase << ". ";
 			
 			if ( i < extendedDataLen)
 			{
@@ -1091,12 +1090,12 @@ std::string AuditLogWSManClient::DisplayBasicUsernameSidInformation(uint8_t* ext
 		} 
 		else if (KERBEROS_SID == initiatorType)
 		{
-			ss << "Domain:" << hex << uppercase;
+			ss << "Domain:" << std::hex << std::uppercase;
 			for (int j=0 ; (j<length) && (i<extendedDataLen) ; i++, j++)
 			{
 				ss << " " <<  (int)extData[i];
 			}
-			ss << dec << nouppercase << ". ";
+			ss << std::dec << std::nouppercase << ". ";
 		}		
 	}
 	return ss.str();
@@ -1294,13 +1293,13 @@ std::string AuditLogWSManClient::DisplaySecurityAdminTlsCertificateRelatedEvent(
 	int i = 0;
 	if (i<extendedDataLen)
 	{
-		ss << "Certificate Serial Number: " << hex << uppercase;
+		ss << "Certificate Serial Number: " << std::hex << std::uppercase;
 		for (int x=0 ; (x<CERT_SERIAL_NUM_MAX_LEN) && (i<extendedDataLen); x++)
 		{
 			ss << (int)extData[i] << " ";
 			i++;
 		}
-		ss << dec << nouppercase;
+		ss << std::dec << std::nouppercase;
 	}
 	return ss.str();
 }
@@ -1332,12 +1331,12 @@ std::string AuditLogWSManClient::DisplaySecurityAdminPowerPackageModifiedEvent(u
 	stringstream ss;
 	ss << "Power Package Modified to: ";
 	stringstream data;
-	data << hex << uppercase << setfill('0');
+	data << std::hex << std::uppercase << std::setfill('0');
 	for (int k=0; k<16; k++)
 	{
-		data << setw(2) << (int)extData[k];
+		data << std::setw(2) << (int)extData[k];
 	}
-	data << dec << nouppercase;
+	data << std::dec << std::nouppercase;
 	for (int k=0; k<12; k++)
 	{
 		if (data.str().compare(powerPolicyFW[k]) == 0)
@@ -1435,13 +1434,13 @@ std::string AuditLogWSManClient::DisplayRemoteControlBootOptionsRelatedEvent(uin
 	int i=0;
 	if (i<extendedDataLen)
 	{
-		ss << "Boot Options: " << hex << uppercase;
+		ss << "Boot Options: " << std::hex << std::uppercase;
 		for (int x=0 ; (x<BOOT_OPTIONS_LEN) && (i<extendedDataLen); x++)
 		{
 			ss << (int)extData[i] << " ";
 			i++;
 		}
-		ss << dec << nouppercase;
+		ss << std::dec << std::nouppercase;
 	}
 	return ss.str();
 }
@@ -1852,7 +1851,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 	{
 		if (MANUAL_ID == interfaceIDGenType)
 		{
-			ss << "Interface ID: " << hex << uppercase;
+			ss << "Interface ID: " << std::hex << std::uppercase;
 			for (int j=0 ; (j<INTERFCAE_ID_LEN) && (i<extendedDataLen); j++)
 			{
 				if ((int)extData[i] < 10)
@@ -1862,7 +1861,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 				ss << (int)extData[i];
 				i++;
 			}
-			ss << dec << nouppercase << ". ";
+			ss << std::dec << std::nouppercase << ". ";
 		}
 		else
 		{
@@ -1875,7 +1874,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 	{
 		if ((i+16) <= extendedDataLen)
 		{
-			ss << addresses[j] << hex << uppercase;
+			ss << addresses[j] << std::hex << std::uppercase;
 			for ( int k = 0; k < 16; k++ )
 			{
 				if (!(k%2) && (int)extData[i+k] == 0 && (int)extData[i+k+1] == 0)  // put 0 instead of 0000
@@ -1894,7 +1893,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 					ss << ":";
 				}
 			}
-			ss << dec << nouppercase << " ";
+			ss << std::dec << std::nouppercase << " ";
 			i+=16;
 		}
 	}
@@ -2000,7 +1999,7 @@ std::string AuditLogWSManClient::DisplayEventManagerAlertRelatedEvent(uint8_t* e
 	{
 		if ((i+16)<=extendedDataLen)
 		{
-			ss << "Alert Target IP Address: " << hex << uppercase;
+			ss << "Alert Target IP Address: " << std::hex << std::uppercase;
 			for ( int k = 0; k < 16; k++ )
 			{
 				if (k%2 == 0 && (int)extData[i+k] == 0 && (int)extData[i+k+1] == 0)
@@ -2020,7 +2019,7 @@ std::string AuditLogWSManClient::DisplayEventManagerAlertRelatedEvent(uint8_t* e
 				}
 			}
 			i+=16;
-			ss << dec << nouppercase;
+			ss << std::dec << std::nouppercase;
 		}
 	}
 
@@ -2569,15 +2568,12 @@ std::string AuditLogWSManClient::DisplayWatchdogActionPairingChangedEvent(uint8_
 std::string AuditLogWSManClient::DisplayUnknownEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	stringstream ss;
-	ss << "Unknown Event: Length = " << (unsigned int)extendedDataLen << ". Data =" << hex << uppercase;
+	ss << "Unknown Event: Length = " << (unsigned int)extendedDataLen << ". Data =" << std::hex << std::uppercase;
 
 	for(int i=0 ; i<extendedDataLen; i++)
 	{
 		ss << " " << (int)extData[i];
 	}
-	ss << dec << nouppercase  << ". ";
+	ss << std::dec << std::nouppercase  << ". ";
 	return ss.str();
 }
-
-
-

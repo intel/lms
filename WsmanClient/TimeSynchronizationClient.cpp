@@ -13,22 +13,18 @@
 #include "WsmanClientCatch.h"
 
 using namespace Intel::Manageability::Cim::Typed;
-using namespace std;
 
-TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(DEFAULT_TRUE)
+TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(DEFAULT_TRUE), m_isInit(false)
 {
-	m_isInit = false;
 }
 
-TimeSynchronizationClient::TimeSynchronizationClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password), m_TimeSyncState(DEFAULT_TRUE)
+TimeSynchronizationClient::TimeSynchronizationClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_TimeSyncState(DEFAULT_TRUE), m_isInit(false)
 {
-	m_isInit = false;	
 }
-
 
 TimeSynchronizationClient::~TimeSynchronizationClient()
 {
-	m_isInit = false;
 }
 
 bool TimeSynchronizationClient::Init()
@@ -37,7 +33,7 @@ bool TimeSynchronizationClient::Init()
 	try 
 	{
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		m_service.WsmanClient(m_client.get());
@@ -85,7 +81,6 @@ bool TimeSynchronizationClient::GetLocalTimeSyncEnabledState(bool & state)
 
 	return true;
 }
-
 
 bool TimeSynchronizationClient::GetAMTTime(unsigned int & time)
 {	
@@ -138,5 +133,3 @@ bool TimeSynchronizationClient::SetAMTTime(unsigned int time)
 	CATCH_exception_return("TimeSynchronizationClient::SetAMTTime")
 	return true;
 }
-
-

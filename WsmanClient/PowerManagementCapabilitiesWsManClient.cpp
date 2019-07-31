@@ -42,21 +42,15 @@ enum PowerStates
 	GRACEFUL_RESET = 14
 };
 
-using namespace std;
-
-
 using namespace Intel::Manageability::Cim::Typed;
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient()
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient() : m_isInit(false)
 {
-	m_isInit = false;
-	
 }
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(const std::string &User, const std::string &Password) : BaseWSManClient( User, Password)
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_isInit(false)
 {
-	m_isInit = false;
-	
 }
 
 PowerManagementCapabilitiesClient::~PowerManagementCapabilitiesClient()
@@ -72,7 +66,7 @@ bool PowerManagementCapabilitiesClient::Init(bool forceGet)
 	try 
 	{
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		m_service.WsmanClient(m_client.get());

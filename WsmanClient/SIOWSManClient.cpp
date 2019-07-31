@@ -12,13 +12,8 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace std;
-
-using namespace Intel::Manageability::Cim::Typed;
-
-SIOWSManClient::SIOWSManClient()
+SIOWSManClient::SIOWSManClient() : m_isInit(false)
 {
-	m_isInit = false;
 }
 
 SIOWSManClient::~SIOWSManClient()
@@ -105,7 +100,7 @@ bool SIOWSManClient::Init(bool forceGet)
 
 	try {
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
@@ -144,6 +139,3 @@ bool SIOWSManClient::GetExpectedLanguage(unsigned short *language)
 	*language = (m_service.RequestedLanguage()); 
 	return true;
 }
-
-
-	

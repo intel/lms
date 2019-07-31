@@ -13,11 +13,9 @@
 #include "WsmanClientCatch.h"
 
 using namespace Intel::Manageability::Cim::Typed;
-using namespace std;
 
-RedirectionServiceWSManClient::RedirectionServiceWSManClient()
+RedirectionServiceWSManClient::RedirectionServiceWSManClient() : m_isInit(false)
 {
-	m_isInit = false;
 }
 
 RedirectionServiceWSManClient::~RedirectionServiceWSManClient()
@@ -54,7 +52,7 @@ bool RedirectionServiceWSManClient::Init(bool forceGet)
 	try
 	{
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		m_service.WsmanClient(m_client.get());

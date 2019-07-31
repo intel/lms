@@ -20,14 +20,13 @@
 
 using namespace Intel::Manageability::Cim::Typed;
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient()
+AMTFCFHWSmanClient::AMTFCFHWSmanClient() : m_isInit(false)
 {
-	m_isInit = false;
-	
 }
-AMTFCFHWSmanClient::AMTFCFHWSmanClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password)
+
+AMTFCFHWSmanClient::AMTFCFHWSmanClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_isInit(false)
 {
-	m_isInit = false;	
 }
 
 AMTFCFHWSmanClient::~AMTFCFHWSmanClient()
@@ -44,7 +43,7 @@ bool AMTFCFHWSmanClient::Init()
 	try {
 		if (!m_endpoint)
 		{
-			SetEndpoint(false);
+			SetEndpoint();
 		
 			m_isInit = true;
 			
@@ -53,8 +52,6 @@ bool AMTFCFHWSmanClient::Init()
 	CATCH_exception("AMTFCFHWSmanClient::Init")
 	return m_isInit;
 }
-
-
 
 bool AMTFCFHWSmanClient::userInitiatedPolicyRuleExists(short* pExist)
 {
@@ -135,8 +132,6 @@ bool AMTFCFHWSmanClient::userInitiatedPolicyRuleForLocalMpsExists(short* pExist)
 	CATCH_exception("AMTFCFHWSmanClient::userInitiatedPolicyRuleForLocalMpsExists")
 	return false;
 }
-
-
 
 bool AMTFCFHWSmanClient::snmpEventSubscriberExists(short* pExist)
 {

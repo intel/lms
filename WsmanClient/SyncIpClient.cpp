@@ -10,22 +10,18 @@
 
 #include "AMT_EthernetPortSettings.h"
 #include "SyncIpClient.h"
-
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace std; 
-
 using namespace Intel::Manageability::Cim::Typed;
-SyncIpClient::SyncIpClient() : m_SharedStaticIpState(false)
+
+SyncIpClient::SyncIpClient() : m_SharedStaticIpState(false), m_isInit(false)
 {
-	m_isInit = false;
-	
 }
 
-SyncIpClient::SyncIpClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password), m_SharedStaticIpState(false)
+SyncIpClient::SyncIpClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_SharedStaticIpState(false), m_isInit(false)
 {
-	m_isInit = false;	
 }
 
 
@@ -39,7 +35,7 @@ bool SyncIpClient::Init(bool forceGet)
 
 	try {
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		

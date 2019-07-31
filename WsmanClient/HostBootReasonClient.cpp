@@ -14,18 +14,15 @@
 #include "WsmanClientCatch.h"
 
 using namespace Intel::Manageability::Cim::Typed;
-using namespace std;
 
-HostBootReasonClient::HostBootReasonClient()
+HostBootReasonClient::HostBootReasonClient() : m_isInit(false)
 {
-	m_isInit = false;
 }
 
-HostBootReasonClient::HostBootReasonClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password)
+HostBootReasonClient::HostBootReasonClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_isInit(false)
 {
-	m_isInit = false;	
 }
-
 
 HostBootReasonClient::~HostBootReasonClient()
 {
@@ -42,7 +39,7 @@ bool HostBootReasonClient::Init(bool forceGet, bool actionGet)
 	try {
 		if (!m_endpoint)
 		{
-			SetEndpoint(false);
+			SetEndpoint();
 		
 			m_isInit = true;
 			
@@ -62,9 +59,9 @@ bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX
 	{
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		vector<shared_ptr<IPS_HostBootReason>> HostBootReason = 
+		std::vector<std::shared_ptr<IPS_HostBootReason>> HostBootReason =
 			IPS_HostBootReason::Enumerate(m_client.get()); 	
-		vector<shared_ptr<IPS_HostBootReason>>::iterator HostBootReasonIterator;
+		std::vector<std::shared_ptr<IPS_HostBootReason>>::iterator HostBootReasonIterator;
 				
 		for (HostBootReasonIterator = HostBootReason.begin(); 
 			 HostBootReasonIterator != HostBootReason.end() ; 
@@ -84,7 +81,6 @@ bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX
 			}
 			else 
 			{
-				
 				return false;		
 			}
 		}
@@ -92,6 +88,3 @@ bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX
 	CATCH_exception("HostBootReasonClient::GetHostResetReason")
 	return false;
 }
-
-
-

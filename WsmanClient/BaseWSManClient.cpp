@@ -7,7 +7,7 @@
 @file: BaseWSManClient.cpp
 
 --*/
-#define _CRT_SECURE_NO_WARNINGS
+
 #include "BaseWSManClient.h"
 #include "CryptUtils_w.h"
 #include "global.h"
@@ -15,23 +15,6 @@
 #include "MEIClientException.h"
 #include "AMTHIErrorException.h"
 #include "GetLocalSystemAccountCommand.h"
-#include "CryptUtils_w.h"
-
-#ifdef _WIN32
-#include <iphlpapi.h>
-#else
-#include <netdb.h>
-#include <unistd.h>
-#include <limits.h>
-#endif
-
-#include <string>
-
-#define WSMAN_PATH           "/wsman"
-#define WSMAN_HTTPS_SCHEME   "https"
-#define WSMAN_HTTP_SCHEME    "http"
-#define WSMAN_AUTH_DIGEST    "digest"
-
 
 const std::string BaseWSManClient::DEFAULT_USER = "$$uns";
 const std::string BaseWSManClient::DEFAULT_PASS = "$$uns";
@@ -58,9 +41,7 @@ BaseWSManClient::BaseWSManClient(const std::string &defaultUser,
 //************************************************************************
 BaseWSManClient::~BaseWSManClient()
 {		
-	
 }
-
 
 //************************************************************************
 // Name:		BaseWSManClient::Init
@@ -76,7 +57,7 @@ void BaseWSManClient::Init()
 	}
 	
 	// Init some flags.
-	m_endpoint   = false; // Endpoint not resolved yet.
+	m_endpoint = false; // Endpoint not resolved yet.
 	m_client.reset();
 }
 
@@ -84,29 +65,8 @@ void BaseWSManClient::Init()
 // Name			: SetEndpoint.
 // Description	: Set soap endpoint  	
 //************************************************************************
-int BaseWSManClient::SetEndpoint(bool secure)
+int BaseWSManClient::SetEndpoint()
 {
-	int status;
-	std::string fqdn;
-
-	// Get FQDN of local host
-	if (m_fqdn.empty() && secure)
-	{
-		// First try to get the FQDN from the hosts file.
-		status = FindHostsFileFQDN(fqdn);
-		// If FQDN wasn't found, try to get the local host FQDN.
-		if (status != 1) {
-			status = GetNetworkFQDN(fqdn);
-		}
-
-		// IF both failed return ERROR.
-		if (status != 1)
-		{
-			return WSMAN_STATUS_SUBSCRIPTION_ERROR;
-		}
-		m_fqdn = fqdn;
-	}
-
 	//Lock WsMan to prevent reentry
 	std::lock_guard<std::mutex> lock(WsManSemaphore());
 		
@@ -120,131 +80,6 @@ int BaseWSManClient::SetEndpoint(bool secure)
 	return WSMAN_STATUS_SUCCESS;
 }
 
-
-//************************************************************************
-// Name			: FindHostsFileFQDN 
-// Description	: Find the LMS inserted FQDN in the hosts file.
-// Params		: fqdn - A pointer to a buffer at least FQDN_MAX_SIZE in length
-//
-// Returns		: 1 if FQDN was found (it is placed in @fqdn)
-//		          0 if FQDN wasn't found
-//				  < 0 on error.
-//************************************************************************
-int	BaseWSManClient::FindHostsFileFQDN (std::string& fqdn)
-{
-	const char *sig = "# LMS GENERATED LINE";
-	bool hasFqdn = false;
-#ifdef _WIN32
-	const char *dir = "\\system32\\drivers\\etc\\";
-	const char *hostFile = "hosts";
-
-	auto sysDrive = getenv("SystemRoot");
-	if (sysDrive == NULL) {
-		// Can't find hosts file
-		return -1;
-	}
-	std::string inFileName(sysDrive);
-	inFileName.append(dir);
-	inFileName.append(hostFile);
-	
-#else
-	std::string inFileName("/etc/hosts");
-#endif
-
-	FILE *ifp = fopen(inFileName.c_str(), "r");
-	if (ifp == NULL) {
-		// Can't open hosts file
-		return -1;
-	}
-
-	char line[1024];
-
-	// Go over each line and check for LMS signature
-	while (fgets(line, sizeof(line), ifp)) {
-		if (strstr(line, sig) != NULL) {
-			char tmpFqdn[FQDN_MAX_SIZE + 1];
-
-			memset(tmpFqdn, 0, sizeof(tmpFqdn));
-
-			if (sscanf(line, "127.0.0.1       %256s #", tmpFqdn) == 1) {
-				fqdn = std::string(tmpFqdn);
-				hasFqdn = true;
-				break;
-			}
-
-
-			// Badly formatted line, even though it has LMS sig; ignore it.
-		}
-	}
-
-	fclose(ifp);
-
-	return (hasFqdn) ? 1 : 0;
-}
-
-//************************************************************************
-// Name			: GetNetworkFQDN.
-// Description	: Use the GetNetworkParams to query the local fqdn.
-// Params		: fqdn - A pointer to a buffer at least FQDN_MAX_SIZE in length
-// Returns		: 1 if FQDN was found (it is placed in @fqdn)
-//		          <= 0 on error        
-//************************************************************************
-int	BaseWSManClient::GetNetworkFQDN(std::string& fqdn)
-{
-#ifdef _WIN32
-	FIXED_INFO *FixedInfo;
-	ULONG		ulOutBufLen;
-	DWORD		dwRetVal;
-
-
-	// Allocate memory.
-	FixedInfo = (FIXED_INFO *)GlobalAlloc(GPTR, sizeof(FIXED_INFO));
-	if (FixedInfo == NULL) {
-		return -1;
-	}
-	ulOutBufLen = sizeof(FIXED_INFO);
-
-	// If GetNetworkParams returns ERROR_BUFFER_OVERFLOW, realloc the required memory.
-	if (ERROR_BUFFER_OVERFLOW == GetNetworkParams(FixedInfo, &ulOutBufLen)) {
-		GlobalFree(FixedInfo);
-		FixedInfo = (FIXED_INFO *)GlobalAlloc(GPTR, ulOutBufLen);
-		if (FixedInfo == NULL) {
-			return -1;
-		}
-	}
-	dwRetVal = GetNetworkParams(FixedInfo, &ulOutBufLen);
-	if (dwRetVal) {
-		UNS_ERROR("Call to GetNetworkParams failed. Return Value: %08x\n", dwRetVal);
-		GlobalFree(FixedInfo);
-		return -1;
-	}
-
-	if ((strlen(FixedInfo->HostName) + strlen(FixedInfo->DomainName) + 2) > FQDN_MAX_SIZE) {
-		UNS_ERROR("FQDN too long: %C.%C\n", FixedInfo->HostName, FixedInfo->DomainName);
-		GlobalFree(FixedInfo);
-		return -1;
-	}
-	std::string s_fqdn(FixedInfo -> HostName);
-	s_fqdn.append(".");
-	s_fqdn.append(FixedInfo -> DomainName);
-	fqdn = s_fqdn;
-	GlobalFree( FixedInfo );
-#else // LINUX
-	char hostname[HOST_NAME_MAX];
-	if (gethostname(hostname, HOST_NAME_MAX) != 0) {
-		return -1;
-	}
-	struct hostent *ent = gethostbyname(hostname);
-	if (ent == NULL) {
-		return -1;
-	}
-	fqdn = std::string(ent->h_name);
-#endif
-	return 1;	
-}
-
-
-
 //************************************************************************
 // Name			: GetPassword.
 // Description	: Return encrypted password
@@ -254,7 +89,6 @@ std::string BaseWSManClient::GetPassword()
 {
 	return m_defaultPass;
 }
-
 
 bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& password)
 {
@@ -317,7 +151,6 @@ BaseWSManClient::WsmanInitializer::WsmanInitializer()
 	//generate instances of singletons (generation in first function call is not thread-safe)
 	BaseWSManClient::WsManSemaphore();
 	BaseWSManClient::CtorSemaphore();
-	//Intel::Manageability::Cim::Untyped::CimSerializer::GetSerializer(); 
 }
 
 BaseWSManClient::WsmanInitializer BaseWSManClient::WsmanInitializer::initializer;

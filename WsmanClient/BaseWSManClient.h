@@ -15,12 +15,7 @@
 #include <memory>
 #include <mutex>
 #include "CimWsman.h"
-
-#define FQDN_MAX_SIZE 256
-#define OID_LOCAL  "2.16.840.1.113741.1.2.2"
-
 #include "WsmanClientDllExport.h"
-
 
 typedef enum _WSMAN_STATUS
 {
@@ -33,12 +28,9 @@ typedef enum _WSMAN_STATUS
 	WSMAN_GET_NET_PARAM_ERROR			= 0x6,
 	WSMAN_STATUS_UPDATE_REG_MODE		= 0x7,
 	WSMAN_STATUS_CONNECTION_ERROR		= 0x8
-
 } WSMAN__STATUS;
 
-
 // Constants for the common use
-static const int TIMEOUT = 5;
 static const int AMT_NON_SECURE_PORT = 16992;
 static const int AMT_SECURE_PORT	 = 16993;
 
@@ -53,12 +45,12 @@ public:
 	virtual ~BaseWSManClient();
 
 protected:
-	int SetEndpoint(bool secure);		// Set endpoint for wsman request.
+	int SetEndpoint();		// Set endpoint for wsman request.
 	static std::mutex& WsManSemaphore();// For locking Wsman library
 
 	// Data members
 	std::string							endpoint;
-	bool								m_endpoint;		// True iff endpoint is correct.
+	bool								m_endpoint;		// True if endpoint is correct.
 
 	//This class only acquires the CtorSemaphore in the constructor (or blocks until it can)
 	struct Locker
@@ -75,8 +67,6 @@ protected:
 
 private:
 	void Init();						// Initialize soap client.
-	int		FindHostsFileFQDN	(std::string& fqdn);	// Find the LMS inserted FQDN in the hosts file
-	int		GetNetworkFQDN		(std::string& fqdn);	// Use GetNetworkParams to get local FQDN
 	std::string GetPassword();
 	bool GetLocalSystemAccount(std::string& user,std::string& password);
 
@@ -94,7 +84,6 @@ private:
 	// Data members
 protected:
 	std::shared_ptr<Intel::WSManagement::ICimWsmanClient>			m_client;		// WSMan client.
-	std::string							m_fqdn;			// FQDN of the server.
 	std::string							m_ip;
 private:
 	std::string							m_defaultUser;

@@ -39,7 +39,7 @@ bool WlanWSManClient::Init(void)
 	{
 		if (!m_endpoint)
 		{
-			SetEndpoint(false);
+			SetEndpoint();
 		}
 
 		m_isInit = true;

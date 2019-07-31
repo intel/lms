@@ -13,21 +13,18 @@
 #include "WsmanClientCatch.h"
 #include <sstream>
 
-using namespace std;
- 
 using namespace Intel::Manageability::Cim::Typed;
-HBPWSManClient::HBPWSManClient() : m_AdminProvisioningRecordGot(false)
+
+HBPWSManClient::HBPWSManClient() :
+	m_isInit(false), m_HostBasedSetupServiceGot(false), m_HostProvisioningRecordGot(false),
+	m_RemoteProvisioningRecordGot(false), m_ManualProvisioningRecordGot(false), m_AdminProvisioningRecordGot(false)
 {
-	m_isInit = false;
-	m_HostBasedSetupServiceGot = false;
-	m_HostProvisioningRecordGot = false;
-	m_RemoteProvisioningRecordGot = false;
-	m_ManualProvisioningRecordGot = false;
 }
 
 HBPWSManClient::~HBPWSManClient()
 {
 }
+
 string toUNSDateFormat(string xml)
 {
 	if (!xml.empty())
@@ -146,7 +143,7 @@ bool HBPWSManClient::Init(bool forceGet)
 	try 
 	{			
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		m_HostBasedSetupService.WsmanClient(m_client.get());

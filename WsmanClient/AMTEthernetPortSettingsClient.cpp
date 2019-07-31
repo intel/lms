@@ -13,22 +13,15 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient()
+AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient() :
+	m_isInit(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
 {
-	m_isInit = false;
-	m_LinkControl = 0;
-	m_LinkPreference = 0;
-	m_LinkProtection = 5;
 }
 
-AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password)
+AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient(const std::string &User, const std::string &Password) :
+	BaseWSManClient(User, Password), m_isInit(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
 {
-	m_isInit = false;	
-	m_LinkControl = 0;
-	m_LinkPreference = 0;
-	m_LinkProtection = 5;
 }
-
 
 AMTEthernetPortSettingsClient::~AMTEthernetPortSettingsClient()
 {
@@ -43,7 +36,7 @@ bool AMTEthernetPortSettingsClient::Init(bool forceGet, bool actionGet)
 	try 
 	{
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 
 		using Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings;
@@ -116,5 +109,3 @@ bool AMTEthernetPortSettingsClient::SetLinkPreference(unsigned int LinkPreferenc
 		return false;	
 	return true;
 }
-
-

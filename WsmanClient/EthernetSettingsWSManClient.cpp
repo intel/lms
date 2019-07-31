@@ -12,20 +12,14 @@
 #include "global.h"
 
 using namespace Intel::Manageability::Cim::Typed;
-using namespace std;
 
-EthernetSettingsWSManClient::EthernetSettingsWSManClient()
+EthernetSettingsWSManClient::EthernetSettingsWSManClient() : m_isInit(false)
 {
-	m_isInit = false;
-	
 }
 
-EthernetSettingsWSManClient::EthernetSettingsWSManClient(
-	const std::string &userName, 
-	const std::string &password) : BaseWSManClient(userName, password)
+EthernetSettingsWSManClient::EthernetSettingsWSManClient(const std::string &userName, const std::string &password) :
+	BaseWSManClient(userName, password), m_isInit(false)
 {
-	m_isInit = false;
-	
 }
 
 EthernetSettingsWSManClient::~EthernetSettingsWSManClient()
@@ -38,13 +32,13 @@ unsigned int EthernetSettingsWSManClient::Enumerate(vector<shared_ptr<Intel::Man
 
 	try {
 		if (!m_endpoint)
-			SetEndpoint(false);
+			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		EthernetSettings = AMT_EthernetPortSettings::Enumerate(m_client.get());
 		retValue = 0;
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		const char* reason =  e.what();
 		retValue = ERROR_UNKNOWN_ERROR;
