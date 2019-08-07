@@ -130,6 +130,7 @@ uint32_t PFWUpdateDllWrapperME12::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 		{
 			goto End;
 		}
+		UNS_DEBUG(L"isPfwuRequired LOCL: currentInstanceId=%u, expectedInstanceId=%u\n", currentInstanceId, expectedInstanceId);
 		if (currentInstanceId == 0 ||
 			currentInstanceId != expectedInstanceId)
 		{
@@ -143,6 +144,7 @@ uint32_t PFWUpdateDllWrapperME12::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 		{
 			goto End;
 		}
+		UNS_DEBUG(L"isPfwuRequired WCOD: currentInstanceId=%u, expectedInstanceId=%u\n", currentInstanceId, expectedInstanceId);
 		if (currentInstanceId == 0 ||
 			currentInstanceId != expectedInstanceId)
 		{
