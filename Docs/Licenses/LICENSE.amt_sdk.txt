@@ -1,0 +1,53 @@
+1) INTEL SOFTWARE LICENSE AGREEMENT (SDK, Site License)
+-------------------------------------------------------
+
+IMPORTANT - READ BEFORE COPYING, INSTALLING OR USING.
+Do not use or load this software and any associated materials (collectively,
+the "Software") until you have carefully read the following terms and
+conditions. By loading or using the Software, you agree to the terms of this
+Agreement. If you do not wish to so agree, do not install or use the Software.
+
+LICENSE:  Subject to the restrictions below, Intel Corporation ("Intel")
+grants to you the following non-exclusive, non-assignable, royalty-free
+copyright licenses in the Software. The Software may include portions offered
+on terms in addition to those set out here, as set out in a license
+accompanying those portions:
+
+* Developer Tools include developer documentation, installation or development
+  utilities, and other materials.  You may use them internally for the purposes
+  of using the Software as licensed hereunder, but you may not redistribute
+  them.
+
+* Sample Source may include example interface or application source code.
+  You may copy, modify and compile the Sample Source and distribute it in
+  your own products in binary and source code form.
+
+* End-User Documentation includes textual materials intended for end users.
+  You may copy, modify and distribute them.
+
+* Licensed Binaries are redistributable code provided in binary form.  You
+  may copy and distribute Licensed Binaries with your product.
+
+SITE LICENSE:  You may copy the Software onto your organization's computers
+for your organization's use subject to and consistent with the terms of this
+Agreement.
+
+RESTRICTIONS:  You will make reasonable efforts to discontinue distribution
+of the portions of the Software that you are licensed hereunder to distribute,
+upon Intel's release of an update, upgrade or new version of the Software and
+to make reasonable efforts to distribute such updates, upgrades or new versions
+to your customers who have received the Software herein.
+You may not reverse-assemble, reverse-compile, or otherwise reverse-engineer
+any software provided solely in binary form.
+Distribution of the Software is also subject to the following limitations:
+you (i) are solely responsible to your customers for any update or support
+obligation or other liability which may arise from the distribution,
+(ii) do not make any statement that your product is "certified," or that its
+performance is guaranteed, by Intel, (iii) do not use Intel's name or
+trademarks to market your product without written permission, (iv) shall
+prohibit disassembly and reverse engineering, and (v) shall indemnify, hold
+harmless, and defend Intel and its suppliers from and against any claims or
+lawsuits, including attorney's fees, that arise or result from your
+distribution of any product.
+
+-------------------------------------------------------------------------------
