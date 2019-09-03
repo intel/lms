@@ -1,3 +1,4 @@
+# Copyright (c) Intel Corporation, 2019  All Rights Reserved.
 project(CimFrameworkAll)
 cmake_minimum_required(VERSION 3.1)
 
