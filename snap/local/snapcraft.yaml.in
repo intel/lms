@@ -1,7 +1,10 @@
 name: lms
-version: "2.0.99.0"
+version: "1932.0.0.0"
 summary: Intel(R) AMT Local Manageability Service
 description: Intel(R) Active Management Technology Local Manageability Service
+ allows applications to access
+ the Intel Active Management Technology (AMT) firmware
+ via the Intel Management Engine Interface (MEI).
 
 grade: stable
 confinement: strict
@@ -31,9 +34,10 @@ slots:
 parts:
   lms:
     plugin: cmake
-    configflags:
-      #- -DCMAKE_BUILD_TYPE=Debug
-    source: .
+    #configflags:
+    #  - -DCMAKE_BUILD_TYPE=Debug
+    source: https://github.com/intel/lms.git
+    source-commit: f90fa51f07514b7644cc57846c90e46b146b23ae
     build-packages:
       - g++
       - make
