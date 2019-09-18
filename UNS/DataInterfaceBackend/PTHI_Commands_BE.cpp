@@ -143,9 +143,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetCodeVersionCommand")
-				CATCH_AMTHIErrorException(L"GetCodeVersionCommand")
-				CATCH_exception(L"GetCodeVersionCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetCodeVersionCommand")
+			CATCH_exception(L"GetCodeVersionCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetAMTVersion(std::string &sAMTVersion)
@@ -295,9 +295,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetProvisioningModeCommand")
-				CATCH_AMTHIErrorException(L"GetProvisioningModeCommand")
-				CATCH_exception(L"GetProvisioningModeCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetProvisioningModeCommand")
+			CATCH_exception(L"GetProvisioningModeCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetProvisioningTlsMode(uint32_t &pProvisioningTlsMode)
@@ -312,9 +312,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetProvisioningTlsModeCommand")
-				CATCH_AMTHIErrorException(L"GetProvisioningTlsModeCommand")
-				CATCH_exception(L"GetProvisioningTlsModeCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetProvisioningTlsModeCommand")
+			CATCH_exception(L"GetProvisioningTlsModeCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetProvisioningState(uint32_t &pProvisioningState)
@@ -331,7 +331,7 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetProvisioningStateCommand")
-				catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
+			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
 				if (errNo == AMT_STATUS_NOT_READY)
@@ -346,7 +346,7 @@ namespace Intel {
 				}
 			}
 			CATCH_exception(L"GetProvisioningStateCommand")
-				return ERROR_FAIL;
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetNetworkConnectionStatus(uint32_t &pStatus, uint32_t &pConnectionType, uint32_t &pConnectionTrigger)
@@ -361,9 +361,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetRemoteAccessConnectionStatus")
-				CATCH_AMTHIErrorException(L"GetRemoteAccessConnectionStatus")
-				CATCH_exception(L"GetRemoteAccessConnectionStatus")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetRemoteAccessConnectionStatus")
+			CATCH_exception(L"GetRemoteAccessConnectionStatus")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetUserInitiatedEnabled(short &pStatus)
@@ -400,17 +400,17 @@ namespace Intel {
 						tlsEnabled = getSecurityParametersCommand.getResponse().TLSEnabled;
 					}
 					CATCH_MEIClientException(L"GetSecurityParametersCommand")
-						CATCH_AMTHIErrorException(L"GetSecurityParametersCommand")
-						CATCH_exception(L"GetSecurityParametersCommand")
+					CATCH_AMTHIErrorException(L"GetSecurityParametersCommand")
+					CATCH_exception(L"GetSecurityParametersCommand")
 
-						if (tlsEnabled)
-						{
-							webUIState = AMT_WEB_UI_ENABLED_TLS;
-						}
-						else
-						{
-							webUIState = AMT_WEB_UI_ENABLED_NOT_TLS;
-						}
+					if (tlsEnabled)
+					{
+						webUIState = AMT_WEB_UI_ENABLED_TLS;
+					}
+					else
+					{
+						webUIState = AMT_WEB_UI_ENABLED_NOT_TLS;
+					}
 				}
 				else
 				{
@@ -421,9 +421,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetWebUIStateCommand")
-				CATCH_AMTHIErrorException(L"GetWebUIStateCommand")
-				CATCH_exception(L"GetWebUIStateCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetWebUIStateCommand")
+			CATCH_exception(L"GetWebUIStateCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetPowerPolicy(std::string &bstrPolicy)
@@ -436,9 +436,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetCurrentPowerPolicyCommand")
-				CATCH_AMTHIErrorException(L"GetCurrentPowerPolicyCommand")
-				CATCH_exception(L"GetCurrentPowerPolicyCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetCurrentPowerPolicyCommand")
+			CATCH_exception(L"GetCurrentPowerPolicyCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetLastResetReason(short &pReason)
@@ -452,9 +452,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetAMTStateCommand")
-				CATCH_AMTHIErrorException(L"GetAMTStateCommand")
-				CATCH_exception(L"GetAMTStateCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetAMTStateCommand")
+			CATCH_exception(L"GetAMTStateCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetRedirectionStatus(uint32_t &pSOL, uint32_t &pIDER)
@@ -471,9 +471,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetRedirectionSessionsStateCommand")
-				CATCH_AMTHIErrorException(L"GetRedirectionSessionsStateCommand")
-				CATCH_exception(L"GetRedirectionSessionsStateCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetRedirectionSessionsStateCommand")
+			CATCH_exception(L"GetRedirectionSessionsStateCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetSystemDefenseStatus(uint32_t &pStatus)
@@ -489,9 +489,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetSystemDefenseStatus")
-				CATCH_AMTHIErrorException(L"GetSystemDefenseStatus")
-				CATCH_exception(L"GetSystemDefenseStatus")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetSystemDefenseStatus")
+			CATCH_exception(L"GetSystemDefenseStatus")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetNetworkSettings(short ConnectionType /*WIRED, WIRELESS*/,
@@ -538,9 +538,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetLanInterfaceSettingsCommand")
-				CATCH_AMTHIErrorException(L"GetLanInterfaceSettingsCommand")
-				CATCH_exception(L"GetLanInterfaceSettingsCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetLanInterfaceSettingsCommand")
+			CATCH_exception(L"GetLanInterfaceSettingsCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetIPv6NetworkSettings(short ConnectionType /*WIRED, WIRELESS*/,
@@ -590,7 +590,7 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetIPv6LanInterfaceStatusCommand")
-				catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
+			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
 				if (errNo == AMT_STATUS_IPV6_INTERFACE_DISABLED) //this is not a failure
@@ -606,8 +606,7 @@ namespace Intel {
 					UNS_DEBUG(L"GetIPv6LanInterfaceStatusCommand failed ret=%d\n", errNo);
 			}
 			CATCH_exception(L"GetIPv6LanInterfaceStatusCommand")
-
-				return ERROR_FAIL;
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetSystemUUID(std::string &bstrUUID)
@@ -627,9 +626,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"GetUUIDCommand")
-				CATCH_AMTHIErrorException(L"GetUUIDCommand")
-				CATCH_exception(L"GetUUIDCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"GetUUIDCommand")
+			CATCH_exception(L"GetUUIDCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::OpenUserInitiatedConnection(void)
@@ -646,9 +645,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
-				CATCH_AMTHIErrorException(L"OpenUserInitiatedConnection")
-				CATCH_exception(L"OpenUserInitiatedConnection")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"OpenUserInitiatedConnection")
+			CATCH_exception(L"OpenUserInitiatedConnection")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::CloseUserInitiatedConnection(void)
@@ -663,9 +662,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"CloseUserInitiatedConnection")
-				CATCH_AMTHIErrorException(L"CloseUserInitiatedConnection")
-				CATCH_exception(L"CloseUserInitiatedConnection")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"CloseUserInitiatedConnection")
+			CATCH_exception(L"CloseUserInitiatedConnection")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::TerminateKVMSession(void)
@@ -925,7 +924,7 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
-				catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
+			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				pStatus = (short)e.getErr();
 				if ((pStatus == AMT_STATUS_NOT_READY) || (pStatus == AMT_STATUS_DATA_MISSING))
@@ -939,7 +938,7 @@ namespace Intel {
 				}
 			}
 			CATCH_exception(L"OpenUserInitiatedConnection")
-				return ERROR_FAIL;
+			return ERROR_FAIL;
 		}
 
 
@@ -1086,10 +1085,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MEIClientException(L"AddProxyTableEntryCommand")
-				CATCH_AMTHIErrorException(L"AddProxyTableEntryCommand")
-				CATCH_exception(L"AddProxyTableEntryCommand")
-				return ERROR_FAIL;
+			CATCH_AMTHIErrorException(L"AddProxyTableEntryCommand")
+			CATCH_exception(L"AddProxyTableEntryCommand")
+			return ERROR_FAIL;
 		}
-
 	}
 }

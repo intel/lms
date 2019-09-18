@@ -197,9 +197,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MKHIErrorException(L"GetTheFeatureState")
-				CATCH_MEIClientException(L"GetTheFeatureState")
-				CATCH_exception(L"GetTheFeatureState")
-				return ERROR_FAIL;
+			CATCH_MEIClientException(L"GetTheFeatureState")
+			CATCH_exception(L"GetTheFeatureState")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetFeaturesState(std::vector<FEATURE_STATE> &ppStates)
@@ -249,9 +249,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MKHIErrorException(L"GetTheFeatureState")
-				CATCH_MEIClientException(L"GetTheFeatureState")
-				CATCH_exception(L"GetTheFeatureState")
-				return ERROR_FAIL;
+			CATCH_MEIClientException(L"GetTheFeatureState")
+			CATCH_exception(L"GetTheFeatureState")
+			return ERROR_FAIL;
 		}
 
 		CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
@@ -269,29 +269,29 @@ namespace Intel {
 			}
 			CATCH_exception(L"getFWVersionCommand")
 
-				if (isME11)
+			if (isME11)
+			{
+				if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_FULL_SKU)
 				{
-					if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_FULL_SKU)
-					{
-						return CORPORATE;
-					}
-					if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_SMALL_SKU)
-					{
-						return CONSUMER;
-					}
+					return CORPORATE;
 				}
-				else
+				if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_SMALL_SKU)
 				{
-					Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE_ME10 * Platform10 = (Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE_ME10 *)Platform;
-					if (Platform10->Fields.Corporate)
-					{
-						return CORPORATE;
-					}
-					if (Platform10->Fields.Consumer)
-					{
-						return CONSUMER;
-					}
+					return CONSUMER;
 				}
+			}
+			else
+			{
+				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE_ME10 * Platform10 = (Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE_ME10 *)Platform;
+				if (Platform10->Fields.Corporate)
+				{
+					return CORPORATE;
+				}
+				if (Platform10->Fields.Consumer)
+				{
+					return CONSUMER;
+				}
+			}
 			return WRONG_CUSTOMER_TYPE;
 		}
 
@@ -309,9 +309,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeExt")
-				CATCH_MEIClientException(L"GetPlatformTypeExt")
-				CATCH_exception(L"GetPlatformTypeExt")
-				return ERROR_FAIL;
+			CATCH_MEIClientException(L"GetPlatformTypeExt")
+			CATCH_exception(L"GetPlatformTypeExt")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetPlatformType(PLATFORM_TYPE &pType)
@@ -338,9 +338,9 @@ namespace Intel {
 				return ERROR_OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeCommand")
-				CATCH_MEIClientException(L"GetPlatformTypeCommand")
-				CATCH_exception(L"GetPlatformTypeCommand")
-				return ERROR_FAIL;
+			CATCH_MEIClientException(L"GetPlatformTypeCommand")
+			CATCH_exception(L"GetPlatformTypeCommand")
+			return ERROR_FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetMenageabiltyMode(MENAGEABILTY_MODE &pMode)
@@ -455,7 +455,7 @@ namespace Intel {
 			CATCH_MKHIErrorException(L"GetFWUpdateStateCommand")
 			CATCH_MEIClientException(L"GetFWUpdateStateCommand")
 			CATCH_exception(L"GetFWUpdateStateCommand")
-				UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
+			UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
 				pMEBxVersion.c_str(), pBiosBootState, pCryptoFuseEnable, pLocalFWupdateEnable);
 			return ERROR_OK;
 		}
