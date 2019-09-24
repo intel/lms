@@ -802,7 +802,6 @@ wsman_parse_event_request(WsXmlDocH doc, WsSubscribeInfo * subsInfo,
 	        if (!wsman_f)
 	                wsman_f = wse_f;
 	  
-	        subsInfo->filter = wsman_f;      
 		if (wsman_f) {
 			if (strcmp(wsman_f->dialect, WSM_CQL_FILTER_DIALECT) == 0)
 				subsInfo->flags |= WSMAN_SUBSCRIPTION_CQL;
@@ -822,7 +821,7 @@ wsman_parse_event_request(WsXmlDocH doc, WsSubscribeInfo * subsInfo,
 				subsInfo->flags |= WSMAN_SUBSCRIPTION_SELECTORSET;
 			}
 		}
-		filter_destroy(wsman_f);
+	        subsInfo->filter = wsman_f;      
 	}
 
 	return 0;
