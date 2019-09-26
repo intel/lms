@@ -118,7 +118,7 @@ static char * strcrop(char * s, char * l)
     if ((s==NULL) || (l==NULL)) return NULL ;
     memset(l, 0, ASCIILINESZ+1);
     strncpy(l, s, ASCIILINESZ + 1);
-	l[ASCIILINESZ] = '\0';
+    l[ASCIILINESZ] = '\0';
     last = l + strlen(l);
     while (last > l) {
         if (!isspace((int)*(last-1)))
@@ -216,9 +216,9 @@ static dictionary * dictionary_new(int size)
 
     d = (dictionary *)calloc(1, sizeof(dictionary));
     if (d == NULL)
-        return NULL;
+		return NULL;
 
-    d->size = size;
+    d->size = size ;
     d->val  = (char **)calloc(size, sizeof(char*));
     d->key  = (char **)calloc(size, sizeof(char*));
     d->hash = (unsigned int *)calloc(size, sizeof(unsigned int));
@@ -228,7 +228,7 @@ static dictionary * dictionary_new(int size)
          free(d->key);
          free(d->hash);
          free(d);
-         d = NULL;
+		 d = NULL;
     }
     return d;
 }

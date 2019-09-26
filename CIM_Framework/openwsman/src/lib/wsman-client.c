@@ -424,10 +424,10 @@ _wsmc_add_key_value(list_t **list_ptr,
   }
   if (list == NULL) {
     list = list_create(LISTCOUNT_T_MAX);
-	if (list == NULL) {
-		error("list_create returned NULL");
-		return;
-	}
+    if (list == NULL) {
+      error("list_create returned NULL");
+      return;
+    }
     *list_ptr = list;
   }
   if (!useArray && list_find(list, key, _list_key_compare)) {
@@ -580,8 +580,9 @@ wsmc_add_selector_from_options(WsXmlDocH doc, client_opt_t *options)
 	if (!options->selectors || list_count(options->selectors) == 0)
 		return;
 	header = ws_xml_get_soap_header(doc);
-	if (header == NULL)
+	if (header == NULL) {
 		return;
+	}
         node = list_first(options->selectors);
   	while (node) {
           key_value_t *kv;
@@ -602,7 +603,7 @@ wsmc_set_selectors_from_uri(const char *resource_uri, client_opt_t * options)
   if (options->selectors) {
     list_destroy_nodes(options->selectors);
     list_destroy(options->selectors);
-	options->selectors = NULL;
+    options->selectors = NULL;
   }
   u_uri_t *uri = u_malloc(sizeof(u_uri_t));
   u_uri_parse(resource_uri, &uri);
@@ -693,18 +694,22 @@ wsmc_add_selector_from_uri(WsXmlDocH doc,
 	hnode_t        *hn;
 	hscan_t         hs;
 
-	if (header == NULL)
+	if (header == NULL) {
 		return;
-	if (resource_uri == NULL)
+	}
+	if (resource_uri == NULL) {
 		return;
-		if (u_uri_parse((const char *) resource_uri, &uri) != 0)
-			return;
-		else if (!uri->query)
-			goto cleanup;
+	}
+	if (u_uri_parse((const char *) resource_uri, &uri) != 0) {
+		return;
+	} else if (!uri->query) {
+		goto cleanup;
+	}
 
 	query = u_parse_query(uri->query);
-	if (query == NULL)
+	if (query == NULL) {
 		goto cleanup;
+	}
 	hash_scan_begin(&hs, query);
 	while ((hn = hash_scan_next(&hs))) {
 		wsman_add_selector(header,
@@ -886,8 +891,9 @@ wsman_set_subscribe_options(WsManClient * cl,
 	WsXmlNodeH node = NULL, temp = NULL, node2 = NULL, node3 = NULL;
 	char buf[32];
 
-	if (header == NULL || body == NULL)
+	if (header == NULL || body == NULL) {
 		return;
+	}
 	if(options->delivery_certificatethumbprint ||options->delivery_password ||
 		options->delivery_password) {
 		node = ws_xml_add_child(header, XML_NS_TRUST, WST_ISSUEDTOKENS, NULL);
@@ -976,7 +982,7 @@ wsman_set_subscribe_options(WsManClient * cl,
 			if (temp == NULL) {
 				return;
 			}
-			char * mode = wsmc_create_delivery_sec_mode_str(options->delivery_sec_mode);
+			char *mode = wsmc_create_delivery_sec_mode_str(options->delivery_sec_mode);
 			ws_xml_add_node_attr(temp, NULL, WSM_PROFILE, mode);
 			u_free(mode);
 		}
@@ -1163,8 +1169,9 @@ wsmc_create_request(WsManClient * cl, const char *resource_uri,
 	case WSMAN_ACTION_REFERENCES:
 		node = ws_xml_add_child(body,
 				XML_NS_ENUMERATION, WSENUM_ENUMERATE, NULL);
-		if (options)
+		if (options) {
 			wsman_set_enumeration_options(cl, body, resource_uri, options, filter);
+		}
 		break;
 	case WSMAN_ACTION_PULL:
 		node = ws_xml_add_child(body,
@@ -1189,8 +1196,9 @@ wsmc_create_request(WsManClient * cl, const char *resource_uri,
 		}
 		break;
 	case WSMAN_ACTION_SUBSCRIBE:
-		if (options)
+		if (options) {
 			wsman_set_subscribe_options(cl, request, resource_uri, options, filter);
+		}
 		break;
 	case WSMAN_ACTION_UNSUBSCRIBE:
 		node = ws_xml_add_child(body,
@@ -1205,10 +1213,10 @@ wsmc_create_request(WsManClient * cl, const char *resource_uri,
                 char buf[20];
 		node = ws_xml_add_child(body,
 				XML_NS_EVENTING, WSEVENT_RENEW, NULL);
-                /* %f default precision is 6 -> [-]ddd.ddd */
 		if (node == NULL) {
 			return NULL;
 		}
+                /* %f default precision is 6 -> [-]ddd.ddd */
 		snprintf(buf, 20, "PT%fS", (options) ? options->expires : 0);
 		ws_xml_add_child(node, XML_NS_EVENTING, WSEVENT_EXPIRES, buf);
 		if(data) {
@@ -1233,16 +1241,16 @@ wsmc_create_request(WsManClient * cl, const char *resource_uri,
 				if ((options->flags & FLAG_ENUMERATION_OPTIMIZATION) ==
 					FLAG_ENUMERATION_OPTIMIZATION ) {
 						if (node == NULL) {
-		 					 return NULL;
+							return NULL;
 						}
 						/* wsman:MaxElements is for Enumerate */
 						ws_xml_add_child_format(node, XML_NS_WS_MAN,
 									WSENUM_MAX_ELEMENTS, "%d", options->max_elements);
 				}
 		         } else {
-				 	if (node == NULL) {
-		 					 return NULL;
-						}
+				if (node == NULL) {
+					return NULL;
+				}
 				/* wsen:MaxElements is for Pull */
 				ws_xml_add_child_format(node, XML_NS_ENUMERATION,
 						WSENUM_MAX_ELEMENTS, "%d", options->max_elements);
@@ -1560,9 +1568,9 @@ wsmc_action_invoke(WsManClient * cl,
             if (method) {
               WsXmlNodeH xnode = ws_xml_add_empty_child_format(body,
                                   (char *)resource_uri, "%s_INPUT", method);
-			  if (xnode == NULL) {
-				  return NULL;
-			  }
+              if (xnode == NULL) {
+                  return NULL;
+              }
               lnode_t *lnode = list_first(options->properties);
               while (lnode) {
                 key_value_t *property = (key_value_t *)lnode->list_data;
@@ -1893,8 +1901,9 @@ wsmc_get_enum_context(WsXmlDocH doc)
 		WsXmlNodeH      cntxNode = ws_xml_get_child(enumStartNode, 0,
 				XML_NS_ENUMERATION,
 				WSENUM_ENUMERATION_CONTEXT);
-		if (!cntxNode)
+		if (!cntxNode) {
 			return NULL;
+		}
 		text = ws_xml_get_node_text(cntxNode);
 		if (text) {
 			enumContext = u_strdup(text);
@@ -2005,12 +2014,15 @@ wsmc_create_from_uri(const char* endpoint)
 {
 	u_uri_t *uri = NULL;
 	WsManClient* cl;
-	if (!endpoint)
+	if (!endpoint) {
 		return NULL;
-	if (u_uri_parse((const char *) endpoint, &uri) != 0 )
+	}
+	if (u_uri_parse((const char *) endpoint, &uri) != 0 ) {
 		return NULL;
-	if (!uri)
+	}
+	if (!uri) {
 		return NULL;
+	}
 	cl = wsmc_create( uri->host,
 			uri->port,
 			uri->path,

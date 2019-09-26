@@ -43,7 +43,7 @@ pid_t getpid(void);
 #define sleep(secs) Sleep( (secs) * 1000 )
 #if _MSC_VER < 1900
   #define snprintf _snprintf              /*!< The snprintf is called _snprintf() in Win32 */
-#endif /*_MSC_VER < 1900 */
+#endif /* _MSC_VER < 1900 */
 #define popen _popen
 #define getpid GetCurrentProcessId
 #define pclose _pclose

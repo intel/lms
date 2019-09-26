@@ -73,7 +73,7 @@ static int filter_set(filter_t *filter, const char *dialect, const char *query, 
 			filter->resultProp = u_malloc(propNum*sizeof(char *));
 			if (filter->resultProp) {
 				filter->PropNum = propNum;
-				while(i < propNum) {
+				while (i < propNum) {
 					filter->resultProp[i] = u_strdup(resultProp[i]);
 					i++;
 				}

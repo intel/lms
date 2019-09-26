@@ -330,7 +330,7 @@ int wsman_is_valid_envelope(WsmanMessage * msg, WsXmlDocH doc)
 		retval = 0;
 		debug("allocation failure");
 		goto cleanup;
-	}	
+	}
 	if (strcmp(soapNsUri, XML_NS_SOAP_1_2) != 0) {
 		wsman_set_fault(msg, SOAP_FAULT_VERSION_MISMATCH, 0, NULL);
 		retval = 0;
@@ -428,7 +428,7 @@ int wsman_is_valid_xml_envelope(WsXmlDocH doc)
 	if (!soapNsUri) {
 		retval = 0;
 		goto cleanup;
-	}	
+	}
 
 	if (strcmp(soapNsUri, XML_NS_SOAP_1_2) != 0) {
 		retval = 0;
@@ -703,6 +703,10 @@ int wsman_parse_credentials(WsXmlDocH doc, WsSubscribeInfo * subsInfo,
 							*detailcode = WSMAN_DETAIL_INVALID_ADDRESS;
 							return -1;
 						}
+					} else {
+						*faultcode = WSMAN_INVALID_PARAMETER;
+						*detailcode = WSMAN_DETAIL_INVALID_ADDRESS;
+						return -1;
 					}
 				}
 			}
@@ -715,26 +719,29 @@ int wsman_parse_credentials(WsXmlDocH doc, WsSubscribeInfo * subsInfo,
 			return -1;
 		}
 		if(strcmp(value, WST_USERNAMETOKEN) == 0) {
-			if (subsInfo->username || subsInfo->password) {
-				*faultcode = WSMAN_INVALID_PARAMETER;
-				*detailcode = WSMAN_DETAIL_INVALID_ADDRESS;
-				return -1;
-			}
 			node = ws_xml_get_child(tnode, 0, XML_NS_TRUST, WST_REQUESTEDSECURITYTOKEN);
 			if(node) {
 				node = ws_xml_get_child(node, 0, XML_NS_SE, WSSE_USERNAMETOKEN);
 				if(node) {
 					temp = ws_xml_get_child(node, 0, XML_NS_SE, WSSE_USERNAME);
 					if(temp) {
+						if (subsInfo->username)
+							u_free(subsInfo->username);
 						value = ws_xml_get_node_text(temp);
 						if (value)
 							subsInfo->username = u_strdup(value);
+						else
+							subsInfo->username = NULL;
 					}
 					temp = ws_xml_get_child(node, 0, XML_NS_SE, WSSE_PASSWORD);
 					if(temp) {
+						if (subsInfo->password)
+							u_free(subsInfo->password);
 						value = ws_xml_get_node_text(temp);
 						if (value)
 							subsInfo->password = u_strdup(value);
+						else
+							subsInfo->password = NULL;
 					}
 				}
 			}
@@ -743,18 +750,17 @@ int wsman_parse_credentials(WsXmlDocH doc, WsSubscribeInfo * subsInfo,
 					subsInfo->password);
 		}
 		else if(strcmp(value, WST_CERTIFICATETHUMBPRINT) == 0) {
-			if (subsInfo->certificate_thumbprint) {
-				*faultcode = WSMAN_INVALID_PARAMETER;
-				*detailcode = WSMAN_DETAIL_INVALID_ADDRESS;
-				return -1;
-			}
 			node = ws_xml_get_child(tnode, 0, XML_NS_TRUST, WST_REQUESTEDSECURITYTOKEN);
 			if(node) {
 				node = ws_xml_get_child(node, 0, XML_NS_WS_MAN, WSM_CERTIFICATETHUMBPRINT);
 				if(node) {
+					if (subsInfo->certificate_thumbprint)
+						u_free(subsInfo->certificate_thumbprint);
 					value = ws_xml_get_node_text(node);
 					if (value)
 						subsInfo->certificate_thumbprint = u_strdup(value);
+					else
+						subsInfo->certificate_thumbprint = NULL;
 				}
 			}
 		}
@@ -790,13 +796,13 @@ wsman_parse_event_request(WsXmlDocH doc, WsSubscribeInfo * subsInfo,
 
 		wsman_f = filter_deserialize(node, XML_NS_WS_MAN);
 		wse_f = filter_deserialize(node, XML_NS_EVENTING);
-	        if (wsman_f && wse_f) {
-	                /* return wse:InvalidMessage if wsman:Filter and wse:Filter are given
+		if (wsman_f && wse_f) {
+			/* return wse:InvalidMessage if wsman:Filter and wse:Filter are given
 			 * see R10.2.2-52 of DSP0226 */
-		        *faultcode = WSE_INVALID_MESSAGE;
-				filter_destroy(wsman_f);
-				filter_destroy(wse_f);
-				return -1;
+			*faultcode = WSE_INVALID_MESSAGE;
+			filter_destroy(wsman_f);
+			filter_destroy(wse_f);
+			return -1;
 		}
 	        /* use the wse:Filter variant if wsman:Filter not given */
 	        if (!wsman_f)
@@ -1379,12 +1385,12 @@ wsman_set_estimated_total(WsXmlDocH in_doc,
 			  WsXmlDocH out_doc, WsEnumerateInfo *enumInfo)
 {
 	WsXmlNodeH header = ws_xml_get_soap_header(in_doc);
-	if (ws_xml_get_child(header, 0, XML_NS_WS_MAN, WSM_REQUEST_TOTAL) != NULL) {
+	if (ws_xml_get_child(header, 0,
+			     XML_NS_WS_MAN, WSM_REQUEST_TOTAL) != NULL) {
 		if (out_doc) {
 			WsXmlNodeH response_header = ws_xml_get_soap_header(out_doc);
 			if (!response_header)
 				return;
-
 			ws_xml_add_child_format(response_header,
 						XML_NS_WS_MAN, WSM_TOTAL_ESTIMATE,
 						"%d", enumInfo->totalItems);

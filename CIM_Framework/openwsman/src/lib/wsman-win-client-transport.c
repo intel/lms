@@ -524,10 +524,10 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 					if ((pwd == NULL) || (usr == NULL)) {
 						if (pwd != NULL) {
 							memset(pwd, 0, (strlen(decryptedPassword) + 1) * sizeof(wchar_t)); //The size it fot from convert_to_unicode. strlen will not work here hence it contains NULLs
-							free(pwd);
+							u_free(pwd);
 						}
 						if (usr != NULL) {
-							free(usr);
+							u_free(usr);
 						}
 						memset(decryptedPassword, 0, strlen(decryptedPassword));
 						u_free(decryptedPassword);
@@ -645,10 +645,10 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 				if ((pwd == NULL) || (usr == NULL)) {
 					if (pwd != NULL) {
 						memset(pwd, 0, (strlen(decryptedPassword) + 1) * sizeof(wchar_t)); //The size it fot from convert_to_unicode. strlen will not work here hence it contains NULLs
-						free(pwd);
+						u_free(pwd);
 					}
 					if (usr != NULL) {
-						free(usr);
+						u_free(usr);
 					}
 					memset(decryptedPassword, 0, strlen(decryptedPassword));
 					u_free(decryptedPassword);

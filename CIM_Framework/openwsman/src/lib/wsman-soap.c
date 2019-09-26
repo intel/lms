@@ -473,9 +473,10 @@ ws_clear_context_enuminfos(WsContextH hCntx)
 
 callback_t *
 make_callback_entry(SoapServiceCallback proc,
-		    void *data, list_t *list_to_add)
+		    void *data,
+		    list_t * list_to_add)
 {
-	callback_t *entry = (callback_t *)u_malloc(sizeof(callback_t));
+	callback_t *entry = (callback_t *) u_malloc(sizeof(callback_t));
 	debug("make new callback entry");
 	if (entry) {
 		lnode_init(&entry->node, data);
@@ -486,23 +487,25 @@ make_callback_entry(SoapServiceCallback proc,
 			u_free(entry);
 			return NULL;
 		}
+	} else {
+		return NULL;
 	}
 	return entry;
 }
+
+
 
 void
 ws_initialize_context(WsContextH cntx, SoapH soap)
 {
 	cntx->entries = hash_create(HASHCOUNT_T_MAX, NULL, NULL);
-	if (cntx->entries)
-	{
+	if (cntx->entries) {
 		hash_set_allocator(cntx->entries, NULL, free_hentry_func, NULL);
 	}
 
 	cntx->enuminfos = hash_create(HASHCOUNT_T_MAX, NULL, NULL);
 	cntx->subscriptionMemList = list_create(LISTCOUNT_T_MAX);
-	if (cntx->enuminfos)
-	{
+	if (cntx->enuminfos) {
 		hash_set_allocator(cntx->enuminfos, NULL, free_hentry_func, NULL);
 	}
 	cntx->owner = 1;
@@ -778,8 +781,7 @@ wsman_identify_stub(SoapOpH op,
 
 	status = u_zalloc(sizeof(WsmanStatus *));
 	cntx = ws_create_ep_context(soap, soap_get_op_doc(op, 1));
-	if (cntx ==  NULL)
-	{
+	if (cntx == NULL) {
 		error("ws_create_ep_context failed");
 		u_free(status);
 		return -1;
@@ -832,8 +834,7 @@ ws_transfer_put_stub(SoapOpH op,
 	}
 
 	WsContextH   cntx = ws_create_ep_context(soap, soap_get_op_doc(op, 1));
-	if (cntx == NULL)
-	{
+	if (cntx == NULL) {
 		error("ws_create_ep_context");
 		return -1;
 	}
@@ -933,8 +934,7 @@ ws_transfer_get_stub(SoapOpH op,
 	}
 
 	WsContextH  cntx = ws_create_ep_context(soap, soap_get_op_doc(op, 1));
-	if (cntx == NULL)
-	{
+	if (cntx == NULL) {
 		error("ws_create_ep_context failed");
 		return -1;
 	}
@@ -1102,8 +1102,9 @@ wsenum_enumerate_stub(SoapOpH op,
 
 	wsman_set_estimated_total(_doc, doc, enumInfo);
 	body = ws_xml_get_soap_body(doc);
-	if (!body)
+	if (!body) {
 		goto DONE;
+	}
 
 	if (enumInfo->pullResultPtr == NULL) {
 		resp_node = ws_xml_add_child(body, XML_NS_ENUMERATION,
@@ -1112,12 +1113,13 @@ wsenum_enumerate_stub(SoapOpH op,
 		resp_node = ws_xml_get_child(body, 0,
 				 XML_NS_ENUMERATION, WSENUM_ENUMERATE_RESP);
 	}
-	if (!resp_node)
+	if (!resp_node) {
 		goto DONE;
+	}
 
 	soapCntx = ws_get_soap_context(soap);
-	if ((enumInfo->flags & WSMAN_ENUMINFO_OPT) == WSMAN_ENUMINFO_OPT  &&
-	    (enumInfo->totalItems == 0 || enumInfo->index == enumInfo->totalItems)) {
+	if (( enumInfo->flags & WSMAN_ENUMINFO_OPT ) == WSMAN_ENUMINFO_OPT  &&
+		(enumInfo->totalItems == 0 || enumInfo->index == enumInfo->totalItems)) {
 		ws_serialize_str(epcntx->serializercntx, resp_node, NULL,
 			    XML_NS_ENUMERATION, WSENUM_ENUMERATION_CONTEXT, 0);
 		ws_serialize_str(epcntx->serializercntx, resp_node,
@@ -1252,7 +1254,7 @@ wsenum_pull_stub(SoapOpH op, void *appData,
 	if (!body) {
 		goto DONE;
 	}
-	
+
 	node = ws_xml_add_child(body, XML_NS_ENUMERATION, WSENUM_PULL_RESP, NULL);
 	if (node == NULL) {
 		goto DONE;

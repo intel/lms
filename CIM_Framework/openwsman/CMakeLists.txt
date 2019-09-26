@@ -254,14 +254,14 @@ ENDIF ( NOT SWIG_EXECUTABLE )
 IF(UNIX)
   INCLUDE(FindCURL)
   IF ( NOT CURL_FOUND)
-    MESSAGE( FATAL_ERROR " curl not found" )
+   MESSAGE( FATAL_ERROR " curl not found" )
   ELSE ( NOT CURL_FOUND)
     INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
     IF(CURL_VERSION_STRING)
       STRING(COMPARE LESS ${CURL_VERSION_STRING} "7.12.0" result)
       IF(result LESS 0)
         MESSAGE( FATAL_ERROR " curl version ${CURL_VERSION_STRING} is too low, need 7.12.0 or greater" )
-      ENDIF(result LESS 0)    
+      ENDIF(result LESS 0)
     ENDIF(CURL_VERSION_STRING)
   ENDIF( NOT CURL_FOUND)
 ENDIF(UNIX)
@@ -276,13 +276,14 @@ ELSE ( NOT LIBXML2_FOUND)
 ENDIF( NOT LIBXML2_FOUND)
 
 # pthreads
+
 IF(UNIX)
- INCLUDE(FindThreads)
- IF( NOT CMAKE_USE_PTHREADS_INIT )
-  MESSAGE( FATAL_ERROR " openwsman needs pthread" )
- ELSE( NOT CMAKE_USE_PTHREADS_INIT )
-  SET(USE_PTHREAD TRUE)
- ENDIF( NOT CMAKE_USE_PTHREADS_INIT )
+  INCLUDE(FindThreads)
+  IF( NOT CMAKE_USE_PTHREADS_INIT )
+    MESSAGE( FATAL_ERROR " openwsman needs pthread" )
+  ELSE( NOT CMAKE_USE_PTHREADS_INIT )
+   SET(USE_PTHREAD TRUE)
+  ENDIF( NOT CMAKE_USE_PTHREADS_INIT )
 ENDIF(UNIX)
 
 # dl
@@ -331,8 +332,8 @@ ENDIF(BUILD_LIBCIM)
 # Various include files
 
 INCLUDE(CheckIncludeFile)
-
 INCLUDE(CheckFunctionExists)
+
 CHECK_FUNCTION_EXISTS( "alloca" HAVE_ALLOCA )
 IF (NOT HAVE_ALLOCA)
   SET(HAVE_ALLOCA 0)
@@ -353,7 +354,6 @@ ENDIF (NOT HAVE_ALLOCA)
 #
 
 SET (FILES_TO_TEST "alloca.h" "crypt.h" "ctype.h" "CUnit/Basic.h" "dirent.h" "dlfcn.h" "ifaddrs.h" "inttypes.h" "memory.h" "netinet/in.h" "net/if_dl.h" "net/if.h" "pam/pam_appl.h" "pam/pam_misc.h" "pthread.h" "security/pam_appl.h" "security/pam_misc.h" "stdarg.h" "stdint.h" "stdlib.h" "strings.h" "string.h" "sys/ioctl.h" "sys/resource.h" "sys/select.h" "sys/sendfile.h" "sys/signal.h" "sys/socket.h" "sys/sockio.h" "sys/stat.h" "sys/types.h" "unistd.h" "vararg.h" )
-#SET(FILES_TO_TEST "crypt.h")
 FOREACH( FILE ${FILES_TO_TEST})
   STRING(REGEX REPLACE "\\." "_" FILEDOT ${FILE})
   STRING(REGEX REPLACE "/" "_" FILESLASH ${FILEDOT})
@@ -379,7 +379,6 @@ SET(SSIZE_T_MISSING 0)
 
 # library functions
 
-INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS("getifaddrs" HAVE_GETIFADDRS)
 #SIOCGIFHWADDR
 #SIOCGARP

@@ -217,11 +217,11 @@ int ws_xml_set_node_real(WsXmlNodeH node, double Val);
 
 char *ws_xml_get_node_text(WsXmlNodeH node);
 
-static inline char *ws_xml_get_node_text_safe(WsXmlNodeH node)
+static inline const char *ws_xml_get_node_text_safe(WsXmlNodeH node)
 {
-	char * ret = ws_xml_get_node_text(node);
+	const char *ret = ws_xml_get_node_text(node);
 
-	return (ret) ? ret : (char*)"";
+	return (ret) ? ret : "";
 }
 
 int ws_xml_set_node_text(WsXmlNodeH node, const char *text);

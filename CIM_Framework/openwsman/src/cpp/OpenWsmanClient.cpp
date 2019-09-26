@@ -13,8 +13,11 @@
 
 #include <sstream>
 
+extern "C" {
 #include "u/libu.h"
 #include "wsman-api.h"
+}
+
 #include "wsman-client-transport.h"
 
 #define WSMAN_ENCODING		"UTF-8"
@@ -69,7 +72,7 @@ OpenWsmanClient::OpenWsmanClient(
 		error.append("wsmc_create failed:");
 		error.append("host: " + host);
 		error.append("username: " + username);
-		throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR); 
+		throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
 	}
 	SetAuth(auth_method);
 #ifdef _WIN32
@@ -402,7 +405,7 @@ string XmlDocToString(WsXmlDocH& doc) {
 	char *buf;
 	int  len;
 	ws_xml_dump_memory_enc(doc, &buf, &len, WSMAN_ENCODING);
-	string str = (buf) ? string(buf) : string("");	// This constructor copies the data.
+	string str = (buf) ? string(buf) : "";	// This constructor copies the data.
 	if (buf)
 #ifdef _WIN32
 		ws_xml_free_memory(buf);
@@ -438,16 +441,15 @@ bool CheckWsmanResponse(WsManClient* cl, WsXmlDocH& doc)
 		throw WsmanClientException("The Wsman response was NULL.");
 
 	if (wsmc_check_for_fault(doc)) {
-		WsManFault fault = {0}; 
+		WsManFault fault = {0};
 		wsmc_get_fault_data(doc, &fault);
-
-		std::stringstream ss3;
 		string subcode_s = fault.subcode ? string(fault.subcode) : "";
 		string code_s = fault.code ? string(fault.code) : "";
 		string reason_s = fault.reason ? string(fault.reason) : "";
 		string detail_s = fault.fault_detail ? string(fault.fault_detail) : "";
 		ws_xml_destroy_doc(doc);
-		ss3 << "A Soap Fault was received:" << std::endl;
+
+		std::stringstream ss3;
 		ss3 << "FaultCode: " << code_s << std::endl;
 		ss3 << "FaultSubCode: " + subcode_s << std::endl;
 		ss3 << "FaultReason: " + reason_s<< std::endl;

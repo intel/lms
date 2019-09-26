@@ -474,11 +474,12 @@ static int wsman_is_duplicate_message_id(op_t * op)
 		debug("Checking Message ID: %s", msgId);
 		u_lock(soap);
 
-		if (soap->processedMsgIdList == NULL &&
-		    (soap->processedMsgIdList = list_create(LISTCOUNT_T_MAX)) == NULL)
-		{
-			error("list_create failed");
-			return 1;
+		if (soap->processedMsgIdList == NULL) {
+			soap->processedMsgIdList = list_create(LISTCOUNT_T_MAX);
+			if (!soap->processedMsgIdList) {
+				error("list_create failed");
+				return 1;
+			}
 		}
 #ifndef IGNORE_DUPLICATE_ID
 		node = list_first(soap->processedMsgIdList);
@@ -1024,10 +1025,10 @@ SoapDispatchH wsman_dispatcher(WsContextH cntx, void *data, WsXmlDocH doc)
 	if (wsman_is_identify_request(doc) && r != NULL) {
 		ep = &r->endPoints[0];
 	} else if (r != NULL) {
-		char *ptr = action;
 		if (!action) {
 			goto cleanup;
 		}
+		char *ptr = action;
 		/*
 		 * See if the action is part of the namespace which means that
 		 * we are dealing with a custom action

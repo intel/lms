@@ -112,21 +112,23 @@ epr_t *epr_create(const char *uri, hash_t *selectors, const char *address)
 	epr_t *epr = NULL;
 
 	epr = u_malloc(sizeof(epr_t));
-	if (epr == NULL)
+	if (epr == NULL) {
 		return NULL;
-
+	}
 
 	if (address == NULL)
 		epr->address = u_strdup(WSA_TO_ANONYMOUS);
 	else
 		epr->address = u_strdup(address);
 
-	if (!epr->address)
+	if (!epr->address) {
 		goto CLEANUP;
+	}
 
 	epr->refparams.uri = u_strdup(uri);
-	if (!epr->refparams.uri)
+	if (!epr->refparams.uri) {
 		goto CLEANUP;
+	}
 
 	if (selectors) {
 		hnode_t        *hn;
@@ -192,11 +194,10 @@ epr_t *epr_from_string(const char* str)
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		uri = u_strdup(str);
 	}
-	
+
 	if (uri)
 		epr = epr_create(uri, selectors_new, NULL);
 
@@ -268,11 +269,9 @@ int epr_delete_selector(epr_t *epr, const char *name)
 		memcpy(&selectors[k], &selectors[k+1], sizeof(key_value_t));
 	}
 
-	key_value_t *temp = u_realloc(selectors, (count - 1) * sizeof(key_value_t));
+	key_value_t *temp = u_realloc(selectors, (count-1)*sizeof(key_value_t));
 	if (!temp)
-	{
 		return -1;
-	}
 	epr->refparams.selectorset.selectors = temp;
 	epr->refparams.selectorset.count--;
 
@@ -413,8 +412,7 @@ char *epr_to_string(const epr_t *epr)
 		  if (p->type == 0) {
 			  strcpy(ptr, p->v.text);
 			  ptr += strlen(p->v.text);
-		  }
-		  else {
+		  } else {
 			  char *value = epr_to_string(p->v.epr);
 			  if (value) {
 				  strcpy(ptr, value);
@@ -477,9 +475,8 @@ int epr_serialize(WsXmlNodeH node, const char *ns,
 		ws_xml_add_child(eprnode, XML_NS_ADDRESSING, WSA_ADDRESS, epr->address);
 	else
 		ws_xml_add_child(eprnode, XML_NS_ADDRESSING, WSA_TO, epr->address);
-	if (embedded) {
+	if(embedded)
 		refparamnode = ws_xml_add_child(eprnode, XML_NS_ADDRESSING, WSA_REFERENCE_PARAMETERS, NULL);
-	}
 	else
 		refparamnode = node;
 
@@ -538,12 +535,14 @@ epr_t *epr_deserialize(WsXmlNodeH node, const char *ns,
 	} else {
 		temp = ws_xml_get_child(eprnode, 0, XML_NS_ADDRESSING, WSA_TO);
 	}
-
 	if(temp == NULL)
 		goto CLEANUP;
+
 	epr->address = u_strdup(ws_xml_get_node_text_safe(temp));
-	if (epr->address == NULL)
+	if(epr->address == NULL) {
 		goto CLEANUP;
+	}
+
 	if(embedded) {
 		refparamnode = ws_xml_get_child(eprnode, 0, XML_NS_ADDRESSING, WSA_REFERENCE_PARAMETERS);
 	} else {
@@ -558,8 +557,9 @@ epr_t *epr_deserialize(WsXmlNodeH node, const char *ns,
 		goto CLEANUP;
 
 	epr->refparams.uri = u_strdup(ws_xml_get_node_text_safe(temp));
-	if (epr->refparams.uri == NULL)
+	if (epr->refparams.uri == NULL) {
 		goto CLEANUP;
+	}
 
 	selectorsetnode = ws_xml_get_child(refparamnode, 0, XML_NS_WS_MAN, WSM_SELECTOR_SET);
 	epr->refparams.selectorset.count = ws_xml_get_child_count(selectorsetnode);
@@ -577,14 +577,9 @@ epr_t *epr_deserialize(WsXmlNodeH node, const char *ns,
 			if (ws_xml_get_child(temp, 0, XML_NS_ADDRESSING, WSA_EPR)) {
 				p->type = 1;
 				p->v.epr = epr_deserialize(temp, XML_NS_ADDRESSING, WSA_EPR, 1);
-			}
-			else {
+			} else {
 				p->type = 0;
-				char *text = ws_xml_get_node_text(temp);
-				if (text != NULL)
-					p->v.text = u_strdup(text);
-				else
-					p->v.text = u_strdup("");
+				p->v.text = u_strdup(ws_xml_get_node_text_safe(temp));
 			}
 			p++;
 		}

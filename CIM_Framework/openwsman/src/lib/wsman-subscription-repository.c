@@ -58,7 +58,7 @@ int LocalSubscriptionOpUpdate (char * uri_repository, char * uuid, char *expire)
 int LocalSubscriptionOpDelete (char * uri_repository, char * uuid);
 
 
-static struct __SubsRepositoryOpSet subscription_repository_op_set = { 
+static struct __SubsRepositoryOpSet subscription_repository_op_set = {
   LocalSubscriptionOpInit,
   LocalSubscriptionOpFinalize,
   LocalSubscriptionOpLoad,
@@ -117,14 +117,13 @@ int LocalSubscriptionOpGet(char * uri_repository, char * uuid, unsigned char  **
             pre_count = count;
             count += m;
             debug("buf = %0x, count = %d", buf, count);
-			unsigned char *temp = u_realloc(buf, count);
-			if (!temp)
-			{
-				free(buf);
-				fclose(fp);
-				return -1;
-			}
-			buf = temp;
+            unsigned char *temp = u_realloc(buf, count);
+            if (!temp) {
+              free(buf);
+              fclose(fp);
+              return -1;
+            }
+            buf = temp;
             memcpy(buf+pre_count, block, m);
           }
 	}
@@ -194,8 +193,7 @@ int LocalSubscriptionOpLoad (char * uri_repository, list_t * subscription_list)
 					pre_count = count;
 					count += m;
 					unsigned char *temp = u_realloc(buf, count);
-					if (!temp)
-					{
+					if (!temp) {
 						free(buf);
 						fclose(subs);
 						return -1;

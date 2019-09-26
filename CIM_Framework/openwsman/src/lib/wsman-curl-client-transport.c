@@ -706,15 +706,13 @@ int wsmc_transport_init(WsManClient *cl, void *arg)
 {
 	CURLcode r;
 
-	if (pthread_mutex_lock(&curl_mutex))
-	{
+	if (pthread_mutex_lock(&curl_mutex)) {
 		error("Error: Can't lock curl_mutex\n");
 		return 1;
 	}
 	if (cl->initialized) {
-		if (pthread_mutex_unlock(&curl_mutex))
-		{
-			error("Error: Can't unlock curl_mutex\n");			
+		if (pthread_mutex_unlock(&curl_mutex)) {
+			error("Error: Can't unlock curl_mutex\n");
 		}
 		return 0;
 	}
@@ -722,9 +720,8 @@ int wsmc_transport_init(WsManClient *cl, void *arg)
 	if (r == CURLE_OK) {
 		cl->initialized = 1;
 	}
-	if (pthread_mutex_unlock(&curl_mutex))
-	{
-		error("Error: Can't unlock curl_mutex\n");		
+	if (pthread_mutex_unlock(&curl_mutex)) {
+		error("Error: Can't unlock curl_mutex\n");
 	}
 	if (r != CURLE_OK) {
 		debug("Error = %d (%s); Could not initialize curl globals",
@@ -735,23 +732,20 @@ int wsmc_transport_init(WsManClient *cl, void *arg)
 
 void wsmc_transport_fini(WsManClient *cl)
 {
-	if (pthread_mutex_lock(&curl_mutex))
-	{
+	if (pthread_mutex_lock(&curl_mutex)) {
 		error("Error: Can't lock curl_mutex\n");
 		return;
 	}
 	if (cl->initialized == 0 ) {
-		if (pthread_mutex_unlock(&curl_mutex))
-		{
-			error("Error: Can't unlock curl_mutex\n");			
+		if (pthread_mutex_unlock(&curl_mutex)) {
+			error("Error: Can't unlock curl_mutex\n");
 		}
 		return;
 	}
 	curl_global_cleanup();
 	cl->initialized = 0;
-	if (pthread_mutex_unlock(&curl_mutex))
-	{
-		error("Error: Can't unlock curl_mutex\n");		
+	if (pthread_mutex_unlock(&curl_mutex)) {
+		error("Error: Can't unlock curl_mutex\n");
 	}
 	return;
 }
