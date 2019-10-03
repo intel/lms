@@ -61,8 +61,8 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 		// Key
 		wcsncpy_s(profileData->keyMaterial,	xmlRead(pProfileXml, L"keyMaterial").c_str(), sizeof(profileData->keyMaterial) / sizeof(profileData->keyMaterial[0]));
 
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": \n  auth: %W\n  encr: %W\n  key:  %W\n Flags: %d\n",
-			profileData->auth, profileData->encr, profileData->keyMaterial, flags);
+		UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": \n  auth: %W\n  encr: %W\n Flags: %d\n",
+			profileData->auth, profileData->encr, flags);
 
 		// Set Profile Flags
 		*pProfileFlags = flags;
