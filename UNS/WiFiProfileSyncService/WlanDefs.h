@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 #ifndef __WLAN_DEFS_H_
 #define __WLAN_DEFS_H_
@@ -48,7 +48,9 @@ namespace wlanps {
 	   AuthenticationMethodWPAIEEE802_1x = 5,
 	   AuthenticationMethodWPA2PSK = 6,
 	   AuthenticationMethodWPA2IEEE802_1x = 7,
-	   AuthenticationMethodDMTFReserved = 8
+	   AuthenticationMethodDMTFReserved = 8,
+	   AuthenticationMethodWPA3SAE = 32768, // WPA3
+	   AuthenticationMethodVendorReserved = 32769
    };
 
    enum EncryptionMethods

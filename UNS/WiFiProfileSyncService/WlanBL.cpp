@@ -14,7 +14,7 @@ const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Setting
 
 typedef std::map<std::wstring, int> str_int_map_t;
 
-wlanps::authenticationSet_t supportedAuthentication = { L"open", L"WPAPSK", L"WPA2PSK" };
+wlanps::authenticationSet_t supportedAuthentication = { L"open", L"WPAPSK", L"WPA2PSK", L"WPA3SAE" };
 wlanps::encriptionSet_t supportedEncription = { L"WEP", L"TKIP", L"AES", L"none" };
 
 // User Profiles DB maximum size
@@ -472,7 +472,8 @@ int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabil
 	static const str_int_map_t authMap = {
 		{ L"open",    AuthenticationMethodOpenSystem },
 		{ L"WPAPSK",  AuthenticationMethodWPAPSK },
-		{ L"WPA2PSK", AuthenticationMethodWPA2PSK }
+		{ L"WPA2PSK", AuthenticationMethodWPA2PSK },
+		{ L"WPA3SAE", AuthenticationMethodWPA3SAE }
 	};
 	static const str_int_map_t encrMap = {
 		{ L"WEP",  EncryptionMethodWEP },
