@@ -1,0 +1,20 @@
+*            text=auto
+
+*.sln        text eol=crlf
+*.vcxproj    text eol=crlf
+*.filters    text eol=crlf
+
+*.sh         text eol=lf
+*.bat        text eol=crlf
+*.vbs        text eol=crlf
+
+*.so         binary
+*.dll        binary
+
+*.a          binary
+*.lib        binary
+
+*.exe        binary
+
+*.zip        binary
+*.gz         binary
