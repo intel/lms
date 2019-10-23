@@ -326,7 +326,7 @@ TEST(SyncIpClient, GetNetworkData)
 	}
 }
 
-TEST(SyncIpClient, SetNetworkData)
+/*TEST(SyncIpClient, SetNetworkData)
 {
 	SyncIpClient syncIP;
 	bool ret, DHCPEnabled;
@@ -336,7 +336,7 @@ TEST(SyncIpClient, SetNetworkData)
 	// Static --> Static true, 100.100.100.100, 255.255.255.0 100.100.100.3 11.11.11.11 22.22.22.22
 	// DHSP --> Static	true, 100.100.100.100, 255.255.255.0 100.100.100.3 11.11.11.11 0.0.0.0
 	//EXPECT_FALSE(syncIP.SetNetworkData(DHCPEnabled, IPAddress, subnet, gateway, dnsAddress1, dnsAddress2));
-}
+}*/
 
 void printTime(unsigned int time)
 {
