@@ -3,7 +3,7 @@
  * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "Tools.h"
-#include "time.h"
+#include <time.h>
 #include <string>
 #include <codecvt>
 #include <iomanip>
@@ -21,38 +21,42 @@
 
 using namespace std;
 
-string getDateTime()
+std::string getDateTime()
 {
-	time_t timestamp;
-	timestamp = time(NULL);
-	stringstream ss;
-	tm *lcl = localtime(&timestamp);
-	if (lcl == NULL)
+	time_t timestamp = time(NULL);
+	std::stringstream ss;
+	tm lcl;
+#ifdef WIN32
+	if (localtime_s(&lcl, &timestamp))
+#else
+	if (localtime_r(&timestamp, &lcl) == NULL)
+#endif // WIN32
 		return ss.str();
-	ss << (lcl->tm_year+1900) << "-" << (lcl->tm_mon+1) << "-" << lcl->tm_mday << "T" << lcl->tm_hour << ":" <<
-		lcl->tm_min << ":" << lcl->tm_sec << ".000";
+	ss << (lcl.tm_year+1900) << "-" << (lcl.tm_mon+1) << "-" << lcl.tm_mday << "T" << lcl.tm_hour << ":" <<
+		lcl.tm_min << ":" << lcl.tm_sec << ".000";
 	return ss.str();
 }
 
 // Parse the MAC address from IP_ADAPTER_INFO Address field to string
-string MacAddressToString(unsigned char addr[], unsigned int addrLen)
+std::string MacAddressToString(unsigned char addr[], unsigned int addrLen)
 {
-
-	string mac = "";
+	std::string mac = "";
 	if (addrLen == 6)
 	{
-		stringstream wiredMacAddress;
-		
-		wiredMacAddress.setf ( ios::hex, ios::basefield );  //shift to hex
-		wiredMacAddress<<uppercase<<setfill('0')<<setw(2)<<(short)addr[0]<<":"<<setw(2)<<(short)addr[1]<<":"
-												<<setw(2)<<(short)addr[2]<<":"<<setw(2)<<(short)addr[3]<<":"
-												<<setw(2)<<(short)addr[4]<<":"<<setw(2)<<(short)addr[5];
-		wiredMacAddress.setf ( ios::dec, ios::basefield );  //return to default	
-		
+		std::stringstream wiredMacAddress;
+
+		wiredMacAddress.setf(std::ios::hex, std::ios::basefield);  //shift to hex
+		wiredMacAddress << uppercase << setfill('0') << setw(2) <<
+			(short)addr[0] << ":" << setw(2) << (short)addr[1] <<
+			":" << setw(2) << (short)addr[2] << ":" << setw(2) <<
+			(short)addr[3] <<":" << setw(2) << (short)addr[4] <<
+			":" << setw(2) << (short)addr[5];
+		wiredMacAddress.setf(std::ios::dec, std::ios::basefield);  //return to default
+
 		mac.assign(wiredMacAddress.str());
 	}
 	// Return human readable MAC address 
-	return mac;	
+	return mac;
 }
 
 #ifdef WIN32
@@ -62,8 +66,6 @@ string MacAddressToString(unsigned char addr[], unsigned int addrLen)
 */
 bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFilePath)
 {
-	//This function was copied from PartialFWUpdateService::checkImageFileExist
-	//TODO - need to be migrated to GMS-common and shared for all
 	bool retVal = false;
 	HKEY hKey;
 	WCHAR ServiceKey[1024];
@@ -130,14 +132,14 @@ bool checkFileExist(wstring path)
 }
 #endif // WIN32
 
-wstring StringToWString(const string& s)
+std::wstring StringToWString(const string& s)
 {
-	wstring temp(s.length(), L' ');
+	std::wstring temp(s.length(), L' ');
 	copy(s.begin(), s.end(), temp.begin());
 	return temp;
 }
 
-string WStringToString(const std::wstring& wstr)
+std::string WStringToString(const std::wstring& wstr)
 {
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converterX;
     return converterX.to_bytes(wstr);

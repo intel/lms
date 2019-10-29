@@ -24,7 +24,6 @@ public:
 	static const HMODULE SafeLoadDll(const std::wstring & wcName);
 
 private:
-	//static bool GetServiceDirectory(const std::string serviceName, std::string& serviceFilePath);
 	static bool GetAppVersion(const wchar_t* LibName, uint16_t *MajorVersion, uint16_t *MinorVersion,
 		uint16_t *BuildNumber, uint16_t *RevisionNumber);
 	static bool CompareVersions(std::wstring &file);
