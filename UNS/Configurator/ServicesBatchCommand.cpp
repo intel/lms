@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include "ServicesBatchCommand.h"
 #include "DependancyManager.h"
@@ -19,6 +19,8 @@ IServicesManager *ServicesBatchCommand::s_servicesManager = NULL;
 bool ServicesBatchCommand::Execute(const ServiceNamesList &services) const
 {
 	bool ret = true;
+	bool operationAlreadyDoneForAllServices = true;
+
 	NamesList serviceNames;
 	services.GetNames(serviceNames);
 	NamesList::const_iterator endIt = serviceNames.end();
@@ -28,6 +30,8 @@ bool ServicesBatchCommand::Execute(const ServiceNamesList &services) const
 		//if service is already in requested state - return true
 		if (OperationAlreadyDone(service))
 			continue;
+
+		operationAlreadyDoneForAllServices = false;
 		// if there are dependencies - call the command on them. the configurator will call 
 		// "execute" again when the services that should have been completing the command before, 
 		// have finished, and then execute will be called again.
@@ -46,6 +50,11 @@ bool ServicesBatchCommand::Execute(const ServiceNamesList &services) const
 				ret = false;
 			}
 		}
+	}
+
+	if (operationAlreadyDoneForAllServices)
+	{
+		ret = false; // in case that the operation already done for all services, and no operation occured here, we should return false, for TaskCompleted to be called
 	}
 
 	return ret;
