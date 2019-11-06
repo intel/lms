@@ -149,7 +149,6 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 	if ((ret = ACE_Reactor::instance()->register_handler(m_event, this, ACE_Event_Handler::READ_MASK)) != 0)
 	{
 		UNS_ERROR(L"Register handler error...%d, SharedStaticIP will stop - failure to initialize\n", ret);
-		int ret = 0;
 		if ((ret = ACE_Reactor::instance()->remove_handler(m_event,
 		     ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close
 			UNS_ERROR(L"Remove handler error... %d\n", ret);

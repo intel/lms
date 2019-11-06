@@ -497,7 +497,7 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 	}
 
 	param->gw = emptyAddress;
-	for (struct nl_object* obj = nl_cache_get_first(route_cache);
+	for (obj = nl_cache_get_first(route_cache);
 	     obj != NULL; obj = nl_cache_get_next(obj))
 	{
 		struct rtnl_route *route = (struct rtnl_route *)obj;

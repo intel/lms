@@ -568,7 +568,6 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		SaveCurrentStatus(KVM_REQUESTED,KVM_SESSION_S);
 		if (m_UserConsentPolicy != NOT_REQUIRED)
 		{
-			short UserConsentState;
 			GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);
 			SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
 		}

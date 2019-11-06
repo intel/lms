@@ -53,11 +53,11 @@ EventHandler::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 				bool meiEnabled = false;
 				if (event != nullptr)
 					meiEnabled = event->m_meiEnabled;
-				MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-				mbPtr->data_block(new UnSubscribeEventHandler(name(),meiEnabled));
-				mbPtr->msg_type(MB_UNSUBSCRIBE_EVENT);
-				mbPtr->msg_priority(5);
-				m_mainService->sendMessage(EVENT_MANAGER,mbPtr);
+				MessageBlockPtr unPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
+				unPtr->data_block(new UnSubscribeEventHandler(name(),meiEnabled));
+				unPtr->msg_type(MB_UNSUBSCRIBE_EVENT);
+				unPtr->msg_priority(5);
+				m_mainService->sendMessage(EVENT_MANAGER, unPtr);
 				m_serviceIsClosed=true;
 			}
 			break;

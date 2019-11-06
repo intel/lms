@@ -1363,10 +1363,10 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 
 					sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_AVAILABLE, ACE_TEXT("Port Forwarding Service started"));
 					
-					MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-					mbPtr->data_block(new ChangeConfiguration(PFW_ENABLE_CONF, 1));
-					mbPtr->msg_type(MB_CONFIGURATION_CHANGE);
-					this->putq(mbPtr->duplicate());
+					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
+					pfwPtr->data_block(new ChangeConfiguration(PFW_ENABLE_CONF, 1));
+					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
+					this->putq(pfwPtr->duplicate());
 					
 					TaskCompleted();
 				}break;

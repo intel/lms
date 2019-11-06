@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -161,7 +161,7 @@ public:
 private:
 	uint32_t formatted_table_len(unsigned char*, uint32_t, uint32_t);
 	uint32_t unformatted_table_len(unsigned char*, uint32_t, uint32_t);
-	bool   areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t smbios_table_len, SM_BIOS_CAPABILITIES *pCapabilities);
+	bool areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t smbios_table_len, SM_BIOS_CAPABILITIES *pBIOSCapabilities);
 };
 ///////////////////////////////////////////////////////////////
 #endif // _SMBIOS_READER_H_

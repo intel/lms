@@ -55,7 +55,7 @@ uint32_t SMBIOS_Reader::unformatted_table_len(unsigned char *smbios_table_data, 
 }
 
 // Returns in the SM_BIOS_CAPABILITIES all the relevant settings or false on error related table structure
-bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t smbios_table_len, SM_BIOS_CAPABILITIES *pCapabilities)
+bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t smbios_table_len, SM_BIOS_CAPABILITIES *pBIOSCapabilities)
 {
 	unsigned int index = 0;
 	unsigned int table_len1=0;
@@ -85,32 +85,40 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 			else
 			{
 				// MEBx version defined as such:
-				pCapabilities->MEBx_Major = SM_table->MebxVer[0]; // MebxVer[1] -> Mebx Major version
-				pCapabilities->MEBx_Minor = SM_table->MebxVer[1]; // MebxVer[0] -> Mebx Minor version
-				pCapabilities->MEBx_Hotfix = SM_table->MebxVer[2];// MebxVer[3] -> Mebx Hotfix number
-				pCapabilities->MEBx_Build = SM_table->MebxVer[3]; // MebxVer[2] -> Mebx Build number
-				UNS_DEBUG(L"areSmbiosFlagsSet:: MEBx version %d.%d.%d.%d\n",pCapabilities->MEBx_Major,pCapabilities->MEBx_Minor,pCapabilities->MEBx_Hotfix,pCapabilities->MEBx_Build );
+				pBIOSCapabilities->MEBx_Major = SM_table->MebxVer[0]; // MebxVer[1] -> Mebx Major version
+				pBIOSCapabilities->MEBx_Minor = SM_table->MebxVer[1]; // MebxVer[0] -> Mebx Minor version
+				pBIOSCapabilities->MEBx_Hotfix = SM_table->MebxVer[2];// MebxVer[3] -> Mebx Hotfix number
+				pBIOSCapabilities->MEBx_Build = SM_table->MebxVer[3]; // MebxVer[2] -> Mebx Build number
+				UNS_DEBUG(L"areSmbiosFlagsSet:: MEBx version %d.%d.%d.%d\n",
+					pBIOSCapabilities->MEBx_Major,
+					pBIOSCapabilities->MEBx_Minor,
+					pBIOSCapabilities->MEBx_Hotfix,
+					pBIOSCapabilities->MEBx_Build);
 
 				// ME version defined as such:
-				pCapabilities->ME_Major = SM_table->MeVer[1]; // MeVer[1] -> Me Major version
-				pCapabilities->ME_Minor = SM_table->MeVer[0]; // MeVer[0] -> Me Minor version
-				pCapabilities->ME_Hotfix = SM_table->MeVer[3];// MeVer[3] -> Me Hotfix number
-				pCapabilities->ME_Build = SM_table->MeVer[2]; // MeVer[2] -> Me Build number
-				UNS_DEBUG(L"areSmbiosFlagsSet:: ME version %d.%d.%d.%d\n",pCapabilities->ME_Major,pCapabilities->ME_Minor,pCapabilities->ME_Hotfix,pCapabilities->ME_Build );
+				pBIOSCapabilities->ME_Major = SM_table->MeVer[1]; // MeVer[1] -> Me Major version
+				pBIOSCapabilities->ME_Minor = SM_table->MeVer[0]; // MeVer[0] -> Me Minor version
+				pBIOSCapabilities->ME_Hotfix = SM_table->MeVer[3];// MeVer[3] -> Me Hotfix number
+				pBIOSCapabilities->ME_Build = SM_table->MeVer[2]; // MeVer[2] -> Me Build number
+				UNS_DEBUG(L"areSmbiosFlagsSet:: ME version %d.%d.%d.%d\n",
+					pBIOSCapabilities->ME_Major,
+					pBIOSCapabilities->ME_Minor,
+					pBIOSCapabilities->ME_Hotfix,
+					pBIOSCapabilities->ME_Build);
 
 				// AT properties are defined as such:
 				if (SM_table->MeCap.AtpSupported)
 				{
 					UNS_DEBUG(L"areSmbiosFlagsSet:: TDT supported %d !\n",SM_table->MeCap.AtpSupported);
-					pCapabilities->AT_Allowed = SM_table->MeCap.AtpSupported;
+					pBIOSCapabilities->AT_Allowed = SM_table->MeCap.AtpSupported;
 					at_info1* AtInfo1 = (struct at_info1*)&SM_table->Rerserve[0];
 					UNS_DEBUG(L"areSmbiosFlagsSet:: AT enrolled: %d\n", AtInfo1->atEnrolled);
-					pCapabilities->AT_Enrolled = AtInfo1->atEnrolled;
+					pBIOSCapabilities->AT_Enrolled = AtInfo1->atEnrolled;
 				}
 				else
 				{
-					pCapabilities->AT_Allowed = 0;
-					pCapabilities->AT_Enrolled = 0;
+					pBIOSCapabilities->AT_Allowed = 0;
+					pBIOSCapabilities->AT_Enrolled = 0;
 					UNS_DEBUG(L"areSmbiosFlagsSet:: AT not supported !\n");
 				}
 				return true;
