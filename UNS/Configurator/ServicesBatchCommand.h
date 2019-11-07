@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2015 Intel Corporation
+ * Copyright (C) 2011-2019 Intel Corporation
  */
 #ifndef __SERVICES_BATCH_COMMAND_H_
 #define __SERVICES_BATCH_COMMAND_H_
@@ -13,12 +13,13 @@
 class ServicesBatchCommand
 {
 public:
+	typedef enum { SUCCESS, NOTHING_TO_DO, FAILURE } ExecuteCommandResult;
 	virtual ~ServicesBatchCommand() {}
 	
 	static void SetServicesManager(IServicesManager *servicesManager)
 		{s_servicesManager = servicesManager;}
 
-	bool Execute(const ServiceNamesList &services) const;
+	ExecuteCommandResult Execute(const ServiceNamesList &services) const;
 
 protected:
 

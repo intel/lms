@@ -731,7 +731,7 @@ void Configurator::StopAllServices(bool stopMainService)
 	theLoadedServices::instance()->GetAllLoadedServices(remainingServices);
 	if(!remainingServices.empty())
 	{
-		if(!stopMisc.Execute(remainingServices))
+		if(stopMisc.Execute(remainingServices) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 			TaskCompleted();
 	}
 	else if(stopMainService)
@@ -751,7 +751,7 @@ bool Configurator::SuspendResumeAllServices(const ServicesBatchCommand &command)
 
 	NamesList loadedServices;
 	theLoadedServices::instance()->GetAllLoadedServices(loadedServices);
-	if(!command.Execute(loadedServices))
+	if(command.Execute(loadedServices) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 	{
 		TaskCompleted();
 		return false;
@@ -888,7 +888,7 @@ void Configurator::ScanConfiguration()
 		theDependencyManager::instance()->FillAbsoluteDependencies(servicesNames);
 		theLoadedServices::instance()->SetServicesToLoad(servicesNames);
 
-		if(!batch.Execute(servicesNames))
+		if(batch.Execute(servicesNames) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 			TaskCompleted();
 
 		ACE_Reactor::instance()->cancel_timer (this);
@@ -930,7 +930,7 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 	{
 		theLoadedServices::instance()->AddServiceToLoad(service);
 		ServicesBatchStartCommand	batchStartCommand;
-		if(!batchStartCommand.Execute(services))
+		if(batchStartCommand.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 		{
 			TaskCompleted();
 		}
@@ -944,7 +944,7 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 
 		theLoadedServices::instance()->RemoveServiceToLoad(service);
 		ServicesBatchStopCommand	batchStopCommand;
-		if(!batchStopCommand.Execute(services))
+		if(batchStopCommand.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 			TaskCompleted();
 	}
 }
@@ -964,7 +964,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			{
 				//stopping all the services that were in waiting list.
 				ServicesBatchStopCommand command;
-				if(!command.Execute(services))
+				if(command.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 					TaskCompleted();
 			}
 			else if(serviceName.compare(FIRST_SERVICE) == 0)
@@ -987,7 +987,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			{
 				//starting all the services that were in waiting list.
 				ServicesBatchStartCommand command;
-				if(!command.Execute(services))
+				if(command.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 					TaskCompleted();
 			}
 			else if(serviceName.compare(LAST_SERVICE) == 0 || serviceName.compare(AMT_ENABLE_LAST_SERVICE) == 0 || serviceName.compare(WAITING_FOR_PFW_LAST_SERVICE) == 0)
@@ -1004,7 +1004,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			{
 				// Suspending all the services that were in waiting list.
 				ServicesBatchSuspendCommand command;
-				if(!command.Execute(services))
+				if(command.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 					TaskCompleted();
 			}
 			else if(serviceName.compare(FIRST_SERVICE) == 0)
@@ -1020,7 +1020,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			{
 				// Resuming all the services that were in waiting list.
 				ServicesBatchResumeCommand command;
-				if(!command.Execute(services))
+				if(command.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 					TaskCompleted();
 			}
 			else if(serviceName.compare(LAST_SERVICE) == 0)
@@ -1074,7 +1074,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 						theLoadedServices::instance()->AddServiceToLoad(*it);
 
 					ServicesBatchStartCommand batch;
-					if(!batch.Execute(services))
+					if(batch.Execute(services) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 						TaskCompleted();
 				}
 				else
@@ -1107,7 +1107,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				}
 				
 				ServicesBatchStartCommand batch;
-				if (!batch.Execute(servicesNames))
+				if (batch.Execute(servicesNames) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 				{
 					UNS_ERROR(L"Starting the services that waited for Port forwarding to start - Failed.\n");
 					TaskCompleted();
