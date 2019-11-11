@@ -620,11 +620,11 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 		UNS_DEBUG(L"%s: needSpecialCheck\n", serviceName.c_str());
 
 		if (!m_mainService->GetPortForwardingStarted()) {
-			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting StartAceService operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", serviceName.c_str());
+			UNS_DEBUG(L"%s: Port Forwarding did not start yet, delay StartAceService operation till Port Forwarding start.\n", serviceName.c_str());
 			theLoadedServices::instance()->RemoveServiceToLoad(serviceName);
 			theLoadedServices::instance()->UnlockService(serviceName);
 			theLoadedServices::instance()->AddServiceToWaitForPfw(serviceName);
-			return false;
+			return true;
 		}
 
 		CheckLoadFunc *checkLoadFunc = m_checkLoadMap[serviceName];

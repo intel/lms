@@ -61,8 +61,10 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 
 bool ServicesBatchCommand::OperationAlreadyDone(const ACE_TString &service) const
 {
-	return theLoadedServices::instance()->IsLocked(service) ||	//if the service is already in transition from state to state
-		   DoneCriteria(service);								// or the specific state already reached
+	//if the service is already in transition from state to state
+	//or the specific state already reached
+	return theLoadedServices::instance()->IsLocked(service) ||
+		   DoneCriteria(service);
 }
 
 void ServicesBatchCommand::fillDependencies(const ACE_TString &service, ServiceNamesList &dependencies, bool serviceDependsOn) const
