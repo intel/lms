@@ -1245,7 +1245,10 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 	if (m_serviceIsClosed || m_needToStop)
 	{
 		UNS_DEBUG(L"We already closed, come back tomorrow. %d\n", type);
-		TaskCompleted();
+		if (!m_inProcess) //otherwise, the TaskCompleted refers to the task that is in process, instead of this new coming task.
+		{
+			TaskCompleted();
+		}
 		return;
 	}
 
