@@ -23,7 +23,7 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 	unsigned long  dwGrantedAccess = 0;
 	unsigned long  dwResult = ERROR_SUCCESS;
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": profile: [%W]\n", profileData->profile);
+	UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": profile: [%W]\n", profileData->profile);
 
 	// Get Wlan Profile
 	dwResult = WlanGetProfile(m_hwlan, &(profileData->ifGuid), profileData->profile, nullptr, &pProfileXml, &flags, &dwGrantedAccess);
@@ -148,7 +148,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 	{
 		if (pIfList != nullptr)
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WLAN_INTERFACE_INFO_LIST Entries: %d Index: %d\n",
+			UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": WLAN_INTERFACE_INFO_LIST Entries: %d Index: %d\n",
 				pIfList->dwNumberOfItems, pIfList->dwIndex);
 
 			// Loop over Wlan Interfaces
@@ -156,7 +156,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 			{
 				pIfInfo = (WLAN_INTERFACE_INFO *)&pIfList->InterfaceInfo[i];
 
-				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": [%d] Interface Description: %W  Interface State: %d, dwNumberOfItems = %d\n",
+				UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": [%d] Interface Description: %W  Interface State: %d, dwNumberOfItems = %d\n",
 					i, pIfInfo->strInterfaceDescription, pIfInfo->isState, pIfList->dwNumberOfItems);
 
 				dwResult = WlanGetProfileList(m_hwlan, &pIfInfo->InterfaceGuid, nullptr, &pProfileList);
@@ -167,7 +167,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 					continue;
 				}
 
-				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList num of items: %d\n", pProfileList->dwNumberOfItems);
+				UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList num of items: %d\n", pProfileList->dwNumberOfItems);
 
 				// Loop over all OS profiles or until MAX_OS_USER_PROFILES User Profiles were found
 				for (j = 0; (j < pProfileList->dwNumberOfItems) && (numUserProfiles < MAX_OS_USER_PROFILES); j++)
@@ -258,7 +258,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 		}
 	}
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": numUserProfiles %d\n", numUserProfiles);
+	UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": numUserProfiles %d\n", numUserProfiles);
 
 	// Return the number of OS User Profiles
 	*numOsUserProfiles = numUserProfiles;
