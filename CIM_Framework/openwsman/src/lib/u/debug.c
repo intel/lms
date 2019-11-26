@@ -64,10 +64,7 @@ debug_add_handler(debug_fn fn, debug_level_e level, void *user_data)
 
 	if (list_count(handlers) > 0) {
 		lnode_t *n = list_last(handlers);
-		if (n)
-			handler->id = ((debug_handler_t *) n->list_data)->id + 1;
-		else
-			handler->id = 1;
+		handler->id = ((debug_handler_t *) n->list_data)->id + 1;
 	} else
 		handler->id = 1;
 

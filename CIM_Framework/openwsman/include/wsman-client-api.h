@@ -745,12 +745,12 @@ typedef enum {
 					     client_opt_t * options);
 
 	void wsmc_set_action_option(client_opt_t * options,
-				     unsigned int);
+				     unsigned long);
 
-	unsigned int wsmc_get_action_option(client_opt_t * options);
+	unsigned long wsmc_get_action_option(client_opt_t * options);
 
 	void wsmc_clear_action_option(client_opt_t * options,
-				     unsigned int);
+				     unsigned long);
 
 	void wsmc_set_options_from_uri(const char *resource_uri,
 					client_opt_t * options);
@@ -819,11 +819,11 @@ typedef enum {
 
 
 	void
-	wsmc_set_sub_expiry(int event_subscription_expire, client_opt_t * options);
+	wsmc_set_sub_expiry(float event_subscription_expire, client_opt_t * options);
 
 
 	void
-	wsmc_set_heartbeat_interval(int heartbeat_interval, client_opt_t * options);
+	wsmc_set_heartbeat_interval(float heartbeat_interval, client_opt_t * options);
 
 
 	void

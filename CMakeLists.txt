@@ -36,7 +36,7 @@ if (UNIX)
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
 
   #Secure library usage and secure compile flags
-  add_definitions (-fstack-protector-strong -D_FORTIFY_SOURCE=2 -O2 -Wformat -Wformat-security)
+  add_definitions (-fstack-protector-all -D_FORTIFY_SOURCE=2 -O2 -Wformat -Wformat-security)
   add_definitions (-fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv)
 else (UNIX)
   add_definitions (/GS /sdl)

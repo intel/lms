@@ -161,12 +161,11 @@ filter_t * filter_create_selector(hash_t *selectors)
 static int
 _filter_add_selector(filter_t *filter, const char* key, const char *value, const epr_t *epr)
 {
-	unsigned int i;
         key_value_t *entry;
 	if(filter == NULL || key == NULL || ((value == NULL) && (epr == NULL)))
 		return 0;
 	entry = filter->selectorset.selectors;
-	for(i = 0; i < filter->selectorset.count; i++) {
+	for(unsigned int i = 0; i < filter->selectorset.count; i++) {
 		if(strcmp(key, entry[i].key) == 0)
 			return -1;
 	}
@@ -357,8 +356,6 @@ filter_t * filter_deserialize(WsXmlNodeH node, const char *ns)
 {
 	char *dialect = NULL;
 	int properNum = 0;
-	unsigned int i = 0;
-	int j = 0;
 	WsXmlAttrH attr = NULL;
 	filter_t *filter = NULL;
 	WsXmlNodeH instance_node = NULL;
@@ -382,6 +379,7 @@ filter_t * filter_deserialize(WsXmlNodeH node, const char *ns)
 			filter->dialect = u_strdup(WSM_XPATH_FILTER_DIALECT);
 	}
 	if(strcmp(filter->dialect , WSM_ASSOCIATION_FILTER_DIALECT) == 0) {
+		int i = 0;
 		instance_node = ws_xml_get_child(filter_node, 0, XML_NS_CIM_BINDING, WSMB_ASSOCIATED_INSTANCES);
 		if(instance_node) {
 			filter->assocType = 0;
@@ -409,16 +407,17 @@ filter_t * filter_deserialize(WsXmlNodeH node, const char *ns)
 			filter->resultRole = u_strdup(ws_xml_get_node_text_safe(entry_node));
 		properNum = ws_xml_get_child_count(instance_node) - 4;
 		filter->resultProp = u_zalloc(properNum * sizeof(char*));
-		while(j < properNum) {
-			filter_node = ws_xml_get_child(instance_node, j, XML_NS_CIM_BINDING, WSMB_INCLUDE_RESULT_PROPERTY);
+		while(i < properNum) {
+			filter_node = ws_xml_get_child(instance_node, i, XML_NS_CIM_BINDING, WSMB_INCLUDE_RESULT_PROPERTY);
 			if(filter_node == NULL)
 				break;
-			filter->resultProp[j] = u_strdup(ws_xml_get_node_text_safe(filter_node));
-			j++;
+			filter->resultProp[i] = u_strdup(ws_xml_get_node_text_safe(filter_node));
+			i++;
 		}
-		filter->PropNum = j;
+		filter->PropNum = i;
 	}
 	else if(strcmp(filter->dialect, WSM_SELECTOR_FILTER_DIALECT) == 0) {
+		unsigned int i = 0;
 		filter_node = ws_xml_get_child(filter_node, 0, XML_NS_WS_MAN, WSM_SELECTOR_SET);
 		if(filter_node == NULL)
 			goto CLEANUP;
