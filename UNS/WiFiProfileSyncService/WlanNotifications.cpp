@@ -35,7 +35,7 @@ int wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncService *servic
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanRegisterNotification retVal=%d\n", retVal);
 
-	return 0;
+	return retVal;
 }
 
 // copy SSID to a null-terminated WCHAR string
