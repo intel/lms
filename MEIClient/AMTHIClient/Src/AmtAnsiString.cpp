@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 #include <string.h>
 #include "AmtAnsiString.h"
@@ -37,7 +37,7 @@ AmtAnsiString::AmtAnsiString(vector<uint8_t>::const_iterator& first, vector<uint
 	
 }
 
-AmtAnsiString::AmtAnsiString(std::string str, bool nullTerminated) : m_nullTerminated(nullTerminated)
+AmtAnsiString::AmtAnsiString(const std::string &str, bool nullTerminated) : m_nullTerminated(nullTerminated)
 {
 	if (str.length() >= USHRT_MAX)
 	{

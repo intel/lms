@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -13,7 +13,8 @@
 using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
-AddProxyTableEntryCommand::AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE], string proxyFQDN, string networkDnsSuffix)
+AddProxyTableEntryCommand::AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
+	const std::string &proxyFQDN, const std::string &networkDnsSuffix)
 {
 	shared_ptr<MEICommandRequest> tmp(new AddProxyTableEntryRequest(proxyPort, gatewayMAC, proxyFQDN, networkDnsSuffix));
 	m_request = tmp;
@@ -21,7 +22,8 @@ AddProxyTableEntryCommand::AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t
 }
 
 void 
-AddProxyTableEntryCommand::reTransact(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE], string proxyFQDN, string networkDnsSuffix)
+AddProxyTableEntryCommand::reTransact(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
+	const std::string &proxyFQDN, const std::string &networkDnsSuffix)
 { 
 	shared_ptr<MEICommandRequest> tmp(new AddProxyTableEntryRequest(proxyPort, gatewayMAC, proxyFQDN, networkDnsSuffix));
 	m_request = tmp;

@@ -33,10 +33,10 @@ namespace Intel
 			{
 			public:
 
-				SetDNSSuffixCommand(std::string suffix);
+				SetDNSSuffixCommand(const std::string &suffix);
 				virtual ~SetDNSSuffixCommand() {}
 
-				virtual void reTransact(std::string suffix);
+				virtual void reTransact(const std::string &suffix);
 
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
@@ -48,7 +48,7 @@ namespace Intel
 			class SetDNSSuffixRequest : public AMTHICommandRequest
 			{
 			public:
-				SetDNSSuffixRequest(const std::string suffix ):m_str(suffix, false) {} //should check if the null terminated is needed or not
+				SetDNSSuffixRequest(const std::string &suffix):m_str(suffix, false) {} //should check if the null terminated is needed or not
 				virtual ~SetDNSSuffixRequest() {}
 
 			private:

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -15,7 +15,7 @@ using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
 
-SetProvisioningServerOTPCommand::SetProvisioningServerOTPCommand(std::string passwordOTP)
+SetProvisioningServerOTPCommand::SetProvisioningServerOTPCommand(const std::string &passwordOTP)
 {
 	shared_ptr<MEICommandRequest> tmp(new SetProvisioningServerOTPRequest(passwordOTP));
 	m_request = tmp;
@@ -23,7 +23,7 @@ SetProvisioningServerOTPCommand::SetProvisioningServerOTPCommand(std::string pas
 }
 
 void
-SetProvisioningServerOTPCommand::reTransact(std::string passwordOTP)
+SetProvisioningServerOTPCommand::reTransact(const std::string &passwordOTP)
 {
 	shared_ptr<MEICommandRequest> tmp(new SetProvisioningServerOTPRequest(passwordOTP));
 	m_request = tmp;

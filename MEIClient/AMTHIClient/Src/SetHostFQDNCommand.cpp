@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -15,14 +15,14 @@ using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
 
-SetHostFQDNCommand::SetHostFQDNCommand(std::string FQDN)
+SetHostFQDNCommand::SetHostFQDNCommand(const std::string &FQDN)
 {
 	shared_ptr<MEICommandRequest> tmp(new SetHostFQDNRequest(FQDN));
 	m_request = tmp;
 	Transact();
 }
 
-void SetHostFQDNCommand::reTransact(std::string FQDN)
+void SetHostFQDNCommand::reTransact(const std::string &FQDN)
 {
 	shared_ptr<MEICommandRequest> tmp(new SetHostFQDNRequest(FQDN));
 	m_request = tmp;

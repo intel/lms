@@ -42,9 +42,11 @@ namespace Intel
 			{
 			public:
 
-				AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE], std::string proxyFQDN, std::string networkDnsSuffix);
+				AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
+					const std::string &proxyFQDN, const std::string &networkDnsSuffix);
 				virtual ~AddProxyTableEntryCommand() {}
-				virtual void reTransact(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE], std::string proxyFQDN, std::string networkDnsSuffix);
+				virtual void reTransact(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
+					const std::string &proxyFQDN, const std::string &networkDnsSuffix);
 
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
@@ -60,8 +62,8 @@ namespace Intel
 			public:
 				AddProxyTableEntryRequest(	uint16_t proxyPort, 
 											uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
-											std::string proxyFQDN, 
-											std::string networkDnsSuffix) :
+											const std::string &proxyFQDN, 
+											const std::string &networkDnsSuffix) :
 					_proxyPort(proxyPort), 
 					_proxyFQDN(proxyFQDN), 
 					_networkDnsSuffix(networkDnsSuffix) 

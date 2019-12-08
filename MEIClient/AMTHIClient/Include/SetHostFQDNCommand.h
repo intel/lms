@@ -33,9 +33,9 @@ namespace Intel
 			class SetHostFQDNCommand : public AMTHICommand
 			{
 			public:
-				SetHostFQDNCommand(std::string confServerFQDN);
+				SetHostFQDNCommand(const std::string &FQDN);
 				virtual ~SetHostFQDNCommand() {}
-				virtual void reTransact(std::string confServerFQDN);
+				virtual void reTransact(const std::string &FQDN);
 				SET_HOST_FQDN_RESPONSE getResponse();
 
 			private:
@@ -49,7 +49,7 @@ namespace Intel
 			class SetHostFQDNRequest : public AMTHICommandRequest
 			{
 			public:
-				SetHostFQDNRequest(std::string FQDN) : _FQDN (FQDN){}
+				SetHostFQDNRequest(const std::string &FQDN) : _FQDN (FQDN){}
 				virtual ~SetHostFQDNRequest() {}
 
 			private:

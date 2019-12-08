@@ -34,12 +34,12 @@ namespace Intel
 			{
 			public:
 
-				SetProvisioningServerOTPCommand(std::string passwordOTP);
+				SetProvisioningServerOTPCommand(const std::string &passwordOTP);
 				virtual ~SetProvisioningServerOTPCommand() {}
 
 				SET_PROVISIONING_SERVER_OTP_RESPONSE getResponse();
 				
-				virtual void reTransact(std::string);
+				virtual void reTransact(const std::string &passwordOTP);
 
 				private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
@@ -54,7 +54,7 @@ namespace Intel
 				static const uint32_t MIN_OTP_BUFFER_LENGTH = 8;
 				static const uint32_t MAX_OTP_BUFFER_LENGTH = 32;
 			public:
-				SetProvisioningServerOTPRequest (const std::string otp):_otp(otp) 
+				SetProvisioningServerOTPRequest (const std::string &otp):_otp(otp) 
 				{
 					if (_otp.size() > MAX_OTP_BUFFER_LENGTH || _otp.size() < MIN_OTP_BUFFER_LENGTH) 
 						throw MEIClientException("Error: OTP string not in the right size.");

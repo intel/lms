@@ -15,14 +15,14 @@
 using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
-SetDNSSuffixCommand::SetDNSSuffixCommand(string suffix)
+SetDNSSuffixCommand::SetDNSSuffixCommand(const std::string &suffix)
 {
 	shared_ptr<MEICommandRequest> tmp(new SetDNSSuffixRequest(suffix));
 	m_request = tmp;
 	Transact();
 }
 
-void SetDNSSuffixCommand::reTransact(string suffix)
+void SetDNSSuffixCommand::reTransact(const std::string &suffix)
 {
 	shared_ptr<MEICommandRequest> tmp(new SetDNSSuffixRequest(suffix));
 	m_request = tmp;
