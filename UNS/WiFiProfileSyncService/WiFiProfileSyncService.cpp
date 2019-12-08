@@ -31,7 +31,7 @@ void WiFiProfileSyncService::InitAndPerformSync()
 {
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService:: Initialize WLAN...\n");
 
-	if (InitWlan() != 0)
+	if (!InitWlan())
 	{
 		ACE_Reactor::instance()->schedule_timer(this, NULL, ACE_Time_Value(INIT_LOOP_DELAY), ACE_Time_Value::zero);
 		return;
@@ -41,13 +41,14 @@ void WiFiProfileSyncService::InitAndPerformSync()
 	PerformSync();
 }
 
-int WiFiProfileSyncService::InitWlan()
+bool WiFiProfileSyncService::InitWlan()
 {
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService:: Open Handle...\n");
 
 	unsigned long dwMaxClientVer = 2;
 	unsigned long dwCurVersion = 0;
 	unsigned long dwResult;
+
 
 	// open wlan handle
 	dwResult = WlanOpenHandle(dwMaxClientVer, NULL, &dwCurVersion, &m_wlanHandle);
@@ -56,28 +57,27 @@ int WiFiProfileSyncService::InitWlan()
 	if (dwResult != ERROR_SUCCESS)
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle error\n");
-		return dwResult;
+		return false;
 	}
 
 	wlanps::WlanBL&  wlanBL = wlanps::WlanBL::getInstance();
 
-	int retVal = wlanBL.Init(m_wlanHandle);
-	if (retVal)
+	if (!wlanBL.Init(m_wlanHandle))
 	{
-		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error %d\n", retVal);
-		return retVal;
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error\n");
+		return false;
 	}
 
 	wlanps::WlanNotifications&  wlanNotifications = wlanps::WlanNotifications::getInstance();
 
-	retVal = wlanNotifications.Init(m_wlanHandle, this); // _hEvents, 
-	if (retVal)
+	unsigned long retVal = wlanNotifications.Init(m_wlanHandle, this); // _hEvents, 
+	if (retVal != ERROR_SUCCESS)
 	{
-		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanNotifications.Init error %d\n", retVal);
-		return retVal;
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanNotifications.Init error %u\n", retVal);
+		return false;
 	}
 
-	return 0;
+	return true;
 }
 
 

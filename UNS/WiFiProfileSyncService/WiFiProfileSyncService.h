@@ -47,7 +47,7 @@ private:
 
 	int handlePublishEvent(const GMS_AlertIndication & alert);
 	void InitAndPerformSync();
-	int InitWlan();
+	bool InitWlan();
 	int handle_timeout(const ACE_Time_Value &current_time, const void *arg);
 
 	void PerformSync();

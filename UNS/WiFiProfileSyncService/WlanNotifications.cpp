@@ -15,7 +15,7 @@ wlanps::WlanNotifications& wlanps::WlanNotifications::getInstance()
 	return wlanNotificationsInstance;
 }
 
-int wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncService *service)
+unsigned long wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncService *service)
 {
 
 	m_service = service;
@@ -33,7 +33,7 @@ int wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncService *servic
 		nullptr                     // dwPrevNotifSource - A pointer to the previously registered notification sources.
 	);
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanRegisterNotification retVal=%d\n", retVal);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanRegisterNotification retVal=%u\n", retVal);
 
 	return retVal;
 }

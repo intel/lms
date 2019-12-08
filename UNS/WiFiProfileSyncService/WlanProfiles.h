@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 #ifndef __WLAN_PRFOFILES_H_
 #define __WLAN_PRFOFILES_H_
@@ -30,11 +30,11 @@ namespace wlanps {
 
 		~WlanProfiles() {};
 
-		int Init(HANDLE hwlan);
+		bool Init(HANDLE hwlan);
 
-		int GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags);
+		bool GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags);
 
-		int GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOsUserProfiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription);
+		bool GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOsUserProfiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription);
 
 	private:
 		std::wstring xmlRead(const std::wstring &strXML, std::wstring strKey);

@@ -10,13 +10,13 @@ wlanps::WlanProfiles::WlanProfiles() : m_hwlan(nullptr), m_lastConnSSID(L"")
 {
 }
 
-int wlanps::WlanProfiles::Init(HANDLE hwlan)
+bool wlanps::WlanProfiles::Init(HANDLE hwlan)
 {
 	m_hwlan = hwlan;
-	return 0;
+	return true;
 }
 
-int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags)
+bool wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags)
 {
 	LPWSTR pProfileXml = nullptr;
 	unsigned long  flags = WLAN_PROFILE_GET_PLAINTEXT_KEY;
@@ -39,14 +39,14 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 		}
 
 		// Get Profile failed
-		return dwResult;
+		return false;
 	}
 
 	if (!isLegalProfileName(profileData->profile))
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR\n", profileData->profile);
 
-		return -1;
+		return false;
 	}
 
 	// Set additional profile data
@@ -71,7 +71,7 @@ int wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsign
 		pProfileXml = nullptr;
 	}
 
-	return dwResult;
+	return true;
 }
 
 std::wstring wlanps::WlanProfiles::xmlRead(const std::wstring &strXML, std::wstring strKey)
@@ -118,7 +118,7 @@ bool wlanps::WlanProfiles::isLegalProfileName(const std::wstring &profileName)
 	return isLegal;
 }
 
-int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOsUserProfiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription)
+bool wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOsUserProfiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription)
 {
 	// initialize variables
 	unsigned long dwResult = 0;
@@ -135,14 +135,14 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 	if (nullptr == m_hwlan)
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": handle is not opened\n");
-		return 1;
+		return false;
 	}
 
 	dwResult = WlanEnumInterfaces(m_hwlan, nullptr, &pIfList);
 	if (dwResult != ERROR_SUCCESS)
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanEnumInterfaces failed with error: %d\n", dwResult);
-		return 1;
+		return false;
 	}
 	else
 	{
@@ -275,7 +275,7 @@ int wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOs
 		pIfList = nullptr;
 	}
 
-	return 0;
+	return true;
 }
 
 bool wlanps::WlanProfiles::isSupportedEncription(const std::wstring &enc, const encriptionSet_t &supportedEnc)

@@ -84,14 +84,14 @@ void wlanps::WlanBL::CleanOsProfileList()
 	}
 }
 
-int wlanps::WlanBL::Init(HANDLE hwlan)
+bool wlanps::WlanBL::Init(HANDLE hwlan)
 {
 	std::lock_guard<std::mutex> lock(_updateMutex);
 
-	int ret = m_osProfiles.Init(hwlan);
+	bool ret = m_osProfiles.Init(hwlan);
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_osProfiles.Init ret = %d\n", ret);
 
-	if (ret == 0)
+	if (ret)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Get Initial Porfile List form the OS\n");
 		ret = FetchOsProfiles();
@@ -100,14 +100,14 @@ int wlanps::WlanBL::Init(HANDLE hwlan)
 	return ret;
 }
 
-int wlanps::WlanBL::FetchOsProfiles()
+bool wlanps::WlanBL::FetchOsProfiles()
 {
-	int ret;
+	bool ret;
 
 	ret = m_osProfiles.GetProfiles(m_wlanOsProfiles, &m_numOsUserProfiles, supportedAuthentication, supportedEncription);
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %d \n", m_numOsUserProfiles);
 
-	if (ret == 0)
+	if (ret)
 	{
 		PrintInternalOsUserProfileList();
 	}
@@ -131,7 +131,6 @@ void wlanps::WlanBL::SyncProfiles()
 {
 	std::lock_guard<std::mutex> lock(_updateMutex);
 
-	int ret;
 	bool status;
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: -->\n");
@@ -147,12 +146,12 @@ void wlanps::WlanBL::SyncProfiles()
 	}
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Delete Profiles which are not in the top16 use profiles \n");
-	ret = CleanupProfilesInMe();
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe returned %d\n", ret);
+	status = CleanupProfilesInMe();
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe completed %C\n", status == true ? "successfully" : "with failure");
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Add Missing profiles \n");
-	ret = AddMissingProfilesToMe();
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: AddMissingProfilesToMe returned %d\n", ret);
+	status = AddMissingProfilesToMe();
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: AddMissingProfilesToMe completed %C\n", status == true ? "successfully" : "with failure");
 }
 
 
@@ -184,7 +183,7 @@ void wlanps::WlanBL::PrintInternalMeProfiles()
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: -------       ME Profiles List End            ------\n");
 }
 
-int wlanps::WlanBL::CleanupProfilesInMe()
+bool wlanps::WlanBL::CleanupProfilesInMe()
 {
 	int numOsProfiles;
 	int numMEPRofiles;
@@ -236,15 +235,15 @@ int wlanps::WlanBL::CleanupProfilesInMe()
 	catch (std::exception* e)
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
-		return -1;
+		return false;
 	}
 
-	return 0;
+	return true;
 }
 
-int wlanps::WlanBL::AddMissingProfilesToMe()
+bool wlanps::WlanBL::AddMissingProfilesToMe()
 {
-	int ret = 0;
+	bool ret = true;
 	int osProfilesIndex;
 	int numOsProfiles;
 	int numMEPRofiles;
@@ -286,7 +285,7 @@ int wlanps::WlanBL::AddMissingProfilesToMe()
 				CIM_WiFiEndpointSettings			wifiSettings = { 0 };
 				PINTEL_PROFILE_DATA	pIntelProfileData = m_wlanOsProfiles[osProfilesIndex];
 				ret = trans2CIM(pIntelProfileData, wifiSettings);
-				if (ret == 0)
+				if (ret)
 				{
 					wsmanStatus = wsmanClient.AddProfile(wifiSettings);
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C AddProfile completed %C [ret = %d]\n",
@@ -302,7 +301,7 @@ int wlanps::WlanBL::AddMissingProfilesToMe()
 	catch (std::exception* e)
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
-		return -1;
+		return false;
 	}
 
 	return ret;
@@ -311,7 +310,7 @@ int wlanps::WlanBL::AddMissingProfilesToMe()
 void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 {
 	std::lock_guard<std::mutex> lock(_updateMutex);
-	unsigned int retVal;
+	bool retVal;
 	bool bFound = false;
 	bool bFoundMatch = false;
 	bool wsmanStatus;
@@ -333,7 +332,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Profile details: SSID = %W aut = %W, enc = %W profileFlags 0x%08X\n",
 		profileData->SSID, profileData->auth, profileData->encr, profileFlags);
 
-	if (retVal != ERROR_SUCCESS)
+	if (!retVal)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": GetProfileData failed! Stop add Profile process\n");
 		return;
@@ -350,7 +349,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	retVal = trans2CIM(profileData, wifiSettings);
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": trans2CIM returned %d\n", retVal);
 
-	if (retVal != ERROR_SUCCESS)
+	if (!retVal)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: trans2CIM failed -> Don't add this profile\n");
 		return;
@@ -457,7 +456,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	}
 }
 
-int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings& wifiSettings)
+bool wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings& wifiSettings)
 {
 	static const unsigned short TKIPPriority = 4;
 	static const unsigned short Priority802_11x_AES	= 6;
@@ -501,7 +500,7 @@ int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabil
 	catch (...)
 	{
 		UNS_ERROR(L"[ProfileSync] Fix the auth or encr map\n");
-		return -1;
+		return false;
 	}
 
 	wifiSettings.Priority(priority);
@@ -515,7 +514,7 @@ int wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabil
 
 	PrintWifiSetting(auth, encr, priority, profileData->profile, profileData->SSID);
 
-	return 0;
+	return true;
 }
 
 void wlanps::WlanBL::PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid)

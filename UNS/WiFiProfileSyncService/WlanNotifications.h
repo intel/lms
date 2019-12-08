@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 #ifndef __WLAN_NOTIFICATIONS_H_
 #define __WLAN_NOTIFICATIONS_H_
@@ -27,7 +27,7 @@ namespace wlanps {
 		virtual ~WlanNotifications() {};
 		static WlanNotifications& getInstance();
 
-		int Init(HANDLE hwlan, WiFiProfileSyncService *service);
+		unsigned long Init(HANDLE hwlan, WiFiProfileSyncService *service);
 
 	private:
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018 Intel Corporation
+ * Copyright (C) 2018-2019 Intel Corporation
  */
 #ifndef __WLAN_BL_H_
 #define __WLAN_BL_H_
@@ -36,7 +36,7 @@ namespace wlanps{
 		~WlanBL();
 		static WlanBL& getInstance();
 
-		int Init(HANDLE hwlan);
+		bool Init(HANDLE hwlan);
 
 		void SyncProfiles();
 
@@ -45,16 +45,16 @@ namespace wlanps{
 	private:
 		WlanBL();
 
-		int trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings& wifiSettings);
+		bool trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings& wifiSettings);
 		void PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid);
 
 		void    CleanOsProfileList();
-		int		AddMissingProfilesToMe();
+		bool	AddMissingProfilesToMe();
 		bool	FetchMeProfiles();
-		int		FetchOsProfiles();
+		bool	FetchOsProfiles();
 		void	PrintInternalMeProfiles();
 		void	PrintInternalOsUserProfileList();
-		int		CleanupProfilesInMe();
+		bool	CleanupProfilesInMe();
 	};
 }
 
