@@ -76,7 +76,7 @@ RegistryStorage::GetDataValue(DATA_NAME name, std::string& value, bool withCache
 			//type not fit user requested type
 			return false;
 		}
-		std::unique_ptr<char[]> newVal(new char[valsz]);
+		std::unique_ptr<char[]> newVal(new char[valsz + 1]);
 		if (GetRegistryData(newVal.get(), &valsz, &type, key, value_name, withCache) !=true)
 		{
 			return false;
