@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -53,7 +52,7 @@ namespace Intel
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
 				std::shared_ptr<MKHICommandResponse<GET_EOP_STATE_RESPONSE>> m_response;
-				
+
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1D;
 			};
 
@@ -76,7 +75,8 @@ namespace Intel
 				{
 					return 0;
 				}
-				virtual unsigned int requestHeaderGroupID() 
+
+				virtual unsigned int requestHeaderGroupID()
 				{
 					//this is the command group (taken from the MKHI document)
 					return MKHI_GEN_GROUP_ID;

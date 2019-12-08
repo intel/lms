@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -13,7 +12,7 @@
 #define __MKHI_COMMAND_H__
 
 #include "MEICommand.h"
-#include "MKHIErrorException.h" 
+#include "MKHIErrorException.h"
 #include "StatusCodeDefinitions.h"
 #include <string>
 #include <iostream>
@@ -40,7 +39,7 @@ enum MKHIGroups
 };
 
 //Macro to build a rule identifier. for Me rules all other fields are zeros
-#define MAKE_ME_RULE_ID(FeatureId, RuleId)  ((FeatureId << 16) | RuleId) 
+#define MAKE_ME_RULE_ID(FeatureId, RuleId)  ((FeatureId << 16) | RuleId)
 #define ME_RULE_FEATURE_ID                            0
 #define MEFWCAPS_FW_SKU_RULE                          0
 #define MEFWCAPS_ME_FW_UPDATE_RULE                    7
@@ -67,7 +66,7 @@ typedef union _RULE_ID
 typedef union _MKHI_MSG_HEADER
 {
 	uint32_t	Data;
-	struct 
+	struct
 	{
 		uint32_t    GroupId	:8;	// Kernel Client specific Info for dispatching
 		uint32_t    Command	:7;	// Command code specific to HECI client
@@ -112,9 +111,9 @@ private:
 
 	std::vector<uint8_t> serializeHeader(const MKHI_MSG_HEADER& header);
 	//returns the AMTHI command number (in the header) of the request command
-	virtual uint32_t requestHeaderCommandNumber() = 0; 
-	virtual uint32_t requestHeaderGroupID() = 0; 
-	virtual uint32_t requestDataSize() = 0; 
+	virtual uint32_t requestHeaderCommandNumber() = 0;
+	virtual uint32_t requestHeaderGroupID() = 0;
+	virtual uint32_t requestDataSize() = 0;
 	virtual std::vector<uint8_t> SerializeData()
 	{
 		//default no data
@@ -132,7 +131,7 @@ public:
 		m_commandNumber = commandNumber;
 		m_groupID = groupID;
 		unsigned int headerAndStatSize =0;
-		verifyHeaderAndStatus(buffer,  headerAndStatSize); 
+		verifyHeaderAndStatus(buffer,  headerAndStatSize);
 		verifyAndGenerateResponse(buffer.begin() + headerAndStatSize, buffer.end());
 	}
 	virtual ~MKHICommandResponse() {}
@@ -154,15 +153,15 @@ private:
 		}
 
 		MKHI_MSG_HEADER *header = (MKHI_MSG_HEADER *)&buffer[0];
-		if ((header->Fields.Command!= getCommandNumber()) || (header->Fields.GroupId!=getGroupID()) || 
-			(header->Fields.IsResponse!=1)) 
+		if ((header->Fields.Command!= getCommandNumber()) || (header->Fields.GroupId!=getGroupID()) ||
+			(header->Fields.IsResponse!=1))
 		{
 			throw MEIClientException("Error: MKHI Command number/Group ID/ is response is incorrect" );
 		}
-		
-		if (header->Fields.Result!= AMT_STATUS_SUCCESS) 
+
+		if (header->Fields.Result!= AMT_STATUS_SUCCESS)
 		{
-			throw Intel::MEI_Client::MKHI_Client::MKHIErrorException(header->Fields.Result); 
+			throw Intel::MEI_Client::MKHI_Client::MKHIErrorException(header->Fields.Result);
 		}
 		headerAndStatSize = sizeof(MKHI_MSG_HEADER);
 	}
@@ -185,7 +184,7 @@ public:
 		m_groupID = groupID;
 		m_ruleID = ruleID;
 		unsigned int headerAndStatSize = 0;
-		verifyHeaderAndStatus(buffer,  headerAndStatSize); 
+		verifyHeaderAndStatus(buffer,  headerAndStatSize);
 		verifyAndGenerateResponse(buffer.begin() + headerAndStatSize, buffer.end());
 	}
 	virtual ~MKHIGetRuleCommandResponse() {}
@@ -208,25 +207,25 @@ private:
 		}
 
 		MKHI_MSG_HEADER *header = (MKHI_MSG_HEADER *)&buffer[0];
-		if ((header->Fields.Command!= getCommandNumber()) || (header->Fields.GroupId!=getGroupID()) || 
-			(header->Fields.IsResponse!=1)) 
+		if ((header->Fields.Command!= getCommandNumber()) || (header->Fields.GroupId!=getGroupID()) ||
+			(header->Fields.IsResponse!=1))
 		{
 			throw MEIClientException("Error: MKHI Command number/Group ID/ is response is incorrect", header->Data );
 		}
-		
+
 		if (header->Fields.Result!= AMT_STATUS_SUCCESS)
 		{
 			throw Intel::MEI_Client::MKHI_Client::MKHIErrorException(header->Fields.Result);
 		}
 		headerAndStatSize = sizeof(MKHI_MSG_HEADER);
 		RULE_ID *ruleID = (RULE_ID *)&(buffer[headerAndStatSize]);
-		if (ruleID->Data!= getRuleID()) 
+		if (ruleID->Data!= getRuleID())
 		{
-			 throw MEIClientException("Error: MKHI RuleID is incorrect", ruleID->Data ); 
+			 throw MEIClientException("Error: MKHI RuleID is incorrect", ruleID->Data );
 		}
 		headerAndStatSize += sizeof(RULE_ID);
 		uint8_t *RuleDataLen = (uint8_t *)&(buffer[headerAndStatSize]);
-		if (*RuleDataLen!= sizeof(T)) 
+		if (*RuleDataLen!= sizeof(T))
 		{
 			std::stringstream ob;
 			ob << std::hex << buffer[0];
@@ -237,7 +236,7 @@ private:
 #else
 			std::cout << ob.str() << std::endl;
 #endif // WIN32
-			throw MEIClientException("Error: MKHI RuleDataLen is incorrect", *RuleDataLen ); 
+			throw MEIClientException("Error: MKHI RuleDataLen is incorrect", *RuleDataLen );
 		}
 		headerAndStatSize += sizeof(uint8_t);
 	}

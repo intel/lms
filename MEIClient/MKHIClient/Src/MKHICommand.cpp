@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -26,13 +25,14 @@ MKHICommandRequest::Serialize()
 	MKHI_MSG_HEADER header;
 	header.Data = 0; //initialize to 0
 	//put data in correct bits
-	
+
 	header.Fields.Command = requestHeaderCommandNumber();
 	header.Fields.GroupId = requestHeaderGroupID();
 	//all other fields should and are 0
 	std::vector<uint8_t> output = serializeHeader(header);
 	std::vector<uint8_t> dataOutput = SerializeData();
-	output.insert(output.end(), dataOutput.begin(), dataOutput.end());	
+	output.insert(output.end(), dataOutput.begin(), dataOutput.end());
+
 	return output;
 }
 

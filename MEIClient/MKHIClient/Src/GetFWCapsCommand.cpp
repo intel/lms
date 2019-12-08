@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2015 Intel Corporation
@@ -31,8 +30,7 @@ void GetFWCapsCommand::reTransact()
 }
 
 
-MEFWCAPS_SKU_MKHI
- GetFWCapsCommand::getResponse()
+MEFWCAPS_SKU_MKHI GetFWCapsCommand::getResponse()
 {
 	return m_response->getResponse();
 }
@@ -44,10 +42,9 @@ shared_ptr<MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI>> tmp(
 	m_response = tmp;
 }
 
-std::vector<uint8_t> 
+std::vector<uint8_t>
 GetFWCapsRequest::SerializeData()
-{	
+{
 	vector<uint8_t> output((std::uint8_t*)&m_rule, (std::uint8_t*)&m_rule + sizeof(m_rule));
 	return output;
 }
-

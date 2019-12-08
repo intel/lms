@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2018-2019 Intel Corporation
@@ -50,4 +49,3 @@ namespace Intel
 } // namespace Intel
 
 #endif //__HECI_EXCEPTION_H
-

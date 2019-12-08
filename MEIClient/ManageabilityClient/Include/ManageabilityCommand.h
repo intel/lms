@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -26,7 +25,7 @@ namespace Manageability_Client
 {
 typedef uint32_t Manageability_STATUS;
 
-struct Manageability_MESSAGE_HEADER 
+struct Manageability_MESSAGE_HEADER
 {
 	uint8_t CMD;
 	uint8_t BytesCount;
@@ -64,7 +63,7 @@ public:
 	virtual std::vector<uint8_t> Serialize();
 
 private:
-	
+
 	std::vector<uint8_t> serializeHeader(const Manageability_MESSAGE_HEADER& header);
 	//returns the Manageability command number (in the header) of the request command
 	virtual uint8_t requestHeaderCMD() = 0;
@@ -88,7 +87,7 @@ public:
 	{
 		verifyAndGenerateResponse(buffer.begin(), buffer.end());
 	}
-	virtual ~ManageabilityCommandResponse() {}	
+	virtual ~ManageabilityCommandResponse() {}
 	T getResponse()
 	{
 		return m_result;

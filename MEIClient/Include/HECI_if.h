@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2005-2007, 2009-2019 Intel Corporation
@@ -29,7 +28,7 @@ DEFINE_GUID(FW_UPDATE_GUID,
 
 // Define GUID used to connect to the MKHI client (via the HECI device)
 // {0x8e6a6715, 0x9abc, 0x4043, 0x88, 0xef, 0x9e, 0x39, 0xc6, 0xf6, 0x3e, 0xf}
-// aka as HCI_HECI_DYNAMIC_CLIENT_GUID      
+// aka as HCI_HECI_DYNAMIC_CLIENT_GUID
 DEFINE_GUID(HECI_MKHI_GUID,
          0x8e6a6715, 0x9abc, 0x4043, 0x88, 0xef, 0x9e, 0x39, 0xc6, 0xf6, 0x3e, 0xf);
 

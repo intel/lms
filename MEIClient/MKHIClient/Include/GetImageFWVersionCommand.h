@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -48,7 +47,7 @@ namespace Intel
 			{
 				uint32_t             NumOfModules;
 				FLASH_PARTITION_DATA ManifestData[MAXIMUM_IPU_SUPPORTED];
-		
+
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					Intel::MEI_Client::parseData(NumOfModules, itr, end);
@@ -70,7 +69,7 @@ namespace Intel
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
 				std::shared_ptr<MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE>> m_response;
-				
+
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1C;
 				uint32_t _partitionId;
 			};
@@ -82,7 +81,7 @@ namespace Intel
 				virtual ~GetImageFWVersionRequest() {}
 
 			private:
-				
+
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x1C;
 				virtual unsigned int requestHeaderCommandNumber()
 				{
@@ -95,7 +94,7 @@ namespace Intel
 					return sizeof(GET_IMAGE_FW_VERSION_REQUEST);
 				}
 
-				virtual unsigned int requestHeaderGroupID() 
+				virtual unsigned int requestHeaderGroupID()
 				{
 					//this is the command group (taken from the MKHI document)
 					return MKHI_GEN_GROUP_ID;

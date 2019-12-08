@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2009-2019 Intel Corporation
@@ -46,13 +45,12 @@ namespace Intel
 			{
 				return _what;
 			}
-			virtual const char *what() const throw() 
-			{ 
-			  return _what.c_str(); 
+			virtual const char *what() const throw()
+			{
+				return _what.c_str();
 			}
 		};
 	} //namespace MEI_Client
 } // namespace Intel
 
 #endif //__MEI_CLIENT_EXCEPTION_H
-

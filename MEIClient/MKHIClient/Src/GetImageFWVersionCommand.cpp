@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2018 Intel Corporation
@@ -32,7 +31,7 @@ GET_IMAGE_FW_VERSION_RESPONSE GetImageFWVersionCommand::getResponse()
 	return m_response->getResponse();
 }
 
-void  GetImageFWVersionCommand::parseResponse(const std::vector<uint8_t>& buffer)
+void GetImageFWVersionCommand::parseResponse(const std::vector<uint8_t>& buffer)
 {
 	std::shared_ptr<MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE>> tmp(
 		new MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE>(buffer,  RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));

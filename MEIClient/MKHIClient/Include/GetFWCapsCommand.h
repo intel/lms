@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -32,7 +31,7 @@ namespace Intel
 			union MEFWCAPS_SKU_MKHI
 			{
 				uint32_t Data;
-				struct 
+				struct
 				{
 					uint32_t MngFull:1;
 					uint32_t MngStd:1;
@@ -47,7 +46,7 @@ namespace Intel
 					uint32_t ThermReport:1;
 					uint32_t IccOverClockin:1;
 					uint32_t Pav:1; //Protected Audio Video Path
-					uint32_t Spk:1; 
+					uint32_t Spk:1;
 					uint32_t Rca:1;
 					uint32_t Rpat:1;
 					uint32_t Hap:1;
@@ -113,12 +112,13 @@ namespace Intel
 				{
 					return sizeof(RULE_ID);
 				}
-				virtual unsigned int requestHeaderGroupID() 
+
+				virtual unsigned int requestHeaderGroupID()
 				{
 					//this is the command group (taken from the MKHI document)
 					return MKHI_FWCAPS_GROUP_ID;
 				}
-				
+
 				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace MKHI_Client

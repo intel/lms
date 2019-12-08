@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2015 Intel Corporation
@@ -36,17 +35,14 @@ ChangeToAMT_RESPONSE MNGChangeToAMTCommand::getResponse()
 	return m_response->getResponse();
 }
 
-void
-MNGChangeToAMTCommand::parseResponse(const vector<uint8_t>& buffer)
+void MNGChangeToAMTCommand::parseResponse(const vector<uint8_t>& buffer)
 {
 	shared_ptr<ManageabilityCommandResponse<ChangeToAMT_RESPONSE>> tmp(new ManageabilityCommandResponse<ChangeToAMT_RESPONSE>(buffer));
 	m_response = tmp;
 }
 
-std::vector<uint8_t> 
-MNGChangeToAMTRequest::SerializeData()
+std::vector<uint8_t> MNGChangeToAMTRequest::SerializeData()
 {
 	vector<uint8_t> output;
 	return output;
 }
-

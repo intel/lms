@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -41,11 +40,11 @@ std::vector<uint8_t>
 ManageabilityCommandRequest::Serialize()
 {
 	uint8_t bytesCount = (uint8_t)(sizeof(uint8_t)*2) + requestDataSize();
-	Manageability_MESSAGE_HEADER header = 
+	Manageability_MESSAGE_HEADER header =
 	{ requestHeaderCMD(), bytesCount,requestHeaderSubCMD(), MNG_HEADER_VERSION  };
 	std::vector<uint8_t> output = serializeHeader(header);
 	std::vector<uint8_t> dataOutput = SerializeData();
-	output.insert(output.end(), dataOutput.begin(), dataOutput.end());	
+	output.insert(output.end(), dataOutput.begin(), dataOutput.end());
 	return output;
 }
 
@@ -54,4 +53,3 @@ ManageabilityCommandRequest::serializeHeader(const Manageability_MESSAGE_HEADER&
 {
 	return Intel::MEI_Client::serializeHeader<Manageability_MESSAGE_HEADER>(header);
 }
-

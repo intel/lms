@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -55,7 +54,7 @@ namespace Intel
 			private:
 				static const uint8_t REQUEST_COMMAND = 0x05;
 				static const uint8_t REQUEST_SUB_CMD = 0x52;
-				
+
 				virtual uint8_t requestHeaderCMD()
 				{
 					//this is the command number (taken from the AMTHI document)
@@ -68,7 +67,7 @@ namespace Intel
 				}
 				virtual uint8_t requestDataSize()
 				{
-					return 0; 
+					return 0;
 				}
 
 				virtual std::vector<uint8_t> SerializeData();

@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2017 Intel Corporation
@@ -29,24 +28,21 @@ void GetImageTypeCommand::reTransact()
 	Transact();
 }
 
-
-MKHI_IMAGE_TYPE
-GetImageTypeCommand::getResponse()
+MKHI_IMAGE_TYPE GetImageTypeCommand::getResponse()
 {
 	return m_response->getResponse();
 }
 
 void  GetImageTypeCommand::parseResponse(const vector<uint8_t>& buffer)
 {
-shared_ptr<MKHICommandResponse<MKHI_IMAGE_TYPE>> tmp(
-	new MKHICommandResponse<MKHI_IMAGE_TYPE>(buffer,  RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
+	shared_ptr<MKHICommandResponse<MKHI_IMAGE_TYPE>> tmp(
+		new MKHICommandResponse<MKHI_IMAGE_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
 	m_response = tmp;
 }
 
-std::vector<uint8_t> 
-GetImageTypeRequest::SerializeData()
-{	
+std::vector<uint8_t> GetImageTypeRequest::SerializeData()
+{
 	vector<uint8_t> output(0, 0);
+
 	return output;
 }
-

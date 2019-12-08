@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2013-2015 Intel Corporation
@@ -31,9 +30,7 @@ void parseData (T& t,std::vector<uint8_t>::const_iterator& itr, const std::vecto
 		throw MEIClientException("Error: Buffer size is too small!");
 	}
 	uint8_t *p = (uint8_t*)&t;
-	std::copy(itr,
-		itr + sizeof(T),
-		p);
+	std::copy(itr, itr + sizeof(T), p);
 	itr+=sizeof(T);
 }
 /*
@@ -165,7 +162,7 @@ void parseComplexArray (std::vector<T>& v,std::vector<uint8_t>::const_iterator& 
 	if (count==0)
 		return;
 	v.resize(count);
-	
+
 	//parse should check for buffer size
 	for (uint32_t i = 0; i<count; ++i)
 		v[i].parse(itr,end);

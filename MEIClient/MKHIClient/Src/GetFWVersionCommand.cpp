@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2015 Intel Corporation
@@ -29,24 +28,21 @@ void GetFWVersionCommand::reTransact()
 	Transact();
 }
 
-
-GET_FW_VER_RESPONSE 
- GetFWVersionCommand::getResponse()
+GET_FW_VER_RESPONSE GetFWVersionCommand::getResponse()
 {
 	return m_response->getResponse();
 }
 
-void  GetFWVersionCommand::parseResponse(const vector<uint8_t>& buffer)
+void GetFWVersionCommand::parseResponse(const vector<uint8_t>& buffer)
 {
-shared_ptr<MKHICommandResponse<GET_FW_VER_RESPONSE>> tmp(
-	new MKHICommandResponse<GET_FW_VER_RESPONSE>(buffer,  RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
+	shared_ptr<MKHICommandResponse<GET_FW_VER_RESPONSE>> tmp(
+		new MKHICommandResponse<GET_FW_VER_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
 	m_response = tmp;
 }
 
-std::vector<uint8_t> 
-GetFWVersionRequest::SerializeData()
-{	
+std::vector<uint8_t> GetFWVersionRequest::SerializeData()
+{
 	vector<uint8_t> output(0, 0);
+
 	return output;
 }
-

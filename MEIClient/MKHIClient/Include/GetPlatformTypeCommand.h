@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -29,12 +28,12 @@ namespace Intel
 				BrandStdMng,
 				BrandL3,
 				BrandRpat,
-				BrandSBT 
+				BrandSBT
 			};
 			enum IMAGE_TYPE
 			{
-				NoME, 
-				IGN_FW,//IGN_FW 
+				NoME,
+				IGN_FW,//IGN_FW
 				ME_LITE,//ME_LITE -(reserved)
 				ME_FULL_4MB,
 				ME_FULL_8MB
@@ -46,7 +45,7 @@ namespace Intel
 				struct
 				{
 					uint32_t   Mobile:  1;  //0
-					uint32_t   Desktop: 1; 
+					uint32_t   Desktop: 1;
 					uint32_t   Server:  1;
 					uint32_t   WorkStn:  1;
 					uint32_t   Corporate: 1;
@@ -113,7 +112,7 @@ namespace Intel
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
 				std::shared_ptr<MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>> m_response;
-				
+
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};
 
@@ -135,12 +134,12 @@ namespace Intel
 				{
 					return sizeof(RULE_ID);
 				}
-				virtual unsigned int requestHeaderGroupID() 
+				virtual unsigned int requestHeaderGroupID()
 				{
 					//this is the command group (taken from the MKHI document)
 					return MKHI_FWCAPS_GROUP_ID;
 				}
-				
+
 				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace MKHI_Client

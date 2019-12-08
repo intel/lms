@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -32,15 +31,15 @@ class MEICommand
 public:
 	MEICommand() {}
 	virtual ~MEICommand() {}
-	
+
 protected:
-	std::shared_ptr <MEICommandRequest> m_request;	
+	std::shared_ptr <MEICommandRequest> m_request;
 	void Transact();
 
 private:
 	virtual const GUID& getGUID() = 0;
 	virtual void parseResponse(const std::vector<uint8_t>& buffer) = 0;
-	
+
 };
 
 class MEICommandRequest
@@ -53,7 +52,7 @@ public:
 
 class MEICommandResponse
 {
-public: 
+public:
 	MEICommandResponse() {}
 	virtual ~MEICommandResponse() {}
 

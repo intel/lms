@@ -1,4 +1,3 @@
-/*++
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Copyright (C) 2010-2019 Intel Corporation
@@ -24,7 +23,7 @@ namespace Intel
 			struct IsChangedEnabledResponse
 			{
 				uint32_t Enabled;
-				
+
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
 				{
 					Intel::MEI_Client::parseData(*this, itr, end);
@@ -56,7 +55,7 @@ namespace Intel
 			private:
 				static const uint8_t REQUEST_COMMAND = 0x05;
 				static const uint8_t REQUEST_SUB_CMD = 0x051;
-				
+
 				virtual uint8_t requestHeaderCMD()
 				{
 					//this is the command number (taken from the AMTHI document)
@@ -69,7 +68,7 @@ namespace Intel
 				}
 				virtual uint8_t requestDataSize()
 				{
-					return 0; 
+					return 0;
 				}
 
 				virtual std::vector<uint8_t> SerializeData();
