@@ -1332,7 +1332,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminPowerPackageModifiedEvent(u
 	ss << "Power Package Modified to: ";
 	stringstream data;
 	data << std::hex << std::uppercase << std::setfill('0');
-	for (int k=0; k<16; k++)
+	for (uint8_t k = 0; k < 16 && k < extendedDataLen; k++)
 	{
 		data << std::setw(2) << (int)extData[k];
 	}
