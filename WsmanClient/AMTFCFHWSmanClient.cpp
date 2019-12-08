@@ -187,7 +187,7 @@ bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist)
 	CATCH_exception_return("AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists")
 }
 
-bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist, std::string filterType)
+bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist, const std::string &filterType)
 {
 	try 
 	{

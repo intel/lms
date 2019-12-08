@@ -59,7 +59,7 @@ public:
 	virtual bool SetDataValue(DATA_NAME name, unsigned long value, bool withCache);
 	virtual bool ValueExists(DATA_NAME name);
 private:
-	DataStorageWrapper(std::shared_ptr<DataStorageWrapperImpl> impl);
+	DataStorageWrapper(const std::shared_ptr<DataStorageWrapperImpl> &impl);
 	std::shared_ptr<DataStorageWrapperImpl> _impl;
 };
 

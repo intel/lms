@@ -10,7 +10,7 @@
 
 #include "DataStorageWrapper.h"
 
-DataStorageWrapper::DataStorageWrapper(std::shared_ptr<DataStorageWrapperImpl> impl) : _impl(impl) {}
+DataStorageWrapper::DataStorageWrapper(const std::shared_ptr<DataStorageWrapperImpl> &impl) : _impl(impl) {}
 
 DataStorageWrapper::~DataStorageWrapper() {}
 

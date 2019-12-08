@@ -55,7 +55,7 @@ private:
 	bool SetRegistryData(const void* value, unsigned long valsz, unsigned long type,
 		const LmsRegStr &key, const LmsRegStr &valueName, bool withCache);
 	
-	RegistryStorage(std::shared_ptr<RegEntryMap> regMap, std::shared_ptr<MajorSubKeysList> keyList);
+	RegistryStorage(const std::shared_ptr<RegEntryMap> &regMap, const std::shared_ptr<MajorSubKeysList> &keyList);
 	
 	std::shared_ptr< RegEntryMap > _regMap;
 	std::shared_ptr< MajorSubKeysList > _keyLists;

@@ -50,7 +50,7 @@ public:
 	virtual int resume();
 	int stop();
 
-	virtual bool sendMessage(const ACE_TString  name,MessageBlockPtr mb) const;
+	virtual bool sendMessage(const ACE_TString &name, const MessageBlockPtr &mb) const;
 
 	//implement IServicesManager
 	virtual bool StartAceService(const ACE_TString &serviceName);

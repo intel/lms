@@ -31,7 +31,7 @@ public:
 	bool CILAFilterCollectionSubscriptionExists(short* pExist);
 	bool Init();
 private:
-	bool CILAFilterCollectionSubscriptionExists(short* pExist,std::string filterType);
+	bool CILAFilterCollectionSubscriptionExists(short* pExist, const std::string &filterType);
 
 	bool m_isInit;
 

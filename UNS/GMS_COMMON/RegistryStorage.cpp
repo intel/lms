@@ -21,7 +21,7 @@ DECLARE_CACHE()
 		return false; \
 	} while(0);
 
-RegistryStorage::RegistryStorage(std::shared_ptr<RegEntryMap> regMap, std::shared_ptr<MajorSubKeysList> keyList):_regMap(regMap), _keyLists(keyList)
+RegistryStorage::RegistryStorage(const std::shared_ptr<RegEntryMap> &regMap, const std::shared_ptr<MajorSubKeysList> &keyList):_regMap(regMap), _keyLists(keyList)
 {
 	/*_regMap.insert(key, RegEntry);
 	 ..

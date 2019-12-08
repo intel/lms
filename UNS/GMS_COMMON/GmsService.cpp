@@ -457,7 +457,7 @@ int GmsService::resume()
 	return 0;
 }
 
-bool GmsService::sendMessage(const ACE_TString dest,MessageBlockPtr mb) const
+bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb) const
 {
 	UNS_DEBUG(L"GmsService: sending message to %s\n", dest.c_str());
 	const ACE_Service_Type *svc_rec;
