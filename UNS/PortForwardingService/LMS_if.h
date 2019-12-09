@@ -161,7 +161,7 @@ typedef struct
 } APF_SERVICE_ACCEPT_MESSAGE;
 
 /**
- * holds the protocl major and minor version implemented by AMT.
+ * holds the protocol major and minor version implemented by AMT.
  * @MajorVersion - Protocol's Major version
  * @MinorVersion - Protocol's Minor version
  * @Trigger - The open session reason

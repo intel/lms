@@ -43,8 +43,9 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 
 
 	unsigned long registrySize; //previous FLog size from the registry
-
-	if (DSinstance().GetDataValue(FLogSize, registrySize, false) == true && currentSize != registrySize || //if current log's size is greater than previos one (of when we got up) = there was a fatal error. Even if it is lower than the current - it may be after reset of FLog
+	//If current log's size is greater than previous one (of when we got up) = there was a fatal error.
+	//Even if it is lower than the current - it may be after reset of FLog
+	if (DSinstance().GetDataValue(FLogSize, registrySize, false) == true && currentSize != registrySize ||
 		DSinstance().GetDataValue(FLogSize, registrySize, false) == false ) // no value is saved in the registry
 	{	
 		UNS_DEBUG(L"Intel(R) Management Engine (Intel(R) ME) error(s) occurred. Please review Intel(R) ME logs.\n");
@@ -62,10 +63,8 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 int
 WinLogEventHandler::fini (void)
 {
-		
 	return EventHandler::fini();
 }
-
 
 int
 WinLogEventHandler::handle_event (MessageBlockPtr mbPtr )
