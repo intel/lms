@@ -59,7 +59,6 @@ namespace Intel
 				GetTcpipParametersCommand();
 				virtual ~GetTcpipParametersCommand() {}
 
-				virtual void reTransact();
 				TCPIP_PARAMETERS getResponse();
 
 			private:

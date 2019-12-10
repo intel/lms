@@ -39,7 +39,7 @@ namespace Intel
 
 				GetImageTypeCommand();
 				virtual ~GetImageTypeCommand() {}
-				virtual void reTransact();
+
 				MKHI_IMAGE_TYPE getResponse();
 
 			private:

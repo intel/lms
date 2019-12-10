@@ -41,13 +41,9 @@ namespace Intel
 			class AddProxyTableEntryCommand : public AMTHICommand
 			{
 			public:
-
 				AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
 					const std::string &proxyFQDN, const std::string &networkDnsSuffix);
 				virtual ~AddProxyTableEntryCommand() {}
-				virtual void reTransact(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
-					const std::string &proxyFQDN, const std::string &networkDnsSuffix);
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 

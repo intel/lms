@@ -91,7 +91,6 @@ namespace Intel
 				GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex);	//INTERFACE_SETTINGS
 				virtual ~GetIPv6LanInterfaceStatusCommand() {}
 
-				virtual void reTransact(uint32_t interfaceIndex);	//INTERFACE_SETTINGS
 				GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE getResponse();
 
 			private:

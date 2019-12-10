@@ -42,10 +42,6 @@ namespace AMTHI_Client
 		CFG_SetOverrideProsetAdapterSwitchingCommand(bool OverrideEnabled);
 		virtual ~CFG_SetOverrideProsetAdapterSwitchingCommand();
 
-		virtual void reTransact()
-		{
-			Transact();
-		}
 		AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE getResponse();
 
 	private:

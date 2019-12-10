@@ -105,7 +105,7 @@ namespace Intel
 
 				GetPlatformTypeCommand();
 				virtual ~GetPlatformTypeCommand() {}
-				virtual void reTransact();
+
 				MKHI_PLATFORM_TYPE getResponse();
 
 			private:

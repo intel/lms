@@ -38,10 +38,8 @@ namespace Intel
 				virtual ~SetProvisioningServerOTPCommand() {}
 
 				SET_PROVISIONING_SERVER_OTP_RESPONSE getResponse();
-				
-				virtual void reTransact(const std::string &passwordOTP);
 
-				private:
+			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
 				std::shared_ptr<AMTHICommandResponse<SET_PROVISIONING_SERVER_OTP_RESPONSE>> m_response;

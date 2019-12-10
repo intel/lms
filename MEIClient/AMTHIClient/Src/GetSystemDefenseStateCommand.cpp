@@ -23,13 +23,6 @@ GetSystemDefenseStateCommand::GetSystemDefenseStateCommand()
 	Transact();
 }
 
-void GetSystemDefenseStateCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetSystemDefenseStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
 GET_SYSTEM_DEFENSE_STATE_RESPONSE GetSystemDefenseStateCommand::getResponse()
 {
 	return m_response->getResponse();

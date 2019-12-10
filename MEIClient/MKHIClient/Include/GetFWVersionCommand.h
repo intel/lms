@@ -51,7 +51,7 @@ namespace Intel
 			public:
 				GetFWVersionCommand();
 				virtual ~GetFWVersionCommand() {}
-				virtual void reTransact();
+
 				GET_FW_VER_RESPONSE getResponse();
 
 			private:

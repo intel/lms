@@ -37,7 +37,6 @@ namespace Intel
 				GetCurrentPowerPolicyCommand();
 				virtual ~GetCurrentPowerPolicyCommand() {}
 
-				virtual void reTransact();
 				std::string getResponse();
 
 			private:

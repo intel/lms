@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -21,14 +21,6 @@ GetCertificateHashEntryCommand::GetCertificateHashEntryCommand(uint32_t hashHand
 	m_request = tmp;
 	Transact();
 }
-
-void GetCertificateHashEntryCommand::reTransact(uint32_t hashHandle)
-{
-	shared_ptr<MEICommandRequest> tmp(new GetCertificateHashEntryRequest(hashHandle));
-	m_request = tmp;
-	Transact();
-}
-
 
 GET_CERTIFICATE_HASH_ENTRY_RESPONSE 
 GetCertificateHashEntryCommand::getResponse()

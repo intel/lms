@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -19,13 +19,6 @@ using namespace Intel::MEI_Client::AMTHI_Client;
 
 
 GetSecurityParametersCommand::GetSecurityParametersCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetSecurityParametersRequest());
-	m_request = tmp;
-	Transact();
-}
-
-void GetSecurityParametersCommand::reTransact()
 {
 	shared_ptr<MEICommandRequest> tmp(new GetSecurityParametersRequest());
 	m_request = tmp;

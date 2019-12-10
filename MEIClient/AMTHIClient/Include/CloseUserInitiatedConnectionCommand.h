@@ -35,8 +35,6 @@ namespace Intel
 				CloseUserInitiatedConnectionCommand();
 				virtual ~CloseUserInitiatedConnectionCommand() {}
 
-				virtual void reTransact();
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 

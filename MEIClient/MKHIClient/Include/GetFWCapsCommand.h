@@ -80,7 +80,7 @@ namespace Intel
 
 				GetFWCapsCommand(CapsRule rule);
 				virtual ~GetFWCapsCommand() {}
-				virtual void reTransact();
+
 				MEFWCAPS_SKU_MKHI getResponse();
 
 			private:

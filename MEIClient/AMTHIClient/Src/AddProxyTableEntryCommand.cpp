@@ -21,15 +21,6 @@ AddProxyTableEntryCommand::AddProxyTableEntryCommand(uint16_t proxyPort, uint8_t
 	Transact();
 }
 
-void 
-AddProxyTableEntryCommand::reTransact(uint16_t proxyPort, uint8_t gatewayMAC[MAC_ADDRESS_SIZE],
-	const std::string &proxyFQDN, const std::string &networkDnsSuffix)
-{ 
-	shared_ptr<MEICommandRequest> tmp(new AddProxyTableEntryRequest(proxyPort, gatewayMAC, proxyFQDN, networkDnsSuffix));
-	m_request = tmp;
-	Transact();
-}
-
 void
 AddProxyTableEntryCommand::parseResponse(const vector<uint8_t>& buffer)
 {	

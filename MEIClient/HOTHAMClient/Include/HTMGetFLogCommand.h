@@ -46,7 +46,7 @@ namespace Intel
 
 				HTMGetFatalErrorsCommand();
 				virtual ~HTMGetFatalErrorsCommand() {}
-				virtual void reTransact();
+
 				GET_FLOG_RESP getResponse();
 
 			private:

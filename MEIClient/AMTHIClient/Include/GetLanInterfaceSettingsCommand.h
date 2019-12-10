@@ -45,7 +45,6 @@ namespace Intel
 				GetLanInterfaceSettingsCommand(uint32_t interfaceSettings);	//INTERFACE_SETTINGS
 				virtual ~GetLanInterfaceSettingsCommand() {}
 
-				virtual void reTransact(uint32_t interfaceSettings);	//INTERFACE_SETTINGS
 				LAN_SETTINGS getResponse();
 
 			private:

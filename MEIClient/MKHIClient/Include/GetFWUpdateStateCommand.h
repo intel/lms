@@ -44,7 +44,7 @@ namespace Intel
 
 				GetFWUpdateStateCommand();
 				virtual ~GetFWUpdateStateCommand() {}
-				virtual void reTransact();
+
 				FW_UPDATE_STATE getResponse();
 
 			private:

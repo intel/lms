@@ -31,13 +31,6 @@ namespace Intel {
 				Transact();
 			}
 
-			void SetEnterpriseAccessCommand::reTransact(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess)
-			{
-				std::shared_ptr<MEICommandRequest> tmp(new SetEnterpriseAccessRequest(Flags, HostIPAddress, EnterpiseAccess));
-				m_request = tmp;
-				Transact();
-			}
-
 			SetEnterpriseAccess_RESPONSE SetEnterpriseAccessCommand::getResponse()
 			{
 				return m_response->getResponse();

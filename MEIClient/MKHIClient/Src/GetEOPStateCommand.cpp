@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -13,13 +13,6 @@
 using namespace Intel::MEI_Client::MKHI_Client;
 
 GetEOPStateCommand::GetEOPStateCommand()
-{
-	std::shared_ptr<MEICommandRequest> tmp(new GetEOPStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
-void GetEOPStateCommand::reTransact()
 {
 	std::shared_ptr<MEICommandRequest> tmp(new GetEOPStateRequest());
 	m_request = tmp;

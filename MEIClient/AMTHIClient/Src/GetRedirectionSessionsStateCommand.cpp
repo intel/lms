@@ -23,13 +23,6 @@ GetRedirectionSessionsStateCommand::GetRedirectionSessionsStateCommand()
 	Transact();
 }
 
-void GetRedirectionSessionsStateCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetRedirectionSessionsStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
 GET_REDIRECTION_SESSIONS_STATE_RESPONSE GetRedirectionSessionsStateCommand::getResponse()
 {
 	return m_response->getResponse();

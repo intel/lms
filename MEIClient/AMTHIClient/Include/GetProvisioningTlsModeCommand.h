@@ -45,7 +45,7 @@ namespace Intel
 
 				GetProvisioningTLSModeCommand();
 				virtual ~GetProvisioningTLSModeCommand() {}
-				virtual void reTransact();
+
 				PROV_TLS_MODE_RESPONSE getResponse();
 
 			private:

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -16,13 +16,6 @@ using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
 EnumerateHashHandlesCommand::EnumerateHashHandlesCommand ()
-{
-	shared_ptr<MEICommandRequest> tmp(new EnumerateHashHandlesRequest ());
-	m_request = tmp;
-	Transact();
-}
-
-void EnumerateHashHandlesCommand::reTransact()
 {
 	shared_ptr<MEICommandRequest> tmp(new EnumerateHashHandlesRequest ());
 	m_request = tmp;

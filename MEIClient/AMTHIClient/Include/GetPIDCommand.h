@@ -38,7 +38,6 @@ namespace Intel
 				GetPIDCommand();
 				virtual ~GetPIDCommand() {}
 
-				virtual void reTransact();
 				GET_PID_RESPONSE getResponse();
 
 			private:

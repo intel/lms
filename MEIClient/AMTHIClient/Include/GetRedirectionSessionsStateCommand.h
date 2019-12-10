@@ -44,7 +44,6 @@ namespace Intel
 				GetRedirectionSessionsStateCommand();
 				virtual ~GetRedirectionSessionsStateCommand() {}
 
-				virtual void reTransact();
 				GET_REDIRECTION_SESSIONS_STATE_RESPONSE getResponse();
 
 			private:

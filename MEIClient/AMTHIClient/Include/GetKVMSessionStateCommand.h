@@ -48,7 +48,6 @@ namespace Intel
 				GetKVMSessionStateCommand();
 				virtual ~GetKVMSessionStateCommand() {}
 
-				virtual void reTransact();
 				GET_KVM_SESSION_STATE_RESPONSE getResponse();
 
 			private:

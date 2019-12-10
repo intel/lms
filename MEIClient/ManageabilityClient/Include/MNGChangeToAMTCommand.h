@@ -36,7 +36,7 @@ namespace Intel
 
 				MNGChangeToAMTCommand();
 				virtual ~MNGChangeToAMTCommand() {}
-				virtual void reTransact();
+
 				ChangeToAMT_RESPONSE getResponse();
 
 			private:

@@ -37,7 +37,7 @@ namespace Intel
 
 				MNGIsChangeToAMTEnabledCommand();
 				virtual ~MNGIsChangeToAMTEnabledCommand() {}
-				virtual void reTransact();
+
 				IsChangedEnabledResponse getResponse();
 
 			private:

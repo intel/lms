@@ -40,7 +40,6 @@ namespace Intel
 				GetSystemDefenseStateCommand();
 				virtual ~GetSystemDefenseStateCommand() {}
 
-				virtual void reTransact();
 				GET_SYSTEM_DEFENSE_STATE_RESPONSE getResponse();
 
 			private:

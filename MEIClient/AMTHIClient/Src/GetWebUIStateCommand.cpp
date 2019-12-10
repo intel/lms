@@ -23,13 +23,6 @@ GetWebUIStateCommand::GetWebUIStateCommand()
 	Transact();
 }
 
-void GetWebUIStateCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetWebUIStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
 GET_WEB_UI_STATE_RESPONSE GetWebUIStateCommand::getResponse()
 {
 	return m_response->getResponse();

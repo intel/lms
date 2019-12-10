@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2018 Intel Corporation
+ * Copyright (C) 2013-2019 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
@@ -503,7 +503,6 @@ TEST(instantiate, testUnprovisionCommand)
 {
 	EXPECT_NO_THROW(
 		UnprovisionCommand upc(CFG_PROVISIONING_MODE_NONE);
-		//upc.reTransact(CFG_PROVISIONING_MODE::CFG_PROVISIONING_MODE_NONE);
 	);
 }
 

@@ -40,7 +40,6 @@ namespace Intel
 				GetWebUIStateCommand();
 				virtual ~GetWebUIStateCommand() {}
 
-				virtual void reTransact();
 				GET_WEB_UI_STATE_RESPONSE getResponse();
 
 			private:

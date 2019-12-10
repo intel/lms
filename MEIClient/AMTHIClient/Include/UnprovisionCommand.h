@@ -37,8 +37,6 @@ namespace Intel
 				UnprovisionCommand(const CFG_PROVISIONING_MODE Mode);
 				virtual ~UnprovisionCommand() {}
 
-				virtual void reTransact(const CFG_PROVISIONING_MODE Mode);
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 

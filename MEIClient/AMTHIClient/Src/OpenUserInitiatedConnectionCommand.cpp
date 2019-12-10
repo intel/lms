@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -22,14 +22,6 @@ OpenUserInitiatedConnectionCommand::OpenUserInitiatedConnectionCommand()
 	m_request = tmp;
 	Transact();
 }
-
-void OpenUserInitiatedConnectionCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new OpenUserInitiatedConnectionRequest());
-	m_request = tmp;
-	Transact();
-}
-
 
 void
 OpenUserInitiatedConnectionCommand::parseResponse(const vector<uint8_t>& buffer)

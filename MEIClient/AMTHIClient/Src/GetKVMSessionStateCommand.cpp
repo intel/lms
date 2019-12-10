@@ -23,13 +23,6 @@ GetKVMSessionStateCommand::GetKVMSessionStateCommand()
 	Transact();
 }
 
-void GetKVMSessionStateCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetKVMSessionStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
 GET_KVM_SESSION_STATE_RESPONSE GetKVMSessionStateCommand::getResponse()
 {
 	return m_response->getResponse();

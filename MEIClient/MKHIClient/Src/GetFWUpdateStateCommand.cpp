@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -18,14 +18,6 @@ GetFWUpdateStateCommand::GetFWUpdateStateCommand()
 	m_request = tmp;
 	Transact();
 }
-
-void GetFWUpdateStateCommand::reTransact()
-{
-	std::shared_ptr<MEICommandRequest> tmp(new GetFWUpdateStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
 
 FW_UPDATE_STATE GetFWUpdateStateCommand::getResponse()
 {

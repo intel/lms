@@ -45,7 +45,7 @@ namespace Intel
 
 				GetEOPStateCommand();
 				virtual ~GetEOPStateCommand() {}
-				virtual void reTransact();
+
 				GET_EOP_STATE_RESPONSE getResponse();
 
 			private:

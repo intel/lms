@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -16,14 +16,6 @@ using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
 GetMESetupAuditRecordCommand::GetMESetupAuditRecordCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetMESetupAuditRecordRequest());
-	m_request = tmp;
-	Transact();
-}
-
-void
-GetMESetupAuditRecordCommand::reTransact()
 {
 	shared_ptr<MEICommandRequest> tmp(new GetMESetupAuditRecordRequest());
 	m_request = tmp;

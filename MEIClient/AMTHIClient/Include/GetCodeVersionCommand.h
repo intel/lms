@@ -59,10 +59,6 @@ namespace AMTHI_Client
 		GetCodeVersionCommand();
 		virtual ~GetCodeVersionCommand() {}
 
-		virtual void reTransact()
-		{
-			Transact();
-		}
 		CODE_VERSIONS getResponse();
 
 	private:

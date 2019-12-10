@@ -24,13 +24,6 @@ GetCurrentPowerPolicyCommand::GetCurrentPowerPolicyCommand()
 	Transact();
 }
 
-void GetCurrentPowerPolicyCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetCurrentPowerPolicyRequest());
-	m_request = tmp;
-	Transact();
-}
-
 string GetCurrentPowerPolicyCommand::getResponse()
 {
 	return m_response->getResponse().powerPolicy;

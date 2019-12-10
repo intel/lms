@@ -40,7 +40,6 @@ namespace Intel
 				GetLastHostResetReasonCommand();
 				virtual ~GetLastHostResetReasonCommand() {}
 
-				virtual void reTransact();
 				LAST_HOST_RESET_REASON_RESPONSE getResponse();
 
 			private:

@@ -43,7 +43,6 @@ namespace Intel
 				GetUserInitiatedEnabledInterfacesCommand();
 				virtual ~GetUserInitiatedEnabledInterfacesCommand() {}
 
-				virtual void reTransact();
 				GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE getResponse();
 
 			private:

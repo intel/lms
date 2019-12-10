@@ -56,7 +56,7 @@ namespace Intel
 
 				GetCertificateHashEntryCommand(uint32_t hashHandle);
 				virtual ~GetCertificateHashEntryCommand() {}
-				virtual void reTransact(uint32_t hashHandle);
+
 				GET_CERTIFICATE_HASH_ENTRY_RESPONSE getResponse();
 
 			private:

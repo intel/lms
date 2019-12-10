@@ -36,7 +36,7 @@ namespace Intel
 
 				GetZeroTouchEnabledCommand();
 				virtual ~GetZeroTouchEnabledCommand() {}
-				virtual void reTransact();
+
 				ZTC_ENABLED_STATUS getResponse();
 
 			private:

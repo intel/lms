@@ -37,7 +37,6 @@ namespace Intel
 				GetDNSSuffixCommand();
 				virtual ~GetDNSSuffixCommand() {}
 
-				virtual void reTransact();
 				std::string getResponse();
 
 			private:

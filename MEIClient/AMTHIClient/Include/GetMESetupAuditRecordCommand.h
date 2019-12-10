@@ -87,7 +87,7 @@ namespace Intel
 
 				GetMESetupAuditRecordCommand();
 				virtual ~GetMESetupAuditRecordCommand() {}
-				virtual void reTransact();
+
 				GetMESetupAuditRecord_RESPONSE getResponse();
 
 			private:

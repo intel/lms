@@ -22,14 +22,6 @@ SetProvisioningServerOTPCommand::SetProvisioningServerOTPCommand(const std::stri
 	Transact();
 }
 
-void
-SetProvisioningServerOTPCommand::reTransact(const std::string &passwordOTP)
-{
-	shared_ptr<MEICommandRequest> tmp(new SetProvisioningServerOTPRequest(passwordOTP));
-	m_request = tmp;
-	Transact();
-}
-
 SET_PROVISIONING_SERVER_OTP_RESPONSE 
 SetProvisioningServerOTPCommand::getResponse ()
 {

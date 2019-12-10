@@ -22,13 +22,6 @@ SetHostFQDNCommand::SetHostFQDNCommand(const std::string &FQDN)
 	Transact();
 }
 
-void SetHostFQDNCommand::reTransact(const std::string &FQDN)
-{
-	shared_ptr<MEICommandRequest> tmp(new SetHostFQDNRequest(FQDN));
-	m_request = tmp;
-	Transact();
-}
-
 SET_HOST_FQDN_RESPONSE
 SetHostFQDNCommand::getResponse()
 {

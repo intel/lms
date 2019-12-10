@@ -36,7 +36,7 @@ namespace Intel
 
 				GetProvisioningStateCommand();
 				virtual ~GetProvisioningStateCommand() {}
-				virtual void reTransact();
+
 				CFG_PROVISIONING_STATE getResponse();
 
 			private:

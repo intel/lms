@@ -23,13 +23,6 @@ GetEACStateCommand::GetEACStateCommand()
 	Transact();
 }
 
-void GetEACStateCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetEACStateRequest());
-	m_request = tmp;
-	Transact();
-}
-
 GET_EAC_STATE_RESPONSE GetEACStateCommand::getResponse()
 {
 	return m_response->getResponse();

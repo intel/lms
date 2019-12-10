@@ -51,8 +51,7 @@ namespace Intel
 				GetRedirectionStateCommand();
 				virtual ~GetRedirectionStateCommand() {}
 
-				virtual void reTransact();
-				 REDIRECTION_STATE getResponse();
+				REDIRECTION_STATE getResponse();
 
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);

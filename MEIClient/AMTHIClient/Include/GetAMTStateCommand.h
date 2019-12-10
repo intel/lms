@@ -91,7 +91,6 @@ namespace Intel
 				GetAMTStateCommand(AMT_UUID StateVariableIdentifier = AMT_UUID_LINK_STATE);
 				virtual ~GetAMTStateCommand() {}
 
-				virtual void reTransact(AMT_UUID StateVariableIdentifier);
 				AMT_STATE_RESPONSE getResponse();
 
 			private:

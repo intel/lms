@@ -48,7 +48,6 @@ namespace Intel
 				GetConfigServerDataCommand();
 				virtual ~GetConfigServerDataCommand() {}
 
-				virtual void reTransact();
 				CFG_GET_CONFIG_SERVER_DATA_RESPONSE getResponse();
 
 			private:

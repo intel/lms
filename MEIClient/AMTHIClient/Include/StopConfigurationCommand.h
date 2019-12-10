@@ -35,8 +35,6 @@ namespace Intel
 				StopConfigurationCommand();
 				virtual ~StopConfigurationCommand() {}
 
-				virtual void reTransact();
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 

@@ -54,7 +54,6 @@ namespace Intel
 				GetLocalSystemAccountCommand();
 				virtual ~GetLocalSystemAccountCommand() {}
 
-				virtual void reTransact();
 				GET_LOCAL_SYSTEM_ACCOUNT_RESPONSE getResponse();
 
 			private:

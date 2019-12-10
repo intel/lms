@@ -40,9 +40,7 @@ namespace Intel
 				virtual ~EnumerateHashHandlesCommand () {}
 
 				ENUMERATE_HASH_HANDLES_RESPONSE getResponse() ;
-				
-				virtual void reTransact();
-				
+
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 

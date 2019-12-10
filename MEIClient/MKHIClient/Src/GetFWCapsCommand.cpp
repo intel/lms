@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -21,14 +21,6 @@ GetFWCapsCommand::GetFWCapsCommand(CapsRule rule)
 	m_request = tmp;
 	Transact();
 }
-
-void GetFWCapsCommand::reTransact()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetFWCapsRequest(m_rule));
-	m_request = tmp;
-	Transact();
-}
-
 
 MEFWCAPS_SKU_MKHI GetFWCapsCommand::getResponse()
 {

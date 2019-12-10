@@ -62,7 +62,7 @@ namespace Intel
 
 				GetImageFWVersionCommand(uint32_t PartitionId);
 				virtual ~GetImageFWVersionCommand() {}
-				virtual void reTransact();
+
 				GET_IMAGE_FW_VERSION_RESPONSE getResponse();
 
 			private:

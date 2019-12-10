@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2019 Intel Corporation
  */
 /*++
 
@@ -17,13 +17,6 @@ using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 
 GetAMTStateCommand::GetAMTStateCommand(AMT_UUID StateVariableIdentifier)
-{
-	shared_ptr<MEICommandRequest> tmp(new GetAMTStateRequest(StateVariableIdentifier));
-	m_request = tmp;
-	Transact();
-}
-
-void GetAMTStateCommand::reTransact(AMT_UUID StateVariableIdentifier)
 {
 	shared_ptr<MEICommandRequest> tmp(new GetAMTStateRequest(StateVariableIdentifier));
 	m_request = tmp;

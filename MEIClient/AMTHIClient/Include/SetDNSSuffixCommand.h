@@ -36,8 +36,6 @@ namespace Intel
 				SetDNSSuffixCommand(const std::string &suffix);
 				virtual ~SetDNSSuffixCommand() {}
 
-				virtual void reTransact(const std::string &suffix);
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 				std::shared_ptr<AMTHICommandResponse<SetDNSSuffix_RESPONSE>> m_response;

@@ -50,7 +50,7 @@ namespace Intel
 
 				FWUGetInfoCommand();
 				virtual ~FWUGetInfoCommand() {}
-				virtual void reTransact();
+
 				GET_INFO_RESPONSE getResponse();
 
 			private:

@@ -22,13 +22,6 @@ SetDNSSuffixCommand::SetDNSSuffixCommand(const std::string &suffix)
 	Transact();
 }
 
-void SetDNSSuffixCommand::reTransact(const std::string &suffix)
-{
-	shared_ptr<MEICommandRequest> tmp(new SetDNSSuffixRequest(suffix));
-	m_request = tmp;
-	Transact();
-}
-
 void
 SetDNSSuffixCommand::parseResponse(const vector<uint8_t>& buffer)
 {

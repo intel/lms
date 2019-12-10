@@ -35,7 +35,7 @@ namespace Intel
 			public:
 				SetHostFQDNCommand(const std::string &FQDN);
 				virtual ~SetHostFQDNCommand() {}
-				virtual void reTransact(const std::string &FQDN);
+
 				SET_HOST_FQDN_RESPONSE getResponse();
 
 			private:

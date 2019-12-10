@@ -40,7 +40,6 @@ namespace Intel
 				GetProvisioningModeCommand();
 				virtual ~GetProvisioningModeCommand() {}
 
-				virtual void reTransact();
 				PROVISIONING_MODE_SETTINGS getResponse();
 
 			private:

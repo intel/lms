@@ -70,7 +70,6 @@ namespace Intel
 				GetRemoteAccessConnectionStatusCommand();
 				virtual ~GetRemoteAccessConnectionStatusCommand() {}
 
-				virtual void reTransact();
 				REMOTE_ACCESS_STATUS getResponse();
 
 			private:

@@ -40,8 +40,6 @@ namespace Intel
 
 				GET_DNS_SUFFIX_LIST_RESPONSE getResponse() ;
 
-				virtual void reTransact();
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 

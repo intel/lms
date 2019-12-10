@@ -55,7 +55,6 @@ namespace Intel
 				GetFQDNCommand();
 				virtual ~GetFQDNCommand() {}
 
-				virtual void reTransact();
 				GET_FQDN_RESPONSE getResponse();
 
 			private:

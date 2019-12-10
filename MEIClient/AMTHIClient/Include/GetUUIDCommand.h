@@ -37,7 +37,6 @@ namespace Intel
 				GetUUIDCommand();
 				virtual ~GetUUIDCommand() {}
 
-				virtual void reTransact();
 				GET_UUID_RESPONSE getResponse();
 
 			private:

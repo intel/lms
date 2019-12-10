@@ -62,7 +62,6 @@ namespace Intel
 				GetSecurityParametersCommand();
 				virtual ~GetSecurityParametersCommand() {}
 
-				virtual void reTransact();
 				SECURITY_PARAMETERS getResponse();
 
 			private:

@@ -36,7 +36,7 @@ namespace Intel
 
 				SetEnterpriseAccessCommand(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess);
 				virtual ~SetEnterpriseAccessCommand() {}
-				virtual void reTransact(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess);
+
 				SetEnterpriseAccess_RESPONSE getResponse();
 
 			private:

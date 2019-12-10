@@ -34,7 +34,7 @@ namespace Intel
 
 				StartConfigurationExCommand(bool IPv6Enable);
 				virtual ~StartConfigurationExCommand() {}
-				virtual void reTransact(bool IPv6Enable);
+
 				START_CONFIGURATION_EX_RESPONSE getResponse();
 
 			private:

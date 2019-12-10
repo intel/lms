@@ -40,7 +40,6 @@ namespace Intel
 				GetEACStateCommand();
 				virtual ~GetEACStateCommand() {}
 
-				virtual void reTransact();
 				GET_EAC_STATE_RESPONSE getResponse();
 
 			private:
