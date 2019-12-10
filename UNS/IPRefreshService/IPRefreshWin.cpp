@@ -7,42 +7,33 @@
 #include <iphlpapi.h>
 #include <FuncEntryExit.h>
 
-/* Note: could also use malloc() and free() */
-#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
-#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
-
 //Main flow
 bool IPRefreshService::IPRefresh(unsigned int nicType)
 {
 	FuncEntryExit<void> fee(L"IPRefresh");
 
 	// Before calling IpRenewAddress we use GetInterfaceInfo to retrieve a handle to the adapter
-    PIP_INTERFACE_INFO pInfo;
-    pInfo = (IP_INTERFACE_INFO *) MALLOC( sizeof(IP_INTERFACE_INFO) );
-	if(pInfo == NULL)
-	{
-		UNS_ERROR(L"IPRefresh failed - indufficient memory.\n");
-		return false;
-	}
+	std::unique_ptr<uint8_t[]> buf(new uint8_t(sizeof(IP_INTERFACE_INFO)));
+	PIP_INTERFACE_INFO pInfo = (IP_INTERFACE_INFO *)(buf.get());
+
     ULONG ulOutBufLen = 0;
     DWORD dwRetVal = 0;
 	int adaptorID = 0;
     // Make an initial call to GetInterfaceInfo to get the necessary size into the ulOutBufLen variable
-	if (GetInterfaceInfo(pInfo, &ulOutBufLen) == ERROR_INSUFFICIENT_BUFFER) {
-		FREE(pInfo);
-		pInfo = (IP_INTERFACE_INFO *)MALLOC(ulOutBufLen);
-		if (pInfo == NULL)
-		{
-			UNS_ERROR(L"IPRefresh failed - indufficient memory.\n");
-			return false;
-		}
+	if (GetInterfaceInfo(pInfo, &ulOutBufLen) == ERROR_INSUFFICIENT_BUFFER)
+	{
+		buf.reset(new uint8_t(ulOutBufLen));
+		pInfo = (IP_INTERFACE_INFO *)(buf.get());
 	}
     // Make a second call to GetInterfaceInfo to get the actual data we want
     if ((dwRetVal = GetInterfaceInfo(pInfo, &ulOutBufLen)) == NO_ERROR ) 
 	{
 		UNS_DEBUG(L"\tNum Adapters: %d\n", pInfo->NumAdapters);
 
-		if (pInfo->NumAdapters ==0 ) return false;
+		if (pInfo->NumAdapters == 0)
+		{
+			return false;
+		}
 
 		for (int i = 0; i < pInfo->NumAdapters; i++)
 		{
@@ -53,35 +44,13 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 	else if (dwRetVal == ERROR_NO_DATA)
 	{
 		UNS_ERROR(L"There are no network adapters with IPv4 enabled on the local system\n");
-		FREE(pInfo);
-		pInfo = NULL;
 		return false;
 	}
 	else
 	{
-		UNS_ERROR(L"GetInterfaceInfo failed.\n");
-		LPVOID lpMsgBuf;
-		// to remove                
-		if (FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER |
-			FORMAT_MESSAGE_FROM_SYSTEM |
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,
-			dwRetVal,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR)&lpMsgBuf,
-			0,
-			NULL)) {
-			UNS_DEBUG(L"\tError: %C\n", lpMsgBuf);
-		}
-		LocalFree(lpMsgBuf);
-		// to remove
+		UNS_ERROR(L"GetInterfaceInfo failed Error: %lu.\n", dwRetVal);
 		return false;
 	}
-
-    // Call IpReleaseAddress and IpRenewAddress to release and renew the IP address on the first network adapter returned by the call to GetInterfaceInfo.
-    //if ((dwRetVal = IpReleaseAddress(&pInfo->Adapter[adaptorID])) == NO_ERROR) {   //  UNS_DEBUG("IP release succeeded.\n");   //}
-    //else {   //  UNS_ERROR("IP release failed.\n");   //}
 	
 	// Populate the Adaptor ID of wired and wireless NICs
 	GetAdaptorIDs();
@@ -100,11 +69,6 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 			UNS_ERROR(L"IP renew failed.\n");
 		}
 	}
-    /* Free allocated memory no longer needed */
-    if (pInfo) {
-        FREE(pInfo);
-        pInfo = NULL;
-    }
 	return (dwRetVal == NO_ERROR);
 }
 
@@ -112,32 +76,21 @@ bool IPRefreshService::FillAdaptorIDs()
 {
 	int ret;
 	// Populate the network settings			
-	PIP_ADAPTER_INFO pAdapterList = NULL;
 	PIP_ADAPTER_INFO pAdapter = NULL;
 	ULONG ulBufLen = 0;
-		
-	pAdapterList = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-	if (pAdapterList == NULL) 
-	{
-		UNS_ERROR(L"GetAdaptorIDs - Can't allocate memory\n");
-		return false;
-	}
+
+	std::unique_ptr<uint8_t[]> buf(new uint8_t(sizeof(IP_ADAPTER_INFO)));
+	PIP_ADAPTER_INFO pAdapterList = (IP_ADAPTER_INFO *)(buf.get());
+
 	if (GetAdaptersInfo(pAdapterList, &ulBufLen) == ERROR_BUFFER_OVERFLOW) 
 	{
-		free(pAdapterList);
-		pAdapterList = (IP_ADAPTER_INFO *) malloc(ulBufLen);
-		if (pAdapterList == NULL) 
-		{
-			UNS_ERROR(L"GetAdaptorIDs - Error allocating memory needed to call GetAdaptersinfo\n");
-			return false;
-		}
+		buf.reset(new uint8_t(ulBufLen));
+		pAdapterList = (IP_ADAPTER_INFO *)(buf.get());
 	}
 	ret = GetAdaptersInfo(pAdapterList, &ulBufLen);
 	if (ret != NO_ERROR)
 	{
 		UNS_ERROR(L"GetAdaptorIDs - GetAdaptersInfo failed with error: %d\n", ret);
-		if (pAdapterList)
-			free(pAdapterList);
 		return false; //(ret == ERROR_NO_DATA); --> cause it happens each request and not periodic...
 	}				
 	// Enumerate the network adapters and check the wired one with the same MAC address of the AMT
