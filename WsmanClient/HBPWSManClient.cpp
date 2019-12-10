@@ -13,8 +13,6 @@
 #include "WsmanClientCatch.h"
 #include <sstream>
 
-using namespace Intel::Manageability::Cim::Typed;
-
 HBPWSManClient::HBPWSManClient() :
 	m_isInit(false), m_HostBasedSetupServiceGot(false), m_HostProvisioningRecordGot(false),
 	m_RemoteProvisioningRecordGot(false), m_ManualProvisioningRecordGot(false), m_AdminProvisioningRecordGot(false)
@@ -25,18 +23,19 @@ HBPWSManClient::~HBPWSManClient()
 {
 }
 
-string toUNSDateFormat(string xml)
+std::string toUNSDateFormat(const std::string &xml)
 {
 	if (!xml.empty())
 	{
-		size_t pos = xml.find_first_of(">");
-		string tmp = xml.substr(pos+1);
-		pos = tmp.find("<");
+		size_t pos = xml.find_first_of('>');
+		std::string tmp = xml.substr(pos+1);
+		pos = tmp.find('<');
 		return tmp.substr(0, pos);
 	}
 	return "";
 }
-bool HBPWSManClient::GetConfigurationInfo(short* pControlMode,short* pProvisioningMethod,string& CreationTimeStamp, std::vector<unsigned char> &ppCertHash)
+
+bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvisioningMethod, std::string& CreationTimeStamp, std::vector<unsigned char> &ppCertHash)
 {
 	if (!Init(true))
 		return false;
@@ -94,8 +93,9 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode,short* pProvisioni
 					UNS_DEBUG("%C\n", stream.str().c_str());
 				}
 				else
+				{
 					ppCertHash.resize(0);
-
+				}
 			}
 			else
 			{

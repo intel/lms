@@ -12,7 +12,7 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
+namespace CimTyped = Intel::Manageability::Cim::Typed;
 
 typedef enum _TEMINATE_SESSION_QUALIFIER
 {
@@ -42,7 +42,7 @@ bool AMTRedirectionServiceWSManClient::TerminateSession(unsigned int SessionType
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		
-		AMT_RedirectionService::TerminateSession_INPUT request;
+		CimTyped::AMT_RedirectionService::TerminateSession_INPUT request;
 		request.SessionType(SessionType);
 		unsigned int returnedVal = m_service.TerminateSession(request);
 		UNS_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d) ReturnValue=%d\n", SessionType, returnedVal);

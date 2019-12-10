@@ -93,23 +93,23 @@ std::string BaseWSManClient::GetPassword()
 bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& password)
 {
 	bool rc=false;
-	using namespace Intel::MEI_Client::AMTHI_Client;
-	using namespace Intel::MEI_Client; 
+
+	namespace MEIClient = Intel::MEI_Client;
 
 	try 
 	{
-		GetLocalSystemAccountCommand getLocalSystemAccountCommand;
-		GET_LOCAL_SYSTEM_ACCOUNT_RESPONSE response = getLocalSystemAccountCommand.getResponse();
+		MEIClient::AMTHI_Client::GetLocalSystemAccountCommand getLocalSystemAccountCommand;
+		MEIClient::AMTHI_Client::GET_LOCAL_SYSTEM_ACCOUNT_RESPONSE response = getLocalSystemAccountCommand.getResponse();
 		user = response.UserName;
 		password = WSmanCrypt::EncryptString(response.Password); //EncryptString will empty response.Password
 		rc= true;	
 	}
-	catch (MEIClientException& e)
+	catch (MEIClient::MEIClientException& e)
 	{	
 		const char* reason =  e.what();
 		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
 	}
-	catch (AMTHIErrorException& e)
+	catch (MEIClient::AMTHI_Client::AMTHIErrorException& e)
 	{
 		unsigned int errNo =  e.getErr();
 		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", errNo);

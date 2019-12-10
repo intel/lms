@@ -13,8 +13,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 HostBootReasonClient::HostBootReasonClient() : m_isInit(false)
 {
 }
@@ -28,7 +26,7 @@ HostBootReasonClient::~HostBootReasonClient()
 {
 }
 
-bool HostBootReasonClient::Init(bool forceGet, bool actionGet)
+bool HostBootReasonClient::Init()
 {
 	
 	if (m_isInit)
@@ -51,12 +49,13 @@ bool HostBootReasonClient::Init(bool forceGet, bool actionGet)
 
 bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX_STATES& previousSxState)
 {	
-	 if (!Init())
+	if (!Init())
 	{
 		return false;
 	}
 	try 
 	{
+		using Intel::Manageability::Cim::Typed::IPS_HostBootReason;
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		std::vector<std::shared_ptr<IPS_HostBootReason>> HostBootReason =

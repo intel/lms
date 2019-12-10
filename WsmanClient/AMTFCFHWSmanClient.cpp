@@ -18,7 +18,7 @@
 #include <algorithm>
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
+namespace CimTyped = Intel::Manageability::Cim::Typed;
 
 AMTFCFHWSmanClient::AMTFCFHWSmanClient() : m_isInit(false)
 {
@@ -63,15 +63,15 @@ bool AMTFCFHWSmanClient::userInitiatedPolicyRuleExists(short* pExist)
 	{
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		std::vector<std::shared_ptr<AMT_RemoteAccessPolicyRule>> RemoteAccessPolicyRules =
-			AMT_RemoteAccessPolicyRule::Enumerate(m_client.get()); 	
-		std::vector<std::shared_ptr<AMT_RemoteAccessPolicyRule>>::iterator RemoteAccessPolicyRulesIterator;
+		std::vector<std::shared_ptr<CimTyped::AMT_RemoteAccessPolicyRule>> RemoteAccessPolicyRules =
+			CimTyped::AMT_RemoteAccessPolicyRule::Enumerate(m_client.get());
+		std::vector<std::shared_ptr<CimTyped::AMT_RemoteAccessPolicyRule>>::iterator RemoteAccessPolicyRulesIterator;
 		*pExist=false;
 		for (RemoteAccessPolicyRulesIterator = RemoteAccessPolicyRules.begin(); 
 			 RemoteAccessPolicyRulesIterator != RemoteAccessPolicyRules.end() ; 
 			 RemoteAccessPolicyRulesIterator++)
 		{	
-			AMT_RemoteAccessPolicyRule *currRule = RemoteAccessPolicyRulesIterator->get();
+			CimTyped::AMT_RemoteAccessPolicyRule *currRule = RemoteAccessPolicyRulesIterator->get();
 			if (!currRule)
 				continue;
 
@@ -104,7 +104,7 @@ bool AMTFCFHWSmanClient::userInitiatedPolicyRuleForLocalMpsExists(short* pExist)
 		*pExist=false;
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		auto mpsPolicyRules = AMT_RemoteAccessPolicyAppliesToMPS::Enumerate(m_client.get()); 	
+		auto mpsPolicyRules = CimTyped::AMT_RemoteAccessPolicyAppliesToMPS::Enumerate(m_client.get());
 		
 		for (auto it = mpsPolicyRules.begin(); it != mpsPolicyRules.end(); ++it)
 		{	
@@ -115,7 +115,7 @@ bool AMTFCFHWSmanClient::userInitiatedPolicyRuleForLocalMpsExists(short* pExist)
 			if (mpsPolicy->MpsType() != 2  && mpsPolicy->MpsType() != 1)
 				continue;
 
-			AMT_RemoteAccessPolicyRule policyRule(m_client.get());
+			CimTyped::AMT_RemoteAccessPolicyRule policyRule(m_client.get());
 			policyRule.Get(mpsPolicy->PolicySet());
 
 			if (!policyRule.TriggerExists())
@@ -139,13 +139,13 @@ bool AMTFCFHWSmanClient::snmpEventSubscriberExists(short* pExist)
 	{
 		return false;
 	}
-	try 
+	try
 	{
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		vector<shared_ptr<AMT_SNMPEventSubscriber>> AMT_SNMPEventSubscribers = 
-			AMT_SNMPEventSubscriber::Enumerate(m_client.get()); 	
-		vector<shared_ptr<AMT_SNMPEventSubscriber>>::iterator AMT_SNMPEventSubscribersIterator;
+		std::vector<std::shared_ptr<CimTyped::AMT_SNMPEventSubscriber>> AMT_SNMPEventSubscribers =
+			CimTyped::AMT_SNMPEventSubscriber::Enumerate(m_client.get());
+		std::vector<std::shared_ptr<CimTyped::AMT_SNMPEventSubscriber>>::iterator AMT_SNMPEventSubscribersIterator;
 		*pExist=false;
 		for (AMT_SNMPEventSubscribersIterator = AMT_SNMPEventSubscribers.begin(); 
 			 AMT_SNMPEventSubscribersIterator != AMT_SNMPEventSubscribers.end() ; 
@@ -191,15 +191,15 @@ bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist, c
 {
 	try 
 	{
-		CIM_FilterCollection filter(m_client.get());
+		CimTyped::CIM_FilterCollection filter(m_client.get());
 		filter.InstanceID(filterType);
 		filter.Get();
 		Intel::WSManagement::EnumerateFilter filterEnumerator;
 		filterEnumerator.reference =filter.Reference();;
 		filterEnumerator.assocType = Intel::WSManagement::EnumerateFilter::AssociationInstance;
 		filterEnumerator.resultClass = "CIM_FilterCollectionSubscription";
-		vector<shared_ptr<CimReference> > filterSubscriptions = 
-			CIM_FilterCollectionSubscription::EnumerateRef(m_client.get(),filterEnumerator);
+		std::vector<std::shared_ptr<CimTyped::CimReference> > filterSubscriptions =
+			CimTyped::CIM_FilterCollectionSubscription::EnumerateRef(m_client.get(),filterEnumerator);
 		if (filterSubscriptions.size()>0)
 		{
 			*pExist=true;

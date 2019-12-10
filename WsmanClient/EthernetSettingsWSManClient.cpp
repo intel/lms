@@ -11,8 +11,6 @@
 #include "EthernetSettingsWSManClient.h"
 #include "global.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 EthernetSettingsWSManClient::EthernetSettingsWSManClient() : m_isInit(false)
 {
 }
@@ -26,7 +24,7 @@ EthernetSettingsWSManClient::~EthernetSettingsWSManClient()
 {
 }
 
-unsigned int EthernetSettingsWSManClient::Enumerate(vector<shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings)
+unsigned int EthernetSettingsWSManClient::Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings)
 {
 	unsigned int retValue = ERROR_UNKNOWN_ERROR;
 
@@ -35,7 +33,7 @@ unsigned int EthernetSettingsWSManClient::Enumerate(vector<shared_ptr<Intel::Man
 			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		EthernetSettings = AMT_EthernetPortSettings::Enumerate(m_client.get());
+		EthernetSettings = Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings::Enumerate(m_client.get());
 		retValue = 0;
 	}
 	catch (std::exception& e)

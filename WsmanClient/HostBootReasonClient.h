@@ -45,7 +45,7 @@ public:
 	bool GetHostResetReason(HOST_RESET_REASON& resetReason, SX_STATES& previousSxState);
 
 private:
-	bool Init(bool forceGet = false, bool actionGet = false);
+	bool Init();
 	bool m_isInit;
 };
 
