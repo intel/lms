@@ -113,7 +113,7 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 		}
 		int elementNum = 0;
 		int index = 0;
-		while ((index = eventList.find(L"|", index))!= std::wstring::npos )
+		while ((index = eventList.find(L'|', index)) != std::wstring::npos)
 		{
 			++index;
 			++elementNum;
