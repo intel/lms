@@ -106,7 +106,7 @@ const static std::string appIdStrings[NUM_APPS] = { "Security Admin", "RCO", "Re
 									  "BIOS Management", "Screen Blanking", "Watchdog"};
 
 // Holds the final index of each id per event group
-const static unsigned int endStringsArrayIndices[NUM_APPS] = { 19, 9, 12, 1, 5, 2, 5, 3, 3, 6, 2, 4, 4, 4, 2, -1/*"BIOS Management" is empty*/, 1, 1 };
+const static unsigned int endStringsArrayIndices[NUM_APPS] = { 20, 10, 13, 2, 6, 3, 6, 4, 4, 7, 3, 5, 5, 5, 3, 0, 2, 2 };
 
 const static std::string eventIdStrings[] = {/*Security*/
 										"Provisioning Started", // Removed - Intel(R) AMT 

@@ -284,22 +284,22 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		std::string eventIdString = "";
 		std::string appIdString = "";
 
-		if ((structedRecord.AuditAppID>=APP_ID_START_INDEX)&&
-			    (structedRecord.AuditAppID<=APP_ID_END_INDEX))
+		if ((structedRecord.AuditAppID >= APP_ID_START_INDEX)&&
+			    (structedRecord.AuditAppID <= APP_ID_END_INDEX))
 		{
-			appIdString = appIdStrings[structedRecord.AuditAppID-APP_ID_START_INDEX];
+			appIdString = appIdStrings[structedRecord.AuditAppID - APP_ID_START_INDEX];
 
 			//Check if the event ID is in the legal range
-			if (structedRecord.EventID<=endStringsArrayIndices[structedRecord.AuditAppID-APP_ID_START_INDEX])
+			if (structedRecord.EventID < endStringsArrayIndices[structedRecord.AuditAppID - APP_ID_START_INDEX])
 			{
 				unsigned int startIndex = 0;
-				for (unsigned int i=0 ; i < (structedRecord.AuditAppID-APP_ID_START_INDEX) ; i++)
+				for (unsigned int i =  0; i < (structedRecord.AuditAppID - APP_ID_START_INDEX); i++)
 				{
-					startIndex += endStringsArrayIndices[i]+1;
+					startIndex += endStringsArrayIndices[i];
 				}
-				if ( (startIndex + structedRecord.EventID) < (sizeof(eventIdStrings) / sizeof(eventIdStrings[0])))
+				if ((startIndex + structedRecord.EventID) < (sizeof(eventIdStrings) / sizeof(eventIdStrings[0])))
 				{
-					eventIdString = eventIdStrings[startIndex+structedRecord.EventID];
+					eventIdString = eventIdStrings[startIndex + structedRecord.EventID];
 				}
 				else
 				{

@@ -30,12 +30,6 @@ add_library (LmsWsmanClient SHARED
   $<$<BOOL:${WIN32}>:WsmanClient.rc>
 )
 
-if (CMAKE_COMPILER_IS_GNUCC)
-target_compile_options (LmsWsmanClient PRIVATE
-  -Wno-narrowing
-)
-endif (CMAKE_COMPILER_IS_GNUCC)
-
 target_compile_definitions (LmsWsmanClient PRIVATE
   -DWSMAN_DLL_EXPORT
 )

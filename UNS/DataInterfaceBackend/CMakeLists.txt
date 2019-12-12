@@ -12,10 +12,6 @@ add_library (DataInterfaceBackend STATIC
 
 set_target_properties (DataInterfaceBackend PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-  target_compile_options (DataInterfaceBackend PRIVATE -Wno-narrowing)
-endif (CMAKE_COMPILER_IS_GNUCC)
-
 target_link_libraries (DataInterfaceBackend
   LmsGMS_COMMON
   ACELIB
