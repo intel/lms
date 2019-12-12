@@ -13,7 +13,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 	FuncEntryExit<void> fee(L"IPRefresh");
 
 	// Before calling IpRenewAddress we use GetInterfaceInfo to retrieve a handle to the adapter
-	std::unique_ptr<uint8_t[]> buf(new uint8_t(sizeof(IP_INTERFACE_INFO)));
+	std::unique_ptr<uint8_t[]> buf(new uint8_t[sizeof(IP_INTERFACE_INFO)]);
 	PIP_INTERFACE_INFO pInfo = (IP_INTERFACE_INFO *)(buf.get());
 
     ULONG ulOutBufLen = 0;
@@ -22,7 +22,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
     // Make an initial call to GetInterfaceInfo to get the necessary size into the ulOutBufLen variable
 	if (GetInterfaceInfo(pInfo, &ulOutBufLen) == ERROR_INSUFFICIENT_BUFFER)
 	{
-		buf.reset(new uint8_t(ulOutBufLen));
+		buf.reset(new uint8_t[ulOutBufLen]);
 		pInfo = (IP_INTERFACE_INFO *)(buf.get());
 	}
     // Make a second call to GetInterfaceInfo to get the actual data we want
@@ -79,12 +79,12 @@ bool IPRefreshService::FillAdaptorIDs()
 	PIP_ADAPTER_INFO pAdapter = NULL;
 	ULONG ulBufLen = 0;
 
-	std::unique_ptr<uint8_t[]> buf(new uint8_t(sizeof(IP_ADAPTER_INFO)));
+	std::unique_ptr<uint8_t[]> buf(new uint8_t[sizeof(IP_ADAPTER_INFO)]);
 	PIP_ADAPTER_INFO pAdapterList = (IP_ADAPTER_INFO *)(buf.get());
 
 	if (GetAdaptersInfo(pAdapterList, &ulBufLen) == ERROR_BUFFER_OVERFLOW) 
 	{
-		buf.reset(new uint8_t(ulBufLen));
+		buf.reset(new uint8_t[ulBufLen]);
 		pAdapterList = (IP_ADAPTER_INFO *)(buf.get());
 	}
 	ret = GetAdaptersInfo(pAdapterList, &ulBufLen);
