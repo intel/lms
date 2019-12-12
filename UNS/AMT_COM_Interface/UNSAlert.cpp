@@ -20,23 +20,26 @@
 
 // CUNSAlert
 STDMETHODIMP CUNSAlert::RiseAlert(USHORT category,
-				ULONG id,
-				BSTR message,
-				BSTR messageArg,
-				BSTR messageID, 
-				BSTR dateTime)
+								  ULONG id,
+								  BSTR message,
+								  BSTR messageArg,
+								  BSTR messageID, 
+								  BSTR dateTime)
 {
 	UNS_DEBUG(L"CUNSAlert::RiseAlert\n");
-	Fire_Alert(category,id,message,messageArg,messageID,dateTime);
+	Fire_Alert(category, id, message, messageArg, messageID, dateTime);
 	return S_OK;
 }
 
 STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 {
+	if (bstrEventHistory == nullptr)
+		return E_POINTER;
+
 #ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"GetIMSSEventHistory", bstrEventHistory) == true)
+	if (GetFromRegistry(L"DebugData", L"GetIMSSEventHistory", bstrEventHistory))
 	{
-		if (strcmp((char*)bstrEventHistory, "exception") == 0)
+		if (strcmp((char *)bstrEventHistory, "exception") == 0)
 			return E_FAIL;
 		return S_OK;
 	}
@@ -47,7 +50,9 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 
 	UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
 	std::wstring EventHistory;
-	Intel::LMS::LMS_ERROR err = Intel::LMS::UNSAlert_BE(GetGmsPortForwardingStarted()).GetIMSSEventHistory(EventHistory);
+
+	Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::LMS_ERROR err = be.GetIMSSEventHistory(EventHistory);
 	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
 		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
@@ -61,23 +66,23 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()
 {
 	UNS_DEBUG(L"CUNSAlert::ResetUNSstartedEvent\n");
-	HANDLE hUNSstarted=OpenEvent(EVENT_MODIFY_STATE,FALSE,L"Global\\UNSstarted");
-	if (hUNSstarted==NULL)
+	HANDLE hUNSstarted = OpenEvent(EVENT_MODIFY_STATE, FALSE, L"Global\\UNSstarted");
+	if (hUNSstarted == nullptr)
 	{
-		UNS_DEBUG(L"CUNSAlert::OpenEvent UNSstarted failed, err=%d\n",GetLastError());
-		if (GetLastError()==5)
+		UNS_DEBUG(L"CUNSAlert::OpenEvent UNSstarted failed, err=%d\n", GetLastError());
+		if (GetLastError() == 5)
 			return E_ACCESSDENIED;
 		else
 			return E_HANDLE;
 	}
+
 	if (!ResetEvent(hUNSstarted))
 	{
-		UNS_DEBUG(L"CUNSAlert::ResetEvent UNSstarted failed, err=%d\n",GetLastError());
+		UNS_DEBUG(L"CUNSAlert::ResetEvent UNSstarted failed, err=%d\n", GetLastError());
 		CloseHandle(hUNSstarted);
 		return E_FAIL;
 	}
+
 	CloseHandle(hUNSstarted);
 	return S_OK;
 }
-
-

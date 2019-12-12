@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -21,8 +21,11 @@
 
 STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT* pState, BSTR* bstrInfo)
 {
+	if (pState == nullptr || bstrInfo == nullptr)
+		return E_POINTER;
+
 #ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"ATState", pState) == true)
+	if (GetFromRegistry(L"DebugData", L"ATState", pState))
 	{
 		return S_OK;
 	}
@@ -41,14 +44,15 @@ STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT* pState, BSTR* bstrInfo)
 	memset(ValueStr, 0, 512);
 	CComBSTR bstr(ValueStr);
 	*bstrInfo = bstr.Detach();
+
 	return S_OK;
 }
 
 STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 {
-#ifdef _DEBUG
-	//return S_OK;
-#endif	
+	if (bstrAuditLogs == nullptr)
+		return E_POINTER;
+
 	if (CheckCredentials(GetAuditLogs_F) != S_OK)
 		return E_ACCESSDENIED;
 
