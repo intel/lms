@@ -12,8 +12,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 KVMWSManClient::KVMWSManClient() : m_isInit(false), m_isSAPInit(false)
 {
 
@@ -69,12 +67,6 @@ bool KVMWSManClient::TerminateKVMSession(void)
 
 bool KVMWSManClient::KVMRedirectionState(unsigned short* state) 
 {
-#ifdef _DEBUG
-	/*if (GetFromRegistry("DebugData", "KVMRedirectionState", state) == true)
-	{
-		return true;
-	}*/
-#endif
 	try 
 	{ 
 		if (!SAPInit())

@@ -12,8 +12,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(DEFAULT_TRUE), m_isInit(false)
 {
 }
@@ -113,7 +111,7 @@ bool TimeSynchronizationClient::SetAMTTime(unsigned int time)
 	if (!Init())
 		return false;
 	
-	AMT_TimeSynchronizationService::SetHighAccuracyTimeSynch_INPUT input;
+	Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService::SetHighAccuracyTimeSynch_INPUT input;
 	unsigned int currTime = 0;
 	if (!GetAMTTime(currTime))
 	{

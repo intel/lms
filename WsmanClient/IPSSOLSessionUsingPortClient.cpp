@@ -8,8 +8,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient() : m_LinkTechnology(0)
 {
 }
@@ -30,10 +28,12 @@ bool IPSSolSessionUsingPortClient::init()
 			SetEndpoint();
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 
-		IPS_SolSessionUsingPort solSession(m_client.get());
+		namespace CimTyped = Intel::Manageability::Cim::Typed;
+
+		CimTyped::IPS_SolSessionUsingPort solSession(m_client.get());
 		solSession.Get();
 		
-		AMT_EthernetPortSettings portSettings(m_client.get());
+		CimTyped::AMT_EthernetPortSettings portSettings(m_client.get());
 		portSettings.Get(solSession.Antecedent());
 		std::string instanceId = portSettings.InstanceID();
 		if(instanceId[instanceId.length()-1] == '0')

@@ -42,8 +42,6 @@ enum PowerStates
 	GRACEFUL_RESET = 14
 };
 
-using namespace Intel::Manageability::Cim::Typed;
-
 PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient() : m_isInit(false)
 {
 }
@@ -87,9 +85,9 @@ bool PowerManagementCapabilitiesClient::Init(bool forceGet)
 	return:
 	true, if changes have been made to the vector, false otherwise.
 */
-bool updateCapability(bool insert, unsigned short capability, vector<unsigned short> &capabilities){
+bool updateCapability(bool insert, unsigned short capability, std::vector<unsigned short> &capabilities){
 	bool result = false;
-	vector<unsigned short>::iterator position = find(capabilities.begin(), capabilities.end(), capability);
+	std::vector<unsigned short>::iterator position = find(capabilities.begin(), capabilities.end(), capability);
 	bool exists = (position != capabilities.end());
 	if (insert && !exists) { // the value is not present in the vector - add it
 		UNS_DEBUG("Adding the value %d. PowerManagementCapabilitiesClient::updateCapability\n", capability);
@@ -118,7 +116,7 @@ bool PowerManagementCapabilitiesClient::addGracefulOperations(bool sleep,bool hi
 			//indicates whether the PSS should be rewritten, if it has been changed.
 			bool changed = false;
 			//checking the inclusion/declusion of a capability in the capabilities vector
-			vector<unsigned short> capabilities(m_service.PowerStatesSupported());
+			std::vector<unsigned short> capabilities(m_service.PowerStatesSupported());
 			// graceful shutdown and reset are supported:
 			changed |= updateCapability(true, GRACEFUL_SHUTDOWN, capabilities);
 			changed |= updateCapability(true, GRACEFUL_RESET, capabilities);

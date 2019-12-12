@@ -8,8 +8,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient() : m_LinkTechnology(0)
 {
 }
@@ -30,11 +28,13 @@ bool IPSKVMSessionUsingPortClient::init()
 			SetEndpoint();
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 
-		IPS_KvmSessionUsingPort kvmSession(m_client.get());
+		namespace CimTyped = Intel::Manageability::Cim::Typed;
+
+		CimTyped::IPS_KvmSessionUsingPort kvmSession(m_client.get());
 		
 		kvmSession.Get();
 		
-		AMT_EthernetPortSettings portSettings(m_client.get());
+		CimTyped::AMT_EthernetPortSettings portSettings(m_client.get());
 		portSettings.Get(kvmSession.Antecedent());
 		std::string instanceId = portSettings.InstanceID();
 		if(instanceId[instanceId.length()-1] == '0')

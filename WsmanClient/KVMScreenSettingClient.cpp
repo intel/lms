@@ -12,8 +12,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 KVMScreenSettingClient::KVMScreenSettingClient() : m_isInit(false)
 {
 }

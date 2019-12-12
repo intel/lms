@@ -13,8 +13,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 SyncIpClient::SyncIpClient() : m_SharedStaticIpState(false), m_isInit(false)
 {
 }
@@ -38,11 +36,13 @@ bool SyncIpClient::Init(bool forceGet)
 			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		
+
+		using Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings;
+
 		m_SharedStaticIpState = false;
-		vector<shared_ptr<AMT_EthernetPortSettings>> ethernetSettings = 
+		std::vector<std::shared_ptr<AMT_EthernetPortSettings>> ethernetSettings =
 			AMT_EthernetPortSettings::Enumerate(m_client.get());
-		vector<shared_ptr<AMT_EthernetPortSettings>>::iterator settingsIterator;
+		std::vector<std::shared_ptr<AMT_EthernetPortSettings>>::iterator settingsIterator;
 		for (settingsIterator = ethernetSettings.begin(); 
 			 settingsIterator != ethernetSettings.end() ; 
 			 settingsIterator++)

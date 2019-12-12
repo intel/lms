@@ -13,8 +13,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 WifiPortClient::WifiPortClient()
 {
 }
@@ -30,7 +28,9 @@ bool WifiPortClient::PortsNum(size_t &ports)
 			SetEndpoint();
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		
+
+		using Intel::Manageability::Cim::Typed::CIM_WiFiPort;
+
 		std::vector<std::shared_ptr<CIM_WiFiPort>> ethernetSettings =
 			CIM_WiFiPort::Enumerate(m_client.get());
 

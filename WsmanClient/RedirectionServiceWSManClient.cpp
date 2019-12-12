@@ -12,8 +12,6 @@
 #include "global.h"
 #include "WsmanClientCatch.h"
 
-using namespace Intel::Manageability::Cim::Typed;
-
 RedirectionServiceWSManClient::RedirectionServiceWSManClient() : m_isInit(false)
 {
 }
@@ -24,13 +22,6 @@ RedirectionServiceWSManClient::~RedirectionServiceWSManClient()
 
 bool RedirectionServiceWSManClient::RedirectionState(unsigned short *state)
 {
-/*#ifdef _DEBUG
-	if (GetFromRegistry("DebugData", "KVMRedirectionState", state) == true)
-	{
-		return true;
-	}
-#endif*/
-	
 	if (!Init(true))
 		return false;
 	if (m_service.EnabledStateExists())
