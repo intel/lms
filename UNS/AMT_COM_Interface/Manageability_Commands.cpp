@@ -101,7 +101,7 @@ HRESULT CManageability_Commands::GetFeaturesState(SAFEARRAY** ppStates)
 	if (err != Intel::LMS::ERROR_OK)
 		return E_FAIL;
 
-	CComSafeArray<SHORT> StatesArr(FEATURES_NUM);
+	ATL::CComSafeArray<SHORT> StatesArr(FEATURES_NUM);
 	for (int i = 0; i < FEATURES_NUM; i++)
 		StatesArr[i] = (ATL::_ATL_AutomationType<SHORT>::_typewrapper)states[i];
 
@@ -224,7 +224,7 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 	if (err != Intel::LMS::ERROR_OK)
 		return E_FAIL;
 
-	CComBSTR bstr(MEBxVersion.c_str());
+	ATL::CComBSTR bstr(MEBxVersion.c_str());
 	*pMEBxVersion = bstr.Detach();
 	*pBiosBootState = BiosBootState;
 	*pCryptoFuseEnable = CryptoFuseEnable;
@@ -258,7 +258,7 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 	if (err != Intel::LMS::ERROR_OK)
 		return E_FAIL;
 
-	CComBSTR bstr(FwVer.c_str());
+	ATL::CComBSTR bstr(FwVer.c_str());
 	*pFwVer = bstr.Detach();
 
 	return S_OK;

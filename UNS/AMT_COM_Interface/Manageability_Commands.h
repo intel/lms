@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -24,9 +24,9 @@
 
 
 class ATL_NO_VTABLE CManageability_Commands :
-	public CComObjectRootEx<CComMultiThreadModel>, 
-	public CComCoClass<CManageability_Commands, &CLSID_Manageability_Commands>,
-	public IDispatchImpl<IManageability_Commands, &IID_IManageability_Commands, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
+	public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
+	public ATL::CComCoClass<CManageability_Commands, &CLSID_Manageability_Commands>,
+	public ATL::IDispatchImpl<IManageability_Commands, &IID_IManageability_Commands, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
 {
 public:
 	CManageability_Commands()
@@ -55,9 +55,6 @@ END_COM_MAP()
 	}
 
 public:
-
-	//STDMETHOD(GetFeatureState)(ULONG* pState);
-	//STDMETHOD(GetPlatformFeatureCapability)(ULONG* pPlatform, ULONG* pSKU);
 	STDMETHOD(GetTheFeatureState)(FEATURES feat, FEATURE_STATE* pState);
 	STDMETHOD(GetFeaturesState)(SAFEARRAY** ppStates);
 	STDMETHOD(GetCustomerType)(CUSTOMER_TYPE* pType);
@@ -65,9 +62,6 @@ public:
 	STDMETHOD(GetMenageabiltyMode)(MENAGEABILTY_MODE* pMode);
 	STDMETHOD(GetFWInfo)(BSTR* pMEBxVersion, ULONG* pBiosBootState, VARIANT_BOOL* pCryptoFuseEnable, VARIANT_BOOL* pLocalFWupdateEnable);
 	STDMETHOD(GetPMCVersion)(BSTR* pFwVer);
-private:
-	//HECIWin m_HeciFWUpdateClient;
-	//HRESULT GetFWUpdateData(FWU_HECI_MESSAGE_TYPE cmd, UINT32* pData);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Manageability_Commands), CManageability_Commands)

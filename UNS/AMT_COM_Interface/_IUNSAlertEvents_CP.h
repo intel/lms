@@ -13,7 +13,7 @@
 
 template<class T>
 class CProxy_IUNSAlertEvents :
-	public IConnectionPointImpl<T, &__uuidof(_IUNSAlertEvents)>
+	public ATL::IConnectionPointImpl<T, &__uuidof(_IUNSAlertEvents)>
 {
 public:
 	HRESULT Fire_Alert(USHORT category,
@@ -30,14 +30,14 @@ public:
 		for (int iConnection = 0; iConnection < cConnections; iConnection++)
 		{
 			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			ATL::CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
 			pThis->Unlock();
 
 			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
 
 			if (pConnection)
 			{
-				CComVariant avarParams[6];
+				ATL::CComVariant avarParams[6];
 				avarParams[5] = category;
 				avarParams[5].vt = VT_UI2;
 				avarParams[4] = id;

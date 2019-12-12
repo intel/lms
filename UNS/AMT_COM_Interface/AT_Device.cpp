@@ -42,7 +42,7 @@ STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT* pState, BSTR* bstrInfo)
 
 	char ValueStr[512];
 	memset(ValueStr, 0, 512);
-	CComBSTR bstr(ValueStr);
+	ATL::CComBSTR bstr(ValueStr);
 	*bstrInfo = bstr.Detach();
 
 	return S_OK;
@@ -63,7 +63,7 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
 		return E_FAIL;
-	CComBSTR bstr(AuditLogs.c_str());
+	ATL::CComBSTR bstr(AuditLogs.c_str());
 	*bstrAuditLogs = bstr.Detach();
 	return S_OK;
 }

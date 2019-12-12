@@ -58,7 +58,7 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	if (err != Intel::LMS::ERROR_OK)
 		return E_FAIL;
 
-	CComBSTR bstr(EventHistory.c_str());
+	ATL::CComBSTR bstr(EventHistory.c_str());
 	*bstrEventHistory = bstr.Detach();
 	return S_OK;
 }

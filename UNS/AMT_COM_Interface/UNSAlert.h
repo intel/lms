@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -25,11 +25,11 @@
 // CUNSAlert
 
 class ATL_NO_VTABLE CUNSAlert :
-	public CComObjectRootEx<CComMultiThreadModel>,
-	public CComCoClass<CUNSAlert, &CLSID_UNSAlert>,
-	public IConnectionPointContainerImpl<CUNSAlert>,
+	public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
+	public ATL::CComCoClass<CUNSAlert, &CLSID_UNSAlert>,
+	public ATL::IConnectionPointContainerImpl<CUNSAlert>,
 	public CProxy_IUNSAlertEvents<CUNSAlert>,
-	public IDispatchImpl<IUNSAlert, &IID_IUNSAlert, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
+	public ATL::IDispatchImpl<IUNSAlert, &IID_IUNSAlert, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
 {
 public:
 	CUNSAlert()

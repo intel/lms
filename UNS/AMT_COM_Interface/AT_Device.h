@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -23,9 +23,9 @@
 // CAT_Device
 
 class ATL_NO_VTABLE CAT_Device :
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CAT_Device, &CLSID_AT_Device>,
-	public IDispatchImpl<IAT_Device, &IID_IAT_Device, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
+	public ATL::CComObjectRootEx<ATL::CComSingleThreadModel>,
+	public ATL::CComCoClass<CAT_Device, &CLSID_AT_Device>,
+	public ATL::IDispatchImpl<IAT_Device, &IID_IAT_Device, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
 {
 public:
 	CAT_Device()

@@ -151,7 +151,7 @@ HRESULT DelRegKeys()
 }
 
 
-class CAMT_COM_InterfaceModule : public CAtlServiceModuleT< CAMT_COM_InterfaceModule, IDS_SERVICENAME >
+class CAMT_COM_InterfaceModule : public ATL::CAtlServiceModuleT< CAMT_COM_InterfaceModule, IDS_SERVICENAME >
 {
 private:
 	static GmsService* GMSsrv;
@@ -167,7 +167,7 @@ public:
 	HRESULT InitializeSecurity() throw()
 	{
 		HRESULT rc;
-		CSecurityDescriptor sd;
+		ATL::CSecurityDescriptor sd;
 		sd.InitializeFromThreadToken();
 		//sd.Allow("NETWORK_SERVICE", COM_RIGHTS_EXECUTE);
 		rc = CoInitializeSecurity(sd, -1, NULL, NULL,
@@ -184,7 +184,7 @@ public:
 											LPVOID lpEventData,
 											LPVOID lpContext)
 	{
-		return ((CAMT_COM_InterfaceModule*)_pAtlModule)->ServiceCtrlHandler(dwControl, dwEventType, lpEventData, lpContext);
+		return ((CAMT_COM_InterfaceModule*)ATL::_pAtlModule)->ServiceCtrlHandler(dwControl, dwEventType, lpEventData, lpContext);
 	}
 
 	DWORD WINAPI ServiceCtrlHandler(DWORD dwControl,
@@ -371,8 +371,8 @@ public:
 		if (hSCM == NULL)
 		{
 			TCHAR szBuf[1024];
-			if (AtlLoadString(ATL_SERVICE_MANAGER_OPEN_ERROR, szBuf, 1024) == 0)
-				Checked::tcscpy_s(szBuf, _countof(szBuf), _T("Could not open Service Manager"));
+			if (ATL::AtlLoadString(ATL_SERVICE_MANAGER_OPEN_ERROR, szBuf, 1024) == 0)
+				ATL::Checked::tcscpy_s(szBuf, _countof(szBuf), _T("Could not open Service Manager"));
 			MessageBox(NULL, szBuf, _T("LMS"), MB_OK);
 			return S_FALSE;
 		}

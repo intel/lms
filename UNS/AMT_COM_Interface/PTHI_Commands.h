@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -25,9 +25,9 @@
 // CPTHI_Commands
 
 class ATL_NO_VTABLE CPTHI_Commands :
-	public CComObjectRootEx<CComMultiThreadModel>,
-	public CComCoClass<CPTHI_Commands, &CLSID_PTHI_Commands>,
-	public IDispatchImpl<IPTHI_Commands, &IID_IPTHI_Commands, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
+	public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
+	public ATL::CComCoClass<CPTHI_Commands, &CLSID_PTHI_Commands>,
+	public ATL::IDispatchImpl<IPTHI_Commands, &IID_IPTHI_Commands, &LIBID_AMT_COM_InterfaceLib, /*wMajor =*/ 1, /*wMinor =*/ 0>
 {
 public:
 	CPTHI_Commands()

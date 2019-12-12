@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2019 Intel Corporation
  */
 /*++
 
@@ -47,7 +47,6 @@
 #include <atlcom.h>
 #include <string>
 #include <Windows.h>
-using namespace ATL;
 
 enum DATA_NAME : unsigned int;
 
