@@ -239,9 +239,9 @@ bool wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numO
 						//Set the profile data
 						wcsncpy_s(prof->profile, pProfile->strProfileName, _countof(prof->profile));
 						memcpy_s(&prof->ifGuid, sizeof(prof->ifGuid), &pIfInfo->InterfaceGuid, sizeof(prof->ifGuid));
-						wcsncpy_s(prof->auth, auth.c_str(), auth.length());
-						wcsncpy_s(prof->encr, enc.c_str(), enc.length());
-						wcsncpy_s(prof->keyMaterial, key.c_str(), key.length());
+						wcsncpy_s(prof->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
+						wcsncpy_s(prof->encr, INTEL_SHORT_DESCR_LEN, enc.c_str(), enc.length());
+						wcsncpy_s(prof->keyMaterial, INTEL_KEY_MATERIAL_LEN, key.c_str(), key.length());
 						wcsncpy_s(prof->SSID, ssid.c_str(), _countof(prof->SSID));
 
 						//update the list
