@@ -158,10 +158,10 @@ bool PowerManagementCapabilitiesClient::GetPowerOperationsSupport(bool & support
 
 	//for Unit testing
 #ifdef _DEBUG
-	vector<unsigned short>  PowerManagementCapabilitiesClient::getCapsVector()
+	std::vector<unsigned short>  PowerManagementCapabilitiesClient::getCapsVector()
 	{
 		if (!Init())
-			return vector<unsigned short>();
+			return std::vector<unsigned short>();
 
 		std::lock_guard<std::mutex> lock(WsManSemaphore()); //Lock WsMan to prevent reentry
 			
