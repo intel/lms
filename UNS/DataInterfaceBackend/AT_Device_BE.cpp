@@ -21,19 +21,19 @@ namespace Intel {
 			SMBIOS_Reader sm_reader;
 			res = sm_reader.CheckForSmbiosFlags();
 
-			if (res == SMBIOS_FOUNDED)
+			if (res == SMBIOS_FOUND)
 			{
 				pState = sm_reader.pCapabilities.AT_Enrolled + 1;
 				return ERROR_OK;
 			}
-			else
+			else if (res == SMBIOS_NOT_FOUND)
 			{
-				if (res == SMBIOS_NOT_FOUNDED)
-				{
-					pState = 0; // Disable
-				}
-				else
-				{	/*
+				pState = 0; // Disable
+			}
+			else /* SMBIOS_FAILURE */
+			{
+				pState = 0;
+				/*
 					///////////////////////////////
 					SMBIOS_FAILURE				2
 					ERROR_COCREATEINSTANCE		3
@@ -41,9 +41,9 @@ namespace Intel {
 					ERROR_SMBIOS_ENUMERATION	5
 					ERROR_WMI_CONNECT			6
 					ERROR_WMI_SET_PROXY			7
-					///////////////////////////////		*/
-					UNS_DEBUG(L"GetATInfo failed res=%d\n", res);
-				}
+					///////////////////////////////
+				*/
+				UNS_DEBUG(L"GetATInfo failed res=%d\n", res);
 			}
 			return ERROR_FAIL;
 		}
@@ -62,14 +62,14 @@ namespace Intel {
 			{
 				if (!client.readLogsFromFW(base64Records))
 					return ERROR_FAIL;
+
 				UNS_DEBUG(L"get %d logs\n", base64Records.size());
-				const unsigned char* tmpData;
-				unsigned int tmpLength;
 				for (unsigned int i = 0; i < base64Records.size(); i++)
 				{
-					tmpData = base64Records.at(i).Data();
-					tmpLength = base64Records.at(i).Length();
-					records.push_back(BinaryData(tmpData, tmpData + tmpLength));
+					const unsigned char *data= base64Records.at(i).Data();
+					unsigned int length = base64Records.at(i).Length();
+
+					records.push_back(BinaryData(data, data + length));
 				}
 				if (client.parseLogs(parsedRecords, records))
 				{
@@ -83,7 +83,5 @@ namespace Intel {
 			}
 			return ERROR_FAIL;
 		}
-
-
 	}
 }

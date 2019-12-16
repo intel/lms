@@ -85,6 +85,9 @@ namespace Intel {
 		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
 	}
 
+template<typename T, size_t SIZE>
+constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
+
 
 		typedef enum _EAMTWebUIState
 		{
@@ -97,10 +100,10 @@ namespace Intel {
 
 		std::string uuidToString(const uint8_t uuid[])
 		{
-			const int guid_index[16] = { 3,2,1,0,5,4,7,6,8,9,10,11,12,13,14,15 };
+			const unsigned int guid_index[16] = {3, 2, 1, 0, 5, 4, 7, 6, 8, 9, 10, 11, 12, 13, 14, 15};
 			std::stringstream uuidStr;
 
-			for (int i = 0; i < 16; ++i)
+			for (unsigned int i = 0; i < 16; ++i)
 			{
 				uuidStr << std::setfill('0') << std::setw(2) << std::hex << (int)uuid[guid_index[i]];
 				if ((i == 3) || (i == 5) || (i == 7) || (i == 9))
@@ -110,7 +113,6 @@ namespace Intel {
 			}
 			return uuidStr.str();
 		}
-
 
 		PTHI_Commands_BE::PTHI_Commands_BE(bool isPfwUp) : Common_BE(isPfwUp)
 		{
@@ -123,7 +125,7 @@ namespace Intel {
 				Intel::MEI_Client::AMTHI_Client::GetCodeVersionCommand getCodeVersionCommand;
 				Intel::MEI_Client::AMTHI_Client::CODE_VERSIONS codeVersions = getCodeVersionCommand.getResponse();
 				//get the AMT version from the code version array
-				for (unsigned int i = 0; i < codeVersions.Versions.size(); ++i)
+				for (unsigned int i = 0; i < codeVersions.Versions.size(); i++)
 				{
 					if (!codeVersions.Versions[i].Description.compare("AMT"))
 					{
@@ -157,8 +159,8 @@ namespace Intel {
 		LMS_ERROR GetServiceVersion(const std::wstring &ServiceName, std::string &sVersion)
 		{
 			HKEY hKey;
-			wchar_t path[MAX_PATH];//BUFSIZE
-			wchar_t expandedPath[MAX_PATH];
+			wchar_t path[MAX_PATH + 1];//BUFSIZE
+			wchar_t expandedPath[MAX_PATH + 1];
 			DWORD pathBufSize = MAX_PATH;//BUFSIZE
 			LONG RetValue;
 			DWORD dwHandle = 0;
@@ -182,16 +184,20 @@ namespace Intel {
 				RegCloseKey(hKey);
 				return ERROR_FAIL;
 			}
+			/* Even if the function returns ERROR_SUCCESS,
+			 * the application should ensure that the string is properly terminated before using it.
+			 */
+			path[pathBufSize] = '\0';
 
 			RegCloseKey(hKey);
 
-			bufCount = ExpandEnvironmentStrings(path, expandedPath, MAX_PATH);
+			bufCount = ExpandEnvironmentStrings(path, expandedPath, sizeof(expandedPath));
 			if (bufCount > MAX_PATH)
 			{
 				UNS_DEBUG(L"ExpandEnvironmentStrings: Too small buffer for expanding %W\n", path);
 				return ERROR_FAIL;
 			}
-			else if (!bufCount)
+			else if (bufCount == 0)
 			{
 				UNS_DEBUG(L"ExpandEnvironmentStrings failed.\n");
 				return ERROR_FAIL;
@@ -225,25 +231,24 @@ namespace Intel {
 				return ERROR_FAIL;
 			}
 
-			VS_FIXEDFILEINFO *temp_fileQuerInfo;
-			UINT InfoSize;
-			if (!VerQueryValue(FileValues, TEXT("\\"), (LPVOID*)&temp_fileQuerInfo, &InfoSize) || !InfoSize)
+			VS_FIXEDFILEINFO *fileQuerInfo;
+			UINT InfoSize = 0;
+			if (!VerQueryValue(FileValues, TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
+				!InfoSize || InfoSize < sizeof(VS_FIXEDFILEINFO)) 
 			{
 				delete[] FileValues;
 				UNS_DEBUG(L"GetServiceVersion:VerQueryValue failed err=%d\n", GetLastError());
 				return ERROR_FAIL;
 			}
-			char tmpServiceVerString[MAX_PATH];
-			sprintf_s(tmpServiceVerString, MAX_PATH, "%hd.%hd.%hd.%hd",
-				HIWORD(temp_fileQuerInfo->dwProductVersionMS),
-				LOWORD(temp_fileQuerInfo->dwProductVersionMS),
-				HIWORD(temp_fileQuerInfo->dwProductVersionLS),
-				LOWORD(temp_fileQuerInfo->dwProductVersionLS));
+			std::stringstream ss;
+			ss << HIWORD(fileQuerInfo->dwProductVersionMS) << "."
+			   << LOWORD(fileQuerInfo->dwProductVersionMS) << "."
+			   << HIWORD(fileQuerInfo->dwProductVersionLS) << "."
+			   << LOWORD(fileQuerInfo->dwProductVersionLS);
+			sVersion = ss.str();
+
 			delete[] FileValues;
 
-			UNS_DEBUG(L"%C\n", tmpServiceVerString);
-
-			sVersion = tmpServiceVerString;
 			return ERROR_OK;
 		}
 
@@ -254,12 +259,13 @@ namespace Intel {
 			try
 			{
 				Intel::MEI_Client::GetHeciDriverVersion(&HeciVersion);
-				char tmpVerString[MAX_PATH];
-				sprintf_s(tmpVerString, MAX_PATH, "%hd.%hd.%hd.%hd",
-					HeciVersion.major, HeciVersion.minor, HeciVersion.hotfix, HeciVersion.build);
+				std::stringstream ss;
+				ss << HeciVersion.major << "."
+				   << HeciVersion.minor << "."
+				   << HeciVersion.hotfix << "." 
+				   << HeciVersion.build;
 
-				UNS_DEBUG(L"%C\n", tmpVerString);
-				sVersion = tmpVerString;
+				sVersion = ss.str();
 				return ERROR_OK;
 			}
 			CATCH_HECIException(L"GetHeciVersion")
@@ -443,7 +449,7 @@ namespace Intel {
 
 		LMS_ERROR PTHI_Commands_BE::GetLastResetReason(short &pReason)
 		{
-			// Dan:: Need to check if the values fit to: ME_LAST_RESET_REASON ==> POWER_UP = 0,FW_RESET = 1,GLOBAL_SYSTEM_RESET = 2,REASON_UNKOWN = 3
+			// Need to check if the values fit to: ME_LAST_RESET_REASON ==> POWER_UP = 0,FW_RESET = 1,GLOBAL_SYSTEM_RESET = 2,REASON_UNKOWN = 3
 			try
 			{
 				Intel::MEI_Client::AMTHI_Client::GetAMTStateCommand getAMTStateCommand;
@@ -495,14 +501,15 @@ namespace Intel {
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetNetworkSettings(short ConnectionType /*WIRED, WIRELESS*/,
-			uint32_t &pDhcpEnabled,// Both
-			std::string &strIpAddress,//Both
-			std::string &bstrMacAddress,//Both
-			short &pLinkStatus, //Both
-			short &pWirelessControl,// WIRELESS
-			short &pWirelessConfEnabled) //WIRELESS
+													   uint32_t &pDhcpEnabled,// Both
+													   std::string &strIpAddress,//Both
+													   std::string &bstrMacAddress,//Both
+													   short &pLinkStatus, //Both
+													   short &pWirelessControl,// WIRELESS
+													   short &pWirelessConfEnabled) //WIRELESS
 		{
 			Intel::MEI_Client::AMTHI_Client::INTERFACE_SETTINGS AMTinterface;
+
 			switch (ConnectionType) {
 			case 0: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRED; break;
 			case 1: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRELESS; break;
@@ -748,7 +755,7 @@ namespace Intel {
 
 			sAMTVersion.append(".");	//So sAMTVersion[0] won't crash on empty string
 
-			if ((sAMTVersion[0] == '.') || (sAMTVersion[0] <= '7') && (sAMTVersion[0] != '1'))
+			if ((sAMTVersion[0] == '.') || ((sAMTVersion[0] <= '7') && (sAMTVersion[0] != '1')))
 			{
 				if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 					return ERROR_NOT_AVAILABLE_NOW;
@@ -999,7 +1006,7 @@ namespace Intel {
 			KVMScreenSettingClient Client;
 			KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
 
-			for (int i = 0; i < numOfDisplays; ++i)
+			for (int i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
 			{
 				extendedDisplayParameters.screenSettings[i].isActive = eExtendedDisplayParameters.DisplayParameters[i].IsActive;
 				extendedDisplayParameters.screenSettings[i].ResolutionX = eExtendedDisplayParameters.DisplayParameters[i].SizeX;
@@ -1008,7 +1015,7 @@ namespace Intel {
 				extendedDisplayParameters.screenSettings[i].UpperLeftY = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftY;
 				extendedDisplayParameters.screenSettings[i].Pipe = eExtendedDisplayParameters.DisplayParameters[i].Pipe;
 			}
-			if (Client.updateScreenSettings(extendedDisplayParameters, numOfDisplays) != true)
+			if (!Client.updateScreenSettings(extendedDisplayParameters, numOfDisplays))
 			{
 				return ERROR_FAIL;
 			}

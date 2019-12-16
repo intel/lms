@@ -36,15 +36,15 @@ uint32_t SMBIOS_Reader::formatted_table_len(unsigned char *smbios_table_data, ui
 uint32_t SMBIOS_Reader::unformatted_table_len(unsigned char *smbios_table_data, uint32_t index, uint32_t smbios_table_len)
 {
 	unsigned int start_point = index;
-	unsigned int formatted_table_length = (unsigned int) smbios_table_data[index+1];
+	unsigned int formatted_table_length = (unsigned int) smbios_table_data[index + 1];
 
 	// very basic overflow protection in the add operation below
 	if (formatted_table_length < smbios_table_len)
 	{
 		index += formatted_table_length;
-		while (index < smbios_table_len-1)
+		while (index < smbios_table_len - 1)
 		{
-			if ((smbios_table_data[index]==0) && (smbios_table_data[index+1]==0))
+			if ((smbios_table_data[index] == 0) && (smbios_table_data[index + 1] == 0))
 			{
 				return index - formatted_table_length + 2 - start_point;
 			}
@@ -63,27 +63,32 @@ bool SMBIOS_Reader::areSmbiosFlagsSet(unsigned char *smbios_table_data, uint32_t
 	unsigned int current_table_length = 0;
 	struct SMBIOS_Type131 *SM_table;
 
-	while(index < smbios_table_len - 1)
+	while (index < smbios_table_len - 1)
 	{
 		table_len1 = SMBIOS_Reader::formatted_table_len(smbios_table_data, index, smbios_table_len);
 		table_len2 = SMBIOS_Reader::unformatted_table_len(smbios_table_data, index, smbios_table_len);
 		current_table_length = table_len1 + table_len2;
 
-		if (current_table_length == 0) break;
+		if (current_table_length == 0)
+			break;
 
-		SM_table = (struct SMBIOS_Type131 *) &smbios_table_data[index];
+		if (current_table_length < sizeof(SM_table->Header))
+			return false;
 
-		if (SM_table->Header.Type == SMBIOS_INTEL_OEM_TYPE
-			&& strncmp((char *)SM_table->vProSig, VPRO_STRING, sizeof(VPRO_STRING)) == 0)
+		SM_table = (struct SMBIOS_Type131 *)&smbios_table_data[index];
+
+		if (SM_table->Header.Type == SMBIOS_INTEL_OEM_TYPE)
 		{
-			UNS_DEBUG(L"areSmbiosFlagsSet:: Found vPRO table\n");
 			if (current_table_length < sizeof(struct SMBIOS_Type131))
 			{
 				UNS_DEBUG(L"areSmbiosFlagsSet:: Incorrect current_table_length - returning false\n");
 				return false;
 			}
-			else
+
+			// vProSig has no \0 termination
+			if (strncmp((const char *)SM_table->vProSig, VPRO_STRING, sizeof(VPRO_STRING)) == 0)
 			{
+				UNS_DEBUG(L"areSmbiosFlagsSet:: Found vPRO table\n");
 				// MEBx version defined as such:
 				pBIOSCapabilities->MEBx_Major = SM_table->MebxVer[0]; // MebxVer[1] -> Mebx Major version
 				pBIOSCapabilities->MEBx_Minor = SM_table->MebxVer[1]; // MebxVer[0] -> Mebx Minor version
@@ -162,15 +167,12 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 
     // WMI interface locator for host
 
-	IWbemLocator* ploc = 0;
+	IWbemLocator* ploc = nullptr;
 
-    hr = CoCreateInstance(
-		__uuidof(WbemLocator),
-        0,
-        CLSCTX_INPROC_SERVER,
-		__uuidof(IWbemLocator), (LPVOID *) &ploc);
+    hr = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER,
+						  __uuidof(IWbemLocator), (LPVOID *)&ploc);
 
-    if (hr<0)
+    if (hr < 0)
     {
 		UNS_DEBUG(L"CheckForSmbiosFlags:: Error during IWbemLocator initialization\n");
 		ret = ERROR_COCREATEINSTANCE;
@@ -182,7 +184,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
     // Now connect to the wmi namespace to make call for IWbemServices
 
     bstrMsg = SysAllocString(L"ROOT\\WMI");
-    hr = ploc->ConnectServer(bstrMsg,  NULL,  NULL, 0, NULL, 0, 0, &psvc );
+    hr = ploc->ConnectServer(bstrMsg,  NULL,  NULL, 0, NULL, 0, 0, &psvc);
     SysFreeString(bstrMsg);
     if (hr<0)
     {
@@ -194,10 +196,10 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 
     // Using IWbemServices proxy
 
-    hr = CoSetProxyBlanket( psvc,  RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,
-       RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );
+    hr = CoSetProxyBlanket(psvc,  RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,
+						   RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
 
-    if (hr<0)
+    if (hr < 0)
     {
 		UNS_DEBUG(L"CheckForSmbiosFlags:: Error in set up WMI proxy\n");
         psvc->Release();
@@ -232,9 +234,9 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 			CIMTYPE type;
 
 			bstrMsg = SysAllocString(L"SmbiosMajorVersion");
-			hr = pinst->Get(bstrMsg,0,&smbios_variant,&type,NULL);
+			hr = pinst->Get(bstrMsg, 0, &smbios_variant, &type, NULL);
 			SysFreeString(bstrMsg);
-			if(hr < 0)
+			if (hr < 0)
 			{
 				UNS_DEBUG(L"CheckForSmbiosFlags:: Failed to read SMBIOS major version\n");
 				VariantClear(&smbios_variant);
@@ -244,9 +246,9 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 				VariantClear(&smbios_variant);
 				VariantInit(&smbios_variant);
 				bstrMsg = SysAllocString(L"SmbiosMinorVersion");
-				hr = pinst->Get(bstrMsg,0,&smbios_variant,&type,NULL);
+				hr = pinst->Get(bstrMsg,0, &smbios_variant, &type, NULL);
 				SysFreeString(bstrMsg);
-				if(hr < 0)
+				if (hr < 0)
 				{
 					UNS_DEBUG(L"CheckForSmbiosFlags:: Error in reading SMBIOS minor version\n");
 					VariantClear(&smbios_variant);
@@ -256,14 +258,11 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 					VariantClear(&smbios_variant);
 					VariantInit(&smbios_variant);
 					bstrMsg = SysAllocString(L"SMBiosData");
-					hr = pinst->Get(bstrMsg,0,&smbios_variant,&type,NULL);
+					hr = pinst->Get(bstrMsg, 0, &smbios_variant, &type, NULL);
 					SysFreeString(bstrMsg);
-					if(hr >= 0)
+					if (hr >= 0)
 					{
-						if ( ( VT_UI1 | VT_ARRAY  ) != smbios_variant.vt )
-						{
-						}
-						else
+						if ((VT_UI1 | VT_ARRAY) == smbios_variant.vt)
 						{
 							SAFEARRAY* plist = NULL;
 							plist = V_ARRAY(&smbios_variant);
@@ -272,11 +271,11 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 							// SMBIOS tables found. Now look for Table 131 & TDT flags
 							if (areSmbiosFlagsSet(smbios_entry, smbios_len, &pCapabilities))
 							{
-								ret = SMBIOS_FOUNDED;
+								ret = SMBIOS_FOUND;
 							}
 							else
 							{
-								ret = SMBIOS_NOT_FOUNDED;
+								ret = SMBIOS_NOT_FOUND;
 							}
 						}
 					}
@@ -315,8 +314,7 @@ static bool read_file(const std::string &name, std::vector<uint8_t> &data)
 {
 	bool ret;
 
-	std::ifstream file(name,
-		std::ios::in | std::ios::binary | std::ios::ate);
+	std::ifstream file(name, std::ios::in | std::ios::binary | std::ios::ate);
 	if (!file)
 		return false;
 	std::streampos size = file.tellg();
@@ -330,10 +328,9 @@ static bool read_file(const std::string &name, std::vector<uint8_t> &data)
 
 uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 {
-	int ret;
-
 	std::vector<uint8_t> entry_point;
 	std::string sm("_SM_");
+
 	if (!read_file(smbios_entry_point, entry_point))
 	{
 		UNS_DEBUG(L"CheckForSmbiosFlags:: Failed to read %C\n", smbios_entry_point.c_str());
@@ -346,6 +343,7 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 		return SMBIOS_FAILURE;
 	}
 
+	// assumed smbios_table_sizes < smbios_table_siz
 	uint16_t *len = (uint16_t*)&entry_point[smbios_dmi_size_pos];
 
 	std::vector<uint8_t> dmi;
@@ -364,14 +362,12 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	// SMBIOS tables found. Now look for Table 131 & TDT flags
 	if (areSmbiosFlagsSet(&dmi[0], *len, &pCapabilities))
 	{
-		ret = SMBIOS_FOUNDED;
+		return SMBIOS_FOUND;
 	}
 	else
 	{
-		ret = SMBIOS_NOT_FOUNDED;
+		return SMBIOS_NOT_FOUND;
 	}
-
-	return ret;
 }
 #endif //WIN32
 
