@@ -153,8 +153,11 @@ uint32_t PFWUpdateDllWrapperME10::isFwInitDone(bool* isFwInitDone)
 	{
 		std::lock_guard<std::mutex> lock(Intel::MEI_Client::FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 		retcode = functionsPtr->GetFwUpdateInfoStatusDLL(&flags);
-		*isFwInitDone = flags.FwInitDone;
-		UNS_DEBUG(L"retcode=0x%X isFwInitDone=%d\n", retcode, *isFwInitDone);
+		if (retcode == 0)
+		{
+			*isFwInitDone = flags.FwInitDone;
+			UNS_DEBUG(L"isFwInitDone=%d\n", *isFwInitDone);
+		}
 	}
 	catch (...)
 	{
@@ -176,7 +179,11 @@ uint32_t PFWUpdateDllWrapperME10::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 	{
 		std::lock_guard<std::mutex> lock(Intel::MEI_Client::FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 		retcode = functionsPtr->GetIpuPartitionAttributesDLL(&info);
-
+		if (retcode != 0)
+		{
+			UNS_ERROR(L"GetIpuPartitionAttributesDLL failed, retcode=0x%X\n", retcode);
+			return retcode;
+		}
 
 		for (uint16_t i = 0; (i < info.NumOfPartition) && (i < MAXIMUM_IPU_SUPPORTED); i++)
 		{
