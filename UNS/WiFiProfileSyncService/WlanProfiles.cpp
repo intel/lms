@@ -86,7 +86,7 @@ std::wstring wlanps::WlanProfiles::xmlRead(const std::wstring &strXML, std::wstr
 	size_t start_pos = strXML.find(start_tag, 0);
 	size_t end_pos = strXML.find(end_tag, start_pos);
 
-	if (start_pos != strXML.npos &&  end_pos != strXML.npos)
+	if (start_pos != strXML.npos &&  end_pos != strXML.npos && start_pos < end_pos && (start_pos + start_tag_len) < end_pos)
 	{
 		strVal = strXML.substr(start_pos + start_tag_len, end_pos - (start_pos + start_tag_len));
 	}
