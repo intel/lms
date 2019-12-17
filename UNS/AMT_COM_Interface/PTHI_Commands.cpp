@@ -785,7 +785,7 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 	 */
 #ifdef _DEBUG
 	TCHAR addresses[2048];
-	DWORD Ipv6Enable_;
+	DWORD Ipv6Enable_ = 0;
 	if (GetFromRegistry(L"DebugData", L"IPv6DefaultRouter", IPv6DefaultRouter) &&
 	    GetFromRegistry(L"DebugData", L"PrimaryDNS", PrimaryDNS) &&
 	    GetFromRegistry(L"DebugData", L"SecondaryDNS", SecondaryDNS) &&
@@ -816,7 +816,7 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 		num = 0;
 		while (token != NULL)
 		{
-			CComBSTR bstr(token);
+			ATL::CComBSTR bstr(token);
 			SafeArrayPutElement(pSar, &num, bstr) ;
 			token = std::wcstok(NULL, seps, &context);
 			num++;
@@ -1139,7 +1139,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 		ULONG len = 1024;
 		if (GetFromRegistry(L"DebugData", L"CertHash", Data, &len))
 		{
-			CComSafeArray<BYTE> hashdata(len);
+			ATL::CComSafeArray<BYTE> hashdata(len);
 			for (LONG i = 0; i < len ; i++)
 			{
 				hashdata[i] = Data[i];
@@ -1206,7 +1206,7 @@ STDMETHODIMP CPTHI_Commands::GetUserConsentState(SHORT* pState, USER_CONSENT_POL
 		return E_POINTER;
 
 #ifdef _DEBUG
-	SHORT UserConsentPolicy;
+	SHORT UserConsentPolicy = 0;
 	if (GetFromRegistry(L"DebugData", L"UserConsentState", pState) &&
 	    GetFromRegistry(L"DebugData", L"UserConsentPolicy", &UserConsentPolicy))
 	{
