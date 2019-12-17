@@ -9,37 +9,34 @@
 --*/
 
 #include "EnumerateHashHandlesCommand.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			EnumerateHashHandlesCommand::EnumerateHashHandlesCommand ()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new EnumerateHashHandlesRequest ());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			ENUMERATE_HASH_HANDLES_RESPONSE EnumerateHashHandlesCommand::getResponse() 
+			{
+				return m_response->getResponse();
+			}
 
-EnumerateHashHandlesCommand::EnumerateHashHandlesCommand ()
-{
-	shared_ptr<MEICommandRequest> tmp(new EnumerateHashHandlesRequest ());
-	m_request = tmp;
-	Transact();
-}
+			void EnumerateHashHandlesCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>> tmp(
+					new AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-ENUMERATE_HASH_HANDLES_RESPONSE
-EnumerateHashHandlesCommand::getResponse() 
-{
-	return m_response->getResponse();
-}
-				
-void 
-EnumerateHashHandlesCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-shared_ptr<AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE> > tmp (
-	new AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-EnumerateHashHandlesRequest::SerializeData()
-{	
-	vector<uint8_t> output;
-	return output;
-}
-	
+			std::vector<uint8_t> EnumerateHashHandlesRequest::SerializeData()
+			{	
+				std::vector<uint8_t> output;
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

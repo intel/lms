@@ -9,38 +9,28 @@
 --*/
 
 #include "CloseUserInitiatedConnectionCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			CloseUserInitiatedConnectionCommand::CloseUserInitiatedConnectionCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new CloseUserInitiatedConnectionRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			void CloseUserInitiatedConnectionCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<CloseUserInitiatedConnection_RESPONSE>> tmp(new AMTHICommandResponse<CloseUserInitiatedConnection_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-CloseUserInitiatedConnectionCommand::CloseUserInitiatedConnectionCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new CloseUserInitiatedConnectionRequest());
-	m_request = tmp;
-	Transact();
-}
-
-void
-CloseUserInitiatedConnectionCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<CloseUserInitiatedConnection_RESPONSE>> tmp(new AMTHICommandResponse<CloseUserInitiatedConnection_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-CloseUserInitiatedConnectionRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
-
-
-
-
-
-	
-
-	
+			std::vector<uint8_t> CloseUserInitiatedConnectionRequest::SerializeData()
+			{
+				std::vector<uint8_t> output;
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel	

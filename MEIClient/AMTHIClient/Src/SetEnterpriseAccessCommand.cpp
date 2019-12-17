@@ -9,12 +9,10 @@
 --*/
 
 #include "SetEnterpriseAccessCommand.h"
-#include <string.h>
 
 namespace Intel {
 	namespace MEI_Client {
 		namespace AMTHI_Client {
-
 			SetEnterpriseAccessRequest::SetEnterpriseAccessRequest(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess) :
 				_Flags(Flags), _HostIPAddress(HostIPAddress), _EnterpiseAccess(EnterpiseAccess)
 			{
@@ -58,6 +56,3 @@ namespace Intel {
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client
 } // namespace Intel
-	
-
-	

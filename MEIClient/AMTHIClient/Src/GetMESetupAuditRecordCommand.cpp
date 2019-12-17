@@ -9,41 +9,34 @@
 --*/
 
 #include "GetMESetupAuditRecordCommand.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetMESetupAuditRecordCommand::GetMESetupAuditRecordCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetMESetupAuditRecordRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			GetMESetupAuditRecord_RESPONSE GetMESetupAuditRecordCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetMESetupAuditRecordCommand::GetMESetupAuditRecordCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetMESetupAuditRecordRequest());
-	m_request = tmp;
-	Transact();
-}
+			void GetMESetupAuditRecordCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE>> tmp(
+					new AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-GetMESetupAuditRecord_RESPONSE 
-GetMESetupAuditRecordCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-GetMESetupAuditRecordCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE>> tmp(
-		new AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-GetMESetupAuditRecordRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
-
-
-	
-
-	
+			std::vector<uint8_t> GetMESetupAuditRecordRequest::SerializeData()
+			{
+				std::vector<uint8_t> output;
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel	

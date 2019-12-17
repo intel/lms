@@ -9,31 +9,27 @@
 --*/
 
 #include "GetSecurityParametersCommand.h"
-#include "StatusCodeDefinitions.h"
 
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetSecurityParametersCommand::GetSecurityParametersCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetSecurityParametersRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace std;
+			SECURITY_PARAMETERS GetSecurityParametersCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
-
-
-
-GetSecurityParametersCommand::GetSecurityParametersCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetSecurityParametersRequest());
-	m_request = tmp;
-	Transact();
-}
-
-SECURITY_PARAMETERS GetSecurityParametersCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-GetSecurityParametersCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<SECURITY_PARAMETERS>> tmp(new AMTHICommandResponse<SECURITY_PARAMETERS>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
+			void GetSecurityParametersCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<SECURITY_PARAMETERS>> tmp(new AMTHICommandResponse<SECURITY_PARAMETERS>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

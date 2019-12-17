@@ -8,38 +8,34 @@
 
 --*/
 
-
-#include <iostream>
 #include "GetCurrentPowerPolicyCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
-using namespace Intel::MEI_Client::AMTHI_Client;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetCurrentPowerPolicyCommand::GetCurrentPowerPolicyCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetCurrentPowerPolicyRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-GetCurrentPowerPolicyCommand::GetCurrentPowerPolicyCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetCurrentPowerPolicyRequest());
-	m_request = tmp;
-	Transact();
-}
+			std::string GetCurrentPowerPolicyCommand::getResponse()
+			{
+				return m_response->getResponse().powerPolicy;
+			}
 
-string GetCurrentPowerPolicyCommand::getResponse()
-{
-	return m_response->getResponse().powerPolicy;
-}
+			void GetCurrentPowerPolicyCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>> tmp(new AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-void
-GetCurrentPowerPolicyCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>> tmp(new AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-GetCurrentPowerPolicyRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
-
+			std::vector<uint8_t> GetCurrentPowerPolicyRequest::SerializeData()
+			{
+				std::vector<uint8_t> output;
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

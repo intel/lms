@@ -9,43 +9,33 @@
 --*/
 
 #include "GetAMTStateCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetAMTStateCommand::GetAMTStateCommand(AMT_UUID StateVariableIdentifier)
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetAMTStateRequest(StateVariableIdentifier));
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			AMT_STATE_RESPONSE GetAMTStateCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetAMTStateCommand::GetAMTStateCommand(AMT_UUID StateVariableIdentifier)
-{
-	shared_ptr<MEICommandRequest> tmp(new GetAMTStateRequest(StateVariableIdentifier));
-	m_request = tmp;
-	Transact();
-}
+			void GetAMTStateCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<AMT_STATE_RESPONSE>> tmp(new AMTHICommandResponse<AMT_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-AMT_STATE_RESPONSE GetAMTStateCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-GetAMTStateCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<AMT_STATE_RESPONSE>> tmp(new AMTHICommandResponse<AMT_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-GetAMTStateRequest::SerializeData()
-{
-	vector<uint8_t> output(m_stateVariableIdentifier.amt_uuid, m_stateVariableIdentifier.amt_uuid + sizeof(AMT_UUID));
-	return output;
-}
-
-
-
-
-
-	
-
-	
+			std::vector<uint8_t> GetAMTStateRequest::SerializeData()
+			{
+				std::vector<uint8_t> output(m_stateVariableIdentifier.amt_uuid, m_stateVariableIdentifier.amt_uuid + sizeof(AMT_UUID));
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

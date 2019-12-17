@@ -9,23 +9,22 @@
 --*/
 
 #include "StopConfigurationCommand.h"
-#include "StatusCodeDefinitions.h"
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			StopConfigurationCommand::StopConfigurationCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new StopConfigurationRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
-
-StopConfigurationCommand::StopConfigurationCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new StopConfigurationRequest());
-	m_request = tmp;
-	Transact();
-}
-
-void
-StopConfigurationCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<StopConfig_RESPONSE>> tmp(new AMTHICommandResponse<StopConfig_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
+			void StopConfigurationCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<StopConfig_RESPONSE>> tmp(new AMTHICommandResponse<StopConfig_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

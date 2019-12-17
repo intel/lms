@@ -9,31 +9,28 @@
 --*/
 
 #include "SetDNSSuffixCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
-using namespace Intel::MEI_Client::AMTHI_Client;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			SetDNSSuffixCommand::SetDNSSuffixCommand(const std::string &suffix)
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new SetDNSSuffixRequest(suffix));
+				m_request = tmp;
+				Transact();
+			}
 
-SetDNSSuffixCommand::SetDNSSuffixCommand(const std::string &suffix)
-{
-	shared_ptr<MEICommandRequest> tmp(new SetDNSSuffixRequest(suffix));
-	m_request = tmp;
-	Transact();
-}
+			void SetDNSSuffixCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<SetDNSSuffix_RESPONSE>> tmp(new AMTHICommandResponse<SetDNSSuffix_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-void
-SetDNSSuffixCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<SetDNSSuffix_RESPONSE>> tmp(new AMTHICommandResponse<SetDNSSuffix_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-SetDNSSuffixRequest::SerializeData()
-{
-	
-	vector<uint8_t> output = m_str.serialize();
-	return output;
-}
-
+			std::vector<uint8_t> SetDNSSuffixRequest::SerializeData()
+			{
+				std::vector<uint8_t> output = m_str.serialize();
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

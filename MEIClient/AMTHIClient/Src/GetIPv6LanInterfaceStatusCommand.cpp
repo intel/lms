@@ -9,44 +9,33 @@
 --*/
 
 #include "GetIPv6LanInterfaceStatusCommand.h"
-//#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetIPv6LanInterfaceStatusCommand::GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex)	//INTERFACE_SETTINGS
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetIPv6LanInterfaceStatusRequest(interfaceIndex));
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE GetIPv6LanInterfaceStatusCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetIPv6LanInterfaceStatusCommand::GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex)	//INTERFACE_SETTINGS
-{
-	shared_ptr<MEICommandRequest> tmp(new GetIPv6LanInterfaceStatusRequest(interfaceIndex));
-	m_request = tmp;
-	Transact();
-}
+			void GetIPv6LanInterfaceStatusCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>> tmp(new AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE GetIPv6LanInterfaceStatusCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-GetIPv6LanInterfaceStatusCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>> tmp(new AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-GetIPv6LanInterfaceStatusRequest::SerializeData()
-{
-	vector<uint8_t> output((std::uint8_t*)&m_interfaceIndex, (std::uint8_t*)&m_interfaceIndex + sizeof(uint32_t));
-	return output;
-}
-
-
-
-
-
-
-	
-
-	
+			std::vector<uint8_t> GetIPv6LanInterfaceStatusRequest::SerializeData()
+			{
+				std::vector<uint8_t> output((std::uint8_t*)&m_interfaceIndex, (std::uint8_t*)&m_interfaceIndex + sizeof(uint32_t));
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

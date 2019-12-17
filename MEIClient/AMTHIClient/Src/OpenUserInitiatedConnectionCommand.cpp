@@ -9,32 +9,28 @@
 --*/
 
 #include "OpenUserInitiatedConnectionCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			OpenUserInitiatedConnectionCommand::OpenUserInitiatedConnectionCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new OpenUserInitiatedConnectionRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			void OpenUserInitiatedConnectionCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<OpenUserInitiatedConnection_RESPONSE>> tmp(new AMTHICommandResponse<OpenUserInitiatedConnection_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-OpenUserInitiatedConnectionCommand::OpenUserInitiatedConnectionCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new OpenUserInitiatedConnectionRequest());
-	m_request = tmp;
-	Transact();
-}
-
-void
-OpenUserInitiatedConnectionCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<OpenUserInitiatedConnection_RESPONSE>> tmp(new AMTHICommandResponse<OpenUserInitiatedConnection_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-OpenUserInitiatedConnectionRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
-
-	
+			std::vector<uint8_t> OpenUserInitiatedConnectionRequest::SerializeData()
+			{
+				std::vector<uint8_t> output;
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

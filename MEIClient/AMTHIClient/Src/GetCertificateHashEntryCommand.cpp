@@ -9,36 +9,34 @@
 --*/
 
 #include "GetCertificateHashEntryCommand.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetCertificateHashEntryCommand::GetCertificateHashEntryCommand(uint32_t hashHandle)
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetCertificateHashEntryRequest(hashHandle));
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			GET_CERTIFICATE_HASH_ENTRY_RESPONSE GetCertificateHashEntryCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetCertificateHashEntryCommand::GetCertificateHashEntryCommand(uint32_t hashHandle)
-{
-	shared_ptr<MEICommandRequest> tmp(new GetCertificateHashEntryRequest(hashHandle));
-	m_request = tmp;
-	Transact();
-}
+			void GetCertificateHashEntryCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>> tmp(
+					new AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-GET_CERTIFICATE_HASH_ENTRY_RESPONSE 
-GetCertificateHashEntryCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void GetCertificateHashEntryCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-shared_ptr<AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>> tmp(
-	new AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-GetCertificateHashEntryRequest::SerializeData()
-{	
-	vector<uint8_t> output((std::uint8_t*)&_hashHandle, (std::uint8_t*)&_hashHandle + sizeof(uint32_t));
-	return output;
-}
-
+			std::vector<uint8_t> GetCertificateHashEntryRequest::SerializeData()
+			{
+				std::vector<uint8_t> output((std::uint8_t*)&_hashHandle, (std::uint8_t*)&_hashHandle + sizeof(uint32_t));
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

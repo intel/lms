@@ -9,36 +9,33 @@
 --*/
 
 #include "GetLastHostResetReasonCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetLastHostResetReasonCommand::GetLastHostResetReasonCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetLastHostResetReasonRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			LAST_HOST_RESET_REASON_RESPONSE GetLastHostResetReasonCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetLastHostResetReasonCommand::GetLastHostResetReasonCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetLastHostResetReasonRequest());
-	m_request = tmp;
-	Transact();
-}
+			void GetLastHostResetReasonCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>> tmp(new AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
 
-LAST_HOST_RESET_REASON_RESPONSE GetLastHostResetReasonCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-GetLastHostResetReasonCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>> tmp(new AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-GetLastHostResetReasonRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
-
+			std::vector<uint8_t> GetLastHostResetReasonRequest::SerializeData()
+			{
+				std::vector<uint8_t> output;
+				return output;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel

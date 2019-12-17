@@ -9,30 +9,27 @@
 --*/
 
 #include "GetConfigServerDataCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace AMTHI_Client {
+			GetConfigServerDataCommand::GetConfigServerDataCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetConfigServerDataRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::AMTHI_Client;
+			CFG_GET_CONFIG_SERVER_DATA_RESPONSE GetConfigServerDataCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetConfigServerDataCommand::GetConfigServerDataCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetConfigServerDataRequest());
-	m_request = tmp;
-	Transact();
-}
-
-CFG_GET_CONFIG_SERVER_DATA_RESPONSE GetConfigServerDataCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-GetConfigServerDataCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>> tmp(new AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-
+			void GetConfigServerDataCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>> tmp(new AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+				m_response = tmp;
+			}
+		} // namespace AMTHI_Client
+	} // namespace MEI_Client
+} // namespace Intel
