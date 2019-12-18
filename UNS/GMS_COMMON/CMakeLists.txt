@@ -55,6 +55,7 @@ target_link_libraries (LmsGMS_COMMON
 target_compile_definitions (LmsGMS_COMMON PRIVATE
   GMS_COMMON_DLL_EXPORTS
   NO_STDOUT_DEBUG_LOG
+  $<$<BOOL:${IGNORE_DLL_SIGNATURES}>:IGNORE_DLL_SIGNATURES>
 )
 
 target_include_directories (LmsGMS_COMMON PUBLIC .)

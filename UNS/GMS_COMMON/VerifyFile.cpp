@@ -206,6 +206,8 @@ bool VerifyFile::VerifyFileVersionAndSignature(const std::wstring &filename, boo
 {
 	std::wstring path(m_UNSPath);
 	path.append(filename);
+
+#if !defined(IGNORE_DLL_SIGNATURES)
 	std::wstring wpath(path.begin(), path.end());
 	UNS_DEBUG(L"Checking signature for configuration file %s\n", filename.c_str());
 
@@ -225,8 +227,9 @@ bool VerifyFile::VerifyFileVersionAndSignature(const std::wstring &filename, boo
 // PREPROCESSOR variable that enable signing on production releases 
 #if SIGNING > 0			
 		return false;
-#endif		
+#endif // ndef _DEBUG
 	}
+#endif // !defined(IGNORE_DLL_SIGNATURES)
 	if (compareVersions) 
 	{
 		UNS_DEBUG(L"Checking version for configuration file %s\n", filename.c_str());

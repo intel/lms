@@ -5,6 +5,7 @@ project (lms)
 
 option (BUILD_TESTS "Build tests" NO)
 option (BUILD_WIN_UNIVERSAL "Build Windows Universal App" NO)
+option (IGNORE_DLL_SIGNATURES "Skip Windows DLL signatures check" NO)
 
 set (CMAKE_CXX_STANDARD 11)
 

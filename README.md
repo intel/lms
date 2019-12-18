@@ -89,8 +89,10 @@ In Yocto the desired service should be configured in the recipe.
 
 ### Windows
 
+Note: The DLL signature check tests Intel(R) signatures, so external build should disable DLL signature check.
+
 1. Create `build` directory
-2. Run `cmake -G "Visual Studio 15 2017" -A <Build_arch> <srcdir>` from the `build` directory (best to set build_arch to Win32)
+2. Run `cmake -G "Visual Studio 15 2017" -A <Build_arch> -DIGNORE_DLL_SIGNATURES=YES <srcdir>` from the `build` directory (best to set build_arch to Win32)
 3. Run `cmake --build . --config Release --target package -j <nproc>` from the `build` directory to build an archive with all executables and libraries (e.g. lms-1.0.0-win32.zip)
 
 ### Linux
