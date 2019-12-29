@@ -34,15 +34,15 @@ namespace Intel {
 #define CATCH_MKHIErrorException(func) \
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e) \
 	{ \
-		const char* reason = e.what(); \
-		UNS_DEBUG(func L" failed %C\n", reason); \
+		unsigned int errNo = e.getErr(); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	}
 
 #define CATCH_FWUpdateErrorException(func) \
 	catch (Intel::MEI_Client::FWUpdate_Client::FWUpdateErrorException& e) \
 	{ \
-		const char* reason = e.what(); \
-		UNS_DEBUG(func L" failed %C\n", reason); \
+		unsigned int errNo = e.getErr(); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	}
 
 #define CATCH_exception(func) \
