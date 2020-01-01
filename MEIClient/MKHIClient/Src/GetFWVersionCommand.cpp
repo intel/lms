@@ -10,32 +10,34 @@
 
 #include "GetFWVersionCommand.h"
 
-using namespace std;
+namespace Intel {
+	namespace MEI_Client {
+		namespace MKHI_Client {
+			GetFWVersionCommand::GetFWVersionCommand()
+			{
+				std::shared_ptr<MEICommandRequest> tmp(new GetFWVersionRequest());
+				m_request = tmp;
+				Transact();
+			}
 
-using namespace Intel::MEI_Client::MKHI_Client;
+			GET_FW_VER_RESPONSE GetFWVersionCommand::getResponse()
+			{
+				return m_response->getResponse();
+			}
 
-GetFWVersionCommand::GetFWVersionCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new GetFWVersionRequest());
-	m_request = tmp;
-	Transact();
-}
+			void GetFWVersionCommand::parseResponse(const std::vector<uint8_t>& buffer)
+			{
+				std::shared_ptr<MKHICommandResponse<GET_FW_VER_RESPONSE>> tmp(
+					new MKHICommandResponse<GET_FW_VER_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
+				m_response = tmp;
+			}
 
-GET_FW_VER_RESPONSE GetFWVersionCommand::getResponse()
-{
-	return m_response->getResponse();
-}
+			std::vector<uint8_t> GetFWVersionRequest::SerializeData()
+			{
+				std::vector<uint8_t> output(0, 0);
 
-void GetFWVersionCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<MKHICommandResponse<GET_FW_VER_RESPONSE>> tmp(
-		new MKHICommandResponse<GET_FW_VER_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> GetFWVersionRequest::SerializeData()
-{
-	vector<uint8_t> output(0, 0);
-
-	return output;
-}
+				return output;
+			}
+		} // namespace MKHI_Client
+	} // namespace MEI_Client
+} // namespace Intel
