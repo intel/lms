@@ -9,36 +9,29 @@
 --*/
 
 #include "FWUGetInfoCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
+	FWUGetInfoCommand::FWUGetInfoCommand()
+	{
+		std::shared_ptr<MEICommandRequest> tmp(new FWUGetInfoRequest());
+		m_request = tmp;
+		Transact();
+	}
 
-using namespace Intel::MEI_Client::FWUpdate_Client;
+	GET_INFO_RESPONSE FWUGetInfoCommand::getResponse()
+	{
+		return m_response->getResponse();
+	}
 
-FWUGetInfoCommand::FWUGetInfoCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new FWUGetInfoRequest());
-	m_request = tmp;
-	Transact();
-}
+	void FWUGetInfoCommand::parseResponse(const std::vector<uint8_t>& buffer)
+	{
+		std::shared_ptr<FWUpdateCommandResponse<GET_INFO_RESPONSE>> tmp(new FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
+		m_response = tmp;
+	}
 
-GET_INFO_RESPONSE FWUGetInfoCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void
-FWUGetInfoCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<FWUpdateCommandResponse<GET_INFO_RESPONSE>> tmp(new FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> 
-FWUGetInfoRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
-
+	std::vector<uint8_t> FWUGetInfoRequest::SerializeData()
+	{
+		std::vector<uint8_t> output;
+		return output;
+	}
+} /* namespace FWUpdate_Client */ } /* namespace MEI_Client */ } /* namespace Intel */
