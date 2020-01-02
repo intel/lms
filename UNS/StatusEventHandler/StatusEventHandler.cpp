@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "StatusEventHandler.h"
@@ -97,7 +97,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
-StatusEventHandler::StatusEventHandler(): m_prevTDTState(NOT_PRESENT), filter_(new StatusEventFilter)
+StatusEventHandler::StatusEventHandler(): filter_(new StatusEventFilter)
 {
 	StatusEventFilter::defaultInitialization(filter_);
 	m_KVM=0;
@@ -107,8 +107,6 @@ StatusEventHandler::StatusEventHandler(): m_prevTDTState(NOT_PRESENT), filter_(n
 	m_prevProvState = Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_PRE;
 	m_UserConsentPolicy = ALL_SESSIONS;
 	m_prevAmtState=NOT_PRESENT;
-	m_prevRpatState=NOT_PRESENT;
-	m_prevKvmState=NOT_PRESENT;
 	m_prevManageMode=NOT_KNOWN;
 	m_prevCustomerType = CORPORATE;	
 	m_eacEnabled = true;
@@ -830,10 +828,10 @@ void StatusEventHandler::GenerateEvents()
 {
 	FuncEntryExit<void> fee(L"GenerateEvents");
 
-	FEATURE_STATE AmtState=NOT_PRESENT, RpatState=NOT_PRESENT, KvmState=NOT_PRESENT, TDTState=NOT_PRESENT;
-	MENAGEABILTY_MODE ManageMode=NOT_KNOWN;
-	CUSTOMER_TYPE CustomerType=CORPORATE;
-	if (GetManageabiltyAndFeaturesState(&ManageMode,&CustomerType,&AmtState,&RpatState,&KvmState,&TDTState))
+	FEATURE_STATE AmtState = NOT_PRESENT;
+	MENAGEABILTY_MODE ManageMode = NOT_KNOWN;
+	CUSTOMER_TYPE CustomerType = CORPORATE;
+	if (GetManageabiltyAndFeaturesState(&ManageMode, &CustomerType, &AmtState))
 	{
 		CheckForStatusChange(AMT_ENABLE_S,AmtState);
 	}
@@ -860,10 +858,10 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 		return;
 	}
 
-	FEATURE_STATE AMTState = NOT_PRESENT, RpatState=NOT_PRESENT, KvmState=NOT_PRESENT, TDTState=NOT_PRESENT;
-	MENAGEABILTY_MODE ManageMode=NOT_KNOWN;
-	CUSTOMER_TYPE CustomerType=CORPORATE;
-	if (!GetManageabiltyAndFeaturesState(&ManageMode,&CustomerType,&AMTState,&RpatState,&KvmState,&TDTState))
+	FEATURE_STATE AMTState = NOT_PRESENT;
+	MENAGEABILTY_MODE ManageMode = NOT_KNOWN;
+	CUSTOMER_TYPE CustomerType = CORPORATE;
+	if (!GetManageabiltyAndFeaturesState(&ManageMode, &CustomerType, &AMTState))
 	{
 		UNS_ERROR(L"Failure\n");
 		// assume that it is FWreset or HECI disabled
@@ -1093,43 +1091,39 @@ namespace
 }
 
 
-bool StatusEventHandler::GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pManageMode,CUSTOMER_TYPE* pType,FEATURE_STATE* pAmtState,FEATURE_STATE* pRpatState,FEATURE_STATE* pKvmState,FEATURE_STATE* pTDTState)
+bool StatusEventHandler::GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType, FEATURE_STATE* pAmtState)
 {
 	bool rc = false;
 	FuncEntryExit<decltype(rc)> fee(L"GetManageabiltyAndFeaturesState", rc);
 
-	using namespace Intel::MEI_Client;	
-	using namespace Intel::MEI_Client::MKHI_Client;				
+	namespace MKHI_Client = Intel::MEI_Client::MKHI_Client;
 
 	try
 	{	
-		GetFWCapsCommand getCapabilitiesCommand(FEATURES_CAPABLE);
-		GetFWCapsCommand getFeaturesStateCommand(FEATURES_ENABLED);
-		GetPlatformTypeCommand getPlatformTypeCommand;
-		MEFWCAPS_SKU_MKHI CapabilityData = getCapabilitiesCommand.getResponse();
-		MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
-		MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
-		UNS_DEBUG(L"Capability=0x%X State=0x%X platform=0x%X\n",CapabilityData,StateData,Platform);
-		MenageabiltyModeLogic( Platform, pManageMode);
+		MKHI_Client::GetFWCapsCommand getCapabilitiesCommand(MKHI_Client::FEATURES_CAPABLE);
+		MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(MKHI_Client::FEATURES_ENABLED);
+		MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
+		MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData = getCapabilitiesCommand.getResponse();
+		MKHI_Client::MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
+		MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
+		UNS_DEBUG(L"Capability=0x%X State=0x%X platform=0x%X\n", CapabilityData, StateData, Platform);
+		MenageabiltyModeLogic(Platform, pManageMode);
 		rc = true;
-		*pAmtState=FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt); 
-		*pRpatState=FeatureStateLogic(CapabilityData.Fields.Rpat, StateData.Fields.Rpat); 
-		*pKvmState=FeatureStateLogic(CapabilityData.Fields.Kvm, StateData.Fields.Kvm); 
-		*pTDTState=FeatureStateLogic(CapabilityData.Fields.Tdt, StateData.Fields.Tdt); 					
+		*pAmtState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt); 
 
 		*pType = GetPlatformTypeExt(&Platform);
 		if (*pType == WRONG_CUSTOMER_TYPE)
 		{
 			*pType = CORPORATE;
 		}
-		UNS_DEBUG(L"AmtState=%d RpatState=%d KvmState=%d TDTState=%d CustomerType=%d ManageMode=%d\n",
-			*pAmtState,*pRpatState,*pKvmState,*pTDTState,*pType,*pManageMode);
+		UNS_DEBUG(L"AmtState=%d CustomerType=%d ManageMode=%d\n",
+			*pAmtState, *pType, *pManageMode);
 	}
-	catch (MKHIErrorException& e)
+	catch (MKHI_Client::MKHIErrorException& e)
 	{	
-		UNS_ERROR(L"GetManageabiltyAndFeaturesState failed %C\n", e.what());
+		UNS_ERROR(L"GetManageabiltyAndFeaturesState failed %u\n", e.getErr());
 	}
-	catch (MEIClientException& e)
+	catch (Intel::MEI_Client::MEIClientException& e)
 	{	
 		UNS_ERROR(L"GetManageabiltyAndFeaturesState failed %C\n", e.what());
 	}
@@ -1151,36 +1145,6 @@ void StatusEventHandler::publishAMTEnabledEvent(bool enable)
 	ACE_TString message=AMT_STATE;
 	message+=(enable ? ENABLED_STR : DISABLED_STR); 
 	raiseGMS_AlertIndication(CATEGORY_GENERAL,eventID,getDateTime(),ACTIVE_MESSAGEID,message);
-}
-
-bool StatusEventHandler::GetAMTEnableState(bool& AMTState)
-{
-	// Assume that every PTHI command fails if AMT disable
-	// Dan:: Need to rewrite that function using a better API
-	using namespace Intel::MEI_Client;
-
-	try
-	{
-		AMTHI_Client::GetRedirectionSessionsStateCommand getRedirectionState;
-		AMTState = true;	
-	}
-	catch(MEIClientException& e)
-	{
-		UNS_ERROR(L"GetRedirectionSessionsStateCommand failed %C\n", e.what());
-		AMTState = false;
-	}
-	catch(AMTHI_Client::AMTHIErrorException& e)
-	{
-		UNS_ERROR(L"GetRedirectionSessionsStateCommand failed, ret=%d\n", e.getErr());
-		AMTState = false;
-	}	
-	catch(...)
-	{
-		UNS_ERROR(L"GetRedirectionSessionsStateCommand failed\n");
-		AMTState = false;
-	}
-
-	return (AMTState!= AMTHI_Client::AMT_FALSE);
 }
 
 bool StatusEventHandler::GetSolIderState(bool& SOLState, bool& IDERState)
@@ -1534,7 +1498,7 @@ void StatusEventHandler::firstPullForEvents(void)
 	DataStorageWrapper& ds = DSinstance();
 	using namespace Intel::MEI_Client;
 
-	if (!GetManageabiltyAndFeaturesState(&m_prevManageMode,&m_prevCustomerType,&m_prevAmtState,&m_prevRpatState,&m_prevKvmState, &m_prevTDTState))
+	if (!GetManageabiltyAndFeaturesState(&m_prevManageMode, &m_prevCustomerType, &m_prevAmtState))
 	{
 		unsigned long val;
 		if (!ds.GetDataValue(AMT_ENABLE_S, val, true))

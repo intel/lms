@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #ifndef __STATUSEVENTHANDLER_H_
 #define __STATUSEVENTHANDLER_H_
@@ -121,7 +121,7 @@ protected:
 		return filter_;
 	}
 
-	private:
+private:
 
 	bool SaveCurrentStatus(uint32_t status,DATA_NAME storageName);
 	void NotifyConfigurator(int status, CONFIGURATION_TYPE RegValueName);
@@ -136,7 +136,6 @@ protected:
 	void CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state);
 
 	bool GetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE& ProvState);
-	bool GetAMTEnableState(bool& AMTState);
 	bool GetSolIderState(bool& SOLState, bool& IDERState);
 	bool GetSystemDefenseState(bool& SysDefState);
 	bool GetMEState(bool& MEState);
@@ -161,7 +160,7 @@ protected:
 	void GenerateWLANEvents();
 	void GenerateWiFiProfileSyncEvents();
 
-	bool GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pManageMode,CUSTOMER_TYPE* pType,FEATURE_STATE* pAmtState,FEATURE_STATE* pRpatState,FEATURE_STATE* pKvmState,FEATURE_STATE* pTDTState);
+	bool GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType, FEATURE_STATE* pAmtState);
 
 	// Publish AMT enabled event
 	void publishAMTEnabledEvent(bool enable);
@@ -220,11 +219,11 @@ protected:
 	USER_CONSENT_POLICY m_UserConsentPolicy;
 	std::mutex m_semAMTEnabled;
 	bool m_eacEnabled;
-	FEATURE_STATE m_prevAmtState, m_prevRpatState, m_prevKvmState, m_prevTDTState;
+	FEATURE_STATE m_prevAmtState;
 	CUSTOMER_TYPE m_prevCustomerType;
 	MENAGEABILTY_MODE m_prevManageMode;
 	bool m_firstTime;
 	std::shared_ptr<StatusEventFilter> filter_;
-	};
+};
 
 #endif /* __STATUSEVENTHANDLER_H_ */
