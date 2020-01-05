@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -47,9 +47,11 @@
 #include <atlcom.h>
 #include <string>
 #include <Windows.h>
+#include "DataInterfaceBackend.h"
 
 enum DATA_NAME : unsigned int;
 
 HRESULT CheckCredentials(DATA_NAME funcName);
 inline std::string ConvertBStrToString(BSTR bstr);
 bool GetGmsPortForwardingStarted();
+HRESULT LMSError2HRESULT(Intel::LMS::LMS_ERROR err);

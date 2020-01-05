@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -35,10 +35,8 @@ STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT* pState, BSTR* bstrInfo)
 		return E_ACCESSDENIED;
 
 	Intel::LMS::LMS_ERROR err = Intel::LMS::AT_Device_BE(GetGmsPortForwardingStarted()).GetATDeviceInfo(*pState);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE; 
 	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
+		return LMSError2HRESULT(err);
 
 	char ValueStr[512];
 	memset(ValueStr, 0, 512);
@@ -59,10 +57,9 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 	std::string AuditLogs;
 	
 	Intel::LMS::LMS_ERROR err = Intel::LMS::AT_Device_BE(GetGmsPortForwardingStarted()).GetAuditLogs(AuditLogs);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
+		return LMSError2HRESULT(err);
+
 	ATL::CComBSTR bstr(AuditLogs.c_str());
 	*bstrAuditLogs = bstr.Detach();
 	return S_OK;

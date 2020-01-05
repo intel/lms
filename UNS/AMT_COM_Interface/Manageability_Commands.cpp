@@ -71,17 +71,7 @@ HRESULT CManageability_Commands::GetTheFeatureState(FEATURES feat, FEATURE_STATE
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetTheFeatureState(feat, *pState);
-	switch (err)
-	{
-	case Intel::LMS::ERROR_OK:
-		return S_OK;
-	case Intel::LMS::ERROR_INVALIDARG:
-		return E_INVALIDARG;
-	case Intel::LMS::ERROR_NOT_AVAILABLE_NOW:
-		return E_NOT_VALID_STATE;
-	default:
-		return E_FAIL;
-	}
+	return LMSError2HRESULT(err);
 }
 
 HRESULT CManageability_Commands::GetFeaturesState(SAFEARRAY** ppStates)
@@ -96,10 +86,8 @@ HRESULT CManageability_Commands::GetFeaturesState(SAFEARRAY** ppStates)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetFeaturesState(states);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
+		return LMSError2HRESULT(err);
 
 	ATL::CComSafeArray<SHORT> StatesArr(FEATURES_NUM);
 	for (int i = 0; i < FEATURES_NUM; i++)
@@ -129,12 +117,7 @@ HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetCustomerType(*pType);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
-	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
-
-	return S_OK;
+	return LMSError2HRESULT(err);
 }
 
 HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
@@ -156,11 +139,7 @@ HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetPlatformType(*pType);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
-	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
-	return S_OK;
+	return LMSError2HRESULT(err);
 }
 
 HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
@@ -182,11 +161,7 @@ HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetMenageabiltyMode(*pMode);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
-	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
-	return S_OK;
+	return LMSError2HRESULT(err);
 }
 HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootState, VARIANT_BOOL* pCryptoFuseEnable, VARIANT_BOOL* pLocalFWupdateEnable)
 {
@@ -219,10 +194,8 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetFWInfo(MEBxVersion, BiosBootState, CryptoFuseEnable, LocalFWupdateEnable);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
+		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(MEBxVersion.c_str());
 	*pMEBxVersion = bstr.Detach();
@@ -253,17 +226,14 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetPMCVersion(FwVer);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
+		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(FwVer.c_str());
 	*pFwVer = bstr.Detach();
 
 	return S_OK;
 }
-
 
 STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 {
@@ -285,10 +255,8 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.IsMeasuredBootState(state);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
 	if (err != Intel::LMS::ERROR_OK)
-		return E_FAIL;
+		return LMSError2HRESULT(err);
 
 	*pState = state ? VARIANT_TRUE : VARIANT_FALSE;
 
