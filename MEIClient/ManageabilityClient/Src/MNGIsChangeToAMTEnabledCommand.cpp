@@ -9,33 +9,29 @@
 --*/
 
 #include "MNGIsChangeToAMTEnabledCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel { namespace MEI_Client { namespace Manageability_Client {
+	MNGIsChangeToAMTEnabledCommand::MNGIsChangeToAMTEnabledCommand()
+	{
+		std::shared_ptr<MEICommandRequest> tmp(new MNGIsChangeToAMTEnabledRequest());
+		m_request = tmp;
+		Transact();
+	}
 
-using namespace Intel::MEI_Client::Manageability_Client;
+	IsChangedEnabledResponse MNGIsChangeToAMTEnabledCommand::getResponse()
+	{
+		return m_response->getResponse();
+	}
 
-MNGIsChangeToAMTEnabledCommand::MNGIsChangeToAMTEnabledCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new MNGIsChangeToAMTEnabledRequest());
-	m_request = tmp;
-	Transact();
-}
+	void MNGIsChangeToAMTEnabledCommand::parseResponse(const std::vector<uint8_t>& buffer)
+	{
+		std::shared_ptr<ManageabilityCommandResponse<IsChangedEnabledResponse>> tmp(new ManageabilityCommandResponse<IsChangedEnabledResponse>(buffer));
+		m_response = tmp;
+	}
 
-IsChangedEnabledResponse MNGIsChangeToAMTEnabledCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void MNGIsChangeToAMTEnabledCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<ManageabilityCommandResponse<IsChangedEnabledResponse>> tmp(new ManageabilityCommandResponse<IsChangedEnabledResponse>(buffer));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> MNGIsChangeToAMTEnabledRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
+	std::vector<uint8_t> MNGIsChangeToAMTEnabledRequest::SerializeData()
+	{
+		std::vector<uint8_t> output;
+		return output;
+	}
+} /* namespace Manageability_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

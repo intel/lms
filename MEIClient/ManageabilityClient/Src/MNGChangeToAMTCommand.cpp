@@ -9,33 +9,29 @@
 --*/
 
 #include "MNGChangeToAMTCommand.h"
-#include "StatusCodeDefinitions.h"
-#include <string.h>
 
-using namespace std;
+namespace Intel { namespace MEI_Client { namespace Manageability_Client {
+	MNGChangeToAMTCommand::MNGChangeToAMTCommand()
+	{
+		std::shared_ptr<MEICommandRequest> tmp(new MNGChangeToAMTRequest());
+		m_request = tmp;
+		Transact();
+	}
 
-using namespace Intel::MEI_Client::Manageability_Client;
+	ChangeToAMT_RESPONSE MNGChangeToAMTCommand::getResponse()
+	{
+		return m_response->getResponse();
+	}
 
-MNGChangeToAMTCommand::MNGChangeToAMTCommand()
-{
-	shared_ptr<MEICommandRequest> tmp(new MNGChangeToAMTRequest());
-	m_request = tmp;
-	Transact();
-}
+	void MNGChangeToAMTCommand::parseResponse(const std::vector<uint8_t>& buffer)
+	{
+		std::shared_ptr<ManageabilityCommandResponse<ChangeToAMT_RESPONSE>> tmp(new ManageabilityCommandResponse<ChangeToAMT_RESPONSE>(buffer));
+		m_response = tmp;
+	}
 
-ChangeToAMT_RESPONSE MNGChangeToAMTCommand::getResponse()
-{
-	return m_response->getResponse();
-}
-
-void MNGChangeToAMTCommand::parseResponse(const vector<uint8_t>& buffer)
-{
-	shared_ptr<ManageabilityCommandResponse<ChangeToAMT_RESPONSE>> tmp(new ManageabilityCommandResponse<ChangeToAMT_RESPONSE>(buffer));
-	m_response = tmp;
-}
-
-std::vector<uint8_t> MNGChangeToAMTRequest::SerializeData()
-{
-	vector<uint8_t> output;
-	return output;
-}
+	std::vector<uint8_t> MNGChangeToAMTRequest::SerializeData()
+	{
+		std::vector<uint8_t> output;
+		return output;
+	}
+} /* namespace Manageability_Client */ } /* namespace MEI_Client */ } /* namespace Intel */
