@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 """
 LMS DBus interface unit-tests
 
@@ -63,6 +63,11 @@ class ManageabilityTestCase(unittest.TestCase):
     def test_GetPMCVersion(self):
         '''GetPMCVersion test method'''
         self.iface.GetPMCVersion()
+
+    @unittest.skip("Requires FW 14.x")
+    def test_IsMeasuredBootState(self):
+        '''IsMeasuredBootState test method'''
+        self.iface.IsMeasuredBootState()
 
 class PTHITestCase(unittest.TestCase):
     """PTHI interface test"""

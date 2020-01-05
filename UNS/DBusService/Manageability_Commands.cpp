@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2019 Intel Corporation
+ * Copyright (C) 2017-2020 Intel Corporation
  */
 #include "DBusService.h"
 #include "Manageability_Commands.h"
@@ -132,6 +132,21 @@ namespace Manageability {
 		return TRUE;
 	}
 
+	gboolean on_is_measured_boot_state(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
+					   gpointer user_data)
+	{
+		UNS_DEBUG(L"on_is_measured_boot_state\n");
+		DBusService *th = (DBusService *)user_data;
+		bool Status = false;
+
+		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).IsMeasuredBootState(Status);
+		if (!error)
+			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
+		else
+			send_error(invocation, error);
+		return TRUE;
+	}
+
 	gboolean on_bus_acquired(GDBusConnection *connection, LmsManageability **skeleton_manageability,
 				 gpointer user_data)
 	{
@@ -150,6 +165,8 @@ namespace Manageability {
 			G_CALLBACK (on_get_fwinfo), user_data);
 		g_signal_connect (*skeleton_manageability, "handle-get-pmcversion",
 			G_CALLBACK (on_get_pmc_version), user_data);
+		g_signal_connect (*skeleton_manageability, "handle-is-measured-boot-state",
+			G_CALLBACK (on_is_measured_boot_state), user_data);
 		return g_dbus_interface_skeleton_export(G_DBUS_INTERFACE_SKELETON(*skeleton_manageability),
 							connection,
 							Intel::DBus::OBJ_PATH,

@@ -112,6 +112,15 @@
 <method name="GetPMCVersion">
 <arg name="Version" type="s" direction="out" />
 </method>
+<!--
+    IsMeasuredBootState:
+    @State: 0 = Yes, 1 = No
+
+    Checks if system is in a measured boot state.
+-->
+<method name="IsMeasuredBootState">
+<arg name="State" type="u" direction="out" />
+</method>
 </interface>
 <!--
     com.intel.amt.lms.PTHI:

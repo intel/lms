@@ -74,6 +74,7 @@ file (GLOB MKHIClient
   MKHIClient/Src/GetFWUpdateStateCommand.cpp
   MKHIClient/Src/GetFWVersionCommand.cpp
   MKHIClient/Src/GetPlatformTypeCommand.cpp
+  MKHIClient/Src/GetMeasuredBootStateCommand.cpp
   MKHIClient/Src/MKHICommand.cpp
 )
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -100,6 +100,7 @@ enum DATA_NAME : unsigned int
 	WIFI_PROFILE_SYNC_ENABLE_S,
 	LMSLoggingSeverity,
 	RebootAfterProvsioningNeeded_S,
+	IsMeasuredBootState_F,
 
 	DATA_NAME_MAX_SENTINEL
 };

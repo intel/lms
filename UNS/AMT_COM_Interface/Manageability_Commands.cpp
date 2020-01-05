@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -260,6 +260,37 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 
 	ATL::CComBSTR bstr(FwVer.c_str());
 	*pFwVer = bstr.Detach();
+
+	return S_OK;
+}
+
+
+STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
+{
+	if (pState == nullptr)
+		return E_POINTER;
+
+#ifdef _DEBUG
+	if (GetFromRegistry(L"DebugData", L"IsMeasuredBootState", (SHORT*)pState))
+	{
+		UNS_DEBUG(L"CPTHI_Commands::IsMeasuredBootState DEBUG mode, got from registry %d\n", *pState);
+		return S_OK;
+	}
+#endif
+
+	if (CheckCredentials(IsMeasuredBootState_F) != S_OK)
+		return E_ACCESSDENIED;
+
+	bool state;
+
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::LMS_ERROR err = be.IsMeasuredBootState(state);
+	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
+		return E_NOT_VALID_STATE;
+	if (err != Intel::LMS::ERROR_OK)
+		return E_FAIL;
+
+	*pState = state ? VARIANT_TRUE : VARIANT_FALSE;
 
 	return S_OK;
 }

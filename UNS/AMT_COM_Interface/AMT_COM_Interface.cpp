@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -133,6 +133,8 @@ HRESULT AddRegKeys()
 	if (false == ds.SetDataValue(ProxyAddProxyEntry_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(UserInitiatedPolicyRuleForLocalMpsExists_F, L"", true))
+		return 1;
+	if (false == ds.SetDataValue(IsMeasuredBootState_F, L"", true))
 		return 1;
 
 	DWORD val = 0;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -17,6 +17,7 @@
 #include "GetFWUpdateStateCommand.h"
 #include "GetEOPStateCommand.h"
 #include "GetImageFWVersionCommand.h"
+#include "GetMeasuredBootStateCommand.h"
 #include "SMBIOS_Reader.h"
 #include <sstream>
 #include <iomanip>
@@ -511,6 +512,23 @@ namespace Intel {
 				pFwVer = "";
 				return ERROR_OK;
 			}
+		}
+
+		LMS_ERROR Manageability_Commands_BE::IsMeasuredBootState(bool &pState)
+		{
+			try
+			{
+				Intel::MEI_Client::MKHI_Client::GetMeasuredBootStateCommand  getMeasuredBootStateCommand;
+				Intel::MEI_Client::MKHI_Client::MKHI_MEASURED_BOOT_STATE measuredBootState = getMeasuredBootStateCommand.getResponse();
+				pState = measuredBootState.State != 0;
+
+				UNS_DEBUG("measuredBootState=%d\n", pState);
+				return ERROR_OK;
+			}
+			CATCH_MKHIErrorException(L"GetMeasuredBootStateCommand")
+			CATCH_MEIClientException(L"GetMeasuredBootStateCommand")
+			CATCH_exception(L"GetMeasuredBootStateCommand")
+			return ERROR_FAIL;
 		}
 	}
 }

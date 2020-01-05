@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2017 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -26,7 +26,7 @@ namespace Intel {
 			LMS_ERROR GetMenageabiltyMode(MENAGEABILTY_MODE& pMode);
 			LMS_ERROR GetFWInfo(std::string &pMEBxVersion, unsigned long &pBiosBootState, bool &pCryptoFuseEnable, bool &pLocalFWupdateEnable);
 			LMS_ERROR GetPMCVersion(std::string &pFwVer);
-
+			LMS_ERROR IsMeasuredBootState(bool &pState);
 		};
 	}
 }

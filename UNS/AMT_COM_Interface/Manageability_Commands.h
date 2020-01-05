@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -62,6 +62,7 @@ public:
 	STDMETHOD(GetMenageabiltyMode)(MENAGEABILTY_MODE* pMode);
 	STDMETHOD(GetFWInfo)(BSTR* pMEBxVersion, ULONG* pBiosBootState, VARIANT_BOOL* pCryptoFuseEnable, VARIANT_BOOL* pLocalFWupdateEnable);
 	STDMETHOD(GetPMCVersion)(BSTR* pFwVer);
+	STDMETHOD(IsMeasuredBootState)(VARIANT_BOOL *pState);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Manageability_Commands), CManageability_Commands)
