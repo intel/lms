@@ -1,3 +1,24 @@
+2001.0.0.0
+==========
+- Features
+ - Update internal copy of openwsman code to latest upstream tip
+ - [Windows] Support for WPA3 protocol in WiFiProfileSync
+ - Improve code quality (variable shadowing, unused code, code style, etc.)
+ - [Windows] Push some prints from debug to trace to lighten logs in WiFiProfileSync
+ - [Windows] Clean up the memory management in IPRefresh service.
+ - [Windows] Add build option to bypass DLL signatures check
+ - Add IsMeasuredBootState method to DBus and COM interfaces
+- Bugfixes
+ - [Windows] Fix DLL signature check
+ - [Windows] Remove logging of AP password in WiFiProfileSync
+ - Replace non-threadsafe functions
+ - Fix various cases where service failed to stop
+ - [Windows] Fix socket creation on Windows 8.1
+ - Fix initialization sequence for cases when MEI is not ready yet
+ - [CMake] fix build-depend on MeTee to ensure proper build order
+ - Fix buffer overflow in RegistryStorage
+ - Fixes for bunch of security issues (check return values, input validation, use secure functions)
+
 1932.0.0.0
 ==========
 - Features
