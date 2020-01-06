@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -15,42 +15,27 @@
 #include <stdexcept>
 #include <sstream>
 
-namespace Intel
-{
-	namespace MEI_Client
+namespace Intel { namespace MEI_Client {
+	static class mei_category_t : public std::error_category {
+	public:
+		virtual const char* name() const noexcept { return "mei"; }
+		virtual std::string message(int ev) const {
+			return std::to_string(ev);
+		}
+	} mei_category;
+
+	class MEIClientException : public std::system_error
 	{
-		class MEIClientException : public std::exception
-		{
-		private:
-			std::string _what;
-
-			struct Formater
-			{
-				const std::string &what_;
-				unsigned long long binaryData_;
-				Formater(const std::string &what, unsigned long long binaryData):
-					what_(what), binaryData_(binaryData) {}
-				operator std::string() const { std::stringstream ss; ss << what_ << " Inner data: " << binaryData_; return ss.str(); }
-			};
-
-		public:
-			MEIClientException(const std::string &what)
-				:_what(what){}
-
-			MEIClientException(const std::string &what, unsigned long long innerData)
-				:_what(Formater(what, innerData)){}
-
-			virtual ~MEIClientException() throw (){}
-			virtual std::string getDetail()
-			{
-				return _what;
-			}
-			virtual const char *what() const throw()
-			{
-				return _what.c_str();
-			}
-		};
-	} //namespace MEI_Client
-} // namespace Intel
+	public:
+		MEIClientException(const std::string &what, int err = 0) : std::system_error(err, mei_category, what) {}
+		virtual ~MEIClientException() throw (){}
+	};
+	class MEIClientExceptionZeroBuffer : public MEIClientException
+	{
+	public:
+		MEIClientExceptionZeroBuffer(const std::string &what, int err = 0) : MEIClientException(what, err) {}
+		virtual ~MEIClientExceptionZeroBuffer() throw () {}
+	};
+} /* namespace MEI_Client */ } /* namespace Intel */
 
 #endif //__MEI_CLIENT_EXCEPTION_H

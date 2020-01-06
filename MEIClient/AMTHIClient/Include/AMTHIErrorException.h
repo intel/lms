@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -13,45 +13,28 @@
 
 #include <string>
 #include <stdexcept>
+#include <system_error>
 
-namespace Intel
-{
-namespace MEI_Client
-{
-namespace AMTHI_Client
-{
-	class AMTHIErrorException : public std::exception
-	{
-	private:
-		unsigned int error;
-		std::string _what;
-
-		struct Formater
-		{
-			unsigned long long binaryData_;
-			Formater(unsigned long long binaryData): binaryData_(binaryData) {}
-			operator std::string() const { std::stringstream ss; ss << " Binary data: " << binaryData_; return ss.str(); }
-		};
-
+namespace Intel { namespace MEI_Client { namespace AMTHI_Client	{
+	static class amthi_category_t : public std::error_category {
 	public:
-		AMTHIErrorException(unsigned int err)
-			:error(err), _what(Formater(err)) {}
-		virtual ~AMTHIErrorException() throw (){}
-
-		virtual const char *what() const throw() 
-		{ 
-		  return _what.c_str(); 
+		virtual const char* name() const noexcept { return "amthi"; }
+		virtual std::string message(int ev) const {
+			return std::to_string(ev);
 		}
+	} amthi_category;
+
+	class AMTHIErrorException : public std::system_error
+	{
+	public:
+		AMTHIErrorException(unsigned int err) : std::system_error(err, amthi_category) {}
+		virtual ~AMTHIErrorException() throw () {}
+
 		virtual unsigned int getErr() const throw()
 		{
-			return error;
+			return code().value();
 		}
 	};
-} // namespace AMTHI_Client
-
-} //namespace MEI_Client
-
-} // namespace Intel
+} /* namespace AMTHI_Client */ } /* namespace MEI_Client */ } /* namespace Intel */
 
 #endif //__AMTHI_ERROR_EXCEPTION_H
-

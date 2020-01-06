@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,6 @@
 --*/
 
 #include "MEICommand.h"
-#include "StatusCodeDefinitions.h"
 #include "heci.h"
 #include "HECI_if.h"
 
@@ -56,7 +55,7 @@ namespace Intel {
 			}
 			else
 			{
-				throw MEIClientException("Error: Failed on RecieveResponse");
+				throw MEIClientExceptionZeroBuffer("Error: Failed on RecieveResponse");
 			}
 		}
 

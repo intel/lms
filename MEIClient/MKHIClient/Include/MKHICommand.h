@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -13,7 +13,6 @@
 
 #include "MEICommand.h"
 #include "MKHIErrorException.h"
-#include "StatusCodeDefinitions.h"
 #include <string>
 #include <iostream>
 #include <mutex>
@@ -159,7 +158,7 @@ private:
 			throw MEIClientException("Error: MKHI Command number/Group ID/ is response is incorrect" );
 		}
 
-		if (header->Fields.Result!= AMT_STATUS_SUCCESS)
+		if (header->Fields.Result!= MKHI_STATUS_SUCCESS)
 		{
 			throw Intel::MEI_Client::MKHI_Client::MKHIErrorException(header->Fields.Result);
 		}
@@ -213,7 +212,7 @@ private:
 			throw MEIClientException("Error: MKHI Command number/Group ID/ is response is incorrect", header->Data );
 		}
 
-		if (header->Fields.Result!= AMT_STATUS_SUCCESS)
+		if (header->Fields.Result!= MKHI_STATUS_SUCCESS)
 		{
 			throw Intel::MEI_Client::MKHI_Client::MKHIErrorException(header->Fields.Result);
 		}

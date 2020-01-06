@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
@@ -585,10 +585,44 @@ TEST(MEIParser,big_data)
 	);
 }
 
+TEST(AMTHIException, simple_output)
+{
+	try
+	{
+		throw AMTHIErrorException(1);
+	}
+	catch (const AMTHIErrorException &e)
+	{
+		std::cout << "AMTHIErrorException.what == " << e.what() << std::endl;
+	}
+}
 
-int main(int argc, char** argv)  
+TEST(MKHIException, simple_output)
+{
+	try
+	{
+		throw MKHIErrorException(1);
+	}
+	catch (const MKHIErrorException &e)
+	{
+		std::cout << "MKHIErrorException.what == " << e.what() << std::endl;
+	}
+}
+
+TEST(MEIClientException, simple_output)
+{
+	try
+	{
+		throw Intel::MEI_Client::MEIClientException("some message here", 1);
+	}
+	catch (const Intel::MEI_Client::MEIClientException &e)
+	{
+		std::cout << "MEIClientException.what == " << e.what() << std::endl;
+	}
+}
+
+int main(int argc, char** argv)
 {  
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
-} 
-
+}

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -897,25 +897,26 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 	try {
 		GetProvisioningStateCommand provisioningStateCommand;
 	}
-	catch (MEIClientException& e)
+	catch (const MEIClientExceptionZeroBuffer&)
 	{
-		if (e.getDetail().compare("Error: Failed on RecieveResponse") == 0)
+		if(!isActivate)
 		{
-			if(!isActivate)
-			{
-				return status;
-			}
-			status= ChangeToAMT();
-			if (status == AMT_STATUS_SUCCESS)
-			{
-				Sleep(CHANGE_TO_AMT_TIMEOUT);
-			}
-			else
-			{
-				UNS_ERROR("Error: ChangeToAMT Failed with status %C\n", status);
-				return status;
-			}
+			return status;
 		}
+		status= ChangeToAMT();
+		if (status == AMT_STATUS_SUCCESS)
+		{
+			Sleep(CHANGE_TO_AMT_TIMEOUT);
+		}
+		else
+		{
+			UNS_ERROR("Error: ChangeToAMT Failed with status %C\n", status);
+			return status;
+		}
+	}
+	catch (const MEIClientException& e)
+	{
+		UNS_ERROR("GetProvisioningStateCommand failed %C\n", e.what());
 	}
 	//It may take the AMTHI time to work after ChangeToAMTSucceeds
 	for(int i = 0; i < 12; i++)
