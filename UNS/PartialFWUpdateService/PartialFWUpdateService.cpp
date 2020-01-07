@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -85,7 +85,7 @@ bool PartialFWUpdateEventsFilter::defaultInitialization(std::shared_ptr<PartialF
 	return false;
 }
 
-void FlowLog(const wchar_t * pref, const wchar_t * func) 
+void FlowLog(const wchar_t * pref, const wchar_t * func)
 {
 	std::wstringstream ss;
 	ss << pref << func;
@@ -93,17 +93,17 @@ void FlowLog(const wchar_t * pref, const wchar_t * func)
 	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
-void FuncEntry(const wchar_t * func) 
+void FuncEntry(const wchar_t * func)
 {
 	FlowLog(L"PFU : --> ", func);
 }
 
-void FuncExit(const wchar_t * func) 
+void FuncExit(const wchar_t * func)
 {
 	FlowLog(L"PFU : <-- ", func);
 }
 
-void FuncExitWithStatus(const wchar_t * func, uint64_t status) 
+void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 {
 	std::wstringstream ss;
 	ss << L"PFU : <-- " << func << L" Status: " << status;
@@ -114,7 +114,7 @@ void FuncExitWithStatus(const wchar_t * func, uint64_t status)
 
 
 
-PartialFWUpdateService::PartialFWUpdateService() : 
+PartialFWUpdateService::PartialFWUpdateService() :
 	filter_(std::make_shared<PartialFWUpdateEventsFilter>()), langID(PRIMARYLANGID(GetSystemDefaultLCID())), mode(INITIAL_MODE), schedPFUAfterResume_(false)
 {
 	PartialFWUpdateEventsFilter::defaultInitialization(filter_);
@@ -153,7 +153,7 @@ const ACE_TString PartialFWUpdateService::name()
 }
 
 
-int PartialFWUpdateService::resume() 
+int PartialFWUpdateService::resume()
 {
 	GmsSubService::resume();
 	UNS_DEBUG(L"PartialFWUpdateService::resume(). Service resumed, PFWUp flow will be scheduled after PFWS is up, to see if HW changed during hiberboot.\n");
@@ -168,14 +168,14 @@ void PartialFWUpdateService::startPFWUpMessage()
 	mbPtr->data_block(new StartPFWUP());
 	mbPtr->msg_type(MB_PFWU_START_EVENT);
 	mbPtr->msg_priority(3);//higher than normal messages
-	this->putq(mbPtr->duplicate()); 
+	this->putq(mbPtr->duplicate());
 }
 
 ACE_FACTORY_DEFINE (PARTIALFWUPDATESERVICE , PartialFWUpdateService)
 
 /* Business logic */
 int PartialFWUpdateService::handle_event (MessageBlockPtr mbPtr )
-{	
+{
 	int type=mbPtr->msg_type();
 	GMS_AlertIndication * pGMS_AlertIndication = nullptr;
 	StartPFWUP * pStartPFWUP = nullptr;
@@ -248,9 +248,9 @@ int PartialFWUpdateService::handlePublishEvent(const GMS_AlertIndication & alert
 			{
 				schedPFUAfterResume_ = false;
 
-				//Starting PFWUp flow. There is no need to do this in sleep and in hibernate, but there is need 
+				//Starting PFWUp flow. There is no need to do this in sleep and in hibernate, but there is need
 				// in hiberboot (Win 8 and up).
-				//In hibernate the PFWU is done in the init, and here it will be duplicate. So if more than 5 seconds passed from the init, there may be hiberboot, and do PFWU. 
+				//In hibernate the PFWU is done in the init, and here it will be duplicate. So if more than 5 seconds passed from the init, there may be hiberboot, and do PFWU.
 				// Otherwise, we are right after the init and do nothing
 				ACE_Time_Value now = ACE_OS::gettimeofday();
 				if ((now.sec() - initTimestamp.sec()) > 5)
@@ -306,7 +306,7 @@ bool PartialFWUpdateService::getAllowFlashUpdate()
 }
 
 bool PartialFWUpdateService::getPartialFWUpdateImagePath(std::wstring& value)
-{	
+{
 	return DSinstance().GetDataValue(PARTIAL_FWU_IMAGE_PATH, value, false);
 }
 
@@ -333,7 +333,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE mo
 void PartialFWUpdateService::publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE module, const std::wstring& returnValue, int error)
 {
 	FuncEntryExit<decltype(error)> fee(L"publishPartialFWUpgrade_failed", error);
-	unsigned long eventID = EVENT_PARTIAL_FWU_END_FAILURE_LANG;			
+	unsigned long eventID = EVENT_PARTIAL_FWU_END_FAILURE_LANG;
 	if(module == WLAN_MODULE)
 		eventID = EVENT_PARTIAL_FWU_END_FAILURE_WLAN;
 	std::wstringstream strStream, errorStream;
@@ -346,7 +346,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE m
 }
 
 void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE module, int returnValue)
-{	
+{
 	std::wstring state;
 	unsigned long eventID;
 	std::wstringstream strStream;
@@ -370,7 +370,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 		else
 			eventID = EVENT_PARTIAL_FWU_END_FAILURE_LANG;
 		tmpbuffer_s<<returnValue;
-	}		
+	}
 	strStream << PARTIAL_FW_UPDATE_END_INIT << state;
 
 	ACE_TString arg;
@@ -382,12 +382,12 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 }
 
 void PartialFWUpdateService::publishMissingImageFile(PARTIAL_FWU_MODULE module)
-{		
+{
 	FuncEntryExit<decltype(module)> fee(L"publishMissingImageFile", module);
 
 	unsigned long eventID;
 	if(module == WLAN_MODULE)
-		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_WLAN;      
+		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_WLAN;
 	else
 		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_LANG;
 
@@ -402,7 +402,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 	std::wstring value;
 
 	FuncEntryExit<decltype(retVal)>(L"checkImageFileExist", retVal);
-	
+
 	if (GetServiceDirectory(L"LMS", lmsPath) != true)
 	{
 		UNS_ERROR("PartialFWUpdateService::checkImageFileExist Failed getting LMS path\n");
@@ -422,7 +422,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 			path = lmsPath + value.substr(2, value.size() - 2);	//concatenate the relative path, substr is used to eliminate the ".\"
 
 		}
-		else 
+		else
 		{
 			path = lmsPath + value;
 		}
@@ -486,7 +486,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 	{
 		using namespace Intel::MEI_Client::MKHI_Client;
 		using namespace Intel::MEI_Client;
-		
+
 		bool isProduction = false;
 
 		GetFWVersionCommand getFWVersionCommand;
@@ -549,7 +549,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 		ACE_TCHAR requiredBestName[16];
 		swprintf_s(requiredBestName, 16, L"%02d%02d_%2s_PFU.BIN", fwVersion.FTMajor, fwVersion.FTMinor, isProduction ? L"PD" : L"PP");
 		int minorInt = fwVersion.FTMinor + 1; //Will be decreased at the begining of the loop
-		
+
 		do {
 			minorInt--;
 			if (minorInt < 0) //No matching bin file was found
@@ -559,7 +559,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 			}
 			swprintf_s(requiredName, 16, L"%02d%02d_%2s_PFU.BIN", fwVersion.FTMajor, minorInt, isProduction ? L"PD" : L"PP");
 			UNS_DEBUG("PartialFWUpdateService::getImageFileNameByFwVersion Look for bin file: %s\n", requiredName);
-			
+
 			for each (ACE_TString existingPfuFile in existingPfuFiles)
 			{
 				if (ACE_OS::strcmp(requiredName, existingPfuFile.c_str()) == 0)
@@ -569,18 +569,18 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 					break;
 				}
 			}
-			
+
 		} while (!found);
-			
+
 		fileName = requiredName;
 		return true;
 	}
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
-	{	
+	{
 		UNS_ERROR(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n", e.what());
 	}
 	catch (Intel::MEI_Client::MEIClientException& e)
-	{	
+	{
 		UNS_ERROR(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n", e.what());
 	}
 	catch (std::exception& e)
@@ -601,8 +601,8 @@ bool PartialFWUpdateService::isMESKU()
 	FuncEntryExit<decltype(res)>(L"isMESKU", res);
 	//Lock lock(FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 	try
-	{				
-		using namespace Intel::MEI_Client;	
+	{
+		using namespace Intel::MEI_Client;
 		//NOTE: we can't convert this call to MKHI command, since calling this command check also that
 		//FWUpdate Client isn't caught by an external application. Otherwise the program will get stuck
 		// at the Lock constructor in the beginning of invokePartialFWUpdateFlow if the handle is caught
@@ -610,14 +610,14 @@ bool PartialFWUpdateService::isMESKU()
 		MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
 
 		UNS_DEBUG(L"FW ImageType=%d\n",Platform.Fields.ImageType);
-		res = (Platform.Fields.ImageType == MKHI_Client::ME_FULL_8MB);		
+		res = (Platform.Fields.ImageType == MKHI_Client::ME_FULL_8MB);
 	}
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
-	{	
+	{
 		UNS_ERROR(L"GetPlatformTypeCommand failed %C\n", e.what());
 	}
 	catch (Intel::MEI_Client::MEIClientException& e)
-	{	
+	{
 		UNS_ERROR(L"GetPlatformTypeCommand %C\n", e.what());
 	}
 	catch (std::exception& e)
@@ -637,12 +637,12 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 
 	if (defaultLangSet)
 	{
-		languageID = getUCLanguageID();	
+		languageID = getUCLanguageID();
 	}
 
 	SIOWSManClient client;
 	UINT32 currentLang = 0;
-	
+
 	if (!client.GetSpriteLanguage((unsigned short*)&currentLang))
 	{
 		publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to get FW status", 8725);
@@ -656,7 +656,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		UNS_ERROR(L"Failed to get expected language\n");
 		publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to get FW status", 8725);
 		return res;
-	} 
+	}
 
 	if (expectedLang != languageID)
 	{
@@ -673,18 +673,22 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		UNS_DEBUG(L"Current language is the requested one\n");
 		if (mode==MANUAL_MODE)
 		{
-			if(!defaultLangSet && !DSinstance().GetDataValue(LastLanguageUpdate, lcid))
+			if(defaultLangSet)
+			{
+				DSinstance().DeleteDataVal(LastLanguageUpdate);
+			}
+			else if (!DSinstance().GetDataValue(LastLanguageUpdate, lcid))
 			{
 				lcid = getWindowsLanguageID((unsigned short)languageID);
 				DSinstance().SetDataValue(LastLanguageUpdate, lcid, true);
 			}
-			publishPartialFWUpgrade_end(LANGUAGE_MODULE,0);
+			publishPartialFWUpgrade_end(LANGUAGE_MODULE, 0);
 		}
 		res = true;
 		return res;
 	}
 
-	res = invokePartialFWUpdateFlow(LANGUAGE_MODULE, LOCL_ID);	
+	res = invokePartialFWUpdateFlow(LANGUAGE_MODULE, LOCL_ID);
 
 	if (res && (mode == MANUAL_MODE))
 	{
@@ -698,7 +702,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 			DSinstance().SetDataValue(LastLanguageUpdate, lcid, true);
 		}
 	}
-	
+
 	return res;
 }
 
@@ -716,9 +720,9 @@ bool PartialFWUpdateService::invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module
 		publishMissingImageFile(module);
 		return res;
 	}
-	
+
 	UNS_DEBUG(L"Start\n");
-	
+
 	uint32_t retcode = pfwuWrapper->performPFWU(partialID, imagePath);
 	publishPartialFWUpgrade_end(module, retcode);
 	return retcode == 0;
@@ -776,7 +780,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	}
 
 	//mode == INITIAL_MODE:
-	
+
 	// TODO: do nothing with failure?
 	if (!SetExpectedWithLocalOSLanguage())
 	{
@@ -796,7 +800,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	{
 		res &= invokePartialFWUpdateFlow(WLAN_MODULE, WOCD_ID);
 	}
-	if (isLoclPfuNeeded) 
+	if (isLoclPfuNeeded)
 	{
 		res &= updateLanguageChangeCode(requiredLanguage, INITIAL_MODE);
 	}
@@ -814,8 +818,8 @@ bool SetExpectedWithLocalOSLanguage()
 
 	UNS_DEBUG(L"vS: %d rV: %d\n", valSz, retVal ? 1 : 0);
 
-	if(!retVal || valSz == 0) 	
-	{			
+	if (!retVal || valSz == 0)
+	{
 		unsigned short lang = (unsigned short)getUCLanguageID();
 		SIOWSManClient wsman;
 		UINT32 expectedLang = 0;
@@ -833,7 +837,7 @@ bool SetExpectedWithLocalOSLanguage()
 			{
 				UNS_DEBUG(L"SetExpectedLanguage success - set lang %d\n",lang);
 			}
-			else  
+			else
 			{
 				UNS_ERROR(L"SetExpectedLanguage failure - set lang %d\n",lang);
 				return res;
@@ -853,7 +857,7 @@ unsigned int getUCLanguageID()
 	int languageId = PRIMARYLANGID(lcid);
 	int sublanguageId = SUBLANGID(lcid);
 
-	
+
 	switch(languageId)
 	{
 	case LANG_ENGLISH:
@@ -876,7 +880,7 @@ unsigned int getUCLanguageID()
 		case SUBLANG_CHINESE_HONGKONG:
 		case SUBLANG_CHINESE_MACAU:
 			lang = SIOWSManClient::Chinese_Traditional;
-			break;					
+			break;
 		}
 		break;
 	case LANG_JAPANESE :
@@ -1001,7 +1005,7 @@ unsigned int getWindowsLanguageID(const UINT16 languageID)
 	case SIOWSManClient::Portuguese_Portugal:
 		lang = LANG_PORTUGUESE;
 		sublanguageId = SUBLANG_PORTUGUESE;
-		break;					
+		break;
 	case  SIOWSManClient::Korean :
 		lang = LANG_KOREAN;
 		break;
