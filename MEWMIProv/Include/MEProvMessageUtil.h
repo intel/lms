@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -11,7 +11,7 @@
 #pragma once
 
 #include "WindowsEventLog.h"
-#include "..\MEProvMessageFile.h"
+#include "MEProvMessageFile.h"
 
 #define EVENT_LOG_APPLICATION	"Application"
 #define ME_PPROV_NAME			"MEProv"

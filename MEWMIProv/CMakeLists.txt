@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 set (MEPROV_MESSAGE_FILES
@@ -45,6 +45,7 @@ add_library (MEProv SHARED
 
 target_include_directories (MEProv PRIVATE
   Include
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_compile_definitions (MEProv PRIVATE
