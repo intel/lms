@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_library (LmsCOMEventHandler SHARED
@@ -25,8 +25,11 @@ target_compile_definitions (LmsCOMEventHandler PRIVATE
 )
 
 target_include_directories (LmsCOMEventHandler PRIVATE
-  "${TOP_DIR}/UNS/AMT_COM_Interface/"
+  $<TARGET_PROPERTY:AMT_COM_Interface,BINARY_DIR> # For build-time generated in binary dir AMT_COM_Interface.h
+  $<TARGET_PROPERTY:AMT_COM_Interface,SOURCE_DIR> # For static AMT_COM_Interface.h dependencies
 )
+
+add_dependencies (LmsCOMEventHandler AMT_COM_Interface)
 
 install (TARGETS LmsCOMEventHandler
   LIBRARY DESTINATION ${LMS_LIBDIR}

@@ -26,6 +26,7 @@ target_link_libraries (AMT_COM_Interface
 
 target_include_directories (AMT_COM_Interface PUBLIC
   .
+  ${CMAKE_CURRENT_BINARY_DIR} # For build-time generated in binary dir AMT_COM_Interface.h
 )
 
 set(MIDL_OUTPUT
