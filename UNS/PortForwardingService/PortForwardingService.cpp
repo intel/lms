@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "PortForwardingService.h"
 
@@ -230,7 +230,8 @@ public:
 				// Sleep for check if lme disconnect for some reason
 				ACE_Time_Value till(0, 500000);
 				m_initProtStop.wait(&till, 0);
-
+				if (!m_prot.IsInitialized())
+					continue;
 
 				if (warningMessageWasShown)
 				{
