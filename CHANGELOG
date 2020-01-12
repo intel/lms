@@ -1,3 +1,12 @@
+2003.0.0.0
+==========
+- Bugfixes
+ - [Windows] Fix build with CMake
+ - [Windows] Explicitely ask for CMake 3.12 in AMT_COM_Interface
+ - Delete LastLanguageUpdate registry value for default language set and fix it usage
+ - WifiProfileSync: Add support for OWE in WPA3 protocol
+ - PortForwarding: try re-init if mei is fast-disconnected to fix service stale on CSME reset
+
 2001.0.0.0
 ==========
 - Features
