@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
@@ -14,7 +14,7 @@ const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Setting
 
 typedef std::map<std::wstring, int> str_int_map_t;
 
-wlanps::authenticationSet_t supportedAuthentication = { L"open", L"WPAPSK", L"WPA2PSK", L"WPA3SAE" };
+wlanps::authenticationSet_t supportedAuthentication = { L"open", L"WPAPSK", L"WPA2PSK", L"WPA3SAE", L"OWE" };
 wlanps::encriptionSet_t supportedEncription = { L"WEP", L"TKIP", L"AES", L"none" };
 
 // User Profiles DB maximum size
@@ -472,7 +472,8 @@ bool wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabi
 		{ L"open",    AuthenticationMethodOpenSystem },
 		{ L"WPAPSK",  AuthenticationMethodWPAPSK },
 		{ L"WPA2PSK", AuthenticationMethodWPA2PSK },
-		{ L"WPA3SAE", AuthenticationMethodWPA3SAE }
+		{ L"WPA3SAE", AuthenticationMethodWPA3SAE },
+		{ L"OWE", AuthenticationMethodWPA3OWE }
 	};
 	static const str_int_map_t encrMap = {
 		{ L"WEP",  EncryptionMethodWEP },
