@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -65,18 +65,6 @@ bool SIOWSManClient::SetSpriteZoom(unsigned short zoom)
 	}
 	CATCH_exception_return("SIOWSManClient::SetSpriteZoom Put")
 	return true;
-}
-
-bool SIOWSManClient::GetSpriteZoom(unsigned short *zoom)
-{
-	if (!Init(true))
-		return false;
-	if (m_service.zoomExists())
-	{
-		*zoom = (m_service.zoom()); 
-		return true;
-	}
-	return false;
 }
 
 bool SIOWSManClient::GetSpriteParameters(unsigned short *language, unsigned short *zoom)

@@ -41,9 +41,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetSystemUUID_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSystemUUID"));
 	regMap->at(GetIPv6NetworkSettings_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetIPv6NetworkSettings"));
 	regMap->at(TerminateKVMSession_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("TerminateKVMSession"));
-	regMap->at(GetSpriteLanguage_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSpriteLanguage"));
 	regMap->at(SetSpriteLanguage_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("SetSpriteLanguage"));
-	regMap->at(GetSpriteZoom_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSpriteZoom"));
 	regMap->at(SetSpriteZoom_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("SetSpriteZoom"));
 	regMap->at(GetSpriteParameters_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSpriteParameters"));
 	regMap->at(TerminateRemedySessions_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("TerminateRemedySessions"));

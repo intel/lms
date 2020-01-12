@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -24,7 +24,6 @@ public:
 	
 	bool GetSpriteLanguage(unsigned short *language);
 	bool SetSpriteLanguage(unsigned short language);
-	bool GetSpriteZoom(unsigned short *zoom);
 	bool SetSpriteZoom(unsigned short zoom);
 	bool GetSpriteParameters(unsigned short *language, unsigned short *zoom);
 	bool GetExpectedLanguage(unsigned short *language);

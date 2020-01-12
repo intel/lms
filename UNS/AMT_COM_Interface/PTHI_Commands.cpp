@@ -961,31 +961,7 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 
 STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT* pLanguage)
 {
-
-	if (pLanguage == nullptr)
-		return E_POINTER;
-
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"SpriteLanguage", pLanguage))
-	{
-		if (*pLanguage == -1)
-			return E_FAIL;
-		return S_OK;
-	}
-#endif
-
-	if (CheckCredentials(GetSpriteLanguage_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	unsigned short lang = 0;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.GetSpriteLanguage(lang);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	*pLanguage = lang;
-	return S_OK;
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
@@ -1005,31 +981,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 
 STDMETHODIMP CPTHI_Commands::GetSpriteZoom(SHORT* pZoom)
 {
-	if (pZoom == nullptr)
-		return E_POINTER;
-
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"SpriteZoom", pZoom))
-	{
-		if (*pZoom == -1)
-			return E_FAIL;
-		return S_OK;
-	}
-#endif
-
-	if (CheckCredentials(GetSpriteZoom_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	unsigned short zoom = 0;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.GetSpriteZoom(zoom);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	*pZoom = zoom;
-
-	return S_OK;
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::GetSpriteParameters(SHORT* pLanguage, SHORT* pZoom)

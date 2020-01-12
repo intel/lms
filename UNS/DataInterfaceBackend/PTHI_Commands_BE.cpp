@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -736,17 +736,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			return ERROR_OK;
 		}
 
-		LMS_ERROR PTHI_Commands_BE::GetSpriteLanguage(unsigned short &pLanguage)
-		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
-
-			SIOWSManClient Client;
-			if (Client.GetSpriteLanguage(&pLanguage) != true)
-				return ERROR_FAIL;
-			return ERROR_OK;
-		}
-
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
 		{
 			std::string sAMTVersion;
@@ -775,18 +764,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					return ERROR_FAIL;
 				}
 			}
-			return ERROR_OK;
-		}
-
-		LMS_ERROR PTHI_Commands_BE::GetSpriteZoom(unsigned short &pZoom)
-		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
-
-			SIOWSManClient Client;
-			if (Client.GetSpriteZoom(&pZoom) != true)
-				return ERROR_FAIL;
-
 			return ERROR_OK;
 		}
 

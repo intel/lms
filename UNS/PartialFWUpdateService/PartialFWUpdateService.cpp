@@ -419,7 +419,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 		}
 		else if (value.find(L".\\") == 0) //Relative path beginning with ".\"
 		{
-			path = lmsPath + value.substr(2, value.size() - 2);	//concatenate the relative path, substr is used to eliminate the ".\"
+			path = lmsPath + value.substr(2, value.size() - 2); //concatenate the relative path, substr is used to eliminate the ".\"
 
 		}
 		else
@@ -632,7 +632,6 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 {
 	bool res = false;
 	FuncEntryExit<decltype(res)>(L"updateLanguageChangeCode", res);
-	DWORD lcid;
 	bool defaultLangSet = (languageID == DEFAULT_LANG_ID);
 
 	if (defaultLangSet)
@@ -677,10 +676,9 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 			{
 				DSinstance().DeleteDataVal(LastLanguageUpdate);
 			}
-			else if (!DSinstance().GetDataValue(LastLanguageUpdate, lcid))
+			else
 			{
-				lcid = getWindowsLanguageID((unsigned short)languageID);
-				DSinstance().SetDataValue(LastLanguageUpdate, lcid, true);
+				DSinstance().SetDataValue(LastLanguageUpdate, languageID, true);
 			}
 			publishPartialFWUpgrade_end(LANGUAGE_MODULE, 0);
 		}
@@ -698,8 +696,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		}
 		else
 		{
-			lcid = getWindowsLanguageID((unsigned short)languageID);
-			DSinstance().SetDataValue(LastLanguageUpdate, lcid, true);
+			DSinstance().SetDataValue(LastLanguageUpdate, languageID, true);
 		}
 	}
 
@@ -812,13 +809,11 @@ bool SetExpectedWithLocalOSLanguage()
 	bool res = false;
 	FuncEntryExit<decltype(res)>(L"SetExpectedWithLocalOSLanguage", res);
 
-	unsigned long valSz;
-	bool retVal = DSinstance().GetDataValue(LastLanguageUpdate,valSz);
+	unsigned long languageId;
+	bool retVal = DSinstance().GetDataValue(LastLanguageUpdate, languageId);
+	UNS_DEBUG(L"Is Windows Default Language: %d\n", !retVal ? 1 : 0);
 
-
-	UNS_DEBUG(L"vS: %d rV: %d\n", valSz, retVal ? 1 : 0);
-
-	if (!retVal || valSz == 0)
+	if (!retVal)
 	{
 		unsigned short lang = (unsigned short)getUCLanguageID();
 		SIOWSManClient wsman;
@@ -829,7 +824,7 @@ bool SetExpectedWithLocalOSLanguage()
 			UNS_ERROR(L"GetExpectedLanguage failure - lang %d\n",expectedLang);
 			return res;
 		}
-		UNS_DEBUG(L"eL: %d\n", expectedLang);
+		UNS_DEBUG(L"expectedLang: %d\n", expectedLang);
 
 		if (lang != expectedLang)
 		{
@@ -961,104 +956,3 @@ unsigned int getUCLanguageID()
 
 	return lang;
 }
-
-unsigned int getWindowsLanguageID(const UINT16 languageID)
-{
-	DWORD windowsLangID = 0;
-	DWORD lang = 0;
-	DWORD sublanguageId = 0;
-	switch(languageID)
-	{
-	case SIOWSManClient::English :
-		lang = LANG_ENGLISH;
-		break;
-	case SIOWSManClient::French :
-		lang = LANG_FRENCH;
-		break;
-	case SIOWSManClient::German :
-		lang = LANG_GERMAN;
-		break;
-	case SIOWSManClient::Chinese_Simplified :
-		lang = LANG_CHINESE;
-		sublanguageId = SUBLANG_CHINESE_SIMPLIFIED;
-		break;
-	case SIOWSManClient::Chinese_Traditional:
-		lang = LANG_CHINESE;
-		sublanguageId = SUBLANG_CHINESE_TRADITIONAL;
-		break;
-	case SIOWSManClient::Gapanese :
-		lang = LANG_JAPANESE;
-		break;
-	case SIOWSManClient::Russian :
-		lang = LANG_RUSSIAN;
-		break;
-	case SIOWSManClient::Italian :
-		lang = LANG_ITALIAN;
-		break;
-	case SIOWSManClient::Spanish :
-		lang = LANG_SPANISH;
-		break;
-	case SIOWSManClient::Portuguese_Brazil :
-		lang = LANG_PORTUGUESE;
-		sublanguageId = SUBLANG_PORTUGUESE_BRAZILIAN;
-		break;
-	case SIOWSManClient::Portuguese_Portugal:
-		lang = LANG_PORTUGUESE;
-		sublanguageId = SUBLANG_PORTUGUESE;
-		break;
-	case  SIOWSManClient::Korean :
-		lang = LANG_KOREAN;
-		break;
-	case SIOWSManClient::Arabic :
-		lang = LANG_ARABIC;
-		break;
-	case SIOWSManClient::Czech :
-		lang = LANG_CZECH;
-		break;
-	case SIOWSManClient::Danish :
-		lang = LANG_DANISH;
-		break;
-	case SIOWSManClient::Greek :
-		lang = LANG_GREEK;
-		break;
-	case SIOWSManClient::Finnish :
-		lang = LANG_FINNISH;
-		break;
-	case SIOWSManClient::Hebrew :
-		lang = LANG_HEBREW;
-		break;
-	case SIOWSManClient::Hungarian :
-		lang = LANG_HUNGARIAN;
-		break;
-	case SIOWSManClient::Dutch :
-		lang = LANG_DUTCH;
-		break;
-	case SIOWSManClient::Norwegian :
-		lang = LANG_NORWEGIAN;
-		break;
-	case SIOWSManClient::Polish :
-		lang = LANG_POLISH;
-		break;
-	case SIOWSManClient::Slovak :
-		lang = LANG_SLOVAK;
-		break;
-	case SIOWSManClient::Slovenian :
-		lang = LANG_SLOVENIAN;
-		break;
-	case SIOWSManClient::Swedish :
-		lang = LANG_SWEDISH;
-		break;
-	case SIOWSManClient::Thai :
-		lang = LANG_THAI;
-		break;
-	case SIOWSManClient::Turkish :
-		lang = LANG_TURKISH;
-		break;
-	default:
-		break;
-	}
-	windowsLangID = sublanguageId*0x100 + lang;
-	return windowsLangID;
-
-}
-

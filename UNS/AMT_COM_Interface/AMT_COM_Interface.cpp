@@ -84,11 +84,7 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(TerminateKVMSession_F, L"", true))
 		return 1;
-	if (false == ds.SetDataValue(GetSpriteLanguage_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(SetSpriteLanguage_F, L"", true))
-		return 1;
-	if (false == ds.SetDataValue(GetSpriteZoom_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(SetSpriteZoom_F, L"", true))
 		return 1;
@@ -135,10 +131,6 @@ HRESULT AddRegKeys()
 	if (false == ds.SetDataValue(UserInitiatedPolicyRuleForLocalMpsExists_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(IsMeasuredBootState_F, L"", true))
-		return 1;
-
-	DWORD val = 0;
-	if (false == ds.SetDataValue(LastLanguageUpdate, val, false))
 		return 1;
 
 	if (false == ds.DeleteDataVal(NETWORK_TRAFFIC_TX_CEASED_))

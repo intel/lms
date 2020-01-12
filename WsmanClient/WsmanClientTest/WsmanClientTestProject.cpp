@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -251,28 +251,17 @@ TEST(SIOWSManClient, setInvalidSpriteLanguage)
 	EXPECT_FALSE(sio.SetSpriteLanguage(lang));
 }
 
-TEST(SIOWSManClient, getSpriteZoom)
-{
-	SIOWSManClient sio;
-	unsigned short zoom = 0;
-	bool ret = false;
-	EXPECT_TRUE(ret = sio.GetSpriteZoom(&zoom));
-	if (ret){
-		cout << "Sprite zoom is: " << zoom << endl;
-	}
-}
-
 TEST(SIOWSManClient, setValidSpriteZoom)
 {
 	SIOWSManClient sio;
-	unsigned short zoom2 = 0;
+	unsigned short lang2, zoom2 = 0;
 	bool ret = 0;
 	for (unsigned short zoom=1; zoom<=2; zoom++)
 	{
 		EXPECT_TRUE(ret = sio.SetSpriteZoom(zoom));
 		if (ret)
 		{
-			EXPECT_TRUE(ret = sio.GetSpriteZoom(&zoom2));
+			EXPECT_TRUE(ret = sio.GetSpriteParameters(&lang2, &zoom2));
 			if (ret)
 			{
 				EXPECT_EQ(zoom, zoom2);
@@ -290,13 +279,11 @@ TEST(SIOWSManClient, setInvalidSpriteZoom)
 TEST(SIOWSManClient, getSpriteParameters)
 {
 	SIOWSManClient sio;
-	unsigned short language, zoom, lang2, zoom2;
+	unsigned short language, zoom, lang2;
 	bool ret = false;
 	EXPECT_TRUE(ret = sio.GetSpriteLanguage(&language));
-	EXPECT_TRUE(ret = sio.GetSpriteZoom(&zoom));
-	EXPECT_TRUE(sio.GetSpriteParameters(&lang2, &zoom2));
+	EXPECT_TRUE(sio.GetSpriteParameters(&lang2, &zoom));
 	EXPECT_EQ(lang2, language);
-	EXPECT_EQ(zoom2, zoom);
 }
 
 TEST(SyncIpClient, GetSharedStaticIpState)
