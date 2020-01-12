@@ -4,3 +4,4 @@ sudo snap connect lms:network-observe :network-observe
 sudo snap connect lms:network-manager :network-manager
 sudo snap connect lms:hardware-observe :hardware-observe
 sudo snap connect lms:network-control :network-control
+sudo snap connect lms:intel-mei :intel-mei
