@@ -64,10 +64,12 @@ class ManageabilityTestCase(unittest.TestCase):
         '''GetPMCVersion test method'''
         self.iface.GetPMCVersion()
 
-    @unittest.skip("Requires FW 14.x")
     def test_IsMeasuredBootState(self):
         '''IsMeasuredBootState test method'''
-        self.iface.IsMeasuredBootState()
+        try:
+            self.iface.IsMeasuredBootState()
+        except dbus.exceptions.DBusException as the_exp:
+            self.assertEqual(the_exp.get_dbus_message(), 'Request is not suported by system')
 
 class PTHITestCase(unittest.TestCase):
     """PTHI interface test"""

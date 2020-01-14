@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2020 Intel Corporation
  */
 #include "DBus_Commands.h"
 namespace Intel {
@@ -23,6 +23,10 @@ namespace DBus {
 		case Intel::LMS::ERROR_NOT_AVAILABLE_NOW:
 			code = G_IO_ERROR_BUSY;
 			str = "Service is not available now";
+			break;
+		case Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW:
+			code = G_IO_ERROR_NOT_SUPPORTED;
+			str = "Request is not suported by system";
 			break;
 		case Intel::LMS::ERROR_FAIL:
 		default:

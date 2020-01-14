@@ -312,6 +312,8 @@ HRESULT LMSError2HRESULT(Intel::LMS::LMS_ERROR err)
 		return E_INVALIDARG;
 	case Intel::LMS::ERROR_NOT_AVAILABLE_NOW:
 		return E_NOT_VALID_STATE;
+	case Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW:
+		return E_NOINTERFACE;
 	default:
 		return E_FAIL;
 	}

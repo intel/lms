@@ -525,7 +525,13 @@ namespace Intel {
 				UNS_DEBUG("measuredBootState=%d\n", pState);
 				return ERROR_OK;
 			}
-			CATCH_MKHIErrorException(L"GetMeasuredBootStateCommand")
+			catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
+			{
+				unsigned int errNo = e.getErr();
+				UNS_DEBUG(L"GetMeasuredBootStateCommand failed ret=%d\n", errNo);
+				if (errNo == Intel::MEI_Client::MKHI_Client::MKHI_STATUS_INVALID_COMMAND) 
+					return ERROR_NOT_SUPPORTED_BY_FW;
+			}
 			CATCH_MEIClientException(L"GetMeasuredBootStateCommand")
 			CATCH_exception(L"GetMeasuredBootStateCommand")
 			return ERROR_FAIL;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017 Intel Corporation
+ * Copyright (C) 2017-2020 Intel Corporation
  */
 #ifndef DATA_INTERFACE_BE_H
 #define DATA_INTERFACE_BE_H
@@ -27,6 +27,7 @@ namespace Intel {
 			ERROR_UNEXPECTED = 2,
 			ERROR_INVALIDARG = 3,
 			ERROR_NOT_AVAILABLE_NOW = 4,
+			ERROR_NOT_SUPPORTED_BY_FW = 5,
 		} LMS_ERROR;
 
 	}
