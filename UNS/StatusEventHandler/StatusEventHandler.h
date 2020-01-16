@@ -222,7 +222,8 @@ private:
 	FEATURE_STATE m_prevAmtState;
 	CUSTOMER_TYPE m_prevCustomerType;
 	MENAGEABILTY_MODE m_prevManageMode;
-	bool m_firstTime;
+	bool m_firstPullForEvents;
+	bool m_firstCheckForBootReason;
 	std::shared_ptr<StatusEventFilter> filter_;
 };
 

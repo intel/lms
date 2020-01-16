@@ -110,7 +110,8 @@ StatusEventHandler::StatusEventHandler(): filter_(new StatusEventFilter)
 	m_prevManageMode=NOT_KNOWN;
 	m_prevCustomerType = CORPORATE;	
 	m_eacEnabled = true;
-	m_firstTime=true;
+	m_firstPullForEvents = true;
+	m_firstCheckForBootReason = true;
 }
 
 #ifdef WIN32
@@ -315,17 +316,10 @@ int
 	switch (type)
 	{
 	case MB_SRVICE_UP:
-		{
-			if (m_firstTime)
-			{
-				m_firstTime = false;
-				firstPullForEvents();
-			}
-
-			GenerateEvents();
-			requestDisplaySettings();
-			return 0;
-		}
+		firstPullForEvents();
+		GenerateEvents();
+		requestDisplaySettings();
+		return 0;
 	case MB_PUBLISH_EVENT:
 		pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
 		if (pGMS_AlertIndication != nullptr)
@@ -607,11 +601,7 @@ void  StatusEventHandler::handleUNSEvents(const GMS_AlertIndication *alert)
 	switch (alert->id)
 	{
 	case EVENT_PORT_FORWARDING_SERVICE_AVAILABLE:
-		if(m_firstTime)
-		{
-			m_firstTime = false;
-			firstPullForEvents();
-		}
+		firstPullForEvents();
 		checkForBootReason();
 		GeneratePortFwrdRelatedEvents();
 		break;
@@ -1495,6 +1485,14 @@ bool StatusEventHandler::GetProvisioningState(Intel::MEI_Client::AMTHI_Client::A
 void StatusEventHandler::firstPullForEvents(void)
 {
 	FuncEntryExit<void> fee(L"firstPullForEvents");
+
+	if (!m_firstPullForEvents)
+	{
+		UNS_DEBUG(L"firstPullForEvents: Not first time\n");
+		return;
+	}
+
+	m_firstPullForEvents = false;
 	DataStorageWrapper& ds = DSinstance();
 	using namespace Intel::MEI_Client;
 
@@ -1511,13 +1509,13 @@ void StatusEventHandler::firstPullForEvents(void)
 		}
 	}
 
-	
+
 
 	// provisioning state		
 	AMTHI_Client::AMT_PROVISIONING_STATE prevProvState = AMTHI_Client::PROVISIONING_STATE_PRE;
 	unsigned long val;
 	if (!ds.GetDataValue(AMT_PROVISIONING_STATE_S, val, true))
-	{		
+	{
 		if (m_prevCustomerType == CORPORATE)
 		{
 			GetProvisioningState(prevProvState);
@@ -1534,6 +1532,13 @@ void StatusEventHandler::checkForBootReason()
 {
 	FuncEntryExit<void> fee(L"checkForBootReason");
 
+	if (!m_firstCheckForBootReason)
+	{
+		UNS_DEBUG(L"checkForBootReason: Not first time\n");
+		return;
+	}
+
+	m_firstCheckForBootReason = false;
 	DataStorageWrapper& ds = DSinstance();
 	using namespace Intel::MEI_Client;
 	::uint32_t Reason,TimeStamp;		
