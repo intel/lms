@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2019 Intel Corporation
+# Copyright (C) 2019-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 find_library (LIBMETEE_LIB REQUIRED NAMES metee PATHS ENV METEE_LIB_PATH)
@@ -30,6 +30,7 @@ if (${LIBMETEE_LIB} MATCHES "LIBMETEE_LIB-NOTFOUND" OR
   include (ExternalProject)
   ExternalProject_Add (libmetee
     SOURCE_DIR ${LIBMETEE_PATH}
+    BUILD_BYPRODUCTS ${LIBMETEE_LIB}
     BUILD_IN_SOURCE YES
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
