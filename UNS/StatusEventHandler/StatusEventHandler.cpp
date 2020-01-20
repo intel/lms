@@ -819,9 +819,7 @@ void StatusEventHandler::GenerateEvents()
 	FuncEntryExit<void> fee(L"GenerateEvents");
 
 	FEATURE_STATE AmtState = NOT_PRESENT;
-	MENAGEABILTY_MODE ManageMode = NOT_KNOWN;
-	CUSTOMER_TYPE CustomerType = CORPORATE;
-	if (GetManageabiltyAndFeaturesState(&ManageMode, &CustomerType, &AmtState))
+	if (GetAmtState(AmtState))
 	{
 		CheckForStatusChange(AMT_ENABLE_S,AmtState);
 	}
@@ -849,9 +847,7 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 	}
 
 	FEATURE_STATE AMTState = NOT_PRESENT;
-	MENAGEABILTY_MODE ManageMode = NOT_KNOWN;
-	CUSTOMER_TYPE CustomerType = CORPORATE;
-	if (!GetManageabiltyAndFeaturesState(&ManageMode, &CustomerType, &AMTState))
+	if (!GetAmtState(AMTState))
 	{
 		UNS_ERROR(L"Failure\n");
 		// assume that it is FWreset or HECI disabled
@@ -1081,49 +1077,80 @@ namespace
 }
 
 
-bool StatusEventHandler::GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType, FEATURE_STATE* pAmtState)
+bool StatusEventHandler::GetManageabiltyMode(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType)
 {
 	bool rc = false;
-	FuncEntryExit<decltype(rc)> fee(L"GetManageabiltyAndFeaturesState", rc);
+	FuncEntryExit<decltype(rc)> fee(L"GetManageabiltyMode", rc);
 
 	namespace MKHI_Client = Intel::MEI_Client::MKHI_Client;
 
 	try
 	{	
-		MKHI_Client::GetFWCapsCommand getCapabilitiesCommand(MKHI_Client::FEATURES_CAPABLE);
-		MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(MKHI_Client::FEATURES_ENABLED);
 		MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
-		MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData = getCapabilitiesCommand.getResponse();
-		MKHI_Client::MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
 		MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
-		UNS_DEBUG(L"Capability=0x%X State=0x%X platform=0x%X\n", CapabilityData, StateData, Platform);
+		UNS_DEBUG(L"platform=0x%X\n", Platform);
 		MenageabiltyModeLogic(Platform, pManageMode);
 		rc = true;
-		*pAmtState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt); 
 
 		*pType = GetPlatformTypeExt(&Platform);
 		if (*pType == WRONG_CUSTOMER_TYPE)
 		{
 			*pType = CORPORATE;
 		}
-		UNS_DEBUG(L"AmtState=%d CustomerType=%d ManageMode=%d\n",
-			*pAmtState, *pType, *pManageMode);
+		UNS_DEBUG(L"CustomerType=%d ManageMode=%d\n", *pType, *pManageMode);
 	}
 	catch (MKHI_Client::MKHIErrorException& e)
 	{	
-		UNS_ERROR(L"GetManageabiltyAndFeaturesState failed %u\n", e.getErr());
+		UNS_ERROR(L"GetManageabiltyMode failed %u\n", e.getErr());
 	}
 	catch (Intel::MEI_Client::MEIClientException& e)
 	{	
-		UNS_ERROR(L"GetManageabiltyAndFeaturesState failed %C\n", e.what());
+		UNS_ERROR(L"GetManageabiltyMode failed %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"Exception in GetManageabiltyAndFeaturesState %C\n", e.what());
+		UNS_ERROR(L"Exception in GetManageabiltyMode %C\n", e.what());
 	}
 	catch(...)
 	{
-		UNS_ERROR(L"Exception in GetManageabiltyAndFeaturesState\n");
+		UNS_ERROR(L"Exception in GetManageabiltyMode\n");
+	}
+	return rc;
+}
+
+bool StatusEventHandler::GetAmtState(FEATURE_STATE &AmtState) const
+{
+	bool rc = false;
+	FuncEntryExit<decltype(rc)> fee(L"GetAmtState", rc);
+
+	namespace MKHI_Client = Intel::MEI_Client::MKHI_Client;
+
+	try
+	{
+		MKHI_Client::GetFWCapsCommand getCapabilitiesCommand(MKHI_Client::FEATURES_CAPABLE);
+		MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(MKHI_Client::FEATURES_ENABLED);
+		MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData = getCapabilitiesCommand.getResponse();
+		MKHI_Client::MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
+		UNS_DEBUG(L"Capability=0x%X State=0x%X\n", CapabilityData, StateData);
+		AmtState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt);
+		UNS_DEBUG(L"AmtState=%d\n", AmtState);
+		rc = true;
+	}
+	catch (MKHI_Client::MKHIErrorException& e)
+	{
+		UNS_ERROR(L"GetAmtState failed %u\n", e.getErr());
+	}
+	catch (Intel::MEI_Client::MEIClientException& e)
+	{
+		UNS_ERROR(L"GetAmtState failed %C\n", e.what());
+	}
+	catch (std::exception& e)
+	{
+		UNS_ERROR(L"Exception in GetAmtState %C\n", e.what());
+	}
+	catch (...)
+	{
+		UNS_ERROR(L"Exception in GetAmtState\n");
 	}
 	return rc;
 }
@@ -1496,7 +1523,7 @@ void StatusEventHandler::firstPullForEvents(void)
 	DataStorageWrapper& ds = DSinstance();
 	using namespace Intel::MEI_Client;
 
-	if (!GetManageabiltyAndFeaturesState(&m_prevManageMode, &m_prevCustomerType, &m_prevAmtState))
+	if (!GetAmtState(m_prevAmtState))
 	{
 		unsigned long val;
 		if (!ds.GetDataValue(AMT_ENABLE_S, val, true))
@@ -1509,7 +1536,7 @@ void StatusEventHandler::firstPullForEvents(void)
 		}
 	}
 
-
+	GetManageabiltyMode(&m_prevManageMode, &m_prevCustomerType);
 
 	// provisioning state		
 	AMTHI_Client::AMT_PROVISIONING_STATE prevProvState = AMTHI_Client::PROVISIONING_STATE_PRE;

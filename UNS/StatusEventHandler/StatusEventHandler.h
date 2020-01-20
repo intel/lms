@@ -160,7 +160,8 @@ private:
 	void GenerateWLANEvents();
 	void GenerateWiFiProfileSyncEvents();
 
-	bool GetManageabiltyAndFeaturesState(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType, FEATURE_STATE* pAmtState);
+	bool GetManageabiltyMode(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType);
+	bool GetAmtState(FEATURE_STATE &AmtState) const;
 
 	// Publish AMT enabled event
 	void publishAMTEnabledEvent(bool enable);
