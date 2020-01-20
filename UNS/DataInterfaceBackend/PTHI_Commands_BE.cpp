@@ -144,8 +144,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				}
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetCodeVersionCommand")
 			CATCH_AMTHIErrorException(L"GetCodeVersionCommand")
+			CATCH_MEIClientException(L"GetCodeVersionCommand")
 			CATCH_exception(L"GetCodeVersionCommand")
 			return ERROR_FAIL;
 		}
@@ -269,8 +269,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return ERROR_OK;
 			}
 			CATCH_HECIException(L"GetHeciVersion")
-			CATCH_MEIClientException(L"GetHeciVersion")
 			CATCH_AMTHIErrorException(L"GetHeciVersion")
+			CATCH_MEIClientException(L"GetHeciVersion")
 			CATCH_exception(L"GetHeciVersion")
 			return ERROR_FAIL;
 		}
@@ -300,8 +300,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"pProvisioningMode=%d\n", pProvisioningMode);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetProvisioningModeCommand")
 			CATCH_AMTHIErrorException(L"GetProvisioningModeCommand")
+			CATCH_MEIClientException(L"GetProvisioningModeCommand")
 			CATCH_exception(L"GetProvisioningModeCommand")
 			return ERROR_FAIL;
 		}
@@ -317,8 +317,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"pProvisioningTlsMode=%d\n", pProvisioningTlsMode);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetProvisioningTlsModeCommand")
 			CATCH_AMTHIErrorException(L"GetProvisioningTlsModeCommand")
+			CATCH_MEIClientException(L"GetProvisioningTlsModeCommand")
 			CATCH_exception(L"GetProvisioningTlsModeCommand")
 			return ERROR_FAIL;
 		}
@@ -336,7 +336,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"ProvisioningState=%d\n", pProvisioningState);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetProvisioningStateCommand")
 			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
@@ -351,6 +350,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					UNS_DEBUG(L"GetProvisioningStateCommand failed ret=%d\n", errNo);
 				}
 			}
+			CATCH_MEIClientException(L"GetProvisioningStateCommand")
 			CATCH_exception(L"GetProvisioningStateCommand")
 			return ERROR_FAIL;
 		}
@@ -366,8 +366,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"RemoteAccessConnectionStatus=%d\t AmtNetworkConnectionStatus=%d\n", pStatus, pConnectionType);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetRemoteAccessConnectionStatus")
 			CATCH_AMTHIErrorException(L"GetRemoteAccessConnectionStatus")
+			CATCH_MEIClientException(L"GetRemoteAccessConnectionStatus")
 			CATCH_exception(L"GetRemoteAccessConnectionStatus")
 			return ERROR_FAIL;
 		}
@@ -381,8 +381,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"GetUserInitiatedEnabled enabled=%d\n", pStatus);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetUserInitiatedEnabledInterfacesCommand")
 			CATCH_AMTHIErrorException(L"GetUserInitiatedEnabledInterfacesCommand")
+			CATCH_MEIClientException(L"GetUserInitiatedEnabledInterfacesCommand")
 			CATCH_exception(L"GetUserInitiatedEnabledInterfacesCommand")
 			return ERROR_FAIL;
 		}
@@ -405,8 +405,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 						Intel::MEI_Client::AMTHI_Client::GetSecurityParametersCommand getSecurityParametersCommand;
 						tlsEnabled = getSecurityParametersCommand.getResponse().TLSEnabled;
 					}
-					CATCH_MEIClientException(L"GetSecurityParametersCommand")
 					CATCH_AMTHIErrorException(L"GetSecurityParametersCommand")
+					CATCH_MEIClientException(L"GetSecurityParametersCommand")
 					CATCH_exception(L"GetSecurityParametersCommand")
 
 					if (tlsEnabled)
@@ -426,8 +426,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"WEBUI enabled=%d\n", pState);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetWebUIStateCommand")
 			CATCH_AMTHIErrorException(L"GetWebUIStateCommand")
+			CATCH_MEIClientException(L"GetWebUIStateCommand")
 			CATCH_exception(L"GetWebUIStateCommand")
 			return ERROR_FAIL;
 		}
@@ -441,8 +441,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				bstrPolicy = getCurrentPowerPolicyCommand.getResponse().c_str();
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetCurrentPowerPolicyCommand")
 			CATCH_AMTHIErrorException(L"GetCurrentPowerPolicyCommand")
+			CATCH_MEIClientException(L"GetCurrentPowerPolicyCommand")
 			CATCH_exception(L"GetCurrentPowerPolicyCommand")
 			return ERROR_FAIL;
 		}
@@ -457,8 +457,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"LastResetReason=%d\n", pReason);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetAMTStateCommand")
 			CATCH_AMTHIErrorException(L"GetAMTStateCommand")
+			CATCH_MEIClientException(L"GetAMTStateCommand")
 			CATCH_exception(L"GetAMTStateCommand")
 			return ERROR_FAIL;
 		}
@@ -476,8 +476,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"SOL=%d \t IDER=%d\n", pSOL, pIDER);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetRedirectionSessionsStateCommand")
 			CATCH_AMTHIErrorException(L"GetRedirectionSessionsStateCommand")
+			CATCH_MEIClientException(L"GetRedirectionSessionsStateCommand")
 			CATCH_exception(L"GetRedirectionSessionsStateCommand")
 			return ERROR_FAIL;
 		}
@@ -494,8 +494,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"systemDefense=%d \n", pStatus);
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetSystemDefenseStatus")
 			CATCH_AMTHIErrorException(L"GetSystemDefenseStatus")
+			CATCH_MEIClientException(L"GetSystemDefenseStatus")
 			CATCH_exception(L"GetSystemDefenseStatus")
 			return ERROR_FAIL;
 		}
@@ -544,8 +544,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetLanInterfaceSettingsCommand")
 			CATCH_AMTHIErrorException(L"GetLanInterfaceSettingsCommand")
+			CATCH_MEIClientException(L"GetLanInterfaceSettingsCommand")
 			CATCH_exception(L"GetLanInterfaceSettingsCommand")
 			return ERROR_FAIL;
 		}
@@ -596,7 +596,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				pIpv6Enable = Ipv6Enablement;
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetIPv6LanInterfaceStatusCommand")
 			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
@@ -612,6 +611,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				else
 					UNS_DEBUG(L"GetIPv6LanInterfaceStatusCommand failed ret=%d\n", errNo);
 			}
+			CATCH_MEIClientException(L"GetIPv6LanInterfaceStatusCommand")
 			CATCH_exception(L"GetIPv6LanInterfaceStatusCommand")
 			return ERROR_FAIL;
 		}
@@ -632,8 +632,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG("AmtUUID=%C\n", bstrUUID.c_str());
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"GetUUIDCommand")
 			CATCH_AMTHIErrorException(L"GetUUIDCommand")
+			CATCH_MEIClientException(L"GetUUIDCommand")
 			CATCH_exception(L"GetUUIDCommand")
 			return ERROR_FAIL;
 		}
@@ -651,8 +651,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
 			CATCH_AMTHIErrorException(L"OpenUserInitiatedConnection")
+			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
 			CATCH_exception(L"OpenUserInitiatedConnection")
 			return ERROR_FAIL;
 		}
@@ -668,8 +668,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"CIRA closed\n");
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"CloseUserInitiatedConnection")
 			CATCH_AMTHIErrorException(L"CloseUserInitiatedConnection")
+			CATCH_MEIClientException(L"CloseUserInitiatedConnection")
 			CATCH_exception(L"CloseUserInitiatedConnection")
 			return ERROR_FAIL;
 		}
@@ -907,7 +907,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
 			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
 				pStatus = (short)e.getErr();
@@ -921,6 +920,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					UNS_DEBUG(L"OpenUserInitiatedConnection failed, ret=%d\n", pStatus);
 				}
 			}
+			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
 			CATCH_exception(L"OpenUserInitiatedConnection")
 			return ERROR_FAIL;
 		}
@@ -1068,8 +1068,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 				return ERROR_OK;
 			}
-			CATCH_MEIClientException(L"AddProxyTableEntryCommand")
 			CATCH_AMTHIErrorException(L"AddProxyTableEntryCommand")
+			CATCH_MEIClientException(L"AddProxyTableEntryCommand")
 			CATCH_exception(L"AddProxyTableEntryCommand")
 			return ERROR_FAIL;
 		}

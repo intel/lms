@@ -13,7 +13,7 @@
 
 #include <string>
 #include <stdexcept>
-#include <system_error>
+#include "MEIClientException.h"
 
 namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
 	static class fwupd_category_t : public std::error_category {
@@ -24,10 +24,10 @@ namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
 		}
 	} fwupd_category;
 
-	class FWUpdateErrorException : public std::system_error
+	class FWUpdateErrorException : public MEIClientException
 	{
 	public:
-		FWUpdateErrorException(unsigned int err) : std::system_error(err, fwupd_category) {}
+		FWUpdateErrorException(unsigned int err) : MEIClientException(err, fwupd_category) {}
 		virtual ~FWUpdateErrorException() throw (){}
 		virtual unsigned int getErr() const throw()
 		{

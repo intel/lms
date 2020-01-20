@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -104,15 +104,15 @@ bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& pass
 		password = WSmanCrypt::EncryptString(response.Password); //EncryptString will empty response.Password
 		rc= true;	
 	}
-	catch (MEIClient::MEIClientException& e)
-	{	
-		const char* reason =  e.what();
-		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
-	}
 	catch (MEIClient::AMTHI_Client::AMTHIErrorException& e)
 	{
 		unsigned int errNo =  e.getErr();
 		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", errNo);
+	}
+	catch (MEIClient::MEIClientException& e)
+	{
+		const char* reason = e.what();
+		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{

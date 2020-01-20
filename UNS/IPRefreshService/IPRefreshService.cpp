@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include <sstream>
 
@@ -110,13 +110,13 @@ bool IPRefreshService::GetMacAddresses(unsigned short adaptorType)
 		}		
 		res = true;
 	}
-	catch (MEIClientException& e)
-	{	
-		UNS_ERROR(L"UpdateMacAddress: GetLanInterfaceSettingsCommand failed %C\n", e.what());
-	}
 	catch (AMTHI_Client::AMTHIErrorException& e)
 	{
 		UNS_ERROR(L"UpdateMacAddress: GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
+	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR(L"UpdateMacAddress: GetLanInterfaceSettingsCommand failed %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{

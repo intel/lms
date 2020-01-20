@@ -14,6 +14,7 @@
 #include <string>
 #include <stdexcept>
 #include <sstream>
+#include <system_error>
 
 namespace Intel { namespace MEI_Client {
 	static class mei_category_t : public std::error_category {
@@ -28,6 +29,9 @@ namespace Intel { namespace MEI_Client {
 	{
 	public:
 		MEIClientException(const std::string &what, int err = 0) : std::system_error(err, mei_category, what) {}
+		MEIClientException(int err, const std::error_category& cat) : std::system_error(err, cat) {}
+		MEIClientException(int err, const std::error_category& cat, const std::string& what)
+			: std::system_error(err, cat, what) {}
 		virtual ~MEIClientException() throw (){}
 	};
 	class MEIClientExceptionZeroBuffer : public MEIClientException

@@ -12,8 +12,8 @@
 #define __MKHI_ERROR_EXCEPTION_H
 
 #include <stdexcept>
-#include <system_error>
 #include <string>
+#include "MEIClientException.h"
 
 namespace Intel { namespace MEI_Client { namespace MKHI_Client {
 	enum MKHI_STATUS
@@ -71,10 +71,10 @@ namespace Intel { namespace MEI_Client { namespace MKHI_Client {
 		}
 	} mkhi_category;
 
-	class MKHIErrorException : public std::system_error
+	class MKHIErrorException : public MEIClientException
 	{
 	public:
-		MKHIErrorException(unsigned int err): std::system_error(err, mkhi_category){}
+		MKHIErrorException(unsigned int err): MEIClientException(err, mkhi_category){}
 		virtual ~MKHIErrorException() throw (){}
 		virtual unsigned int getErr() const throw()
 		{

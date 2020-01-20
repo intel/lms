@@ -12,8 +12,8 @@
 #define __HOTHAM_ERROR_EXCEPTION_H
 
 #include <stdexcept>
-#include <system_error>
 #include <string>
+#include "MEIClientException.h"
 
 namespace Intel { namespace MEI_Client { namespace HOTHAM_Client {
 	static class hotham_category_t : public std::error_category {
@@ -24,10 +24,10 @@ namespace Intel { namespace MEI_Client { namespace HOTHAM_Client {
 		}
 	} hotham_category;
 
-	class HOTHAMErrorException : public std::system_error
+	class HOTHAMErrorException : public MEIClientException
 	{
 	public:
-		HOTHAMErrorException(unsigned int err) : std::system_error(err, hotham_category) {}
+		HOTHAMErrorException(unsigned int err) : MEIClientException(err, hotham_category) {}
 		virtual ~HOTHAMErrorException() throw (){}
 		virtual unsigned int getErr() const throw()
 		{

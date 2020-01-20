@@ -13,7 +13,7 @@
 
 #include <string>
 #include <stdexcept>
-#include <system_error>
+#include "MEIClientException.h"
 
 namespace Intel { namespace MEI_Client { namespace AMTHI_Client	{
 	static class amthi_category_t : public std::error_category {
@@ -24,10 +24,10 @@ namespace Intel { namespace MEI_Client { namespace AMTHI_Client	{
 		}
 	} amthi_category;
 
-	class AMTHIErrorException : public std::system_error
+	class AMTHIErrorException : public MEIClientException
 	{
 	public:
-		AMTHIErrorException(unsigned int err) : std::system_error(err, amthi_category) {}
+		AMTHIErrorException(unsigned int err) : MEIClientException(err, amthi_category) {}
 		virtual ~AMTHIErrorException() throw () {}
 
 		virtual unsigned int getErr() const throw()

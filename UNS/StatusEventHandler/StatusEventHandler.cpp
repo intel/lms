@@ -1150,13 +1150,13 @@ bool StatusEventHandler::GetSolIderState(bool& SOLState, bool& IDERState)
 		UNS_DEBUG(L"SOL=%d \t IDER=%d\n",SOLState,IDERState);
 		res = true;			
 	}
-	catch(MEIClientException& e)
-	{
-		UNS_ERROR(L"GetRedirectionSessionsStateCommand failed %C\n", e.what());
-	}
 	catch(AMTHI_Client::AMTHIErrorException& e)
 	{
 		UNS_ERROR(L"GetRedirectionSessionsStateCommand failed, ret=%d\n", e.getErr());
+	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR(L"GetRedirectionSessionsStateCommand failed %C\n", e.what());
 	}
 	catch(...)
 	{
@@ -1176,13 +1176,13 @@ bool StatusEventHandler::GetSystemDefenseState(bool& SysDefState)
 		UNS_DEBUG(L"SystemDefense=%d \n",SysDefState);
 		return true;
 	}
+	catch (AMTHI_Client::AMTHIErrorException& e)
+	{
+		UNS_ERROR(L"GetSystemDefenseState failed, ret=%d\n", e.getErr());
+	}
 	catch(MEIClientException& e)
 	{
 		UNS_ERROR(L"GetSystemDefenseState failed %C\n", e.what());
-	}
-	catch(AMTHI_Client::AMTHIErrorException& e)
-	{
-		UNS_ERROR(L"GetSystemDefenseState failed, ret=%d\n", e.getErr());
 	}
 	catch(...)
 	{
@@ -1459,14 +1459,14 @@ bool StatusEventHandler::GetProvisioningState(Intel::MEI_Client::AMTHI_Client::A
 		ProvState = getProvisioningStateCommand.getResponse().ProvisioningState;
 		return true;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR(L"GetProvisioningStateCommand failed ret=%C\n", e.getErr());
+		return false;
+	}
 	catch (MEIClientException& e) //original error handling was just returning "false"
 	{	
 		UNS_ERROR(L"GetProvisioningStateCommand failed %C\n",e.what());
-		return false;
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR(L"GetProvisioningStateCommand failed ret=%C\n",e.getErr());
 		return false;
 	}
 	catch (std::exception& e)
@@ -1582,14 +1582,14 @@ void StatusEventHandler::checkForBootReason()
 			}
 		}
 	}
-	catch(MEIClientException& e)
-	{
-		UNS_ERROR(L"GetLastHostResetReasonCommand failed %C\n", e.what());
-	}
 	catch(AMTHI_Client::AMTHIErrorException& e)
 	{
 		UNS_ERROR(L"GetLastHostResetReasonCommand failed, ret=%d\n", e.getErr());
 	}	
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR(L"GetLastHostResetReasonCommand failed %C\n", e.what());
+	}
 	catch(...)
 	{
 		UNS_ERROR(L"GetLastHostResetReasonCommand failed\n");
@@ -1655,14 +1655,14 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 		std::lock_guard<std::mutex> lock(m_semAMTEnabled);
 		enable = m_eacEnabled = (Eac_enabled != AMTHI_Client::AMT_FALSE);
 	}
-	catch (MEIClientException& e)
-	{	
-		UNS_ERROR(L"GetEACStateCommand failed %C\n", e.what());
-		return false;
-	}
 	catch (AMTHI_Client::AMTHIErrorException& e)
 	{
 		UNS_ERROR(L"GetEACStateCommand failed ret=%d\n", e.getErr());
+		return false;
+	}
+	catch (MEIClientException& e)
+	{	
+		UNS_ERROR(L"GetEACStateCommand failed %C\n", e.what());
 		return false;
 	}
 	catch (std::exception& e)

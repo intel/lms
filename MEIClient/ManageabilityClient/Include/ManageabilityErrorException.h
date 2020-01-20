@@ -12,8 +12,8 @@
 #define __MANAGEABILITY_ERROR_EXCEPTION_H
 
 #include <stdexcept>
-#include <system_error>
 #include <string>
+#include "MEIClientException.h"
 
 namespace Intel { namespace MEI_Client { namespace Manageability_Client {
 	enum
@@ -45,10 +45,10 @@ namespace Intel { namespace MEI_Client { namespace Manageability_Client {
 		}
 	} manageability_category;
 
-	class ManageabilityErrorException : public std::system_error
+	class ManageabilityErrorException : public MEIClientException
 	{
 	public:
-		ManageabilityErrorException(unsigned int err) : std::system_error(err, manageability_category) {}
+		ManageabilityErrorException(unsigned int err) : MEIClientException(err, manageability_category) {}
 		virtual ~ManageabilityErrorException() throw (){}
 		virtual unsigned int getErr() const throw()
 		{

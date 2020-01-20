@@ -13,7 +13,7 @@
 
 #include <string>
 #include <stdexcept>
-#include <system_error>
+#include "MEIClientException.h"
 
 namespace Intel { namespace MEI_Client {
 	static class heci_category_t : public std::error_category {
@@ -41,10 +41,10 @@ namespace Intel { namespace MEI_Client {
 		}
 	} heci_category;
 
-	class HECIException : public std::system_error
+	class HECIException : public MEIClientException
 	{
 	public:
-		HECIException(const std::string &what, int err = TEE_INTERNAL_ERROR) : std::system_error(err, heci_category, what) {}
+		HECIException(const std::string &what, int err = TEE_INTERNAL_ERROR) : MEIClientException(err, heci_category, what) {}
 	};
 
 	class HeciNoClientException : public HECIException
