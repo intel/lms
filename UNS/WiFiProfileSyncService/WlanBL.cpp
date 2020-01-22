@@ -508,7 +508,10 @@ bool wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageabi
 	wifiSettings.AuthenticationMethod(auth);
 	wifiSettings.EncryptionMethod(encr);
 
-	if (encr != EncryptionMethodNone)
+	// PSKPassPhrase should be NULL if AuthenticationMethod does not contain
+	// 4 ("WPA PSK") or 6 ("WPA2 PSK") or 32768 ("WPA3 SAE").
+	if ((auth == AuthenticationMethodWPAPSK || auth == AuthenticationMethodWPA2PSK || auth == AuthenticationMethodWPA3SAE) &&
+		encr != EncryptionMethodNone)
 	{
 		wifiSettings.PSKPassPhrase(WStringToString(profileData->keyMaterial));
 	}
