@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -985,7 +985,7 @@ int Protocol::_rxFromSocket(SOCKET s)
 		UNS_TRACE(L"Socket[%d] ==>: %d bytes\n", (int)s, res);
 #ifdef _DEBUG
 		std::string dbg_dump(_rxSocketBuffer, _rxSocketBuffer + res);
-		UNS_DEBUG(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n\n",
+		UNS_TRACE(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n\n",
 			dbg_dump.c_str());
 #endif // _DEBUG
 		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);
@@ -1543,7 +1543,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							UNS_TRACE(L"Sent UDP data: %d bytes of %d.\n", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
 							std::string dbg_dump(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
-							UNS_DEBUG(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n\n",
+							UNS_TRACE(L"-----------------------From FW UDP---------------------------\n%C\n-----------------------End from FW UDP---------------------------\n\n",
 								dbg_dump.c_str());
 #endif
 							_closeSocket(s);
@@ -1795,7 +1795,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							it->second->GetSocket());
 #ifdef _DEBUG
 						std::string dbg_dump(channelDataMessage->Data.begin(), channelDataMessage->Data.end());
-						UNS_DEBUG(L"-----------------------From FW TCP---------------------------\n%C\n-----------------------End from FW TCP---------------------------\n\n",
+						UNS_TRACE(L"-----------------------From FW TCP---------------------------\n%C\n-----------------------End from FW TCP---------------------------\n\n",
 							dbg_dump.c_str());
 #endif
 
