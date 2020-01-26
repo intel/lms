@@ -232,25 +232,6 @@ TEST(SIOWSManClient, getSpriteLanguage)
 	}
 }
 
-TEST(SIOWSManClient, setValidSpriteLanguage)
-{
-	SIOWSManClient sio;
-	unsigned short lang = 0;
-	for (; lang<=26; lang++)
-	{
-		EXPECT_TRUE(sio.SetSpriteLanguage(lang));
-	}
-}
-
-TEST(SIOWSManClient, setInvalidSpriteLanguage)
-{
-	SIOWSManClient sio;
-	unsigned short lang = 1000;
-	EXPECT_FALSE(sio.SetSpriteLanguage(lang));
-	lang = 40000;
-	EXPECT_FALSE(sio.SetSpriteLanguage(lang));
-}
-
 TEST(SIOWSManClient, setValidSpriteZoom)
 {
 	SIOWSManClient sio;

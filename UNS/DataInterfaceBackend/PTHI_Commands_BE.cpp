@@ -738,31 +738,13 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
 		{
-			std::string sAMTVersion;
-			GetStringAMTVersion(sAMTVersion);
-			UNS_DEBUG(L"AMT Version: %C\n", sAMTVersion.c_str());
+			MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
+			mbPtr->data_block(new StartPFWUP(Language));
+			mbPtr->msg_type(MB_PFWU_EVENT);
 
-			sAMTVersion.append(".");	//So sAMTVersion[0] won't crash on empty string
-
-			if ((sAMTVersion[0] == '.') || ((sAMTVersion[0] <= '7') && (sAMTVersion[0] != '1')))
+			if (!theService::instance()->sendMessage(GMS_PARTIALFWUPDATESERVICE, mbPtr))
 			{
-				if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-					return ERROR_NOT_AVAILABLE_NOW;
-
-				SIOWSManClient Client;
-				if (Client.SetSpriteLanguage(Language) != true)
-					return ERROR_FAIL;
-			}
-			else if (sAMTVersion[0] >= '8' || sAMTVersion[0] == '1')
-			{
-				MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-				mbPtr->data_block(new StartPFWUP(Language));
-				mbPtr->msg_type(MB_PFWU_EVENT);
-
-				if (!theService::instance()->sendMessage(GMS_PARTIALFWUPDATESERVICE, mbPtr))
-				{
-					return ERROR_FAIL;
-				}
+				return ERROR_FAIL;
 			}
 			return ERROR_OK;
 		}

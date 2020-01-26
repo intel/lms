@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -22,15 +22,6 @@ UINT32 WSmanCommands::setSpriteZoom(short zoom)
 {
 	SIOWSManClient sio;
 	if (sio.SetSpriteZoom(zoom) != true)
-		return 1;
-	else
-		return 0; 
-}
-
-UINT32 WSmanCommands::setSpriteLocale(short locale)
-{
-	SIOWSManClient sio;
-	if (sio.SetSpriteLanguage(locale) != true)
 		return 1;
 	else
 		return 0; 

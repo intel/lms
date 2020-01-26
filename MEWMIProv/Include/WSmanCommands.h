@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -37,7 +37,6 @@ class WSmanCommands
 {
 	public:
 		UINT32 setSpriteZoom(short zoom);
-		UINT32 setSpriteLocale(short locale);
 		UINT32 TerminateKVMSession(void);
 		UINT32 isKVMActive(bool* enabled, bool* active);
 		UINT32 GetPortSettings(

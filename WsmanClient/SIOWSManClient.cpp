@@ -20,22 +20,6 @@ SIOWSManClient::~SIOWSManClient()
 {
 }
 
-bool SIOWSManClient::SetSpriteLanguage(unsigned short language)
-{
-	try {
-		if (!Init(true))
-			return false;
-	
-		//Lock WsMan to prevent reentry
-		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		m_service.language(language);
-		m_service.Put();
-	}
-	CATCH_exception_return("SIOWSManClient::SetSpriteLanguage Put")
-
-	return true;
-}
-
 bool SIOWSManClient::GetSpriteLanguage(unsigned short *language)
 {
 	if (!Init(true))

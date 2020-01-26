@@ -23,7 +23,6 @@ public:
 	/*Actual soap actions!*/
 	
 	bool GetSpriteLanguage(unsigned short *language);
-	bool SetSpriteLanguage(unsigned short language);
 	bool SetSpriteZoom(unsigned short zoom);
 	bool GetSpriteParameters(unsigned short *language, unsigned short *zoom);
 	bool GetExpectedLanguage(unsigned short *language);
