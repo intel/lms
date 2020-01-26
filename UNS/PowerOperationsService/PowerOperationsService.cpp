@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 // PowerOperationsService.cpp : Defines the exported functions for the DLL application.
 
@@ -418,6 +418,11 @@ void PowerOperationsService::loadStrings() {}
 
 void PowerOperationsService::addPowerCapabilities()
 {
+	if (!m_mainService->GetPortForwardingStarted()) {
+		m_addCapabilitiesRequiredButNoPfw = true;
+		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting addPowerCapabilities operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
+		return;
+	}
 	//update graceful power capabilities
 	UNS_DEBUG(L"adding graceful power operations\n");
 	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient;
