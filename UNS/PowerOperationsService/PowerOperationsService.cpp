@@ -410,7 +410,7 @@ void PowerOperationsService::loadStrings()
 		m_shutdownMessageStr = ACE_TEXT_ALWAYS_WCHAR(DEFAULT_SHUTDOWN_MSG.c_str());
 	m_rebootMessageStr = StringManager::instance()->getString(REBOOT_MSG_ID);
 	if (m_rebootMessageStr.empty())
-		m_shutdownMessageStr = ACE_TEXT_ALWAYS_WCHAR(DEFAULT_REBOOT_MSG.c_str());
+		m_rebootMessageStr = ACE_TEXT_ALWAYS_WCHAR(DEFAULT_REBOOT_MSG.c_str());
 }
 #else
 void PowerOperationsService::loadStrings() {}
