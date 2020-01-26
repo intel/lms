@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -108,15 +108,14 @@ unsigned int FWUpdate_Commands::GetFWUpdateStateCommand(bool* enabled)
 				   (response.Data == Intel::MEI_Client::MKHI_Client::FW_UPDATE_PASSWORD_PROTECTED);
 		rc = 0;
 	}
-	catch (Intel::MEI_Client::MEIClientException& e)
-	{
-		UNS_ERROR("GetFWUpdateStateCommand failed %C\n", e.what());
-	}
-
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
 	{
 		UNS_ERROR("GetFWUpdateStateCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
+	}
+	catch (Intel::MEI_Client::MEIClientException& e)
+	{
+		UNS_ERROR("GetFWUpdateStateCommand failed %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{

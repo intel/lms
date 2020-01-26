@@ -344,11 +344,9 @@ HRESULT getApplicationDetails(string& userNameStr, string& domainNameStr, string
 	return hr;
 }
 
-
 unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 {
 	USES_CONVERSION;
-
 
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
@@ -357,17 +355,15 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 		(*amtFQDN) = ToWStr(response.FQDN);
 		rc = 0;
 	}
-
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetFQDNCommand failed %C\n", e.what());
-	}
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("GetFQDNCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
-
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("GetFQDNCommand failed %C\n", e.what());
+	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetFQDNCommand %C\n", e.what());
@@ -375,7 +371,6 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 
 	return rc;
 }
-
 
 unsigned int PTHI_Commands::OpenCIRA(void)
 {
@@ -388,22 +383,20 @@ unsigned int PTHI_Commands::OpenCIRA(void)
 		OpenUserInitiatedConnectionCommand command;
 		rc = 0;
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("OpenUserInitiatedConnectionCommand failed %C\n", e.what());
-	}
-
-
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("OpenUserInitiatedConnectionCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("OpenUserInitiatedConnectionCommand failed %C\n", e.what());
+	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in OpenUserInitiatedConnectionCommand %C\n", e.what());
 	}
-return rc;
+	return rc;
 }
 
 unsigned int PTHI_Commands::CloseCIRA(void)
@@ -417,16 +410,14 @@ unsigned int PTHI_Commands::CloseCIRA(void)
 		CloseUserInitiatedConnectionCommand command;
 		rc = 0;
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("CloseUserInitiatedConnectionCommand failed %C\n",e.what());
-	}
-
-
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("CloseUserInitiatedConnectionCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
+	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("CloseUserInitiatedConnectionCommand failed %C\n",e.what());
 	}
 	catch (exception& e)
 	{
@@ -446,22 +437,19 @@ unsigned int PTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 		*pProvisioningTlsMode = response.ProvTLSMode;
 		rc = 0;
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetProvisioningTlsModeCommand failed %C\n",e.what());
-	}
-
-
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("GetProvisioningTlsModeCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("GetProvisioningTlsModeCommand failed %C\n",e.what());
+	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetProvisioningTlsModeCommand %C\n", e.what());
 	}
-
 
 	return rc;
 }
@@ -476,16 +464,14 @@ unsigned int PTHI_Commands::GetTLSEnabled(bool* enabled)
 		*enabled = response.TLSEnabled;
 		rc = 0;
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetSecurityParametersCommand failed %C\n", e.what());
-	}
-
-
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("GetSecurityParametersCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
+	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("GetSecurityParametersCommand failed %C\n", e.what());
 	}
 	catch (exception& e)
 	{
@@ -508,23 +494,21 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 		*enabled = (response.LinkStatus == 1);
 		rc = 0;
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
-	}
-
-
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
 	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
+	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 	}
-	return rc;
 
+	return rc;
 }
 
 unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
@@ -540,21 +524,20 @@ unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
 		mode = (unsigned char)response.ProvisioningMode;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetProvisioningModeCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetProvisioningModeCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetProvisioningModeCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetProvisioningModeCommand %C\n", e.what());
 	}
+
 	return rc;
 }
 
@@ -569,16 +552,14 @@ UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 		*pProvisioningState = (SHORT)response.ProvisioningState;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetProvisioningStateCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetProvisioningStateCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetProvisioningStateCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -604,16 +585,14 @@ UINT PTHI_Commands::GetPID(wstring* pPID)
 		pPID->assign(PID);
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetPIDCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetPIDCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetPIDCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -632,16 +611,14 @@ unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 		*enabled = command.getResponse().ZTCEnabled;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetZeroTouchEnabledCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetZeroTouchEnabledCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetZeroTouchEnabledCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -665,16 +642,14 @@ unsigned int PTHI_Commands::GetProvisioningInfo(wstring* pPKIDNSSuffix, wstring*
 		(*pPKIDNSSuffix) = ToWStr(command.getResponse());
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("AMTHICommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("AMTHICommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("AMTHICommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -700,16 +675,14 @@ unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTri
 		*RemoteAccessConStatus = response.RemoteAccessConnectionStatus;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetRemoteAccessConnectionStatusCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetRemoteAccessConnectionStatusCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetRemoteAccessConnectionStatusCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -847,17 +820,15 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 
 	}while(0);
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("%C failed ret=%d\n", lastFunction, e.getErr());
+		status = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("%C failed %C\n",lastFunction, e.what());
 		status = AMT_STATUS_INTERNAL_ERROR;
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("%C failed ret=%d\n",lastFunction, e.getErr());
-		status = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -926,16 +897,16 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 			getCodeVersionCommand.getResponse(); // There was a version parsing and usage here, but removed
 			return status;
 		}
-		catch (MEIClientException& e)
-		{
-			UNS_ERROR("GetCodeVersionCommand failed %C\n", e.what());
-		}
 		catch (AMTHIErrorException& e)
 		{
 			//in case reached here the AMTHI engine in the FW works and other problem ocured - so, no need to continue try
-			UNS_ERROR("GetCodeVersionCommand failed ret=%d\n",e.getErr());
+			UNS_ERROR("GetCodeVersionCommand failed ret=%d\n", e.getErr());
 			status = e.getErr();
 			return status;
+		}
+		catch (MEIClientException& e)
+		{
+			UNS_ERROR("GetCodeVersionCommand failed %C\n", e.what());
 		}
 		catch (exception& e)
 		{
@@ -1021,23 +992,19 @@ unsigned int PTHI_Commands::GetConfigServerData(wstring* Address, unsigned short
 		*port = response.ServerPort;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetConfigServerDataCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetConfigServerDataCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetConfigServerDataCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetConfigServerDataCommand %C\n", e.what());
 	}
-
-
 
 	return rc;
 }
@@ -1062,23 +1029,19 @@ AMT_STATUS_UNSUPPORTED_OBJECT	StateDataIdentifier is not recognized or not suppo
 		*cryptoFuseEnabled = !(response.StateData.Fields.CryptoFuse==0);
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetAMTState failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetAMTState failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetAMTState failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetAMTState %C\n", e.what());
 	}
-
-
 
 	return rc;
 }
@@ -1093,23 +1056,19 @@ unsigned int PTHI_Commands::GetPowerPolicy(wstring* policy)
 		*policy = ToWStr(command.getResponse());
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetPowerPolicy failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetPowerPolicy failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetPowerPolicy failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetPowerPolicy %C\n", e.what());
 	}
-
-
 
 	return rc;
 }
@@ -1158,23 +1117,19 @@ unsigned int PTHI_Commands::StopConfiguration(void)
 		StopConfigurationCommand command;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("StopConfigurationCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("StopConfigurationCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("StopConfigurationCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in StopConfigurationCommand %C\n", e.what());
 	}
-
-
 
 	return rc;
 }
@@ -1216,22 +1171,19 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 			}
 		}
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetCodeVersionCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetCodeVersionCommand failed %C\n",e.what());
-	}
-
-
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetCodeVersionCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetCodeVersionCommand %C\n", e.what());
 	}
-
 
 	if (rc != 0)
 	{
@@ -1254,6 +1206,7 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 			UNS_ERROR("Exception in FWUGetVersionCommand %C\n", e.what());
 		}
 	}
+
 	return rc;
 }
 
@@ -1310,20 +1263,19 @@ unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 		MEAudit->TlsStartTime.Year = response.TlsStartTime.Year;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetMESetupAuditRecordCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetMESetupAuditRecordCommand failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetMESetupAuditRecordCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetMESetupAuditRecordCommand %C\n", e.what());
 	}
-
 
 	return rc;
 }
@@ -1341,21 +1293,19 @@ unsigned int PTHI_Commands::getWebUIState(SHORT* pState)
 		*pState = response.WebUiEnabled;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetWebUIStateCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetWebUIStateCommand failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetWebUIStateCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetWebUIStateCommand %C\n", e.what());
 	}
-
-
 
 	return rc;
 }
@@ -1371,14 +1321,14 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 		*pIDER = response.IderOpen;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetWebUIStateCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetWebUIStateCommand failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetWebUIStateCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -1387,9 +1337,6 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 
 	return rc;
 }
-
-
-
 
 unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 {
@@ -1413,14 +1360,14 @@ unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 				memcpy_s(entry.HashData, sizeof(entry.HashData), response.CertificateHash, sizeof(response.CertificateHash));
 				hashlist.push_back(entry);
 			}
-			catch (MEIClientException& e)
-			{
-				UNS_ERROR("GetCertificateHashEntryCommand failed %C\n", e.what());
-			}
 			catch (AMTHIErrorException& e)
 			{
 				UNS_ERROR("GetCertificateHashEntryCommand failed ret=%d\n", e.getErr());
 				rc = e.getErr();
+			}
+			catch (MEIClientException& e)
+			{
+				UNS_ERROR("GetCertificateHashEntryCommand failed %C\n", e.what());
 			}
 			catch (exception& e)
 			{
@@ -1429,14 +1376,14 @@ unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 		}
 		rc = 0;
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("EnumerateHashHandlesCommand failed %C\n", e.what());
-	}
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("EnumerateHashHandlesCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
+	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("EnumerateHashHandlesCommand failed %C\n", e.what());
 	}
 	catch (exception& e)
 	{
@@ -1459,22 +1406,22 @@ unsigned int PTHI_Commands::GetKVMSessionActivation(bool* activated)
 			*activated = false;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetKVMSessionActivation failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetKVMSessionActivation failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetKVMSessionActivation failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetKVMSessionActivation %C\n", e.what());
 	}
+
 	return rc;
 }
-
 
 unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREnabled, bool *pKVMEnabled)
 {
@@ -1488,19 +1435,20 @@ unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREna
 		*pKVMEnabled = response.KVMEnabled;
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetRedirectionState failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetRedirectionState failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetRedirectionState failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetRedirectionState %C\n", e.what());
 	}
+
 	return rc;
 }
 
@@ -1530,14 +1478,14 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 			ethernetPortList.push_back(entry);
 			rc = 0;
 		}
-		catch (MEIClientException& e)
-		{
-			UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
-		}
 		catch (AMTHIErrorException& e)
 		{
 			UNS_ERROR("GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 			rc = e.getErr();
+		}
+		catch (MEIClientException& e)
+		{
+			UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 		}
 		catch (exception& e)
 		{
@@ -1558,14 +1506,14 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 				ethernetPortList.push_back(entry);
 				rc = 0;
 			}
-			catch (MEIClientException& e)
-			{
-				UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
-			}
 			catch (AMTHIErrorException& e)
 			{
 				UNS_ERROR("GetLanInterfaceSettingsCommand failed ret=%d\n", e.getErr());
 				rc = e.getErr();
+			}
+			catch (MEIClientException& e)
+			{
+				UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 			}
 			catch (exception& e)
 			{
@@ -1573,14 +1521,14 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 			}
 		}
 	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetTcpipParametersCommand failed %C\n", e.what());
-	}
 	catch (AMTHIErrorException& e)
 	{
 		UNS_ERROR("GetTcpipParametersCommand failed ret=%d\n", e.getErr());
 		rc = e.getErr();
+	}
+	catch (MEIClientException& e)
+	{
+		UNS_ERROR("GetTcpipParametersCommand failed %C\n", e.what());
 	}
 	catch (exception& e)
 	{
@@ -1605,14 +1553,14 @@ unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAcc
 		}
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
@@ -1629,18 +1577,19 @@ unsigned int PTHI_Commands::Unprovision()
 		UnprovisionCommand command(CFG_PROVISIONING_MODE_NONE);
 		rc = 0;
 	}
+	catch (AMTHIErrorException& e)
+	{
+		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
 	catch (MEIClientException& e)
 	{
 		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n",e.getErr());
-		rc = e.getErr();
 	}
 	catch (exception& e)
 	{
 		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", e.what());
 	}
+
 	return rc;
 }
