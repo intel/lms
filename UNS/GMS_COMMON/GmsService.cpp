@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 
 #include "global.h"
@@ -307,19 +307,7 @@ int GmsService::svc(void)
 	UNS_DEBUG(L"GmsService:Starting service\n");
 	 
 	reactor()->owner(ACE_Thread::self());
-#ifdef WIN32
-	//windows only********************** Dan::Need to check why and if needed
-	HANDLE hUNSstarted=CreateEvent(NULL,TRUE,TRUE,L"Global\\UNSstarted");
-	if (hUNSstarted==NULL)
-	{
-		UNS_ERROR(L"CreateEvent UNSstarted failed, err=%d\n", GetLastError());
-	}
-	if (!SetEvent(hUNSstarted))
-	{
-		UNS_ERROR(L"SetEvent UNSstarted failed, err=%d\n", GetLastError());
-	}
-	//*************************
-#endif // WIN32
+
 	GMSExternalLogger::instance().ServiceStart();
 
 	

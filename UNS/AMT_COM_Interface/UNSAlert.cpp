@@ -64,23 +64,5 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()
 {
 	UNS_DEBUG(L"CUNSAlert::ResetUNSstartedEvent\n");
-	HANDLE hUNSstarted = OpenEvent(EVENT_MODIFY_STATE, FALSE, L"Global\\UNSstarted");
-	if (hUNSstarted == nullptr)
-	{
-		UNS_DEBUG(L"CUNSAlert::OpenEvent UNSstarted failed, err=%d\n", GetLastError());
-		if (GetLastError() == 5)
-			return E_ACCESSDENIED;
-		else
-			return E_HANDLE;
-	}
-
-	if (!ResetEvent(hUNSstarted))
-	{
-		UNS_DEBUG(L"CUNSAlert::ResetEvent UNSstarted failed, err=%d\n", GetLastError());
-		CloseHandle(hUNSstarted);
-		return E_FAIL;
-	}
-
-	CloseHandle(hUNSstarted);
-	return S_OK;
+	return E_NOINTERFACE;
 }
