@@ -1,4 +1,5 @@
- //Copyright 2009 - 2012 Intel Corporation All Rights Reserved.
+//SPDX-License-Identifier: Apache-2.0
+//Copyright (C) 2009-2012 Intel Corporation
 
 #PRAGMA AUTORECOVER
 #pragma include ("cim_schema/Core/CIM_ManagedElement.mof")

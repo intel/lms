@@ -1,3 +1,7 @@
+@rem SPDX-License-Identifier: Apache-2.0 */
+@rem
+@rem Copyright (C) 2010-2020 Intel Corporation
+@rem
 
 rem compile mof files and create namespace
 mofcomp wmi_build.mof

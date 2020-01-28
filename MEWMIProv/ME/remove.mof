@@ -1,3 +1,4 @@
- //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+//SPDX-License-Identifier: Apache-2.0
+//Copyright (C) 2009-2020 Intel Corporation
 #pragma namespace("\\\\.\\root")
-#pragma deleteinstance ("__Namespace.Name='Intel_ME'", FAIL)
+#pragma deleteinstance ("__Namespace.Name='Intel_ME'", nofail)
