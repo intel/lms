@@ -687,9 +687,11 @@ void  StatusEventHandler::handleWlanEvents(const GMS_AlertIndication *alert)
 		break;
 	case EVENT_WIRELESS_STATE_CHANGED:
 		{
-			uint32_t status = GetLocalProfileSynchronizationEnabled() ? 1 : 0;
-			SaveCurrentStatus(status, WIFI_PROFILE_SYNC_ENABLE_S);
-			NotifyConfigurator(status, WIFI_PROFILE_SYNC_CONF);
+			bool enabled = false;
+			if (GetLocalProfileSynchronizationEnabled(enabled))
+			{
+				CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, WIFIPROFILESYNCENABLE);
+			}
 			break;
 		}
 	}
@@ -857,7 +859,7 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 
 	GenerateSharedStaticIPEvents(AMTState);
 	GenerateTimeSyncEvents(AMTState);
-	GenerateWiFiProfileSyncEvents();
+	GenerateWiFiProfileSyncEvents(AMTState);
 
 	// Order of GenerateKVMRedirectionEvents and GenerateUCEvents matters (if KVM_REQUESTED state then don't generate UC_REQUESTED event)
 	GenerateKVMRedirectionEvents(AMTState); 
@@ -898,12 +900,21 @@ void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 	CheckForStatusChange(IP_SYNC_ENABLE_S,IPSyncEnabled,IPSYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
-void StatusEventHandler::GenerateWiFiProfileSyncEvents()
+void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
 {
 	FuncEntryExit<void> fee(L"GenerateWiFiProfileSyncEvents");
 
-	CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S,
-		GetLocalProfileSynchronizationEnabled(), WIFIPROFILESYNCENABLE);
+	bool enabled = false;
+
+	if (AMTstate)
+	{
+		if (!GetLocalProfileSynchronizationEnabled(enabled))
+		{
+			UNS_ERROR(L"StatusEventHandler: GetLocalProfileSynchronizationEnabled failed\n");
+			return;
+		}
+	}
+	CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, WIFIPROFILESYNCENABLE);
 }
 
 void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
@@ -1433,20 +1444,30 @@ bool StatusEventHandler::GetUserConsentState(short* pState, USER_CONSENT_POLICY*
 	return true;
 }
 
-bool StatusEventHandler::GetLocalProfileSynchronizationEnabled()
+#ifdef WIN32
+bool StatusEventHandler::GetLocalProfileSynchronizationEnabled(bool &enabled)
 {
 	WlanWSManClient WlanWSMan;
 	bool ret;
-	bool enabled = true;
 
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
-	if (!ret)
+	if (!ret) {
 		UNS_ERROR(L"StatusEventHandler:: WlanWSMan failed to receive current state\n");
+		return false;
+	}
 	if (!enabled)
 		UNS_DEBUG(L"StatusEventHandler:: LocalProfileSynchronization disabled in FW\n");
 
-	return enabled;
+	return true;
 }
+#else // WIN32
+bool StatusEventHandler::GetLocalProfileSynchronizationEnabled(bool &enabled)
+{
+	enabled = false;
+	UNS_DEBUG(L"StatusEventHandler:: WiFiProfileSync supported only on Windows\n");
+	return true;
+}
+#endif // WIN32
 
 // Publish Provisioning event
 void StatusEventHandler::publishProvisioningEvent(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE state)

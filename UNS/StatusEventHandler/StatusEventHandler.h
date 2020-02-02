@@ -158,7 +158,7 @@ private:
 	void GenerateUCEvents(bool AMTstate);
 	void GenerateMEEvents();
 	void GenerateWLANEvents();
-	void GenerateWiFiProfileSyncEvents();
+	void GenerateWiFiProfileSyncEvents(bool AMTstate);
 
 	bool GetManageabiltyMode(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType);
 	bool GetAmtState(FEATURE_STATE &AmtState) const;
@@ -171,7 +171,7 @@ private:
 
 	Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE UpdatePrevProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State);
 	bool GetUserConsentState(short* pState, USER_CONSENT_POLICY* pPolicy);
-	bool GetLocalProfileSynchronizationEnabled();
+	bool GetLocalProfileSynchronizationEnabled(bool &enabled);
 	void firstPullForEvents();
 	void checkForBootReason();
 
