@@ -17,7 +17,6 @@
 #include "SIOWSManClient.h"
 #include "HBPWSManClient.h"
 #include "KVMWSManClient.h"
-#include "global.h"
 #include "CancelOptInClient.h"
 #include "AMTRedirectionServiceWSManClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -35,11 +34,7 @@
 #include "GetCodeVersionCommand.h"
 #include "GetCurrentPowerPolicyCommand.h"
 #include "GetLanInterfaceSettingsCommand.h"
-#include "GetProvisioningModeCommand.h"
 #include "GetProvisioningStateCommand.h"
-#include "GetProvisioningTlsModeCommand.h"
-#include "GetSecurityParametersCommand.h"
-#include "GetWebUIStateCommand.h"
 #include "GetRedirectionSessionsStateCommand.h"
 #include "GetAMTStateCommand.h"
 #include "KVMScreenSettingClient.h"
@@ -49,7 +44,6 @@
 #include "IPSKVMSessionUsingPortClient.h"
 #include "IPSSOLSessionUsingPortClient.h"
 #include "IPSIderSessionUsingPortClient.h"
-#include "AddProxyTableEntryCommand.h"
 #include "PTHI_Commands_BE.h"
 #include "version.h"
 #include "servicesNames.h"
@@ -87,14 +81,6 @@ namespace Intel {
 
 template<typename T, size_t SIZE>
 constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
-
-
-		typedef enum _EAMTWebUIState
-		{
-			AMT_WEB_UI_ENABLED_TLS,
-			AMT_WEB_UI_ENABLED_NOT_TLS,
-			AMT_WEB_UI_DISABLED
-		} EAMTWebUIState;
 
 		const short DEFAULT_LANG_ID = 100;
 
@@ -291,38 +277,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		}
 #endif // WIN32
 
-		LMS_ERROR PTHI_Commands_BE::GetProvisioningMode(uint32_t &pProvisioningMode)
-		{
-			try
-			{
-				Intel::MEI_Client::AMTHI_Client::GetProvisioningModeCommand getProvisioningModeCommand;
-				pProvisioningMode = getProvisioningModeCommand.getResponse().ProvisioningMode;
-				UNS_DEBUG(L"pProvisioningMode=%d\n", pProvisioningMode);
-				return ERROR_OK;
-			}
-			CATCH_AMTHIErrorException(L"GetProvisioningModeCommand")
-			CATCH_MEIClientException(L"GetProvisioningModeCommand")
-			CATCH_exception(L"GetProvisioningModeCommand")
-			return ERROR_FAIL;
-		}
-
-		LMS_ERROR PTHI_Commands_BE::GetProvisioningTlsMode(uint32_t &pProvisioningTlsMode)
-		{
-			/*AMT_STATUS_NOT_READY	Management controller has not progressed far enough in its initialization to process the command.
-			*/
-			try
-			{
-				Intel::MEI_Client::AMTHI_Client::GetProvisioningTLSModeCommand getProvisioningTlsModeCommand;
-				pProvisioningTlsMode = getProvisioningTlsModeCommand.getResponse().ProvTLSMode;
-				UNS_DEBUG(L"pProvisioningTlsMode=%d\n", pProvisioningTlsMode);
-				return ERROR_OK;
-			}
-			CATCH_AMTHIErrorException(L"GetProvisioningTlsModeCommand")
-			CATCH_MEIClientException(L"GetProvisioningTlsModeCommand")
-			CATCH_exception(L"GetProvisioningTlsModeCommand")
-			return ERROR_FAIL;
-		}
-
 		LMS_ERROR PTHI_Commands_BE::GetProvisioningState(uint32_t &pProvisioningState)
 		{
 			/*
@@ -384,51 +338,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			CATCH_AMTHIErrorException(L"GetUserInitiatedEnabledInterfacesCommand")
 			CATCH_MEIClientException(L"GetUserInitiatedEnabledInterfacesCommand")
 			CATCH_exception(L"GetUserInitiatedEnabledInterfacesCommand")
-			return ERROR_FAIL;
-		}
-
-		LMS_ERROR PTHI_Commands_BE::getWebUIState(uint32_t &pState)
-		{
-			/*
-			AMT_STATUS_INVALID_PARAMETER	Request Id is unknown
-			*/
-			EAMTWebUIState webUIState;
-			try
-			{
-				Intel::MEI_Client::AMTHI_Client::GetWebUIStateCommand getWebUIStateCommand;
-
-				if (getWebUIStateCommand.getResponse().WebUiEnabled)
-				{
-					bool tlsEnabled = false;
-					try
-					{
-						Intel::MEI_Client::AMTHI_Client::GetSecurityParametersCommand getSecurityParametersCommand;
-						tlsEnabled = getSecurityParametersCommand.getResponse().TLSEnabled;
-					}
-					CATCH_AMTHIErrorException(L"GetSecurityParametersCommand")
-					CATCH_MEIClientException(L"GetSecurityParametersCommand")
-					CATCH_exception(L"GetSecurityParametersCommand")
-
-					if (tlsEnabled)
-					{
-						webUIState = AMT_WEB_UI_ENABLED_TLS;
-					}
-					else
-					{
-						webUIState = AMT_WEB_UI_ENABLED_NOT_TLS;
-					}
-				}
-				else
-				{
-					webUIState = AMT_WEB_UI_DISABLED;
-				}
-				pState = webUIState;
-				UNS_DEBUG(L"WEBUI enabled=%d\n", pState);
-				return ERROR_OK;
-			}
-			CATCH_AMTHIErrorException(L"GetWebUIStateCommand")
-			CATCH_MEIClientException(L"GetWebUIStateCommand")
-			CATCH_exception(L"GetWebUIStateCommand")
 			return ERROR_FAIL;
 		}
 
@@ -638,25 +547,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			return ERROR_FAIL;
 		}
 
-		LMS_ERROR PTHI_Commands_BE::OpenUserInitiatedConnection(void)
-		{
-			/*
-			AMT_STATUS_NOT_PERMITTED	Entity has no permission to open a connection..
-			AMT_STATUS_INTERNAL_ERROR	The operation could not be completed by AMT.
-			AMT_STATUS_DATA_MISSING		No connectivity policy configured when AMT is outside the enterprise network.
-			*/
-			try
-			{
-				Intel::MEI_Client::AMTHI_Client::OpenUserInitiatedConnectionCommand openUserInitiatedConnection;
-				UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
-				return ERROR_OK;
-			}
-			CATCH_AMTHIErrorException(L"OpenUserInitiatedConnection")
-			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
-			CATCH_exception(L"OpenUserInitiatedConnection")
-			return ERROR_FAIL;
-		}
-
 		LMS_ERROR PTHI_Commands_BE::CloseUserInitiatedConnection(void)
 		{
 			/*
@@ -672,25 +562,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			CATCH_MEIClientException(L"CloseUserInitiatedConnection")
 			CATCH_exception(L"CloseUserInitiatedConnection")
 			return ERROR_FAIL;
-		}
-
-		LMS_ERROR PTHI_Commands_BE::TerminateKVMSession(void)
-		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
-
-			KVMWSManClient _KVMWSManClient;
-			if (_KVMWSManClient.TerminateKVMSession() != true)
-			{
-				unsigned short state;
-				if (_KVMWSManClient.KVMRedirectionState(&state))// Check if KVMWSMAnClient enabled in the FW
-					return ERROR_FAIL;
-			}
-			unsigned int ReturnValue;
-			CancelOptInClient _CancelOptInClient;
-			_CancelOptInClient.CancelOptIn(&ReturnValue);
-
-			return ERROR_OK;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetKVMRedirectionState(bool &pEnabled, bool &pConnected)
@@ -982,11 +853,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			return ERROR_OK;
 		}
 
-		LMS_ERROR PTHI_Commands_BE::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters)
-		{
-			return UpdateScreenSettings2(eExtendedDisplayParameters, MAX_DISPLAY_NUMBER_LEGACY);
-		}
-
 		LMS_ERROR PTHI_Commands_BE::GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology)
 		{
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
@@ -1031,29 +897,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			pNeeded = (needed != 0);
 			UNS_DEBUG(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded, got from StatusEventHandler %d\n", pNeeded);
 			return ERROR_OK;
-		}
-
-		LMS_ERROR PTHI_Commands_BE::ProxyAddProxyEntry(const std::string &proxy_fqdn,
-			unsigned short proxy_port,
-			uint8_t *gateway_mac_address,
-			const std::string &network_dns_suffix)
-		{
-
-			try
-			{
-				Intel::MEI_Client::AMTHI_Client::AddProxyTableEntryCommand addProxyCommand(proxy_port,
-					gateway_mac_address,
-					proxy_fqdn,
-					network_dns_suffix);
-
-				UNS_DEBUG(L"AddProxyTableEntryCommand succeed\n");
-
-				return ERROR_OK;
-			}
-			CATCH_AMTHIErrorException(L"AddProxyTableEntryCommand")
-			CATCH_MEIClientException(L"AddProxyTableEntryCommand")
-			CATCH_exception(L"AddProxyTableEntryCommand")
-			return ERROR_FAIL;
 		}
 	}
 }

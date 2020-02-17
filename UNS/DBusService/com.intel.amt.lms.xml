@@ -51,7 +51,7 @@
 <arg name="State" type="u" direction="out" />
 </method>
 <!--
-    GetFeaturesState:
+    GetFeaturesState (DEPRECATED):
     @States: Feature states array (0 = NOT_PRESENT, 1 = DISABLED, 2 = ENABLED, 3 = AVAILABLE).
 
     Retrieves all feature states in array.
@@ -71,7 +71,7 @@
 <arg name="CustomerType" type="u" direction="out" />
 </method>
 <!--
-    GetPlatformType:
+    GetPlatformType (DEPRECATED):
     @PlatformType: 0 = MOBILE, 1 = DESKTOP, 2 = SERVER, 3 = WORKSTATION
 
     Retrieves platform type.
@@ -152,7 +152,7 @@
 <arg name="Version" type="s" direction="out" />
 </method>-->
 <!--
-    GetProvisioningMode:
+    GetProvisioningMode (DEPRECATED):
     @ProvisioningMode: 0 = NONE, 1 = ENTERPRISE, 2 = SMALL_BUSINESS, 3 = REMOTE_CONNECTIVITY_SERVICE
 
     Retrieves FW provisioning mode.
@@ -161,7 +161,7 @@
 <arg name="ProvisioningMode" type="u" direction="out" />
 </method>
 <!--
-    GetProvisioningTlsMode:
+    GetProvisioningTlsMode (DEPRECATED):
     @ProvisioningTlsMode: 0 = UNKNOWN, 1 = PSK, 2 = PKI
 
     Retrieves available provision TLS mode.
@@ -201,7 +201,7 @@
 <arg name="Status" type="u" direction="out" />
 </method>
 <!--
-    getWebUIState:
+    getWebUIState (DEPRECATED):
     @State: 0 = ENABLED_TLS, 1 = NOT_TLS, 2 = DISABLED
 
     Retrieves state of WebUI enablement.
@@ -297,7 +297,7 @@
 <arg name="SystemUUID" type="s" direction="out" />
 </method>
 <!--
-    OpenUserInitiatedConnection:
+    OpenUserInitiatedConnection (DEPRECATED):
 
     Send command to initiate a user request for helpdesk services.
 -->
@@ -311,7 +311,7 @@
 <method name="CloseUserInitiatedConnection">
 </method>
 <!--
-    TerminateKVMSession:
+    TerminateKVMSession (DEPRECATED):
 
     Sent command to terminate an active KVM session.
 -->

@@ -26,12 +26,9 @@ namespace Intel {
 #endif // WIN32
 			LMS_ERROR GetLMSVersion(std::string &sVersion);
 
-			LMS_ERROR GetProvisioningMode(uint32_t &pProvisioningMode);
-			LMS_ERROR GetProvisioningTlsMode(uint32_t &pProvisioningTlsMode);
 			LMS_ERROR GetProvisioningState(uint32_t &pProvisioningState);
 			LMS_ERROR GetNetworkConnectionStatus(uint32_t &pStatus, uint32_t &pConnectionType, uint32_t &pConnectionTrigger);
 			LMS_ERROR GetUserInitiatedEnabled(short &pStatus);
-			LMS_ERROR getWebUIState(uint32_t &pState);
 			LMS_ERROR GetPowerPolicy(std::string &bstrPolicy);
 			LMS_ERROR GetLastResetReason(short &pReason);
 			LMS_ERROR GetRedirectionStatus(uint32_t &pSOL, uint32_t &pIDER);
@@ -50,9 +47,7 @@ namespace Intel {
 				std::vector<std::string> &pResponse,
 				bool &pIpv6Enable);
 			LMS_ERROR GetSystemUUID(std::string &bstrUUID);
-			LMS_ERROR OpenUserInitiatedConnection(void);
 			LMS_ERROR CloseUserInitiatedConnection(void);
-			LMS_ERROR TerminateKVMSession(void);
 			LMS_ERROR GetKVMRedirectionState(bool &pEnabled, bool &pConnected);
 			LMS_ERROR SetSpriteLanguage(unsigned short Language);
 			LMS_ERROR GetSpriteParameters(unsigned short &pLanguage, unsigned short &pZoom);
@@ -69,13 +64,8 @@ namespace Intel {
 			LMS_ERROR snmpEventSubscriberExists(short &pExist);
 			LMS_ERROR CILAFilterCollectionSubscriptionExists(short &pExist);
 			LMS_ERROR UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, short numOfDisplays);
-			LMS_ERROR UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters);
 			LMS_ERROR GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology);
 			LMS_ERROR IsRebootAfterProvisioningNeeded(bool &pNeeded);
-			LMS_ERROR ProxyAddProxyEntry(const std::string &proxy_fqdn,
-				unsigned short proxy_port,
-				uint8_t *gateway_mac_address,
-				const std::string &network_dns_suffix);
 		};
 	}
 }

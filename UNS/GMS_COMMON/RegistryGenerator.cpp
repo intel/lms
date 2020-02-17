@@ -19,20 +19,16 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(IMSS_EVENT_HISTORY) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_EVENT_HISTORY,LMS_REG_TEXT("IMSS Event History"));
 	regMap->at(GetUserInitiatedEnabled_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetUserInitiatedEnabled"));
 	regMap->at(GetKVMRedirectionState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetKVMRedirectionState"));
-	regMap->at(OpenUserInitiatedConnection_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("OpenUserInitiatedConnection"));
 	regMap->at(CloseUserInitiatedConnection_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("CloseUserInitiatedConnection"));
 	regMap->at(GetIMSSEventHistory_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetIMSSEventHistory"));
 	regMap->at(GetAMTVersion_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetAMTVersion"));
 	regMap->at(GetLMSVersion_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetLMSVersion"));
 	regMap->at(GetHeciVersion_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetHeciVersion"));
-	regMap->at(GetProvisioningMode_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetProvisioningMode"));
-	regMap->at(GetProvisioningTlsMode_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetProvisioningTlsMode"));
 	regMap->at(GetProvisioningState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetProvisioningState"));
 	regMap->at(GetNetworkConnectionStatus_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetNetworkConnectionStatus"));
 	regMap->at(userInitiatedPolicyRuleExists_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("userInitiatedPolicyRuleExists"));
 	regMap->at(snmpEventSubscriberExists_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("snmpEventSubscriberExists"));
 	regMap->at(CILAFilterCollectionSubscriptionExists_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("CILAFilterCollectionSubscriptionExists"));
-	regMap->at(getWebUIState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("getWebUIState"));
 	regMap->at(GetPowerPolicy_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetPowerPolicy"));
 	regMap->at(GetLastResetReason_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetLastResetReason"));
 	regMap->at(GetRedirectionStatus_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetRedirectionStatus"));
@@ -40,7 +36,6 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetNetworkSettings_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetNetworkSettings"));
 	regMap->at(GetSystemUUID_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSystemUUID"));
 	regMap->at(GetIPv6NetworkSettings_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetIPv6NetworkSettings"));
-	regMap->at(TerminateKVMSession_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("TerminateKVMSession"));
 	regMap->at(SetSpriteLanguage_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("SetSpriteLanguage"));
 	regMap->at(SetSpriteZoom_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("SetSpriteZoom"));
 	regMap->at(GetSpriteParameters_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSpriteParameters"));
@@ -48,9 +43,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetAuditLogs_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetAuditLogs"));
 	regMap->at(GetATDeviceInfo_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetATDeviceInfo"));
 	regMap->at(GetTheFeatureState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetTheFeatureState"));
-	regMap->at(GetFeaturesState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetFeaturesState"));
 	regMap->at(GetCustomerType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetCustomerType"));
-	regMap->at(GetPlatformType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetPlatformType"));
 	regMap->at(GetMenageabiltyMode_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetMenageabiltyMode"));
 	regMap->at(GetConfigurationInfo_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetConfigurationInfo"));
 	regMap->at(GetUserConsentState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetUserConsentState"));
@@ -81,7 +74,6 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetRedirectionSessionLinkTechnology_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetRedirectionSessionLinkTechnology"));
 	regMap->at(TIME_SYNC_ENABLE_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE,LMS_REG_TEXT("Time Sync Enable"));
 	regMap->at(IsRebootAfterProvisioningNeeded_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("IsRebootAfterProvisioningNeeded"));
-	regMap->at(ProxyAddProxyEntry_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("ProxyAddProxyEntry"));
 	regMap->at(OverrideProsetAdapterSwitching) = RegEntry(LMS_REG,LMS_REG_TEXT("OverrideProsetAdapterSwitching"));
 	regMap->at(UserInitiatedPolicyRuleForLocalMpsExists_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("UserInitiatedPolicyRuleForLocalMpsExists"));
 	regMap->at(FLogSize) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("FLogSize"));

@@ -25,13 +25,13 @@ interface IPTHI_Commands : IDispatch{
 	[id(1), helpstring("method GetAMTVersion")] HRESULT GetAMTVersion([out] BSTR* AMTVersion);
 	[id(2), helpstring("method GetLMSVersion")] HRESULT GetLMSVersion([out] BSTR* sVersion);
 	[id(3), helpstring("method GetHeciVersion")] HRESULT GetHeciVersion([out] BSTR* sVersion);
-	[id(4), helpstring("method GetProvisioningMode")] HRESULT GetProvisioningMode([out] SHORT* pProvisioningMode);
-	[id(5), helpstring("method GetProvisioningTlsMode")] HRESULT GetProvisioningTlsMode([out] SHORT* pProvisioningTlsMode);
+	[id(4), helpstring("method GetProvisioningMode (DEPRECATED)")] HRESULT GetProvisioningMode([out] SHORT* pProvisioningMode);
+	[id(5), helpstring("method GetProvisioningTlsMode (DEPRECATED)")] HRESULT GetProvisioningTlsMode([out] SHORT* pProvisioningTlsMode);
 	[id(6), helpstring("method GetProvisioningState")] HRESULT GetProvisioningState([out] SHORT* pProvisioningState);
 	[id(7), helpstring("method GetNetworkConnectionStatus (Remote Access, NetworkConnectionType, ConnectionTrigger")]
 		HRESULT GetNetworkConnectionStatus([out] SHORT* pStatus,[out] SHORT* pConnectionType,[out] SHORT* pConnectionTrigger);
-	[id(8), helpstring("method GetUserInitiatedEnabled (connetcion status(CIRA disabled/enabled)")] HRESULT GetUserInitiatedEnabled([out] SHORT* pStatus);
-	[id(9), helpstring("method getWebUIState")] HRESULT getWebUIState([out] SHORT* pState);
+	[id(8), helpstring("method GetUserInitiatedEnabled (connection status(CIRA disabled/enabled)")] HRESULT GetUserInitiatedEnabled([out] SHORT* pStatus);
+	[id(9), helpstring("method getWebUIState (DEPRECATED)")] HRESULT getWebUIState([out] SHORT* pState);
 	[id(10), helpstring("method GetPowerPolicy")] HRESULT GetPowerPolicy([out] BSTR* bstrPolicy);
 	[id(11), helpstring("method GetLastResetReason")] HRESULT GetLastResetReason([out] SHORT* pReason);
 	[id(12), helpstring("method GetRedirectionStatus")] HRESULT GetRedirectionStatus([out] SHORT* pSOL, [out] SHORT* pIDER);
@@ -45,7 +45,7 @@ interface IPTHI_Commands : IDispatch{
 									[out] SHORT* pWirelessControl,// WIRELESS
 									[out] SHORT* pWirelessConfEnabled); //WIRELESS
 	[id(15), helpstring("method GetSystemUUID")] HRESULT GetSystemUUID([out] BSTR* bstrUUID);
-	[id(16), helpstring("method OpenUserInitiatedConnection")] HRESULT OpenUserInitiatedConnection(void);
+	[id(16), helpstring("method OpenUserInitiatedConnection (DEPRECATED)")] HRESULT OpenUserInitiatedConnection(void);
 	[id(17), helpstring("method CloseUserInitiatedConnection")] HRESULT CloseUserInitiatedConnection(void);
 	[id(18), helpstring("method GetIPv6NetworkSettings (0-WIRED, 1-WIRELESS)")] 
 		HRESULT GetIPv6NetworkSettings( [in] SHORT ConnectionType /*WIRED, WIRELESS*/,
@@ -54,12 +54,12 @@ interface IPTHI_Commands : IDispatch{
 										[out] BSTR* SecondaryDNS,
 										[out,size_is(4160)] VARIANT* pResponse, //IPv6 Addresses
 										[out] VARIANT_BOOL* pIpv6Enable);
-	[id(19) , helpstring("method TerminateKVMSession")] HRESULT TerminateKVMSession(void);
+	[id(19) , helpstring("method TerminateKVMSession (DEPRECATED)")] HRESULT TerminateKVMSession(void);
 	[id(20) , helpstring("method GetKVMRedirectionState")] HRESULT GetKVMRedirectionState([out] VARIANT_BOOL* pEnabled, [out] VARIANT_BOOL* pConnected);
 
-	[id(21) , helpstring("method GetSpriteLanguage")] HRESULT GetSpriteLanguage([out] SHORT* Language);
+	[id(21) , helpstring("method GetSpriteLanguage (DEPRECATED)")] HRESULT GetSpriteLanguage([out] SHORT* Language);
 	[id(22) , helpstring("method SetSpriteLanguage")] HRESULT SetSpriteLanguage([in] SHORT Language);
-	[id(23) , helpstring("method GetSpriteZoom")] HRESULT GetSpriteZoom([out] SHORT* Zoom);
+	[id(23) , helpstring("method GetSpriteZoom (DEPRECATED)")] HRESULT GetSpriteZoom([out] SHORT* Zoom);
 	[id(24) , helpstring("method SetSpriteZoom")] HRESULT SetSpriteZoom([in] SHORT Zoom);
 	[id(25) , helpstring("method GetSpriteParameters")] HRESULT GetSpriteParameters([out] SHORT* Language,[out] SHORT* Zoom);
 	[id(26) , helpstring("method GetConfigurationInfo")] HRESULT GetConfigurationInfo([out] SHORT* pControlMode,[out] SHORT* pProvisioningMethod, [out] BSTR* pCreationTimeStamp,[out] SAFEARRAY(BYTE)* pCertHash);
@@ -71,11 +71,11 @@ interface IPTHI_Commands : IDispatch{
 	[id(32), helpstring("method userInitiatedPolicyRuleExists (connetcion status - CIRA disabled/enabled)")] HRESULT userInitiatedPolicyRuleExists([out] SHORT* pStatus);
 	[id(33), helpstring("method snmpEventSubscriberExists (snmpEvent existence - eventSubscriber exists/doesn't exists)")] HRESULT snmpEventSubscriberExists([out] SHORT* pExists);
 	[id(34), helpstring("method CILAFilterCollectionSubscriptionExists (filter Collection Subscription existence - Subscriber exists/doesn't exists)")] HRESULT CILAFilterCollectionSubscriptionExists([out] SHORT* pExists);
-	[id(35), helpstring("method UpdateScreenSettings")] HRESULT UpdateScreenSettings([in] EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters); //Naftali
+	[id(35), helpstring("method UpdateScreenSettings (DEPRECATED)")] HRESULT UpdateScreenSettings([in] EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters);
 	[id(36), helpstring("method UpdateScreenSettings2")] HRESULT UpdateScreenSettings2([in] EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, [in] SHORT numOfDisplays);
 	[id(37), helpstring("method GetRedirectionSessionLinkTechnology")] HRESULT GetRedirectionSessionLinkTechnology ([in] REDIRECTION_SESSION_TYPE sessionType, [out] SHORT* pLinkTechnology);
 	[id(38), helpstring("method IsRebootAfterProvisioningNeeded")] HRESULT IsRebootAfterProvisioningNeeded( [out] VARIANT_BOOL* pNeeded);
-	[id(39), helpstring("method ProxyAddProxyEntry")] HRESULT ProxyAddProxyEntry(	[in]  BSTR                proxy_fqdn, 
+	[id(39), helpstring("method ProxyAddProxyEntry (DEPRECATED)")] HRESULT ProxyAddProxyEntry(	[in]  BSTR                proxy_fqdn, 
 																					[in]  USHORT              proxy_port,
 																					[in]  SAFEARRAY(BYTE)      gateway_mac_address,
 																					[in]  BSTR                 network_dns_suffix);
@@ -112,7 +112,7 @@ interface IUNSAlert : IDispatch{
 				[in]BSTR messageID, 
 				[in]BSTR dateTime);
 	[id(3), helpstring("method GetIMSSEventHistory")] HRESULT GetIMSSEventHistory([out] BSTR* bstrEventHistory);
-	[id(4), helpstring("method ResetUNSstartedEvent")] HRESULT ResetUNSstartedEvent();
+	[id(4), helpstring("method ResetUNSstartedEvent (DEPRECATED)")] HRESULT ResetUNSstartedEvent();
 };
 [
 	object,
@@ -128,9 +128,9 @@ interface IManageability_Commands : IDispatch{
 	//[id(1), helpstring("method GetFeatureState")] HRESULT GetFeatureState([out] ULONG* pState);
 	//[id(2), helpstring("method GetPlatformFeatureCapability")] HRESULT GetPlatformFeatureCapability([out] ULONG* pPlatform, [out] ULONG* pSKU);
 	[id(3), helpstring("method GetTheFeatureState")] HRESULT GetTheFeatureState([in] FEATURES feat, [out] FEATURE_STATE* pState);
-	[id(4), helpstring("method GetFeaturesState")] HRESULT GetFeaturesState([out]SAFEARRAY(SHORT)* ppStates);
+	[id(4), helpstring("method GetFeaturesState (DEPRECATED)")] HRESULT GetFeaturesState([out]SAFEARRAY(SHORT)* ppStates);
 	[id(5), helpstring("method GetCustomerType")] HRESULT GetCustomerType([out] CUSTOMER_TYPE* pType);
-	[id(6), helpstring("method GetPlatformType")] HRESULT GetPlatformType([out] PLATFORM_TYPE* pType);
+	[id(6), helpstring("method GetPlatformType (DEPRECATED)")] HRESULT GetPlatformType([out] PLATFORM_TYPE* pType);
 	[id(7), helpstring("method GetMenageabiltyMode")] HRESULT GetMenageabiltyMode([out] MENAGEABILTY_MODE* pMode);
 	[id(8), helpstring("method GetFWInfo")] HRESULT GetFWInfo([out] BSTR* pMEBxVersion, [out] ULONG* pBiosBootState, [out] VARIANT_BOOL* pCryptoFuseEnable, [out] VARIANT_BOOL* pLocalFWupdateEnable);
 	[id(9), helpstring("method GetPMCVersion")] HRESULT GetPMCVersion([out] BSTR* pFwVer);

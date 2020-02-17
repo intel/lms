@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 // AMT_COM_Test.cpp : Defines the entry point for the console application.
 //
@@ -14,6 +14,7 @@
 try {(func);} catch (const _com_error& e){	if (e.Error() != err) FAIL();}
 
 #define ASSERT_THROW_INVALIDARG(func)  ASSERT_THROW_COM_(func, E_INVALIDARG)
+#define ASSERT_THROW_NOINTERFACE(func)  ASSERT_THROW_COM_(func, E_NOINTERFACE)
 
 #define ASSERT_NO_THROW_COM(func) \
 try {(func);} catch (const _com_error& e){std::cout<<"0x"<<std::hex<<e.Error()<<std::endl;FAIL();}
@@ -40,16 +41,7 @@ protected:
 TEST_F(AMT_COM_Manageability, GetFeaturesState)
 {
 	SAFEARRAY *states;
-	ASSERT_NO_THROW_COM(amthi->GetFeaturesState(&states));
-
-	LONG UBound, LBound;
-	LONG arraySize;
-	ASSERT_NO_THROW_COM(SafeArrayGetUBound(states, 1, &UBound));
-	ASSERT_NO_THROW_COM(SafeArrayGetLBound(states, 1, &LBound));
-
-	arraySize = (UBound - LBound) + 1;
-
-	ASSERT_EQ(arraySize, AMT_COM_InterfaceLib::FEATURES_NUM);
+	ASSERT_THROW_NOINTERFACE(amthi->GetFeaturesState(&states));
 }
 
 TEST_F(AMT_COM_Manageability, GetTheFeatureState)
@@ -75,7 +67,7 @@ TEST_F(AMT_COM_Manageability, GetCustomerType)
 TEST_F(AMT_COM_Manageability, GetPlatformType)
 {
 	enum AMT_COM_InterfaceLib::PLATFORM_TYPE Type;
-	ASSERT_NO_THROW_COM(amthi->GetPlatformType(&Type));
+	ASSERT_THROW_NOINTERFACE(amthi->GetPlatformType(&Type));
 }
 
 TEST_F(AMT_COM_Manageability, GetMenageabiltyMode)
@@ -141,13 +133,13 @@ TEST_F(AMT_COM_PTHI, GetHeciVersion)
 TEST_F(AMT_COM_PTHI, GetProvisioningMode)
 {
 	SHORT Mode;
-	ASSERT_NO_THROW_COM(amthi->GetProvisioningMode(&Mode));
+	ASSERT_THROW_NOINTERFACE(amthi->GetProvisioningMode(&Mode));
 }
 
 TEST_F(AMT_COM_PTHI, GetProvisioningTlsMode)
 {
 	SHORT Mode;
-	ASSERT_NO_THROW_COM(amthi->GetProvisioningTlsMode(&Mode));
+	ASSERT_THROW_NOINTERFACE(amthi->GetProvisioningTlsMode(&Mode));
 }
 
 TEST_F(AMT_COM_PTHI, GetProvisioningState)
@@ -197,7 +189,7 @@ TEST_F(AMT_COM_PTHI, GetUserInitiatedEnabled)
 TEST_F(AMT_COM_PTHI, getWebUIState)
 {
 	SHORT Mode;
-	ASSERT_NO_THROW_COM(amthi->getWebUIState(&Mode));
+	ASSERT_THROW_NOINTERFACE(amthi->getWebUIState(&Mode));
 }
 
 TEST_F(AMT_COM_PTHI, GetPowerPolicy)
@@ -266,13 +258,13 @@ TEST_F(AMT_COM_PTHI, UserInitiatedConnection)
 {
 	SHORT Status;
 	ASSERT_NO_THROW_COM(amthi->InitiateUserConnection(&Status));
-	ASSERT_NO_THROW_COM(amthi->OpenUserInitiatedConnection());
+	ASSERT_THROW_NOINTERFACE(amthi->OpenUserInitiatedConnection());
 	ASSERT_NO_THROW_COM(amthi->CloseUserInitiatedConnection());
 }
 
 TEST_F(AMT_COM_PTHI, TerminateKVMSession)
 {
-	ASSERT_NO_THROW_COM(amthi->TerminateKVMSession());
+	ASSERT_THROW_NOINTERFACE(amthi->TerminateKVMSession());
 }
 
 TEST_F(AMT_COM_PTHI, GetKVMRedirectionState)
@@ -286,13 +278,11 @@ TEST_F(AMT_COM_PTHI, Sprite)
 {
 	SHORT Language;
 	ASSERT_NO_THROW_COM(amthi->SetSpriteLanguage(1));
-	ASSERT_NO_THROW_COM(amthi->GetSpriteLanguage(&Language));
-	EXPECT_EQ(Language, 1);
+	ASSERT_THROW_NOINTERFACE(amthi->GetSpriteLanguage(&Language));
 
 	SHORT Zoom;
 	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(2));
-	ASSERT_NO_THROW_COM(amthi->GetSpriteZoom(&Zoom));
-	EXPECT_EQ(Zoom, 2);
+	ASSERT_THROW_NOINTERFACE(amthi->GetSpriteZoom(&Zoom));
 
 	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&Language, &Zoom));
 	EXPECT_EQ(Language, 1);
@@ -337,7 +327,7 @@ TEST_F(AMT_COM_PTHI, UpdateScreenSettings)
 {
 	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters = 
 	{ {0,1,2,3,4,5} };
-	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings(eExtendedDisplayParameters));
+	ASSERT_THROW_NOINTERFACE(amthi->UpdateScreenSettings(eExtendedDisplayParameters));
 }
 
 TEST_F(AMT_COM_PTHI, UpdateScreenSettings2)
@@ -367,7 +357,7 @@ TEST_F(AMT_COM_PTHI, ProxyAddProxyEntry)
 	USHORT proxy_port = 0;
 	CComSafeArray<BYTE> gateway_mac_address(6);
 	bstr_t network_dns_suffix = "1.2.3.4";
-	ASSERT_NO_THROW_COM(amthi->ProxyAddProxyEntry(proxy_fqdn, proxy_port, gateway_mac_address.Detach(), network_dns_suffix));
+	ASSERT_THROW_NOINTERFACE(amthi->ProxyAddProxyEntry(proxy_fqdn, proxy_port, gateway_mac_address.Detach(), network_dns_suffix));
 }
 
 /* ------------------------- AMT_COM_AT_Device ----------------------- */
@@ -427,7 +417,7 @@ TEST_F(AMT_COM_UNSAlert, GetIMSSEventHistory)
 
 TEST_F(AMT_COM_UNSAlert, ResetUNSstartedEvent)
 {
-	ASSERT_NO_THROW_COM(amthi->ResetUNSstartedEvent());
+	ASSERT_THROW_NOINTERFACE(amthi->ResetUNSstartedEvent());
 }
 
 TEST_F(AMT_COM_UNSAlert, RiseAlert)

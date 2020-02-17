@@ -203,58 +203,6 @@ namespace Intel {
 			return ERROR_FAIL;
 		}
 
-		LMS_ERROR Manageability_Commands_BE::GetFeaturesState(std::vector<FEATURE_STATE> &ppStates)
-		{
-			try
-			{
-				Intel::MEI_Client::MKHI_Client::GetFWCapsCommand getCapabilitiesCommand(Intel::MEI_Client::MKHI_Client::FEATURES_CAPABLE);
-				Intel::MEI_Client::MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(Intel::MEI_Client::MKHI_Client::FEATURES_ENABLED);
-				Intel::MEI_Client::MKHI_Client::GetFWCapsCommand getFeaturesAvailabilityCommand(Intel::MEI_Client::MKHI_Client::FEATURES_AVAILABLE);
-
-				Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData = getCapabilitiesCommand.getResponse();
-				Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI StateData = getFeaturesStateCommand.getResponse();
-				auto AvailData = getFeaturesAvailabilityCommand.getResponse();
-
-				UNS_DEBUG(L"CManageability_Commands::GetTheFeatureState Capability=0x%X State=0x%X Availability=0x%X\n", CapabilityData, StateData, AvailData);
-
-				ppStates.resize(FEATURES_NUM);
-
-				ppStates[AMT] = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt, AvailData.Fields.Amt);
-				ppStates[IRWT] = FeatureStateLogic(CapabilityData.Fields.Irwt, StateData.Fields.Irwt, AvailData.Fields.Irwt);
-				ppStates[QST] = FeatureStateLogic(CapabilityData.Fields.Qst, StateData.Fields.Qst, AvailData.Fields.Qst);
-				ppStates[TDT] = FeatureStateLogic(CapabilityData.Fields.Tdt, StateData.Fields.Tdt, AvailData.Fields.Tdt);
-				ppStates[SOFTCREEK] = FeatureStateLogic(CapabilityData.Fields.SoftCreek, StateData.Fields.SoftCreek, AvailData.Fields.SoftCreek);
-				ppStates[VE] = FeatureStateLogic(CapabilityData.Fields.Ve, StateData.Fields.Ve, AvailData.Fields.Ve);
-				//this feature doesn't exist in the MKHI command
-				//ppStates[DT]=FeatureStateLogic(CapabilityData.Fields.Dt,StateData.Fields.Dt);
-				ppStates[DT] = NOT_PRESENT;
-
-				ppStates[NAND] = FeatureStateLogic(CapabilityData.Fields.Nand29, StateData.Fields.Nand29, AvailData.Fields.Nand29);
-				//this feature doesn't exist in the MKHI command
-				//ppStates[MPC]=FeatureStateLogic(CapabilityData.Fields.Mpc,StateData.Fields.Mpc);
-				ppStates[MPC] = NOT_PRESENT;
-
-				ppStates[ICC_OVER_CLOCK_IN] = FeatureStateLogic(CapabilityData.Fields.IccOverClockin, StateData.Fields.IccOverClockin, AvailData.Fields.IccOverClockin);
-				ppStates[PAV] = FeatureStateLogic(CapabilityData.Fields.Pav, StateData.Fields.Pav, AvailData.Fields.Pav);
-				ppStates[SPK] = FeatureStateLogic(CapabilityData.Fields.Spk, StateData.Fields.Spk, AvailData.Fields.Spk);
-				ppStates[RCA] = FeatureStateLogic(CapabilityData.Fields.Rca, StateData.Fields.Rca, AvailData.Fields.Rca);
-				ppStates[RPAT] = FeatureStateLogic(CapabilityData.Fields.Rpat, StateData.Fields.Rpat, AvailData.Fields.Rpat);
-				ppStates[IPV6] = FeatureStateLogic(CapabilityData.Fields.Ipv6, StateData.Fields.Ipv6, AvailData.Fields.Ipv6);
-				ppStates[KVM] = FeatureStateLogic(CapabilityData.Fields.Kvm, StateData.Fields.Kvm, AvailData.Fields.Kvm);
-				ppStates[OCH] = FeatureStateLogic(CapabilityData.Fields.Och, StateData.Fields.Och, AvailData.Fields.Och);
-				ppStates[DAL] = FeatureStateLogic(CapabilityData.Fields.MEDAL, StateData.Fields.MEDAL, AvailData.Fields.MEDAL);
-				ppStates[TLS] = FeatureStateLogic(CapabilityData.Fields.Tls, StateData.Fields.Tls, AvailData.Fields.Tls);
-				ppStates[CILA] = FeatureStateLogic(CapabilityData.Fields.Cila, StateData.Fields.Cila, AvailData.Fields.Cila);
-				ppStates[LAKEHOUSTON] = FeatureStateLogic(CapabilityData.Fields.LakeHouston, StateData.Fields.LakeHouston, AvailData.Fields.LakeHouston);
-
-				return ERROR_OK;
-			}
-			CATCH_MKHIErrorException(L"GetTheFeatureState")
-			CATCH_MEIClientException(L"GetTheFeatureState")
-			CATCH_exception(L"GetTheFeatureState")
-			return ERROR_FAIL;
-		}
-
 		CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
 		{
 			bool isME11 = true;
@@ -312,35 +260,6 @@ namespace Intel {
 			CATCH_MKHIErrorException(L"GetPlatformTypeExt")
 			CATCH_MEIClientException(L"GetPlatformTypeExt")
 			CATCH_exception(L"GetPlatformTypeExt")
-			return ERROR_FAIL;
-		}
-
-		LMS_ERROR Manageability_Commands_BE::GetPlatformType(PLATFORM_TYPE &pType)
-		{
-			try
-			{
-				Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
-				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
-
-				UNS_DEBUG(L"CManageability_Commands::GetPlatformType: Platform=0x%X \n", Platform.Data);
-				if (Platform.Fields.Desktop)
-					pType = DESKTOP;
-				else
-					if (Platform.Fields.Mobile)
-						pType = MOBILE;
-					else
-						if (Platform.Fields.Server)
-							pType = SERVER;
-						else
-							if (Platform.Fields.WorkStn)
-								pType = WORKSTATION;
-							else
-								return ERROR_UNEXPECTED;
-				return ERROR_OK;
-			}
-			CATCH_MKHIErrorException(L"GetPlatformTypeCommand")
-			CATCH_MEIClientException(L"GetPlatformTypeCommand")
-			CATCH_exception(L"GetPlatformTypeCommand")
 			return ERROR_FAIL;
 		}
 

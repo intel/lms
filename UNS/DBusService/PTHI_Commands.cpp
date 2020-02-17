@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2019 Intel Corporation
+ * Copyright (C) 2017-2020 Intel Corporation
  */
 #include "DBusService.h"
 #include "PTHI_Commands.h"
@@ -44,30 +44,16 @@ namespace PTHI {
 	gboolean on_get_provisioning_mode(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_provisioning_mode\n");
-		DBusService *th = (DBusService *)user_data;
-		uint32_t mode = 0;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetProvisioningMode(mode);
-		if (!error)
-			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", mode));
-		else
-			send_error(invocation, error);
+		UNS_DEBUG(L"on_get_provisioning_mode - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
 	gboolean on_get_provisioning_tls_mode(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_provisioning_tls_mode\n");
-		DBusService *th = (DBusService *)user_data;
-		uint32_t mode = 0;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetProvisioningTlsMode(mode);
-		if (!error)
-			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", mode));
-		else
-			send_error(invocation, error);
+		UNS_DEBUG(L"on_get_provisioning_tls_mode - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -120,15 +106,8 @@ namespace PTHI {
 	gboolean on_get_web_uistate(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_web_uistate\n");
-		DBusService *th = (DBusService *)user_data;
-		uint32_t state = 0;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).getWebUIState(state);
-		if (!error)
-			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", state));
-		else
-			send_error(invocation, error);
+		UNS_DEBUG(L"on_get_web_uistate - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -274,14 +253,8 @@ namespace PTHI {
 	gboolean on_open_user_initiated_connection(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_open_user_initiated_connection\n");
-		DBusService *th = (DBusService *)user_data;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).OpenUserInitiatedConnection();
-		if (!error)
-			g_dbus_method_invocation_return_value(invocation, NULL);
-		else
-			send_error(invocation, error);
+		UNS_DEBUG(L"on_open_user_initiated_connection - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -302,14 +275,8 @@ namespace PTHI {
 	gboolean on_terminate_kvmsession(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
-		UNS_DEBUG(L"on_terminate_kvmsession\n");
-		DBusService *th = (DBusService *)user_data;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).TerminateKVMSession();
-		if (!error)
-			g_dbus_method_invocation_return_value(invocation, NULL);
-		else
-			send_error(invocation, error);
+		UNS_DEBUG(L"on_terminate_kvmsession - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 

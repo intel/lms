@@ -22,7 +22,6 @@ namespace Intel {
 			LMS_ERROR GetTheFeatureState(FEATURES feat, FEATURE_STATE& pState);
 			LMS_ERROR GetFeaturesState(std::vector<FEATURE_STATE> &ppStates);
 			LMS_ERROR GetCustomerType(CUSTOMER_TYPE& pType);
-			LMS_ERROR GetPlatformType(PLATFORM_TYPE& pType);
 			LMS_ERROR GetMenageabiltyMode(MENAGEABILTY_MODE& pMode);
 			LMS_ERROR GetFWInfo(std::string &pMEBxVersion, unsigned long &pBiosBootState, bool &pCryptoFuseEnable, bool &pLocalFWupdateEnable);
 			LMS_ERROR GetPMCVersion(std::string &pFwVer);

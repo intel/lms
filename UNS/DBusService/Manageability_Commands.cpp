@@ -14,27 +14,8 @@ namespace Manageability {
 	gboolean on_get_features_state(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 				       gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_features_state\n");
-		DBusService *th = (DBusService *)user_data;
-		std::vector<FEATURE_STATE> states;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetFeaturesState(states);
-		if (!error)
-		{
-			GVariantBuilder builder;
-			GVariantBuilder builder1;
-
-			g_variant_builder_init(&builder, G_VARIANT_TYPE ("au"));
-			for (const FEATURE_STATE& i : states)
-				g_variant_builder_add_value(&builder, g_variant_new_uint32((guint32)i));
-			g_variant_builder_init(&builder1, G_VARIANT_TYPE ("(au)"));
-			g_variant_builder_add_value(&builder1, g_variant_builder_end(&builder));
-			g_dbus_method_invocation_return_value(invocation, g_variant_builder_end (&builder1));
-		}
-		else
-		{
-			send_error(invocation, error);
-		}
+		UNS_DEBUG(L"on_get_features_state - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return true;
 	}
 
@@ -71,15 +52,8 @@ namespace Manageability {
 	gboolean on_get_platform_type(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
 				      gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_platform_type\n");
-		DBusService *th = (DBusService *)user_data;
-		PLATFORM_TYPE platform_type = DESKTOP;
-
-		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetPlatformType(platform_type);
-		if (!error)
-			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", platform_type));
-		else
-			send_error(invocation, error);
+		UNS_DEBUG(L"on_get_platform_type - deprecated\n");
+		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 

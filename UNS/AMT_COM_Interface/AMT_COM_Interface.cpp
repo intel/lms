@@ -40,8 +40,6 @@ HRESULT AddRegKeys()
 		return 1;
  	if (false == ds.SetDataValue(GetKVMRedirectionState_F, L"", true))
 		return 1;
- 	if (false == ds.SetDataValue(OpenUserInitiatedConnection_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(CloseUserInitiatedConnection_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetIMSSEventHistory_F, L"", true))
@@ -52,10 +50,6 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetHeciVersion_F, L"", true))
 		return 1;
-	if (false == ds.SetDataValue(GetProvisioningMode_F, L"", true))
-		return 1;
-	if (false == ds.SetDataValue(GetProvisioningTlsMode_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(GetProvisioningState_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetNetworkConnectionStatus_F, L"", true))
@@ -65,8 +59,6 @@ HRESULT AddRegKeys()
 	if (false == ds.SetDataValue(snmpEventSubscriberExists_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(CILAFilterCollectionSubscriptionExists_F, L"", true))
-		return 1;
-	if (false == ds.SetDataValue(getWebUIState_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetPowerPolicy_F, L"", true))
 		return 1;
@@ -82,8 +74,6 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetIPv6NetworkSettings_F, L"", true))
 		return 1;
-	if (false == ds.SetDataValue(TerminateKVMSession_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(SetSpriteLanguage_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(SetSpriteZoom_F, L"", true))
@@ -98,11 +88,7 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetTheFeatureState_F, L"", true))
 		return 1;
-	if (false == ds.SetDataValue(GetFeaturesState_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(GetCustomerType_F, L"", true))
-		return 1;
-	if (false == ds.SetDataValue(GetPlatformType_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetMenageabiltyMode_F, L"", true))
 		return 1;
@@ -125,8 +111,6 @@ HRESULT AddRegKeys()
 	if (false == ds.SetDataValue(GetRedirectionSessionLinkTechnology_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(IsRebootAfterProvisioningNeeded_F, L"", true))
-		return 1;
-	if (false == ds.SetDataValue(ProxyAddProxyEntry_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(UserInitiatedPolicyRuleForLocalMpsExists_F, L"", true))
 		return 1;

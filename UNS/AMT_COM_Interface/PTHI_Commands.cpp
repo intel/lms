@@ -412,27 +412,8 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningMode(SHORT* pProvisioningMode)
 	if (pProvisioningMode == nullptr)
 		return E_POINTER;
 
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"ProvisioningMode", pProvisioningMode))
-	{
-		if (*pProvisioningMode == -1)
-			return E_FAIL;
-		return S_OK;
-	}
-#endif
-
-	if (CheckCredentials(GetProvisioningMode_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	uint32_t ProvisioningMode;
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.GetProvisioningMode(ProvisioningMode);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	*pProvisioningMode = (SHORT)ProvisioningMode;
-
-	return S_OK;
+	UNS_DEBUG(L"CPTHI_Commands::GetProvisioningMode - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
@@ -440,29 +421,8 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 	if (pProvisioningTlsMode == nullptr)
 		return E_POINTER;
 
-	/*AMT_STATUS_NOT_READY	Management controller has not progressed far enough in its initialization to process the command.
-	*/
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"ProvisioningTlsMode", pProvisioningTlsMode))
-	{
-		if (*pProvisioningTlsMode == -1)
-			return E_FAIL;
-		return S_OK;
-	}
-#endif
-
-	if (CheckCredentials(GetProvisioningTlsMode_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	uint32_t ProvisioningTlsMode;
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.GetProvisioningTlsMode(ProvisioningTlsMode);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	*pProvisioningTlsMode = (SHORT)ProvisioningTlsMode;
-
-	return S_OK;
+	UNS_DEBUG(L"CPTHI_Commands::GetProvisioningTlsMode - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
@@ -564,30 +524,9 @@ STDMETHODIMP CPTHI_Commands::getWebUIState(SHORT* pState)
 {
 	if (pState == nullptr)
 		return E_POINTER;
-	/*
-	AMT_STATUS_INVALID_PARAMETER	Request Id is unknown
-	*/
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"WebUIState", pState))
-	{
-		if (*pState == -1)
-			return E_FAIL;
-		return S_OK;
-	}
-#endif
 
-	if (CheckCredentials(getWebUIState_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	uint32_t State;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.getWebUIState(State);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	*pState = (SHORT)State;
-	return S_OK;
+	UNS_DEBUG(L"CPTHI_Commands::getWebUIState - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
@@ -895,17 +834,8 @@ STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 
 STDMETHODIMP CPTHI_Commands::OpenUserInitiatedConnection()
 {
-	/*
-	AMT_STATUS_NOT_PERMITTED	Entity has no permission to open a connection..
-	AMT_STATUS_INTERNAL_ERROR	The operation could not be completed by AMT.
-	AMT_STATUS_DATA_MISSING		No connectivity policy configured when AMT is outside the enterprise network.
-	*/
-	if (CheckCredentials(OpenUserInitiatedConnection_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.OpenUserInitiatedConnection();
-	return LMSError2HRESULT(err);
+	UNS_DEBUG(L"CPTHI_Commands::OpenUserInitiatedConnection - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::CloseUserInitiatedConnection()
@@ -923,12 +853,8 @@ STDMETHODIMP CPTHI_Commands::CloseUserInitiatedConnection()
 
 STDMETHODIMP CPTHI_Commands::TerminateKVMSession()
 {
-	if (CheckCredentials(TerminateKVMSession_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.TerminateKVMSession();
-	return LMSError2HRESULT(err);
+	UNS_DEBUG(L"CPTHI_Commands::TerminateKVMSession - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARIANT_BOOL* pConnected)
@@ -963,6 +889,7 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 
 STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT* pLanguage)
 {
+	UNS_DEBUG(L"CPTHI_Commands::GetSpriteLanguage - deprecated\n");
 	return E_NOINTERFACE;
 }
 
@@ -983,6 +910,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 
 STDMETHODIMP CPTHI_Commands::GetSpriteZoom(SHORT* pZoom)
 {
+	UNS_DEBUG(L"CPTHI_Commands::GetSpriteZoom - deprecated\n");
 	return E_NOINTERFACE;
 }
 
@@ -1285,9 +1213,10 @@ STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExis
 	return LMSError2HRESULT(err);
 }
 
-STDMETHODIMP CPTHI_Commands::UpdateScreenSettings (EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters)
+STDMETHODIMP CPTHI_Commands::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters)
 {
-	return UpdateScreenSettings2(eExtendedDisplayParameters, MAX_DISPLAY_NUMBER_LEGACY);
+	UNS_DEBUG(L"CPTHI_Commands::UpdateScreenSettings - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CPTHI_Commands::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, SHORT numOfDisplays)
@@ -1354,39 +1283,8 @@ STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR proxy_fqdn,
 												BSTR network_dns_suffix)
 
 {
-	if (CheckCredentials(ProxyAddProxyEntry_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	HRESULT hr = E_FAIL;
-	LONG UBound = 0, LBound = 0;
-	LONG arraySize = 0;
-
-	hr = SafeArrayGetUBound(gateway_mac_address, 1, &UBound);
-	if (!SUCCEEDED(hr))
-	{
-		return hr;
-	}
-
-	hr = SafeArrayGetLBound(gateway_mac_address, 1, &LBound);
-	if (!SUCCEEDED(hr))
-	{
-		return hr;
-	}
-
-	arraySize = (UBound - LBound) + 1;
-	// Check for MAC MAX Len
-	if (arraySize != 6)
-	{
-		return E_INVALIDARG;
-	}
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.ProxyAddProxyEntry(
-	                                ConvertBStrToString(proxy_fqdn),
-	                                proxy_port,
-	                                (uint8_t*)gateway_mac_address->pvData,
-	                                ConvertBStrToString(network_dns_suffix));
-	return LMSError2HRESULT(err);
+	UNS_DEBUG(L"CPTHI_Commands::ProxyAddProxyEntry - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 inline std::string ConvertBStrToString(BSTR bstr)

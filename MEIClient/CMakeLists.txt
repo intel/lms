@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 include (metee.cmake)
 
 file (GLOB AMTHIClient
-  AMTHIClient/Src/AddProxyTableEntryCommand.cpp
   AMTHIClient/Src/AmtAnsiString.cpp
   AMTHIClient/Src/AMTHICommand.cpp
   AMTHIClient/Src/CFG_SetOverrideProsetAdapterSwitchingCommand.cpp

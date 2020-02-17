@@ -10,6 +10,7 @@
 
 // Manageability_Commands.cpp : Implementation of CManageability_Commands
 
+#include "global.h"
 #include "stdafx.h"
 #include "Manageability_Commands.h"
 #include "Manageability_Commands_BE.h"
@@ -79,23 +80,8 @@ HRESULT CManageability_Commands::GetFeaturesState(SAFEARRAY** ppStates)
 	if (ppStates == nullptr)
 		return E_POINTER;
 
-	if (CheckCredentials(GetFeaturesState_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	std::vector<FEATURE_STATE> states;
-
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.GetFeaturesState(states);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	ATL::CComSafeArray<SHORT> StatesArr(FEATURES_NUM);
-	for (int i = 0; i < FEATURES_NUM; i++)
-		StatesArr[i] = (ATL::_ATL_AutomationType<SHORT>::_typewrapper)states[i];
-
-	*ppStates = StatesArr.Detach();
-
-	return S_OK;
+	UNS_DEBUG(L"CManageability_Commands::GetFeaturesState - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
@@ -125,21 +111,8 @@ HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
 	if (pType == nullptr)
 		return E_POINTER;
 
-#ifdef _DEBUG
-	SHORT val;
-	if (GetFromRegistry(L"DebugData", L"GetPlatformType", &val))
-	{
-		*pType = (PLATFORM_TYPE)val;
-		return S_OK;
-	}
-#endif
-
-	if (CheckCredentials(GetPlatformType_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.GetPlatformType(*pType);
-	return LMSError2HRESULT(err);
+	UNS_DEBUG(L"CManageability_Commands::GetPlatformType - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
