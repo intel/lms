@@ -522,7 +522,7 @@ void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *a
 
 void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication *alert)
 {
-	short UserConsentState;
+	OPT_IN_STATE UserConsentState;
 	switch (alert->id)
 	{
 	case EVENT_REMOTE_SOL_STARTED:
@@ -553,7 +553,7 @@ void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication
 
 void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 {		
-	short UserConsentState;
+	OPT_IN_STATE UserConsentState;
 	switch (alert->id)
 	{
 	case EVENT_KVM_SESSION_REQUESTED:
@@ -800,9 +800,10 @@ void StatusEventHandler::GenerateUCEvents(bool AmtState)
 	UC_STATE UCstate = UC_ENDED;
 	if (AmtState)
 	{
-		short UserConsentState=OPT_IN_STATE_NOT_STARTED, UserConsentPolicy;
-		CancelOptInClient cancelOptInClient;
-		if (!cancelOptInClient.GetUserConsentState(&UserConsentState, &UserConsentPolicy))
+		OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
+		USER_CONSENT_POLICY UserConsentPolicy;
+
+		if (!GetUserConsentState(&UserConsentState, &UserConsentPolicy))
 		{
 			UNS_ERROR(L"StatusEventHandler: GetUserConsentState failed\n");
 			return;
@@ -1431,15 +1432,17 @@ void StatusEventHandler::SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Clien
 	std::lock_guard<std::mutex> lock(m_semAMTEnabled);
 	m_prevProvState = State;
 }
-
-bool StatusEventHandler::GetUserConsentState(short* pState, USER_CONSENT_POLICY* pPolicy)
+ 
+bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_POLICY* pPolicy)
 {
 	CancelOptInClient _CancelOptInClient;
 	short UserConsentPolicy;
+	short UserConsentState;
 
-	if (!_CancelOptInClient.GetUserConsentState(pState,&UserConsentPolicy))
+	if (!_CancelOptInClient.GetUserConsentState(&UserConsentState, &UserConsentPolicy))
 		return false;
 	*pPolicy = (USER_CONSENT_POLICY)UserConsentPolicy;
+	*pState = (OPT_IN_STATE)UserConsentState;
 	UNS_DEBUG(L"GetUserConsentState State=%d, Policy=%d\n",*pState,*pPolicy);
 	return true;
 }
@@ -1747,9 +1750,10 @@ bool StatusEventHandler::GetAlarmClockBootEvent(SX_STATES &previousSXState)
 bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connected)
 {
 	KVMWSManClient Client;
-	CancelOptInClient cancelOptInClient;
-	short UserConsentState=OPT_IN_STATE_NOT_STARTED, UserConsentPolicy;
+	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
+	USER_CONSENT_POLICY UserConsentPolicy;
 	short state;
+
 	if (Client.KVMRedirectionState((unsigned short*)&state))
 	{
 		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%d \n",state);
@@ -1758,8 +1762,8 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 		case KVM_ENABLED_AND_CONNECTED: 
 			enable=true;
 			connected=KVM_STARTED;
-			cancelOptInClient.GetUserConsentState(&UserConsentState, &UserConsentPolicy);
-			if (UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED)
+			if (GetUserConsentState(&UserConsentState, &UserConsentPolicy) &&
+			   (UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED))
 				connected=KVM_REQUESTED;
 			return true;
 		case KVM_DISABLED: 

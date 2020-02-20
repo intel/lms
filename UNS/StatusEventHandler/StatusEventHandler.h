@@ -170,7 +170,7 @@ private:
 	static void MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, MENAGEABILTY_MODE* pMode);
 
 	Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE UpdatePrevProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State);
-	bool GetUserConsentState(short* pState, USER_CONSENT_POLICY* pPolicy);
+	bool GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_POLICY* pPolicy);
 	bool GetLocalProfileSynchronizationEnabled(bool &enabled);
 	void firstPullForEvents();
 	void checkForBootReason();
