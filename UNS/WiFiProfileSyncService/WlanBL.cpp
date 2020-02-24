@@ -20,7 +20,7 @@ wlanps::encriptionSet_t supportedEncription = { L"WEP", L"TKIP", L"AES", L"none"
 // User Profiles DB maximum size
 #define MAX_USER_PROFILES 16
 
-wlanps::WlanBL::WlanBL() : m_osProfiles(), m_MeProfileList()
+wlanps::WlanBL::WlanBL() : m_osProfiles()
 {
 	int index;
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]\n");
@@ -131,59 +131,38 @@ void wlanps::WlanBL::SyncProfiles()
 {
 	std::lock_guard<std::mutex> lock(_updateMutex);
 
-	bool status;
-
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: -->\n");
-
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Get ME Profiles...\n");
-	status = FetchMeProfiles();
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: FetchMeProfiles completed %C\n", status == true ? "successfully" : "with failure");
-
-	if (!status)
-	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: FetchMeProfiles failed -> Stop sync operation\n");
-		return;
-	}
-
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Delete Profiles which are not in the top16 use profiles \n");
-	status = CleanupProfilesInMe();
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe completed %C\n", status == true ? "successfully" : "with failure");
-
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Add Missing profiles \n");
-	status = AddMissingProfilesToMe();
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: AddMissingProfilesToMe completed %C\n", status == true ? "successfully" : "with failure");
-}
-
-
-bool wlanps::WlanBL::FetchMeProfiles()
-{
 	bool wsmanStatus;
+	MeProfileList MeProfileList;
 	WlanWSManClient wsmanClient;
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerating ME (CSME FW) Profiles, Wait for it...\n");
-	wsmanStatus = wsmanClient.Enumerate(m_MeProfileList);
+	wsmanStatus = wsmanClient.Enumerate(MeProfileList);
 
-	if (wsmanStatus)
+	if (!wsmanStatus)
 	{
-		PrintInternalMeProfiles();
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerate failed -> Stop sync operation\n");
+		return;
 	}
 
-	return wsmanStatus;
-}
-
-void wlanps::WlanBL::PrintInternalMeProfiles()
-{
-	int numMeProfiles = m_MeProfileList.size();
+	int numMeProfiles = MeProfileList.size();
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: ------- ME Profiles List Start (length [%02d]) ------\n", numMeProfiles);
 
 	for (int i = 0; i < numMeProfiles; i++)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] Profile  = %C \n", i, m_MeProfileList[i]->ElementName().c_str());
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] Profile  = %C \n", i, MeProfileList[i]->ElementName().c_str());
 	}
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: -------       ME Profiles List End            ------\n");
+
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Delete Profiles which are not in the top16 use profiles \n");
+	wsmanStatus = CleanupProfilesInMe(wsmanClient, MeProfileList);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
+
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Add Missing profiles \n");
+	wsmanStatus = AddMissingProfilesToMe(wsmanClient, MeProfileList);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: AddMissingProfilesToMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
 }
 
-bool wlanps::WlanBL::CleanupProfilesInMe()
+bool wlanps::WlanBL::CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList)
 {
 	int numOsProfiles;
 	int numMEPRofiles;
@@ -191,13 +170,11 @@ bool wlanps::WlanBL::CleanupProfilesInMe()
 	int osProfilesIndex;
 	bool bFoundMatch;
 	bool status;
-	WlanWSManClient wsmanClient;
-	Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings profileWifiSettings;
 
 	try
 	{
 		numOsProfiles = m_numOsUserProfiles > MAX_USER_PROFILES ? MAX_USER_PROFILES : m_numOsUserProfiles;
-		numMEPRofiles = m_MeProfileList.size();
+		numMEPRofiles = MeProfileList.size();
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: numOsProfiles %d, numMEPRofiles %d\n",  numOsProfiles, numMEPRofiles);
 
@@ -210,7 +187,7 @@ bool wlanps::WlanBL::CleanupProfilesInMe()
 
 				std::string currentOsProfile = WStringToString(m_wlanOsProfiles[osProfilesIndex]->profile);
 
-				if (m_MeProfileList[meProfilesIndex]->ElementName().compare(currentOsProfile) == 0)
+				if (MeProfileList[meProfilesIndex]->ElementName().compare(currentOsProfile) == 0)
 				{
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  Profile matching with one of top 16 OS User Profile at osIndex [%d] \n",
 						meProfilesIndex, currentOsProfile.c_str(), osProfilesIndex);
@@ -222,13 +199,12 @@ bool wlanps::WlanBL::CleanupProfilesInMe()
 			if (bFoundMatch == false)
 			{
 				//If I got here, it means I didn't find a match in the OS list for this profile
-				profileWifiSettings = *(m_MeProfileList[meProfilesIndex]);
-
+				std::string name = MeProfileList[meProfilesIndex]->ElementName();
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  Profile is not at the top 16 - Deleting Profile From ME !\n",
-					meProfilesIndex, profileWifiSettings.ElementName().c_str());
-				status = wsmanClient.DeleteProfile(profileWifiSettings);
+					meProfilesIndex, name.c_str());
+				status = wsmanClient.DeleteProfile(*MeProfileList[meProfilesIndex]);
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  DeleteProfile completed %C\n",
-					meProfilesIndex, profileWifiSettings.ElementName().c_str(), status == true ? "successfully" : "with Exception");
+					meProfilesIndex, name.c_str(), status == true ? "successfully" : "with Exception");
 			}
 		}
 	}
@@ -241,7 +217,7 @@ bool wlanps::WlanBL::CleanupProfilesInMe()
 	return true;
 }
 
-bool wlanps::WlanBL::AddMissingProfilesToMe()
+bool wlanps::WlanBL::AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList)
 {
 	bool ret = true;
 	int osProfilesIndex;
@@ -250,12 +226,11 @@ bool wlanps::WlanBL::AddMissingProfilesToMe()
 	int meProfilesIndex;
 	bool isThisAMissingProfile;
 	bool wsmanStatus;
-	WlanWSManClient  wsmanClient;
 
 	try
 	{
 		numOsProfiles = m_numOsUserProfiles > MAX_USER_PROFILES ? MAX_USER_PROFILES : m_numOsUserProfiles;
-		numMEPRofiles = m_MeProfileList.size();
+		numMEPRofiles = MeProfileList.size();
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: numOsProfiles %d, numMEPRofiles %d\n", numOsProfiles, numMEPRofiles);
 
 		// Go over the top 16 profiles in the OS profile list. Any profile that doesn't exist in the ME list - Add it
@@ -264,10 +239,10 @@ bool wlanps::WlanBL::AddMissingProfilesToMe()
 			isThisAMissingProfile = true;
 			std::string currentOsProfile = WStringToString(m_wlanOsProfiles[osProfilesIndex]->profile);
 
-			numMEPRofiles = m_MeProfileList.size();
+			numMEPRofiles = MeProfileList.size();
 			for (meProfilesIndex = 0; meProfilesIndex < numMEPRofiles; meProfilesIndex++)
 			{
-				if (m_MeProfileList[meProfilesIndex]->ElementName().compare(currentOsProfile) == 0)
+				if (MeProfileList[meProfilesIndex]->ElementName().compare(currentOsProfile) == 0)
 				{
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C OS Profile matches existing ME Profile at meProfilesIndex [%d] \n",
 						osProfilesIndex, currentOsProfile.c_str(), meProfilesIndex);
@@ -315,12 +290,12 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	bool bFoundMatch = false;
 	bool wsmanStatus;
 	unsigned long profileFlags = 0;
-	Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings profileWifiSettings;
 	int numMEPRofiles;
 	int numOsProfiles;
 	int meProfilesIndex;
 	int osProfilesIndex;
 	WlanWSManClient wsmanClient;
+	MeProfileList MeProfileList;
 
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Got connected to profile: [%W]\n", profileData->profile);
@@ -361,7 +336,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Getting ME Profiles list\n");
 
 		// Get Profile list from ME
-		wsmanStatus = wsmanClient.Enumerate(m_MeProfileList);
+		wsmanStatus = wsmanClient.Enumerate(MeProfileList);
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.Enumerate completed %C\n",
 			wsmanStatus == true ? "successfully" : "with failure");
@@ -373,7 +348,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 			return;
 		}
 
-		numMEPRofiles = m_MeProfileList.size();
+		numMEPRofiles = MeProfileList.size();
 
 		// Before getting the updated OS Profile list, need to clean the current list
 		CleanOsProfileList();
@@ -389,9 +364,9 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 		for (int i = 0; i < numMEPRofiles; i++)
 		{
 			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] m_MeProfileList->ElementName: [%C]\n",
-				i, m_MeProfileList[i]->ElementName().c_str());
+				i, MeProfileList[i]->ElementName().c_str());
 
-			if (m_MeProfileList[i]->ElementName().compare(wifiSettings.ElementName()) == 0)
+			if (MeProfileList[i]->ElementName().compare(wifiSettings.ElementName()) == 0)
 			{
 				bFound = true;
 				break;
@@ -405,12 +380,12 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 			{
 				bFoundMatch = false;
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Going to search ME Profile %C in OS profile list...\n",
-					m_MeProfileList[meProfilesIndex]->ElementName().c_str());
+					MeProfileList[meProfilesIndex]->ElementName().c_str());
 				for (osProfilesIndex = 0; osProfilesIndex < numOsProfiles; osProfilesIndex++)
 				{
 					std::string currentOsProfile = WStringToString(m_wlanOsProfiles[osProfilesIndex]->profile);
 
-					if (m_MeProfileList[meProfilesIndex]->ElementName().compare(currentOsProfile) == 0)
+					if (MeProfileList[meProfilesIndex]->ElementName().compare(currentOsProfile) == 0)
 					{
 						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  Profile matching with one of top 16 OS User Profile at osIndex [%d] \n",
 							meProfilesIndex, currentOsProfile.c_str(), osProfilesIndex);
@@ -421,14 +396,14 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 
 				if (bFoundMatch == false)
 				{
-					profileWifiSettings = *(m_MeProfileList[meProfilesIndex]);
+					std::string name = MeProfileList[meProfilesIndex]->ElementName();
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  Profile is not at the top 16 - Deleting Profile From ME!\n",
-						meProfilesIndex, profileWifiSettings.ElementName().c_str());
+						meProfilesIndex, name.c_str());
 
-					wsmanStatus = wsmanClient.DeleteProfile(profileWifiSettings);
+					wsmanStatus = wsmanClient.DeleteProfile(*MeProfileList[meProfilesIndex]);
 
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C  DeleteProfile completed\n",
-						meProfilesIndex, profileWifiSettings.ElementName().c_str());
+						meProfilesIndex, name.c_str());
 					break;
 				}
 			}

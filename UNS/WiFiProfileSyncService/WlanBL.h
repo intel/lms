@@ -1,15 +1,14 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 #ifndef __WLAN_BL_H_
 #define __WLAN_BL_H_
 
-#pragma once
-
 #include "WlanProfiles.h"
 
 #include "CIM_WiFiEndpointSettings.h"
+#include "WlanWSManClient.h"
 #include <memory>
 #include <locale>
 #include <codecvt>
@@ -22,15 +21,11 @@ namespace wlanps{
 	class WlanBL
 	{
 	private:
-		WlanProfiles	                                                                            m_osProfiles;								// Operating System Profiles, in OS format
-		PINTEL_PROFILE_DATA                                                                         m_wlanOsProfiles[MAX_OS_USER_PROFILES];		// Operating System Profiles, in Intel format
-		int																							m_numOsUserProfiles;
-		std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings>>    m_MeProfileList;							// ME db Profiles
+		WlanProfiles	    m_osProfiles;								// Operating System Profiles, in OS format
+		PINTEL_PROFILE_DATA m_wlanOsProfiles[MAX_OS_USER_PROFILES];		// Operating System Profiles, in Intel format
+		int                 m_numOsUserProfiles;
 
 		std::mutex      _updateMutex;
-		std::wstring    _lastConnSSID = L"";
-		long long       _lastConn = 0;
-
 
 	public:
 		~WlanBL();
@@ -49,12 +44,10 @@ namespace wlanps{
 		void PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid);
 
 		void    CleanOsProfileList();
-		bool	AddMissingProfilesToMe();
-		bool	FetchMeProfiles();
+		bool	AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
 		bool	FetchOsProfiles();
-		void	PrintInternalMeProfiles();
 		void	PrintInternalOsUserProfileList();
-		bool	CleanupProfilesInMe();
+		bool	CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
 	};
 }
 

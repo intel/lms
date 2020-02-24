@@ -1,10 +1,9 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 #ifndef __WLAN_PRFOFILES_H_
 #define __WLAN_PRFOFILES_H_
-#pragma once
 
 #include <wlanapi.h>
 #include <winnt.h>
@@ -22,7 +21,6 @@ namespace wlanps {
 	private:
 
 		HANDLE					m_hwlan ;
-		std::wstring			m_lastConnSSID ;
 
 	public:
 

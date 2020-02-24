@@ -1,12 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
 #include "WlanProfiles.h"
 
-wlanps::WlanProfiles::WlanProfiles() : m_hwlan(nullptr), m_lastConnSSID(L"")
+wlanps::WlanProfiles::WlanProfiles() : m_hwlan(nullptr)
 {
 }
 
