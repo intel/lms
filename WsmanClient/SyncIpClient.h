@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -28,6 +28,7 @@ public:
 		const std::string &GateWay, const std::string &DNSAddress1, const std::string &DNSAddress2);
 	bool GetSharedStaticIpState(bool* SharedStaticIpState);
 	bool Init(bool forceGet = false);
+	bool InitEPS();
 private:
 
 	bool m_isInit;

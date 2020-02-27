@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -31,6 +31,23 @@ bool SyncIpClient::Init(bool forceGet)
 {
 	if (!forceGet && m_isInit) return true;
 
+	m_isInit = false;
+	try {
+		if (!m_endpoint)
+			SetEndpoint();
+		//Lock WsMan to prevent reentry
+		std::lock_guard<std::mutex> lock(WsManSemaphore());
+		m_HostIpSettings.WsmanClient(m_client.get());
+		m_HostIpSettings.Get();
+		m_isInit = true;
+	}
+	CATCH_exception("SyncIpClient::Init")
+
+	return m_isInit;
+}
+
+bool SyncIpClient::InitEPS()
+{
 	try {
 		if (!m_endpoint)
 			SetEndpoint();
@@ -43,30 +60,20 @@ bool SyncIpClient::Init(bool forceGet)
 		std::vector<std::shared_ptr<AMT_EthernetPortSettings>> ethernetSettings =
 			AMT_EthernetPortSettings::Enumerate(m_client.get());
 		std::vector<std::shared_ptr<AMT_EthernetPortSettings>>::iterator settingsIterator;
-		for (settingsIterator = ethernetSettings.begin(); 
-			 settingsIterator != ethernetSettings.end() ; 
-			 settingsIterator++)
-		{				
+		for (settingsIterator = ethernetSettings.begin();
+			settingsIterator != ethernetSettings.end();
+			settingsIterator++)
+		{
 			AMT_EthernetPortSettings *currSetting = settingsIterator->get();
-			if(!currSetting)
+			if (!currSetting)
 				continue;
 
 			if (currSetting->IpSyncEnabledExists())
 				m_SharedStaticIpState |= currSetting->IpSyncEnabled();
 		}
 	}
-	CATCH_exception("SyncIpClient::Init")
-	m_isInit = false;
-	try {	
-		//Lock WsMan to prevent reentry
-		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		m_HostIpSettings.WsmanClient(m_client.get());
-		m_HostIpSettings.Get(); 
-		m_isInit = true;
-	}
-	CATCH_exception("SyncIpClient::Init")
-		
-	return m_isInit;
+	CATCH_exception_return("SyncIpClient::InitEPS")
+	return true;
 }
 
 bool SyncIpClient::GetNetworkData(bool& DHCPEnabled, std::string& IPAddress, std::string& SubNet, std::string& GateWay,
@@ -137,7 +144,7 @@ bool SyncIpClient::SetNetworkData(bool DHCPEnabled, const std::string &IPAddress
 
 bool SyncIpClient::GetSharedStaticIpState(bool* SharedStaticIpState)
 {
-	if (!Init(true))
+	if (!InitEPS())
 	{
 		UNS_ERROR("GetSharedStaticIpState Init return false!\n");
 		return false;
