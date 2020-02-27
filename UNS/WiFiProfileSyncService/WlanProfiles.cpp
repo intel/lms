@@ -46,6 +46,10 @@ bool wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsig
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR\n", profileData->profile);
 
+		if (pProfileXml != nullptr)
+		{
+			WlanFreeMemory(pProfileXml);
+		}
 		return false;
 	}
 

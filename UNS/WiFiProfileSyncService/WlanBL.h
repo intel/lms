@@ -6,14 +6,7 @@
 #define __WLAN_BL_H_
 
 #include "WlanProfiles.h"
-
-#include "CIM_WiFiEndpointSettings.h"
 #include "WlanWSManClient.h"
-#include <memory>
-#include <locale>
-#include <codecvt>
-#include <string>
-#include <map>
 #include <mutex>
 
 namespace wlanps{
@@ -40,7 +33,7 @@ namespace wlanps{
 	private:
 		WlanBL();
 
-		bool trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings& wifiSettings);
+		bool trans2CIM(PINTEL_PROFILE_DATA profileData, SingleMeProfile& wifiSettings);
 		void PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid);
 
 		void    CleanOsProfileList();

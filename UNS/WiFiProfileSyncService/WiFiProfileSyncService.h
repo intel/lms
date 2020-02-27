@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 #ifndef __WIFIPROFILE_SYNC_SERVICE_H_
 #define __WIFIPROFILE_SYNC_SERVICE_H_
@@ -14,7 +14,7 @@ class WIFIPROFILESYNCSERVICE_Export WiFiProfileSyncService : public EventHandler
 {
 public:
 
-	WiFiProfileSyncService() : m_syncRequiredButNoPfw(false), m_filter(new WiFiProfileSyncEventFilter), deferredInitTimerId_(-1), m_initNum(1), m_wlanHandle(nullptr) {}
+	WiFiProfileSyncService() : m_syncRequiredButNoPfw(false), m_filter(new WiFiProfileSyncEventFilter), m_initNum(1), m_wlanHandle(nullptr) {}
 
 	// ********************* ACE PART ********************************
 	
@@ -54,7 +54,6 @@ private:
 
 	bool m_syncRequiredButNoPfw;
 	std::shared_ptr<WiFiProfileSyncEventFilter> m_filter;
-	long deferredInitTimerId_;
 	int m_initNum;
 	HANDLE m_wlanHandle;
 };

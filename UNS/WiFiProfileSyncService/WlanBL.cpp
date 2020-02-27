@@ -4,12 +4,10 @@
  */
 #include "global.h"
 #include "WlanDefs.h"
-#include "WlanNotifications.h"
-#include "WlanWSManClient.h"
 #include "WlanBL.h"
 #include "Tools.h"
 #include <string>
-#include <list>
+#include <map>
 const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Settings ";
 
 typedef std::map<std::wstring, int> str_int_map_t;
@@ -431,7 +429,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	}
 }
 
-bool wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings& wifiSettings)
+bool wlanps::WlanBL::trans2CIM(PINTEL_PROFILE_DATA profileData, SingleMeProfile& wifiSettings)
 {
 	static const unsigned short TKIPPriority = 4;
 	static const unsigned short Priority802_11x_AES	= 6;

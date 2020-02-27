@@ -5,30 +5,14 @@
 #ifndef __WLAN_DEFS_H_
 #define __WLAN_DEFS_H_
 
-#pragma once
-
 #include <wlanapi.h>
-#include <map>
-#include <functional>   // std::greater
-#include <memory>
 
 namespace wlanps {
 
 	const unsigned int INTEL_SHORT_DESCR_LEN = 32;
 	const unsigned int INTEL_KEY_MATERIAL_LEN = 64;
 	const unsigned int INTEL_MAX_USERPROFILES = 16;
-	const unsigned int INTEL_AT6_NAME_SIZE_1X = 32;
 	const unsigned int MAX_OS_USER_PROFILES = 30;
-
-	typedef enum INTEL_PS_EVENTS_tag
-	{
-		PS_THREAD_SHUTDOWN = WM_USER + 1,
-		PS_ACM_CONNECTION_COMPLETE_SUCCESS,
-		PS_MSM_DISCONNECTED,
-
-		// Max event for the count
-		PS_EVENTS_COUNT
-	}INTEL_PS_EVENTS;
 
 	typedef struct INTEL_PROFILE_DATA_tag {
 		GUID  ifGuid;
@@ -66,4 +50,4 @@ namespace wlanps {
 
 }
 
-#endif
+#endif // __WLAN_DEFS_H_
