@@ -14,7 +14,7 @@
 #include "WSmanCommands.h"
 #include "SIOWSManClient.h"
 #include "KVMWSManClient.h"
-#include "RedirectionServiceWSManClient.h"
+#include "AMTRedirectionServiceWSManClient.h"
 #include "StringManipulator.h"
 using namespace std;
 
@@ -40,7 +40,7 @@ UINT32 WSmanCommands::TerminateKVMSession(void)
 
 UINT32 WSmanCommands::isIDEREnabled(bool *enabled)
 {
-	RedirectionServiceWSManClient redirectionClient;
+	AMTRedirectionServiceWSManClient redirectionClient;
 	unsigned short state;
 	*enabled = false;
 
@@ -69,7 +69,7 @@ UINT32 WSmanCommands::isIDEREnabled(bool *enabled)
 
 UINT32 WSmanCommands::isSOLEnabled(bool *enabled)
 {
-	RedirectionServiceWSManClient redirectionClient;
+	AMTRedirectionServiceWSManClient redirectionClient;
 	unsigned short state;
 	*enabled = false;
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -54,6 +54,18 @@ bool AMTRedirectionServiceWSManClient::TerminateSession(unsigned int SessionType
 	CATCH_exception_return("AMTRedirectionServiceWSManClient::TerminateSession")
 
 	return true;
+}
+
+bool AMTRedirectionServiceWSManClient::RedirectionState(unsigned short *state)
+{
+	if (!Init(true))
+		return false;
+	if (m_service.EnabledStateExists())
+	{
+		*state = m_service.EnabledState();
+		return true;
+	}
+	return false;
 }
 
 bool AMTRedirectionServiceWSManClient::Init(bool forceGet)

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 #pragma once
 
@@ -24,6 +24,7 @@ public:
 	AMTRedirectionServiceWSManClient(void);
 	virtual ~AMTRedirectionServiceWSManClient(void);
 	bool TerminateSession(unsigned int SessionType);
+	bool RedirectionState(unsigned short *state);
 	bool Init(bool forceGet= false);
 private:
 	

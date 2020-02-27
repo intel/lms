@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_subdirectory ("${TOP_DIR}/CIM_Framework" "CIM_Framework")
@@ -21,7 +21,6 @@ add_library (LmsWsmanClient SHARED
   KVMScreenSettingClient.cpp
   KVMWSManClient.cpp
   PowerManagementCapabilitiesWsManClient.cpp
-  RedirectionServiceWSManClient.cpp
   SIOWSManClient.cpp
   SyncIpClient.cpp
   TimeSynchronizationClient.cpp
