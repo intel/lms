@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 #ifndef __WINLOGEVENTHANDLER_H_
 #define __WINLOGEVENTHANDLER_H_
@@ -25,6 +25,7 @@ protected:
 	virtual int handle_event (MessageBlockPtr mbPtr);
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"WLOG"; }
 
 	virtual std::shared_ptr<EventsFilter> getFilter()
 	{

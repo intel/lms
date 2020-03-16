@@ -21,6 +21,7 @@ endif (UNIX)
 
 add_library (LmsGMS_COMMON SHARED
   EventHandler.cpp
+  FuncEntryExit.cpp
   GMSExternalLogger.cpp
   GmsSubService.cpp
   ${EVENTLOG_SRC}

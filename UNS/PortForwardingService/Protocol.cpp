@@ -45,8 +45,6 @@ const int local_socket_domain = AF_LOCAL;
 #include <SetEnterpriseAccessCommand.h>
 #include <GetDNSSuffixListCommand.h>
 
-#include <FuncEntryExit.h>
-
 #define FQDN_MAX_SIZE 256
 
 const LMEProtocolVersionMessage Protocol::MIN_PROT_VERSION(1, 0);
@@ -104,7 +102,7 @@ Protocol::~Protocol()
 bool Protocol::Init(InitParameters & params)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)> fee(L"Init", res);
+	FuncEntryExit<decltype(res)> fee(this, L"Init", res);
 
 	_eventLogWrn = params.evtLogCbWrn_;
 	_eventLogDbg = params.evtLogCbDbg_;
@@ -282,7 +280,7 @@ void Protocol::_TCPCleanup()
 
 void Protocol::Deinit()
 {
-	FuncEntryExit<void> fee(L"Deinit");
+	FuncEntryExit<void> fee(this, L"Deinit");
 	try
 	{
 		_lme.Deinit();
@@ -573,7 +571,7 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 {
 	SOCKET s = INVALID_SOCKET;
 	vector<SOCKET> sockets;
-	FuncEntryExit<SOCKET> fee(L"_connect", s);
+	FuncEntryExit<SOCKET> fee(this, L"_connect", s);
 	UNS_DEBUG(L"Port: %d\n", port);
 
 	for (addr; addr != NULL; addr = addr->ai_next) {
@@ -677,7 +675,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 {
 	sockaddr_storage addr;
 	socklen_t addrLen = sizeof(addr);
-	FuncEntryExit<void> fee(L"_acceptConnection");
+	FuncEntryExit<void> fee(this, L"_acceptConnection");
 
 	ConnectionAcceptCB cb_params(this, port);
 
@@ -1929,7 +1927,7 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 
 void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay)
 {
-	FuncEntryExit<void> fee(L"_updateEnterpriseAccessStatus");
+	FuncEntryExit<void> fee(this, L"_updateEnterpriseAccessStatus");
 
 	bool raccess = false;
 	sockaddr_storage localIp;
@@ -2056,7 +2054,7 @@ int Protocol::_isLocalCallback(void *const param, SOCKET s, sockaddr_storage* ca
 int Protocol:: _isLocal(SOCKET s, sockaddr_storage* caller_addr) const
 {
 	int result = -1;
-	FuncEntryExit<decltype(result)> fee(L"_isLocal", result);
+	FuncEntryExit<decltype(result)> fee(this, L"_isLocal", result);
 
 	SuffixMap suffixMap;
 	SuffixMap::iterator it;
@@ -2117,7 +2115,7 @@ int Protocol::_isRemoteCallback(void *const param, SOCKET s, sockaddr_storage* c
 
 int Protocol::_isRemote(SOCKET s) const
 {
-	FuncEntryExit<void> fee(L"_isRemote");
+	FuncEntryExit<void> fee(this, L"_isRemote");
 
 
 	sockaddr_storage localAddr;
@@ -2155,7 +2153,7 @@ int Protocol::_isRemote(SOCKET s) const
 
 int Protocol::_handleFQDNChange(const char *fqdn)
 {
-	FuncEntryExit<void> fee(L"_handleFQDNChange");
+	FuncEntryExit<void> fee(this, L"_handleFQDNChange");
 	std::string inFileName("");
 	const std::string hostFile("hosts");
 	const std::string sig("# LMS GENERATED LINE");
@@ -2272,7 +2270,7 @@ HOSTS_FILE_ERR:
 
 int Protocol::_updateIPFQDN(const string &fqdn)
 {
-	FuncEntryExit<void> fee(L"_updateIPFQDN");
+	FuncEntryExit<void> fee(this, L"_updateIPFQDN");
 	// When fqdn is empty, _handleFQDNChange() will remove LMS line from hosts file.
 
 	if (fqdn != _AMTFQDN)

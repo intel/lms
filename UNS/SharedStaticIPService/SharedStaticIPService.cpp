@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 
 #include "SharedStaticIPService.h"
@@ -14,8 +14,6 @@
 #include <netlink/route/addr.h>
 #endif //WIN32
 
-#include <FuncEntryExit.h>
-
 const ACE_TString SYNC_FW_UPDATE_FAILED(ACE_TEXT("Failed to update Intel(R) ME firmware with new network configuration"));
 const ACE_TString SYNC_VALIDATION_FAILED(ACE_TEXT("Failed to verify that the new network configuration is valid and did not update the Intel(R) ME firmware with the configuration"));
 
@@ -26,32 +24,6 @@ const unsigned long SharedStaticIPService::RetryInterval = 10 * GMS_ACE_SECOND;
 const unsigned long Immediately = 0;
 
 const unsigned int	MAX_SyncRetries = 10;
-
-void FlowLog(const wchar_t * pref, const wchar_t * func)
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func)
-{
-	FlowLog(L"SSIP: --> ", func);
-}
-
-void FuncExit(const wchar_t * func)
-{
-	FlowLog(L"SSIP: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status)
-{
-	std::wstringstream ss;
-	ss << L"SSIP: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
 
 SharedStaticIPService::SSIP_Message_Block::~SSIP_Message_Block()
 {}
@@ -79,7 +51,7 @@ ACE_HANDLE SharedStaticIPService::get_handle(void) const
 
 int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 {
-	FuncEntryExit<void> fee(L"init");
+	FuncEntryExit<void> fee(this, L"init");
 
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
@@ -181,7 +153,7 @@ SharedStaticIPService::fini (void)
 int
 SharedStaticIPService::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 {
-	FuncEntryExit<void> fee(L"handle_close");
+	FuncEntryExit<void> fee(this, L"handle_close");
 
 	int ret = 0;
 	if ((ret = ACE_Reactor::instance()->remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
@@ -198,7 +170,7 @@ SharedStaticIPService::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 int
 SharedStaticIPService::handle_signal (int, siginfo_t *, ucontext_t *)
 {
-	FuncEntryExit<void> fee(L"handle_signal");
+	FuncEntryExit<void> fee(this, L"handle_signal");
 
 	bool ret = NotifyRouteChange(&m_hand, &m_overlap); //Reset overlap
 	if (ret != NO_ERROR)
@@ -217,7 +189,7 @@ SharedStaticIPService::handle_signal (int, siginfo_t *, ucontext_t *)
 #else
 int SharedStaticIPService::handle_input(ACE_HANDLE)
 {
-	FuncEntryExit<void> fee(L"handle_input");
+	FuncEntryExit<void> fee(this, L"handle_input");
 
 	nl_recvmsgs_default(m_sock);
 	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
@@ -235,7 +207,7 @@ ACE_FACTORY_DEFINE (SHAREDSTATICIPSERVICE, SharedStaticIPService)
 
 int SharedStaticIPService::handle_timeout (const ACE_Time_Value &current_time, const void *arg)
 {
-	FuncEntryExit<void> fee(L"handle_timeout");
+	FuncEntryExit<void> fee(this, L"handle_timeout");
 	size_t state = (size_t)arg;
 	UNS_DEBUG(L"%d\n", (ACE_UINT32_MAX & state));
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
@@ -248,7 +220,7 @@ int SharedStaticIPService::handle_timeout (const ACE_Time_Value &current_time, c
 
 void SharedStaticIPService::MoveToState(SSIP_Message_Block::SSIP_STATE State, unsigned long Interval)
 {
-	FuncEntryExit<void> fee(L"MoveTo");
+	FuncEntryExit<void> fee(this, L"MoveTo");
 	UNS_DEBUG(L"%d %d\n", Interval, State);
 
 	if (Interval == 0)
@@ -265,7 +237,7 @@ void SharedStaticIPService::MoveToState(SSIP_Message_Block::SSIP_STATE State, un
 
 void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 {
-	FuncEntryExit<void> fee(L"HandleState");
+	FuncEntryExit<void> fee(this, L"HandleState");
 	UNS_DEBUG(L"%d\n", State);
 	bool enabled = false;
 	unsigned long TimerInterval = 0;
@@ -403,7 +375,7 @@ SharedStaticIPService::PreStop(int type, bool meiEnabled)
 
 bool SharedStaticIPService::GetSharedStaticIpState(bool * isEnabled)
 {
-	FuncEntryExit<void> fee(L"GetSharedStaticIpState");
+	FuncEntryExit<void> fee(this, L"GetSharedStaticIpState");
 	if (m_syncNetData.getSharedStaticIpState(isEnabled))
 	{
 		//TimerInterval = CheckDNSInterval;
@@ -426,7 +398,7 @@ bool SharedStaticIPService::GetSharedStaticIpState(bool * isEnabled)
 bool SharedStaticIPService::NetworkSettingsChanged()
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)> fee(L"NetworkSettingsChanged", res);
+	FuncEntryExit<decltype(res)> fee(this, L"NetworkSettingsChanged", res);
 
 	//UNS_DEBUG(L"m_SharedStaticIP: %d\n", m_SharedStaticIP);
 
@@ -467,7 +439,7 @@ bool SharedStaticIPService::NetworkSettingsChanged()
 bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)> fee(L"SyncSettings", res);
+	FuncEntryExit<decltype(res)> fee(this, L"SyncSettings", res);
 
 	UNS_DEBUG(L"Need to sync network settings %d ? %d\n", m_SyncRetries, MAX_SyncRetries);
 	if (m_SyncRetries < MAX_SyncRetries)
@@ -510,7 +482,7 @@ bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 
 bool SharedStaticIPService::setTimer(unsigned long Interval, SSIP_Message_Block::SSIP_STATE State)
 {
-	FuncEntryExit<void> fee(L"setTimer");
+	FuncEntryExit<void> fee(this, L"setTimer");
 	UNS_DEBUG(L"%d %d\n", Interval, State);
 
 	if ((ACE_Reactor::instance()->cancel_timer(this)) != 1)
@@ -530,7 +502,7 @@ bool SharedStaticIPService::setTimer(unsigned long Interval, SSIP_Message_Block:
 
 void SharedStaticIPService::SyncFwUpdateFailed()
 {
-	FuncEntryExit<void> fee(L"SyncFwUpdateFailed");
+	FuncEntryExit<void> fee(this, L"SyncFwUpdateFailed");
 
 	sendAlertIndicationMessage(CATEGORY_IPSYNC, EVENT_IP_SYNC_FW_UPDATE_FAILED, SYNC_FW_UPDATE_FAILED);
 }
@@ -538,7 +510,7 @@ void SharedStaticIPService::SyncFwUpdateFailed()
 
 void SharedStaticIPService::SyncValidationFailed()
 {
-	FuncEntryExit<void> fee(L"SyncValidationFailed");
+	FuncEntryExit<void> fee(this, L"SyncValidationFailed");
 
 	sendAlertIndicationMessage(CATEGORY_IPSYNC, EVENT_IP_SYNC_VALIDATION_FAILED, SYNC_VALIDATION_FAILED);
 }
@@ -550,7 +522,7 @@ bool SharedStaticIPService::UpdateMacAddress()
 	using namespace Intel::MEI_Client;
 	bool res = false;
 
-	FuncEntryExit<decltype(res)> fee(L"UpdateMacAddress", res);
+	FuncEntryExit<decltype(res)> fee(this, L"UpdateMacAddress", res);
 
 	try
 	{

@@ -1,14 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #ifndef __PORTFORWARDINGSERVICE_H_
 #define __PORTFORWARDINGSERVICE_H_
 
 #include "GmsSubService.h"
 #include "PORTFORWARDINGSERVICE_export.h"
-
-
 
 class LMS_Thread_Impl;
 
@@ -25,6 +23,7 @@ class PORTFORWARDINGSERVICE_Export PortForwardingService : public GmsSubService
     virtual int fini (void);
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"PFWS"; }
 
 	virtual void HandleAceMessage(int type, MessageBlockPtr &mbPtr);
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2012-2015 Intel Corporation
+ * Copyright (C) 2012-2020 Intel Corporation
  */
 #ifndef DUMMY_SERVICES_H
 #define DUMMY_SERVICES_H
@@ -16,6 +16,7 @@ class FIRSTSERVICE_Export FirstService : public GmsSubService
   public:
 	  FirstService(){}
 	  virtual const ACE_TString name();
+	  virtual const wchar_t *short_name() const { return L"FirstService"; }
 };
 
 class LASTSERVICE_Export LastService : public GmsSubService
@@ -23,6 +24,7 @@ class LASTSERVICE_Export LastService : public GmsSubService
   public:
 	  LastService(){}
 	  virtual const ACE_TString name();
+	  virtual const wchar_t *short_name() const { return L"LastService"; }
 };
 
 class AMTENABLELASTSERVICE_Export AmtEnableLastService : public GmsSubService
@@ -30,6 +32,7 @@ class AMTENABLELASTSERVICE_Export AmtEnableLastService : public GmsSubService
 public:
 	AmtEnableLastService(){}
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"AmtEnableLastService"; }
 };
 
 class WAITINGFORPFWLASTSERVICE_Export WaitingForPfwLastService : public GmsSubService
@@ -37,6 +40,7 @@ class WAITINGFORPFWLASTSERVICE_Export WaitingForPfwLastService : public GmsSubSe
 public:
 	WaitingForPfwLastService() {}
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"WaitingForPfwLastService"; }
 };
 
 #endif//DUMMY_SERVICES_H

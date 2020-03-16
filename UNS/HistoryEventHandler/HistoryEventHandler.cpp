@@ -1,38 +1,10 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 #include "HistoryEventHandler.h"
 #include "DataStorageGenerator.h"
 #include <sstream>
-#include <FuncEntryExit.h>
-
-
-void FlowLog(const wchar_t * pref, const wchar_t * func) 
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func) 
-{
-	FlowLog(L"HEVH: --> ", func);
-}
-
-void FuncExit(const wchar_t * func) 
-{
-	FlowLog(L"HEVH: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status) 
-{
-	std::wstringstream ss;
-	ss << L"HEVH: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
 
 HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 	{
@@ -103,7 +75,7 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 	
 	int HistoryEventHandler::setEventHistory(std::wstring &newEvent, DATA_NAME storageName)
 	{
-		FuncEntryExit<void>  fee(L"setEventHistory");
+		FuncEntryExit<void> fee(this, L"setEventHistory");
 		
 		std::wstring eventList = L"";
 		std::wstring value;

@@ -115,6 +115,7 @@ protected:
 
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"STEH"; }
 
 	virtual std::shared_ptr<EventsFilter> getFilter()
 	{

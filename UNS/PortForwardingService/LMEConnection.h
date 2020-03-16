@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -21,6 +21,7 @@
 #include <ace/Thread_Manager.h>
 #include <ace/Event.h>
 #include "LMS_if_constants.h"
+#include "FuncEntryExit.h"
 
 struct AuthMethodData {
 
@@ -329,6 +330,12 @@ private:
 
 	ACE_Thread_Manager * aceMgr_;
 	ACE_thread_t _rxThread;
+	
+
+	template <typename T>
+	using FuncEntryExit = FuncEntryExit_<T, LMEConnection>;
+public:
+	const wchar_t *short_name() const { return L"LMEC"; }
 };
 
 #endif

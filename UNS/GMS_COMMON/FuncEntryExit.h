@@ -1,47 +1,51 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
-#include <stdint.h>
-void FlowLog(const wchar_t * pref, const wchar_t * func);
-void FuncEntry(const wchar_t * func);
-void FuncExit(const wchar_t * func);
-void FuncExitWithStatus(const wchar_t * func, uint64_t status);
+#ifndef FUNCENTRYEXIT_H
+#define FUNCENTRYEXIT_H
+#include "GMSCommonDllExport.h"
 
+GMS_COMMON_EXPORT void FlowLog(const wchar_t *name, const wchar_t *pref, const wchar_t *func);
+GMS_COMMON_EXPORT void FuncEntry(const wchar_t *name, const wchar_t *func);
+GMS_COMMON_EXPORT void FuncExit(const wchar_t *name, const wchar_t *func);
+GMS_COMMON_EXPORT void FuncExitWithStatus(const wchar_t * name, const wchar_t *func, uint64_t status);
 
-template<typename T>
-class FuncEntryExit
+template<typename T, typename O>
+class FuncEntryExit_
 {
 public:
-	FuncEntryExit(const wchar_t * func, const T & status): func_(func), status_(status) 
+	FuncEntryExit_(const O* obj, const wchar_t * func, const T & status) :
+		name_(obj->short_name()), func_(func), status_(status)
 	{
-		FuncEntry(func_);
+		FuncEntry(name_, func_);
 	}
-	~FuncEntryExit()
+	~FuncEntryExit_()
 	{
-		FuncExitWithStatus(func_, status_);
+		FuncExitWithStatus(name_, func_, status_);
 	}
 
 private:
+	const wchar_t * name_;
 	const wchar_t * func_;
 	const T & status_;
 };
 
-
-template<>
-class FuncEntryExit<void>
+template<typename O>
+class FuncEntryExit_<void, O>
 {
 public:
-	FuncEntryExit(const wchar_t * func): func_(func)
+	FuncEntryExit_(const O* obj, const wchar_t * func) : name_(obj->short_name()), func_(func)
 	{
-		FuncEntry(func_);
+		FuncEntry(name_, func_);
 	}
-	~FuncEntryExit()
+	~FuncEntryExit_()
 	{
-		FuncExit(func_);
+		FuncExit(name_, func_);
 	}
 
 private:
+	const wchar_t * name_;
 	const wchar_t * func_;
 };
-
+#endif // FUNCENTRYEXIT_H

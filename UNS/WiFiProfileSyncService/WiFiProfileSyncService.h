@@ -23,6 +23,7 @@ public:
 	virtual int fini (void);
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"WiFi"; }
 
 	//*********************** business logic ****************************
 

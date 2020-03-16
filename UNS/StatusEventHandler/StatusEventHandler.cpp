@@ -32,7 +32,6 @@
 #include <atlbase.h>
 #include <atlsafe.h>
 #endif // WIN32
-#include <FuncEntryExit.h>
 
 //messages definitions
 const ACE_TString ENABLED_STR(ACE_TEXT("enabled"));
@@ -70,32 +69,6 @@ const ACE_TString LINK_PROTECTION_PASSIVE_MSG(ACE_TEXT("Intel(R) ME WLAN Link Pr
 const ACE_TString LINK_PROTECTION_OFF_MSG(ACE_TEXT("Intel(R) ME WLAN Link Protection is OFF"));
 const ACE_TString LINK_CONTROL_HOST_MSG(ACE_TEXT("WLAN Link Control set to Host (Operating system)"));
 const ACE_TString LINK_CONTROL_ME_MSG(ACE_TEXT("WLAN Link Control set to Intel(R) ME"));
-
-void FlowLog(const wchar_t * pref, const wchar_t * func) 
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func) 
-{
-	FlowLog(L"STEH: --> ", func);
-}
-
-void FuncExit(const wchar_t * func) 
-{
-	FlowLog(L"STEH: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status) 
-{
-	std::wstringstream ss;
-	ss << L"STEH: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
 
 StatusEventHandler::StatusEventHandler(): filter_(new StatusEventFilter)
 {
@@ -217,7 +190,7 @@ bool StatusEventHandler::isRebootAfterProvisioningRequired()
 {
 	using namespace Intel::MEI_Client::MKHI_Client;
 	bool result = false;
-	FuncEntryExit<decltype(result)> fee(L"isRebootAfterProvisioningRequired", result);
+	FuncEntryExit<decltype(result)> fee(this, L"isRebootAfterProvisioningRequired", result);
 	try
 	{
 		GetFWVersionCommand getFWVersionCommand;
@@ -345,7 +318,7 @@ const ACE_TString
 
 int StatusEventHandler::handleStatusChanged(const GMS_AlertIndication *alert)
 {
-	FuncEntryExit<void> fee(L"handleStatusChanged");
+	FuncEntryExit<void> fee(this, L"handleStatusChanged");
 	UNS_DEBUG(L"category=%d id=%d\n", alert->category, alert->id);
 	switch (alert->category)
 	{
@@ -795,7 +768,7 @@ void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName, WLAN_PROTEC
 
 void StatusEventHandler::GenerateUCEvents(bool AmtState)
 {
-	FuncEntryExit<void> fee(L"GenerateUCEvents");
+	FuncEntryExit<void> fee(this, L"GenerateUCEvents");
 
 	UC_STATE UCstate = UC_ENDED;
 	if (AmtState)
@@ -819,7 +792,7 @@ void StatusEventHandler::GenerateUCEvents(bool AmtState)
 
 void StatusEventHandler::GenerateEvents()
 {
-	FuncEntryExit<void> fee(L"GenerateEvents");
+	FuncEntryExit<void> fee(this, L"GenerateEvents");
 
 	FEATURE_STATE AmtState = NOT_PRESENT;
 	if (GetAmtState(AmtState))
@@ -842,7 +815,7 @@ void StatusEventHandler::GenerateEvents()
 
 void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 {
-	FuncEntryExit<void> fee(L"GeneratePortFwrdRelatedEvents");
+	FuncEntryExit<void> fee(this, L"GeneratePortFwrdRelatedEvents");
 
 	if (!m_mainService->GetPortForwardingStarted()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GeneratePortFwrdRelatedEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
@@ -886,7 +859,7 @@ void StatusEventHandler::GenerateEACEvents(bool AMTstate)
 
 void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 {
-	FuncEntryExit<void> fee(L"GenerateSharedStaticIPEvents");
+	FuncEntryExit<void> fee(this, L"GenerateSharedStaticIPEvents");
 
 	bool IPSyncEnabled = false;//TODO::to check if it is the right default value
 	if (AMTstate)
@@ -903,7 +876,7 @@ void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 
 void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
 {
-	FuncEntryExit<void> fee(L"GenerateWiFiProfileSyncEvents");
+	FuncEntryExit<void> fee(this, L"GenerateWiFiProfileSyncEvents");
 
 	bool enabled = false;
 
@@ -920,7 +893,7 @@ void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
 
 void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
 {
-	FuncEntryExit<void> fee(L"GenerateTimeSyncEvents");
+	FuncEntryExit<void> fee(this, L"GenerateTimeSyncEvents");
 
 	bool timeSyncEnabled = false;
 	if (AMTstate)
@@ -953,7 +926,7 @@ void StatusEventHandler::GenerateSOLIDEREvents(bool AMTstate)
 
 void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
 {
-	FuncEntryExit<void> fee(L"GenerateKVMRedirectionEvents");
+	FuncEntryExit<void> fee(this, L"GenerateKVMRedirectionEvents");
 
 	bool KVMEnable = false;
 	KVM_STATE KVMState=KVM_STOPPED;
@@ -1018,7 +991,7 @@ void StatusEventHandler::GenerateMEEvents()
 
 void StatusEventHandler::GenerateWLANEvents()
 {
-	FuncEntryExit<void> fee(L"GenerateWLANEvents");
+	FuncEntryExit<void> fee(this, L"GenerateWLANEvents");
 
 	AMTEthernetPortSettingsClient client;
 	unsigned int linkPreference, linkControl, linkProtection; 
@@ -1092,7 +1065,7 @@ namespace
 bool StatusEventHandler::GetManageabiltyMode(MENAGEABILTY_MODE* pManageMode, CUSTOMER_TYPE* pType)
 {
 	bool rc = false;
-	FuncEntryExit<decltype(rc)> fee(L"GetManageabiltyMode", rc);
+	FuncEntryExit<decltype(rc)> fee(this, L"GetManageabiltyMode", rc);
 
 	namespace MKHI_Client = Intel::MEI_Client::MKHI_Client;
 
@@ -1133,7 +1106,7 @@ bool StatusEventHandler::GetManageabiltyMode(MENAGEABILTY_MODE* pManageMode, CUS
 bool StatusEventHandler::GetAmtState(FEATURE_STATE &AmtState) const
 {
 	bool rc = false;
-	FuncEntryExit<decltype(rc)> fee(L"GetAmtState", rc);
+	FuncEntryExit<decltype(rc)> fee(this, L"GetAmtState", rc);
 
 	namespace MKHI_Client = Intel::MEI_Client::MKHI_Client;
 
@@ -1535,7 +1508,7 @@ bool StatusEventHandler::GetProvisioningState(Intel::MEI_Client::AMTHI_Client::A
 
 void StatusEventHandler::firstPullForEvents(void)
 {
-	FuncEntryExit<void> fee(L"firstPullForEvents");
+	FuncEntryExit<void> fee(this, L"firstPullForEvents");
 
 	if (!m_firstPullForEvents)
 	{
@@ -1581,7 +1554,7 @@ void StatusEventHandler::firstPullForEvents(void)
 
 void StatusEventHandler::checkForBootReason()
 {
-	FuncEntryExit<void> fee(L"checkForBootReason");
+	FuncEntryExit<void> fee(this, L"checkForBootReason");
 
 	if (!m_firstCheckForBootReason)
 	{
@@ -1851,7 +1824,7 @@ void StatusEventHandler::PublishWlanControlEvent(WLAN_CONTROL_STATE state)
 // Request display settings from IMSS - called only after the machine state was updated in the registry 
 void StatusEventHandler::requestDisplaySettings()
 {	
-	FuncEntryExit<void> fee(L"requestDisplaySettings");
+	FuncEntryExit<void> fee(this, L"requestDisplaySettings");
 	// Check if the machine is provisioned and KVM enabled
 	DataStorageWrapper& ds = DSinstance();	
 	unsigned long state;

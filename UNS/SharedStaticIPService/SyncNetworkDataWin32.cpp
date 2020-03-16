@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -13,7 +13,6 @@
 #include "global.h"
 #include "SyncNetworkData.h"
 #include "Tools.h"
-#include <FuncEntryExit.h>
 
 // Check if the DNS values changed and update the latest ones
 bool SyncNetworkData::ValidateLinkStatus()
@@ -23,7 +22,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 	DWORD ret, dwSize = 0;
 	bool res = false;
 
-	FuncEntryExit<decltype(res)> fee(L"ValidateLinkStatus", res);
+	FuncEntryExit<decltype(res)> fee(this, L"ValidateLinkStatus", res);
 	// Before calling AddIPAddress we use GetIpAddrTable to get an adapter to which we can add the IP.
 	pIPAddrTable = (MIB_IPADDRTABLE *) malloc(sizeof (MIB_IPADDRTABLE));
 	if (pIPAddrTable == NULL) {
@@ -104,7 +103,7 @@ bool SyncNetworkData::SyncDNSData()
 	DWORD err = ERROR_SUCCESS;
 	bool res = false;
 
-	FuncEntryExit<decltype(res)> fee(L"SyncDNSData", res);
+	FuncEntryExit<decltype(res)> fee(this, L"SyncDNSData", res);
 
 	err = GetPerAdapterInfo(m_NICindex, pPerAdapterInfo, &ulBufLen);
 	if (err == ERROR_BUFFER_OVERFLOW) 
@@ -172,7 +171,7 @@ bool SyncNetworkData::SyncDNSData()
 bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, bool &IPv4Enabled)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)> fee(L"CheckNetworkData", res);
+	FuncEntryExit<decltype(res)> fee(this, L"CheckNetworkData", res);
 
 	needSync = false;
 	IPv4Enabled = false;

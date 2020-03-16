@@ -1,39 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2019 Intel Corporation
+ * Copyright (C) 2017-2020 Intel Corporation
  */
 #include <gio/gio.h>
-#include <sstream>
 
 #include "DBusService.h"
 #include "DBusSkeleton.h"
-
-#include <FuncEntryExit.h>
-void FlowLog(const wchar_t * pref, const wchar_t * func)
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func)
-{
-	FlowLog(L"DBUS: --> ", func);
-}
-
-void FuncExit(const wchar_t * func)
-{
-	FlowLog(L"DBUS: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status)
-{
-	std::wstringstream ss;
-	ss << L"DBUS: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
 
 DBusThread::DBusThread(DBusService *father) : m_father(father),
 					  m_loop(g_main_loop_new(NULL, FALSE)),
@@ -171,7 +143,7 @@ void DBusService::SendAlarm(GMS_AlertIndication* alert)
 
 int DBusService::handle_event(MessageBlockPtr mbPtr)
 {
-	FuncEntryExit<void> fee(L"handle_event");
+	FuncEntryExit<void> fee(this, L"handle_event");
 	int type = mbPtr->msg_type();
 	GMS_AlertIndication *pGMS_AlertIndication = nullptr;
 	switch (type)

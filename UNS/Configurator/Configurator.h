@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #ifndef __CONFIGURATOR_H_
 #define __CONFIGURATOR_H_
@@ -41,6 +41,7 @@ class CONFIGURATOR_Export Configurator : public GmsSubService, public IServicesM
 	virtual int fini (void);
 	virtual void HandleAceMessage(int type, MessageBlockPtr &mbPtr);
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"CONF"; }
 
 	//******************* IServicesManager Part *********************
 	virtual bool StartAceService(const ACE_TString &serviceName);
@@ -74,12 +75,15 @@ private:
 	//Configuration data
 	bool m_SkuAndBrandScanned;
 	int m_scanningNum;
+	bool IsLMEExists() const;
 	bool m_LME_exists;
 	Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE m_platform;
 	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI m_stateData;
 
 	std::map<ACE_TString, CheckLoadFunc*> m_checkLoadMap;
 	bool m_needToStop;
+
+	bool MEIEnabled() const;
 	bool m_meiEnabled;
 	bool m_gotMeiEnabled;
 
@@ -96,6 +100,9 @@ private:
 	void CancelDeferredResumeTimer();
 
 	long deferredResumeTimerId_;
+
+	void DoOverrideProsetAdapterSwitching() const;
+	bool PasswordOnWakeupDisabled() const;
 };
 
 #endif /* __CONFIGURATOR_H_ */

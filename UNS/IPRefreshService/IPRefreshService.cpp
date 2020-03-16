@@ -9,34 +9,6 @@
 #include "Tools.h"
 #include "UNSEventsDefinition.h"
 
-#include <FuncEntryExit.h>
-
-void FlowLog(const wchar_t * pref, const wchar_t * func)
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func)
-{
-	FlowLog(L"IPR: --> ", func);
-}
-
-void FuncExit(const wchar_t * func)
-{
-	FlowLog(L"IPR: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status)
-{
-	std::wstringstream ss;
-	ss << L"IPR: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
 const ACE_TString IPREFRESHEVENT(ACE_TEXT("IP Renew request performed for Intel(R) ME synchronization"));
 
 int IPRefreshService::init (int argc, ACE_TCHAR *argv[])

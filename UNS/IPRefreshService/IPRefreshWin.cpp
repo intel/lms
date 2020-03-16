@@ -1,16 +1,15 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "IPRefreshService.h"
 #include "Tools.h"
 #include <iphlpapi.h>
-#include <FuncEntryExit.h>
 
 //Main flow
 bool IPRefreshService::IPRefresh(unsigned int nicType)
 {
-	FuncEntryExit<void> fee(L"IPRefresh");
+	FuncEntryExit<void> fee(this, L"IPRefresh");
 
 	// Before calling IpRenewAddress we use GetInterfaceInfo to retrieve a handle to the adapter
 	std::unique_ptr<uint8_t[]> buf(new uint8_t[sizeof(IP_INTERFACE_INFO)]);

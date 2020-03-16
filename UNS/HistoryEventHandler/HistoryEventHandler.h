@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 #ifndef __HISTORYEVENTHANDLER_H_
 #define __HISTORYEVENTHANDLER_H_
@@ -18,6 +18,9 @@ enum DATA_NAME : unsigned int;
 		virtual int init (int argc, ACE_TCHAR *argv[]);
 
 		virtual int fini (void);
+
+		virtual const wchar_t *short_name() const { return L"HEVH"; }
+
 	protected:
 
 		virtual int handle_event (MessageBlockPtr mbPtr);

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #ifndef __HOSTCHANGESNOTIFICATIONSERVICE_H_
 #define __HOSTCHANGESNOTIFICATIONSERVICE_H_
@@ -20,7 +20,8 @@ class HostChangesNotificationService : public GmsSubService
     virtual int fini (void);
 
 	virtual const ACE_TString name();
-	
+	virtual const wchar_t *short_name() const { return L"HCNS"; }
+
 	virtual int resume();
 
 	virtual void HandleAceMessage(int type, MessageBlockPtr &mbPtr);

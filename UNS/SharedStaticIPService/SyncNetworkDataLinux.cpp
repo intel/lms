@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -17,16 +17,13 @@
 #include <sstream>
 
 #include "global.h"
-#include <FuncEntryExit.h>
-
-#include <sstream>
 
 static std::string emptyAddress("0.0.0.0");
 
 bool SyncNetworkData::ValidateLinkStatus()
 {
 	int res;
-	FuncEntryExit<decltype(res)> fee(L"ValidateLinkStatus", res);
+	FuncEntryExit<decltype(res)> fee(this, L"ValidateLinkStatus", res);
 
 	struct nl_cache *link_cache, *addr_cache;
 	struct nl_sock *sock;
@@ -539,7 +536,7 @@ out:
 bool SyncNetworkData::CheckNetworkData(bool &needSync, bool &isEmptyAddress, bool &IPv4Enabled)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)> fee(L"CheckNetworkData", res);
+	FuncEntryExit<decltype(res)> fee(this, L"CheckNetworkData", res);
 
 	needSync = false;
 	IPv4Enabled = false;

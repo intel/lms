@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include "FuncEntryExit.h"
 
 class SyncNetworkData
 {
@@ -43,6 +44,10 @@ private:
 	int m_NICindex;
 #endif // WIN32
 
+	template <typename T>
+	using FuncEntryExit = FuncEntryExit_<T, SyncNetworkData>;
+public:
+	const wchar_t *short_name() const { return L"SYND"; }
 };
 
 #endif /*SYNC_NETDATA_H*/

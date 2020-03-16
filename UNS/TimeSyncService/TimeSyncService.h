@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2018 Intel Corporation
+ * Copyright (C) 2011-2020 Intel Corporation
  */
 #ifndef __TIME_SYNC_SERVICE_H_
 #define __TIME_SYNC_SERVICE_H_
@@ -23,6 +23,7 @@ class TIMESYNCSERVICE_Export TimeSyncService : public EventHandler
 	virtual int resume();
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"TSS"; }
 
 	//*********************** business logic ****************************
 	

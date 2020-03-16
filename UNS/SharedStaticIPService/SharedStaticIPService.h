@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #ifndef __SHAREDSTATICIPSERVICE_H_
 #define __SHAREDSTATICIPSERVICE_H_
@@ -44,6 +44,7 @@ public:
 #endif // WIN32
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"SSIP"; }
 
 	virtual ACE_HANDLE get_handle() const;
 

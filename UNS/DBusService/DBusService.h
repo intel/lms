@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2018 Intel Corporation
+ * Copyright (C) 2017-2020 Intel Corporation
  */
 #ifndef __DBUSSERVICE_H_
 #define __DBUSSERVICE_H_
@@ -58,6 +58,7 @@ public:
 	virtual int fini (void);
 
 	virtual const ACE_TString name();
+	const wchar_t *short_name() const { return L"DBUS"; };
 
 	//*********************** business logic ****************************
 	bool GetGmsPortForwardingStarted();

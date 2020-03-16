@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -11,17 +11,15 @@
 #include "SyncIpClient.h"
 
 #include "global.h" 
-#include <FuncEntryExit.h>
 
 SyncNetworkData::SyncNetworkData() : m_NICindex(0)
 {
 	ResetSettings();
 }
 
-
 void SyncNetworkData::ResetSettings()
 {
-	FuncEntryExit<void> fee(L"ResetSettings");
+	FuncEntryExit<void> fee(this, L"ResetSettings");
 	m_DHCPEnabled		= false;
 	m_IpAddress.clear();
 	m_SubnetMask.clear();
@@ -40,7 +38,7 @@ SyncNetworkData::~SyncNetworkData(void)
 bool SyncNetworkData::SyncNetworkConfiguration()
 {
 	bool		res = false;
-	FuncEntryExit<decltype(res)> fee(L"SyncNetworkConfiguration", res);
+	FuncEntryExit<decltype(res)> fee(this, L"SyncNetworkConfiguration", res);
 
 	bool		DHCPEnabled = true;
 	std::string IPAddress;
@@ -149,7 +147,7 @@ bool SyncNetworkData::getSharedStaticIpState(bool* state)
 {	
 	bool res = false;	
 
-	FuncEntryExit<decltype(res)> fee(L"getSharedStaticIpState", res);
+	FuncEntryExit<decltype(res)> fee(this, L"getSharedStaticIpState", res);
 
 	SyncIpClient syncIpClient;
 	res = syncIpClient.GetSharedStaticIpState(state);

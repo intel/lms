@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -43,38 +43,8 @@
 #endif
 #include <memory>
 
-
-#include <FuncEntryExit.h>
-
-
 #define NUM_RETRIES 3
 #define LME_EXISTS_LOOP_DELAY 200
-
-
-void FlowLog(const wchar_t * pref, const wchar_t * func) 
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func) 
-{
-	FlowLog(L"CONF: --> ", func);
-}
-
-void FuncExit(const wchar_t * func) 
-{
-	FlowLog(L"CONF: <-- ", func);
-}
-void FuncExitWithStatus(const wchar_t * func, uint64_t status) 
-{
-	std::wstringstream ss;
-	ss << L"CONF: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
 
 /********************************** Help functions **********************************/
 #ifdef WIN32
@@ -165,10 +135,10 @@ void CreateIMSSShortcut() {}
 
 //check if LME exists in FW
 //to be used only BEFORE starting PortForwardingService
-bool IsLMEExists()
+bool Configurator::IsLMEExists() const
 {
 	auto res = true;
-	FuncEntryExit<decltype(res)> fee(L"IsLMEExists", res);
+	FuncEntryExit<decltype(res)> fee(this, L"IsLMEExists", res);
 	std::unique_ptr<Intel::MEI_Client::HECI> heci(Intel::MEI_Client::GenerateLMEClient());
 
 	for (int i = 1; i <= NUM_RETRIES; i++)
@@ -205,19 +175,17 @@ bool IsLMEExists()
 }
 
 void GetSkuAndBrand(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform,
-	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& stateData, bool& lmeExists)
+	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& stateData)
 {
 	Intel::MEI_Client::MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(Intel::MEI_Client::MKHI_Client::FEATURES_ENABLED);
 	Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
 
 	stateData = getFeaturesStateCommand.getResponse();
 	platform = getPlatformTypeCommand.getResponse();
-
-	lmeExists = IsLMEExists();
 }
 
 #ifdef WIN32
-bool MEIEnabled()
+bool Configurator::MEIEnabled() const
 {
 	bool meiEnabled = false;
 	IWbemLocator *loc = NULL;
@@ -225,7 +193,7 @@ bool MEIEnabled()
 	IWbemClassObject *obj = NULL;
 	ULONG uReturn = 0;
 
-	FuncEntryExit<decltype(meiEnabled)> fee(L"MEIEnabled", meiEnabled);
+	FuncEntryExit<decltype(meiEnabled)> fee(this, L"MEIEnabled", meiEnabled);
 
 	HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
  
@@ -279,7 +247,7 @@ bool MEIEnabled()
 	return meiEnabled;
 }
 #else
-bool MEIEnabled()
+bool Configurator::MEIEnabled() const
 {
 	struct stat buf;
 	static const std::vector<std::string> devnode =
@@ -301,7 +269,7 @@ static const int CONFIGURATOR_CHECK_RETRIES = 3; // Retry if wsman fails (usuall
 bool CheckSharedStaticIPLoad()
 {
 	bool sharedStaticIP = false;
-	FuncEntryExit<decltype(sharedStaticIP)> fee(L"CheckSharedStaticIPLoad", sharedStaticIP);
+	UNS_DEBUG(L"Configurator:CheckSharedStaticIPLoad\n");
 
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
@@ -312,6 +280,7 @@ bool CheckSharedStaticIPLoad()
 			break;
 		UNS_ERROR(L"Configurator:: getSharedStaticIpState failed to receive current state\n");
 	}
+	UNS_DEBUG(L"Configurator:CheckSharedStaticIPLoad %d\n", sharedStaticIP);
 	return ret && sharedStaticIP;
 }
 
@@ -319,7 +288,7 @@ bool CheckSharedStaticIPLoad()
 bool CheckTimeSyncStateLoad()
 {
 	bool timeSyncState = false;
-	FuncEntryExit<decltype(timeSyncState)> fee(L"CheckTimeSyncStateLoad", timeSyncState);
+	UNS_DEBUG(L"Configurator::CheckTimeSyncStateLoad\n");
 
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
@@ -330,6 +299,7 @@ bool CheckTimeSyncStateLoad()
 			break;
 		UNS_ERROR(L"Configurator:: GetLocalTimeSyncEnabledState failed to receive current state\n");
 	}
+	UNS_DEBUG(L"Configurator::CheckTimeSyncStateLoad %d", timeSyncState);
 	return ret && timeSyncState;
 }
 
@@ -369,7 +339,7 @@ bool CheckIfServiceInstalled(const ACE_TString & ServiceName)
 bool CheckWiFiProfileSyncRequired()
 {
 	bool enabled;
-	FuncEntryExit<decltype(enabled)> fee(L"CheckWiFiProfileSyncRequired", enabled);
+	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
 
 	WifiPortClient WifiPort;
 	size_t ports = 0;
@@ -403,7 +373,7 @@ bool CheckWiFiProfileSyncRequired()
 bool CheckWiFiProfileSyncRequired()
 {
 	bool enabled;
-	FuncEntryExit<decltype(enabled)> fee(L"CheckWiFiProfileSyncRequired", enabled);
+	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
 
 	UNS_DEBUG(L"Configurator:: WiFiProfileSync supported only on Windows\n");
 	enabled = false;
@@ -411,9 +381,9 @@ bool CheckWiFiProfileSyncRequired()
 }
 #endif // WIN32
 
+#ifdef WIN32
 namespace
 {
-#ifdef WIN32
 	typedef decltype(PowerReadACValue) PowerReadXXValue;
 
 	std::unique_ptr<uint8_t[]> ReadValue(PowerReadXXValue ReadFunc, DWORD * dataSize)
@@ -426,9 +396,9 @@ namespace
 			&NO_SUBGROUP_GUID,
 			&GUID_LOCK_CONSOLE_ON_WAKE,
 			nullptr,
-			nullptr, 
+			nullptr,
 			dataSize
-			);
+		);
 		std::unique_ptr<uint8_t[]> data;
 
 		while (dwRet == ERROR_MORE_DATA ||
@@ -444,53 +414,50 @@ namespace
 				nullptr,
 				data.get(),
 				dataSize
-				);
+			);
 		}
 		return dwRet == ERROR_SUCCESS ? std::move(data) : nullptr;
 	}
-
+}
 	
 
-	bool PasswordOnWakeupDisabled()
-	{
-		bool result = false;
-		FuncEntryExit<decltype(result)> fee(L"PasswordOnWakeupDisabled", result);
+bool Configurator::PasswordOnWakeupDisabled() const
+{
+	bool result = false;
+	FuncEntryExit<decltype(result)> fee(this, L"PasswordOnWakeupDisabled", result);
 
-		SYSTEM_POWER_STATUS sPS = { 0 };
-		auto res = GetSystemPowerStatus(
-			&sPS
-			);
-		if (res == 0)
-			return result;
-
-		
-		if (sPS.ACLineStatus == 255)
-			return result;
-
-		DWORD dataSize = 0;
-
-		auto acdcRes = ReadValue( (sPS.ACLineStatus == 1) ? PowerReadACValue : PowerReadDCValue, &dataSize);
-		
-		if (acdcRes == nullptr)
-			return result;
-
-		if (dataSize != sizeof(DWORD))
-			return result;
-
-		result = *reinterpret_cast<DWORD*>(acdcRes.get()) == 0;
+	SYSTEM_POWER_STATUS sPS = { 0 };
+	auto res = GetSystemPowerStatus(
+		&sPS
+		);
+	if (res == 0)
 		return result;
-	}
-#else
-	bool PasswordOnWakeupDisabled() { return true;}
-#endif
-}
 
+	if (sPS.ACLineStatus == 255)
+		return result;
+
+	DWORD dataSize = 0;
+
+	auto acdcRes = ReadValue( (sPS.ACLineStatus == 1) ? PowerReadACValue : PowerReadDCValue, &dataSize);
+		
+	if (acdcRes == nullptr)
+		return result;
+
+	if (dataSize != sizeof(DWORD))
+		return result;
+
+	result = *reinterpret_cast<DWORD*>(acdcRes.get()) == 0;
+	return result;
+}
+#else
+bool Configurator::PasswordOnWakeupDisabled() const { return true;}
+#endif
 
 /****************************************************************************************/
 
 int Configurator::init (int argc, ACE_TCHAR *argv[])
 {
-	FuncEntryExit<void> fee(L"init");
+	FuncEntryExit<void> fee(this, L"init");
 
 	initSubService(argc, argv);
 
@@ -534,7 +501,7 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 
 int Configurator::fini (void)
 {	
-	FuncEntryExit<void> fee(L"fini");
+	FuncEntryExit<void> fee(this, L"fini");
 	theDependencyManager::close();
 	theLoadedServices::close();
 	//There can be crash in Linux on shut-down if messages are left in the queue.
@@ -546,7 +513,7 @@ int Configurator::fini (void)
 
 void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 {
-	FuncEntryExit<void> fee(L"Configurator::HandleAceMessage");
+	FuncEntryExit<void> fee(this, L"Configurator::HandleAceMessage");
 	
 	switch (type) {
 			case MB_ME_CONFIGURED:
@@ -603,7 +570,7 @@ const ACE_TString Configurator::name()
 
 bool Configurator::StartAceService(const ACE_TString &serviceName)
 {
-	FuncEntryExit<void> fee(L"StartAceService");
+	FuncEntryExit<void> fee(this, L"StartAceService");
 	UNS_DEBUG(L"StartAceService: %s\n", serviceName.c_str());
 
 	if (theLoadedServices::instance()->IsLoaded(serviceName))
@@ -646,7 +613,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 
 bool Configurator::StopAceService(const ACE_TString &serviceName)
 {
-	FuncEntryExit<void> fee(L"StopAceService");
+	FuncEntryExit<void> fee(this, L"StopAceService");
 
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
@@ -673,7 +640,7 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 	
 bool Configurator::SuspendAceService(const ACE_TString &serviceName)
 {
-	FuncEntryExit<void> fee(L"SuspendAceService");
+	FuncEntryExit<void> fee(this, L"SuspendAceService");
 	if (theLoadedServices::instance()->IsActive(serviceName))
 	{
 		UNS_DEBUG(L"Deactivating %s\n", serviceName.c_str());
@@ -695,7 +662,7 @@ bool Configurator::ResumeAceService(const ACE_TString &serviceName)
 
 int Configurator::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
-	FuncEntryExit<void> fee(L"handle_timeout");
+	FuncEntryExit<void> fee(this, L"handle_timeout");
 	UNS_DEBUG(L"%s service  arg=%lu\n",name().c_str(), arg);
 	if (arg == &deferredResumeTimerId_)
 	{
@@ -722,7 +689,7 @@ int Configurator::handle_timeout (const ACE_Time_Value &current_time,const void 
 
 void Configurator::StopAllServices(bool stopMainService)
 {
-	FuncEntryExit<void> fee(L"StopAllServices" );
+	FuncEntryExit<void> fee(this, L"StopAllServices" );
 
 	m_needToStop = stopMainService;
 
@@ -747,7 +714,7 @@ void Configurator::StopAllServices(bool stopMainService)
 
 bool Configurator::SuspendResumeAllServices(const ServicesBatchCommand &command)
 {
-	FuncEntryExit<void> fee(L"SuspendResumeAllServices");
+	FuncEntryExit<void> fee(this, L"SuspendResumeAllServices");
 
 	NamesList loadedServices;
 	theLoadedServices::instance()->GetAllLoadedServices(loadedServices);
@@ -761,20 +728,20 @@ bool Configurator::SuspendResumeAllServices(const ServicesBatchCommand &command)
 
 int Configurator::SuspendAllServices()
 {
-	FuncEntryExit<void> fee(L"SuspendAllServices");
+	FuncEntryExit<void> fee(this, L"SuspendAllServices");
 	ServicesBatchSuspendCommand suspendAll;
 	return SuspendResumeAllServices(suspendAll);
 }
 
 bool Configurator::ResumeAllServices()
 {
-	FuncEntryExit<void> fee(L"ResumeAllServices");
+	FuncEntryExit<void> fee(this, L"ResumeAllServices");
 	ServicesBatchResumeCommand resumeAll;
 	return SuspendResumeAllServices(resumeAll);
 }
 
 
-namespace 
+namespace
 {
 	Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE GetFwVersion()
 	{
@@ -787,16 +754,17 @@ namespace
 		}
 		catch (std::exception& e)
 		{
-			UNS_ERROR(L"Could not get FW version. %C\n",e.what());
+			UNS_ERROR(L"Could not get FW version. %C\n", e.what());
 			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer = { 0 };
 			return emptyFwVer;
 		}
 	}
+}
 
 #ifdef WIN32
-	void DoOverrideProsetAdapterSwitching()
+	void Configurator::DoOverrideProsetAdapterSwitching() const
 	{
-		FuncEntryExit<void> fee(L"DoOverrideProsetAdapterSwitching");
+		FuncEntryExit<void> fee(this, L"DoOverrideProsetAdapterSwitching");
 
 		if (IsWindows8OrGreater())
 			return;
@@ -820,13 +788,12 @@ namespace
 		}
 	}
 #else
-	void DoOverrideProsetAdapterSwitching() {}
+	void Configurator::DoOverrideProsetAdapterSwitching() const {}
 #endif // WIN32
-}
 
 void Configurator::ScanConfiguration()
 {
-	FuncEntryExit<void> fee(L"ScanConfiguration");
+	FuncEntryExit<void> fee(this, L"ScanConfiguration");
 	ACE_Time_Value interval(5);
 	ACE_Reactor::instance()->schedule_timer (this, 0,interval,interval);
 	
@@ -836,7 +803,8 @@ void Configurator::ScanConfiguration()
 
 		if (!m_SkuAndBrandScanned)
 		{
-			GetSkuAndBrand(m_platform, m_stateData, m_LME_exists);
+			GetSkuAndBrand(m_platform, m_stateData);
+			m_LME_exists = IsLMEExists();
 			UNS_DEBUG(L"platform=0x%X FWCaps=0x%X LME_exists=%d\n" , m_platform, m_stateData, m_LME_exists);
 		}
 		m_SkuAndBrandScanned = true;
@@ -915,7 +883,7 @@ void Configurator::ScanConfiguration()
 
 void Configurator::OnToggleService(const ACE_TString &service, bool val)
 {
-	FuncEntryExit<void> fee(L"OnToggleService");
+	FuncEntryExit<void> fee(this, L"OnToggleService");
 	bool isLoaded = theLoadedServices::instance()->IsLoaded(service);
 	if (val == isLoaded)
 	{
@@ -952,7 +920,7 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 {
 	ServiceNamesList services;
-	FuncEntryExit<decltype(status)> fee(L"ChangeServiceState", status);
+	FuncEntryExit<decltype(status)> fee(this, L"ChangeServiceState", status);
 
 	switch (status) 
 	{
@@ -1041,7 +1009,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 
 int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 {
-	FuncEntryExit<decltype(conf->type)> fee(L"UpdateConfiguration", conf->type);
+	FuncEntryExit<decltype(conf->type)> fee(this, L"UpdateConfiguration", conf->type);
 	switch(conf->type)
 	{
 		case IP_SYNC_CONF:
@@ -1130,7 +1098,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 
 void Configurator::FiniAceService(const ACE_TString &serviceName)
 {
-	FuncEntryExit<void> fee(L"FiniAceService");
+	FuncEntryExit<void> fee(this, L"FiniAceService");
 	UNS_DEBUG(L"%s\n", serviceName.c_str());
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
@@ -1158,7 +1126,7 @@ void Configurator::FiniAceService(const ACE_TString &serviceName)
 
 bool Configurator::CompleteSuspendAceService(const ACE_TString &serviceName)
 {
-	FuncEntryExit<void> fee(L"CompleteSuspendAceService");
+	FuncEntryExit<void> fee(this, L"CompleteSuspendAceService");
 	bool ret = m_mainService->SuspendAceService(serviceName);
 	UNS_DEBUG(L"COMPLETING SUSPEND for %s\n", serviceName.c_str());
 	NamesList services;
@@ -1174,7 +1142,7 @@ bool Configurator::CompleteSuspendAceService(const ACE_TString &serviceName)
 
 void Configurator::DeviceEventRequested(uint32_t dwEventType, bool wasOnOurGUID)
 {
-	FuncEntryExit<void> fee(L"DeviceEventRequested");
+	FuncEntryExit<void> fee(this, L"DeviceEventRequested");
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	MessageBlockPtr mbEventPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 
@@ -1239,7 +1207,7 @@ void Configurator::CancelDeferredResumeTimer()
 
 void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 {
-	FuncEntryExit<void> fee(L"ExecuteTask");
+	FuncEntryExit<void> fee(this, L"ExecuteTask");
 
 	int type=mbPtr->msg_type();
 	if (m_serviceIsClosed || m_needToStop)
@@ -1424,7 +1392,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 
 void Configurator::TaskCompleted()
 {
-	FuncEntryExit<void> fee(L"TaskCompleted");
+	FuncEntryExit<void> fee(this, L"TaskCompleted");
 
 	UNS_DEBUG(L"Message type %d scheduled to complete\n", m_inProcessType);
 

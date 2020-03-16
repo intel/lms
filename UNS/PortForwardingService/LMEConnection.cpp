@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -16,9 +16,6 @@
 
 #include "LMS_if.h"
 
-#include <sstream>
-
-#include <FuncEntryExit.h>
 #include <BaseWSManClient.h>
 
 using namespace Intel::MEI_Client;
@@ -50,7 +47,7 @@ bool LMEConnection::IsInitialized()
 bool LMEConnection::Init(InitParameters & params)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res) > fee(L"LMEConnection::Init", res);
+	FuncEntryExit<decltype(res)> fee(this, L"Init", res);
 
 	{
 		std::lock_guard<std::mutex> lock(_initLock);
@@ -164,7 +161,7 @@ void LMEConnection::DeinitInternal()
 //parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
 void LMEConnection::Deinit(bool signalSelect)
 {
-	FuncEntryExit<void> fee(L"LMEConnection::Deinit");
+	FuncEntryExit<void> fee(this, L"Deinit");
 
 	std::lock_guard<std::mutex> lock(_initLock);
 
@@ -182,7 +179,7 @@ void LMEConnection::Deinit(bool signalSelect)
 
 bool LMEConnection::Disconnect(APF_DISCONNECT_REASON_CODE reasonCode)
 {
-	FuncEntryExit<void> fee(L"LMEConnection::Disconnect");
+	FuncEntryExit<void> fee(this, L"Disconnect");
 
 	unsigned char buf[sizeof(APF_DISCONNECT_MESSAGE)];
 

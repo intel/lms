@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -19,6 +19,7 @@
 #include "PortForwardRequest.h"
 #include "Channel.h"
 #include <ace/Pipe.h>
+#include "FuncEntryExit.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -172,6 +173,10 @@ private:
 	typedef std::map<uint32_t, bool> PortFailureReports;
 	PortFailureReports _failureReported;
 	bool _clientNotFound;
-};
+
+	template <typename T>
+	using FuncEntryExit = FuncEntryExit_<T, Protocol>;
+public:
+	const wchar_t *short_name() const { return L"PROT"; }};
 
 #endif // _PROTOCOL_H_

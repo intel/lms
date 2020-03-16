@@ -41,6 +41,7 @@ class PARTIALFWUPDATESERVICE_Export PartialFWUpdateService:  public EventHandler
 	virtual int resume ();
 
 	virtual const ACE_TString name();
+	virtual const wchar_t *short_name() const { return L"PFU"; }
 	// ******************************************************************
 
     virtual int handle_event (MessageBlockPtr mbPtr);
@@ -48,12 +49,6 @@ class PARTIALFWUPDATESERVICE_Export PartialFWUpdateService:  public EventHandler
     
 	virtual std::shared_ptr<EventsFilter> getFilter();
 	
-	// Help functions
-	static bool getAllowFlashUpdate();		
-	static bool isMESKU();	
-
-	int langID;
-	int mode;
 	bool partialFWUpdate(int _langID = DEFAULT_LANG_ID, int _mode = INITIAL_MODE, bool _toPublishFailure = false);
 
 private:
@@ -90,6 +85,15 @@ private:
 	bool updateLanguageChangeCode(UINT32 languageID, LANGUAGE_FLOW_MODE mode = MANUAL_MODE);
 	bool invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module, UINT32 partialID);
 
+	// Help functions
+	bool getAllowFlashUpdate() const;
+	bool isMESKU() const;
+
+	bool SetExpectedWithLocalOSLanguage() const;
+	unsigned int getUCLanguageID() const;
+
+	int langID;
+	int mode;
 };
 
 #endif /* __PARTIALFWUPDATESERVICE_H_ */

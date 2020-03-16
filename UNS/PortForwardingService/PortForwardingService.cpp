@@ -20,38 +20,10 @@
 #include "GMSExternalLogger.h"
 #include "LMEConnection.h"
 
-#include <FuncEntryExit.h>
-#include <sstream>
-
 namespace 
 {
 	const int DELAY_BETWEEN_CONNECT_RETRIES = 1; //Seconds
 	const int MAX_CONNECT_RETRIES = 35;
-}
-void FlowLog(const wchar_t * pref, const wchar_t * func) 
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func) 
-{
-	FlowLog(L"PFWS: --> ", func);
-}
-
-void FuncExit(const wchar_t * func) 
-{
-	FlowLog(L"PFWS: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status) 
-{
-	std::wstringstream ss;
-	ss << L"PFWS: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
 }
 
 void _SEventLogCallbackWrn(void *param, const char* message)

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 
 #include "GmsSubService.h"
@@ -8,33 +8,6 @@
 #include "Tools.h"
 
 #include <sstream>
-#include "FuncEntryExit.h"
-
-void FlowLog(const wchar_t * pref, const wchar_t * func) 
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func) 
-{
-	FlowLog(L"GMSC: --> ", func);
-}
-
-void FuncExit(const wchar_t * func) 
-{
-	FlowLog(L"GMSC: <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status) 
-{
-	std::wstringstream ss;
-	ss << L"GMSC: <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
 
 int GmsSubService::init (int argc, ACE_TCHAR *argv[])
 {
@@ -45,7 +18,7 @@ int GmsSubService::init (int argc, ACE_TCHAR *argv[])
 
 int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 {
-	FuncEntryExit<void> fee(L"initSubService");
+	FuncEntryExit<void> fee(this, L"initSubService");
 	static const ACE_TCHAR options[] = ACE_TEXT (":g:");
 	ACE_Get_Opt cmd_opts(argc, argv, options, 0);
 	int option;
@@ -86,7 +59,7 @@ int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 
 int GmsSubService::closeSubService()
 {
-	FuncEntryExit<void> fee(L"closeSubService");
+	FuncEntryExit<void> fee(this, L"closeSubService");
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ServiceStatus(name(), STATUS_UNLOADCOMPLETE));
 	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
@@ -110,7 +83,7 @@ int GmsSubService::suspendSubService()
 
 int GmsSubService::startSubService()
 {
-	FuncEntryExit<void> fee(L"startSubService");
+	FuncEntryExit<void> fee(this, L"startSubService");
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ServiceStatus(name(), STATUS_LOADCOMPLETE));
 	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
@@ -145,7 +118,7 @@ int GmsSubService::resume()
 
 int GmsSubService::handle_output(ACE_HANDLE fd)
 {
-	FuncEntryExit<void> fee(L"handle_output");
+	FuncEntryExit<void> fee(this, L"handle_output");
 	UNS_DEBUG(L"handle_output: %s\n",name().c_str());
 
 	ACE_Message_Block *mb = 0;
@@ -164,7 +137,7 @@ int GmsSubService::handle_output(ACE_HANDLE fd)
 
 void GmsSubService::HandleAceMessage( int type, MessageBlockPtr &mbPtr )
 {
-	FuncEntryExit<decltype(type)> fee(L"GmsSubService::HandleAceMessage", type);
+	FuncEntryExit<decltype(type)> fee(this, L"GmsSubService::HandleAceMessage", type);
 
 	switch (type) {
 	case MB_STOP_SERVICE:

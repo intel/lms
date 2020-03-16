@@ -18,14 +18,11 @@
 
 #include "PFWUpdateDllWrapperFactory.h"
 
-
-
 #include "MKHIErrorException.h"
 #include "GetFWVersionCommand.h"
 #include "GetPlatformTypeCommand.h"
 #include "GetImageTypeCommand.h"
 #include "FWUpdateCommand.h"
-#include <FuncEntryExit.h>
 
 #include <iostream>
 #include <memory>
@@ -85,37 +82,11 @@ bool PartialFWUpdateEventsFilter::defaultInitialization(std::shared_ptr<PartialF
 	return false;
 }
 
-void FlowLog(const wchar_t * pref, const wchar_t * func)
-{
-	std::wstringstream ss;
-	ss << pref << func;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-void FuncEntry(const wchar_t * func)
-{
-	FlowLog(L"PFU : --> ", func);
-}
-
-void FuncExit(const wchar_t * func)
-{
-	FlowLog(L"PFU : <-- ", func);
-}
-
-void FuncExitWithStatus(const wchar_t * func, uint64_t status)
-{
-	std::wstringstream ss;
-	ss << L"PFU : <-- " << func << L" Status: " << status;
-	auto l = ss.str();
-	UNS_DEBUG(L"%W\n", l.c_str());
-}
-
-
-
-
 PartialFWUpdateService::PartialFWUpdateService() :
-	filter_(std::make_shared<PartialFWUpdateEventsFilter>()), langID(PRIMARYLANGID(GetSystemDefaultLCID())), mode(INITIAL_MODE), schedPFUAfterResume_(false)
+	filter_(std::make_shared<PartialFWUpdateEventsFilter>()),
+	langID(PRIMARYLANGID(GetSystemDefaultLCID())),
+	mode(INITIAL_MODE),
+	schedPFUAfterResume_(false)
 {
 	PartialFWUpdateEventsFilter::defaultInitialization(filter_);
 
@@ -125,7 +96,6 @@ std::shared_ptr<EventsFilter> PartialFWUpdateService::getFilter()
 {
 	return filter_;
 }
-
 
 int PartialFWUpdateService::init (int argc, ACE_TCHAR *argv[])
 {
@@ -179,7 +149,7 @@ int PartialFWUpdateService::handle_event (MessageBlockPtr mbPtr )
 	int type=mbPtr->msg_type();
 	GMS_AlertIndication * pGMS_AlertIndication = nullptr;
 	StartPFWUP * pStartPFWUP = nullptr;
-	FuncEntryExit<decltype(type)> fee(L"handle_event", type);
+	FuncEntryExit<decltype(type)> fee(this, L"handle_event", type);
 	switch (type)
 	{
 	case MB_PFWU_EVENT:
@@ -300,7 +270,7 @@ bool getBoolRegistryKey(DATA_NAME storageName , bool defaultValue)
 		return defaultValue;
 }
 
-bool PartialFWUpdateService::getAllowFlashUpdate()
+bool PartialFWUpdateService::getAllowFlashUpdate() const
 {
 	return getBoolRegistryKey(ALLOW_FLASH_UPDATE, true);
 }
@@ -314,7 +284,7 @@ bool PartialFWUpdateService::getPartialFWUpdateImagePath(std::wstring& value)
 void PartialFWUpdateService::publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE module)
 {
 
-	FuncEntryExit<decltype(module)> fee(L"publishPartialFWUpgrade_begin", module);
+	FuncEntryExit<decltype(module)> fee(this, L"publishPartialFWUpgrade_begin", module);
 	ACE_TString moduleStr;
 	switch (module)
 	{
@@ -332,7 +302,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE mo
 
 void PartialFWUpdateService::publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE module, const std::wstring& returnValue, int error)
 {
-	FuncEntryExit<decltype(error)> fee(L"publishPartialFWUpgrade_failed", error);
+	FuncEntryExit<decltype(error)> fee(this, L"publishPartialFWUpgrade_failed", error);
 	unsigned long eventID = EVENT_PARTIAL_FWU_END_FAILURE_LANG;
 	if(module == WLAN_MODULE)
 		eventID = EVENT_PARTIAL_FWU_END_FAILURE_WLAN;
@@ -352,7 +322,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 	std::wstringstream strStream;
 	std::wstringstream tmpbuffer_s;
 
-	FuncEntryExit<decltype(returnValue)> fee(L"publishPartialFWUpgrade_end", returnValue);
+	FuncEntryExit<decltype(returnValue)> fee(this, L"publishPartialFWUpgrade_end", returnValue);
 
 	if(returnValue == 0)
 	{
@@ -383,7 +353,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 
 void PartialFWUpdateService::publishMissingImageFile(PARTIAL_FWU_MODULE module)
 {
-	FuncEntryExit<decltype(module)> fee(L"publishMissingImageFile", module);
+	FuncEntryExit<decltype(module)> fee(this, L"publishMissingImageFile", module);
 
 	unsigned long eventID;
 	if(module == WLAN_MODULE)
@@ -401,7 +371,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 	std::wstring path;
 	std::wstring value;
 
-	FuncEntryExit<decltype(retVal)>(L"checkImageFileExist", retVal);
+	FuncEntryExit<decltype(retVal)>(this, L"checkImageFileExist", retVal);
 
 	if (GetServiceDirectory(L"LMS", lmsPath) != true)
 	{
@@ -595,10 +565,10 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 
 }
 
-bool PartialFWUpdateService::isMESKU()
+bool PartialFWUpdateService::isMESKU() const
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(L"isMESKU", res);
+	FuncEntryExit<decltype(res)>(this, L"isMESKU", res);
 	//Lock lock(FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 	try
 	{
@@ -631,7 +601,7 @@ bool PartialFWUpdateService::isMESKU()
 bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAGE_FLOW_MODE mode)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(L"updateLanguageChangeCode", res);
+	FuncEntryExit<decltype(res)>(this, L"updateLanguageChangeCode", res);
 	bool defaultLangSet = (languageID == DEFAULT_LANG_ID);
 
 	if (defaultLangSet)
@@ -706,7 +676,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 bool PartialFWUpdateService::invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module, UINT32 partialID)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(L"invokePartialFWUpdateFlow", res);
+	FuncEntryExit<decltype(res)>(this, L"invokePartialFWUpdateFlow", res);
 
 	UNS_DEBUG(L"Partition: 0x%X\n", partialID);
 	publishPartialFWUpgrade_begin(module);
@@ -730,7 +700,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	bool res = false;
 	langID = _langID;
 	mode = _mode;
-	FuncEntryExit<decltype(res)>(L"partialFWUpdate", res);
+	FuncEntryExit<decltype(res)>(this, L"partialFWUpdate", res);
 
 
 	if (!m_mainService->GetPortForwardingStarted()) {
@@ -804,10 +774,10 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	return res;
 }
 
-bool SetExpectedWithLocalOSLanguage()
+bool PartialFWUpdateService::SetExpectedWithLocalOSLanguage() const
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(L"SetExpectedWithLocalOSLanguage", res);
+	FuncEntryExit<decltype(res)>(this, L"SetExpectedWithLocalOSLanguage", res);
 
 	unsigned long languageId;
 	bool retVal = DSinstance().GetDataValue(LastLanguageUpdate, languageId);
@@ -843,10 +813,10 @@ bool SetExpectedWithLocalOSLanguage()
 	return res;
 }
 
-unsigned int getUCLanguageID()
+unsigned int PartialFWUpdateService::getUCLanguageID() const
 {
 	SIOWSManClient::LanguageId lang = SIOWSManClient::English;  //default language
-	FuncEntryExit<decltype(lang)> fee(L"getUCLanguageID", lang);
+	FuncEntryExit<decltype(lang)> fee(this, L"getUCLanguageID", lang);
 
 	LCID lcid =  GetSystemDefaultLCID();
 	int languageId = PRIMARYLANGID(lcid);
