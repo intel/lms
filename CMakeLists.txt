@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 project (lms)
 
@@ -73,15 +73,13 @@ else (UNIX)
 endif (UNIX)
 
 find_library (ACE_LIB ACE)
+find_path (ACE_H ace/ACE.h)
 
 add_library (ACELIB SHARED IMPORTED)
-if (ACE_LIB)
+if (ACE_LIB AND ACE_H)
   set_target_properties (ACELIB PROPERTIES IMPORTED_LOCATION ${ACE_LIB})
-  find_path (ACE_H ace/ACE.h)
-  if (ACE_H)
-    set_target_properties (ACELIB PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${ACE_H})
-  endif (ACE_H)
-else (ACE_LIB)
+  set_target_properties (ACELIB PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${ACE_H})
+else (ACE_LIB AND ACE_H)
   #ACE libraries compiled out-of-tree
   if (NOT DEFINED ENV{ACE_ROOT})
     message(FATAL_ERROR "Please define ACE_ROOT environment variable with path to ACE library sources.")
@@ -106,7 +104,7 @@ else (ACE_LIB)
   install (FILES ${ACE_PDBS}
     DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
   )
-endif (ACE_LIB)
+endif (ACE_LIB AND ACE_H)
 
 # for ver.h
 include_directories (Common)
