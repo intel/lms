@@ -168,7 +168,7 @@ int PartialFWUpdateService::handle_event (MessageBlockPtr mbPtr )
 		}
 		else
 		{
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PartialFWUpdateService::Invalid data block.\n")), -1);
 		}
 		break;
 	case MB_PFWU_START_EVENT:
@@ -191,11 +191,11 @@ int PartialFWUpdateService::handle_event (MessageBlockPtr mbPtr )
 		}
 		else
 		{
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PartialFWUpdateService::Invalid data block.\n")), -1);
 		}
 	}
 
-	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message.\n")), -1);
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PartialFWUpdateService::Invalid Message.\n")), -1);
 }
 
 
@@ -237,14 +237,14 @@ int PartialFWUpdateService::handlePublishEvent(const GMS_AlertIndication & alert
 			break;
 		}
 		default:
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message id.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PartialFWUpdateService::Invalid Message id.\n")), -1);
 			break;
 
 		}
 		break;
 
 	default:
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message category.\n")), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PartialFWUpdateService::Invalid Message category.\n")), -1);
 		break;
 	}
 }

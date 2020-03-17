@@ -63,12 +63,11 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 				}
 				else
 				{
-					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("HistoryEventHandler::Invalid data block.\n")), -1);
 				}
 				break;
 			default:
-			  ACE_ERROR_RETURN
-				((LM_ERROR, ACE_TEXT ("Invalid Message.\n")), -1);
+			  ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("HistoryEventHandler::Invalid Message.\n")), -1);
 			 }
 		return 0;
 	}

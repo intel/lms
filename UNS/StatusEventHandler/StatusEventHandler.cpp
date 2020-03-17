@@ -301,11 +301,10 @@ int
 		}
 		else
 		{
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("StatusEventHandler::Invalid data block.\n")), -1);
 		}
 	default:
-		ACE_ERROR_RETURN
-			((LM_ERROR, ACE_TEXT ("Invalid Message.\n")), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("StatusEventHandler::Invalid Message.\n")), -1);
 	}
 	return 0;
 }

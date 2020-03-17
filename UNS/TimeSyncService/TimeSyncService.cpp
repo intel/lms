@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "TimeSyncService.h"
 #include "TimeSynchronizationClient.h"
@@ -80,11 +80,11 @@ int TimeSyncService::handle_event (MessageBlockPtr mbPtr )
 		}
 		else
 		{
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("TimeSyncService::Invalid data block.\n")), -1);
 		}
 	}
 
-	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message.\n")), -1);
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("TimeSyncService::Invalid Message.\n")), -1);
 }
 
 
@@ -106,14 +106,14 @@ int TimeSyncService::handlePublishEvent(const GMS_AlertIndication & alert)
 			}
 			break;
 		default:
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message id.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("TimeSyncService::Invalid Message id.\n")), -1);
 			break;
 
 		}
 		break;
 
 	default:
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message category.\n")), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("TimeSyncService::Invalid Message category.\n")), -1);
 		break;
 	}
 	return 1;

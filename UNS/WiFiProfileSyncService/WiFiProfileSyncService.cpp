@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 #include "WiFiProfileSyncService.h"
 #include "WlanBL.h"
@@ -154,7 +154,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 			}
 			else
 			{
-				ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+				ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WiFiProfileSyncService::Invalid data block.\n")), -1);
 			}
 		}
 		break;
@@ -166,7 +166,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 		break;
 	}
 
-	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message.\n")), -1);
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WiFiProfileSyncService::Invalid Message.\n")), -1);
 }
 
 int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert)
@@ -199,7 +199,7 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 
 				default:
 				{
-					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message id.\n")), -1);
+					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WiFiProfileSyncService::Invalid Message id.\n")), -1);
 				}
 				break;
 			}
@@ -208,9 +208,7 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 
 		default:
 		{
-			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Invalid category. Return ERROR\n");
-
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message category.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WiFiProfileSyncService::Invalid Message category.\n")), -1);
 		}
 		break;
 	}

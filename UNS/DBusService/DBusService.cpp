@@ -154,7 +154,7 @@ int DBusService::handle_event(MessageBlockPtr mbPtr)
 			SendAlarm(pGMS_AlertIndication);
 		break;
 	default:
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("Invalid Message.\n")), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("DBusService::Invalid Message.\n")), -1);
 	}
 	return 0;
 }

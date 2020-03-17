@@ -1090,7 +1090,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			break;
 		}
 		default:
-			UNS_ERROR(L"Invalid Message\n");
+			UNS_ERROR(L"Configurator::Invalid Message\n");
 			return -1;
 	}
 	return 0;

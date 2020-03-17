@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "WinLogEventHandler.h"
 #include "HTMGetFLogCommand.h"
@@ -81,11 +81,11 @@ WinLogEventHandler::handle_event (MessageBlockPtr mbPtr )
 			}
 			else
 			{
-				ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+				ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WinLogEventHandler::Invalid data block.\n")), -1);
 			}
 		default:
 			ACE_ERROR_RETURN
-			((LM_ERROR, ACE_TEXT ("Invalid Message.\n")), -1);
+			((LM_ERROR, ACE_TEXT ("WinLogEventHandler::Invalid Message.\n")), -1);
 			}
 	return 0;
 }

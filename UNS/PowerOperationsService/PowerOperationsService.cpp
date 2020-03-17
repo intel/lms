@@ -356,17 +356,17 @@ PowerOperationsService::handle_event (MessageBlockPtr mbPtr )
 					break;
 
 				default:
-					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid Message category.\n")), -1);
+					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PowerOperationsService::Invalid Message category.\n")), -1);
 					break;
 				}
 			}
 			else
 			{
-				ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Invalid data block.\n")), -1);
+				ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("PowerOperationsService::Invalid data block.\n")), -1);
 			}
 		}
 		default:
-			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("Invalid Message.\n")), -1);
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("PowerOperationsService::Invalid Message.\n")), -1);
 	}
 	return 0;
 }
