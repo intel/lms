@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 //----------------------------------------------------------------------------
 //
@@ -16,6 +16,9 @@
 #pragma warning(disable: 4275)
 #pragma warning(disable: 4251)
 
+#ifdef GMS_COMMON_NO_DLL
+  #define GMS_COMMON_EXPORT
+#else // GMS_COMMON_NO_DLL
 #if defined (_WIN32) || defined (_WIN64)
   #ifdef GMS_COMMON_DLL_EXPORTS
     #define GMS_COMMON_EXPORT __declspec(dllexport)
@@ -29,5 +32,6 @@
     #define GMS_COMMON_EXPORT
   #endif
 #endif
+#endif // GMS_COMMON_NO_DLL
 
 #endif // GMS_COMMONDLLEXPORT_H
