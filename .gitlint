@@ -20,7 +20,7 @@
 
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
-# extra-path=examples/
+extra-path=gitlint
 
 [title-max-length]
 line-length=80
@@ -38,12 +38,12 @@ line-length=80
 # (e.g. title-must-not-contain-word).
 regex=^LMS:*
 
-# [B1]
-# B1 = body-max-line-length
-# line-length=120
 
-[body-min-length]
-min-length=4
+[body-max-line-length]
+line-length=72
+
+#[body-min-length]
+#min-length=4
 
 # [body-is-missing]
 # Whether to ignore this rule on merge commits (which typically only have a title)
@@ -57,11 +57,11 @@ min-length=4
 # it in the commit message.
 # files=gitlint/rules.py,README.md
 
-# [author-valid-email]
+[author-valid-email]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
 # For example, use the following regex if you only want to allow email addresses from foo.com
-# regex=[^@]+@foo.com
+regex=[^@]+@intel.com
 
 # [ignore-by-title]
 # Ignore certain rules for commits of which the title matches a regex
