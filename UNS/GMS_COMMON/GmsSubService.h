@@ -59,6 +59,8 @@ protected:
 
 	template <typename T>
 	using FuncEntryExit = FuncEntryExit_<T, GmsSubService>;
+private:
+	void sendStatusChanged(SERVICE_STATUS_TYPE type);
 };
 
 #endif /* __SUBSERVICE_H_ */

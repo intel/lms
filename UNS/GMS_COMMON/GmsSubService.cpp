@@ -57,13 +57,19 @@ int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
+void GmsSubService::sendStatusChanged(SERVICE_STATUS_TYPE type)
+{
+	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
+	mbPtr->data_block(new ServiceStatus(name(), type));
+	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
+	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
+}
+
 int GmsSubService::closeSubService()
 {
 	FuncEntryExit<void> fee(this, L"closeSubService");
-	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-	mbPtr->data_block(new ServiceStatus(name(), STATUS_UNLOADCOMPLETE));
-	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
-	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
+
+	sendStatusChanged(STATUS_UNLOADCOMPLETE);
 
 	UNS_DEBUG(L"%s\n",name().c_str());
 	return 0;
@@ -71,11 +77,7 @@ int GmsSubService::closeSubService()
 
 int GmsSubService::suspendSubService()
 {
-	
-	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-	mbPtr->data_block(new ServiceStatus(name(), STATUS_SUSPENDCOMPLETE));
-	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
-	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
+	sendStatusChanged(STATUS_SUSPENDCOMPLETE);
 
 	UNS_DEBUG(L"%s suspendSubService()\n",name().c_str());
 	return 0;
@@ -84,10 +86,8 @@ int GmsSubService::suspendSubService()
 int GmsSubService::startSubService()
 {
 	FuncEntryExit<void> fee(this, L"startSubService");
-	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-	mbPtr->data_block(new ServiceStatus(name(), STATUS_LOADCOMPLETE));
-	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
-	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
+
+	sendStatusChanged(STATUS_LOADCOMPLETE);
 
 	UNS_DEBUG(L"%s, 0x%X\n",name().c_str(), this);
 	return 0;
@@ -107,10 +107,7 @@ int GmsSubService::suspend()
 
 int GmsSubService::resume() 
 {
-	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-	mbPtr->data_block(new ServiceStatus(name(), STATUS_RESUMECOMPLETE));
-	mbPtr->msg_type(MB_SERVICE_STATUS_CHANGED);
-	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
+	sendStatusChanged(STATUS_RESUMECOMPLETE);
 
 	UNS_DEBUG(L"%s service Resumed\n",name().c_str());
 	return 0;
