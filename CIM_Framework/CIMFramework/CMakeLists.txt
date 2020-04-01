@@ -1,4 +1,4 @@
-# Copyright (c) Intel Corporation, 2019  All Rights Reserved.
+# Copyright (c) Intel Corporation, 2019-2020 All Rights Reserved.
 cmake_minimum_required (VERSION 3.1)
 
 add_library (CIMFramework STATIC
@@ -276,8 +276,10 @@ add_library (CIMFramework STATIC
 
 set_target_properties (CIMFramework PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+find_package (Threads REQUIRED)
 target_link_libraries (CIMFramework
   CimFrameworkUntyped
+  Threads::Threads
 )
 
 include_directories (
