@@ -38,6 +38,8 @@ line-length=80
 # (e.g. title-must-not-contain-word).
 regex=^LMS:*
 
+[body-min-line-count]
+min-line-count=1
 
 [body-max-line-length]
 line-length=72
