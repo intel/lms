@@ -887,7 +887,7 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 	return S_OK;
 }
 
-STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT* pLanguage)
+STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT*)
 {
 	UNS_DEBUG(L"CPTHI_Commands::GetSpriteLanguage - deprecated\n");
 	return E_NOINTERFACE;
@@ -908,7 +908,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 	return S_OK;
 }
 
-STDMETHODIMP CPTHI_Commands::GetSpriteZoom(SHORT* pZoom)
+STDMETHODIMP CPTHI_Commands::GetSpriteZoom(SHORT*)
 {
 	UNS_DEBUG(L"CPTHI_Commands::GetSpriteZoom - deprecated\n");
 	return E_NOINTERFACE;
@@ -1213,7 +1213,7 @@ STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExis
 	return LMSError2HRESULT(err);
 }
 
-STDMETHODIMP CPTHI_Commands::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters)
+STDMETHODIMP CPTHI_Commands::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS)
 {
 	UNS_DEBUG(L"CPTHI_Commands::UpdateScreenSettings - deprecated\n");
 	return E_NOINTERFACE;
@@ -1277,10 +1277,10 @@ STDMETHODIMP CPTHI_Commands::IsRebootAfterProvisioningNeeded(VARIANT_BOOL *pNeed
 	return S_OK;
 }
 
-STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR proxy_fqdn,
-												USHORT proxy_port,
-												SAFEARRAY* gateway_mac_address,
-												BSTR network_dns_suffix)
+STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR,
+												USHORT,
+												SAFEARRAY*,
+												BSTR)
 
 {
 	UNS_DEBUG(L"CPTHI_Commands::ProxyAddProxyEntry - deprecated\n");
