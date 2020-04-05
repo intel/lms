@@ -11,7 +11,13 @@
 #import "..\..\..\Release\LMS.exe"
 
 #define ASSERT_THROW_COM_(func, err) \
-try {(func);} catch (const _com_error& e){	if (e.Error() != err) FAIL();}
+	try {                            \
+		(func);                      \
+		FAIL();                      \
+	} catch (const _com_error& e) {  \
+		if (e.Error() != err)        \
+			FAIL();                  \
+	}
 
 #define ASSERT_THROW_INVALIDARG(func)  ASSERT_THROW_COM_(func, E_INVALIDARG)
 #define ASSERT_THROW_NOINTERFACE(func)  ASSERT_THROW_COM_(func, E_NOINTERFACE)
@@ -19,6 +25,16 @@ try {(func);} catch (const _com_error& e){	if (e.Error() != err) FAIL();}
 #define ASSERT_NO_THROW_COM(func) \
 try {(func);} catch (const _com_error& e){std::cout<<"0x"<<std::hex<<e.Error()<<std::endl;FAIL();}
 
+#define ASSERT_MAY_THROW_COM_(func, err) \
+	try {(func);} \
+	catch (const _com_error& e) { \
+		if (e.Error() != err) { \
+			std::cout<<"0x"<<std::hex<<e.Error()<<std::endl; \
+			FAIL(); \
+		} \
+	}
+
+#define ASSERT_MAY_THROW_NOINTERFACE(func) ASSERT_MAY_THROW_COM_(func, E_NOINTERFACE)
 
 /* ------------------------- AMT_COM_Manageability ----------------------- */
 class AMT_COM_Manageability : public ::testing::Test {
@@ -90,6 +106,12 @@ TEST_F(AMT_COM_Manageability, GetPMCVersion)
 {
 	bstr_t FwVer;
 	ASSERT_NO_THROW_COM(amthi->GetPMCVersion(&FwVer.GetBSTR()));
+}
+
+TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
+{
+	VARIANT_BOOL state;
+	ASSERT_MAY_THROW_NOINTERFACE(amthi->IsMeasuredBootState(&state));
 }
 
 /* ------------------------- AMT_COM_PTHI ----------------------- */
@@ -295,7 +317,8 @@ TEST_F(AMT_COM_PTHI, GetConfigurationInfo)
 	SHORT ProvisioningMethod;
 	bstr_t CreationTimeStamp;
 	SAFEARRAY* pCertHash;
-	ASSERT_NO_THROW_COM(amthi->GetConfigurationInfo(&ControlMode, &ProvisioningMethod, &CreationTimeStamp.GetBSTR(), &pCertHash));
+	ASSERT_NO_THROW_COM(amthi->GetConfigurationInfo(&ControlMode, &ProvisioningMethod,
+												    &CreationTimeStamp.GetBSTR(), &pCertHash));
 }
 
 TEST_F(AMT_COM_PTHI, TerminateRemedySessions)
@@ -353,7 +376,7 @@ TEST_F(AMT_COM_PTHI, IsRebootAfterProvisioningNeeded)
 
 TEST_F(AMT_COM_PTHI, ProxyAddProxyEntry)
 {
-	bstr_t	proxy_fqdn = "1.2.3.4";
+	bstr_t proxy_fqdn = "1.2.3.4";
 	USHORT proxy_port = 0;
 	CComSafeArray<BYTE> gateway_mac_address(6);
 	bstr_t network_dns_suffix = "1.2.3.4";
