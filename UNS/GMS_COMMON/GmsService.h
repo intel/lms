@@ -1,10 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #ifndef _GMS_SERVICE
 #define _GMS_SERVICE
 
+#include <mutex>
 #include "ace/NT_Service.h"
 #include "ace/Mutex.h"
 #include "MessageBlockPtr.h"
@@ -70,12 +71,14 @@ public:
 
 	void SetHeciEventCB(HeciEventCallBack closeHeciHandle, HeciEventCallBack notifyHeciEnable, void* portForwardingService) 
 	{
+		std::lock_guard<std::mutex> lock(m_HECINotifyMutex);
 		m_closeHeciHandle = closeHeciHandle;
 		m_notifyHeciEnable = notifyHeciEnable;
 		m_portForwardingService = portForwardingService;
 	}
 	void CloseHeciHandle();
 	void NotifyHeciEnable();
+	std::mutex m_HECINotifyMutex;
 
 	bool GetPortForwardingStarted();
 	void SetPortForwardingStarted(bool isPfwStarted);

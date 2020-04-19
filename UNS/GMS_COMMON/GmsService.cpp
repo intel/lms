@@ -64,6 +64,8 @@ GmsService::~GmsService(void)
 
 void GmsService::CloseHeciHandle()
 {
+	std::lock_guard<std::mutex> lock(m_HECINotifyMutex);
+
 	if ((m_closeHeciHandle != NULL) && (m_portForwardingService != NULL))
 	{
 		m_closeHeciHandle(m_portForwardingService);
@@ -72,6 +74,8 @@ void GmsService::CloseHeciHandle()
 
 void GmsService::NotifyHeciEnable()
 {
+	std::lock_guard<std::mutex> lock(m_HECINotifyMutex);
+
 	if ((m_notifyHeciEnable != NULL) && (m_portForwardingService != NULL))
 	{
 		m_notifyHeciEnable(m_portForwardingService);
