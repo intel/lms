@@ -35,12 +35,13 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 	catch (std::exception& e)
 	{
 		UNS_ERROR(L"Exception with HTMGetFatalErrorsCommand: %C\n", e.what());
+		return 0;
 	}
 	catch(...)
 	{
 		UNS_ERROR(L"Exception with HTMGetFatalErrorsCommand\n");
+		return 0;
 	}
-
 
 	unsigned long registrySize; //previous FLog size from the registry
 	//If current log's size is greater than previous one (of when we got up) = there was a fatal error.
