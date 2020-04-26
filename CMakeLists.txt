@@ -38,7 +38,11 @@ if (UNIX)
 
   #Secure library usage and secure compile flags
   add_definitions (-fstack-protector-all -D_FORTIFY_SOURCE=2 -O2 -Wformat -Wformat-security)
-  add_definitions (-fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv)
+  add_compile_options (
+     $<$<CXX_COMPILER_ID:GNU>:-fno-strict-overflow>
+     $<$<CXX_COMPILER_ID:GNU>:-fno-delete-null-pointer-checks>
+     -fwrapv
+  )
 else (UNIX)
   set(DEFAULT_LINKER_FLAGS_RELEASE "${DEFAULT_LINKER_FLAGS_RELEASE} /GUARD:CF")
   set(DEFAULT_LINKER_FLAGS_RELWITHDEBINFO "${DEFAULT_LINKER_FLAGS_RELWITHDEBINFO} /GUARD:CF")
