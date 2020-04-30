@@ -154,7 +154,7 @@ uint32_t PFWUpdateDllWrapperME12::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 	catch (...)
 	{
 		status = INTERNAL_ERROR;
-		UNS_ERROR(L"FwuPartitionInstances throwed error\n");
+		UNS_ERROR(L"FwuPartitionInstances threw error\n");
 	}
 
 End:
@@ -259,7 +259,7 @@ uint32_t PFWUpdateDllWrapperME12::performPFWU(uint32_t partialID, const std::wst
 	catch (...)
 	{
 		status = INTERNAL_ERROR;
-		UNS_ERROR(L"performPFWU throwed error\n");
+		UNS_ERROR(L"performPFWU threw error\n");
 	}
 
 End:

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -77,7 +77,7 @@ bool PowerManagementCapabilitiesClient::Init(bool forceGet)
 }
 
 /*
-	This function is used to update the given vector, to include or exclude the givem capability.
+	This function is used to update the given vector, to include or exclude the given capability.
 	params:
 	bool insert: whether the capability should be included (when true) in the vector or excluded (when false).
 	unsigned short capability - the capability to include or exclude.

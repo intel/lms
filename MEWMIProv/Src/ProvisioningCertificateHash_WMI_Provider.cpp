@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -81,7 +81,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 
 		}
 		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-		//Enumarate the collection, retrieving params and creating return instances
+		//Enumerate the collection, retrieving params and creating return instances
 		//if (STATUS_SUCCESS == hr)
 		//{
 		//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
@@ -230,7 +230,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 
 		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 
-		//Enumarate the collection, retrieving params and creating return instances
+		//Enumerate the collection, retrieving params and creating return instances
 		if (STATUS_SUCCESS == hr)
 		{
 			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));

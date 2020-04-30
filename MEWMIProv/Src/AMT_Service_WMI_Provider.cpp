@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -547,7 +547,7 @@ HRESULT AMT_Service_WMI_Provider::setSpriteLocale(
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 
-	//since 8.0 this fuction is not supported anymore
+	//since 8.0 this function is not supported anymore
 	hr = WBEM_E_NOT_SUPPORTED;
 	pResponseHandler->SetStatus ( 0 , hr , NULL , NULL ) ;
 	return hr;
@@ -636,7 +636,7 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-	//Enumarate the collection, retrieving params and creating return instances
+	//Enumerate the collection, retrieving params and creating return instances
 	//if (STATUS_SUCCESS == hr)
 	//{
 	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
@@ -702,7 +702,7 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 
 		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 
-		//Enumarate the collection, retrieving params and creating return instances
+		//Enumerate the collection, retrieving params and creating return instances
 		if (STATUS_SUCCESS == hr)
 		{
 			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));

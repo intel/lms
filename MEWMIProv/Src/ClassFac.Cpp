@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -123,7 +123,7 @@ STDMETHODIMP CProvFactory::CreateInstance(LPUNKNOWN pUnkOuter
     *ppvObj=NULL;
     hr = E_OUTOFMEMORY;
 
-    // This object doesnt support aggregation.
+    // This object doesn't support aggregation.
 
     if (NULL!=pUnkOuter)
         return CLASS_E_NOAGGREGATION;

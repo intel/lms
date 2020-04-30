@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -25,7 +25,7 @@ namespace Intel
 				uint32_t SOLEnabled :1;
 				uint32_t IDEREnabled :1;
 				uint32_t KVMEnabled :1;
-				uint32_t Resrved :29;
+				uint32_t Reserved :29;
 			};
 
 			struct REDIRECTION_STATE

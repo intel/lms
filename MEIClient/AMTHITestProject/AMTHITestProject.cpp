@@ -170,7 +170,7 @@ TEST(instantiate, testGetFQDNCommand)
 		cout<<"---------------------------------"<<endl;
 		cout<<"Domain name is "<<t[fc.getResponse().SharedFQDN]<<" shared"<<endl;
 		cout<<"Dynamic DNS update is "<<t[fc.getResponse().DDNSUpdateEnabled]<<" enabled"<<endl;
-		cout<<"Peroidic update interval is : "<<dec<<fc.getResponse().DDNSPeriodicUpdateInterval<<endl;
+		cout<<"Periodic update interval is : "<<dec<<fc.getResponse().DDNSPeriodicUpdateInterval<<endl;
 		cout<<"TTL for RRs is : "<<fc.getResponse().DDNSTTL<<endl;
 		cout<<"Host name length is : "<<fc.getResponse().HostNameLength<<endl;
 		cout<<"FQDN is : "<<fc.getResponse().FQDN<<endl;

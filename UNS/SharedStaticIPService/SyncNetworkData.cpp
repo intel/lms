@@ -62,7 +62,7 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 		DHCPEnabled = m_DHCPEnabled;			
 		needToSync = true;
 	}		
-	// On DHCP enabled only need to update the DCHP status
+	// On DHCP enabled only need to update the DHCP status
 	// On DHCP disabled we need to update all the network settings and also validate them
 	if (!m_DHCPEnabled)
 	{

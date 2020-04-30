@@ -193,7 +193,7 @@
 </method>
 <!--
     GetUserInitiatedEnabled:
-    @Status: 0 = DIABLED, 1 = ENABLED
+    @Status: 0 = DISABLED, 1 = ENABLED
 
     Retrieves status of user initiated connection enablement.
 -->
@@ -322,7 +322,7 @@
     @Enabled: 0 = DISABLED, 1 = ENABLED
     @Connected: 0 = DISCONNECTED, 1 = CONNECTED
 
-    Retrive KVM redirection state.
+    Retrieve KVM redirection state.
 -->
 <method name="GetKVMRedirectionState">
 <arg name="Enabled" type="b" direction="out" />
@@ -351,7 +351,7 @@
     @SpriteLanguage: 0 = English, 1 = French, 2 = German, 3 = Chinese_Traditional, 4 = Japanese, 5 = Russian, 6 = Italian, 7 = Spanish, 8 = Portuguese_Brazil, 9 = Korean, 10 = Chinese_Simplified, 11 = Arabic, 12 = Czech, 13 = Danish, 14 = Greek, 15 = Finnish, 16 = Hebrew, 17 = Hungarian, 18 = Dutch, 19 = Norwegian, 20 = Polish, 21 = Portuguese_Portugal, 22 = Slovak, 23 = Slovenian, 24 = Swedish, 25 = Thai, 26 = Turkish, 100 = NotSet, 65535 = DefaultEnglish
     @SpriteZoom: 1 = NO_ZOOM, 2 = ZOOM_X2, 65535 = AUTO
 
-    Retrive current sprite language and zoom.
+    Retrieve current sprite language and zoom.
 -->
 <method name="GetSpriteParameters">
 <arg name="SpriteLanguage" type="u" direction="out" />
@@ -364,7 +364,7 @@
     @CreationTimeStamp: Provison time stamp string
     @CertHash: Certificate hash string array
 
-    Retrive AMT configuration parameters.
+    Retrieve AMT configuration parameters.
 -->
 <method name="GetConfigurationInfo">
 <arg name="ControlMode" type="u" direction="out" />
@@ -384,7 +384,7 @@
     @State:0 = NOT STARTED, 1 = REQUESTED, 2 = DISPLAYED, 3 = RECEIVED, 4 = IN_SESSION, 5 = RESERVED
     @Policy: 0 = NOT_REQUIRED, 1 = KVM_ONLY, 4294967295 = ALL_SESSIONS
 
-    Retrive user consent status.
+    Retrieve user consent status.
 -->
 <method name="GetUserConsentState">
 <arg name="State" type="u" direction="out" />
@@ -396,7 +396,7 @@
     @Control: 1 = ME, 2 = HOST, 3 = Reserved
     @Protection: 0 = OVERRIDE, 1 = NONE, 2 = PASSIVE, 3 = HIGH, 4 = RESERVED
 
-    Retrive WLAN link information.
+    Retrieve WLAN link information.
 -->
 <method name="GetWLANLinkInfo">
 <arg name="Preference" type="u" direction="out" />
@@ -471,7 +471,7 @@
     @sessionType: 0 = SOL, 1 = IDER, 2 = KVM
     @LinkTechnology: 0 = WIRED, 1 = WIRELESS
 
-    Retrives underlining link technology for given session type.
+    Retrieves underlining link technology for given session type.
 -->
 <method name="GetRedirectionSessionLinkTechnology">
 <arg name="sessionType" type="u" direction="in" />
@@ -490,7 +490,7 @@
     GetAuditLogs:
     @AuditLogs: logs as XML string
 
-    Retrives audit logs from the FW.
+    Retrieves audit logs from the FW.
 -->
 <method name="GetAuditLogs">
 <arg name="AuditLogs" type="s" direction="out" />
@@ -508,7 +508,7 @@
     GetIMSSEventHistory:
     @EventHistory: event history string
 
-    Retrives IMSS event history from LMS.
+    Retrieves IMSS event history from LMS.
 -->
 <method name="GetIMSSEventHistory">
 <arg name="EventHistory" type="s" direction="out" />

@@ -44,7 +44,7 @@ class ManageabilityTestCase(unittest.TestCase):
         '''GetFeaturesState test method'''
         with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
             self.iface.GetFeaturesState()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not suported by system')
+        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetCustomerType(self):
         '''GetCustomerType test method'''
@@ -54,7 +54,7 @@ class ManageabilityTestCase(unittest.TestCase):
         '''GetPlatformType test method'''
         with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
             self.iface.GetPlatformType()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not suported by system')
+        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetMenageabiltyMode(self):
         '''GetMenageabiltyMode test method'''
@@ -73,7 +73,7 @@ class ManageabilityTestCase(unittest.TestCase):
         try:
             self.iface.IsMeasuredBootState()
         except dbus.exceptions.DBusException as the_exp:
-            self.assertEqual(the_exp.get_dbus_message(), 'Request is not suported by system')
+            self.assertEqual(the_exp.get_dbus_message(), 'Request is not supported by system')
 
 class PTHITestCase(unittest.TestCase):
     """PTHI interface test"""
@@ -100,13 +100,13 @@ class PTHITestCase(unittest.TestCase):
         '''GetProvisioningMode test method'''
         with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
             self.iface.GetProvisioningMode()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not suported by system')
+        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetProvisioningTlsMode(self):
         '''GetProvisioningTlsMode test method'''
         with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
             self.iface.GetProvisioningTlsMode()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not suported by system')
+        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetProvisioningState(self):
         '''GetProvisioningState test method'''
@@ -124,7 +124,7 @@ class PTHITestCase(unittest.TestCase):
         '''getWebUIState test method'''
         with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
             self.iface.getWebUIState()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not suported by system')
+        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetPowerPolicy(self):
         '''GetPowerPolicy test method'''
@@ -191,7 +191,7 @@ class PTHITestCase(unittest.TestCase):
         '''TerminateKVMSession test method'''
         with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
             self.iface.TerminateKVMSession()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not suported by system')
+        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetKVMRedirectionState(self):
         '''GetKVMRedirectionState test method'''

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -38,7 +38,7 @@ class WSMAN_DLL_API BaseWSManClient
 {
 public:
 
-	// Contructors and Destructor.
+	// Constructors and Destructor.
 	BaseWSManClient();
 	BaseWSManClient(const std::string &defaultUser, const std::string &defaultPass);
 

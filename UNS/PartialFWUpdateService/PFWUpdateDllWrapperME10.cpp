@@ -162,7 +162,7 @@ uint32_t PFWUpdateDllWrapperME10::isFwInitDone(bool* isFwInitDone)
 	catch (...)
 	{
 		retcode = 8707;
-		UNS_ERROR(L"GetFwUpdateInfoStatus throwed error\n");
+		UNS_ERROR(L"GetFwUpdateInfoStatus threw error\n");
 	}
 
 	printPfwuReturnCode(retcode);
@@ -220,7 +220,7 @@ uint32_t PFWUpdateDllWrapperME10::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 	catch (...)
 	{
 		retcode = 8707;
-		UNS_ERROR(L"GetIpuPartitionAttributes throwed error\n");
+		UNS_ERROR(L"GetIpuPartitionAttributes threw error\n");
 	}
 
 	printPfwuReturnCode(retcode);
@@ -260,7 +260,7 @@ uint32_t PFWUpdateDllWrapperME10::performPFWU(uint32_t partialID, const std::wst
 	catch (...)
 	{
 		retcode = 8707;
-		UNS_ERROR(L"FwUpdatePartial throwed error\n");
+		UNS_ERROR(L"FwUpdatePartial threw error\n");
 	}
 	printPfwuReturnCode(retcode);
 	if (retcode != 0)
@@ -284,7 +284,7 @@ uint32_t PFWUpdateDllWrapperME10::performPFWU(uint32_t partialID, const std::wst
 		catch (...)
 		{
 			retcode = 8707;
-			UNS_ERROR(L"FWUpdate_QueryStatus_Get_Response throwed error\n");
+			UNS_ERROR(L"FWUpdate_QueryStatus_Get_Response threw error\n");
 		}
 		printPfwuReturnCode(retcode);
 		UNS_DEBUG(L"currentStageNew %u, totalStageNew %u, progressNew %u, lastUpdateStatusNew %u, lastResetTypeNew %u, done %d\n", currentStageNew, totalStageNew, progressNew, lastUpdateStatusNew, lastResetTypeNew, done);

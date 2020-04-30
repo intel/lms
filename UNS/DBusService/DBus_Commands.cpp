@@ -26,7 +26,7 @@ namespace DBus {
 			break;
 		case Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW:
 			code = G_IO_ERROR_NOT_SUPPORTED;
-			str = "Request is not suported by system";
+			str = "Request is not supported by system";
 			break;
 		case Intel::LMS::ERROR_FAIL:
 		default:

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -722,7 +722,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		}
 		break;
 	case KVM_APPID:
-		// No event has parameters to dispaly.
+		// Event has no parameters to display.
 		break;
 	case USER_OPT_IN_APPID:
 		switch(eventId)
@@ -1447,7 +1447,7 @@ std::string AuditLogWSManClient::DisplayRemoteControlBootOptionsRelatedEvent(uin
 }
 
 /*****************************************************************************
- * Function that displays the firmware verion. 
+ * Function that displays the firmware version.
  * Arguments:
  *  extData				- Extended data.
  ****************************************************************************/

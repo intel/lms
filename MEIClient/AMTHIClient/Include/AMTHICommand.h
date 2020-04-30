@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -189,7 +189,7 @@ private:
 		if ((header->Command.cmd.val != getCommandNumber()) ||
 			(header->Length != (buffer.size() - sizeof(AMTHI_MESSAGE_HEADER))))
 		{
-			throw MEIClientException("Error: AMTHI Command number is incorect." );
+			throw MEIClientException("Error: AMTHI Command number is incorrect." );
 		}
 		AMT_STATUS *status = (AMT_STATUS*)&(buffer[sizeof(AMTHI_MESSAGE_HEADER)]);
 		if (*status != AMT_STATUS_SUCCESS)
