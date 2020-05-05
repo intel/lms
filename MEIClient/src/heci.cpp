@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -31,15 +31,15 @@ void HECI::Init()
 		return;
 
 #ifdef WIN32
-	std::vector<std::string> devices = { "" };
+	std::vector<const char*> devices = { NULL };
 #else
-	std::vector<std::string> devices =
+	std::vector<const char*> devices =
 		{"/dev/mei0", "/dev/mei1", "/dev/mei2", "/dev/mei3"};
 #endif // WIN32
 	std::stringstream err;
-	for (std::vector<std::string>::const_iterator it = devices.begin();
+	for (std::vector<const char*>::const_iterator it = devices.begin();
 	    it != devices.end(); it++) {
-		ret = TeeInit(&_handle, &_guid, it->c_str());
+		ret = TeeInit(&_handle, &_guid, *it);
 		if (!TEE_IS_SUCCESS(ret)) {
 			err << *it << " init " << ret << " ";
 			continue;
