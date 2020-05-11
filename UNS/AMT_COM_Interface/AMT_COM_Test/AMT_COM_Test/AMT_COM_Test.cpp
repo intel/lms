@@ -10,31 +10,41 @@
 #include "gtest/gtest.h"
 #import "..\..\..\Release\LMS.exe"
 
-#define ASSERT_THROW_COM_(func, err) \
-	try {                            \
-		(func);                      \
-		FAIL();                      \
-	} catch (const _com_error& e) {  \
-		if (e.Error() != err)        \
-			FAIL();                  \
-	}
+#define ASSERT_THROW_COM_(func, err)                                           \
+	try {                                                                  \
+		(func);                                                        \
+		FAIL();                                                        \
+	} catch (const _com_error& e) {                                        \
+		if (e.Error() != err) {                                        \
+			std::cout << "0x" << std::hex<< e.Error()<< std::endl; \
+			FAIL();                                                \
+		}                                                              \
+	}                                                                      \
 
 #define ASSERT_THROW_INVALIDARG(func)  ASSERT_THROW_COM_(func, E_INVALIDARG)
-#define ASSERT_THROW_NOINTERFACE(func)  ASSERT_THROW_COM_(func, E_NOINTERFACE)
+#define ASSERT_THROW_NOINTERFACE(func) ASSERT_THROW_COM_(func, E_NOINTERFACE)
 
-#define ASSERT_NO_THROW_COM(func) \
-try {(func);} catch (const _com_error& e){std::cout<<"0x"<<std::hex<<e.Error()<<std::endl;FAIL();}
+#define ASSERT_NO_THROW_COM(func)                                              \
+	try {                                                                  \
+		(func);                                                        \
+	} catch (const _com_error& e) {                                        \
+		std::cout << "0x "<< std::hex << e.Error()<< std::endl;        \
+		FAIL();                                                        \
+	}                                                                      \
 
-#define ASSERT_MAY_THROW_COM_(func, err) \
-	try {(func);} \
-	catch (const _com_error& e) { \
-		if (e.Error() != err) { \
-			std::cout<<"0x"<<std::hex<<e.Error()<<std::endl; \
-			FAIL(); \
-		} \
-	}
+#define ASSERT_MAY_THROW_COM_(func, err)                                       \
+	try {                                                                  \
+		(func);                                                        \
+	}                                                                      \
+	catch (const _com_error& e) {                                          \
+		if (e.Error() != err) {                                        \
+			std::cout << "0x" << std::hex<< e.Error()<< std::endl; \
+			FAIL();                                                \
+		}                                                              \
+	}                                                                      \
 
-#define ASSERT_MAY_THROW_NOINTERFACE(func) ASSERT_MAY_THROW_COM_(func, E_NOINTERFACE)
+#define ASSERT_MAY_THROW_NOINTERFACE(func) \
+	ASSERT_MAY_THROW_COM_(func, E_NOINTERFACE)
 
 /* ------------------------- AMT_COM_Manageability ----------------------- */
 class AMT_COM_Manageability : public ::testing::Test {
