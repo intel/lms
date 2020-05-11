@@ -41,13 +41,13 @@ void HECI::Init()
 	    it != devices.end(); it++) {
 		ret = TeeInit(&_handle, &_guid, *it);
 		if (!TEE_IS_SUCCESS(ret)) {
-			err << *it << " init " << ret << " ";
+			err << ((*it) ? *it : "NULL") << " init " << ret << " ";
 			continue;
 		}
 
 		ret = TeeConnect(&_handle);
 		if (!TEE_IS_SUCCESS(ret)) {
-			err << *it << " connect " << ret << " ";
+			err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
 			if (ret == TEE_CLIENT_NOT_FOUND)
 				client_not_found = true;
 			TeeDisconnect(&_handle);
