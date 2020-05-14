@@ -78,12 +78,11 @@ To skip automatic download one can download it manually to Common/googletest dir
 #### NetworkManager or Connman support
 
 LMS utilizes network service for querying the host network parameters, it can work with NetworkManager, Connman, or directly with netlink.
-The support is detected during CMake configuration.
-
-The CMake detects availability of the manager by looking for a package config file.
-The package config files are usually part of a Linux distribution development package such as network-manager-dev and connman-dev in Debian.
-One of them should be installed to enable configuration time detection.
-In Yocto the desired service should be configured in the recipe. 
+To select network service set CMake flags:
+* NETWORK_NM=ON NETWORK_CM=OFF for Network Manager (this is a default one),
+* NETWORK_NM=OFF NETWORK_CM=ON for Connman,
+* NETWORK_NM=OFF NETWORK_CM=OFF to use netlink directly (with reduced functionality).
+You can not set both flags to ON.
 
 ## Build
 

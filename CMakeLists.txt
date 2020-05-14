@@ -6,6 +6,13 @@ project (lms)
 option (BUILD_TESTS "Build tests" NO)
 option (BUILD_WIN_UNIVERSAL "Build Windows Universal App" NO)
 option (IGNORE_DLL_SIGNATURES "Skip Windows DLL signatures check" NO)
+if (UNIX)
+  option (NETWORK_NM "Use NetworkManager in netwoek manipulations" YES)
+  option (NETWORK_CN "Use Connman in netwoek manipulations" NO)
+  if (NETWORK_NM AND NETWORK_CN)
+    message(FATAL_ERROR "Only one network manager can be supported.")
+  endif (NETWORK_NM AND NETWORK_CN)
+endif (UNIX)
 
 set (CMAKE_CXX_STANDARD 11)
 

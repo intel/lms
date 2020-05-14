@@ -29,13 +29,6 @@ if (UNIX)
   pkg_check_modules (NL3 REQUIRED libnl-3.0)
   pkg_check_modules (NL3-ROUTE REQUIRED libnl-route-3.0)
   pkg_check_modules (GIO REQUIRED gio-2.0)
-
-  pkg_check_modules (NETWORKMANAGER NetworkManager)
-  pkg_check_modules (CONNMAN connman)
-
-  if (NETWORKMANAGER_FOUND AND CONNMAN_FOUND)
-    message(FATAL_ERROR "Both NetworkManager and Connman found. Can't choose.")
-  endif (NETWORKMANAGER_FOUND AND CONNMAN_FOUND)
   set (NET_LIBRARIES ${NL3_LIBRARIES} ${NL3-ROUTE_LIBRARIES} ${GIO_LIBRARIES})
   set (NET_INCLUDE_DIRS ${NL3_INCLUDE_DIRS} ${GIO_INCLUDE_DIRS})
 else (UNIX)
@@ -44,8 +37,8 @@ else (UNIX)
 endif (UNIX)
 
 target_compile_options (LmsSharedStaticIPService PRIVATE
-  $<$<BOOL:${NETWORKMANAGER_FOUND}>:-DUSE_NM>
-  $<$<BOOL:${CONNMAN_FOUND}>:-DUSE_CONNMAN>
+  $<$<BOOL:${NETWORK_NM}>:-DUSE_NM>
+  $<$<BOOL:${NETWORK_CN}>:-DUSE_CONNMAN>
 )
 
 target_link_libraries (LmsSharedStaticIPService
