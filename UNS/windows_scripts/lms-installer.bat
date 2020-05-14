@@ -1,5 +1,5 @@
 @REM SPDX-License-Identifier: Apache-2.0
-@REM Copyright (C) 2010-2019 Intel Corporation
+@REM Copyright (C) 2010-2020 Intel Corporation
 @echo off
 REM - This script installs LMS on the current machine.
 REM - Run it from folder containing all required files (you'll be notified when missing one)
@@ -73,7 +73,7 @@ echo SUCCESS
 
 set LMS_FILES=ACE.dll ComEventHandler.dll Configurator.dll EventManager.dll GmsCommon.dll HistoryEventHandler.dll HostChangesNotificationService.dll IPRefreshService.dll LMS.exe PartialFWUpdateService.dll PortForwardingService.dll PowerOperationsService.dll SharedStaticIPService.dll StatusEventHandler.dll TimeSyncService.dll WiFiProfileSyncService.dll WinLogEventHandler.dll WMIEventHandler.dll WsmanClient.dll
 
-set EXTERNAL_FILES=1100_PP_PFU.BIN 1105_PP_PFU.BIN 1106_PP_PFU.BIN 1108_PP_PFU.BIN 1200_PP_PFU.BIN 1300_PP_PFU.BIN FWUpdateLib_10.dll FWUpdateLib_11.dll FWUpdateLib_12.dll
+set EXTERNAL_FILES=1100_PP_PFU.BIN 1105_PP_PFU.BIN 1106_PP_PFU.BIN 1108_PP_PFU.BIN 1200_PP_PFU.BIN 1300_PP_PFU.BIN FWUpdateLib_11.dll FWUpdateLib_12.dll
 
 echo Verify installation files consistency
 call :VerifyLmsFilesExists %LMS_FILES%
@@ -336,14 +336,11 @@ echo "GetIMSSEventHistory"="" >> %TempRegistryFile%
 echo "GetAMTVersion"="" >> %TempRegistryFile%
 echo "GetLMSVersion"="" >> %TempRegistryFile%
 echo "GetHeciVersion"="" >> %TempRegistryFile%
-echo "GetProvisioningMode"="" >> %TempRegistryFile%
-echo "GetProvisioningTlsMode"="" >> %TempRegistryFile%
 echo "GetProvisioningState"="" >> %TempRegistryFile%
 echo "GetNetworkConnectionStatus"="" >> %TempRegistryFile%
 echo "userInitiatedPolicyRuleExists"="" >> %TempRegistryFile%
 echo "snmpEventSubscriberExists"="" >> %TempRegistryFile%
 echo "CILAFilterCollectionSubscriptionExists"="" >> %TempRegistryFile%
-echo "getWebUIState"="" >> %TempRegistryFile%
 echo "GetPowerPolicy"="" >> %TempRegistryFile%
 echo "GetLastResetReason"="" >> %TempRegistryFile%
 echo "GetRedirectionStatus"="" >> %TempRegistryFile%
@@ -351,28 +348,27 @@ echo "GetSystemDefenseStatus"="" >> %TempRegistryFile%
 echo "GetNetworkSettings"="" >> %TempRegistryFile%
 echo "GetSystemUUID"="" >> %TempRegistryFile%
 echo "GetIPv6NetworkSettings"="" >> %TempRegistryFile%
-echo "TerminateKVMSession"="" >> %TempRegistryFile%
-echo "IsKVMSessionInProgress"="" >> %TempRegistryFile%
-echo "GetSpriteLanguage"="" >> %TempRegistryFile%
 echo "SetSpriteLanguage"="" >> %TempRegistryFile%
-echo "GetSpriteZoom"="" >> %TempRegistryFile%
 echo "SetSpriteZoom"="" >> %TempRegistryFile%
 echo "GetSpriteParameters"="" >> %TempRegistryFile%
 echo "TerminateRemedySessions"="" >> %TempRegistryFile%
 echo "GetAuditLogs"="" >> %TempRegistryFile%
 echo "GetATDeviceInfo"="" >> %TempRegistryFile%
 echo "GetTheFeatureState"="" >> %TempRegistryFile%
-echo "GetFeaturesState"="" >> %TempRegistryFile%
 echo "GetCustomerType"="" >> %TempRegistryFile%
-echo "GetPlatformType"="" >> %TempRegistryFile%
 echo "GetMenageabiltyMode"="" >> %TempRegistryFile%
 echo "GetConfigurationInfo"="" >> %TempRegistryFile%
 echo "GetUserConsentState"="" >> %TempRegistryFile%
 echo "GetWLANLinkInfo"="" >> %TempRegistryFile%
 echo "SetLinkPreferenceToHost"="" >> %TempRegistryFile%
 echo "GetFWInfo"="" >> %TempRegistryFile%
+echo "GetPMCVersion"="" >> %TempRegistryFile%
 echo "InitiateUserConnection"="" >> %TempRegistryFile%
+echo "UpdateScreenSettings"="" >> %TempRegistryFile%
 echo "GetRedirectionSessionLinkTechnology"="" >> %TempRegistryFile%
+echo "IsRebootAfterProvisioningNeeded"="" >> %TempRegistryFile%
+echo "UserInitiatedPolicyRuleForLocalMpsExists"="" >> %TempRegistryFile%
+echo "GetMeasuredBootState"="" >> %TempRegistryFile%
 
 REGEDIT /S %TempRegistryFile%
 
