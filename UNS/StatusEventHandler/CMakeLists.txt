@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_library (LmsStatusEventHandler SHARED
@@ -23,13 +23,10 @@ target_link_libraries (LmsStatusEventHandler
   LmsMEIClient
 )
 
-include_directories (
+target_include_directories (LmsStatusEventHandler PRIVATE
   "${TOP_DIR}/UNS/AMT_COM_Interface/"
 )
 
-target_include_directories (LmsStatusEventHandler PUBLIC
-  "."
-)
 target_compile_definitions (LmsStatusEventHandler PRIVATE
   STATUSEVENTHANDLER_BUILD_DLL
 )

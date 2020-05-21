@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (UNIX)
@@ -39,10 +39,11 @@ else (UNIX)
   set (NET_INCLUDE_DIRS "")
 endif (UNIX)
 
-target_compile_options (LmsPortForwardingService PRIVATE
-  -D_REMOTE_SUPPORT
-  $<$<BOOL:${NETWORK_NM}>:-DUSE_NM>
-  $<$<BOOL:${NETWORK_CN}>:-DUSE_CONNMAN>
+target_compile_definitions (LmsPortForwardingService PRIVATE
+  _REMOTE_SUPPORT
+  $<$<BOOL:${NETWORK_NM}>:USE_NM>
+  $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
+  PORTFORWARDINGSERVICE_BUILD_DLL
 )
 
 target_link_libraries (LmsPortForwardingService
@@ -53,12 +54,8 @@ target_link_libraries (LmsPortForwardingService
   ${NET_LIBRARIES}
 )
 
-include_directories (
+target_include_directories (LmsPortForwardingService PRIVATE
   ${NET_INCLUDE_DIRS}
-)
-
-target_compile_definitions (LmsPortForwardingService PRIVATE
-  PORTFORWARDINGSERVICE_BUILD_DLL
 )
 
 install (TARGETS LmsPortForwardingService

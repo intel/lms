@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (UNIX)
@@ -39,7 +39,8 @@ target_link_libraries (LmsIPRefreshService
   LmsMEIClient
   ${NET_LIBRARIES}
 )
-include_directories (
+
+target_include_directories (LmsIPRefreshService PRIVATE
   ${NET_INCLUDE_DIRS}
 )
 

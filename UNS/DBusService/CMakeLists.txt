@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2017-2019 Intel Corporation
+# Copyright (C) 2017-2020 Intel Corporation
 cmake_minimum_required(VERSION 3.1)
 
 configure_file (
@@ -71,7 +71,7 @@ target_link_libraries(LmsDBusService
   DataInterfaceBackend
 )
 
-include_directories (
+target_include_directories (LmsDBusService PUBLIC
   ${GIO_UNIX_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
 )

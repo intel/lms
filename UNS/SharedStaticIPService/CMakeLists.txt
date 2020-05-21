@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (UNIX)
@@ -36,9 +36,10 @@ else (UNIX)
   set (NET_INCLUDE_DIRS "")
 endif (UNIX)
 
-target_compile_options (LmsSharedStaticIPService PRIVATE
-  $<$<BOOL:${NETWORK_NM}>:-DUSE_NM>
-  $<$<BOOL:${NETWORK_CN}>:-DUSE_CONNMAN>
+target_compile_definitions (LmsSharedStaticIPService PRIVATE
+  $<$<BOOL:${NETWORK_NM}>:USE_NM>
+  $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
+  SHAREDSTATICIPSERVICE_BUILD_DLL
 )
 
 target_link_libraries (LmsSharedStaticIPService
@@ -49,12 +50,8 @@ target_link_libraries (LmsSharedStaticIPService
   ${NET_LIBRARIES}
 )
 
-include_directories (
+target_include_directories (LmsSharedStaticIPService PRIVATE
   ${NET_INCLUDE_DIRS}
-)
-
-target_compile_definitions (LmsSharedStaticIPService PRIVATE
-  SHAREDSTATICIPSERVICE_BUILD_DLL
 )
 
 install (TARGETS LmsSharedStaticIPService
