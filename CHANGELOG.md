@@ -1,3 +1,30 @@
+## [2022.0.0.0]
+
+### Added
+ - Add module name in invalid message prints to differentiate errors from different modules.
+ - Enable ACE debug in debug builds.
+ - Add a flag to disable export/import prefixes to enable build of static libraries.
+ - AMT_COM_Test: Add IsMeasuredBootState test.
+ - AMT_COM_Test: print error number in exception catch.
+
+### Fixed
+ - CMake: pick external ACE only if library and header found.
+ - [Windows] Fix 'unreferenced formal parameter' warnings.
+ - [Windows] HostChangesNotificationService: fix original file name in resource.
+ - Do not set FLog size to 0 if FW request to obtain FLog size failed to eliminate false events.
+ - [Windows] Add mutex to ensure that HECi notifier is finished it execution before it can be disabled.
+ - [Linux] Enable no-strict-overflow and no-delete-null-pointer-checks flag for GCC only.
+ - Fix spelling issues found by codespell.
+ - [Windows] Pass NULL for device path as required by MeTee on Windows (required for MeTee 2.2.2).
+ - [Windows] lms-installer.bat - dropped unused and added new registry entries.
+
+### Changed
+ - Move FuncEnterExit into classes to add more granular logging.
+ - Consolidate MB_SERVICE_STATUS_CHANGED.
+ - [Linux] CIM_Framework: CimFramework: explicitly link pthread.
+ - [Linux] Choose network service at build configuration time - use NETWORK_NM and NETWORK_CM CMake options to select desired network backend.
+ - Modernize cmake files.
+
 ## [2011.0.0.0]
 
 ### Added
