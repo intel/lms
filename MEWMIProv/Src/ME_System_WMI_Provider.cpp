@@ -231,7 +231,7 @@ HRESULT ME_System_WMI_Provider::IsFirmwareUpdateEnabled(
 			if (ReturnValue != S_OK)
 				enabled = false;
 		}
-		sprintf_s(str,256,"FWUpdate.MEGetFWUpdateVersion.EnabledUpdateInterfaces=%d rc=%d\n",enabled,ReturnValue);
+		sprintf_s(str,256,"FWUpdate.GetFWUpdateStateCommand=%d rc=%d\n",enabled,ReturnValue);
 		OutputDebugStringA(str);
 		
 		ERROR_HANDLER(ReturnValue);

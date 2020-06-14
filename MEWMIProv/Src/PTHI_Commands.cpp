@@ -959,22 +959,6 @@ unsigned int PTHI_Commands::ZTCActivate(std::string OTP, std::string PKIDNSSuffi
 	return rc;
 }
 
-wstring ChangeIPV6tostring(CFG_IP_ADDR ipv6Addr)
-{
-	USES_CONVERSION;
-	stringstream temp;
-	string str;
-	wstring wstr;
-	//string newstr;
-	for (int i=0; i < sizeof(ipv6Addr.Address); i++)
-		temp << ipv6Addr.Address[i];
-	temp >> str;
-	wstr.assign(str.begin(), str.end());
-	return wstr;
-
-}
-
-
 unsigned int PTHI_Commands::GetConfigServerData(wstring* Address, unsigned short* port)
 {
 	USES_CONVERSION;

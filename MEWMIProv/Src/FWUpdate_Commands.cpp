@@ -13,27 +13,6 @@
 #include "GetFWUpdateStateCommand.h"
 
 UINT32 
-FWUpdate_Commands::GetFWUpdateVersion(Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE& Version)
-{
-	using namespace Intel::MEI_Client;
-	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-	try {
-		MKHI_Client::GetFWVersionCommand command;
-		Version = command.getResponse();
-		rc = 0;
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetFWVersionCommand failed %C\n", e.what());
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in FWUGetVersionCommand %C\n", e.what());
-	}
-	return rc;
-}
-
-UINT32 
 FWUpdate_Commands::GetFWCapabilities(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& capabilities)
 {
 	using namespace Intel::MEI_Client;
