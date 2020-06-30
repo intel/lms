@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "WinLogFilter.h"
 #include "UNSEventsDefinition.h"
@@ -59,11 +59,6 @@ WinLogFilter::WinLogFilter()
 	eventsMap_.bind(EVENT_AGENT_PRSENCE_EXPIRED,			 GmsEventType(UNS_GENERAL		, AGENT_PRSENCE_EXPIRED));
 
 	eventsMap_.bind(EVENT_FW_FATAL_ERROR,					GmsEventType(UNS_GENERAL		, FW_FATAL_ERROR));
-
-	eventsMap_.bind(EVENT_SOAP_SERVICE_FAILED_TO_BIND,		 GmsEventType(UNS_GENERAL		, UNS_WARNING_MESSAGE));
-	eventsMap_.bind(EVENT_SOAP_SERVICE_BIND_SUCCESSFULLY,	 GmsEventType(UNS_GENERAL		, UNS_INFO_MESSAGE));
-	eventsMap_.bind(EVENT_SOAP_SERVICE_PUBLISHED_PORT,		 GmsEventType(UNS_GENERAL		, UNS_INFO_MESSAGE));
-	eventsMap_.bind(EVENT_SOAP_SERVICE_PUBLISHED_PORT_FAIL,	 GmsEventType(UNS_GENERAL		, UNS_WARNING_MESSAGE));
 
 	eventsMap_.bind(EVENT_KVM_SESSION_STARTED,				GmsEventType(UNS_GENERAL		, KVM_SESSION_STARTED));
 	eventsMap_.bind(EVENT_KVM_SESSION_STOPPED,				GmsEventType(UNS_GENERAL		, KVM_SESSION_STOPPED));

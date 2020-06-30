@@ -339,7 +339,7 @@ int StatusEventHandler::handleStatusChanged(const GMS_AlertIndication *alert)
 	case CATEGORY_IPSYNC:
 		handleIPSyncEvents(alert);
 		break;
-	case USER_CONSENT:
+	case CATEGORY_USER_CONSENT:
 		handleUserConsentEvents(alert);
 		break;
 	case CATEGORY_WLAN:
@@ -517,7 +517,7 @@ void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication
 		m_IDER = 0;
 		GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);// get policy (can be change after UNS started by wsman command)
 		if((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && (m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_KVM == 0))
-			raiseGMS_AlertIndication(USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
+			raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
 				EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
 		break;
 	}
@@ -553,7 +553,7 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		if ((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && 
 			(((m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_IDER == 0)) || (m_UserConsentPolicy == KVM_ONLY)))
 		{
-			raiseGMS_AlertIndication(USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
+			raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
 				EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
 		}
 		break;
@@ -1775,7 +1775,7 @@ void StatusEventHandler::publishUCStateEvent(UC_STATE state)
 		actionstr=ENDED_STR;
 		break;
 	} 
-	raiseGMS_AlertIndication(USER_CONSENT,id,getDateTime(),ACTIVE_MESSAGEID,USER_CONSENT_STR+actionstr);
+	raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, id, getDateTime(), ACTIVE_MESSAGEID, USER_CONSENT_STR + actionstr);
 }
 
 void StatusEventHandler::PublishWlanProtectionEvent(WLAN_PROTECTION_STATE state)

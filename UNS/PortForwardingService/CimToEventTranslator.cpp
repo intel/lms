@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -168,10 +168,10 @@ CimToEventTranslator::CimToEventTranslator()
 	 m_eventsMap.bind(PROXY_NOTIFICATION_1, GmsEventType(CATEGORY_PROXY, EVENT_PROXY_SYNC_DISABLE,"User Notification Alert - Proxy synchronization disabled"));//to check if need to change it
 	 m_eventsMap.bind(PROXY_NOTIFICATION_2, GmsEventType(CATEGORY_PROXY, EVENT_PROXY_SYNC_ENABLE,"User Notification Alert - Proxy synchronization enabled"));//to check if need to change it
 	 
-	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_1, GmsEventType(USER_CONSENT, EVENT_USER_CONSENT_ENDED,"User consent ended")); //User Notification Alert - User consent ended
-	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_2, GmsEventType(USER_CONSENT, EVENT_USER_CONSENT_GRANTED, "User consent granted")); //User Notification Alert - User consent granted
-	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_3, GmsEventType(USER_CONSENT, EVENT_USER_CONSENT_REQUESTED, "User consent requested")); //User Notification Alert - User consent requested
-	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_4, GmsEventType(USER_CONSENT, EVENT_USER_CONSENT_CONFIGURATION_CHANGED, "User consent configuration changed"));  //User Notification Alert - User consent timeout started
+	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_1, GmsEventType(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_ENDED,"User consent ended")); //User Notification Alert - User consent ended
+	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_2, GmsEventType(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_GRANTED, "User consent granted")); //User Notification Alert - User consent granted
+	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_3, GmsEventType(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_REQUESTED, "User consent requested")); //User Notification Alert - User consent requested
+	 m_eventsMap.bind(USER_CONSENT_NOTIFICATION_4, GmsEventType(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_CONFIGURATION_CHANGED, "User consent configuration changed"));  //User Notification Alert - User consent timeout started
 	 	
 	 m_eventsMap.bind(IPREFRESH_NOTIFICATION_1, GmsEventType(CATEGORY_IPSYNC, EVENT_IP_REFRESH_LAN, "User Notification Alert - IP refresh LAN"));//to check if need to change it
 	 m_eventsMap.bind(IPREFRESH_NOTIFICATION_2, GmsEventType(CATEGORY_IPSYNC, EVENT_IP_REFRESH_WLAN, "User Notification Alert - IP refresh WLAN"));//to check if need to change it

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -27,7 +27,7 @@
 #define CATEGORY_UNS							  9
 #define CATEGORY_IPSYNC							 10
 #define CATEGORY_PROXY							 11
-#define USER_CONSENT							 13
+#define CATEGORY_USER_CONSENT					 13
 #define CATEGORY_PARTIAL_FW_UPDATE				 14
 #define CATEGORY_REMOTE_GRACEFUL_POWER_OPERATION 15
 #define CATEGORY_TIMESYNC						 16
@@ -141,11 +141,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define EVENT_SD_STARTED						241  // 2 241
 #define EVENT_SD_FINISHED						242  // 2 242
-///////////////////////////////////////////////////////////////////////////////////////////////////
-#define EVENT_SOAP_SERVICE_FAILED_TO_BIND		260
-#define EVENT_SOAP_SERVICE_BIND_SUCCESSFULLY	261
-#define EVENT_SOAP_SERVICE_PUBLISHED_PORT		262
-#define EVENT_SOAP_SERVICE_PUBLISHED_PORT_FAIL	263
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define EVENT_TIME_SYNC_DISABLE					270  // 15 270
 #define EVENT_TIME_SYNC_ENABLE					271  // 15 271

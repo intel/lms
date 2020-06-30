@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 #include "IMSSFilter.h"
 #include "UNSEventsDefinition.h"
@@ -57,7 +57,7 @@ bool IMSSFilter::toSubscribe(const GMS_AlertIndication *alert) const
 				(alert->id == EVENT_RCS_TUNNEL_CLOSE)
 				)
 				return true;
-		case USER_CONSENT:
+		case CATEGORY_USER_CONSENT:
 			if ((alert->id == EVENT_USER_CONSENT_ENDED)||
 				(alert->id == EVENT_USER_CONSENT_GRANTED)||
 				(alert->id == EVENT_USER_CONSENT_REQUESTED)||
