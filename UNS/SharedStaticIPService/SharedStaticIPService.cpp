@@ -203,7 +203,7 @@ const ACE_TString SharedStaticIPService::name()
 }
 
 
-ACE_FACTORY_DEFINE (SHAREDSTATICIPSERVICE, SharedStaticIPService)
+LMS_SUBSERVICE_DEFINE (SHAREDSTATICIPSERVICE, SharedStaticIPService)
 
 int SharedStaticIPService::handle_timeout (const ACE_Time_Value &current_time, const void *arg)
 {

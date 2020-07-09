@@ -1402,6 +1402,4 @@ void Configurator::TaskCompleted()
 	this->putq(mbPtr->duplicate());
 }
 
-ACE_FACTORY_DEFINE (CONFIGURATOR, Configurator)
-
-
+LMS_SUBSERVICE_DEFINE(CONFIGURATOR, Configurator)

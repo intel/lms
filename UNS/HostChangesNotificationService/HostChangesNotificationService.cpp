@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2019 Intel Corporation
+ * Copyright (C) 2011-2020 Intel Corporation
  */
 #include "global.h"
 
@@ -47,7 +47,7 @@ HostChangesNotificationService::name()
 }
 
 
-ACE_FACTORY_DEFINE (HOSTCHANGESNOTIFICATIONSERVICE, HostChangesNotificationService)
+LMS_SUBSERVICE_DEFINE (HOSTCHANGESNOTIFICATIONSERVICE, HostChangesNotificationService)
 
 
 int HostChangesNotificationService::handle_timeout( const ACE_Time_Value &current_time,const void *arg )

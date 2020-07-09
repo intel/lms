@@ -113,7 +113,7 @@ const ACE_TString WiFiProfileSyncService::name()
 }
 
 
-ACE_FACTORY_DEFINE (WIFIPROFILESYNCSERVICE, WiFiProfileSyncService)
+LMS_SUBSERVICE_DEFINE (WIFIPROFILESYNCSERVICE, WiFiProfileSyncService)
 
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )

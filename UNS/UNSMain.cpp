@@ -71,4 +71,30 @@ int main(void)
 		GMSsrv->wait();
 	exit(EXIT_SUCCESS);
 }
+#else
+#include <tchar.h>
+#include "AMT_COM_Interface_exp.h"
+
+extern "C" int WINAPI _tWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/,
+	LPTSTR lpCmdLine, int nShowCmd)
+{
+	if (_wcsicmp(lpCmdLine, L"") != 0)
+	{
+		if ((_wcsicmp(lpCmdLine, L"console") == 0))
+		{
+			ACEInitializer Initializer;
+			GmsService* GMSsrv;
+			if (RunUNSService(&GMSsrv))
+				exit(EXIT_FAILURE);
+			Sleep(120000);
+			getchar();
+			if (GMSsrv != NULL)
+			{
+				GMSsrv->stop();
+				delete GMSsrv;
+			}
+		}
+	}
+	return RunAMT_COM_Interface(nShowCmd);
+}
 #endif // !WIN32

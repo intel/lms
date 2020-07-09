@@ -605,4 +605,4 @@ PowerOperationsService::handle_timeout (const ACE_Time_Value &current_time,const
 	return 0;
 }
 
-ACE_FACTORY_DEFINE (POWEROPERATIONSSERVICE, PowerOperationsService)
+LMS_SUBSERVICE_DEFINE (POWEROPERATIONSSERVICE, PowerOperationsService)

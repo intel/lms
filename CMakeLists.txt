@@ -82,35 +82,44 @@ endif (UNIX)
 find_library (ACE_LIB ACE)
 find_path (ACE_H ace/ACE.h)
 
-add_library (ACELIB SHARED IMPORTED)
 if (ACE_LIB AND ACE_H)
+  add_library (ACELIB SHARED IMPORTED)
   set_target_properties (ACELIB PROPERTIES IMPORTED_LOCATION ${ACE_LIB})
   set_target_properties (ACELIB PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${ACE_H})
 else (ACE_LIB AND ACE_H)
+  if (WIN32)
+    add_library (ACELIB STATIC IMPORTED)
+  else (WIN32)
+    add_library (ACELIB SHARED IMPORTED)
+  endif (WIN32)
   #ACE libraries compiled out-of-tree
   if (NOT DEFINED ENV{ACE_ROOT})
     message(FATAL_ERROR "Please define ACE_ROOT environment variable with path to ACE library sources.")
   endif (NOT DEFINED ENV{ACE_ROOT})
   set (ACE_ROOT $ENV{ACE_ROOT})
-  find_library (ACE_LIB_INT ACE PATHS ${ACE_ROOT}/ace/ $ENV{ACE_LIB} NO_DEFAULT_PATH)
+  if (DEFINED ENV{ACE_LIB})
+    set (ACE_LIB_DIR $ENV{ACE_LIB})
+  else (DEFINED ENV{ACE_LIB})
+    set (ACE_LIB_DIR ${ACE_ROOT}/ace/)
+  endif (DEFINED ENV{ACE_LIB})
+  find_library (ACE_LIB_INT ACEs ACE PATHS ${ACE_LIB_DIR} NO_DEFAULT_PATH)
   set_target_properties (ACELIB PROPERTIES
     IMPORTED_LOCATION ${ACE_LIB_INT}
     IMPORTED_IMPLIB ${ACE_LIB_INT}
     INTERFACE_INCLUDE_DIRECTORIES ${ACE_ROOT}
   )
-  list (APPEND CMAKE_INSTALL_RPATH ${ACE_ROOT}/ace/)
-
-  file (GLOB ACE_LIBS
-    $ENV{ACE_LIB}/${CMAKE_SHARED_LIBRARY_PREFIX}ACE${CMAKE_SHARED_LIBRARY_SUFFIX}*
-  )
-  file (TO_CMAKE_PATH ${ACE_LIBS} ACE_LIBS_F)
-  install (FILES ${ACE_LIBS_F}
-    DESTINATION ${LMS_LIBDIR}
-  )
-  file (TO_CMAKE_PATH $ENV{ACE_LIB}/ACE.pdb ACE_PDBS)
-  install (FILES ${ACE_PDBS}
-    DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
-  )
+  if (WIN32)
+    add_definitions (/D ACE_AS_STATIC_LIBS)
+  else (WIN32)
+    list (APPEND CMAKE_INSTALL_RPATH ${ACE_LIB_DIR})
+    file (GLOB ACE_LIBS
+      ${ACE_LIB_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}ACE${CMAKE_SHARED_LIBRARY_SUFFIX}*
+    )
+    file (TO_CMAKE_PATH "${ACE_LIBS}" ACE_LIBS_F)
+    install (FILES ${ACE_LIBS_F}
+      DESTINATION ${LMS_LIBDIR}
+    )
+  endif (WIN32)
 endif (ACE_LIB AND ACE_H)
 
 # for ver.h
@@ -120,9 +129,6 @@ install (DIRECTORY Docs/Licenses
   DESTINATION ${CMAKE_INSTALL_DOCDIR}
   FILES_MATCHING PATTERN "LICENSE.*"
 )
-
-list (APPEND CMAKE_INSTALL_RPATH "${PROJECT_BINARY_DIR}/UNS/GMS_COMMON")
-list (APPEND CMAKE_INSTALL_RPATH "${PROJECT_BINARY_DIR}/WsmanClient")
 
 if (BUILD_TESTS)
   include (gtest.cmake)

@@ -2,18 +2,11 @@
 # Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsCOMEventHandler SHARED
+add_library (LmsCOMEventHandler STATIC
   COMEventHandler.cpp
   ComFilter.cpp
-  $<$<BOOL:${WIN32}>:COMEventHandler.rc>
 )
 
-if (WIN32)
-  set_target_properties (LmsCOMEventHandler PROPERTIES OUTPUT_NAME COMEventHandler)
-endif (WIN32)
-
-set_target_properties (LmsCOMEventHandler PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsCOMEventHandler PROPERTIES SOVERSION ${LMS_VERSION_STRING})
 
 target_link_libraries (LmsCOMEventHandler
   LmsGMS_COMMON
@@ -21,7 +14,7 @@ target_link_libraries (LmsCOMEventHandler
 )
 
 target_compile_definitions (LmsCOMEventHandler PRIVATE
-  COMEVENTHANDLER_BUILD_DLL
+  COMEVENTHANDLER_HAS_DLL=0
 )
 
 target_include_directories (LmsCOMEventHandler PRIVATE
@@ -30,13 +23,3 @@ target_include_directories (LmsCOMEventHandler PRIVATE
 )
 
 add_dependencies (LmsCOMEventHandler AMT_COM_Interface)
-
-install (TARGETS LmsCOMEventHandler
-  LIBRARY DESTINATION ${LMS_LIBDIR}
-  RUNTIME DESTINATION ${LMS_LIBDIR}
-)
-if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-  install (FILES $<TARGET_PDB_FILE:LmsCOMEventHandler>
-    DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
-  )
-endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)

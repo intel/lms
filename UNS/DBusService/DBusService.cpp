@@ -130,7 +130,7 @@ const ACE_TString DBusService::name()
 	return GMS_DBUSSERVICE;
 }
 
-ACE_FACTORY_DEFINE (DBUSSERVICE, DBusService)
+LMS_SUBSERVICE_DEFINE (DBUSSERVICE, DBusService)
 
 void DBusService::SendAlarm(GMS_AlertIndication* alert)
 {

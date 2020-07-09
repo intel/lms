@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.1)
 
 add_subdirectory ("${TOP_DIR}/CIM_Framework" "CIM_Framework")
 
-add_library (LmsWsmanClient SHARED
+add_library (LmsWsmanClient STATIC
   AMTEthernetPortSettingsClient.cpp
   AMTFCFHWSmanClient.cpp
   AMTRedirectionServiceWSManClient.cpp
@@ -26,20 +26,11 @@ add_library (LmsWsmanClient SHARED
   TimeSynchronizationClient.cpp
   WlanWSManClient.cpp
   WifiPortClient.cpp
-  $<$<BOOL:${WIN32}>:WsmanClient.rc>
 )
 
-target_compile_definitions (LmsWsmanClient PRIVATE
-  -DWSMAN_DLL_EXPORT
+target_compile_definitions (LmsWsmanClient PUBLIC
+  WSMAN_NO_DLL
 )
-
-if (WIN32)
-  set_target_properties(LmsWsmanClient PROPERTIES OUTPUT_NAME WsmanClient)
-endif (WIN32)
-
-set_target_properties (LmsWsmanClient PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsWsmanClient PROPERTIES SOVERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsWsmanClient PROPERTIES CXX_VISIBILITY_PRESET hidden)
 
 target_link_libraries (LmsWsmanClient
   ACELIB
@@ -53,16 +44,6 @@ target_link_libraries (LmsWsmanClient
 target_include_directories (LmsWsmanClient PUBLIC
   "./"
 )
-
-install (TARGETS LmsWsmanClient
-  LIBRARY DESTINATION ${LMS_LIBDIR}
-  RUNTIME DESTINATION ${LMS_LIBDIR}
-)
-if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-  install (FILES $<TARGET_PDB_FILE:LmsWsmanClient>
-    DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
-  )
-endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 if (BUILD_TESTS)
   add_subdirectory ("WsmanClientTest" "WsmanClientTest")

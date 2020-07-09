@@ -378,7 +378,7 @@ PortForwardingService::name()
 }
 
 
-ACE_FACTORY_DEFINE (PORTFORWARDINGSERVICE, PortForwardingService)
+LMS_SUBSERVICE_DEFINE (PORTFORWARDINGSERVICE, PortForwardingService)
 
 
 

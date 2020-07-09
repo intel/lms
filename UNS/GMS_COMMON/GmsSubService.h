@@ -6,9 +6,10 @@
 #define __SUBSERVICE_H_
 #include "global.h"
 #include "GmsService.h"
-#include "ace/Task.h"
-#include "ace/Reactor_Notification_Strategy.h"
-#include "ace/Reactor.h"
+#include <ace/Task.h>
+#include <ace/Reactor_Notification_Strategy.h>
+#include <ace/Reactor.h>
+#include <ace/Service_Config.h>
 #include "EventManagment.h"
 #include "servicesNames.h"
 #include "GMSCommonDllExport.h"
@@ -62,5 +63,20 @@ protected:
 private:
 	void sendStatusChanged(SERVICE_STATUS_TYPE type);
 };
+
+#define LMS_SUBSERVICE_DEFINE(_export_, _name_) \
+ACE_FACTORY_DEFINE (_export_, _name_) \
+\
+ACE_STATIC_SVC_DEFINE ( \
+  _name_, \
+  ACE_TEXT (#_name_), \
+  ACE_SVC_OBJ_T, \
+  &ACE_SVC_NAME (_name_), \
+  ACE_Service_Type::DELETE_THIS \
+  | ACE_Service_Type::DELETE_OBJ, \
+  1 \
+) \
+\
+ACE_STATIC_SVC_REQUIRE (_name_)
 
 #endif /* __SUBSERVICE_H_ */

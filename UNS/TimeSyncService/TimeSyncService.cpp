@@ -58,7 +58,7 @@ TimeSyncService::name()
 }
 
 
-ACE_FACTORY_DEFINE (TIMESYNCSERVICE, TimeSyncService)
+LMS_SUBSERVICE_DEFINE (TIMESYNCSERVICE, TimeSyncService)
 
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
 int TimeSyncService::handle_event (MessageBlockPtr mbPtr )

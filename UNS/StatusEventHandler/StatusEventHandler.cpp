@@ -1846,6 +1846,4 @@ void StatusEventHandler::requestDisplaySettings()
 	UNS_DEBUG(L"Sending request for display settings\n");
 }
 
-ACE_FACTORY_DEFINE (STATUSEVENTHANDLER, StatusEventHandler)
-
-
+LMS_SUBSERVICE_DEFINE (STATUSEVENTHANDLER, StatusEventHandler)

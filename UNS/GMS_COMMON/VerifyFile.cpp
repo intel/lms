@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2019 Intel Corporation
+ * Copyright (C) 2011-2020 Intel Corporation
  */
 #include "VerifyFile.h"
 #include "DataStorageGenerator.h"
@@ -12,10 +12,6 @@
 
 std::wstring VerifyFile::m_UNSPath;
 std::wstring VerifyFile::m_UNSFilePath;
-uint16_t VerifyFile::m_MajorVersion = 0;
-uint16_t VerifyFile::m_MinorVersion = 0;
-uint16_t VerifyFile::m_BuildNumber = 0;
-uint16_t VerifyFile::m_RevisionNumber = 0;
 
 const std::wstring IntelCertificateName(L"Intel(R) Embedded Subsystems and IP Blocks Group");
 
@@ -37,37 +33,6 @@ bool VerifyFile::Init()
 
 	m_UNSPath.assign(m_UNSFilePath, 0, m_UNSFilePath.length()-7); //7 is length of "LMS.exe"
 
-	if (!GetAppVersion(m_UNSFilePath.c_str(), &m_MajorVersion, &m_MinorVersion, &m_BuildNumber, &m_RevisionNumber))
-	{
-		UNS_ERROR(L"Could not get file version for LMS.exe.\n");
-		return false;
-	}
-
-	if (!VerifyCommonDlls())
-	{
-		return false;
-	}
-	return true;
-}
-
-bool VerifyFile::VerifyService(std::wstring serviceName)
-{
-	serviceName.append(L".dll");
-
-	std::wstring filepath(m_UNSPath);
-	filepath.append(serviceName);
-
-	if(!checkFileExist(filepath))
-	{
-		UNS_ERROR(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());
-		return false;
-	}
-	if (!VerifyFileVersionAndSignature(serviceName))
-	{
-	
-		return false;
-	}
-
 	return true;
 }
 
@@ -78,170 +43,31 @@ const HMODULE VerifyFile::SafeLoadDll(const std::wstring & wcName)
 
 	if(!checkFileExist(filepath))
 	{
-		UNS_ERROR(L"The configuration file for service: %s is not found or cannot be opened\n", wcName.c_str());
+		UNS_ERROR(L"The configuration file for service: %W is not found or cannot be opened\n", wcName.c_str());
 		return nullptr;
 	}
-
-	if (!VerifyFileVersionAndSignature(wcName, false)) //FWUpdateLib DLLs' version should not be compared to LMS' version
-	{
-		return nullptr;
-	}
-
-	return LoadLibrary(filepath.c_str());
-}
-
-/*
-* Retrieves the file version
-* Arguments:  		LibName - file to retrieve version of
-* Return values:	true on success, false on failure
-*/
-bool VerifyFile::GetAppVersion(const wchar_t *LibName, uint16_t *MajorVersion, uint16_t *MinorVersion,
-	uint16_t *BuildNumber, uint16_t *RevisionNumber)
-{
-	DWORD dwHandle, dwLen;
-	UINT BufLen;
-	LPWSTR lpData;
-	VS_FIXEDFILEINFO *pFileInfo; 
-
-	dwLen = GetFileVersionInfoSize((LPTSTR)LibName, &dwHandle );
-	auto lastErr = GetLastError();
-	if (!dwLen) 
-	{
-		UNS_ERROR(L"GetAppVersion: GetFileVersionInfoSize for file %s returned with %d error.\n", LibName, lastErr);
-		return FALSE;
-	}
-
-	try
-	{
-		lpData = new TCHAR[dwLen];
-	}
-	catch (std::bad_alloc&)
-	{
-		UNS_ERROR(L"GetAppVersion: Failed to alloc memory\n");
-		return FALSE;
-	}
-	
-	if(!GetFileVersionInfo( LibName, dwHandle, dwLen, lpData ))
-	{
-		UNS_ERROR(L"GetAppVersion: GetFileVersionInfo return with %d error.\n", GetLastError());
-		delete [] lpData;
-		return FALSE;
-	}
-	if (VerQueryValue( lpData, L"\\", (LPVOID *) &pFileInfo, (PUINT)&BufLen )) 
-	{
-		*MajorVersion 	= HIWORD(pFileInfo->dwFileVersionMS);
-		*MinorVersion 	= LOWORD(pFileInfo->dwFileVersionMS);
-		*BuildNumber 	= HIWORD(pFileInfo->dwFileVersionLS);
-		*RevisionNumber = LOWORD(pFileInfo->dwFileVersionLS);
-		delete [] lpData;
-
-		if ((*MajorVersion == 0) || (*MajorVersion > 9999) || (*MinorVersion > 9999) || (*BuildNumber > 9999) || (*RevisionNumber > 9999))
-		{
-			UNS_ERROR(L"GetAppVersion: Got out of bound values.\n");
-			return FALSE;
-		}
-		else
-		{
-			UNS_DEBUG(L"GetAppVersion: Got version: %d.%d.%d.%d\n", *MajorVersion, *MinorVersion, *BuildNumber, *RevisionNumber);
-			return TRUE;
-		}
-	}
-	else
-	{
-		UNS_ERROR(L"GetAppVersion: VerQueryValue return with %d error.\n", GetLastError());
-		delete [] lpData;
-		return FALSE;
-	}
-}
-
-
-/*
-* Returns true if the version of given filepath is newer or equal to LMS's version
-*/
-bool VerifyFile::CompareVersions(std::wstring &filepath)
-{
-	uint16_t MajorVersion, MinorVersion, BuildNumber, RevisionNumber;
-	if (!GetAppVersion(filepath.c_str(), &MajorVersion, &MinorVersion, &BuildNumber, &RevisionNumber))
-	{
-		UNS_ERROR(L"CompareVersions: Could not get file version.\n");
-		return false;
-	}
-	if ((m_MajorVersion < MajorVersion) || 
-		((m_MajorVersion == MajorVersion) && (m_MinorVersion < MinorVersion)) ||
-		((m_MajorVersion == MajorVersion) && (m_MinorVersion == MinorVersion) && (m_BuildNumber < BuildNumber))|| 
-		((m_MajorVersion == MajorVersion) && (m_MinorVersion == MinorVersion) && (m_BuildNumber == BuildNumber) && (m_RevisionNumber <= RevisionNumber)))
-	{
-		UNS_DEBUG(L"CompareVersions: %s version is equal or newer than LMS.\n", filepath.c_str());
-		return true;
-	}
-	UNS_WARNING(L"CompareVersions: %s version is older than LMS.\n", filepath.c_str());
-	return false;
-}
-
-
-bool VerifyFile::VerifyCommonDlls()
-{
-	std::wstring filename;
-
-	filename = L"GmsCommon.dll";
-	if (!VerifyFileVersionAndSignature(filename))
-	{
-		return false;
-	}
-
-#ifdef _DEBUG
-	filename = L"WsmanClientD.dll";
-#else
-	filename = L"WsmanClient.dll";
-#endif
-
-	if (!VerifyFileVersionAndSignature(filename))
-	{
-		return false;
-	}
-	return true;
-}
-
-bool VerifyFile::VerifyFileVersionAndSignature(const std::wstring &filename, bool compareVersions)
-{
-	std::wstring path(m_UNSPath);
-	path.append(filename);
 
 #if !defined(IGNORE_DLL_SIGNATURES)
-	std::wstring wpath(path.begin(), path.end());
-	UNS_DEBUG(L"Checking signature for configuration file %s\n", filename.c_str());
-
-	bool ret = true;
-
-	UNS_DEBUG(L"Verifying signature\n");
-	ret = VerifyFileSignature(wpath);	
+	UNS_DEBUG(L"Verifying signature for configuration file %W\n", wcName.c_str());
+	bool ret = VerifyFileSignature(filepath);
 
 	if (ret)
 	{
-		UNS_DEBUG(L"Verifying certificate name\n");
-		ret = VerifyCertificateName(wpath);
+		UNS_DEBUG(L"Verifying certificate name for configuration file %W\n", wcName.c_str());
+		ret = VerifyCertificateName(filepath);
 	}
 	if (!ret)
 	{
-		UNS_ERROR(L"Could not verify signature for configuration file %s\n", filename.c_str());
-// PREPROCESSOR variable that enable signing on production releases 
-#if SIGNING > 0			
-		return false;
+		UNS_ERROR(L"Could not verify signature/certificate name for configuration file %s\n", wcName.c_str());
+//On DEBUG don't care if not signed
+#ifndef _DEBUG
+		return nullptr;
 #endif // ndef _DEBUG
 	}
 #endif // !defined(IGNORE_DLL_SIGNATURES)
-	if (compareVersions) 
-	{
-		UNS_DEBUG(L"Checking version for configuration file %s\n", filename.c_str());
-		if (!CompareVersions(path))
-		{
-			return false;
-		}
-		UNS_DEBUG(L"Version is valid\n");
-	}
-	return true;
-}
 
+	return LoadLibrary(filepath.c_str());
+}
 
 /*
 * Verify the file signature.

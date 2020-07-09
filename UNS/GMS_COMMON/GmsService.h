@@ -6,6 +6,7 @@
 #define _GMS_SERVICE
 
 #include <mutex>
+#include <map>
 #include "ace/NT_Service.h"
 #include "ace/Mutex.h"
 #include "MessageBlockPtr.h"
@@ -94,6 +95,11 @@ private:
 	HeciEventCallBack m_notifyHeciEnable;
 	void* m_portForwardingService;
 	bool m_isPortForwardingStarted;
+
+	typedef std::map<ACE_TString, ACE_Static_Svc_Descriptor&> svc_map;
+	svc_map m_svcMap;
+	ACE_Static_Svc_Descriptor& svcByName(const ACE_TString &serviceName);
+	void initServiceMap();
 };
 
 typedef ACE_Unmanaged_Singleton<GmsService, ACE_Mutex> theService;

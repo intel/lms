@@ -31,7 +31,7 @@ const ACE_TString IPRefreshService::name()
 	return GMS_IPREFRESHSERVICE;
 }
 
-ACE_FACTORY_DEFINE (IPREFRESHSERVICE , IPRefreshService)
+LMS_SUBSERVICE_DEFINE (IPREFRESHSERVICE , IPRefreshService)
 	
 /* Business logic */
 

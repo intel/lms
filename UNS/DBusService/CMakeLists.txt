@@ -46,7 +46,7 @@ set_source_files_properties(
   PROPERTIES GENERATED TRUE
 )
 
-add_library(LmsDBusService SHARED
+add_library(LmsDBusService STATIC
   DBusService.cpp
   DBusFilter.cpp
   DBusSkeleton.c
@@ -57,9 +57,6 @@ add_library(LmsDBusService SHARED
   UNSAlert.cpp
 )
 
-set_target_properties(LmsDBusService PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties(LmsDBusService PROPERTIES SOVERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsDBusService PROPERTIES CXX_VISIBILITY_PRESET hidden)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GIO_UNIX REQUIRED gio-unix-2.0)
@@ -74,10 +71,6 @@ target_link_libraries(LmsDBusService
 target_include_directories (LmsDBusService PUBLIC
   ${GIO_UNIX_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-install(TARGETS LmsDBusService
-  LIBRARY DESTINATION ${LMS_LIBDIR}
 )
 
 install(FILES com.intel.amt.lms.conf

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 #include "WMIEventHandler.h"
 #include <atlbase.h>
@@ -194,6 +194,6 @@
 		return WMI_EVENT_HANDLER;
 	}
 
-	ACE_FACTORY_DEFINE (WMIEVENTHANDLER, WMIEventHandler)
+	LMS_SUBSERVICE_DEFINE (WMIEVENTHANDLER, WMIEventHandler)
 
 

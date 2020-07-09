@@ -392,27 +392,8 @@ public:
 GmsService * CAMT_COM_InterfaceModule::GMSsrv = NULL;
 CAMT_COM_InterfaceModule _AtlModule;
 
-//
-extern "C" int WINAPI _tWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/,
-                                LPTSTR lpCmdLine, int nShowCmd)
+int RunAMT_COM_Interface(int nShowCmd)
 {
-	/**if (lpCmdLine != "") */
-	if (_wcsicmp(lpCmdLine, L"") != 0)
-	{
-		if ((_wcsicmp(lpCmdLine, L"console") == 0))
-		{
-			GmsService* GMSsrv;
-			if (RunUNSService(&GMSsrv))
-				exit(EXIT_FAILURE);
-			Sleep(120000);
-			getchar();
-			if (GMSsrv != NULL)
-			{
-				GMSsrv->stop();
-				delete GMSsrv;
-			}
-		}
-	}
 	return _AtlModule.WinMain(nShowCmd);
 }
 

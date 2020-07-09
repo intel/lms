@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (WIN32)
@@ -81,6 +81,22 @@ target_link_libraries (lms
   ACELIB
   LmsGMS_COMMON
   $<$<BOOL:${WIN32}>:DataInterfaceBackend>
+  LmsConfigurator
+  $<$<BOOL:${WIN32}>:LmsCOMEventHandler>
+  $<$<BOOL:${UNIX}>:LmsDBusService>
+  LmsEventManager
+  LmsHistoryEventHandler
+  LmsHostChangesNotificationService
+  LmsPortForwardingService
+  LmsPowerOperationsService
+  LmsSharedStaticIPService
+  LmsStatusEventHandler
+  LmsTimeSyncService
+  LmsWinLogEventHandler
+  $<$<BOOL:${WIN32}>:LmsIPRefreshService>
+  $<$<BOOL:${WIN32}>:LmsWiFiProfileSyncService>
+  $<$<BOOL:${WIN32}>:LmsPartialFWUpdateService>
+  $<$<BOOL:${WIN32}>:LmsWMIEventHandler>
 )
 
 install(TARGETS lms

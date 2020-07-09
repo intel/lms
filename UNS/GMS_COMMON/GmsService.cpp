@@ -48,6 +48,7 @@ GmsService::GmsService(void) : stopped(false), loading(false),
 #ifdef WIN32
 	svc_status_.dwControlsAccepted=SERVICE_ACCEPT_STOP |SERVICE_ACCEPT_PAUSE_CONTINUE|SERVICE_ACCEPT_POWEREVENT|SERVICE_ACCEPT_SHUTDOWN;
 #endif // WIN32
+	initServiceMap();
 	ACE_Service_Repository *repo = ACE_Service_Repository::instance();
 	if (repo == NULL)
 		throw std::runtime_error("Failed to instantiate ACE_Service_Repository");
@@ -177,59 +178,74 @@ int GmsService::handle_exception(ACE_HANDLE)
 	return 0;
 }
 
+void GmsService::initServiceMap()
+{
+#define ACE_STATIC_SVC_DECLARE_ALL(_serviceName_, SERVICE_CLASS) ACE_STATIC_SVC_DECLARE(SERVICE_CLASS); \
+ m_svcMap.insert({_serviceName_, ace_svc_desc_##SERVICE_CLASS})
 #ifdef WIN32
-static inline ACE_TString serviceName2objectName(const ACE_TString &serviceName)
-{
-	ACE_TString serviceDll = serviceName;
-	std::transform(serviceDll.begin(), serviceDll.end(), serviceDll.begin(), toupper);
-	return serviceDll;
-}
-#else
-static inline ACE_TString serviceName2objectName(const ACE_TString &serviceName)
-{
-	std::stringstream str;
-	str << ".so." << MAJOR_VERSION << "." << MINOR_VERSION << "." <<
-		QUICK_FIX_NUMBER << "." << VER_BUILD;
-	return ACE_TEXT("libLms") + serviceName + ACE_TEXT(str.str().c_str());
-}
+#define ACE_STATIC_SVC_DECLARE_WIN32(_serviceName_, SERVICE_CLASS) ACE_STATIC_SVC_DECLARE_ALL(_serviceName_, SERVICE_CLASS);
+#define ACE_STATIC_SVC_DECLARE_UNIX(_serviceName_, SERVICE_CLASS)
+#else // WIN32
+#define ACE_STATIC_SVC_DECLARE_WIN32(_serviceName_, SERVICE_CLASS)
+#define ACE_STATIC_SVC_DECLARE_UNIX(_serviceName_, SERVICE_CLASS) ACE_STATIC_SVC_DECLARE_ALL(_serviceName_, SERVICE_CLASS);
 #endif // WIN32
+
+	ACE_STATIC_SVC_DECLARE_ALL(EVENT_MANAGER, EventManager);
+	ACE_STATIC_SVC_DECLARE_ALL(WINLOG_EVENT_HANDLER, WinLogEventHandler);
+	ACE_STATIC_SVC_DECLARE_ALL(GMS_CONFIGURATOR, Configurator);
+	ACE_STATIC_SVC_DECLARE_WIN32(COM_EVENT_HANDLER, COMEventHandler);
+	ACE_STATIC_SVC_DECLARE_WIN32(WMI_EVENT_HANDLER, WMIEventHandler);
+	ACE_STATIC_SVC_DECLARE_ALL(HISTORY_EVENT_HANDLER, HistoryEventHandler);
+	ACE_STATIC_SVC_DECLARE_ALL(STATUS_EVENT_HANDLER, StatusEventHandler);
+	ACE_STATIC_SVC_DECLARE_ALL(GMS_SHAREDSTATICIPSERVICE, SharedStaticIPService);
+	ACE_STATIC_SVC_DECLARE_WIN32(GMS_PARTIALFWUPDATESERVICE, PartialFWUpdateService);
+	ACE_STATIC_SVC_DECLARE_WIN32(GMS_IPREFRESHSERVICE, IPRefreshService);
+	ACE_STATIC_SVC_DECLARE_ALL(GMS_TIMESYNCSERVICE, TimeSyncService);
+	ACE_STATIC_SVC_DECLARE_ALL(GMS_PORTFORWARDINGSERVICE, PortForwardingService);
+	ACE_STATIC_SVC_DECLARE_ALL(GMS_HOSTCHANGESNOTIFICATIONSERVICE, HostChangesNotificationService);
+	ACE_STATIC_SVC_DECLARE_ALL(POWER_OPERATIONS_SERVICE, PowerOperationsService);
+	ACE_STATIC_SVC_DECLARE_UNIX(GMS_DBUSSERVICE, DBusService);
+	ACE_STATIC_SVC_DECLARE_WIN32(GMS_WIFIPROFILESYNCSERVICE, WiFiProfileSyncService);
+	ACE_STATIC_SVC_DECLARE_ALL(FIRST_SERVICE, FirstService);
+	ACE_STATIC_SVC_DECLARE_ALL(LAST_SERVICE, LastService);
+	ACE_STATIC_SVC_DECLARE_ALL(AMT_ENABLE_LAST_SERVICE, AmtEnableLastService);
+	ACE_STATIC_SVC_DECLARE_ALL(WAITING_FOR_PFW_LAST_SERVICE, WaitingForPfwLastService);
+#undef ACE_STATIC_SVC_DECLARE_ALL
+#undef ACE_STATIC_SVC_DECLARE_WIN32
+#undef ACE_STATIC_SVC_DECLARE_LINUX
+}
+
+ACE_Static_Svc_Descriptor& GmsService::svcByName(const ACE_TString &serviceName)
+{
+	return m_svcMap.find(serviceName.c_str())->second;
+}
 
 bool GmsService::StartAceService(const ACE_TString &serviceName)
 {
-	ACE_TString serviceDll;
-
-	if (serviceName != FIRST_SERVICE && serviceName != LAST_SERVICE && serviceName != AMT_ENABLE_LAST_SERVICE && serviceName != WAITING_FOR_PFW_LAST_SERVICE)
-	{
-#ifdef WIN32
-		std::wstring service(serviceName.c_str());
-		if (!VerifyFile::VerifyService(service))
-		{
-			return false;
-		}
-#endif // WIN32
-		serviceDll = serviceName2objectName(serviceName);
-	}
-	else
-	{
-		serviceDll = serviceName2objectName(ACE_TEXT("Configurator"));
-	}
 	
 	ACE_TString directive;
 	std::wstringstream ss;
 	ss<<(unsigned long long)this;
-	directive = ACE_TEXT("dynamic ") + serviceName + ACE_TEXT(" Service_Object * ") + serviceDll +
-		ACE_TEXT(":_make_") + serviceName + ACE_TEXT("() \"-g ") +
-		ACE_TEXT_WCHAR_TO_TCHAR(ss.str().c_str()) + ACE_TEXT("\"");
 
-	int i=ACE_Service_Config::process_directive(directive.c_str());
-	if (i==-1)
+	UNS_DEBUG(L"Starting: %s\n", serviceName.c_str());
+	int i = ACE_Service_Config::process_directive(svcByName(serviceName));
+	if (i == -1)
 	{
 		UNS_ERROR(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());
 		return false;
 	}
-	if (i>0)
+	if (i > 0)
 	{
-		UNS_ERROR(L"Couldn't start service: %s %d\n", serviceName.c_str(), i);
+		UNS_ERROR(L"Couldn't prepare service: %s %d\n", serviceName.c_str(), i);
+		return false;
+	}
+	directive = ACE_TEXT ("\"-g ");
+	directive += ACE_TEXT_WCHAR_TO_TCHAR(ss.str().c_str());
+	directive += ACE_TEXT ("\"");
+	i = ACE_Service_Config::initialize(serviceName.c_str(), directive.c_str());
+	if (i > 0)
+	{
+		UNS_ERROR(L"Couldn't initialize service: %s %d\n", serviceName.c_str(), i);
 		return false;
 	}
 

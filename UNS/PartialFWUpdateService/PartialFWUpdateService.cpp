@@ -141,7 +141,7 @@ void PartialFWUpdateService::startPFWUpMessage()
 	this->putq(mbPtr->duplicate());
 }
 
-ACE_FACTORY_DEFINE (PARTIALFWUPDATESERVICE , PartialFWUpdateService)
+LMS_SUBSERVICE_DEFINE (PARTIALFWUPDATESERVICE, PartialFWUpdateService)
 
 /* Business logic */
 int PartialFWUpdateService::handle_event (MessageBlockPtr mbPtr )

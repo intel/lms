@@ -8,7 +8,7 @@ else (UNIX)
   set (ADAPTER_SRC AdapterListInfoWin32.cpp)
 endif (UNIX)
 
-add_library (LmsPortForwardingService SHARED
+add_library (LmsPortForwardingService STATIC
   Common.cpp
   LMEConnection.cpp
   PortForwardingService.cpp
@@ -16,16 +16,7 @@ add_library (LmsPortForwardingService SHARED
   ${ADAPTER_SRC}
   CimToEventTranslator.cpp
   SoapHandler.cpp
-  $<$<BOOL:${WIN32}>:PortForwardingService.rc>
 )
-
-if (WIN32)
-  set_target_properties(LmsPortForwardingService PROPERTIES OUTPUT_NAME PortForwardingService)
-endif (WIN32)
-
-set_target_properties (LmsPortForwardingService PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsPortForwardingService PROPERTIES SOVERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsPortForwardingService PROPERTIES CXX_VISIBILITY_PRESET hidden)
 
 if (UNIX)
   find_package (PkgConfig)
@@ -43,7 +34,7 @@ target_compile_definitions (LmsPortForwardingService PRIVATE
   _REMOTE_SUPPORT
   $<$<BOOL:${NETWORK_NM}>:USE_NM>
   $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
-  PORTFORWARDINGSERVICE_BUILD_DLL
+  PORTFORWARDINGSERVICE_HAS_DLL=0
 )
 
 target_link_libraries (LmsPortForwardingService
@@ -57,13 +48,3 @@ target_link_libraries (LmsPortForwardingService
 target_include_directories (LmsPortForwardingService PRIVATE
   ${NET_INCLUDE_DIRS}
 )
-
-install (TARGETS LmsPortForwardingService
-  LIBRARY DESTINATION ${LMS_LIBDIR}
-  RUNTIME DESTINATION ${LMS_LIBDIR}
-)
-if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-  install (FILES $<TARGET_PDB_FILE:LmsPortForwardingService>
-    DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
-  )
-endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)

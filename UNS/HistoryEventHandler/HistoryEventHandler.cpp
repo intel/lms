@@ -132,6 +132,6 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 		return HISTORY_EVENT_HANDLER;
 	}
 
-	ACE_FACTORY_DEFINE (HISTORYEVENTHANDLER, HistoryEventHandler)
+	LMS_SUBSERVICE_DEFINE (HISTORYEVENTHANDLER, HistoryEventHandler)
 
 

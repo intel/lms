@@ -2,20 +2,10 @@
 # Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsPowerOperationsService SHARED
+add_library (LmsPowerOperationsService STATIC
   PowerEventFilter.cpp
   PowerOperationsService.cpp
-  $<$<BOOL:${WIN32}>:PowerOperationsService.rc>
-  $<$<BOOL:${WIN32}>:PowerOperationsStrings.rc>
 )
-
-if (WIN32)
-  set_target_properties(LmsPowerOperationsService PROPERTIES OUTPUT_NAME PowerOperationsService)
-endif (WIN32)
-
-set_target_properties (LmsPowerOperationsService PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsPowerOperationsService PROPERTIES SOVERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsPowerOperationsService PROPERTIES CXX_VISIBILITY_PRESET hidden)
 
 if (UNIX)
   find_package(PkgConfig)
@@ -41,15 +31,5 @@ target_include_directories (LmsPowerOperationsService PRIVATE
 )
 
 target_compile_definitions (LmsPowerOperationsService PRIVATE
-  POWEROPERATIONSSERVICE_BUILD_DLL
+  POWEROPERATIONSSERVICE_HAS_DLL=0
 )
-
-install (TARGETS LmsPowerOperationsService
-  LIBRARY DESTINATION ${LMS_LIBDIR}
-  RUNTIME DESTINATION ${LMS_LIBDIR}
-)
-if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-  install (FILES $<TARGET_PDB_FILE:LmsPowerOperationsService>
-    DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
-  )
-endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)

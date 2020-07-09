@@ -8,21 +8,12 @@ else (UNIX)
   set (SYNC_SRC SyncNetworkDataWin32.cpp)
 endif (UNIX)
 
-add_library (LmsSharedStaticIPService SHARED
+add_library (LmsSharedStaticIPService STATIC
   SyncNetworkData.cpp
   ${SYNC_SRC}
   SharedStaticIPService.cpp
   SharedStaticIPEventFilter.cpp
-  $<$<BOOL:${WIN32}>:SharedStaticIPService.rc>
 )
-
-if (WIN32)
-  set_target_properties(LmsSharedStaticIPService PROPERTIES OUTPUT_NAME SharedStaticIPService)
-endif (WIN32)
-
-set_target_properties (LmsSharedStaticIPService PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsSharedStaticIPService PROPERTIES SOVERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsSharedStaticIPService PROPERTIES CXX_VISIBILITY_PRESET hidden)
 
 if (UNIX)
   find_package (PkgConfig)
@@ -39,7 +30,7 @@ endif (UNIX)
 target_compile_definitions (LmsSharedStaticIPService PRIVATE
   $<$<BOOL:${NETWORK_NM}>:USE_NM>
   $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
-  SHAREDSTATICIPSERVICE_BUILD_DLL
+  SHAREDSTATICIPSERVICE_HAS_DLL=0
 )
 
 target_link_libraries (LmsSharedStaticIPService
@@ -53,13 +44,3 @@ target_link_libraries (LmsSharedStaticIPService
 target_include_directories (LmsSharedStaticIPService PRIVATE
   ${NET_INCLUDE_DIRS}
 )
-
-install (TARGETS LmsSharedStaticIPService
-  LIBRARY DESTINATION ${LMS_LIBDIR}
-  RUNTIME DESTINATION ${LMS_LIBDIR}
-)
-if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-  install (FILES $<TARGET_PDB_FILE:LmsSharedStaticIPService>
-    DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
-  )
-endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
