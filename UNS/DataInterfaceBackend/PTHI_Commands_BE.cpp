@@ -886,17 +886,5 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 			return ERROR_OK;
 		}
-
-		LMS_ERROR PTHI_Commands_BE::IsRebootAfterProvisioningNeeded(bool &pNeeded)
-		{
-			unsigned long needed = 0;
-			if (!DSinstance().GetDataValue(RebootAfterProvsioningNeeded_S, needed, true)) {
-				UNS_ERROR(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded GetDataValue failed\n");
-				return ERROR_FAIL;
-			}
-			pNeeded = (needed != 0);
-			UNS_DEBUG(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded, got from StatusEventHandler %d\n", pNeeded);
-			return ERROR_OK;
-		}
 	}
 }

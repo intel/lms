@@ -13,7 +13,6 @@
 #include "GetEACStateCommand.h"
 #include "Tools.h"
 #include "MKHIErrorException.h"
-#include "GetFWVersionCommand.h"
 #include "DataStorageWrapper.h"
 
 //WSMAN calls
@@ -23,15 +22,6 @@
 #include "AMTEthernetPortSettingsClient.h"
 #include "TimeSynchronizationClient.h"
 #include "WlanWSManClient.h"
-
-#ifdef WIN32
-#include <cguid.h>
-#include <comdef.h>
-#include <Wbemidl.h>
-#include <WbemCli.h>
-#include <atlbase.h>
-#include <atlsafe.h>
-#endif // WIN32
 
 //messages definitions
 const ACE_TString ENABLED_STR(ACE_TEXT("enabled"));
@@ -87,156 +77,6 @@ StatusEventHandler::StatusEventHandler(): filter_(new StatusEventFilter)
 	m_firstCheckForBootReason = true;
 }
 
-#ifdef WIN32
-namespace
-{
-
-	bool SolDevicePresent()
-	{
-		try 
-		{
-			auto intel_sol_hw_id = L"PCI\\VEN_8086&DEV_9CBD";
-			CComPtr<IWbemLocator> locator(nullptr);
-			auto hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&locator));
-			
-			if (FAILED(hres))
-			{
-				UNS_ERROR(L"SolDevicePresent: CoCreateInstance() failed %d\n", hres);
-				return false;
-			}
-
-			CComPtr<IWbemServices> svc = nullptr;
-			hres = locator->ConnectServer(L"ROOT\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &svc);
-
-			if (FAILED(hres))
-			{
-				UNS_ERROR(L"SolDevicePresent: ConnectServer failed %d\n", hres);
-				return false;
-			}
-
-			CComPtr<IEnumWbemClassObject> enumerator = nullptr;
-			hres = svc->ExecQuery(L"WQL", L"SELECT Status, HardwareID FROM Win32_PnPEntity Where ClassGuid='{4d36e978-e325-11ce-bfc1-08002be10318}'",
-				WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
-
-			if (FAILED(hres))
-			{
-				UNS_ERROR(L"SolDevicePresent: ExecQuery failed %d\n", hres);
-				return false;
-			}
-
-			HRESULT hRes = WBEM_S_NO_ERROR;
-			// Final Next will return WBEM_S_FALSE
-			while (WBEM_S_NO_ERROR == hRes)
-			{
-				ULONG            oReturned;
-				CComPtr<IWbemClassObject> obj = nullptr;
-
-				hRes = enumerator->Next(WBEM_INFINITE, 1, &obj, &oReturned);
-
-				if (!SUCCEEDED(hRes))
-				{
-					UNS_ERROR(L"SolDevicePresent: Next() failed %d %d\n", hres, oReturned);
-					continue;
-				}
-				if (oReturned != 1)
-				{
-					return false;
-				}
-
-				CComVariant vt_HW_ids;
-				auto res = obj->Get(L"HardwareID", 0, &vt_HW_ids, 0, 0);
-				if (WBEM_S_NO_ERROR != res)
-				{
-					UNS_ERROR(L"SolDevicePresent: Get1() failed %d\n", res);
-					continue;
-				}
-				CComSafeArray<BSTR> hw_ids(vt_HW_ids.parray);
-				for (ULONG i = 0; i<hw_ids.GetCount(); ++i)
-				{
-					CComVariant item = hw_ids.GetAt(i);
-					if (wcsncmp(item.bstrVal, intel_sol_hw_id, wcslen(intel_sol_hw_id)) != 0)
-					{
-						continue;
-					}
-
-					CComVariant vt_status;
-					res = obj->Get(L"Status", 0, &vt_status, 0, 0);
-					if (WBEM_S_NO_ERROR != res)
-					{
-						UNS_ERROR(L"SolDevicePresent: Get2() failed %d\n", res);
-						return false;
-					}
-					UNS_DEBUG(L"SolDevicePresent: SOL device status %W\n", vt_status.bstrVal);
-					return (wcscmp(vt_status.bstrVal, L"OK") == 0);
-
-				}
-
-			}
-		}
-		catch (...)
-		{
-		}
-		return false;
-
-	}
-
-
-}
-#endif // WIN32
-
-//check if reboot is needed after provisioning (currently by checking that major FW version == 10) 
-//and manageability SKUs except from SBT
-bool StatusEventHandler::isRebootAfterProvisioningRequired()
-{
-	using namespace Intel::MEI_Client::MKHI_Client;
-	bool result = false;
-	FuncEntryExit<decltype(result)> fee(this, L"isRebootAfterProvisioningRequired", result);
-	try
-	{
-		GetFWVersionCommand getFWVersionCommand;
-		GET_FW_VER_RESPONSE res = getFWVersionCommand.getResponse();
-		if (res.FTMajor == 10 &&
-			((m_prevManageMode == L3) || (m_prevManageMode == STANDARD) || (m_prevManageMode == VPRO))
-			)
-		{
-#ifdef WIN32
-			CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-			result = !SolDevicePresent();
-			CoUninitialize();
-#endif // WIN32
-		}
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR(L"Exception in IsRebootAfterProvisioningNeeded %C\n", e.what());
-	}
-
-	return result;
-}
-
-
-//returns true if there is a current need for reboot after provisioning 
-bool StatusEventHandler::getRebootAfterProvisioningNeed()
-{
-	unsigned long needed = 0;
-
-	if (!DSinstance().GetDataValue(RebootAfterProvsioningNeeded_S, needed, true))
-	{
-		UNS_ERROR(L"getRebootAfterProvisioningNeed GetDataValue failed\n");
-	}
-	return (needed != 0);
-} 
-
-//sets the current state for reboot after provisioning
-void StatusEventHandler::setRebootAfterProvisioningNeed(bool needed)
-{
-	if (!DSinstance().SetDataValue(RebootAfterProvsioningNeeded_S, static_cast<unsigned long>(needed), true))
-	{
-		UNS_ERROR(L"setRebootAfterProvisioningNeed SetDataValue failed\n");
-	}
-}
-
-
 int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 {
 	int retVal = EventHandler::init(argc, argv);
@@ -250,8 +90,6 @@ int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 	mbPtr->data_block(new ACE_Data_Block());
 	mbPtr->msg_type(MB_SRVICE_UP);
 	this->putq(mbPtr->duplicate());
-
-	setRebootAfterProvisioningNeed(false);
 
 	return 0;
 }
@@ -423,14 +261,6 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 		prevProvState=UpdatePrevProvisioningState(PROVISIONING_STATE_PRE);
 		if (prevProvState==PROVISIONING_STATE_POST) // unprovision
 		{
-			//naftali TODO - correct?
-			//set s_rebootAfterProvsioningNeeded=false if reboot was required (since ME was unprovisioned now)
-			//this will prevent IMSS from asking a reboot if machine was provisioned and then unprovisioned
-			if (getRebootAfterProvisioningNeed())
-			{
-				UNS_DEBUG(L"Reboot was needed after provisioning. Unprovisioned =>setting s_rebootAfterProvsioningNeeded=false\n");
-				setRebootAfterProvisioningNeed(false);
-			}
 			raiseGMS_AlertIndication(alert->category, EVENT_UNPROVISIONING, alert->Datetime,
 				alert->MessageID, ME_UNCONFIGURED, alert->MessageArguments);
 			if (m_eacEnabled)
@@ -453,13 +283,6 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 		prevProvState=UpdatePrevProvisioningState(PROVISIONING_STATE_POST);
 		if (prevProvState==PROVISIONING_STATE_PRE || prevProvState==PROVISIONING_STATE_IN) // provision
 		{
-			//set s_rebootAfterProvsioningNeeded=true if reboot is required
-			if (isRebootAfterProvisioningRequired())
-			{
-				UNS_DEBUG(L"Reboot is needed after provisioning, setting s_rebootAfterProvsioningNeeded=true\n");
-				setRebootAfterProvisioningNeed(true);
-			}
-
 			MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 			mbPtr->data_block(new ACE_Data_Block());
 			mbPtr->msg_type(MB_ME_CONFIGURED);
@@ -1008,52 +831,15 @@ void StatusEventHandler::GenerateWLANEvents()
 namespace 
 {
 
-	CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE * Platform)
+	CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
 	{
-		using namespace Intel::MEI_Client::MKHI_Client;			
-
-		bool isME11 = true;
-
-		try
+		if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_FULL_SKU)
 		{
-			GetFWVersionCommand getFWVersionCommand;
-			GET_FW_VER_RESPONSE res = getFWVersionCommand.getResponse();
-			if (res.FTMajor < 11)
-			{
-				isME11 = false;
-			}
+			return CORPORATE;
 		}
-		catch (std::exception& e)
+		if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_SMALL_SKU)
 		{
-			UNS_ERROR(L"Could not get FW version %C\n", e.what());
-		}
-
-		if (isME11)
-		{
-			if (Platform->Fields.ImageType == MPT_IMAGE_TYPE_FULL_SKU)
-			{
-				return CORPORATE;
-			}
-			if (Platform->Fields.ImageType == MPT_IMAGE_TYPE_SMALL_SKU)
-			{
-				return CONSUMER;
-			}
-		}
-		else
-		{
-			MKHI_PLATFORM_TYPE_ME10 * Platform10 = (MKHI_PLATFORM_TYPE_ME10 *)Platform;
-			if (Platform10->Fields.Corporate)
-			{
-				return CORPORATE;
-			}
-
-			if (Platform10->Fields.Consumer)
-			{
-				return CONSUMER;
-			}
-
-			UNS_ERROR(L"Wrong Customer type\n");
-
+			return CONSUMER;
 		}
 		UNS_ERROR(L"Wrong Customer type %d\n", Platform->Data);
 		return WRONG_CUSTOMER_TYPE;

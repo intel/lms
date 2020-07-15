@@ -1255,25 +1255,8 @@ STDMETHODIMP CPTHI_Commands::IsRebootAfterProvisioningNeeded(VARIANT_BOOL *pNeed
 	if (pNeeded == nullptr)
 		return E_POINTER;
 
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"IsRebootAfterProvisioningNeeded", (SHORT*)pNeeded))
-	{
-		UNS_DEBUG(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded DEBUG mode, got from registry %d\n",*pNeeded);
-		return S_OK;
-	}
-#endif
-	if (CheckCredentials(IsRebootAfterProvisioningNeeded_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	bool isNeeded;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
-	Intel::LMS::LMS_ERROR err = be.IsRebootAfterProvisioningNeeded(isNeeded);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	*pNeeded = isNeeded ? VARIANT_TRUE : VARIANT_FALSE;
-
+	UNS_DEBUG(L"CPTHI_Commands::IsRebootAfterProvisioningNeeded - deprecated\n");
+	*pNeeded = false;
 	return S_OK;
 }
 

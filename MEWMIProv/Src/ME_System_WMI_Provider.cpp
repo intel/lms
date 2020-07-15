@@ -11,7 +11,6 @@
 #include "ME_System_WMI_Provider.h"
 #include "pthi_commands.h"
 #include "FWUpdate_Commands.h"
-#include "GetFWVersionCommand.h"
 #include "ErrorCodes.h"
 #include "StatusCodeDefinitions.h"
 #include "WMIHelper.h"
@@ -406,56 +405,18 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 
 }
 
-
-
-ME_System_WMI_Provider::CUSTOMER_TYPE ME_System_WMI_Provider::GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE * Platform)
+ME_System_WMI_Provider::CUSTOMER_TYPE ME_System_WMI_Provider::GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
 {
-	using namespace Intel::MEI_Client::MKHI_Client;			
-
-	bool isME11 = true;
-	 
-	try
+	if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_FULL_SKU)
 	{
-		GetFWVersionCommand getFWVersionCommand;
-		GET_FW_VER_RESPONSE res = getFWVersionCommand.getResponse();
-		if (res.FTMajor < 11)
-		{
-			isME11 = false;
-		}
+		return CORPORATE;
 	}
-	catch (exception& e)
+	if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_SMALL_SKU)
 	{
-		OutputDebugStringA(e.what());
-	}
-
-	if (isME11)
-	{
-		if (Platform->Fields.ImageType == MPT_IMAGE_TYPE_FULL_SKU)
-		{
-			return CORPORATE;
-		}
-		if (Platform->Fields.ImageType == MPT_IMAGE_TYPE_SMALL_SKU)
-		{
-			return CONSUMER;
-		}
-	}
-	else
-	{
-		MKHI_PLATFORM_TYPE_ME10 * Platform10 = (MKHI_PLATFORM_TYPE_ME10 *)Platform;
-		if (Platform10->Fields.Corporate)
-		{
-			return CORPORATE;
-		}
-
-		if (Platform10->Fields.Consumer)
-		{
-			return CONSUMER;
-		}
+		return CONSUMER;
 	}
 	return CORPORATE;
 }
-
-
 
 HRESULT ME_System_WMI_Provider::GetMESystem(wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
 										 vector<sint16>& OperationalStatus, uint32& type, uint32& segment, 
@@ -473,9 +434,6 @@ HRESULT ME_System_WMI_Provider::GetMESystem(wstring& fwversion, bool& CryptoFuse
 			if (hr != 0)
 				return hr;
 			uint32 ReasonCode=0;
-			//hr = pthic.GetAMTState(&ReasonCode, &CryptoFuseEnabled);
-			//if (hr != 0)
-			//	return hr;
 			using namespace Intel::MEI_Client;
 			FWUpdate_Commands FWUpdate;
 			PLATFORM_TYPE platformType = DESKTOP; //default value,avoid uninitialized variable for security
@@ -506,7 +464,7 @@ HRESULT ME_System_WMI_Provider::GetMESystem(wstring& fwversion, bool& CryptoFuse
 				hr=FWUpdate.GetFWFeaturesState(StateData);
 				if (hr==S_OK)
 				{
-					hr=MenageabiltyModeLogic(CapabilityData, StateData, platform, pMode);
+					hr = MenageabiltyModeLogic(platform, pMode);
 				}
 			}
 			if (hr != 0)
@@ -522,7 +480,7 @@ HRESULT ME_System_WMI_Provider::GetMESystem(wstring& fwversion, bool& CryptoFuse
 			return hr;
 }
 
-UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI		CapabilityData, 
+UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, 
 											   Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform)
 {
 	//uint32 capabilities = 0;
@@ -595,9 +553,6 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	capabilities.Fields.SBT = sbt;
 	return capabilities.Data;
 }
-
-#define MAX_LINE_LEN                   300
-
 
 void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT	CapabilityData, 
 											 vector<wstring>& capabilities)
@@ -698,38 +653,11 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT	CapabilityData,
 	return;
 }
 
-HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, 
-													  Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI StateData, 
-													  Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, 
+HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, 
 													  MENAGEABILTY_MODE& pMode)
 {
 	HRESULT hr=S_OK;
-	/*
-	if (platform.Fields.Corporate)
-	{
-		if (CapabilityData.Fields.Amt) 
-		{
-			if (CapabilityData.Fields.MngFull)
-				if (StateData.Fields.MngFull)
-					pMode=VPRO;
-				else
-					if (StateData.Fields.MngStd)
-						pMode=STANDARD;
-					else
-						hr=E_UNEXPECTED;
-			else
-				if (CapabilityData.Fields.MngStd)
-					if (StateData.Fields.MngStd)
-						pMode=STANDARD;
-					else
-						hr=E_UNEXPECTED;
-		}
-		else
-			pMode=NONE;
-	}
-	else
-		pMode=NOT_KNOWN;
-		*/
+
 	switch(platform.Fields.Brand)
 	{
 

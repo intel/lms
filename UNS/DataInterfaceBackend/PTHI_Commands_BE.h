@@ -65,7 +65,6 @@ namespace Intel {
 			LMS_ERROR CILAFilterCollectionSubscriptionExists(short &pExist);
 			LMS_ERROR UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, short numOfDisplays);
 			LMS_ERROR GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology);
-			LMS_ERROR IsRebootAfterProvisioningNeeded(bool &pNeeded);
 		};
 	}
 }

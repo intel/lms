@@ -73,14 +73,12 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(LINK_PROTECTION_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE,LMS_REG_TEXT("Link Protection"));
 	regMap->at(GetRedirectionSessionLinkTechnology_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetRedirectionSessionLinkTechnology"));
 	regMap->at(TIME_SYNC_ENABLE_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE,LMS_REG_TEXT("Time Sync Enable"));
-	regMap->at(IsRebootAfterProvisioningNeeded_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("IsRebootAfterProvisioningNeeded"));
 	regMap->at(OverrideProsetAdapterSwitching) = RegEntry(LMS_REG,LMS_REG_TEXT("OverrideProsetAdapterSwitching"));
 	regMap->at(UserInitiatedPolicyRuleForLocalMpsExists_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("UserInitiatedPolicyRuleForLocalMpsExists"));
 	regMap->at(FLogSize) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("FLogSize"));
 	regMap->at(GetPMCVersion_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetPMCVersion"));
 	regMap->at(WIFI_PROFILE_SYNC_ENABLE_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE, LMS_REG_TEXT("WIFI_PROFILE_SYNC_ENABLE"));
 	regMap->at(LMSLoggingSeverity) = RegEntry(LMS_REG, LMS_REG_TEXT("LMSLoggingSeverity"));
-	regMap->at(RebootAfterProvsioningNeeded_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE, LMS_REG_TEXT("RebootAfterProvsioningNeeded"));
 	regMap->at(IsMeasuredBootState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetMeasuredBootState"));
 	//When adding to this regMap - add to the same place you added to the DataStorageGenerator.h!!!!
 	return regMap;

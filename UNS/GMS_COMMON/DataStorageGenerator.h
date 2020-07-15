@@ -82,14 +82,12 @@ enum DATA_NAME : unsigned int
 	LINK_PROTECTION_S,
 	GetRedirectionSessionLinkTechnology_F,
 	TIME_SYNC_ENABLE_S,
-	IsRebootAfterProvisioningNeeded_F,
 	OverrideProsetAdapterSwitching,
 	UserInitiatedPolicyRuleForLocalMpsExists_F,
 	FLogSize,
 	GetPMCVersion_F,
 	WIFI_PROFILE_SYNC_ENABLE_S,
 	LMSLoggingSeverity,
-	RebootAfterProvsioningNeeded_S,
 	IsMeasuredBootState_F,
 
 	DATA_NAME_MAX_SENTINEL

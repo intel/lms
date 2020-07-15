@@ -366,7 +366,6 @@ echo "GetPMCVersion"="" >> %TempRegistryFile%
 echo "InitiateUserConnection"="" >> %TempRegistryFile%
 echo "UpdateScreenSettings"="" >> %TempRegistryFile%
 echo "GetRedirectionSessionLinkTechnology"="" >> %TempRegistryFile%
-echo "IsRebootAfterProvisioningNeeded"="" >> %TempRegistryFile%
 echo "UserInitiatedPolicyRuleForLocalMpsExists"="" >> %TempRegistryFile%
 echo "GetMeasuredBootState"="" >> %TempRegistryFile%
 

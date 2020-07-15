@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -38,31 +38,6 @@ namespace Intel
 				ME_FULL_4MB,
 				ME_FULL_8MB
 			};
-
-			union MKHI_PLATFORM_TYPE_ME10
-			{
-				uint32_t    Data;
-				struct
-				{
-					uint32_t   Mobile:  1;  //0
-					uint32_t   Desktop: 1;
-					uint32_t   Server:  1;
-					uint32_t   WorkStn:  1;
-					uint32_t   Corporate: 1;
-					uint32_t   Consumer: 1;
-					uint32_t   SuperSKU: 1;
-					uint32_t   Rsvd:     1;
-					uint32_t   ImageType: 4; // enum IMAGE_TYPE {NoME, IGN_FW,ME_LITE,ME_FULL_4MB,ME_FULL_8MB}
-					uint32_t   Brand:     4; // enum BRAND_TYPE {NoBrand,BrandAMT,BrandStdMng,BrandL3,BrandRpat,BrandSBT}
-					uint32_t   Rsvd1:    16;
-				} Fields;
-
-				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
-				{
-					Intel::MEI_Client::parseData(*this, itr, end);
-				}
-			};
-
 			enum MPT_IMAGE_TYPE { MPT_IMAGE_TYPE_NO_FW  =  0,    // NO SKU
 								MPT_IMAGE_TYPE_SLIM_SKU  = 2,   // SLIMSKU
 								MPT_IMAGE_TYPE_SMALL_SKU = 3,   // SKU2 - Consumer

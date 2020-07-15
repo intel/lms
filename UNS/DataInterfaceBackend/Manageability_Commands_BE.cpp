@@ -205,41 +205,13 @@ namespace Intel {
 
 		CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
 		{
-			bool isME11 = true;
-
-			try
+			if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_FULL_SKU)
 			{
-				Intel::MEI_Client::MKHI_Client::GetFWVersionCommand getFWVersionCommand;
-				Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE res = getFWVersionCommand.getResponse();
-				if (res.FTMajor < 11)
-				{
-					isME11 = false;
-				}
+				return CORPORATE;
 			}
-			CATCH_exception(L"getFWVersionCommand")
-
-			if (isME11)
+			if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_SMALL_SKU)
 			{
-				if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_FULL_SKU)
-				{
-					return CORPORATE;
-				}
-				if (Platform->Fields.ImageType == Intel::MEI_Client::MKHI_Client::MPT_IMAGE_TYPE_SMALL_SKU)
-				{
-					return CONSUMER;
-				}
-			}
-			else
-			{
-				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE_ME10 * Platform10 = (Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE_ME10 *)Platform;
-				if (Platform10->Fields.Corporate)
-				{
-					return CORPORATE;
-				}
-				if (Platform10->Fields.Consumer)
-				{
-					return CONSUMER;
-				}
+				return CONSUMER;
 			}
 			return WRONG_CUSTOMER_TYPE;
 		}

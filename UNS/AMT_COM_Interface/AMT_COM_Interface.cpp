@@ -110,8 +110,6 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetRedirectionSessionLinkTechnology_F, L"", true))
 		return 1;
-	if (false == ds.SetDataValue(IsRebootAfterProvisioningNeeded_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(UserInitiatedPolicyRuleForLocalMpsExists_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(IsMeasuredBootState_F, L"", true))

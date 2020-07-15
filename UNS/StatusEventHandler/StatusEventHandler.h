@@ -206,13 +206,6 @@ private:
 	bool GetKVMRedirectionState(bool& enable,KVM_STATE& connected);
 	void requestDisplaySettings();
 
-	//check if reboot is required after provisioning for current FW and SKU
-	bool isRebootAfterProvisioningRequired();
-	//sets the current state for reboot after provisioning
-	void setRebootAfterProvisioningNeed(bool needed);
-	//returns true if there is a current need for reboot after provisioning
-	bool getRebootAfterProvisioningNeed();
-
 	short m_KVM;
 	short m_SOL;
 	short m_IDER;
