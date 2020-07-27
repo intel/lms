@@ -26,11 +26,10 @@
 
 #include <iostream>
 #include <memory>
+#include <set>
 
 const ACE_TString PARTIAL_FW_UPDATE_BEGIN_MESSAGE_INIT(ACE_TEXT("Partial FW update begin - "));
-//#define PARTIAL_FW_UPDATE_PROGRESS_INIT			L"Partial FW update progress - "
 #define PARTIAL_FW_UPDATE_END_INIT				L"Partial FW update "
-//#define ME_In_RECOVERY_MODE_MSG					L"Intel® ME is in full recovery mode"
 const ACE_TString MISSING_IMAGE_FILE_MSG(ACE_TEXT("Partial FW update failed due missing image file"));
 
 class PartialFWUpdateEventsFilter: public EventsFilter
@@ -449,8 +448,179 @@ bool PartialFWUpdateService::LoadFwUpdateLibDll()
 	return false;
 }
 
+class PFUBase
+{
+public:
+	PFUBase() : major(0), minor(0), hotfix(0), build(0) {}
+	PFUBase(uint16_t _major, uint16_t _minor, uint16_t _hotfix, uint16_t _build) :
+		major(_major), minor(_minor), hotfix(_hotfix), build(_build) {}
+	PFUBase& operator = (const PFUBase &other)
+	{
+		major = other.major;
+		minor = other.minor;
+		hotfix = other.hotfix;
+		build = other.build;
+
+		return *this;
+	}
+	PFUBase(const PFUBase &other)
+	{
+		major = other.major;
+		minor = other.minor;
+		hotfix = other.hotfix;
+		build = other.build;
+	}
+
+	friend bool operator < (const PFUBase &left, const PFUBase &right) noexcept
+	{
+		if (left.major < right.major)
+			return true;
+		if (left.major > right.major)
+			return false;
+		if (left.minor < right.minor)
+			return true;
+		if (left.minor > right.minor)
+			return false;
+		if (left.hotfix < right.hotfix)
+			return true;
+		if (left.hotfix > right.hotfix)
+			return false;
+		if (left.build < right.build)
+			return true;
+		if (left.build > right.build)
+			return false;
+		return false;
+	}
+
+	friend bool operator == (const PFUBase &left, const PFUBase &right) noexcept
+	{
+		return ((left.major == right.major) &&
+			(left.minor == right.minor) &&
+			(left.hotfix == right.hotfix) &&
+			(left.build == right.build));
+	}
+public:
+	uint16_t major;
+	uint16_t minor;
+	uint16_t hotfix;
+	uint16_t build;
+};
+
+class PFUFile : public PFUBase
+{
+public:
+	PFUFile(const std::wstring &_filename, bool production) : filename(_filename)
+	{
+		// The file name is in following format: MMmmHF_PX_PFU.bin
+		// MM - major
+		// mm - minor
+		// HF - hotfix
+		// PX - PP for pre-production and PD for production
+		wchar_t buf[3];
+
+		if (filename.length() != 17)
+		{
+			throw std::invalid_argument("wrong file name size");
+		}
+		buf[0] = filename[0];
+		buf[1] = filename[1];
+		buf[2] = '\0';
+		major = _wtoi(buf);
+		if (!major)
+		{
+			throw std::invalid_argument("major is zero");
+		}
+		buf[0] = filename[2];
+		buf[1] = filename[3];
+		buf[2] = '\0';
+		minor = _wtoi(buf);
+		buf[0] = filename[4];
+		buf[1] = filename[5];
+		buf[2] = '\0';
+		hotfix = _wtoi(buf);
+		build = 0;
+		if (filename[6] != '_' || filename[7] != 'P')
+		{
+			throw std::invalid_argument("_P is missed");
+		}
+		if (production != (filename[8] == 'D'))
+		{
+			throw std::domain_error("production type does not match");
+		}
+	}
+	PFUFile& operator = (const PFUFile &other)
+	{
+		PFUBase::operator=(other);
+		filename = other.filename;
+
+		return *this;
+	}
+	PFUFile(const PFUFile &other) : PFUBase(other)
+	{
+		filename = other.filename;
+	}
+	PFUFile(const PFUBase &other) : PFUBase(other) {}
+	~PFUFile() {}
+
+public:
+	std::wstring filename;
+};
+
+class PFUMap
+{
+public:
+	PFUMap(bool _production) : production(_production) {}
+	void add(const std::wstring &filename)
+	{
+		try
+		{
+			pfu_set.insert(PFUFile(filename, production));
+		}
+		catch (const std::exception &ex)
+		{
+			UNS_DEBUG(L"ignoring PFU %C\n", ex.what());
+		}
+	}
+
+	// Look for PFU file with version lower or equal to target,
+	// same major number
+	std::wstring get_pfu(const PFUBase &target)
+	{
+		if (pfu_set.empty())
+		{
+			throw std::out_of_range("set is empty");
+		}
+		auto it = pfu_set.upper_bound(target);
+		if (it == pfu_set.begin())
+		{
+			throw std::out_of_range("too old");
+		}
+		it = std::prev(it);
+
+		if (it->major != target.major)
+		{
+			throw std::out_of_range("major is wrong");
+		}
+		// For ME11 any minor number is acceptable
+		// For ME12 and up minor should be in the same backet of 5
+		if ((it->major > 11) && !in_same_backet(it->minor, target.minor))
+		{
+			throw std::out_of_range("minor is wrong");
+		}
+		return it->filename;
+	}
+private:
+	std::set<PFUFile> pfu_set;
+	bool production;
+
+	bool in_same_backet(uint16_t left, uint16_t right)
+	{ // backet of 5 (0-4, 5-9, etc.)
+		return ((left / 5) == (right / 5));
+	}
+};
+
 //get the image file name according to FW version, return false at failure
-bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
+bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring &fileName)
 {
 	try
 	{
@@ -486,22 +656,20 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 		}
 		lmsPath = lmsPath.substr(0, lmsPath.length() - 7); // 7 is length of "LMS.exe", we need the directory, not the file.
 
-
-														   //Get existing *PFU.BIN files in LMS folder
+		//Get existing *PFU.BIN files in LMS folder
 		ACE_Dirent_Selector lmsDir;
-		std::vector<ACE_TString> existingPfuFiles;
 		// Pass in function that'll specify the selection criteria.
-		int status = lmsDir.open(lmsPath.c_str(), selector, ACE_SCANDIR_COMPARATOR(ACE_OS::alphasort));
+		int status = lmsDir.open(ACE_TEXT_WCHAR_TO_TCHAR(lmsPath.c_str()), selector, ACE_SCANDIR_COMPARATOR(ACE_OS::alphasort));
 		if (status == -1)
 		{
 			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed opening: %s\n", lmsPath.c_str());
 			return false;
 		}
 
+		PFUMap pfuMap(isProduction);
 		for (int n = 0; n < lmsDir.length(); ++n)
 		{
-			ACE_TString temp(lmsDir[n]->d_name);
-			existingPfuFiles.push_back(temp);
+			pfuMap.add(ACE_TEXT_ALWAYS_WCHAR(lmsDir[n]->d_name));
 		}
 
 		status = lmsDir.close();
@@ -511,38 +679,8 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 			return false;
 		}
 
+		fileName = pfuMap.get_pfu(PFUBase(fwVersion.FTMajor, fwVersion.FTMinor, fwVersion.FTHotFix, fwVersion.FTBuildNo));
 
-		//Look for bin file that match current FW version.
-		//If none exists - try decreasing the minor version. (i.e. FW 11.7 uses bin file of 11.6)
-		bool found = false;
-		ACE_TCHAR requiredName[16];
-		ACE_TCHAR requiredBestName[16];
-		swprintf_s(requiredBestName, 16, L"%02d%02d_%2s_PFU.BIN", fwVersion.FTMajor, fwVersion.FTMinor, isProduction ? L"PD" : L"PP");
-		int minorInt = fwVersion.FTMinor + 1; //Will be decreased at the begining of the loop
-
-		do {
-			minorInt--;
-			if (minorInt < 0) //No matching bin file was found
-			{
-				UNS_WARNING(L"PartialFWUpdateService::getImageFileNameByFwVersion Could not find matching bin file. Required bin file: %s. Returning false\n", requiredBestName);
-				return false;
-			}
-			swprintf_s(requiredName, 16, L"%02d%02d_%2s_PFU.BIN", fwVersion.FTMajor, minorInt, isProduction ? L"PD" : L"PP");
-			UNS_DEBUG("PartialFWUpdateService::getImageFileNameByFwVersion Look for bin file: %s\n", requiredName);
-
-			for each (ACE_TString existingPfuFile in existingPfuFiles)
-			{
-				if (ACE_OS::strcmp(requiredName, existingPfuFile.c_str()) == 0)
-				{
-					UNS_DEBUG("PartialFWUpdateService::getImageFileNameByFwVersion Found: %s\n", requiredName);
-					found = true;
-					break;
-				}
-			}
-
-		} while (!found);
-
-		fileName = requiredName;
 		return true;
 	}
 	catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
@@ -552,6 +690,10 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring& fileName)
 	catch (Intel::MEI_Client::MEIClientException& e)
 	{
 		UNS_ERROR(L"PartialFWUpdateService::getImageFileNameByFwVersion failed: %C\n", e.what());
+	}
+	catch (std::out_of_range& e)
+	{
+		UNS_ERROR(L"PartialFWUpdateService::getImageFileNameByFwVersion The best match PFU file is not found: %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{
