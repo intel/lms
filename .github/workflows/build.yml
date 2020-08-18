@@ -1,0 +1,38 @@
+name: Build
+on:
+  - push
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_name: debian
+            image_tag: 11
+          - image_name: ubuntu
+            image_tag: 20.04
+          - image_name: ubuntu
+            image_tag: 22.04
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          set -euxo pipefail
+          export DOCKER_BUILDKIT=1
+          docker build \
+            --progress=plain \
+            --output=build \
+            --target=artifacts \
+            --build-arg=IMAGE=${{ matrix.image_name }}:${{ matrix.image_tag }} \
+            .
+          for p in build/*.deb; do
+            mv "$p" "${p/-Linux\.deb/-${{ matrix.image_name }}-${{ matrix.image_tag }}.deb}"
+          done
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: |
+            build/*.deb
