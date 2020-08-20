@@ -1,3 +1,20 @@
+## [2034.0.0.0]
+
+### Added
+ - PartialFWUpdateService: Add ability to select PFU files by HotFix number
+
+### Fixed
+ - openwsman: fix potential NULL pointer dereference
+ - PartialFWUpdateService: drop redundant initSubService
+
+### Changed
+ - [Windows] WMIProv: remove unused functions
+ - Statically link all local libraries. Only FWUpdate libraries are left as shared objects.
+
+### Deprecated
+ - Drop ME10 support
+ - [Windows] Deprecate IsRebootAfterProvisioningNeeded COM method.
+
 ## [2022.0.0.0]
 
 ### Added
@@ -12,7 +29,7 @@
  - [Windows] Fix 'unreferenced formal parameter' warnings.
  - [Windows] HostChangesNotificationService: fix original file name in resource.
  - Do not set FLog size to 0 if FW request to obtain FLog size failed to eliminate false events.
- - [Windows] Add mutex to ensure that HECi notifier is finished it execution before it can be disabled.
+ - [Windows] Add mutex to ensure that HECI notifier is finished it execution before it can be disabled.
  - [Linux] Enable no-strict-overflow and no-delete-null-pointer-checks flag for GCC only.
  - Fix spelling issues found by codespell.
  - [Windows] Pass NULL for device path as required by MeTee on Windows (required for MeTee 2.2.2).
