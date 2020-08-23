@@ -174,6 +174,7 @@ typedef enum {
 #define FLAG_EVENT_SENDBOOKMARK		     0X8000
 #define FLAG_CIM_SCHEMA_OPT		    0X10000
 #define FLAG_EXCLUDE_NIL_PROPS		    0X20000
+#define FLAG_SUPRESS_100_CONTINUE	    0X40000
 
 	typedef struct {
 		unsigned long flags;
@@ -222,7 +223,7 @@ typedef enum {
  	* @param path HTTP path, for example /wsman
  	* @param scheme scheme, HTTP or HTTPS
  	* @param username User name
- 	* @param password Passwrod
+ 	* @param password Password
  	* @return client handle
  	*/
 	WsManClient *wsmc_create(const char *hostname,

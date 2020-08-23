@@ -265,7 +265,7 @@ static int get_remote_server_port()
 WsManClient* setup_redirect_client(WsContextH cntx, char *ws_username, char *ws_password)
 {
 	
-	WsManClient *cl = NULL;
+    WsManClient *cl = NULL;
 	const char *password, *username;
 
 	password = get_remote_password() ? get_remote_password() : ws_password;
@@ -279,10 +279,11 @@ WsManClient* setup_redirect_client(WsContextH cntx, char *ws_username, char *ws_
 		/* wsmc_create duplicates the username/password passed, no need to duplicate again. */
                 username, password, strlen(password));
 
-	if (cl == NULL){
-		error("Redirect Plugin: Error while creating the client for redirection");
-		return NULL;
-	}
+    if (cl == NULL){
+	error("Redirect Plugin: Error while creating the client for redirection");
+	return NULL;
+    }
+
 
 	wsman_transport_set_auth_method(cl, get_remote_authentication_method());
 

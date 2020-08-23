@@ -196,7 +196,7 @@ namespace WSManagement
 		string ret;
 		try
 		{
-			ret = cl->Get(resourceUri, s);
+			ret = cl->GetWithFlags(resourceUri, s, FLAG_SUPRESS_100_CONTINUE);
 		}
 		catch (WsmanSoapFault &ex)
 		{
@@ -219,7 +219,7 @@ namespace WSManagement
 		string ret;
 		try
 		{
-			ret = cl->Put(resourceUri, content, s);
+			ret = cl->PutWithFlags(resourceUri, content, s, FLAG_SUPRESS_100_CONTINUE);
 		}
 		catch (WsmanSoapFault &ex)
 		{
