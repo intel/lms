@@ -578,7 +578,8 @@ public:
 		}
 		catch (const std::exception &ex)
 		{
-			UNS_DEBUG(L"ignoring PFU %C\n", ex.what());
+			UNS_DEBUG(L"ignoring PFU '%W' %W %C\n",
+					  filename.c_str(), (production) ? L"PD" : L"PP", ex.what());
 		}
 	}
 
