@@ -1,3 +1,10 @@
+## [2036.0.0.0]
+
+### Fixed
+ - Bundled 3rd party libraries updated to the latest versions
+ - PartialFWUpdate: print better error message for unmatched PFU files
+ - Bring back resource for ATL events
+
 ## [2034.0.0.0]
 
 ### Added
