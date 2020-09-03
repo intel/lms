@@ -1,5 +1,5 @@
 ;//  SPDX-License-Identifier: Apache-2.0
-;//  Copyright (C) Intel Corporation, 2003 - 2019.
+;//  Copyright (C) Intel Corporation, 2003 - 2020.
 ;//
 ;//  File:       UNSEventsCnf.mc 
 ;//
@@ -27,6 +27,13 @@ LanguageNames=(All=0x000:MSG00001)
 
 
 ;//**********************Category Definitions***********************
+MessageId=0
+Facility=Application
+Severity=Success
+SymbolicName=UNS_ATL
+Language=All
+%1
+.
 
 MessageId=1
 Facility=Application
