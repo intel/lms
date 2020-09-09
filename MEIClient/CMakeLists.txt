@@ -77,6 +77,13 @@ file (GLOB MKHIClient
   MKHIClient/Src/MKHICommand.cpp
 )
 
+file (GLOB UPIDClient
+  UPIDClient/Src/GetUPIDCommand.cpp
+  UPIDClient/Src/GetUPIDFeatureStateCommand.cpp
+  UPIDClient/Src/SetUPIDFeatureStateCommand.cpp
+  UPIDClient/Src/UPIDCommand.cpp
+)
+
 add_library (LmsMEIClient STATIC
   src/MEICommand.cpp
   src/MEIparser.cpp
@@ -86,6 +93,7 @@ add_library (LmsMEIClient STATIC
   ${HOTHAMClient}
   ${ManageabilityClient}
   ${MKHIClient}
+  ${UPIDClient}
 )
 
 set_target_properties (LmsMEIClient PROPERTIES VERSION ${LMS_VERSION_STRING})
@@ -104,6 +112,7 @@ target_include_directories (LmsMEIClient PUBLIC
   "HOTHAMClient/Include/"
   "ManageabilityClient/Include/"
   "MKHIClient/Include/"
+  "UPIDClient/Include/"
 )
 if (BUILD_TESTS)
   add_subdirectory ("AMTHITestProject" "AMTHITestProject")

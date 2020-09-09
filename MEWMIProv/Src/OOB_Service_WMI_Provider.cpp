@@ -19,7 +19,6 @@
 #include <string>
 	  
 
-HRESULT IsUserAdmin();
 HRESULT getApplicationDetails(string& userNameStr, string& domainNameStr, string& applicationName);
 
 HRESULT OOB_Service_WMI_Provider::DispatchMethods(

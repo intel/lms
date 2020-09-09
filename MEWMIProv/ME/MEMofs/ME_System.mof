@@ -1,4 +1,4 @@
- //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+ //Copyright 2009 - 2020 Intel Corporation All Rights Reserved.
 #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -87,5 +87,27 @@ class ME_System : CIM_ComputerSystem {
 	   [OUT, Description("An array of strings defining system capabilities. Should match the bitvalues of the system Enabled Capabilities")]
 	   string EnabledCapabilities[]);
 
-	  	
+	[Description ("Get Intel Unique Platform ID feature State"): Amended, static, implemented]  
+	uint32 getUniquePlatformIDFeatureState(
+		[OUT, Description("Unique Platform ID feature State"),
+			ValueMap {false, true},  
+			Values { "Disabled", "Enabled"}] 
+		boolean state);
+		
+	[Description ("Set Intel Unique Platform ID feature State"): Amended, static, implemented]  
+	uint32 setUniquePlatformIDFeatureState(
+		[IN, Description("Unique Platform ID feature State"),
+			ValueMap {false, true},  
+			Values { "Disabled", "Enabled"}] 
+		boolean state);
+
+	[Description ("Get Intel Unique Platform ID"): Amended, static, implemented]  
+	uint32 getUniquePlatformID(
+		[OUT, Description("Platform ID Type")]
+		uint32 OEMPlatformIDType,
+		[OUT, Description("OEM Platform ID "), OctetString]
+		string OEMPlatformID,
+		[OUT, OctetStringDescription("CSME Platform ID"), OctetString]
+		string CSMEPlatformID);
+
 };

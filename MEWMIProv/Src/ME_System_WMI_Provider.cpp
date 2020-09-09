@@ -11,12 +11,10 @@
 #include "ME_System_WMI_Provider.h"
 #include "pthi_commands.h"
 #include "FWUpdate_Commands.h"
+#include "UPID_Commands.h"
 #include "ErrorCodes.h"
 #include "StatusCodeDefinitions.h"
 #include "WMIHelper.h"
-#include <sstream>
-
-
 
 HRESULT ME_System_WMI_Provider::DispatchMethods(
 	const BSTR strMethodName,
@@ -42,6 +40,12 @@ HRESULT ME_System_WMI_Provider::DispatchMethods(
 				hr = getFwUpdateOverrideParams(pClass, pInParams, pResponseHandler, pNamespace);
 			else if(CComBSTR(strMethodName) == L"getCapabilities")
 				hr = getCapabilitiesStrings(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getUniquePlatformIDFeatureState")
+				hr = getUPIDFeatureState(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"setUniquePlatformIDFeatureState")
+				hr = setUPIDFeatureState(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getUniquePlatformID")
+				hr = getUPID(pClass, pInParams, pResponseHandler, pNamespace);
 			else
 			{
 				hr = WBEM_E_NOT_SUPPORTED;
@@ -148,7 +152,8 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 		{
 			if (ReturnValue != WMI_E_HECI_CONNECTION &&
 				ReturnValue != WMI_E_PTHI_CLIENT_CONNECTION &&
-				ReturnValue != WMI_E_FWUPD_CLIENT_CONNECTION)
+				ReturnValue != WMI_E_FWUPD_CLIENT_CONNECTION &&
+				ReturnValue != WMI_E_UPID_CLIENT_CONNECTION)
 			{
 				ReturnValue = WMI_E_MESTATUS_BASE + ReturnValue;
 			}
@@ -679,6 +684,152 @@ HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Cl
 	default:
 		pMode=NOT_KNOWN;
 	}
+
+	return hr;
+}
+
+
+HRESULT ME_System_WMI_Provider::getUPIDFeatureState(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	uint32 hr = 0;
+	
+	try
+	{
+		bool state = false;
+
+		UPID_Commands UPID;
+		{
+			ReturnValue = UPID.GetUPIDStateCommand(state);
+			if (ReturnValue != S_OK)
+				state = false;
+		}
+
+		ERROR_HANDLER(ReturnValue);
+		
+		CComPtr<IWbemClassObject> pOutParams;
+		WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureState", &pOutParams.p);
+		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
+		WMIPut<1>(pOutParams, L"state", state);
+
+		pResponseHandler->Indicate(1, &pOutParams.p);
+	}
+	catch (...)
+	{
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+
+	return hr;
+}
+
+
+HRESULT ME_System_WMI_Provider::setUPIDFeatureState(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	bool state;
+	uint32 ReturnValue = 0;
+	uint32 hr = 0;
+
+	if (IsUserAdmin() == S_FALSE)
+	{
+		hr = WBEM_E_ACCESS_DENIED;
+		pResponseHandler->SetStatus(0, hr, NULL, NULL);
+		return hr;
+	}
+
+	try
+	{
+		if (!pInParams)
+			RETURNIF(WBEM_E_INVALID_METHOD_PARAMETERS);
+
+		do {
+
+			bool specified;
+			GetParamBREAKIF(WMIGet<1>(pNamespace, pInParams, L"state", state, specified), L"state");
+			if (!specified)
+				RETURNIF(WBEM_E_INVALID_METHOD_PARAMETERS);
+
+			UPID_Commands UPID;
+			ReturnValue = UPID.SetUPIDStateCommand(state);
+
+			ERROR_HANDLER(ReturnValue);
+
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"setUniquePlatformIDFeatureState", &pOutParams.p);
+			WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+
+	}
+	catch (...)
+	{
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+
+	return hr;
+}
+
+
+HRESULT ME_System_WMI_Provider::getUPID(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	uint32 hr = 0;
+
+
+	if (IsUserAdmin() == S_FALSE)
+	{
+		hr = WBEM_E_ACCESS_DENIED;
+		pResponseHandler->SetStatus(0, hr, NULL, NULL);
+		return hr;
+	}
+
+	try
+	{
+		bool state = false;
+		uint32_t oemPlatformIdType = 0;
+		std::wstring oemPlatformId, csmePlatformId;
+
+		UPID_Commands UPID;
+		{
+			ReturnValue = UPID.GetUPIDCommand(oemPlatformIdType, oemPlatformId, csmePlatformId);
+		}
+
+		ERROR_HANDLER(ReturnValue);
+
+		CComPtr<IWbemClassObject> pOutParams;
+		WMIGetMethodOParams(pClass, L"getUniquePlatformID", &pOutParams.p);
+		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
+		WMIPut<1>(pOutParams, L"OEMPlatformIDType", oemPlatformIdType);
+		WMIPut<1>(pOutParams, L"OEMPlatformID", oemPlatformId);
+		WMIPut<1>(pOutParams, L"CSMEPlatformID", csmePlatformId);
+
+		pResponseHandler->Indicate(1, &pOutParams.p);
+	}
+	catch (...)
+	{
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 
 	return hr;
 }

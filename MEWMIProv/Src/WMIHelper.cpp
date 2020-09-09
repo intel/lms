@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 #include "ME_System_WMI_Provider.h"
 #include "pthi_commands.h"
@@ -17,7 +17,8 @@ void WMIHelper::PTHIHandleSetStatus(IWbemServices* pNamespace,
 
 	if (ReturnValue == WMI_E_HECI_CONNECTION ||
 		ReturnValue == WMI_E_PTHI_CLIENT_CONNECTION ||
-		ReturnValue == WMI_E_FWUPD_CLIENT_CONNECTION)
+		ReturnValue == WMI_E_FWUPD_CLIENT_CONNECTION ||
+		ReturnValue == WMI_E_UPID_CLIENT_CONNECTION)
 	{
 		hr = WBEM_E_CONNECTION_FAILED;
 	}				

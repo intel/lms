@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 #ifndef __WMIUTILS_H
 #define __WMIUTILS_H
@@ -15,13 +15,14 @@
 		{ \
 			if (ReturnValue != WMI_E_HECI_CONNECTION && \
 				ReturnValue != WMI_E_PTHI_CLIENT_CONNECTION && \
-				ReturnValue != WMI_E_FWUPD_CLIENT_CONNECTION) \
+				ReturnValue != WMI_E_FWUPD_CLIENT_CONNECTION && \
+				ReturnValue != WMI_E_UPID_CLIENT_CONNECTION) \
 			{ \
 				ReturnValue = WMI_E_MESTATUS_BASE + ReturnValue; \
 			} \
 		} 
 
-
+HRESULT IsUserAdmin();
 
 class WMIHelper 
 {

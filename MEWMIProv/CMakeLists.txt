@@ -39,6 +39,7 @@ add_library (MEProv SHARED
   Src/WindowsEventLog.cpp
   Src/WMIHelper.cpp
   Src/WSmanCommands.cpp
+  Src/UPID_Commands.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/MEProvMessageFile.rc
   MEProv.rc
 )

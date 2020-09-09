@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -109,7 +109,7 @@ private:
 	{
 		if (buffer.size() < sizeof(FWUpdate_MESSAGE_HEADER) + sizeof(FWUpdate_STATUS))
 		{
-			throw MEIClientException("Error: response buffer to short.");
+			throw MEIClientException("Error: response buffer too short.");
 		}
 
 		FWUpdate_MESSAGE_HEADER *header = (FWUpdate_MESSAGE_HEADER *)&buffer[0];

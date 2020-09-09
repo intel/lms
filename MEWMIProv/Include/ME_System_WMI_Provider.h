@@ -163,4 +163,22 @@ private:
 	static void GetCapabilities(
 		MEFWCAPS_SKU_INT CapabilityData,
 		vector<wstring>& capabilities);
+
+	static HRESULT getUPIDFeatureState(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+
+	static HRESULT setUPIDFeatureState(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+
+	static HRESULT getUPID(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
 };

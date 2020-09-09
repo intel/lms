@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2005-2007, 2009-2019 Intel Corporation
+ * Copyright (C) 2005-2007, 2009-2020 Intel Corporation
  */
 /*++
 
@@ -41,5 +41,10 @@ DEFINE_GUID(HECI_HOTHAM_GUID,
 // {0x6733a4db, 0x0476, 0x4e7b, 0xb3, 0xaf, 0xbc, 0xfc, 0x29, 0xbe, 0xe7, 0xa7}
 DEFINE_GUID(LME_GUID,
 			0x6733a4db, 0x0476, 0x4e7b, 0xb3, 0xaf, 0xbc, 0xfc, 0x29, 0xbe, 0xe7, 0xa7);
+
+// Define GUID used to connect to the Unique Platform ID client (via the HECI device)
+// {92136C79-5FEA-4CFD-980e-23BE07FA5E9F}
+DEFINE_GUID(HECI_UPID_GUID,
+	0x92136C79, 0x5FEA, 0x4CFD, 0x98, 0x0e, 0x23, 0xBE, 0x07, 0xFA, 0x5E, 0x9F);
 
 #endif // __INTRFACE_H__
