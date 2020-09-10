@@ -1,3 +1,8 @@
+## [2036.1.0.0]
+
+### Added
+ - WMI Provider: Crossover Canyon Unique Platform ID WMI Provider APIs
+
 ## [2036.0.0.0]
 
 ### Fixed
