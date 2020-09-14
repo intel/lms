@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -14,19 +14,16 @@
 
 class Audit_Record_WMI_Provider
 {
-	
-	
 public:
-
 	std::wstring InstanceID;
 	UINT8       ProvisioningTLSMode;
 	bool		SecureDNS;
 	bool        HostInitiated;
 	UINT32  	SelectedHashType;	
-	vector<UINT8> SelectedHashData;
-	vector<UINT8> CACertificateSerial1;
-	vector<UINT8> CACertificateSerial2;
-	vector<UINT8> CACertificateSerial3;
+	std::vector<UINT8> SelectedHashData;
+	std::vector<UINT8> CACertificateSerial1;
+	std::vector<UINT8> CACertificateSerial2;
+	std::vector<UINT8> CACertificateSerial3;
 	bool        AdditionalCaSerialNums;
 	bool		IsOemDefault;
 	bool		IsTimeValid;
@@ -45,12 +42,11 @@ public:
 		IWbemContext __RPC_FAR *pCtx,
 		IWbemObjectSink __RPC_FAR *pResponseHandler);
 	static HRESULT EnumerateAuditRecord(
-		vector<Audit_Record_WMI_Provider>& auditVec, 
+		std::vector<Audit_Record_WMI_Provider>& auditVec,
 		uint32& ReturnValue);
 
 	~Audit_Record_WMI_Provider() {};
 
 private: 
-	Audit_Record_WMI_Provider(MEAdminAudit MEAudit, std::wstring instanceID);
-	
+	Audit_Record_WMI_Provider(const MEAdminAudit &MEAudit, const std::wstring &instanceID);
 };

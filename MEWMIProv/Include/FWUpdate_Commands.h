@@ -10,11 +10,8 @@
 
 #pragma once
 #include "stdafx.h"
-#include <atlbase.h>
-#include <string>
 #include "GetFWCapsCommand.h"
 #include "GetPlatformTypeCommand.h"
-#include "StatusCodeDefinitions.h"
 
 class FWUpdate_Commands
 {
@@ -24,6 +21,4 @@ public:
 	UINT32 GetFWPlatformType(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform);
 
 	unsigned int GetFWUpdateStateCommand(bool* enabled);
-
-public:
 };

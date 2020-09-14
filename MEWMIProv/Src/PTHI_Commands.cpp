@@ -62,8 +62,6 @@
 
 // CPTHI_Commands
 
-#define MAX_BUFFER_LENGTH  256
-
 using namespace Intel::MEI_Client::AMTHI_Client;
 using namespace Intel::MEI_Client::Manageability_Client;
 using namespace Intel::MEI_Client;
@@ -205,7 +203,7 @@ HRESULT IsUserAdmin()
 	return hr;
 }
 
-HRESULT getApplicationDetails(string& userNameStr, string& domainNameStr, string& applicationName)
+HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameStr, std::string& applicationName)
 {
 	HRESULT  hr = S_OK;
 	DWORD dwImp = 0;
@@ -364,7 +362,7 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 	{
 		UNS_ERROR("GetFQDNCommand failed %C\n", e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetFQDNCommand %C\n", e.what());
 	}
@@ -392,7 +390,7 @@ unsigned int PTHI_Commands::OpenCIRA(void)
 	{
 		UNS_ERROR("OpenUserInitiatedConnectionCommand failed %C\n", e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in OpenUserInitiatedConnectionCommand %C\n", e.what());
 	}
@@ -419,7 +417,7 @@ unsigned int PTHI_Commands::CloseCIRA(void)
 	{
 		UNS_ERROR("CloseUserInitiatedConnectionCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in CloseUserInitiatedConnectionCommand %C\n", e.what());
 	}
@@ -446,7 +444,7 @@ unsigned int PTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 	{
 		UNS_ERROR("GetProvisioningTlsModeCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetProvisioningTlsModeCommand %C\n", e.what());
 	}
@@ -473,7 +471,7 @@ unsigned int PTHI_Commands::GetTLSEnabled(bool* enabled)
 	{
 		UNS_ERROR("GetSecurityParametersCommand failed %C\n", e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetSecurityParametersCommand %C\n", e.what());
 	}
@@ -483,10 +481,6 @@ unsigned int PTHI_Commands::GetTLSEnabled(bool* enabled)
 
 unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 {
-	//char str[256];
-
-
-	// TODO: Add your implementation code here
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetLanInterfaceSettingsCommand command(WIRED);
@@ -503,7 +497,7 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 	{
 		UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 	}
@@ -513,10 +507,6 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 
 unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
 {
-
-	//bool isNullBufferReceived;
-//	AMT_BOOLEAN legacy;
-	// TODO: Add your implementation code here
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetProvisioningModeCommand command;
@@ -533,7 +523,7 @@ unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
 	{
 		UNS_ERROR("GetProvisioningModeCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetProvisioningModeCommand %C\n", e.what());
 	}
@@ -561,7 +551,7 @@ UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 	{
 		UNS_ERROR("GetProvisioningStateCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetProvisioningStateCommand %C\n", e.what());
 	}
@@ -569,7 +559,7 @@ UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 	return rc;
 }
 
-UINT PTHI_Commands::GetPID(wstring* pPID)
+UINT PTHI_Commands::GetPID(std::wstring* pPID)
 {
 	USES_CONVERSION;
 
@@ -594,7 +584,7 @@ UINT PTHI_Commands::GetPID(wstring* pPID)
 	{
 		UNS_ERROR("GetPIDCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetPIDCommand %C\n", e.what());
 	}
@@ -620,7 +610,7 @@ unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 	{
 		UNS_ERROR("GetZeroTouchEnabledCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetZeroTouchEnabledCommand %C\n", e.what());
 	}
@@ -629,7 +619,7 @@ unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 }
 
 
-unsigned int PTHI_Commands::GetProvisioningInfo(wstring* pPKIDNSSuffix, wstring* pConfigServerFQDN)
+unsigned int PTHI_Commands::GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN)
 {
 	USES_CONVERSION;
 
@@ -651,7 +641,7 @@ unsigned int PTHI_Commands::GetProvisioningInfo(wstring* pPKIDNSSuffix, wstring*
 	{
 		UNS_ERROR("AMTHICommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in AMTHICommand %C\n", e.what());
 	}
@@ -684,7 +674,7 @@ unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTri
 	{
 		UNS_ERROR("GetRemoteAccessConnectionStatusCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetRemoteAccessConnectionStatusCommand %C\n", e.what());
 	}
@@ -692,6 +682,14 @@ unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTri
 	return rc;
 }
 
+typedef struct _LOCAL_AGENT_PARAMS
+{
+	std::string	OneTimePassword;
+	std::string	DnsSuffix;
+	bool			Verbose;
+	bool            Activate;
+	bool			EnableIPv6;
+} LOCAL_AGENT_PARAMS;
 
 /*
  * Calls to Activate AMT configuration.
@@ -701,20 +699,19 @@ unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTri
  *	PT_STATUS_SUCCESS - on success for get amt configuration data
  *	appropriate error value defined in StatusCodeDefinitions.h - on failure
  */
-unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* provTlsMode)
+unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SHORT* provTlsMode)
 {
 	unsigned int status = 0;
 	bool ztcEnabled;
 	ProvTLSMode_t provisioningTlsMode;
 
 	CFG_PROVISIONING_STATE provstate;
-//	bool isNullBufferReceived;
 	bool isDNSSet = false;
 	bool isOTPSet = false;
 	bool setDNSOrOTPWhileAmtActivated = false;
-	string lastFunction;
-
-	try
+	std::string lastFunction;
+	
+	try 
 	{
 	do {
 		// ZTC enabled
@@ -746,8 +743,8 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 				SetDNSSuffixCommand setDNSSuffixCommand(param.DnsSuffix);
 				lastFunction = "GetDNSSuffixCommand";
 				GetDNSSuffixCommand getDNSSuffixCommand;
-				string tempDnsSuffix = getDNSSuffixCommand.getResponse();
-
+				std::string tempDnsSuffix = getDNSSuffixCommand.getResponse();
+				
 				if (tempDnsSuffix.compare(param.DnsSuffix) != 0)
 				{
 					status=AMT_STATUS_INTERNAL_ERROR;
@@ -830,7 +827,7 @@ unsigned int Activate(LOCAL_AGENT_PARAMS param, bool alreadyActivated, SHORT* pr
 		UNS_ERROR("%C failed %C\n",lastFunction, e.what());
 		status = AMT_STATUS_INTERNAL_ERROR;
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in %C %C\n",lastFunction, e.what());
 		status = AMT_STATUS_INTERNAL_ERROR;
@@ -908,7 +905,7 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 		{
 			UNS_ERROR("GetCodeVersionCommand failed %C\n", e.what());
 		}
-		catch (exception& e)
+		catch (std::exception& e)
 		{
 			UNS_ERROR("Exception in GetCodeVersionCommand %C\n", e.what());
 		}
@@ -925,7 +922,7 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
     return status;
 }
 
-unsigned int PTHI_Commands::ZTCActivate(std::string OTP, std::string PKIDNSSuffix, SHORT* provTLSMode)
+unsigned int PTHI_Commands::ZTCActivate(const std::string &OTP, const std::string &PKIDNSSuffix, SHORT* provTLSMode)
 {
 	//if (CheckCredentials(_T("OpenCIRA")) != S_OK)
 	//	return E_ACCESSDENIED;
@@ -959,7 +956,7 @@ unsigned int PTHI_Commands::ZTCActivate(std::string OTP, std::string PKIDNSSuffi
 	return rc;
 }
 
-unsigned int PTHI_Commands::GetConfigServerData(wstring* Address, unsigned short* port)
+unsigned int PTHI_Commands::GetConfigServerData(std::wstring* Address, unsigned short* port)
 {
 	USES_CONVERSION;
 
@@ -985,7 +982,7 @@ unsigned int PTHI_Commands::GetConfigServerData(wstring* Address, unsigned short
 	{
 		UNS_ERROR("GetConfigServerDataCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetConfigServerDataCommand %C\n", e.what());
 	}
@@ -1004,7 +1001,6 @@ AMT_STATUS_UNSUPPORTED_OBJECT	StateDataIdentifier is not recognized or not suppo
 */
 
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-//	int ret;
 
 	try {
 		GetAMTStateCommand command;
@@ -1022,7 +1018,7 @@ AMT_STATUS_UNSUPPORTED_OBJECT	StateDataIdentifier is not recognized or not suppo
 	{
 		UNS_ERROR("GetAMTState failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetAMTState %C\n", e.what());
 	}
@@ -1030,7 +1026,7 @@ AMT_STATUS_UNSUPPORTED_OBJECT	StateDataIdentifier is not recognized or not suppo
 	return rc;
 }
 
-unsigned int PTHI_Commands::GetPowerPolicy(wstring* policy)
+unsigned int PTHI_Commands::GetPowerPolicy(std::wstring* policy)
 {
 	USES_CONVERSION;
 
@@ -1049,7 +1045,7 @@ unsigned int PTHI_Commands::GetPowerPolicy(wstring* policy)
 	{
 		UNS_ERROR("GetPowerPolicy failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetPowerPolicy %C\n", e.what());
 	}
@@ -1062,7 +1058,7 @@ unsigned int PTHI_Commands::GetPowerPolicy(wstring* policy)
 unsigned int PTHI_Commands::ChangeToAMT()
 {
 	unsigned int status = AMT_STATUS_SUCCESS;
-	string lastFunction ="";
+	std::string lastFunction ="";
 	try {
 		lastFunction = "MNGIsChangeToAMTEnabledCommand";
 		MNGIsChangeToAMTEnabledCommand isChangedToAMTCommand;
@@ -1082,8 +1078,8 @@ unsigned int PTHI_Commands::ChangeToAMT()
 		status = E_FAIL;
 	}
 
-
-	catch (exception& e)
+	
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in %C %C\n", lastFunction, e.what());
 		status = E_FAIL;
@@ -1110,7 +1106,7 @@ unsigned int PTHI_Commands::StopConfiguration(void)
 	{
 		UNS_ERROR("StopConfigurationCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in StopConfigurationCommand %C\n", e.what());
 	}
@@ -1120,16 +1116,14 @@ unsigned int PTHI_Commands::StopConfiguration(void)
 
 unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int* sku)
 {
-	USES_CONVERSION;
+	USES_CONVERSION; 
 
-
-	// TODO: Add your implementation code here
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetCodeVersionCommand command;
 		CODE_VERSIONS response = command.getResponse();
-		vector<AMT_VERSION_TYPE>::iterator itr = response.Versions.begin();
-		vector<AMT_VERSION_TYPE>::iterator endItr = response.Versions.end();
+		std::vector<AMT_VERSION_TYPE>::iterator itr = response.Versions.begin();
+		std::vector<AMT_VERSION_TYPE>::iterator endItr = response.Versions.end();
 		for (; itr != endItr ; ++itr)
 		{
 			if (itr->Description.compare("AMT") == 0)
@@ -1164,7 +1158,7 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 	{
 		UNS_ERROR("GetCodeVersionCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetCodeVersionCommand %C\n", e.what());
 	}
@@ -1175,7 +1169,7 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 		{
 			Intel::MEI_Client::MKHI_Client::GetFWVersionCommand command;
 			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE response = command.getResponse();
-			wstringstream strStream(wstringstream::in | wstringstream::out);
+			std::wstringstream strStream(std::wstringstream::in | std::wstringstream::out);
 			strStream << response.FTMajor << L"." << response.FTMinor << L"." <<
 				response.FTHotFix << L"." << response.FTBuildNo;
 			strStream >> *AMTVersion;
@@ -1185,7 +1179,7 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 		{
 			UNS_ERROR("FWUGetVersionCommand failed %C\n", e.what());
 		}
-		catch (exception& e)
+		catch (std::exception& e)
 		{
 			UNS_ERROR("Exception in FWUGetVersionCommand %C\n", e.what());
 		}
@@ -1194,7 +1188,7 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 	return rc;
 }
 
-wstring  CFG_IPv4_ADDRESStowstring(unsigned int IP)
+std::wstring CFG_IPv4_ADDRESStowstring(unsigned int IP)
 {
 	WCHAR wsip[50];
 	swprintf_s(wsip,50,L"%d.%d.%d.%d",(IP >> 24)&0xff, (IP >> 16)&0xff, (IP >> 8)&0xff, IP &0xff);
@@ -1236,7 +1230,6 @@ unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 		MEAudit->IsOemDefault = response.IsOemDefault;
 		MEAudit->IsTimeValid = response.IsTimeValid;
 		MEAudit->ProvServerIP = ToWStr(response.ProvServerIP);
-		//MEAudit->ProvServerIP = CFG_IPv4_ADDRESStowstring(response.ProvServerIP);
 		MEAudit->ProvServerFQDN = ToWStr(response.ProvServerFQDN);
 		MEAudit->TlsStartTime.Day = response.TlsStartTime.Day;
 		MEAudit->TlsStartTime.DayOfWeek = response.TlsStartTime.DayOfWeek;
@@ -1256,7 +1249,7 @@ unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 	{
 		UNS_ERROR("GetMESetupAuditRecordCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetMESetupAuditRecordCommand %C\n", e.what());
 	}
@@ -1286,7 +1279,7 @@ unsigned int PTHI_Commands::getWebUIState(SHORT* pState)
 	{
 		UNS_ERROR("GetWebUIStateCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetWebUIStateCommand %C\n", e.what());
 	}
@@ -1314,7 +1307,7 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 	{
 		UNS_ERROR("GetWebUIStateCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetWebUIStateCommand %C\n", e.what());
 	}
@@ -1322,15 +1315,15 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 	return rc;
 }
 
-unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
+unsigned int PTHI_Commands::GetCertificateHash(std::vector<HashEntry> &hashlist)
 {
 	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		EnumerateHashHandlesCommand command;
 		ENUMERATE_HASH_HANDLES_RESPONSE response = command.getResponse();
-		vector<unsigned int>::iterator itr = response.HashHandles.begin();
-		vector<unsigned int>::iterator endItr = response.HashHandles.end();
+		std::vector<unsigned int>::iterator itr = response.HashHandles.begin();
+		std::vector<unsigned int>::iterator endItr = response.HashHandles.end();
 		for (; itr != endItr; ++itr)
 		{
 			try {
@@ -1353,7 +1346,7 @@ unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 			{
 				UNS_ERROR("GetCertificateHashEntryCommand failed %C\n", e.what());
 			}
-			catch (exception& e)
+			catch (std::exception& e)
 			{
 				UNS_ERROR("Exception in GetCertificateHashEntryCommand %C\n", e.what());
 			}
@@ -1369,7 +1362,7 @@ unsigned int PTHI_Commands::GetCertificateHash(vector<HashEntry> &hashlist)
 	{
 		UNS_ERROR("EnumerateHashHandlesCommand failed %C\n", e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in EnumerateHashHandlesCommand %C\n", e.what());
 	}
@@ -1399,7 +1392,7 @@ unsigned int PTHI_Commands::GetKVMSessionActivation(bool* activated)
 	{
 		UNS_ERROR("GetKVMSessionActivation failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetKVMSessionActivation %C\n", e.what());
 	}
@@ -1428,7 +1421,7 @@ unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREna
 	{
 		UNS_ERROR("GetRedirectionState failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetRedirectionState %C\n", e.what());
 	}
@@ -1436,7 +1429,7 @@ unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREna
 	return rc;
 }
 
-unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetPortList)
+unsigned int PTHI_Commands::GetPortSettings(std::vector<EthernetPortEntry> &ethernetPortList)
 {
 	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
@@ -1471,7 +1464,7 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 		{
 			UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 		}
-		catch (exception& e)
+		catch (std::exception& e)
 		{
 			UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 		}
@@ -1499,7 +1492,7 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 			{
 				UNS_ERROR("GetLanInterfaceSettingsCommand failed %C\n", e.what());
 			}
-			catch (exception& e)
+			catch (std::exception& e)
 			{
 				UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
 			}
@@ -1514,7 +1507,7 @@ unsigned int PTHI_Commands::GetPortSettings(vector<EthernetPortEntry> &ethernetP
 	{
 		UNS_ERROR("GetTcpipParametersCommand failed %C\n", e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetTcpipParametersCommand %C\n", e.what());
 	}
@@ -1532,7 +1525,7 @@ unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAcc
 
 		if (response.Password.length() < CFG_MAX_ACL_PWD_LENGTH)
 		{
-			string encryptedPassword = WSmanCrypt::EncryptString(response.Password); //EncryptString will empty response.Password
+			std::string encryptedPassword = WSmanCrypt::EncryptString(response.Password); //EncryptString will empty response.Password
 			LocalAccount->Password.assign(encryptedPassword);
 		}
 		rc = 0;
@@ -1546,7 +1539,7 @@ unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAcc
 	{
 		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", e.what());
 	}
@@ -1570,7 +1563,7 @@ unsigned int PTHI_Commands::Unprovision()
 	{
 		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n",e.what());
 	}
-	catch (exception& e)
+	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", e.what());
 	}

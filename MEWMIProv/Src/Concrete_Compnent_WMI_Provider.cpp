@@ -32,16 +32,16 @@ HRESULT Concrete_Component_WMI_Provider::Enumerate(
 	{
 		do{
 			//Enumerate EthernetPortSetting associations
-			vector<EthernetPortSettings_WMI_Provider> ethernetPortList;
+			std::vector<EthernetPortSettings_WMI_Provider> ethernetPortList;
 			hr = EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(
 				ethernetPortList, ReturnValue);
 			if (ReturnValue == STATUS_SUCCESS || hr == STATUS_SUCCESS)
 			{
-				vector<EthernetPortSettings_WMI_Provider>::iterator ethernetPort;
+				std::vector<EthernetPortSettings_WMI_Provider>::iterator ethernetPort;
 				ethernetPort = ethernetPortList.begin();
 				for (; ethernetPort != ethernetPortList.end(); ethernetPort++)
 				{
-					wstring partComponenet = (L"AMT_EtherenetPortSettings.InstanceID=\"") + 
+					std::wstring partComponenet = (L"AMT_EtherenetPortSettings.InstanceID=\"") +
 						ethernetPort->InstanceID; 
 					partComponenet += L"\"";
 					CComPtr<IWbemClassObject> obj;
@@ -55,16 +55,16 @@ HRESULT Concrete_Component_WMI_Provider::Enumerate(
 			hr =0;
 			ReturnValue = 0;
 			//Enumerate Audit_Record associations
-			vector<Audit_Record_WMI_Provider> auditRecordList;
+			std::vector<Audit_Record_WMI_Provider> auditRecordList;
 			hr = Audit_Record_WMI_Provider::EnumerateAuditRecord(
 				auditRecordList, ReturnValue);
 			if (ReturnValue == STATUS_SUCCESS || hr == STATUS_SUCCESS)
 			{
-				vector<Audit_Record_WMI_Provider>::iterator auditRecord;
+				std::vector<Audit_Record_WMI_Provider>::iterator auditRecord;
 				auditRecord = auditRecordList.begin();
 				for (; auditRecord != auditRecordList.end(); auditRecord++)
 				{
-					wstring partComponenet = L"AMT_SetupAuditRecord.InstanceID=\"" + 
+					std::wstring partComponenet = L"AMT_SetupAuditRecord.InstanceID=\"" +
 						auditRecord->InstanceID + 
 						L"\"";
 					CComPtr<IWbemClassObject> obj;
@@ -78,16 +78,16 @@ HRESULT Concrete_Component_WMI_Provider::Enumerate(
 			hr =0;
 			ReturnValue = 0;
 			//Enumerate Audit_Record associations
-			vector<ProvisioningCertificateHash_WMI_Provider> hashList;
+			std::vector<ProvisioningCertificateHash_WMI_Provider> hashList;
 			hr = ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(
 				hashList, ReturnValue);
 			if (ReturnValue == STATUS_SUCCESS || hr == STATUS_SUCCESS)
 			{
-				vector<ProvisioningCertificateHash_WMI_Provider>::iterator certHash;
+				std::vector<ProvisioningCertificateHash_WMI_Provider>::iterator certHash;
 				certHash = hashList.begin();
 				for (; certHash != hashList.end(); certHash++)
 				{
-					wstring partComponenet = L"AMT_ProvisioningCertificateHash.InstanceID=\"" + 
+					std::wstring partComponenet = L"AMT_ProvisioningCertificateHash.InstanceID=\"" +
 						certHash->InstanceID + 
 						L"\"";
 					CComPtr<IWbemClassObject> obj;
@@ -127,13 +127,13 @@ bool Concrete_Component_WMI_Provider::IsGroupOobService(CComBSTR groupREF_BSTR)
 	USES_CONVERSION;
 	CComBSTR groupREF_int(groupREF_BSTR);
 	groupREF_int.ToLower();
-	wstring groupREF(groupREF_int);
-	if (groupREF.find(L"oob_service.") == wstring::npos)
+	std::wstring groupREF(groupREF_int);
+	if (groupREF.find(L"oob_service.") == std::wstring::npos)
 	{
 		return false;
 	}
-	map <std::wstring, CComVariant> groupKeyList;
-	map <std::wstring, CComVariant>::const_iterator groupIt ;
+	std::map <std::wstring, CComVariant> groupKeyList;
+	std::map <std::wstring, CComVariant>::const_iterator groupIt ;
 	GetKeysList(groupKeyList, (BSTR)groupREF_BSTR);
 	if (groupKeyList.size() != 4)
 	{
@@ -176,25 +176,25 @@ bool Concrete_Component_WMI_Provider::compareCaseInsensitive(CComBSTR str1, CCom
 	return false;
 }
 
-wstring Concrete_Component_WMI_Provider::analyzePartCompnent(CComBSTR partComponenetVal)
+std::wstring Concrete_Component_WMI_Provider::analyzePartCompnent(CComBSTR partComponenetVal)
 {
-	wstring retValue(partComponenetVal);
+	std::wstring retValue(partComponenetVal);
 	CComBSTR partComponenet(partComponenetVal);
 	partComponenet.ToLower();
-	wstring partREF(partComponenet);
-	if (partREF.find(L"amt_setupauditrecord.") != wstring::npos)
+	std::wstring partREF(partComponenet);
+	if (partREF.find(L"amt_setupauditrecord.") != std::wstring::npos)
 	{
 		if (!AuditRecordREFExists(partComponenet))
 		{
 			retValue = L"";
 		}
-	} else if (partREF.find(L"amt_provisioningcertificatehash.") != wstring::npos)
+	} else if (partREF.find(L"amt_provisioningcertificatehash.") != std::wstring::npos)
 	{
 		if (!ProvisioningHashREFExists(partComponenet))
 		{
 			retValue = L"";
 		}
-	} else if (partREF.find(L"amt_ethernetportsettings.") != wstring::npos)
+	} else if (partREF.find(L"amt_ethernetportsettings.") != std::wstring::npos)
 	{
 		if (!EthernetPortREFExists(partComponenet))
 		{
@@ -209,22 +209,22 @@ wstring Concrete_Component_WMI_Provider::analyzePartCompnent(CComBSTR partCompon
 
 bool Concrete_Component_WMI_Provider::ProvisioningHashREFExists(ATL::CComBSTR partComponenet)
 {
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 	GetKeysList(keyList, (BSTR)partComponenet);
 	it = keyList.find(L"instanceid");
 	if (it == keyList.end())
 	{
 		return false;
 	}
-	wstring inputInstanceID(it->second.bstrVal);
-	vector<ProvisioningCertificateHash_WMI_Provider> instanceList;
-	vector<ProvisioningCertificateHash_WMI_Provider>::const_iterator instanceIt;
+	std::wstring inputInstanceID(it->second.bstrVal);
+	std::vector<ProvisioningCertificateHash_WMI_Provider> instanceList;
+	std::vector<ProvisioningCertificateHash_WMI_Provider>::const_iterator instanceIt;
 	uint32 retVal;
 	ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(instanceList, retVal);
 	for (instanceIt = instanceList.begin(); instanceIt!= instanceList.end(); instanceIt++)
 	{
-		wstring instanceID = instanceIt->InstanceID;	
+		std::wstring instanceID = instanceIt->InstanceID;
 		
 		if (_wcsnicmp(instanceID.c_str(), inputInstanceID.c_str(), instanceID.length()) == 0)
 		{
@@ -236,22 +236,22 @@ bool Concrete_Component_WMI_Provider::ProvisioningHashREFExists(ATL::CComBSTR pa
 
 bool Concrete_Component_WMI_Provider::EthernetPortREFExists(ATL::CComBSTR partComponenet)
 {
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 	GetKeysList(keyList, (BSTR)partComponenet);
 	it = keyList.find(L"instanceid");
 	if (it == keyList.end())
 	{
 		return false;
 	}
-	wstring inputInstanceID(it->second.bstrVal);
-	vector<EthernetPortSettings_WMI_Provider> instanceList;
-	vector<EthernetPortSettings_WMI_Provider>::const_iterator instanceIt;
+	std::wstring inputInstanceID(it->second.bstrVal);
+	std::vector<EthernetPortSettings_WMI_Provider> instanceList;
+	std::vector<EthernetPortSettings_WMI_Provider>::const_iterator instanceIt;
 	uint32 retVal;
 	EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(instanceList, retVal);
 	for (instanceIt = instanceList.begin(); instanceIt!= instanceList.end(); instanceIt++)
 	{
-		wstring instanceID = instanceIt->InstanceID;	
+		std::wstring instanceID = instanceIt->InstanceID;
 		
 		if (_wcsnicmp(instanceID.c_str(), inputInstanceID.c_str(), instanceID.length()) == 0)
 		{
@@ -263,22 +263,22 @@ bool Concrete_Component_WMI_Provider::EthernetPortREFExists(ATL::CComBSTR partCo
 
 bool Concrete_Component_WMI_Provider::AuditRecordREFExists(ATL::CComBSTR partComponent)
 {	
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 	GetKeysList(keyList, (BSTR)partComponent);
 	it = keyList.find(L"instanceid");
 	if (it == keyList.end())
 	{
 		return false;
 	}
-	wstring inputInstanceID(it->second.bstrVal);
-	vector<Audit_Record_WMI_Provider> recordsList;
-	vector<Audit_Record_WMI_Provider>::const_iterator recordsIt;
+	std::wstring inputInstanceID(it->second.bstrVal);
+	std::vector<Audit_Record_WMI_Provider> recordsList;
+	std::vector<Audit_Record_WMI_Provider>::const_iterator recordsIt;
 	uint32 retVal;
 	Audit_Record_WMI_Provider::EnumerateAuditRecord(recordsList, retVal);
 	for (recordsIt = recordsList.begin(); recordsIt!= recordsList.end(); recordsIt++)
 	{
-		wstring instanceID = recordsIt->InstanceID;	
+		std::wstring instanceID = recordsIt->InstanceID;
 		
 		if (_wcsnicmp(instanceID.c_str(), inputInstanceID.c_str(), instanceID.length()) == 0)
 		{
@@ -299,8 +299,8 @@ HRESULT Concrete_Component_WMI_Provider::GetConcrete_Component(
 	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 	
 	try
 	{

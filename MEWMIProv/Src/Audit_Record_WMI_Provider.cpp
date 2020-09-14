@@ -28,7 +28,7 @@ HRESULT Audit_Record_WMI_Provider::Enumerate(
 	try
 	{
 		do{
-			vector<Audit_Record_WMI_Provider> auditVec;
+			std::vector<Audit_Record_WMI_Provider> auditVec;
 			hr = EnumerateAuditRecord(auditVec, ReturnValue);
 			if (ReturnValue == AMT_STATUS_DATA_MISSING)
 			{
@@ -67,7 +67,6 @@ HRESULT Audit_Record_WMI_Provider::Enumerate(
 			BREAKIF(WMIPut<1>(obj, L"ProvServerIP", auditVec[0].ProvServerIP));
 			BREAKIF(WMIPut<1>(obj, L"ProvServerFQDN", auditVec[0].ProvServerFQDN));
 			BREAKIF(WMIPut<1>(obj, L"CreationTimeStamp", auditVec[0].TlsStartTime));
-//			LastConnectionTime = _T("19700201000000.000000+000");
 
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 		} while(0);
@@ -94,7 +93,7 @@ HRESULT Audit_Record_WMI_Provider::Enumerate(
 
 }
 
-HRESULT Audit_Record_WMI_Provider::EnumerateAuditRecord(vector<Audit_Record_WMI_Provider>& auditVec, uint32& ReturnValue)
+HRESULT Audit_Record_WMI_Provider::EnumerateAuditRecord(std::vector<Audit_Record_WMI_Provider>& auditVec, uint32& ReturnValue)
 {
 	ReturnValue = 0;
 	uint32 hr = 0;
@@ -121,7 +120,7 @@ HRESULT Audit_Record_WMI_Provider::EnumerateAuditRecord(vector<Audit_Record_WMI_
 	return hr;
 }
 
-Audit_Record_WMI_Provider::Audit_Record_WMI_Provider(MEAdminAudit MEAudit, std::wstring instanceID)
+Audit_Record_WMI_Provider::Audit_Record_WMI_Provider(const MEAdminAudit &MEAudit, const std::wstring &instanceID)
 {
 	USES_CONVERSION;
 	InstanceID = instanceID;
@@ -159,8 +158,8 @@ HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 
 	try
 	{
@@ -179,15 +178,8 @@ HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 
 		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
-		//SCS_Profile profile;
 		do 
 		{
-			//hr = SCS_Profile_WMIProviderImpl::GetProfileObject(id,profile)	;
-
-			//if (STATUS_SUCCESS != hr)
-			//{
-			//	break;
-			//}
 			MEAdminAudit MEAudit;
 			PTHI_Commands pthic;
 			ReturnValue = pthic.GetMESetupAudit(&MEAudit);
@@ -219,7 +211,7 @@ HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 				 MEAudit.TlsStartTime.Month,MEAudit.TlsStartTime.Day,
 				 MEAudit.TlsStartTime.Hour,MEAudit.TlsStartTime.Minute,
 				 MEAudit.TlsStartTime.Second);
-			wstring date = sdate;
+			std::wstring date = sdate;
 			BREAKIF(WMIPut<1>(obj, L"CreationTimeStamp", date));
 			
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));

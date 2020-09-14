@@ -34,14 +34,12 @@ public:
 	static bool isMethodCallStatic(const BSTR strObjectPath);
 };
 
-
-
-inline string ToStr(const wstring& t)
+inline std::string ToStr(const std::wstring& t)
 {
 	size_t len = t.length();
 	if (len < 1)
-		return string();
-	string buff(len, '\0');
+		return std::string();
+	std::string buff(len, '\0');
 	size_t count;
 	::wcstombs_s(&count, &buff.at(0), len+1, t.c_str(), len+1);
 	if (count < len)

@@ -31,11 +31,11 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 	try
 	{
 		
-		vector<EthernetPortSettings_WMI_Provider> ethernetPortList;
+		std::vector<EthernetPortSettings_WMI_Provider> ethernetPortList;
 		hr = EnumerateEthernetPortSettings(ethernetPortList, ReturnValue);
 		if (STATUS_SUCCESS == ReturnValue)
 		{
-			vector<EthernetPortSettings_WMI_Provider>::iterator entry;
+			std::vector<EthernetPortSettings_WMI_Provider>::iterator entry;
 			entry = ethernetPortList.begin();
 			for (; entry != ethernetPortList.end(); entry++)
 			{
@@ -85,7 +85,7 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 
 }
 
-HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(vector<EthernetPortSettings_WMI_Provider>& settingsVec, uint32& ReturnValue)
+HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::vector<EthernetPortSettings_WMI_Provider>& settingsVec, uint32& ReturnValue)
 {
 	USES_CONVERSION; 
 
@@ -98,11 +98,11 @@ HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(vector<
 	int i=1;
 	try
 	{
-		vector<EthernetPortEntry> ethernetPortList;
+		std::vector<EthernetPortEntry> ethernetPortList;
 		ReturnValue = GetPortList(ethernetPortList);
 			if (STATUS_SUCCESS == ReturnValue)
 			{	
-				vector<EthernetPortEntry>::iterator entry;
+				std::vector<EthernetPortEntry>::iterator entry;
 				entry = ethernetPortList.begin();
 				for (; entry != ethernetPortList.end(); entry++)
 				{
@@ -133,26 +133,26 @@ HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(vector<
 	return hr;
 }
 
-uint32 EthernetPortSettings_WMI_Provider::GetPortList(vector<EthernetPortEntry>& ethernetPortList)
+uint32 EthernetPortSettings_WMI_Provider::GetPortList(std::vector<EthernetPortEntry>& ethernetPortList)
 {
 	uint32 ReturnValue= 1; 
 	PTHI_Commands pthic;
-	vector<EthernetPortEntryWSMan> ethernetPortWSManList;
+	std::vector<EthernetPortEntryWSMan> ethernetPortWSManList;
 	WSmanCommands wsmc;
 
 	// The wsman call requires adminSecurity credentials - Try and get admin account for this
 	LOCAL_SYSTEM_ACCOUNT systemAccount;
 	if (ReturnValue = pthic.GetLocalSystemAccount(&systemAccount) == STATUS_SUCCESS)
 	{
-		string userName(systemAccount.UserName);
-		string password(systemAccount.Password); // This password is encrypted
+		std::string userName(systemAccount.UserName);
+		std::string password(systemAccount.Password); // This password is encrypted
 		ReturnValue = wsmc.GetPortSettings(ethernetPortWSManList, userName, password);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////
 
 	if (ReturnValue == STATUS_SUCCESS)
 	{
-		vector<EthernetPortEntryWSMan>::iterator portIterator;
+		std::vector<EthernetPortEntryWSMan>::iterator portIterator;
 		portIterator = ethernetPortWSManList.begin();	
 		for (; portIterator != ethernetPortWSManList.end(); portIterator++)
 		{
@@ -176,7 +176,8 @@ uint32 EthernetPortSettings_WMI_Provider::GetPortList(vector<EthernetPortEntry>&
 	return ReturnValue;
 }
 
-EthernetPortSettings_WMI_Provider::EthernetPortSettings_WMI_Provider(EthernetPortEntry port, std::wstring instanceID, std::wstring elementName)
+EthernetPortSettings_WMI_Provider::EthernetPortSettings_WMI_Provider(const EthernetPortEntry &port,
+	const std::wstring &instanceID, const std::wstring &elementName)
 {
 	InstanceID = instanceID;
 	ElementName = elementName;
@@ -203,8 +204,8 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 
 	try
 	{
@@ -221,10 +222,9 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 		unsigned int num = _wtoi(str+wcslen(L"Intel(r) AMT Ethernet Port Settings"));
 		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
-		//SCS_Profile profile;
 		do 
 		{
-			vector<EthernetPortEntry> ethernetPortList;
+			std::vector<EthernetPortEntry> ethernetPortList;
 			ReturnValue = GetPortList(ethernetPortList);
 
 			if (ReturnValue != S_OK)

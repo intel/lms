@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -167,15 +167,15 @@ STDMETHODIMP CMethodPro::ExecMethodAsync(const BSTR ObjectPath, const BSTR Metho
 		//{
 		//}
 
-		wstring objectPathTmp(ObjectPath);
-		wstring objectPath = objectPathTmp.substr(0,objectPathTmp.find(L"."));
+		std::wstring objectPathTmp(ObjectPath);
+		std::wstring objectPath = objectPathTmp.substr(0,objectPathTmp.find(L"."));
 		CComBSTR cbstr(objectPath.c_str());
 		RETURNIF(m_pWbemSvcs->GetObject(cbstr, 0, pCtx, &pClass, NULL));
-		if(objectPath.compare(0,wstring(L"OOB_Service").length(),L"OOB_Service") == 0 )
+		if(objectPath.compare(0, std::wstring(L"OOB_Service").length(),L"OOB_Service") == 0 )
 			hr = OOB_Service_WMI_Provider::DispatchMethods(MethodName,ObjectPath, m_pWbemSvcs, pClass, pInParams, pResponseHandler);
-		if(objectPath.compare(0,wstring(L"ME_System").length(),L"ME_System") == 0 )
+		if(objectPath.compare(0, std::wstring(L"ME_System").length(),L"ME_System") == 0 )
 			hr = ME_System_WMI_Provider::DispatchMethods(MethodName,ObjectPath, m_pWbemSvcs, pClass, pInParams, pResponseHandler);
-		if(objectPath.compare(0,wstring(L"AMT_Service").length(),L"AMT_Service") == 0 )
+		if(objectPath.compare(0, std::wstring(L"AMT_Service").length(),L"AMT_Service") == 0 )
 			hr = AMT_Service_WMI_Provider::DispatchMethods(MethodName,ObjectPath, m_pWbemSvcs, pClass, pInParams, pResponseHandler);
 	}
 	catch (...)

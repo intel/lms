@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -26,7 +26,7 @@ public:
 		IWbemContext __RPC_FAR *pCtx,
 		IWbemObjectSink __RPC_FAR *pResponseHandler);
 	static bool IsGroupOobService(CComBSTR groupREF_BSTR);
-	static wstring analyzePartCompnent(CComBSTR partComponenetVal);
+	static std::wstring analyzePartCompnent(CComBSTR partComponenetVal);
 	static bool compareCaseInsensitive(CComBSTR str1, CComBSTR str2);
 	static bool ProvisioningHashREFExists(CComBSTR partComponenet);
 	static bool EthernetPortREFExists(CComBSTR partComponenet);

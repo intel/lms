@@ -81,10 +81,10 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 	try
 	{
 		do{
-			wstring fwversion = L"";
+			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
 			uint16 val;
-			vector<sint16> OperationalStatus;
+			std::vector<sint16> OperationalStatus;
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
 
 			ReturnValue = GetMESystem(fwversion, CryptoFuseEnabled, val,
@@ -190,7 +190,7 @@ HRESULT ME_System_WMI_Provider::getCurrentPowerPolicy(
 	try
 	{
 		CComPtr<IWbemClassObject> pOutParams;
-		wstring powerPolicy=L"";
+		std::wstring powerPolicy=L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.GetPowerPolicy(&powerPolicy);
 		WMIGetMethodOParams(pClass, L"getCurrentPowerPolicy", &pOutParams.p);
@@ -264,14 +264,14 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-uint32 ReturnValue = 0;
+	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 
 
 	try
 	{
 		CComPtr<IWbemClassObject> pOutParams;
-		vector<wstring> capabilities, enabledCapabilities;
+		std::vector<std::wstring> capabilities, enabledCapabilities;
 		FWUpdate_Commands FWUpdate;
 		
 		{
@@ -338,8 +338,8 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 {
 
 	uint32 hr = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 
 	try
 	{
@@ -352,10 +352,10 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 
 		do 
 		{
-			wstring fwversion = L"";
+			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
 			uint16 val;
-			vector<sint16> OperationalStatus;
+			std::vector<sint16> OperationalStatus;
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
 
 			hr = GetMESystem(fwversion, CryptoFuseEnabled, val,
@@ -423,8 +423,8 @@ ME_System_WMI_Provider::CUSTOMER_TYPE ME_System_WMI_Provider::GetPlatformTypeExt
 	return CORPORATE;
 }
 
-HRESULT ME_System_WMI_Provider::GetMESystem(wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
-										 vector<sint16>& OperationalStatus, uint32& type, uint32& segment, 
+HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
+	std::vector<sint16>& OperationalStatus, uint32& type, uint32& segment,
 										 uint32& mode, uint32& capabilities, uint32& enabledCapabilities)
 {
 	OutputDebugStringA("ME_System_WMI_Provider::GetMESystem\n");
@@ -525,7 +525,7 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	//capabilities = capabilities | (CapabilityData.Fields.Cila * i); i = i *2;
 	//capabilities = capabilities | (stdMng * i); i = i *2;
 	//capabilities = capabilities | (l3 * i); i = i *2;
-	wstring fwversion = L"";
+	std::wstring fwversion = L"";
 	UINT32 sku;
 	PTHI_Commands pthic;
 	pthic.GetAMTVersion(&fwversion, &sku);
@@ -559,8 +559,7 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	return capabilities.Data;
 }
 
-void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT	CapabilityData, 
-											 vector<wstring>& capabilities)
+void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, std::vector<std::wstring>& capabilities)
 {
 	
 	if (CapabilityData.Fields.Amt)

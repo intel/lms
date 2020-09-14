@@ -35,8 +35,8 @@ public:
 		IWbemObjectSink __RPC_FAR *pResponseHandler);
 
 	static HRESULT GetMESystem(
-		wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
-		vector<sint16>& OperationalStatus, uint32& type, uint32& segment, 
+		std::wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
+		std::vector<sint16>& OperationalStatus, uint32& type, uint32& segment, 
 		uint32& mode, uint32& capabilities, uint32& enabledCapabilities);
 private:
 	typedef union _MEFWCAPS_SKU_INT
@@ -162,7 +162,7 @@ private:
 
 	static void GetCapabilities(
 		MEFWCAPS_SKU_INT CapabilityData,
-		vector<wstring>& capabilities);
+		std::vector<std::wstring>& capabilities);
 
 	static HRESULT getUPIDFeatureState(
 		IWbemClassObject*              pClass,

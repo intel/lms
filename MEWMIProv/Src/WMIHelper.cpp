@@ -40,9 +40,9 @@ bool WMIHelper::isMethodCallStatic(const BSTR strObjectPath)
 	if (strObjectPath != NULL)
 	{
 		
-		wstring objectPath(strObjectPath);
+		std::wstring objectPath(strObjectPath);
 		size_t indexOfDot = objectPath.find(L".");
-		if (indexOfDot == wstring::npos)
+		if (indexOfDot == std::wstring::npos)
 		{
 			return true;
 		}

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2003-2015 Intel Corporation
+ * Copyright (C) 2003-2020 Intel Corporation
  */
 /*++
 
@@ -12,7 +12,6 @@
 
 #include <atlbase.h>
 #include <string>
-using namespace std;
 #define STATUS_SUCCESS 0
 #define _WIN32_DCOM
 #include    <objbase.h>
@@ -43,7 +42,6 @@ using namespace std;
 #endif
 
 //  WMI stuff   -------------------------------------------------------------
-//typedef bool            boolean;
 typedef unsigned __int64    uint64;
 typedef unsigned __int32    uint32;
 typedef unsigned __int16    uint16;
@@ -146,13 +144,6 @@ struct _ATL_AutomationType<std::wstring>
 	/*_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad WMI param ")); */\
 	break; }
 
-
-////#define exp)	\
-////	if(exp != S_OK)	\
-////	; // Sara
-////	//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T("Bad WMI param "),StringUtilsNamespace::convertTowString(exp));
-
-
 #define RETURNIF(exp)                                                       \
     do{                                                                     \
         HRESULT hr = exp;                                                   \
@@ -196,24 +187,7 @@ CString ConvertToStr(uint8 data) {CString res; res.Format(_T("0x%02x"), data);re
 template <>
 inline
 CString ConvertToStr(std::wstring data){return  data.c_str();};
-/*
-static  
-void    LogEnter(const char*    func)
-{
-    Debug.InOut("%s: enter", func);
-}
 
-static
-void    LogLeave(const char*    func)
-{
-    Debug.InOut("%s: leave", func);
-}
-
-#define LOGFUNCTION()   LogEnter(__FUNCTION__);                         \
-                        CStRestore<const char*, void>                   \
-                            stRestore(LogLeave, __FUNCTION__)
-
-*/
 //  WMIGet  -----------------------------------------------------------------
 template<typename T>
 static 
@@ -386,7 +360,7 @@ HRESULT  WMIGetClass(   IWbemServices*      srv,
 static HRESULT  WMIGetClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj, 
                         BSTR                name, 
-                        std::vector<wstring>&     vec)
+                        std::vector<std::wstring>&     vec)
 {
     _variant_t  val;
     CIMTYPE     type;
@@ -645,24 +619,16 @@ static
 HRESULT WMIPutMember(   
                         IWbemServices*              srv, 
                         IWbemClassObject**           root, 
-//                        CComPtr<IWbemClassObject>&  embedded, 
-//                        BSTR                        name, 
                         BSTR                        type)
 {
 	HRESULT hr = WBEM_S_NO_ERROR;
-    //if(name)
-    //{
-        CComPtr<IWbemClassObject>   spClass;
 
-        ASSERT(srv);
+    CComPtr<IWbemClassObject>   spClass;
 
-        RETURNIF(srv->GetObject(type, 0, NULL, &spClass.p, NULL));   ASSERT(spClass);
-        RETURNIF(spClass->SpawnInstance(0, root));            ASSERT(root);
-    //}
-    //else
-   // {
-   //     embedded    = root;
-   // }
+    ASSERT(srv);
+
+    RETURNIF(srv->GetObject(type, 0, NULL, &spClass.p, NULL));   ASSERT(spClass);
+    RETURNIF(spClass->SpawnInstance(0, root));            ASSERT(root);
 
     return hr;
 }
@@ -1107,7 +1073,7 @@ HRESULT     GetValue(std::wstring& member, std::wstring& value)
 }
 
 static
-HRESULT     GetKeysList(map <std::wstring, CComVariant>&keyList, const std::wstring& strClass)
+HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std::wstring& strClass)
 {
 
 	HRESULT hr = WBEM_E_PROVIDER_FAILURE;
@@ -1184,8 +1150,6 @@ static HRESULT WMIHandleSetStatus(IWbemServices* pNamespace,IWbemObjectSink  __R
 						
 			HRESULT  hr;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"__ExtendedStatus"));
-			//sara
-			//BREAKIF(WMIPut<1>(obj, L"Description",_Module.GetLastErrorString()));
 			wchar_t str[256];
 			swprintf(str,256,L"Function failed with return code = %u\n",hrInput);
 			std::wstring wstr = str;
@@ -1194,8 +1158,6 @@ static HRESULT WMIHandleSetStatus(IWbemServices* pNamespace,IWbemObjectSink  __R
 			BREAKIF(WMIPut<1>(obj, L"StatusCode",xx));
 		}
 		while(0);
-		//sara
-		//pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, WBEM_E_PROVIDER_FAILURE,_bstr_t(_Module.GetLastErrorString().c_str()), obj);
 		pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, WBEM_E_PROVIDER_FAILURE,L"Error", obj);
 		//_Module.logger.Info(File,LOCATION, _T("SetStatus"), _T("Finish operation with Error:"),_Module.GetLastErrorString());
 	}

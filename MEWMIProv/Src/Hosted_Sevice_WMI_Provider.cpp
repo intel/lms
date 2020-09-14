@@ -12,9 +12,6 @@
 #include "pthi_commands.h"
 #include "WMIHelper.h"
 
-using namespace std;
-
-
 HRESULT Hosted_Service_WMI_Provider::Enumerate(
 								IWbemServices* pNamespace,
 								IWbemContext __RPC_FAR *pCtx,
@@ -29,10 +26,10 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 	uint32 hr = 1;
 	try
 	{
-		wstring fwversion = L"";
+		std::wstring fwversion = L"";
 		bool CryptoFuseEnabled = false;
 		uint16 val;
-		vector<sint16> OperationalStatus;
+		std::vector<sint16> OperationalStatus;
 		uint32 type, segment, mode, capabilities, enabledCapabilities;
 		ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled, val,
 									 OperationalStatus, type, segment, 
@@ -41,9 +38,9 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 		{
 			return hr;
 		}
-		wstring me_ref = L"ME_System.CreationClassName=\"ME_system\",Name=\"Intel(r) AMT\"";
-		wstring oob_ref = L"OOB_Service.CreationClassName=\"OOB_Service\",Name=\"Intel ME Out Of Band Service\",SystemCreationClassName=\"ME_system\",SystemName=\"Intel(r) AMT\"";
-		wstring amt_ref = L"AMT_Service.CreationClassName=\"AMT_Service\",Name=\"Intel AMT Service\",SystemCreationClassName=\"ME_system\",SystemName=\"Intel(r) AMT\"";
+		std::wstring me_ref = L"ME_System.CreationClassName=\"ME_system\",Name=\"Intel(r) AMT\"";
+		std::wstring oob_ref = L"OOB_Service.CreationClassName=\"OOB_Service\",Name=\"Intel ME Out Of Band Service\",SystemCreationClassName=\"ME_system\",SystemName=\"Intel(r) AMT\"";
+		std::wstring amt_ref = L"AMT_Service.CreationClassName=\"AMT_Service\",Name=\"Intel AMT Service\",SystemCreationClassName=\"ME_system\",SystemName=\"Intel(r) AMT\"";
 							
 		for (int i = 0; i < 2; ++i)
 		{	
@@ -91,8 +88,8 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator antecedentIt, dependentIt ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator antecedentIt, dependentIt ;
 	
 	
 
@@ -123,10 +120,10 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 		//SCS_Profile profile;
 		do 
 		{
-			wstring fwversion = L"";
+			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
 			uint16 val;
-			vector<sint16> OperationalStatus;
+			std::vector<sint16> OperationalStatus;
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
 			ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled, val,
 										 OperationalStatus, type, segment, 
@@ -136,24 +133,19 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 				hr = WBEM_E_INVALID_ASSOCIATION;
 				break;
 			}
-			//hr = SCS_Profile_WMIProviderImpl::GetProfileObject(id,profile)	;
 
-			//if (STATUS_SUCCESS != hr)
-			//{
-			//	break;
-			//}
 			std::wstring antecedentVal = (antecedentIt->second).bstrVal;
-			if (antecedentVal.find(L"Name=\"Intel(r) AMT\"") == wstring::npos)
+			if (antecedentVal.find(L"Name=\"Intel(r) AMT\"") == std::wstring::npos)
 			{
 				hr = WBEM_E_INVALID_ASSOCIATION;
 				break;
 			}
 			std::wstring dependentVal = (dependentIt->second).bstrVal;
-			if (dependentVal.find(L"Name=\"Intel ME Out Of Band Service\"") != wstring::npos)
+			if (dependentVal.find(L"Name=\"Intel ME Out Of Band Service\"") != std::wstring::npos)
 			{	
 				dependentVal = L"OOB_Service.CreationClassName=\"OOB_Service\",Name=\"Intel ME Out Of Band Service\",SystemCreationClassName=\"ME_system\",SystemName=\"Intel(r) AMT\"";
 			}
-			else if (dependentVal.find(L"Name=\"Intel AMT Service\"") != wstring::npos)
+			else if (dependentVal.find(L"Name=\"Intel AMT Service\"") != std::wstring::npos)
 			{
 				dependentVal = L"AMT_Service.CreationClassName=\"AMT_Service\",Name=\"Intel AMT Service\",SystemCreationClassName=\"ME_system\",SystemName=\"Intel(r) AMT\"";
 			}

@@ -11,9 +11,7 @@
 #pragma once
 #include "stdafx.h"
 #include <string>
-using namespace std;
-#include    <vector>
-#include "EthernetSettingsWSManClient.h"
+#include <vector>
 
 #define ERR_UKNOWN_CONNECTION_ERROR 1000
 #define IDER_SOL_DISABLED 32768
@@ -23,14 +21,14 @@ using namespace std;
 
 typedef struct _EthernetPortEntryWSMan
 {
-	wstring MACAddress;
+	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
-	wstring   IPAddress;
-	wstring   SubnetMask;
-	wstring   DefaultGateway;
-	wstring   PrimaryDNS;
-	wstring   SecondaryDNS;
+	std::wstring IPAddress;
+	std::wstring SubnetMask;
+	std::wstring DefaultGateway;
+	std::wstring PrimaryDNS;
+	std::wstring SecondaryDNS;
 } EthernetPortEntryWSMan;
 
 class WSmanCommands
@@ -40,7 +38,7 @@ class WSmanCommands
 		UINT32 TerminateKVMSession(void);
 		UINT32 isKVMActive(bool* enabled, bool* active);
 		UINT32 GetPortSettings(
-			vector<EthernetPortEntryWSMan> &ethernetPortList,
+			std::vector<EthernetPortEntryWSMan> &ethernetPortList,
 			std::string userName,
 			std::string password);
 		UINT32 isSOLEnabled(bool* enabled);

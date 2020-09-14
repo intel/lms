@@ -28,12 +28,12 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 	int i=1;
 	try
 	{
-		vector<ProvisioningCertificateHash_WMI_Provider> hashVec;
+		std::vector<ProvisioningCertificateHash_WMI_Provider> hashVec;
 		hr = EnumerateProvisioningCertificateHash(hashVec, ReturnValue);
 		if (STATUS_SUCCESS == ReturnValue)
 		{
 			/////////////////
-			vector<ProvisioningCertificateHash_WMI_Provider>::iterator entry;
+			std::vector<ProvisioningCertificateHash_WMI_Provider>::iterator entry;
 
 		    entry = hashVec.begin();
 			for (; entry != hashVec.end(); entry++)
@@ -49,36 +49,11 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 				BREAKIF(WMIPut<1>(obj, L"Enabled", entry->Enabled));
 				BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 			}
-			
-			////////////////////
-/*			while (hashlist.size() > 0)
-			{
-				HashEntry entry = hashlist.back();
-				hashlist.pop_back();
-				CComPtr<IWbemClassObject> obj;
-				RETURNIF(WMIPutMember(pNamespace, &obj, L"AMT_ProvisioningCertificateHash"));
-				BREAKIF(WMIPut<1>(obj, L"ElementName", L"Intel(r) AMT: Provisioning Certificate Hash"));
-				WCHAR str[256];
-				swprintf_s(str, 256, L"Certificate Hash %d",i++);
-				BREAKIF(WMIPut<1>(obj, L"InstanceID", str));
-				BREAKIF(WMIPut<1>(obj, L"Description", entry.Description));
-				BREAKIF(WMIPut<1>(obj, L"IsDefault", entry.IsDefault));
-				BREAKIF(WMIPut<1>(obj, L"HashType", entry.HashType));
-				vector<uint8> HashData;
-				for (int i=0; i < sizeof(entry.HashData) / sizeof(entry.HashData[0]); i++)
-					HashData.push_back(entry.HashData[i]);
-
-				BREAKIF(WMIPut<uint8>(obj, L"HashData", HashData));
-				BREAKIF(WMIPut<1>(obj, L"Enabled", entry.Enabled));
-		
-				BREAKIF(pResponseHandler->Indicate(1, &obj.p));
-			}*/
 		}
 		else
 		{
 			WMIHelper::PTHIHandleSetStatus(pNamespace, pResponseHandler, ReturnValue, hr);
 			return hr;
-
 		}
 		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 		//Enumerate the collection, retrieving params and creating return instances
@@ -101,7 +76,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 
 }
 
-HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(vector<ProvisioningCertificateHash_WMI_Provider>& enumVec, uint32& ReturnValue)
+HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(std::vector<ProvisioningCertificateHash_WMI_Provider>& enumVec, uint32& ReturnValue)
 {
 	USES_CONVERSION;
 	
@@ -110,7 +85,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertifica
 	int i=1;
 	try
 	{
-		vector<HashEntry> hashlist;
+		std::vector<HashEntry> hashlist;
 		PTHI_Commands pthic;
 		
 		
@@ -119,7 +94,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertifica
 		if (STATUS_SUCCESS == ReturnValue)
 		{
 			/////////////////
-			vector<HashEntry>::iterator entry;
+			std::vector<HashEntry>::iterator entry;
 			
 		    entry = hashlist.begin();
 			for (; entry != hashlist.end(); entry++)
@@ -144,7 +119,8 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertifica
 
 }
 
-ProvisioningCertificateHash_WMI_Provider::ProvisioningCertificateHash_WMI_Provider(HashEntry entry, std::wstring instanceID, std::wstring elementName)
+ProvisioningCertificateHash_WMI_Provider::ProvisioningCertificateHash_WMI_Provider(const HashEntry &entry,
+	const std::wstring &instanceID, const std::wstring &elementName)
 {
 	InstanceID = instanceID;
 	ElementName = elementName;
@@ -168,8 +144,8 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 
 	try
 	{
@@ -182,7 +158,6 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 			return  WBEM_E_INVALID_METHOD_PARAMETERS;
 		}
 
-		//unsigned long id = 0;
 		std::wstring val = (it->second).bstrVal;
 		const WCHAR* str = val.c_str();
 		unsigned int num = _wtoi(str+wcslen(L"Certificate Hash"));
@@ -190,10 +165,9 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 
 		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
-		//SCS_Profile profile;
 		do 
 		{
-			vector<HashEntry> hashlist;
+			std::vector<HashEntry> hashlist;
 			PTHI_Commands pthic;
 			ReturnValue = pthic.GetCertificateHash(hashlist);
 			if (num < 1 || num > hashlist.size())
@@ -213,7 +187,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 				BREAKIF(WMIPut<1>(obj, L"Description", entry.Description));
 				BREAKIF(WMIPut<1>(obj, L"IsDefault", entry.IsDefault));
 				BREAKIF(WMIPut<1>(obj, L"HashType", entry.HashType));
-				vector<uint8> HashData;
+				std::vector<uint8> HashData;
 				for (int i=0; i < sizeof(entry.HashData) / sizeof(entry.HashData[0]); i++)
 					HashData.push_back(entry.HashData[i]);
 
@@ -251,7 +225,3 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 	return hr;
 
 }
-
-
-
-

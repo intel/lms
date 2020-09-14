@@ -15,7 +15,7 @@
 
 
 HRESULT AMT_Service_WMI_Provider::DispatchMethods(
-									  const BSTR                  strMethodName,
+									  const BSTR strMethodName,
 									  const BSTR strObjectPath,
 									  IWbemServices  *pNamespace,
 									  CComPtr<IWbemClassObject> pClass,
@@ -544,68 +544,12 @@ HRESULT AMT_Service_WMI_Provider::setSpriteLocale(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 
 	//since 8.0 this function is not supported anymore
 	hr = WBEM_E_NOT_SUPPORTED;
 	pResponseHandler->SetStatus ( 0 , hr , NULL , NULL ) ;
 	return hr;
-	/*  
-	///////////////6.0, 7.0 code //////////////////////
-    //_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
-
-	
-	try
-	{
-		if(!pInParams)
-			RETURNIF(WBEM_E_INVALID_METHOD_PARAMETERS);
-
-		do{
-			short locale = 0;
-			bool specified = false;
-			GetParamBREAKIF(WMIGet<1>(pNamespace, pInParams, L"locale", locale, specified),L"locale");
-			if (!specified)
-				return WBEM_E_INVALID_METHOD_PARAMETERS;
-			WSmanCommands wsmc;
-			ReturnValue = wsmc.setSpriteLocale(locale);
-			ERROR_HANDLER(ReturnValue);
-			
-			CComPtr<IWbemClassObject> pOutParams;
-			WMIGetMethodOParams(pClass, L"setSpriteLocale", &pOutParams.p));
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue));
-			pResponseHandler->Indicate(1, &pOutParams.p);
-		} while(0);
-	}
-	catch(...)
-	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
-	}
-
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
-	return hr;
-	*/
 }
 
 HRESULT AMT_Service_WMI_Provider::Enumerate(
@@ -660,8 +604,8 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
 
 	uint32 hr = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 
 	try
 	{
@@ -680,16 +624,8 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 
 		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
-		//SCS_Profile profile;
 		do 
 		{
-			//hr = SCS_Profile_WMIProviderImpl::GetProfileObject(id,profile)	;
-
-			//if (STATUS_SUCCESS != hr)
-			//{
-			//	break;
-			//}
-
 			CComPtr<IWbemClassObject> obj;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"AMT_Service"));
 			BREAKIF(WMIPut<1>(obj, L"CreationClassName", L"AMT_Service"));

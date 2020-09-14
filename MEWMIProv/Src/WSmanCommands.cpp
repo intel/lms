@@ -15,8 +15,8 @@
 #include "SIOWSManClient.h"
 #include "KVMWSManClient.h"
 #include "AMTRedirectionServiceWSManClient.h"
+#include "EthernetSettingsWSManClient.h"
 #include "StringManipulator.h"
-using namespace std;
 
 UINT32 WSmanCommands::setSpriteZoom(short zoom)
 {
@@ -141,8 +141,8 @@ UINT32 WSmanCommands::GetPortSettings(
 	}
 
 	EthernetSettingsWSManClient client(userName, password);
-	vector<tr1::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
-	vector<tr1::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
+	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
+	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
 	unsigned int response = client.Enumerate(ethernetSettings);
 	if (response == S_OK)
 	{

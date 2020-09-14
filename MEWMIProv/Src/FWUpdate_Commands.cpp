@@ -11,6 +11,7 @@
 #include "FWUpdate_Commands.h"
 #include "DebugPrints.h"
 #include "GetFWUpdateStateCommand.h"
+#include "StatusCodeDefinitions.h"
 
 UINT32 
 FWUpdate_Commands::GetFWCapabilities(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& capabilities)
@@ -31,7 +32,7 @@ FWUpdate_Commands::GetFWCapabilities(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SK
 	{
 		UNS_ERROR("Exception in GetFWCapsCommand %C\n", e.what());
 	}
-return rc;
+	return rc;
 }
 
 UINT32 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -10,11 +10,9 @@
 
 #pragma once
 #include "stdafx.h"
-#include <atlbase.h>
 #include <string>
-using namespace std;
-#include    <vector>
-#include "WMIUtils_LMS.h"
+#include <vector>
+
 #define NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH  16
 
 #define ENABLED_STATE 	0
@@ -31,28 +29,28 @@ typedef struct _CFG_TIMEDATE
 	UINT16	Hour;
 	UINT16	Minute;
 	UINT16	Second;
-} TIME_DATE;
+} TIME_DATE_;
 typedef struct _MEAdminAudit
 {
 	UINT8       ProvisioningTLSMode;
 	bool		SecureDNS;
 	bool        HostInitiated;
 	UINT32  	SelectedHashType;	
-	vector<UINT8> SelectedHashData;
-	vector<UINT8> CACertificateSerial1;
-	vector<UINT8> CACertificateSerial2;
-	vector<UINT8> CACertificateSerial3;
+	std::vector<UINT8> SelectedHashData;
+	std::vector<UINT8> CACertificateSerial1;
+	std::vector<UINT8> CACertificateSerial2;
+	std::vector<UINT8> CACertificateSerial3;
 	bool        AdditionalCaSerialNums;
 	bool		IsOemDefault;
 	bool		IsTimeValid;
 	std::wstring     ProvServerIP; 
-	TIME_DATE    TlsStartTime;
+	TIME_DATE_    TlsStartTime;
 	std::wstring		ProvServerFQDN;
 } MEAdminAudit;
 
 typedef struct _HashEntry
 {
-	wstring Description;
+	std::wstring Description;
 	bool IsDefault;
 	UINT8 HashType;
 	UINT8 HashData[64];
@@ -61,22 +59,22 @@ typedef struct _HashEntry
 
 typedef struct _EthernetPortEntry
 {
-	wstring MACAddress;
+	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
-	wstring   IPAddress;
-	wstring   SubnetMask;
-	wstring   DefaultGateway;
-	wstring   PrimaryDNS;
-	wstring   SecondaryDNS;
+	std::wstring   IPAddress;
+	std::wstring   SubnetMask;
+	std::wstring   DefaultGateway;
+	std::wstring   PrimaryDNS;
+	std::wstring   SecondaryDNS;
 } EthernetPortEntry;
 
 typedef struct _LOCAL_SYSTEM_ACCOUNT
 {
 	// contains null terminated string
- 	string UserName;
+	std::string UserName;
 	// contains null terminated string
-	string Password;
+	std::string Password;
 
 }LOCAL_SYSTEM_ACCOUNT;
 
@@ -97,7 +95,7 @@ public:
 	UINT32 GetPID(std::wstring* pPID);
 	UINT32 GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN);
 	UINT32 GetAMTFQDN(std::wstring* FQDN);
-	UINT32 ZTCActivate(std::string OTP, std::string PKIDNSSuffix, SHORT* mode);
+	UINT32 ZTCActivate(const std::string &OTP, const std::string &PKIDNSSuffix, SHORT* mode);
 	UINT32 DiscoveryTest(bool isActivate, bool & alreadyActivated);
 	UINT32 ChangeToAMT();
 	UINT32 GetConfigServerData(std::wstring* Address, UINT16* port);
@@ -108,9 +106,9 @@ public:
 	UINT32 GetMESetupAudit(MEAdminAudit *MEAudit);
 	UINT32 getWebUIState(SHORT* pState);
 	UINT32 GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER);
-	UINT32 GetCertificateHash(vector<HashEntry> &hashlist);
+	UINT32 GetCertificateHash(std::vector<HashEntry> &hashlist);
 	UINT32 GetRedirectionState(bool *pSolEnable, bool *pIDEREnabled, bool *pKVMEnabled);
-	UINT32 GetPortSettings(vector<EthernetPortEntry> &ethernetPortList);
+	UINT32 GetPortSettings(std::vector<EthernetPortEntry> &ethernetPortList);
 	UINT32 GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAccount);
 	UINT32 GetKVMSessionActivation(bool* activated);
 	UINT32 Unprovision();

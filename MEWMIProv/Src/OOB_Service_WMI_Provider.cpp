@@ -19,7 +19,7 @@
 #include <string>
 	  
 
-HRESULT getApplicationDetails(string& userNameStr, string& domainNameStr, string& applicationName);
+HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameStr, std::string& applicationName);
 
 HRESULT OOB_Service_WMI_Provider::DispatchMethods(
 									  const BSTR                  strMethodName,
@@ -352,14 +352,13 @@ HRESULT OOB_Service_WMI_Provider::GetPID(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring pid = L"";
+		std::wstring pid = L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.GetPID(&pid);
 		
@@ -409,7 +408,6 @@ HRESULT OOB_Service_WMI_Provider::GetActivationTLSMode(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
@@ -509,7 +507,6 @@ HRESULT OOB_Service_WMI_Provider::isRemoteConfigEnabled(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
@@ -566,22 +563,18 @@ HRESULT OOB_Service_WMI_Provider::GetConfigServerAddressInfo(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring address;
+		std::wstring address;
 		UINT16 port = 9971;//CHANGE!!
 		PTHI_Commands pthic;
 		ReturnValue = pthic.GetConfigServerData(&address, &port);
 
 		ERROR_HANDLER(ReturnValue);
-
-		//std::wstring temp(address.length(),L' ');
-		//std::copy(address.begin(), address.end(), temp.begin());
 
 		CComPtr<IWbemClassObject> pOutParams;
 		WMIGetMethodOParams(pClass, L"GetHelloPacketDestInfo", &pOutParams.p);
@@ -685,14 +678,13 @@ HRESULT OOB_Service_WMI_Provider::GetProvisioningInfo(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring address=L"", dnssuffix=L"";
+		std::wstring address=L"", dnssuffix=L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.GetProvisioningInfo(&dnssuffix, &address);
 
@@ -744,14 +736,13 @@ HRESULT OOB_Service_WMI_Provider::GetRemoteAccessConnectionStatus(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring MPshostName=L"";
+		std::wstring MPshostName=L"";
 		SHORT NetworkConStatus=0, ConnectionTrigger=0, RemoteAccessConStatus=0;
 
 		PTHI_Commands pthic;
@@ -807,14 +798,13 @@ HRESULT OOB_Service_WMI_Provider::GetAMTFQDN(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring FQDN=L"";
+		std::wstring FQDN=L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.GetAMTFQDN(&FQDN);
 
@@ -864,14 +854,12 @@ HRESULT OOB_Service_WMI_Provider::OpenUserInitiatedConnection(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring FQDN=L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.OpenCIRA();
 
@@ -920,14 +908,12 @@ HRESULT OOB_Service_WMI_Provider::CloseUserInitiatedConnection(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
 
 	try
 	{
-		wstring FQDN=L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.CloseCIRA();
 
@@ -977,7 +963,6 @@ HRESULT OOB_Service_WMI_Provider::CancelActivation(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::wstring OTP, PKIDNSSuffix;
 
    // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
@@ -991,7 +976,6 @@ HRESULT OOB_Service_WMI_Provider::CancelActivation(
 
 	try
 	{
-		wstring FQDN=L"";
 		PTHI_Commands pthic;
 		ReturnValue = pthic.StopConfiguration();
 
@@ -1048,8 +1032,8 @@ HRESULT OOB_Service_WMI_Provider::GetOOB_Service(
 	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
 
 	uint32 hr = 0;
-	map <std::wstring, CComVariant> keyList;
-	map <std::wstring, CComVariant>::const_iterator it ;
+	std::map <std::wstring, CComVariant> keyList;
+	std::map <std::wstring, CComVariant>::const_iterator it ;
 
 	try
 	{
@@ -1068,16 +1052,8 @@ HRESULT OOB_Service_WMI_Provider::GetOOB_Service(
 
 		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
-		//SCS_Profile profile;
 		do 
 		{
-			//hr = SCS_Profile_WMIProviderImpl::GetProfileObject(id,profile)	;
-
-			//if (STATUS_SUCCESS != hr)
-			//{
-			//	break;
-			//}
-
 			CComPtr<IWbemClassObject> obj;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"OOB_Service"));
 			BREAKIF(WMIPut<1>(obj, L"CreationClassName", L"OOB_Service"));
@@ -1123,7 +1099,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, "MEProv.dll");
-	string userName, domain, applicationName;
+	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);
 	std::wstring MEBxPwd;
 
@@ -1143,11 +1119,6 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 				pResponseHandler->SetStatus ( 0 , hr , NULL , NULL ) ;
 				break; ;
 			}
-			//if(!pInParams)
-			//{
-			//	hr = WBEM_E_INVALID_METHOD_PARAMETERS;
-			//	break;
-			//}
 			PTHI_Commands pthic;
 			ReturnValue = pthic.Unprovision();
 			ERROR_HANDLER(ReturnValue);
@@ -1178,25 +1149,11 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 
  //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
 
-
-	
-	
-	string successStr;
-	if (success)
-	{
-		successStr = "succeeded";
-	} else 
-	{
-		successStr = "failed";
-	}
-	string message;
-	stringstream messageStream;
+	std::stringstream messageStream;
 	messageStream << "Unconfigure request was invoked.\n";
-	messageStream << "Request " << successStr << "\n";
-		//"Calling application: " + applicationName\n" + 
+	messageStream << "Request " << ((success) ? "succeeded" : "failed") << "\n";
 	messageStream << "Calling User: " << domain << "/" << userName << "\n"; 
-	message = messageStream.str();
-	windowsEventLog.LogEvent(ME_PROVIDER_EVENT, LOCAL_ADMIN_REQUEST, EVENTLOG_INFORMATION_TYPE, message.c_str());
+	windowsEventLog.LogEvent(ME_PROVIDER_EVENT, LOCAL_ADMIN_REQUEST, EVENTLOG_INFORMATION_TYPE, messageStream.str().c_str());
 	//if (hr == STATUS_SUCCESS)
 	//{
 	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
@@ -1220,12 +1177,12 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, "MEProv.dll");
 	// _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
 	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
-	string userName, domain, applicationName;
+	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);
 	
-	wstring userNameWStr;
-	wstring passwordWStr;
-	string passwordStr;
+	std::wstring userNameWStr;
+	std::wstring passwordWStr;
+	std::string passwordStr;
 
 	bool success = false;	
 	try
@@ -1248,10 +1205,10 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 			{
 				success = true;
 				
-				userNameWStr = wstring(ToWStr(localAccount.UserName.c_str()));
+				userNameWStr = ToWStr(localAccount.UserName.c_str());
 
 				passwordStr = WSmanCrypt::DecryptString(localAccount.Password);
-				passwordWStr =  wstring(ToWStr(passwordStr.c_str()));
+				passwordWStr = ToWStr(passwordStr.c_str());
 
 			}
 			CComPtr<IWbemClassObject> pOutParams;
@@ -1282,25 +1239,11 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 
 	 //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
 
-
-	
-	
-	string successStr;
-	if (success)
-	{
-		successStr = "succeeded";
-	} else 
-	{
-		successStr = "failed";
-	}
-	string message;
-	stringstream messageStream;
+	std::stringstream messageStream;
 	messageStream << "GetLocalAdminCredentials request was invoked.\n";
-	messageStream << "Request " << successStr << "\n";
-		//"Calling application: " + applicationName\n" + 
+	messageStream << "Request " << ((success) ? "succeeded" : "failed") << "\n";
 	messageStream << "Calling User: " << domain << "/" << userName << "\n"; 
-	message = messageStream.str();
-	windowsEventLog.LogEvent(ME_PROVIDER_EVENT, UNCONFIGURE_REQUEST, EVENTLOG_INFORMATION_TYPE, message.c_str());
+	windowsEventLog.LogEvent(ME_PROVIDER_EVENT, UNCONFIGURE_REQUEST, EVENTLOG_INFORMATION_TYPE, messageStream.str().c_str());
 
 	//if (hr == STATUS_SUCCESS)
 	//{
