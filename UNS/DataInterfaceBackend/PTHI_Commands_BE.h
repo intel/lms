@@ -63,7 +63,7 @@ namespace Intel {
 			LMS_ERROR userInitiatedPolicyRuleForLocalMpsExists(short &pStatus);
 			LMS_ERROR snmpEventSubscriberExists(short &pExist);
 			LMS_ERROR CILAFilterCollectionSubscriptionExists(short &pExist);
-			LMS_ERROR UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, short numOfDisplays);
+			LMS_ERROR UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays);
 			LMS_ERROR GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology);
 		};
 	}

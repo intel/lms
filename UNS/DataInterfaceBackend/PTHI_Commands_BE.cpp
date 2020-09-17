@@ -828,7 +828,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			return ERROR_OK;
 		}
 
-		LMS_ERROR PTHI_Commands_BE::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, short numOfDisplays)
+		LMS_ERROR PTHI_Commands_BE::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays)
 		{
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return ERROR_NOT_AVAILABLE_NOW;
@@ -836,7 +836,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			KVMScreenSettingClient Client;
 			KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
 
-			for (int i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
+			for (size_t i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
 			{
 				extendedDisplayParameters.screenSettings[i].isActive = eExtendedDisplayParameters.DisplayParameters[i].IsActive;
 				extendedDisplayParameters.screenSettings[i].ResolutionX = eExtendedDisplayParameters.DisplayParameters[i].SizeX;
