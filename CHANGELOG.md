@@ -1,3 +1,11 @@
+## [2039.0.0.0]
+
+### Fixed
+ - DataInterfaceBackend: fix signed/unsigned mismatch warning
+ - WMIProv: code cleanup
+ - Configurator: add missing \n in debug print
+ - WsmanClient: separate logging macros
+
 ## [2036.1.0.0]
 
 ### Added
