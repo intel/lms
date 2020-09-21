@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "CancelOptInClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 CancelOptInClient::CancelOptInClient() : m_isInit(false)
@@ -26,7 +26,7 @@ CancelOptInClient::~CancelOptInClient()
 
 bool CancelOptInClient::CancelOptIn(unsigned int* pReturnValue)
 {
-	UNS_DEBUG("CancelOptInClient::CancelOptIn\n");
+	WSMAN_DEBUG("CancelOptInClient::CancelOptIn\n");
 
 	try 
 	{
@@ -36,7 +36,7 @@ bool CancelOptInClient::CancelOptIn(unsigned int* pReturnValue)
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		unsigned int returnVal = m_service.CancelOptIn();
-		UNS_DEBUG("CancelOptInClient::CancelOptIn ReturnValue=%d\n",returnVal);
+		WSMAN_DEBUG("CancelOptInClient::CancelOptIn ReturnValue=%d\n",returnVal);
 		*pReturnValue=returnVal;
 		return true;
 	}

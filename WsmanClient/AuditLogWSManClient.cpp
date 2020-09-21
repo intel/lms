@@ -9,9 +9,9 @@
 --*/
 #define _CRT_SECURE_NO_WARNINGS
 #include "AuditLogWSManClient.h"
-#include "global.h"
-#include "time.h"
+#include <time.h>
 #include <iomanip>
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 AuditLogWSManClient::AuditLogWSManClient() : m_isInit(false)
@@ -46,12 +46,12 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 			// Check Return Value.
 			if (response != 0)
 			{
-				UNS_ERROR("Error: Failed Getting Audit-Log records.\n");
+				WSMAN_ERROR("Error: Failed Getting Audit-Log records.\n");
 				return false;
 			}	
 			if (!output.EventRecordsExists() || !output.TotalRecordCountExists())
 			{
-				UNS_DEBUG("No Audit-log records exist.\n");
+				WSMAN_DEBUG("No Audit-log records exist.\n");
 				return true;
 			}
 	
@@ -216,7 +216,7 @@ bool AuditLogWSManClient::AuditLogRecordFromBinaryBase64Data( BinaryData binaryR
 	}
 	catch(...)
 	{
-		UNS_ERROR("Error occurs while trying to parse the record binary data!!!\n");
+		WSMAN_ERROR("Error occurs while trying to parse the record binary data!!!\n");
 		return false;
 	}
 	return true;
@@ -270,13 +270,13 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		}
 		catch (std::bad_alloc&)
 		{
-			UNS_ERROR("Error: Can't Alloc memory.\n");
+			WSMAN_ERROR("Error: Can't Alloc memory.\n");
 			goto EXIT;
 		}
 
 		if (false == AuditLogRecordFromBinaryBase64Data(*rec, structedRecord))
 		{
-			UNS_ERROR("Error occur while parsing audit log record from binary base 64!\n");
+			WSMAN_ERROR("Error occur while parsing audit log record from binary base 64!\n");
 			parsed << "<Data><Application><![CDATA[ERROR]]></Application><Event><![CDATA[NA]]></Event><InitiatorType><![CDATA[]]></InitiatorType><InitiatorData><![CDATA[]]></InitiatorData><Time><![CDATA[]]></Time><InitiatorNetAddress><![CDATA[]]></InitiatorNetAddress><ExtendedData><![CDATA[]]></ExtendedData></Data>";
 			continue;
 		}
@@ -337,7 +337,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			}
 			catch (std::bad_alloc&)
 			{
-				UNS_ERROR("Error: Can't Alloc memory.\n");
+				WSMAN_ERROR("Error: Can't Alloc memory.\n");
 				goto EXIT;
 			}
 
@@ -366,7 +366,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			}
 			catch (std::bad_alloc&)
 			{
-				UNS_ERROR("Error: Can't Alloc memory.\n");
+				WSMAN_ERROR("Error: Can't Alloc memory.\n");
 				goto EXIT;
 			}
 
@@ -387,7 +387,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			parsed << "KVM user";
 			break;
 		default:
-			UNS_ERROR("Unknown InitiatorType\n");
+			WSMAN_ERROR("Unknown InitiatorType\n");
 			parsed << "Unknown";
 			break;
 		}
@@ -399,7 +399,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		}
 		catch (std::bad_alloc&)
 		{
-			UNS_ERROR("Error allocating memory, Can't display the Audit Log records!\n");
+			WSMAN_ERROR("Error allocating memory, Can't display the Audit Log records!\n");
 			goto EXIT;
 		}
 
@@ -426,7 +426,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		}
 		catch (std::bad_alloc&)
 		{
-			UNS_ERROR("Error: Can't Alloc memory.\n");
+			WSMAN_ERROR("Error: Can't Alloc memory.\n");
 			goto EXIT;
 		}
 
@@ -441,7 +441,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			parsed << netAddress;
 			break;
 		case NON:
-			UNS_DEBUG("None net Address\n");
+			WSMAN_DEBUG("None net Address\n");
 			break;
 		default:
 			break;
@@ -458,7 +458,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		catch(std::exception &e)
 		{
 			const char* reason =  e.what();
-			UNS_DEBUG("%C\n", reason);
+			WSMAN_DEBUG("%C\n", reason);
 			parsed << "Exception while parsing extended data"; 
 		}
 		parsed << "]]></ExtendedData>\n</Data>\n";
@@ -520,7 +520,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 	}
 	catch (std::bad_alloc&)
 	{
-		UNS_ERROR("could not allocate memory!\n");
+		WSMAN_ERROR("could not allocate memory!\n");
 		return std::string("");
 	}
 

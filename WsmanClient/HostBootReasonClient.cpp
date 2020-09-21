@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -10,7 +10,7 @@
 
 #include "HostBootReasonClient.h"
 #include "IPS_HostBootReason.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 HostBootReasonClient::HostBootReasonClient() : m_isInit(false)
@@ -75,7 +75,7 @@ bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX
 				resetReason = (HOST_RESET_REASON)(curReason->Reason());
 				
 				previousSxState = (SX_STATES)(curReason->PreviousSxState());
-				UNS_DEBUG("HostBootReasonClient::GetHostResetReason ended successfully\n");
+				WSMAN_DEBUG("HostBootReasonClient::GetHostResetReason ended successfully\n");
 				return true;
 			}
 			else 

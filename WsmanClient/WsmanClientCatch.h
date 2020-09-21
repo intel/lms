@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2020 Intel Corporation
  */
 /*++
 
@@ -16,20 +16,20 @@
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		UNS_ERROR("Error: Exception in " func " %C\n", reason); \
+		WSMAN_ERROR("Error: Exception in " func " %C\n", reason); \
 		return false; \
 	}
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		UNS_ERROR("Error: Exception in " func " %C\n", reason); \
+		WSMAN_ERROR("Error: Exception in " func " %C\n", reason); \
 	}
 #define CATCH_exception_debug(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
-		UNS_DEBUG("Error: Exception in " func " %C\n", reason); \
+		WSMAN_DEBUG("Error: Exception in " func " %C\n", reason); \
 	}
 
 

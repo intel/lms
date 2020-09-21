@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "HBPWSManClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 #include <sstream>
 
@@ -61,7 +61,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 					ppCertHash[i]=temp_data[i];
 					stream << " " << std::hex << temp_data[i];
 				}
-				UNS_DEBUG("%C\n", stream.str().c_str());
+				WSMAN_DEBUG("%C\n", stream.str().c_str());
 			}
 			if (m_HostProvisioningRecord.CreationTimeStampExists())
 			{
@@ -90,7 +90,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 						stream << " " << std::hex << temp_data[i];
 
 					}
-					UNS_DEBUG("%C\n", stream.str().c_str());
+					WSMAN_DEBUG("%C\n", stream.str().c_str());
 				}
 				else
 				{
@@ -116,7 +116,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 							CreationTimeStamp = toUNSDateFormat(m_AdminProvisioningRecord.CreationTimeStamp().Serialize());
 						}
 						*pProvisioningMethod = Reserved1; //Admin;
-						UNS_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C !!!!!!!!!!\n", CreationTimeStamp.c_str());
+						WSMAN_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C !!!!!!!!!!\n", CreationTimeStamp.c_str());
 					}
 					else
 					{
@@ -207,7 +207,7 @@ bool HBPWSManClient::Init(bool forceGet)
 						m_AdminProvisioningRecord.WsmanClient(m_client.get());
 						m_AdminProvisioningRecord.Get(); 
 						m_AdminProvisioningRecordGot = true;
-						UNS_DEBUG("m_AdminProvisioningRecord.Get succeed !!!!!!!!!!\n");
+						WSMAN_DEBUG("m_AdminProvisioningRecord.Get succeed !!!!!!!!!!\n");
 					}
 					CATCH_exception_debug("HBPWSManClient::Init get m_AdminProvisioningRecordGet")
 				}

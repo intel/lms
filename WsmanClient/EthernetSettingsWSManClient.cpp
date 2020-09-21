@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "EthernetSettingsWSManClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 
 EthernetSettingsWSManClient::EthernetSettingsWSManClient() : m_isInit(false)
 {
@@ -40,7 +40,7 @@ unsigned int EthernetSettingsWSManClient::Enumerate(std::vector<std::shared_ptr<
 	{
 		const char* reason =  e.what();
 		retValue = ERROR_UNKNOWN_ERROR;
-		UNS_DEBUG("Error: failed while calling get AMT_EthernetPortSettings: %C\n", reason);
+		WSMAN_DEBUG("Error: failed while calling get AMT_EthernetPortSettings: %C\n", reason);
 		m_endpoint = false;
 	}	
 	return retValue;

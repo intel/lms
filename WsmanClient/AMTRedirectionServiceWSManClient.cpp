@@ -9,7 +9,7 @@
 --*/
 
 #include "AMTRedirectionServiceWSManClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 namespace CimTyped = Intel::Manageability::Cim::Typed;
@@ -33,7 +33,7 @@ AMTRedirectionServiceWSManClient::~AMTRedirectionServiceWSManClient(void)
 
 bool AMTRedirectionServiceWSManClient::TerminateSession(unsigned int SessionType)
 {
-	UNS_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d)\n",SessionType);
+	WSMAN_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d)\n",SessionType);
 	
 	if (!Init())
 		return false;
@@ -45,7 +45,7 @@ bool AMTRedirectionServiceWSManClient::TerminateSession(unsigned int SessionType
 		CimTyped::AMT_RedirectionService::TerminateSession_INPUT request;
 		request.SessionType(SessionType);
 		unsigned int returnedVal = m_service.TerminateSession(request);
-		UNS_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d) ReturnValue=%d\n", SessionType, returnedVal);
+		WSMAN_DEBUG("AMTRedirectionServiceWSManClient::TerminateSession(%d) ReturnValue=%d\n", SessionType, returnedVal);
 		if (returnedVal != TEMINATE_SESSION_QUALIFIER_SUCCESS && returnedVal != TEMINATE_SESSION_QUALIFIER_INVALID_STATE)  // may fail if there is no active session, in this case return true 
 		{
 			return false;

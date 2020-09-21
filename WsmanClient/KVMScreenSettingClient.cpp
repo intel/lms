@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "KVMScreenSettingClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 KVMScreenSettingClient::KVMScreenSettingClient() : m_isInit(false)
@@ -43,7 +43,7 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 	
 		for (i = 0 ; i < numOfDisplays ; i++)
 		{
-			UNS_DEBUG("adding %d, isActive:%d,UpperLeftX:%d,UpperLeftY:%d,ResolutionX:%d,ResolutionY:%d, pipe:%d \n",
+			WSMAN_DEBUG("adding %d, isActive:%d,UpperLeftX:%d,UpperLeftY:%d,ResolutionX:%d,ResolutionY:%d, pipe:%d \n",
 				i,displaySettings.screenSettings[i].isActive,displaySettings.screenSettings[i].UpperLeftX,
 				displaySettings.screenSettings[i].UpperLeftY,displaySettings.screenSettings[i].ResolutionX,
 				displaySettings.screenSettings[i].ResolutionY,displaySettings.screenSettings[i].Pipe);
@@ -102,7 +102,7 @@ bool  KVMScreenSettingClient::getScreenSettings (ExtendedDisplayParameters &disp
 
 bool KVMScreenSettingClient::Init(bool forceGet)
 {
-	UNS_DEBUG("KVMScreenSettingClient::Init\n");
+	WSMAN_DEBUG("KVMScreenSettingClient::Init\n");
 	if (!forceGet && m_isInit) return true;
 	m_isInit = false;
 	
@@ -116,7 +116,7 @@ bool KVMScreenSettingClient::Init(bool forceGet)
 		m_service.WsmanClient(m_client.get());
 		m_service.Get();
 		m_isInit = true;
-		UNS_DEBUG("KVMScreenSettingClient::Initialized\n");
+		WSMAN_DEBUG("KVMScreenSettingClient::Initialized\n");
 	}
 	CATCH_exception("KVMScreenSettingClient::Init")
 	return m_isInit;	

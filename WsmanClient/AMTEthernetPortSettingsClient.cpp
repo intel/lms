@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -10,7 +10,7 @@
 
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMT_EthernetPortSettings.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient() :
@@ -93,7 +93,7 @@ bool AMTEthernetPortSettingsClient::GetAMTEthernetPortSettings(unsigned int* pLi
 	if (!Init(true,true))
 		return false;
 
-	UNS_DEBUG("GetAMTEthernetPortSettings LinkPreference=%d LinkControl=%d LinkProtection=%d\n",
+	WSMAN_DEBUG("GetAMTEthernetPortSettings LinkPreference=%d LinkControl=%d LinkProtection=%d\n",
 		m_LinkPreference,m_LinkControl,m_LinkProtection);
 	*pLinkPreference=m_LinkPreference;
 	*pLinkControl=m_LinkControl;

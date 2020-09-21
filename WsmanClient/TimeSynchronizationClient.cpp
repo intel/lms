@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2019 Intel Corporation
+ * Copyright (C) 2011-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "TimeSynchronizationClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(DEFAULT_TRUE), m_isInit(false)
@@ -65,13 +65,13 @@ bool TimeSynchronizationClient::GetLocalTimeSyncEnabledState(bool & state)
 {
 	if (!Init())
 	{
-		UNS_ERROR("GetLocalTimeSyncEnabledState Init return false!\n");
+		WSMAN_ERROR("GetLocalTimeSyncEnabledState Init return false!\n");
 		return false;
 	}
 	//recheck the update state (in case it was changed since the last init.
 	if (!UpdateTimeSyncState())
 	{
-		UNS_ERROR("Error: Failed to Get the time sync state in in TimeSynchronizationClient::GetLocalTimeSyncEnabledState\n");
+		WSMAN_ERROR("Error: Failed to Get the time sync state in in TimeSynchronizationClient::GetLocalTimeSyncEnabledState\n");
 		return false;
 	}
 
@@ -84,7 +84,7 @@ bool TimeSynchronizationClient::GetAMTTime(unsigned int & time)
 {	
 	if (!Init())
 	{
-		UNS_ERROR("GetAMTTime Init return false!\n");
+		WSMAN_ERROR("GetAMTTime Init return false!\n");
 		return false;
 	}
 
@@ -92,12 +92,12 @@ bool TimeSynchronizationClient::GetAMTTime(unsigned int & time)
 	int ret = m_service.GetLowAccuracyTimeSynch(m_time);
 	if (ret != 0)
 	{
-		UNS_ERROR("Error: Failed while calling GetLowAccuracyTimeSynch\n");
+		WSMAN_ERROR("Error: Failed while calling GetLowAccuracyTimeSynch\n");
 		return false;
 	}
 	if (!m_time.Ta0Exists())
 	{
-		UNS_ERROR("Error: Time object doesn't exist\n");
+		WSMAN_ERROR("Error: Time object doesn't exist\n");
 		return false;
 	}
 	time = m_time.Ta0();
@@ -124,7 +124,7 @@ bool TimeSynchronizationClient::SetAMTTime(unsigned int time)
 		int ret = m_service.SetHighAccuracyTimeSynch(input);
 		if (ret != 0)
 		{
-			UNS_ERROR("Error: failed while calling SetHighAccuracyTimeSynch\n");
+			WSMAN_ERROR("Error: failed while calling SetHighAccuracyTimeSynch\n");
 			return false;
 		}
 	}

@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 #include "IPS_KvmSessionUsingPort.h"
 #include "AMT_EthernetPortSettings.h"
 #include "IPSKVMSessionUsingPortClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient() : m_LinkTechnology(0)
@@ -53,7 +53,7 @@ bool IPSKVMSessionUsingPortClient::GetSessionLinkTechnology(short *pLinkTechnolo
 	if(!init())
 		return false;
 	
-	UNS_DEBUG("GetSessionLinkTechnology LinkTechnology=%d \n", m_LinkTechnology);
+	WSMAN_DEBUG("GetSessionLinkTechnology LinkTechnology=%d \n", m_LinkTechnology);
 
 	*pLinkTechnology = m_LinkTechnology;
 

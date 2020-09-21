@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2020 Intel Corporation
  */
 #include "IPS_IderSessionUsingPort.h"
 #include "AMT_EthernetPortSettings.h"
 #include "IPSIderSessionUsingPortClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 IPSIderSessionUsingPortClient::IPSIderSessionUsingPortClient() : m_LinkTechnology(0)
@@ -52,7 +52,7 @@ bool IPSIderSessionUsingPortClient::GetSessionLinkTechnology(short *pLinkTechnol
 	if(!init())
 		return false;
 	
-	UNS_DEBUG("GetSessionLinkTechnology LinkTechnology=%d \n", m_LinkTechnology);
+	WSMAN_DEBUG("GetSessionLinkTechnology LinkTechnology=%d \n", m_LinkTechnology);
 
 	*pLinkTechnology = m_LinkTechnology;
 

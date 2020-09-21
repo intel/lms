@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -9,7 +9,7 @@
 --*/
 
 #include "KVMWSManClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 KVMWSManClient::KVMWSManClient() : m_isInit(false), m_isSAPInit(false)
@@ -37,7 +37,7 @@ bool KVMWSManClient::GetMEBxState(bool* MEBxState)
 			*MEBxState = m_service.EnabledByMEBx(); 			
 			return true;
 		}
-		UNS_DEBUG("ERROR: IPS_KVMRedirectionSettingData.EnabledByMEBxExists returned false!\n");
+		WSMAN_DEBUG("ERROR: IPS_KVMRedirectionSettingData.EnabledByMEBxExists returned false!\n");
 	}
 	CATCH_exception("KVMWSManClient::GetMEBxState")
 
@@ -55,7 +55,7 @@ bool KVMWSManClient::TerminateKVMSession(void)
 		unsigned int returnVal = m_service.TerminateSession();
 		if (returnVal != WSMAN_STATUS_SUCCESS)
 		{
-			UNS_DEBUG("ERROR: IPS_KVMRedirectionSettingData.TerminateSessiin returned %d\n", returnVal);
+			WSMAN_DEBUG("ERROR: IPS_KVMRedirectionSettingData.TerminateSessiin returned %d\n", returnVal);
 			return false;
 		}
 	}

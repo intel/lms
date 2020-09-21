@@ -10,8 +10,8 @@
 
 
 #include "PowerManagementCapabilitiesWsManClient.h"
-#include "global.h"
 #include <algorithm>
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 //These are the supported values of PowerStatesSupported
@@ -57,7 +57,7 @@ PowerManagementCapabilitiesClient::~PowerManagementCapabilitiesClient()
 
 bool PowerManagementCapabilitiesClient::Init(bool forceGet)
 {
-	UNS_DEBUG("PowerManagementCapabilitiesClient::Init\n");
+	WSMAN_DEBUG("PowerManagementCapabilitiesClient::Init\n");
 	if (!forceGet && m_isInit) return true;
 	m_isInit = false;
 	
@@ -70,7 +70,7 @@ bool PowerManagementCapabilitiesClient::Init(bool forceGet)
 		m_service.WsmanClient(m_client.get());
 		m_service.Get();
 		m_isInit = true;
-		UNS_DEBUG("PowerManagementCapabilitiesClient::Initialized\n");
+		WSMAN_DEBUG("PowerManagementCapabilitiesClient::Initialized\n");
 	}
 	CATCH_exception("PowerManagementCapabilitiesClient::Init")
 	return m_isInit;	
@@ -90,12 +90,12 @@ bool updateCapability(bool insert, unsigned short capability, std::vector<unsign
 	std::vector<unsigned short>::iterator position = find(capabilities.begin(), capabilities.end(), capability);
 	bool exists = (position != capabilities.end());
 	if (insert && !exists) { // the value is not present in the vector - add it
-		UNS_DEBUG("Adding the value %d. PowerManagementCapabilitiesClient::updateCapability\n", capability);
+		WSMAN_DEBUG("Adding the value %d. PowerManagementCapabilitiesClient::updateCapability\n", capability);
 		capabilities.push_back(capability);
 		result = true;
 	}
 	else if (!insert && exists) { //the vector contains this value, remove it.
-		UNS_DEBUG("Removing the value %d. PowerManagementCapabilitiesClient::updateCapability\n", capability);
+		WSMAN_DEBUG("Removing the value %d. PowerManagementCapabilitiesClient::updateCapability\n", capability);
 		capabilities.erase(position);
 		result = true;
 	}
@@ -124,13 +124,13 @@ bool PowerManagementCapabilitiesClient::addGracefulOperations(bool sleep,bool hi
 			changed |= updateCapability(sleep, SLEEP, capabilities);
 			changed |= updateCapability(hibernate, HIBERNATE, capabilities);
 			if (changed) {
-				UNS_DEBUG("Updating the capabilities. PowerManagementCapabilitiesClient::addGracefulOperations\n");
+				WSMAN_DEBUG("Updating the capabilities. PowerManagementCapabilitiesClient::addGracefulOperations\n");
 				m_service.PowerStatesSupported(capabilities);
 				m_service.Put();
 			}
 		}
 		else {//Not supported - return false
-			UNS_DEBUG("PSS is not supported - unexpected FW behavior. PowerManagementCapabilitiesClient::addGracefulOperations\n");
+			WSMAN_DEBUG("PSS is not supported - unexpected FW behavior. PowerManagementCapabilitiesClient::addGracefulOperations\n");
 			return false;
 		}
 	}

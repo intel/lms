@@ -9,8 +9,8 @@
 --*/
 
 #include "BaseWSManClient.h"
+#include "WsmanClientLog.h"
 #include "CryptUtils_w.h"
-#include "global.h"
 #include "CimOpenWsmanClient.h"
 #include "MEIClientException.h"
 #include "AMTHIErrorException.h"
@@ -107,17 +107,17 @@ bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& pass
 	catch (MEIClient::AMTHI_Client::AMTHIErrorException& e)
 	{
 		unsigned int errNo =  e.getErr();
-		UNS_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", errNo);
+		WSMAN_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", errNo);
 	}
 	catch (MEIClient::MEIClientException& e)
 	{
 		const char* reason = e.what();
-		UNS_ERROR("GetLocalSystemAccountCommand failed %C\n", e.what());
+		WSMAN_ERROR("GetLocalSystemAccountCommand failed %C\n", e.what());
 	}
 	catch (std::exception& e)
 	{
 		const char* reason =  e.what();
-		UNS_ERROR("Exception in GetLocalSystemAccountCommand %C\n", reason);
+		WSMAN_ERROR("Exception in GetLocalSystemAccountCommand %C\n", reason);
 	}
 	return rc;
 }
@@ -147,7 +147,7 @@ BaseWSManClient::Unlocker::Unlocker()
 //--
 BaseWSManClient::WsmanInitializer::WsmanInitializer()
 {
-	UNS_DEBUG("BaseWSManClient::WsmanInitializer::WsmanInitializer()\n");
+	WSMAN_DEBUG("BaseWSManClient::WsmanInitializer::WsmanInitializer()\n");
 	//generate instances of singletons (generation in first function call is not thread-safe)
 	BaseWSManClient::WsManSemaphore();
 	BaseWSManClient::CtorSemaphore();

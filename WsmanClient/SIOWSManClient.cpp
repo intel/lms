@@ -9,7 +9,7 @@
 --*/
 
 #include "SIOWSManClient.h"
-#include "global.h"
+#include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
 SIOWSManClient::SIOWSManClient() : m_isInit(false)
