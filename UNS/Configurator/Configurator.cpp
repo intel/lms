@@ -299,7 +299,7 @@ bool CheckTimeSyncStateLoad()
 			break;
 		UNS_ERROR(L"Configurator:: GetLocalTimeSyncEnabledState failed to receive current state\n");
 	}
-	UNS_DEBUG(L"Configurator::CheckTimeSyncStateLoad %d", timeSyncState);
+	UNS_DEBUG(L"Configurator::CheckTimeSyncStateLoad %d\n", timeSyncState);
 	return ret && timeSyncState;
 }
 
