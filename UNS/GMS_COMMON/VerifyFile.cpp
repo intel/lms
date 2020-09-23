@@ -11,7 +11,6 @@
 #include <new>
 
 std::wstring VerifyFile::m_UNSPath;
-std::wstring VerifyFile::m_UNSFilePath;
 
 const std::wstring IntelCertificateName(L"Intel(R) Embedded Subsystems and IP Blocks Group");
 
@@ -26,55 +25,108 @@ VerifyFile::~VerifyFile(void)
 
 bool VerifyFile::Init()
 {
-	if (!GetServiceDirectory(L"LMS", m_UNSFilePath))
+	std::wstring UNSFilePath;
+
+	if (!GetServiceDirectory(L"LMS", UNSFilePath))
 	{
 		return false;
 	}
 
-	m_UNSPath.assign(m_UNSFilePath, 0, m_UNSFilePath.length()-7); //7 is length of "LMS.exe"
+	m_UNSPath.assign(UNSFilePath, 0, UNSFilePath.length()-7); //7 is length of "LMS.exe"
 
+	return true;
+}
+
+
+bool VerifyFile::VerifyNotSymbolicLink(const std::wstring &filepath, HANDLE hFile)
+{
+	wchar_t finalPath[MAX_PATH];
+	DWORD dwRet;
+	dwRet = GetFinalPathNameByHandle(hFile, finalPath, MAX_PATH, FILE_NAME_NORMALIZED);
+	if (dwRet < MAX_PATH)
+	{
+		std::wstring finalPathAsString(finalPath), localPrefix(L"\\\\?\\");
+		if (finalPathAsString.substr(0, localPrefix.size()).compare(localPrefix) == 0)
+		{
+			//Compare finalPathAsString (after trancating its LocalPrefix) to the given file path.
+			if (finalPathAsString.compare(localPrefix.size(), finalPathAsString.size() - localPrefix.size(), filepath) == 0)  //Not a Symbolic Link
+			{
+				UNS_DEBUG(L"Path is not a symbolic link.\n");
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool VerifyFile::VerifyDll(const std::wstring &filepath, HANDLE hFile)
+{
+#if !defined(IGNORE_DLL_SIGNATURES)
+	UNS_DEBUG(L"Verifying certificate name for dll %W\n", filepath.c_str());
+	bool ret = VerifyCertificateName(filepath);
+	if (ret)
+	{
+		UNS_DEBUG(L"Verifying signature for dll %W\n", filepath.c_str());
+		ret = VerifyFileSignature(filepath, hFile);
+	}
+	if (!ret)
+	{
+		UNS_ERROR(L"Could not verify signature/certificate name for dll %s\n", filepath.c_str());
+
+		//On DEBUG don't care if not signed
+#ifndef _DEBUG
+		return false;
+#endif // ndef _DEBUG
+	}
+#endif // !defined(IGNORE_DLL_SIGNATURES)
 	return true;
 }
 
 const HMODULE VerifyFile::SafeLoadDll(const std::wstring & wcName)
 {
+	HANDLE file_handle = nullptr;
+	HMODULE library_handle = nullptr;
 	std::wstring filepath(m_UNSPath);
 	filepath.append(wcName);
 
 	if(!checkFileExist(filepath))
 	{
-		UNS_ERROR(L"The configuration file for service: %W is not found or cannot be opened\n", wcName.c_str());
+		UNS_ERROR(L"The dll: %W is not found or cannot be opened\n", wcName.c_str());
 		return nullptr;
 	}
 
-#if !defined(IGNORE_DLL_SIGNATURES)
-	UNS_DEBUG(L"Verifying signature for configuration file %W\n", wcName.c_str());
-	bool ret = VerifyFileSignature(filepath);
-
-	if (ret)
+	file_handle = CreateFile(filepath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (file_handle == INVALID_HANDLE_VALUE)
 	{
-		UNS_DEBUG(L"Verifying certificate name for configuration file %W\n", wcName.c_str());
-		ret = VerifyCertificateName(filepath);
-	}
-	if (!ret)
-	{
-		UNS_ERROR(L"Could not verify signature/certificate name for configuration file %s\n", wcName.c_str());
-//On DEBUG don't care if not signed
-#ifndef _DEBUG
+		UNS_ERROR(L"Create file %W failed with %u\n", wcName.c_str(), GetLastError());
 		return nullptr;
-#endif // ndef _DEBUG
 	}
-#endif // !defined(IGNORE_DLL_SIGNATURES)
 
-	return LoadLibrary(filepath.c_str());
+	if (!VerifyNotSymbolicLink(filepath, file_handle))
+	{
+		UNS_ERROR(L"VerifyNotSymbolicLink failed.\n");
+		CloseHandle(file_handle);
+		return nullptr;
+	}
+
+	if (VerifyDll(filepath, file_handle))
+	{
+		library_handle = LoadLibrary(filepath.c_str());
+	}
+
+	CloseHandle(file_handle);
+	return library_handle;
 }
 
 /*
 * Verify the file signature.
-* Arguments: 		filePath - file to verify
+* Arguments:
+ *  filePath				- File to verify.
+ *  hFile					- Handle of the file to verify.
 * Return values:	true on success, false on failure
 */
-bool VerifyFile::VerifyFileSignature(const std::wstring &filePath)
+bool VerifyFile::VerifyFileSignature(const std::wstring &filePath, HANDLE hFile)
 {
 	#ifdef _DEBUG
 	return true;
@@ -105,7 +157,7 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath)
     GUID WVTPolicyGUID = WINTRUST_ACTION_GENERIC_VERIFY_V2; 
 	WINTRUST_FILE_INFO FileData;
     WINTRUST_DATA WinTrustData;
-	InitWinTrust(WinTrustData, FileData, filePath);
+	InitWinTrust(WinTrustData, FileData, filePath, hFile);
 
     
     // WinVerifyTrust verifies signatures as specified by the GUID and Wintrust_Data.
@@ -179,13 +231,13 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath)
 }
 
 
-void VerifyFile::InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &FileData, const std::wstring &filePath)
+void VerifyFile::InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &FileData, const std::wstring &filePath, HANDLE hFile)
 {
 	// Initialize the WINTRUST_FILE_INFO structure.
 	memset(&FileData, 0, sizeof(FileData));
     FileData.cbStruct = sizeof(WINTRUST_FILE_INFO);
     FileData.pcwszFilePath = filePath.c_str();
-    FileData.hFile = NULL;
+    FileData.hFile = hFile;
     FileData.pgKnownSubject = NULL;
 
 	// Initialize the WinVerifyTrust input data structure.
@@ -261,7 +313,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 
 		if(!fResult)
 		{
-			UNS_ERROR(L"VerifyCertificateName: CryptQueryObject Error\n");
+			UNS_ERROR(L"VerifyCertificateName: CryptQueryObject Error %d\n", GetLastError());
 			break;
 		}
 		// Get signer information size.
