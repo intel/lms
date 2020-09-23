@@ -1,3 +1,9 @@
+## [2039.1.0.0]
+
+### Fixed
+ - CIM_Framework: turn OFF BUILD_LIBCIM
+ - Fix dll signature verification
+
 ## [2039.0.0.0]
 
 ### Fixed
