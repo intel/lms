@@ -47,6 +47,7 @@ add_library (MEProv SHARED
 target_include_directories (MEProv PRIVATE
   Include
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${PROJECT_BINARY_DIR}
 )
 
 target_compile_definitions (MEProv PRIVATE
