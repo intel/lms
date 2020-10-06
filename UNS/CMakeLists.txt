@@ -70,7 +70,6 @@ add_subdirectory ("DataInterfaceBackend" "DataInterfaceBackend")
 
 add_executable (lms
   UNSMain.cpp
-  $<$<BOOL:${WIN32}>:$<TARGET_OBJECTS:AMT_COM_Interface>>
 )
 
 if (WIN32)
@@ -80,7 +79,7 @@ endif (WIN32)
 target_link_libraries (lms
   ACELIB
   LmsGMS_COMMON
-  $<$<BOOL:${WIN32}>:DataInterfaceBackend>
+  $<$<BOOL:${WIN32}>:AMT_COM_Interface>
   LmsConfigurator
   $<$<BOOL:${WIN32}>:LmsCOMEventHandler>
   $<$<BOOL:${UNIX}>:LmsDBusService>
