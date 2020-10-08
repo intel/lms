@@ -59,7 +59,7 @@ END
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION VER_PRODUCTVERSION
- PRODUCTVERSION VER_PRODUCTVERSION
+ PRODUCTVERSION 0000.0000.0000.0000
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -81,7 +81,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 2006-" CURRENT_YEAR_STRING ", Intel Corporation. All rights reserved."
             VALUE "OriginalFilename", "LMS.exe"
             VALUE "ProductName", "Intel(R) Management and Security Application Local Management Service"
-            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
+            VALUE "ProductVersion", "0000.0000.0000.0000"
         END
     END
     BLOCK "VarFileInfo"
