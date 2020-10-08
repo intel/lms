@@ -1,3 +1,12 @@
+## [2041.0.0.0]
+
+### Fixed
+  - CMake: default to MeTee 3.0.0 from GitHub
+  - CMake: take AMT_COM_Interface as usual lib
+  - WMIProv: CMake: pick version.h path
+  - LMS: AMT_COM: push pack version into lms.exe
+
+
 ## [2039.1.0.0]
 
 ### Fixed
