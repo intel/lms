@@ -124,25 +124,14 @@ UINT32 WSmanCommands::isKVMActive(bool* enabled, bool* active)
 		
 	}
 	return 0;
-
-
 }
 
-UINT32 WSmanCommands::GetPortSettings(
-		std::vector<EthernetPortEntryWSMan> &ethernetPortList, 
-		std::string userName = "",
-		std::string password = "" )
+UINT32 WSmanCommands::GetPortSettings(std::vector<EthernetPortEntryWSMan> &ethernetPortList)
 {
-	USES_CONVERSION;
-	if (userName.length() == 0 || password.length() == 0)
-	{
-		userName = "$$uns";
-		password = "$$uns";
-	}
-
-	EthernetSettingsWSManClient client(userName, password);
+	EthernetSettingsWSManClient client;
 	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
 	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
+
 	unsigned int response = client.Enumerate(ethernetSettings);
 	if (response == S_OK)
 	{
@@ -176,7 +165,4 @@ UINT32 WSmanCommands::GetPortSettings(
 	}
 	
 	return response;
-
 }
-
-

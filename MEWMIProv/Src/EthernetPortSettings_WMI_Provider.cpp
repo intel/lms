@@ -140,16 +140,7 @@ uint32 EthernetPortSettings_WMI_Provider::GetPortList(std::vector<EthernetPortEn
 	std::vector<EthernetPortEntryWSMan> ethernetPortWSManList;
 	WSmanCommands wsmc;
 
-	// The wsman call requires adminSecurity credentials - Try and get admin account for this
-	LOCAL_SYSTEM_ACCOUNT systemAccount;
-	if (ReturnValue = pthic.GetLocalSystemAccount(&systemAccount) == STATUS_SUCCESS)
-	{
-		std::string userName(systemAccount.UserName);
-		std::string password(systemAccount.Password); // This password is encrypted
-		ReturnValue = wsmc.GetPortSettings(ethernetPortWSManList, userName, password);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////
-
+	ReturnValue = wsmc.GetPortSettings(ethernetPortWSManList);
 	if (ReturnValue == STATUS_SUCCESS)
 	{
 		std::vector<EthernetPortEntryWSMan>::iterator portIterator;
