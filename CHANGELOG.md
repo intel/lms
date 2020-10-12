@@ -1,3 +1,10 @@
+## [2042.0.0.0]
+
+### Fixed
+  - Windows: compare PFUpdateLib path case insensitive.
+  - WMIProv: get admin credentials from the WsmanClient.
+  - Fix some trivial typos and style issues
+
 ## [2041.0.0.0]
 
 ### Fixed
