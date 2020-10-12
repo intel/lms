@@ -9,6 +9,7 @@
 #include <fstream>
 #include <memory>
 #include <new>
+#include <algorithm>
 
 std::wstring VerifyFile::m_UNSPath;
 
@@ -38,18 +39,23 @@ bool VerifyFile::Init()
 }
 
 
-bool VerifyFile::VerifyNotSymbolicLink(const std::wstring &filepath, HANDLE hFile)
+bool VerifyFile::VerifyNotSymbolicLink(const std::wstring &filePath, HANDLE hFile)
 {
 	wchar_t finalPath[MAX_PATH];
 	DWORD dwRet;
 	dwRet = GetFinalPathNameByHandle(hFile, finalPath, MAX_PATH, FILE_NAME_NORMALIZED);
 	if (dwRet < MAX_PATH)
 	{
-		std::wstring finalPathAsString(finalPath), localPrefix(L"\\\\?\\");
+		std::wstring origFilepath(filePath), finalPathAsString(finalPath), localPrefix(L"\\\\?\\");
 		if (finalPathAsString.substr(0, localPrefix.size()).compare(localPrefix) == 0)
 		{
-			//Compare finalPathAsString (after trancating its LocalPrefix) to the given file path.
-			if (finalPathAsString.compare(localPrefix.size(), finalPathAsString.size() - localPrefix.size(), filepath) == 0)  //Not a Symbolic Link
+			transform(finalPathAsString.begin(), finalPathAsString.end(), finalPathAsString.begin(), ::tolower);
+			transform(origFilepath.begin(), origFilepath.end(), origFilepath.begin(), ::tolower);
+
+			// Compare finalPathAsString (after trancating its LocalPrefix) to the given file path.
+			if (finalPathAsString.compare(localPrefix.size(),
+										  finalPathAsString.size() - localPrefix.size(),
+										  origFilepath) == 0)  // Not a Symbolic Link 
 			{
 				UNS_DEBUG(L"Path is not a symbolic link.\n");
 				return true;
