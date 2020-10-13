@@ -34,10 +34,11 @@ target_compile_definitions (LmsWsmanClient PUBLIC
 
 target_link_libraries (LmsWsmanClient
   ACELIB
-  CIMFramework
-  CimFrameworkUntyped
+  CPPCIMFramework
+  CPPCimFrameworkUntyped
   LmsMEIClient
   CimOpenWsmanClient
+  $<$<BOOL:${WIN32}>:Crypt32.lib>
 )
 
 target_include_directories (LmsWsmanClient PUBLIC

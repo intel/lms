@@ -1,7 +1,7 @@
 # Copyright (c) Intel Corporation, 2019-2020 All Rights Reserved.
 cmake_minimum_required (VERSION 3.1)
 
-add_library (CIMFramework STATIC
+add_library (CPPCIMFramework STATIC
   src/CimAnonymous.cpp
   src/CimBase.cpp
   src/CimClassFactory.cpp
@@ -274,18 +274,19 @@ add_library (CIMFramework STATIC
   CPPClasses/Src/IPS_WatchDogAction.cpp
 )
 
-set_target_properties (CIMFramework PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-find_package (Threads REQUIRED)
-target_link_libraries (CIMFramework
-  CimFrameworkUntyped
-  Threads::Threads
+file (GLOB CIMFRAMEWORK_INCLUDES
+  include/*.h
+  CPPClasses/Include/*.h
 )
 
-include_directories (
-  "include/"
+set_target_properties (CPPCIMFramework PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties (CPPCIMFramework PROPERTIES PUBLIC_HEADER "${CIMFRAMEWORK_INCLUDES}")
+
+target_link_libraries (CPPCIMFramework
+  CPPCimFrameworkUntyped
 )
 
-target_include_directories (CIMFramework PUBLIC
+target_include_directories (CPPCIMFramework PUBLIC
   "CPPClasses/Include/"
+  "include/"
 )

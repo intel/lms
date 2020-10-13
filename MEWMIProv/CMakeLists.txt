@@ -56,8 +56,6 @@ target_compile_definitions (MEProv PRIVATE
 
 target_link_libraries (MEProv
   ACELIB
-  CimOpenWsmanClient
-  CIMFramework
   LmsMEIClient
   LmsWsmanClient
   wbemuuid.lib

@@ -1,13 +1,15 @@
-# Copyright (c) Intel Corporation, 2019  All Rights Reserved.
+# Copyright (c) Intel Corporation, 2019-2020 All Rights Reserved.
 cmake_minimum_required (VERSION 3.1)
 
 if (WIN32)  
-  SET (XMLUtils_File "src/XMLUtils_MS.cpp")
+  set (XMLUtils_File "src/XMLUtils_MS.cpp")
 else()
-  SET (XMLUtils_File "src/XMLUtils_XRCS.cpp")
+  find_package (XercesC REQUIRED)
+  set (XMLUtils_File "src/XMLUtils_XRCS.cpp")
+  set (XML_LIBRARIES ${XercesC_LIBRARIES})
 endif()  
 
-add_library (CimFrameworkUntyped
+add_library (CPPCimFrameworkUntyped
   src/cdecode.cpp
   src/cencode.cpp
   src/CimData.cpp
@@ -20,10 +22,19 @@ add_library (CimFrameworkUntyped
   src/CimWsman.cpp
   src/WSIdentify.cpp
   ${XMLUtils_File}
-)   
+)
 
-set_target_properties (CimFrameworkUntyped PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_link_libraries (CPPCimFrameworkUntyped
+  ${XML_LIBRARIES}
+)
 
-target_include_directories (CimFrameworkUntyped PUBLIC
+file (GLOB CIMFRAMEWORKUNTYPED_INCLUDES
+  include/*.h
+)
+
+set_target_properties (CPPCimFrameworkUntyped PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties (CPPCimFrameworkUntyped PROPERTIES PUBLIC_HEADER "${CIMFRAMEWORKUNTYPED_INCLUDES}")
+
+target_include_directories (CPPCimFrameworkUntyped PUBLIC
   "include/"
 )
