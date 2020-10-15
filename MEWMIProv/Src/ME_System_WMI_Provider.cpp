@@ -428,68 +428,65 @@ HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& Crypt
 										 uint32& mode, uint32& capabilities, uint32& enabledCapabilities)
 {
 	OutputDebugStringA("ME_System_WMI_Provider::GetMESystem\n");
-			HRESULT hr = 0;		
-			val  = 5;
-			uint32 sku = 0;
-			CryptoFuseEnabled = false;
-			fwversion = L"";
-			OperationalStatus.push_back(0);
-			PTHI_Commands pthic;
-			hr = pthic.GetAMTVersion(&fwversion, &sku);
-			if (hr != 0)
-				return hr;
-			uint32 ReasonCode=0;
-			using namespace Intel::MEI_Client;
-			FWUpdate_Commands FWUpdate;
-			PLATFORM_TYPE platformType = DESKTOP; //default value,avoid uninitialized variable for security
-			MKHI_Client::MKHI_PLATFORM_TYPE platform;
-			hr = FWUpdate.GetFWPlatformType(platform);
-			if (hr != 0)
-				return hr;
-			if (platform.Fields.Desktop)
-				platformType=DESKTOP;
+	HRESULT hr = 0;		
+	val  = 5;
+	uint32 sku = 0;
+	CryptoFuseEnabled = false;
+	fwversion = L"";
+	OperationalStatus.push_back(0);
+	PTHI_Commands pthic;
+	hr = pthic.GetAMTVersion(&fwversion, &sku);
+	if (hr != 0)
+		return hr;
+	using namespace Intel::MEI_Client;
+	FWUpdate_Commands FWUpdate;
+	PLATFORM_TYPE platformType = DESKTOP; //default value,avoid uninitialized variable for security
+	MKHI_Client::MKHI_PLATFORM_TYPE platform;
+	hr = FWUpdate.GetFWPlatformType(platform);
+	if (hr != 0)
+		return hr;
+	if (platform.Fields.Desktop)
+		platformType=DESKTOP;
+	else
+		if (platform.Fields.Mobile)
+			platformType=MOBILE;
+		else
+			if (platform.Fields.Server)
+				platformType=SERVER;
 			else
-				if (platform.Fields.Mobile)
-					platformType=MOBILE;
-				else
-					if (platform.Fields.Server)
-						platformType=SERVER;
-					else
-						if (platform.Fields.WorkStn)
-							platformType=WORKSTATION;
+				if (platform.Fields.WorkStn)
+					platformType=WORKSTATION;
 
-			//default value = CORPORATE, avoid uninitialized variable for security
-			CUSTOMER_TYPE customer = GetPlatformTypeExt(&platform); 
+	//default value = CORPORATE, avoid uninitialized variable for security
+	CUSTOMER_TYPE customer = GetPlatformTypeExt(&platform); 
 
-			MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
-			MENAGEABILTY_MODE pMode;
-			hr=FWUpdate.GetFWCapabilities(CapabilityData);
-			if (hr==S_OK)
-			{
-				hr=FWUpdate.GetFWFeaturesState(StateData);
-				if (hr==S_OK)
-				{
-					hr = MenageabiltyModeLogic(platform, pMode);
-				}
-			}
-			if (hr != 0)
-				return hr;
+	MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
+	MENAGEABILTY_MODE pMode;
+	hr=FWUpdate.GetFWCapabilities(CapabilityData);
+	if (hr==S_OK)
+	{
+		hr=FWUpdate.GetFWFeaturesState(StateData);
+		if (hr==S_OK)
+		{
+			hr = MenageabiltyModeLogic(platform, pMode);
+		}
+	}
+	if (hr != 0)
+		return hr;
 
-			capabilities = GetCapabilities_int(CapabilityData, platform);
-			enabledCapabilities = GetCapabilities_int(StateData, platform);
-			type = (uint32)platformType;
-			segment = (uint32)customer;
-			mode = (uint32)pMode;
-			CryptoFuseEnabled = CapabilityData.Fields.Tls;
+	capabilities = GetCapabilities_int(CapabilityData, platform);
+	enabledCapabilities = GetCapabilities_int(StateData, platform);
+	type = (uint32)platformType;
+	segment = (uint32)customer;
+	mode = (uint32)pMode;
+	CryptoFuseEnabled = CapabilityData.Fields.Tls;
 
-			return hr;
+	return hr;
 }
 
 UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, 
 											   Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform)
 {
-	//uint32 capabilities = 0;
-	int i = 1;
 	int amt = 0, stdMng = 0, l3 = 0, sbt = 0;
 	if (CapabilityData.Fields.Amt)
 	{
@@ -502,38 +499,6 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 		else if (Platform.Fields.Brand == Intel::MEI_Client::MKHI_Client::BrandSBT)
 			sbt = 1;
 	}
-	
-	//capabilities = capabilities | (amt * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Irwt * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Qst * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Tdt * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.SoftCreek * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Ve * i); i = i *2;
-	//capabilities = capabilities | (0 * i); i = i *2; //DT
-	//capabilities = capabilities | (0 * i); i = i *2; //NAND
-	//capabilities = capabilities | (0 * i); i = i *2; //MPC
-	//capabilities = capabilities | (CapabilityData.Fields.IccOverClockin * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Pav * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Spk * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Rca * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Rpat * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Ipv6 * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Kvm * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Och * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.MEDAL * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Tls * i); i = i *2;
-	//capabilities = capabilities | (CapabilityData.Fields.Cila * i); i = i *2;
-	//capabilities = capabilities | (stdMng * i); i = i *2;
-	//capabilities = capabilities | (l3 * i); i = i *2;
-	std::wstring fwversion = L"";
-	UINT32 sku;
-	PTHI_Commands pthic;
-	pthic.GetAMTVersion(&fwversion, &sku);
-    std::wstringstream converter;
-    int major = 0;
-    converter << fwversion;
-    converter >> major;
- 
 
 	MEFWCAPS_SKU_INT capabilities;
 	capabilities.Data = 0;
@@ -541,12 +506,9 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	capabilities.Fields.Tdt = CapabilityData.Fields.Tdt;
 	capabilities.Fields.SoftCreek = CapabilityData.Fields.SoftCreek;
 	capabilities.Fields.Ve = CapabilityData.Fields.Ve;
-	capabilities.Fields.Nand = (major < 9) ? CapabilityData.Fields.Nand29 : 0; // bit 9 is not used anymore for NAND since 9.0 project
+	capabilities.Fields.Nand = 0; // bit 9 is not used anymore for NAND since 9.0 project
 	capabilities.Fields.IccOverClockin = CapabilityData.Fields.IccOverClockin;
 	capabilities.Fields.Pav = CapabilityData.Fields.Pav;
-	//capabilities.Fields.Spk = CapabilityData.Fields.Spk;
-	//capabilities.Fields.Rca = CapabilityData.Fields.Rca;
-	//capabilities.Fields.Rpat = CapabilityData.Fields.Rpat;
 	capabilities.Fields.Ipv6 = CapabilityData.Fields.Ipv6;
 	capabilities.Fields.Kvm = CapabilityData.Fields.Kvm;
 	capabilities.Fields.Och = CapabilityData.Fields.Och;
@@ -598,18 +560,10 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"VE");
 	}
-	/*if (CapabilityData.Fields.Dt) 
-	{
-		capabilities.push_back(L"DT");
-	}*/
 	if (CapabilityData.Fields.Nand)
 	{
 		capabilities.push_back(L"NAND");
 	}
-	/*if (CapabilityData.Fields.Mpc)
-	{
-		capabilities.push_back(L"MPC");
-	}*/
 	if (CapabilityData.Fields.IccOverClockin)
 	{
 		capabilities.push_back(L"ICC Over Clocking");
@@ -618,18 +572,6 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"PAVP");
 	}
-	/*if (CapabilityData.Fields.Spk)
-	{
-		capabilities.push_back(L"SPK");
-	}
-	if (CapabilityData.Fields.Rca)
-	{
-		capabilities.push_back(L"RCA");
-	}
-	if (CapabilityData.Fields.Rpat)
-	{
-		capabilities.push_back(L"RPAT");
-	}*/
 	if (CapabilityData.Fields.Ipv6)
 	{
 		capabilities.push_back(L"IPv6");
@@ -654,7 +596,6 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"CILA");
 	}
-	return;
 }
 
 HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, 
