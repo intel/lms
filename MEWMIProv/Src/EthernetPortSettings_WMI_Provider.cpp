@@ -13,8 +13,6 @@
 #include "WSmanCommands.h"
 #include "WMIHelper.h"
 
-
-
 HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 								IWbemServices* pNamespace,
 								IWbemContext __RPC_FAR *pCtx,
@@ -22,15 +20,13 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 {
 	USES_CONVERSION; 
 
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Enumerate started"),_T(""));
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
-	uint32 hr=0;
-	int i=1;
+	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
 	try
 	{
-		
 		std::vector<EthernetPortSettings_WMI_Provider> ethernetPortList;
 		hr = EnumerateEthernetPortSettings(ethernetPortList, ReturnValue);
 		if (STATUS_SUCCESS == ReturnValue)
@@ -58,77 +54,53 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 		}
 		else
 		{
-			//WMIHandleSetStatus(pNamespace,pResponseHandler, ReturnValue);
 			WMIHelper::PTHIHandleSetStatus(pNamespace, pResponseHandler, ReturnValue, hr);
 			return hr;
 		}
-
-
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-	//Enumerate the collection, retrieving params and creating return instances
-	//if (STATUS_SUCCESS == hr)
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-	//}
 
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
-
 }
 
 HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::vector<EthernetPortSettings_WMI_Provider>& settingsVec, uint32& ReturnValue)
 {
 	USES_CONVERSION; 
 
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Enumerate started"),_T(""));
-	//Get all keys in a colllection, from an internal function
 	ReturnValue = 0;
+	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
-	uint32 hr=0;
-	int i=1;
 	try
 	{
 		std::vector<EthernetPortEntry> ethernetPortList;
 		ReturnValue = GetPortList(ethernetPortList);
-			if (STATUS_SUCCESS == ReturnValue)
-			{	
-				std::vector<EthernetPortEntry>::iterator entry;
-				entry = ethernetPortList.begin();
-				for (; entry != ethernetPortList.end(); entry++)
-				{
-					std::wstring elementName = L"Intel(r) AMT Ethernet Port Settings";
-					WCHAR str[256];
-					swprintf_s(str, 256, L"Intel(r) AMT Ethernet Port Settings %d",i++);
-					std::wstring instanceID(str);
-					EthernetPortSettings_WMI_Provider setting(*entry, instanceID, elementName);				
-					settingsVec.push_back(setting);
-				}
+		if (STATUS_SUCCESS == ReturnValue)
+		{	
+			std::vector<EthernetPortEntry>::iterator entry;
+			entry = ethernetPortList.begin();
+			int i = 1;
+			for (; entry != ethernetPortList.end(); entry++)
+			{
+				std::wstring elementName = L"Intel(r) AMT Ethernet Port Settings";
+				WCHAR str[256];
+				swprintf_s(str, 256, L"Intel(r) AMT Ethernet Port Settings %d",i++);
+				std::wstring instanceID(str);
+				EthernetPortSettings_WMI_Provider setting(*entry, instanceID, elementName);
+				settingsVec.push_back(setting);
 			}
+		}
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
-	//Enumerate the collection, retrieving params and creating return instances
-	//if (STATUS_SUCCESS == hr)
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-	//}
 
 	return hr;
 }
@@ -182,7 +154,6 @@ EthernetPortSettings_WMI_Provider::EthernetPortSettings_WMI_Provider(const Ether
 	SubnetMask = port.SubnetMask;
 }
 
-
 HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 									 IWbemServices* pNamespace,
 									 const BSTR strObjectPath,
@@ -191,27 +162,24 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 {
 	USES_CONVERSION; 
 
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
-	std::map <std::wstring, CComVariant> keyList;
-	std::map <std::wstring, CComVariant>::const_iterator it ;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
+		std::map <std::wstring, CComVariant> keyList;
+		std::map <std::wstring, CComVariant>::const_iterator it ;
 		GetKeysList(keyList, strObjectPath);
 		it = keyList.find(L"InstanceID");
 		if (it == keyList.end())
 		{
-			//_Module.logger.Error(File,LOCATION, _T("WiFi Profile data"), _T("AddWiFiProfile"),_T("WBEM_E_INVALID_METHOD_PARAMETERS"));
-			//_Module.SetLastErrorString(GETSCSMESSAGE1(ERROR_IN_PARAMETER,_T("InstanceID")));
-			return  WBEM_E_INVALID_METHOD_PARAMETERS;
+			hr = WBEM_E_INVALID_METHOD_PARAMETERS;
+			return hr;
 		}
 		std::wstring val = (it->second).bstrVal;
 		const WCHAR* str = val.c_str();
 		unsigned int num = _wtoi(str+wcslen(L"Intel(r) AMT Ethernet Port Settings"));
-		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
 		do 
 		{
@@ -257,27 +225,13 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 			}
 		}while(0);
 
-		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-
-		
-		if (STATUS_SUCCESS == hr)
-		{
-			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));
-		}
-		else
-		{
-			//_Module.logger.Error(File,LOCATION,  _T("Profile data"), _T("Get profile failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-		}
+		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
 	catch (...)
 	{
-		//_Module.SetLastErrorString(GETSCSMESSAGE(ERROR_EXCEPTION_IN_SERVICE));
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 
-
 	return hr;
-
 }
-

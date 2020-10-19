@@ -74,10 +74,11 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 	IWbemContext __RPC_FAR *pCtx,
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-
 	//Get all keys in a colllection, from an internal function
 	uint32 hr = WBEM_S_NO_ERROR;
 	uint32 ReturnValue = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
 	try
 	{
 		do{
@@ -123,6 +124,7 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 	}
 	catch (...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
@@ -138,7 +140,7 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 {
 	UINT32 ReturnValue = 0;
 	HRESULT hr = S_OK;
-
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -168,12 +170,12 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 	}
 	catch(...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 	return hr;
 }
 
@@ -185,7 +187,7 @@ HRESULT ME_System_WMI_Provider::getCurrentPowerPolicy(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -201,14 +203,12 @@ HRESULT ME_System_WMI_Provider::getCurrentPowerPolicy(
 	}
 	catch(...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 	return hr;
 }
 
@@ -220,12 +220,11 @@ HRESULT ME_System_WMI_Provider::IsFirmwareUpdateEnabled(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
 		bool enabled = false;
-		char str[256];
 
 		FWUpdate_Commands FWUpdate;
 		{
@@ -235,8 +234,7 @@ HRESULT ME_System_WMI_Provider::IsFirmwareUpdateEnabled(
 			if (ReturnValue != S_OK)
 				enabled = false;
 		}
-		sprintf_s(str,256,"FWUpdate.GetFWUpdateStateCommand=%d rc=%d\n",enabled,ReturnValue);
-		OutputDebugStringA(str);
+		UNS_DEBUG("FWUpdate.GetFWUpdateStateCommand=%d rc=%d\n", enabled, ReturnValue);
 		
 		ERROR_HANDLER(ReturnValue);
 
@@ -249,12 +247,12 @@ HRESULT ME_System_WMI_Provider::IsFirmwareUpdateEnabled(
 	}
 	catch(...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 	return hr;
 }
 
@@ -266,7 +264,7 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -307,13 +305,12 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 	}
 	catch(...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 	return hr;
 }
 
@@ -336,18 +333,19 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 	IWbemContext __RPC_FAR *pCtx,
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-
 	uint32 hr = 0;
-	std::map <std::wstring, CComVariant> keyList;
-	std::map <std::wstring, CComVariant>::const_iterator it ;
+	EntryExitLog log(__FUNCTION__, hr);
 
 	try
 	{
+		std::map <std::wstring, CComVariant> keyList;
+		std::map <std::wstring, CComVariant>::const_iterator it;
 		GetKeysList(keyList, strObjectPath);
 		it = keyList.find(L"Name");
 		if (it == keyList.end())
 		{
-			return  WBEM_E_INVALID_METHOD_PARAMETERS;
+			hr = WBEM_E_INVALID_METHOD_PARAMETERS;
+			return hr;
 		}
 
 		do 
@@ -388,26 +386,15 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 		}while(0);
 
-		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-
-		//Enumerate the collection, retrieving params and creating return instances
-		if (STATUS_SUCCESS == hr)
-		{
-			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));
-		}
-		else
-		{
-			//_Module.logger.Error(File,LOCATION,  _T("Profile data"), _T("Get profile failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-		}
+		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
 	catch (...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 
-
 	return hr;
-
 }
 
 ME_System_WMI_Provider::CUSTOMER_TYPE ME_System_WMI_Provider::GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
@@ -427,8 +414,9 @@ HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& Crypt
 	std::vector<sint16>& OperationalStatus, uint32& type, uint32& segment,
 										 uint32& mode, uint32& capabilities, uint32& enabledCapabilities)
 {
-	OutputDebugStringA("ME_System_WMI_Provider::GetMESystem\n");
-	HRESULT hr = 0;		
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, hr);
+
 	val  = 5;
 	uint32 sku = 0;
 	CryptoFuseEnabled = false;
@@ -637,7 +625,8 @@ HRESULT ME_System_WMI_Provider::getUPIDFeatureState(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
 	try
 	{
 		bool state = false;
@@ -660,12 +649,12 @@ HRESULT ME_System_WMI_Provider::getUPIDFeatureState(
 	}
 	catch (...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
 	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
-
 	return hr;
 }
 
@@ -679,6 +668,7 @@ HRESULT ME_System_WMI_Provider::setUPIDFeatureState(
 	bool state;
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	if (IsUserAdmin() == S_FALSE)
 	{
@@ -714,12 +704,12 @@ HRESULT ME_System_WMI_Provider::setUPIDFeatureState(
 	}
 	catch (...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
 	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
-
 	return hr;
 }
 
@@ -732,7 +722,7 @@ HRESULT ME_System_WMI_Provider::getUPID(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	if (IsUserAdmin() == S_FALSE)
 	{
@@ -765,11 +755,11 @@ HRESULT ME_System_WMI_Provider::getUPID(
 	}
 	catch (...)
 	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
 	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
-
 	return hr;
 }

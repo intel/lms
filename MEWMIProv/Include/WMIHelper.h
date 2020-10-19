@@ -9,6 +9,7 @@
 #include "pthi_commands.h"
 #include "ErrorCodes.h"
 #include "StatusCodeDefinitions.h"
+#include "DebugPrints.h"
 
 #define ERROR_HANDLER(ReturnValue) \
 		if (ReturnValue != S_OK) \
@@ -46,5 +47,29 @@ inline std::string ToStr(const std::wstring& t)
 		buff.resize(count);
 	return buff;
 }
+
+class EntryExitLog
+{
+public:
+	EntryExitLog(const char *func, const uint32 &ret, const uint32 &hr) :
+		func_(func), ret_(ret), hr_(hr)
+	{
+		UNS_DEBUG("--> %C\n", func_);
+	}
+	EntryExitLog(const char *func, const uint32 &hr) :
+		func_(func), ret_(0), hr_(hr)
+	{
+		UNS_DEBUG("--> %C\n", func_);
+	}
+	~EntryExitLog()
+	{
+		UNS_DEBUG("<-- %C 0x%X 0x%X\n", func_, ret_, hr_);
+	}
+
+private:
+	const char *func_;
+	const uint32 &ret_;
+	const uint32 &hr_;
+};
 
 #endif

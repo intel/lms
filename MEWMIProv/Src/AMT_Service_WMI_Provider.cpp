@@ -73,7 +73,7 @@ HRESULT AMT_Service_WMI_Provider::isWebUIEnabled(
 { 
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -92,30 +92,12 @@ HRESULT AMT_Service_WMI_Provider::isWebUIEnabled(
 	}
 	catch(...)
 	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
 }
 
@@ -127,9 +109,7 @@ HRESULT AMT_Service_WMI_Provider::getSOLState(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
- // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -186,30 +166,12 @@ HRESULT AMT_Service_WMI_Provider::getSOLState(
 	}
 	catch(...)
 	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
 }
 
@@ -221,9 +183,7 @@ HRESULT AMT_Service_WMI_Provider::getIDERState(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
- // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -278,33 +238,14 @@ HRESULT AMT_Service_WMI_Provider::getIDERState(
 	}
 	catch(...)
 	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
 }
-
 
 HRESULT AMT_Service_WMI_Provider::getKVMState(
 	IWbemClassObject*              pClass,
@@ -314,9 +255,7 @@ HRESULT AMT_Service_WMI_Provider::getKVMState(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-
-   // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -384,34 +323,14 @@ HRESULT AMT_Service_WMI_Provider::getKVMState(
 	}
 	catch(...)
 	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);	
 	return hr;
 }
-
-
 
 HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 	IWbemClassObject*              pClass,
@@ -422,9 +341,7 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	std::wstring OTP, PKIDNSSuffix;
-
-   // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -445,30 +362,12 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 	}
 	catch(...)
 	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
 }
 
@@ -481,9 +380,7 @@ HRESULT AMT_Service_WMI_Provider::setSpriteZoom(
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	std::wstring OTP, PKIDNSSuffix;
-
-   // _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Step in"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList started"),_T(""));
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
@@ -509,34 +406,14 @@ HRESULT AMT_Service_WMI_Provider::setSpriteZoom(
 	}
 	catch(...)
 	{
-	   // _Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
-	//wstring tmp_val = _T("return value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(ReturnValue);
-	//tmp_val += _T(", hr value: ");
-	//tmp_val += StringUtilsNamespace::convertTowString(hr);
-
- //   _Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Done CreatePSKCredentialList"),tmp_val);
-
-
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);	
-
-
-	//if (status == STATUS_SUCCESS)
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION, _T("PSK Credential data"), _T("Create PSK CredentialList request failed with error code"),StringUtilsNamespace::convertTowString(status));
-	//}
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
 }
-
-
 
 HRESULT AMT_Service_WMI_Provider::setSpriteLocale(
 	IWbemClassObject*              pClass,
@@ -557,11 +434,9 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Enumerate started"),_T(""));
-	//Get all keys in a colllection, from an internal function
 	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, hr);
+
 	try
 	{
 			CComPtr<IWbemClassObject> obj;
@@ -572,26 +447,15 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 			WMIPut<1>(obj, L"SystemCreationClassName", L"ME_system");
 			
 			pResponseHandler->Indicate(1, &obj.p);
-
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
-	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-	//Enumerate the collection, retrieving params and creating return instances
-	//if (STATUS_SUCCESS == hr)
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-	//}
 
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
-
 }
 
 HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
@@ -600,29 +464,20 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-
 	uint32 hr = 0;
-	std::map <std::wstring, CComVariant> keyList;
-	std::map <std::wstring, CComVariant>::const_iterator it ;
+	EntryExitLog log(__FUNCTION__, hr);
 
 	try
 	{
+		std::map <std::wstring, CComVariant> keyList;
+		std::map <std::wstring, CComVariant>::const_iterator it;
 		GetKeysList(keyList, strObjectPath);
 		it = keyList.find(L"Name");
 		if (it == keyList.end())
 		{
-			//_Module.logger.Error(File,LOCATION, _T("WiFi Profile data"), _T("AddWiFiProfile"),_T("WBEM_E_INVALID_METHOD_PARAMETERS"));
-			//_Module.SetLastErrorString(GETSCSMESSAGE1(ERROR_IN_PARAMETER,_T("InstanceID")));
-			return  WBEM_E_INVALID_METHOD_PARAMETERS;
+			hr = WBEM_E_INVALID_METHOD_PARAMETERS;
+			return hr;
 		}
-
-		//unsigned long id = 0;
-		//std::wstring val = (it->second).bstrVal;
-		//StringUtilsNamespace::FromwString(val,id);
-
-		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
 		do 
 		{
@@ -636,27 +491,13 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 		}while(0);
 
-		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-
-		//Enumerate the collection, retrieving params and creating return instances
-		if (STATUS_SUCCESS == hr)
-		{
-			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));
-		}
-		else
-		{
-			//_Module.logger.Error(File,LOCATION,  _T("Profile data"), _T("Get profile failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-		}
+		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
 	catch (...)
 	{
-		//_Module.SetLastErrorString(GETSCSMESSAGE(ERROR_EXCEPTION_IN_SERVICE));
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 
-
 	return hr;
-
 }
-

@@ -14,12 +14,12 @@
 
 #define _WIN32_DCOM
 
+#include "WMIHelper.h"
 #include <objbase.h>
 #include "methprov.h"
 #include <process.h>
 #include <wbemidl.h>
 #include <stdio.h>
-//#include "WMIInfrastructure.h"
 #include "OOB_Service_WMI_Provider.h"
 #include "ME_System_WMI_Provider.h"
 #include "Audit_Record_WMI_Provider.h"
@@ -123,7 +123,6 @@ STDMETHODIMP CMethodPro::Initialize(LPWSTR pszUser, LONG lFlags,
 		pInitSink->SetStatus(WBEM_S_INITIALIZED, 0);
 	}
 
-    
     return WBEM_S_NO_ERROR;
 }
 
@@ -141,31 +140,11 @@ STDMETHODIMP CMethodPro::ExecMethodAsync(const BSTR ObjectPath, const BSTR Metho
             long lFlags, IWbemContext* pCtx, IWbemClassObject* pInParams, 
             IWbemObjectSink* pResponseHandler)
 {
-
 	HRESULT hr = S_OK;
-
+	EntryExitLog log(__FUNCTION__, hr);
 
 	try {
-		//CString csMethodName = strMethodName;
 		CComPtr<IWbemClassObject> pClass;
-		//BSTR Text;
-		//if (pInParams != NULL) 
-		//{
-		//	pInParams->GetObjectText(0, &Text);
-		//	CString Stext = Text;
-		//	wstring tc ;
-		//	tc += 8217;
-		//	tc += 8216;
-		//	wstring tmp = Stext.GetBuffer();
-		//	tmp  = StringUtilsNamespace::wClearChars(tmp,tc);
-
-		//	_Module.logger.Detail(File,LOCATION, _T("ExecMethodAsync"), _T("strObjectPath"),strObjectPath);
-		//	_Module.logger.Detail(File,LOCATION, _T("ExecMethodAsync"), _T("Params for Function are"),tmp);
-		//	SysFreeString(Text);
-		//}
-		//else
-		//{
-		//}
 
 		std::wstring objectPathTmp(ObjectPath);
 		std::wstring objectPath = objectPathTmp.substr(0,objectPathTmp.find(L"."));
@@ -180,7 +159,7 @@ STDMETHODIMP CMethodPro::ExecMethodAsync(const BSTR ObjectPath, const BSTR Metho
 	}
 	catch (...)
 	{
-		//_Module.logger.Detail(File,LOCATION, _T("ExecMethodAsync"), _T("bad catch"),_T("bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 	}
 	CoUninitialize();
     return hr;
@@ -190,8 +169,9 @@ SCODE CMethodPro::CreateInstanceEnumAsync( const BSTR RefStr, long lFlags,
 										  IWbemContext *pCtx, IWbemObjectSink FAR* pHandler)
 {
 	HRESULT hr = S_OK;
+	EntryExitLog log(__FUNCTION__, hr);
 
-	try 
+	try
 	{
 
 		if(CComBSTR(RefStr) == L"OOB_Service")
@@ -210,19 +190,15 @@ SCODE CMethodPro::CreateInstanceEnumAsync( const BSTR RefStr, long lFlags,
 			Hosted_Service_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
 		else if(CComBSTR(RefStr) == L"CIM_ConcreteComponent")
 			Concrete_Component_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
-		
 		else
 		{
 			WMIHandleSetStatus(m_pWbemSvcs,pHandler,0);
-			//_Module.logger.Error(File,LOCATION, _T("CreateInstanceEnumAsync"), _T("WBEM_E_NOT_SUPPORTED"),_T(""));
+			UNS_ERROR("%C WBEM_E_NOT_SUPPORTED", __FUNCTION__);
 		}
-
-		//	ME_System_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
 	}
 	catch (...)
 	{
-		//_Module.logger.Detail(File,LOCATION, _T("CreateInstanceEnumAsync"), _T("bad catch"),_T("bad catch"));
-
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 	}
 	CoUninitialize();
     return hr;
@@ -243,18 +219,13 @@ HRESULT CMethodPro::GetObjectAsync(
 								  /*[in] */ IWbemContext __RPC_FAR *pCtx,
 								  /*[in] */ IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-
 	HRESULT hr = S_OK;
-	try 
+	EntryExitLog log(__FUNCTION__, hr);
+
+	try
 	{
-
-
-		//DBCREQUIRE((strClass != NULL),_T("strClass"));
-
 		do
 		{
-
-			//_Module.logger.Detail(File,LOCATION, _T("GetObjectAsync"), _T("Params for GetObjectAsync are"),strClass);
 			CComPtr<IWbemPath>pParser;
 			hr = CoCreateInstance(CLSID_WbemDefPath,
 				0,
@@ -268,14 +239,6 @@ HRESULT CMethodPro::GetObjectAsync(
 			unsigned long size = 256;
 			pParser->GetClassName(&size,className);
 
-			//if (checkCredentials(className,_T("GetObject"))!= S_OK)
-			//{
-			//	_Module.logger.Error(File,LOCATION, _T("GetObjectAsync"), className,_T("WBEM_E_ACCESS_DENIED"));
-			//	WMIHandleSetStatus(m_pNamespace,pResponseHandler, WBEM_E_ACCESS_DENIED);
-			//	break;
-			//}
-
-			//_Module.logger.Detail(File,LOCATION, _T("GetObjectAsync"), strClass,_T("WBEM_E_ACCESS_DENIED"));
 			if(CComBSTR(className) == L"OOB_Service")
 				OOB_Service_WMI_Provider::GetOOB_Service(m_pWbemSvcs,strClass, pCtx, pResponseHandler);
 			else if(CComBSTR(className) == L"ME_System")
@@ -295,27 +258,18 @@ HRESULT CMethodPro::GetObjectAsync(
 			else
 			{
 				WMIHandleSetStatus(m_pWbemSvcs,pResponseHandler, WBEM_E_NOT_SUPPORTED);
-				//_Module.logger.Error(File,LOCATION, _T("GetObjectAsync"), _T("WBEM_E_NOT_SUPPORTED"),className);
+				UNS_ERROR("%C WBEM_E_NOT_SUPPORTED", __FUNCTION__);
 			}
 
 		}while(0);
 
 	}
-	//catch (DBCException &e)
-	//{
-	//	//_Module.logger.Error(File, _T("GetObjectAsync"), _T("DBCException"),e);
-	//	WMIHandleSetStatus(m_pNamespace,pResponseHandler, WBEM_E_INVALID_PARAMETER);
-	//}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("GetObjectAsync"), _T("bad catch"),_T("bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		WMIHandleSetStatus(m_pWbemSvcs,pResponseHandler, WBEM_E_CRITICAL_ERROR);
 	}
-	//_Module.RemoveThread();
 	CoUninitialize();
 
 	return 1;
-
 }
-
-

@@ -20,22 +20,20 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 {
 	USES_CONVERSION;
 	
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Enumerate started"),_T(""));
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	int i=1;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
 	try
 	{
 		std::vector<ProvisioningCertificateHash_WMI_Provider> hashVec;
 		hr = EnumerateProvisioningCertificateHash(hashVec, ReturnValue);
 		if (STATUS_SUCCESS == ReturnValue)
 		{
-			/////////////////
 			std::vector<ProvisioningCertificateHash_WMI_Provider>::iterator entry;
 
-		    entry = hashVec.begin();
+			entry = hashVec.begin();
 			for (; entry != hashVec.end(); entry++)
 			{
 				CComPtr<IWbemClassObject> obj;
@@ -55,25 +53,15 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 			WMIHelper::PTHIHandleSetStatus(pNamespace, pResponseHandler, ReturnValue, hr);
 			return hr;
 		}
-		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-		//Enumerate the collection, retrieving params and creating return instances
-		//if (STATUS_SUCCESS == hr)
-		//{
-		//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
-		//}
-		//else
-		//{
-		//	_Module.logger.Error(File,LOCATION,  _T("Profile data"), _T("Enumerate failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-		//}
-
+		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
-	return hr;
 
+	return hr;
 }
 
 HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(std::vector<ProvisioningCertificateHash_WMI_Provider>& enumVec, uint32& ReturnValue)
@@ -82,21 +70,18 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertifica
 	
 	ReturnValue = 0;
 	uint32 hr = 0;
-	int i=1;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
 	try
 	{
 		std::vector<HashEntry> hashlist;
 		PTHI_Commands pthic;
-		
-		
 		ReturnValue = pthic.GetCertificateHash(hashlist);
-
 		if (STATUS_SUCCESS == ReturnValue)
 		{
-			/////////////////
 			std::vector<HashEntry>::iterator entry;
-			
-		    entry = hashlist.begin();
+			int i = 1;
+			entry = hashlist.begin();
 			for (; entry != hashlist.end(); entry++)
 			{
 				std::wstring elementName = L"Intel(r) AMT: Provisioning Certificate Hash";
@@ -106,17 +91,15 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertifica
 				ProvisioningCertificateHash_WMI_Provider provisioningCertHash(*entry, instanceID, elementName);
 				enumVec.push_back(provisioningCertHash);
 			} 
-			
 		}
 	}
-	
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
-	return hr;
 
+	return hr;
 }
 
 ProvisioningCertificateHash_WMI_Provider::ProvisioningCertificateHash_WMI_Provider(const HashEntry &entry,
@@ -139,32 +122,25 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	std::map <std::wstring, CComVariant> keyList;
-	std::map <std::wstring, CComVariant>::const_iterator it ;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
+		std::map <std::wstring, CComVariant> keyList;
+		std::map <std::wstring, CComVariant>::const_iterator it;
 		GetKeysList(keyList, strObjectPath);
 		it = keyList.find(L"InstanceID");
 		if (it == keyList.end())
 		{
-			//_Module.logger.Error(File,LOCATION, _T("WiFi Profile data"), _T("AddWiFiProfile"),_T("WBEM_E_INVALID_METHOD_PARAMETERS"));
-			//_Module.SetLastErrorString(GETSCSMESSAGE1(ERROR_IN_PARAMETER,_T("InstanceID")));
-			return  WBEM_E_INVALID_METHOD_PARAMETERS;
+			hr = WBEM_E_INVALID_METHOD_PARAMETERS;
+			return hr;
 		}
 
 		std::wstring val = (it->second).bstrVal;
 		const WCHAR* str = val.c_str();
 		unsigned int num = _wtoi(str+wcslen(L"Certificate Hash"));
-		
-
-		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
-
 		do 
 		{
 			std::vector<HashEntry> hashlist;
@@ -202,26 +178,13 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 			}
 		}while(0);
 
-		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-
-		//Enumerate the collection, retrieving params and creating return instances
-		if (STATUS_SUCCESS == hr)
-		{
-			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));
-		}
-		else
-		{
-			//_Module.logger.Error(File,LOCATION,  _T("Profile data"), _T("Get profile failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-		}
+		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
 	catch (...)
 	{
-		//_Module.SetLastErrorString(GETSCSMESSAGE(ERROR_EXCEPTION_IN_SERVICE));
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 
-
 	return hr;
-
 }

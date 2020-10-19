@@ -11,6 +11,7 @@
 #define __MWI_TYPES_H_
 
 #include <atlbase.h>
+
 #include <string>
 #define STATUS_SUCCESS 0
 #define _WIN32_DCOM
@@ -30,7 +31,7 @@
 #include    <Wmiutils.h>
 #include    <functional>
 #include    <map>
- 
+#include "DebugPrints.h"
 
 #ifndef ASSERT
 #ifdef _DEBUG
@@ -118,8 +119,7 @@ struct _ATL_AutomationType<std::wstring>
 #define GetParamBREAKIF(exp,s1)    \
 	if(exp != S_OK) {\
 	hr = WBEM_E_INVALID_METHOD_PARAMETERS; \
-	/*_Module.SetLastErrorString(GETSCSMESSAGE1(ERROR_IN_PARAMETER,std::wstring(s1).c_str()));\
-	_Module.logger.Error(File,LOCATION, _T("SCS Server"), GETSCSMESSAGE1(ERROR_IN_PARAMETER,std::wstring(s1).c_str()), _T("Bad WMI param ")); */\
+	UNS_ERROR("Bad WMI param %s\n", s1); \
 	break; } \
 	else \
 	hr = WBEM_S_NO_ERROR; 
@@ -127,13 +127,11 @@ struct _ATL_AutomationType<std::wstring>
 #define GetRequiredParamBREAKIF(exp, b,s1)    \
 	if(exp != S_OK) {\
 	hr = ERROR_IN_PARAMETER; \
-	/*_Module.SetLastErrorString(GETSCSMESSAGE1(ERROR_IN_PARAMETER,std::wstring(s1).c_str()));\
-	_Module.logger.Error(File,LOCATION, _T("SCS Server"), GETSCSMESSAGE1(ERROR_IN_PARAMETER,std::wstring(s1).c_str()), _T("Bad WMI param ")); */\
+	UNS_ERROR("Bad WMI param %s\n", s1); \
 	break; }\
 	if(!b) {\
 	hr = MISSING_MANDATORY_PARAMETER; \
-	/*_Module.SetLastErrorString(GETSCSMESSAGE1(MISSING_MANDATORY_PARAMETER,std::wstring(s1).c_str()));\
-	_Module.logger.Error(File,LOCATION, _T("SCS Server"), GETSCSMESSAGE1(MISSING_MANDATORY_PARAMETER,std::wstring(s1).c_str()), _T("Bad WMI param ")); */\
+	UNS_ERROR("Required WMI param %s\n", s1); \
 	break; }\
 	hr = WBEM_S_NO_ERROR; 
 
@@ -141,7 +139,7 @@ struct _ATL_AutomationType<std::wstring>
 #define BREAKIF(exp)	\
 	hr = exp;							\
 	if(hr != S_OK)	{\
-	/*_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad WMI param ")); */\
+	UNS_ERROR("Bad WMI param\n"); \
 	break; }
 
 #define RETURNIF(exp)                                                       \
@@ -149,7 +147,7 @@ struct _ATL_AutomationType<std::wstring>
         HRESULT hr = exp;                                                   \
         if(hr != S_OK)                                                      \
         {				                                                    \
-		/*_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad WMI param "));*/	\
+			UNS_ERROR("Bad WMI param\n");                                   \
 			return hr;                                                      \
         }                                                                   \
     }while(0)
@@ -228,7 +226,7 @@ HRESULT WMIGet(         IWbemServices*      srv,
 
 		return  S_OK;
 	}while (0);
-	//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T("Invalid Parameter"), name);
+	UNS_ERROR("Invalid Parameter %W\n", name);
 
 	return hr;
 }
@@ -261,7 +259,7 @@ HRESULT hr;
 
 		return  S_OK;
 	} while (0);
-	//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T("Invalid Parameter"), name);
+	UNS_ERROR("Invalid Parameter %W\n", name);
 	return hr;
 }
 
@@ -452,7 +450,7 @@ HRESULT  WMIPut(
 		memset(val.bstrVal, 0, (var.size() * sizeof(wchar_t))); 
 		if (hr != S_OK)
 		{
-			/*_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad WMI param "));*/
+			UNS_ERROR("Bad WMI Param %W\n", name);
 			return hr;
 		}
 	}
@@ -1129,7 +1127,7 @@ HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std:
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("GetKeysList"), _T("bad catch"),_T("bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 	}
 	return hr;
 }
@@ -1159,11 +1157,11 @@ static HRESULT WMIHandleSetStatus(IWbemServices* pNamespace,IWbemObjectSink  __R
 		}
 		while(0);
 		pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, WBEM_E_PROVIDER_FAILURE,L"Error", obj);
-		//_Module.logger.Info(File,LOCATION, _T("SetStatus"), _T("Finish operation with Error:"),_Module.GetLastErrorString());
+		UNS_ERROR("Function failed with return code = %u\n", hrInput);
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("WMIHandleSetStatus"), _T("bad catch"),_T("bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 	}
     return  S_OK;
 }

@@ -21,9 +21,8 @@ HRESULT Audit_Record_WMI_Provider::Enumerate(
 
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-	//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Enumerate started"),_T(""));
 	//Get all keys in a colllection, from an internal function
 	try
 	{
@@ -74,29 +73,21 @@ HRESULT Audit_Record_WMI_Provider::Enumerate(
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 		
 	}
+
 	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-	//Enumerate the collection, retrieving params and creating return instances
-	//if (STATUS_SUCCESS == hr)
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate finished successfully"),_T(""));
-	//}
-	//else
-	//{
-	//	_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Enumerate failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-	//}
-
 	return hr;
-
 }
 
 HRESULT Audit_Record_WMI_Provider::EnumerateAuditRecord(std::vector<Audit_Record_WMI_Provider>& auditVec, uint32& ReturnValue)
 {
 	ReturnValue = 0;
 	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
 	try
 	{
 		do{
@@ -114,9 +105,10 @@ HRESULT Audit_Record_WMI_Provider::EnumerateAuditRecord(std::vector<Audit_Record
 	}
 	catch (...)
 	{
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
+
 	return hr;
 }
 
@@ -145,7 +137,6 @@ Audit_Record_WMI_Provider::Audit_Record_WMI_Provider(const MEAdminAudit &MEAudit
 	TlsStartTime = sdate; 
 }
 
-			
 HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 									 IWbemServices* pNamespace,
 									 const BSTR strObjectPath,
@@ -154,29 +145,21 @@ HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 {
 	USES_CONVERSION; 
 
-	//_Module.logger.Detail(File,LOCATION, _T("SCS Server"), _T("Start function"),_T(""));
-
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
-	std::map <std::wstring, CComVariant> keyList;
-	std::map <std::wstring, CComVariant>::const_iterator it ;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
+		std::map <std::wstring, CComVariant> keyList;
+		std::map <std::wstring, CComVariant>::const_iterator it ;
 		GetKeysList(keyList, strObjectPath);
 		it = keyList.find(L"InstanceID");
 		if (it == keyList.end())
 		{
-			//_Module.logger.Error(File,LOCATION, _T("WiFi Profile data"), _T("AddWiFiProfile"),_T("WBEM_E_INVALID_METHOD_PARAMETERS"));
-			//_Module.SetLastErrorString(GETSCSMESSAGE1(ERROR_IN_PARAMETER,_T("InstanceID")));
-			return  WBEM_E_INVALID_METHOD_PARAMETERS;
+			hr = WBEM_E_INVALID_METHOD_PARAMETERS;
+			return hr;
 		}
-
-		//unsigned long id = 0;
-		//std::wstring val = (it->second).bstrVal;
-		//StringUtilsNamespace::FromwString(val,id);
-
-		//_Module.logger.Info(File,LOCATION, _T("Profile data"), _T("Get profile object started"),_T("Profile:")+ StringUtilsNamespace::convertTowString(id));
 
 		do 
 		{
@@ -217,26 +200,13 @@ HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 		}while(0);
 
-		WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
-
-		//Enumerate the collection, retrieving params and creating return instances
-		if (STATUS_SUCCESS == hr)
-		{
-			//_Module.logger.Info(File,LOCATION,  _T("Profile data"), _T("Get profile  finished successfully"),_T(""));
-		}
-		else
-		{
-			//_Module.logger.Error(File,LOCATION,  _T("Profile data"), _T("Get profile failed with error code"),_T("StringUtilsNamespace::convertTowString(hr)"));
-		}
+		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
 	catch (...)
 	{
-		//_Module.SetLastErrorString(GETSCSMESSAGE(ERROR_EXCEPTION_IN_SERVICE));
-		//_Module.logger.Error(File,LOCATION, _T("SCS Server"), _T(""), _T("Bad catch"));
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
 	}
 
-
 	return hr;
-
 }

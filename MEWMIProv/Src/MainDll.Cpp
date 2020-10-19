@@ -41,6 +41,7 @@
 #include "methprov.h"
 #include "MEProvMessageUtil.h"
 #include <strsafe.h>
+#include <fstream>
 
 HMODULE ghModule;
 
@@ -54,6 +55,8 @@ DEFINE_GUID(CLSID_IntelMEProv , 0x73c0325a, 0xd3bf, 0x48af, 0x9f, 0x37, 0x15, 0x
 
 long       g_cObj=0;
 long       g_cLock=0;
+
+static const std::string logFileName = "MeWMIProv.log";
 
 //***************************************************************************
 //
@@ -78,24 +81,27 @@ BOOL WINAPI DllMain(HINSTANCE hInstance,  ULONG ulReason, LPVOID lpvReserved)
         if (DLL_PROCESS_ATTACH!=ulReason)
             return TRUE;
     }
-	//InitXMLLibrary();
 
     ghModule = hInstance;
 
-
-	ACE_LOG_MSG->open(0, ACE_Log_Msg::SYSLOG, 0);
+	std::ofstream *log_output_file = new std::ofstream(logFileName, std::ios::out);
+	if (log_output_file)
+	{
+		ACE_LOG_MSG->msg_ostream(log_output_file, 1);
+	}
+	ACE_LOG_MSG->open(L"WMIProv.dll",
+		ACE_Log_Msg::STDERR | ACE_Log_Msg::OSTREAM,
+		0);
 	u_long mask = ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS);
 #ifdef _DEBUG
 	u_long requiredLoggingMask = mask; // Debug Logging value is Trace
 #else //_DEBUG
-	u_long requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING; // Release Logging value is Error
+	u_long requiredLoggingMask = mask & ~LM_TRACE; // Release Logging value is Debug
 #endif //_DEBUG
 	ACE_LOG_MSG->priority_mask(requiredLoggingMask, ACE_Log_Msg::PROCESS);
 
-
 	UNS_DEBUG("WMIProvider Started\n");
-
-    return TRUE;
+	return TRUE;
 }
 
 //***************************************************************************

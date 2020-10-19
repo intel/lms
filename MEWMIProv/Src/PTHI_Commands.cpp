@@ -372,10 +372,6 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 
 unsigned int PTHI_Commands::OpenCIRA(void)
 {
-	//if (CheckCredentials(_T("OpenCIRA")) != S_OK)
-	//	return E_ACCESSDENIED;
-
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		OpenUserInitiatedConnectionCommand command;
@@ -399,10 +395,6 @@ unsigned int PTHI_Commands::OpenCIRA(void)
 
 unsigned int PTHI_Commands::CloseCIRA(void)
 {
-	//if (CheckCredentials(_T("CloseCIRA")) != S_OK)
-	//	return E_ACCESSDENIED;
-
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		CloseUserInitiatedConnectionCommand command;
@@ -427,7 +419,6 @@ unsigned int PTHI_Commands::CloseCIRA(void)
 
 unsigned int PTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 {
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetProvisioningTLSModeCommand command;
@@ -454,7 +445,6 @@ unsigned int PTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 
 unsigned int PTHI_Commands::GetTLSEnabled(bool* enabled)
 {
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetSecurityParametersCommand command;
@@ -533,8 +523,6 @@ unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
 
 UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 {
-
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetProvisioningStateCommand command;
@@ -562,7 +550,6 @@ UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 UINT PTHI_Commands::GetPID(std::wstring* pPID)
 {
 	USES_CONVERSION;
-
 
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
@@ -594,7 +581,6 @@ UINT PTHI_Commands::GetPID(std::wstring* pPID)
 
 unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 {
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetZeroTouchEnabledCommand command;
@@ -618,11 +604,9 @@ unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 	return rc;
 }
 
-
 unsigned int PTHI_Commands::GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN)
 {
 	USES_CONVERSION;
-
 
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
@@ -646,14 +630,12 @@ unsigned int PTHI_Commands::GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std
 		UNS_ERROR("Exception in AMTHICommand %C\n", e.what());
 	}
 
-
 	return rc;
 }
 
 unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTrigger, SHORT* NetworkConStatus, std::wstring* MPshostName, SHORT* RemoteAccessConStatus )
 {
 	USES_CONVERSION;
-
 
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
@@ -694,10 +676,10 @@ typedef struct _LOCAL_AGENT_PARAMS
 /*
  * Calls to Activate AMT configuration.
  * Arguments:
- *	param - Local agent parameters structure
+ *  param - Local agent parameters structure
  * Return values:
- *	PT_STATUS_SUCCESS - on success for get amt configuration data
- *	appropriate error value defined in StatusCodeDefinitions.h - on failure
+ *  PT_STATUS_SUCCESS - on success for get amt configuration data
+ *  appropriate error value defined in StatusCodeDefinitions.h - on failure
  */
 unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SHORT* provTlsMode)
 {
@@ -710,7 +692,7 @@ unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SH
 	bool isOTPSet = false;
 	bool setDNSOrOTPWhileAmtActivated = false;
 	std::string lastFunction;
-	
+
 	try 
 	{
 	do {
@@ -744,7 +726,7 @@ unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SH
 				lastFunction = "GetDNSSuffixCommand";
 				GetDNSSuffixCommand getDNSSuffixCommand;
 				std::string tempDnsSuffix = getDNSSuffixCommand.getResponse();
-				
+
 				if (tempDnsSuffix.compare(param.DnsSuffix) != 0)
 				{
 					status=AMT_STATUS_INTERNAL_ERROR;
@@ -850,18 +832,18 @@ unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SH
 /*
  * Calls to DiscoveryTest for check AMT configuration.
  * Arguments:
- *	isActivate - if this test running for start amt configuration
+ *  isActivate - if this test running for start amt configuration
  * Return values:
- *	AMT_STATUS_SUCCESS - on success for get amt configuration data
- *	appropriate error value defined in StatusCodeDefinitions.h - on failure
+ *  AMT_STATUS_SUCCESS - on success for get amt configuration data
+ *  appropriate error value defined in StatusCodeDefinitions.h - on failure
  */
 unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivated)
 {
 	unsigned int  status = AMT_STATUS_SUCCESS ;
-    bool isReinit = false;
+	bool isReinit = false;
 	bool isNullBufferReceived = false;
 	// In order to know if the mode is not AMT (i.e. NONE or ASF), basic commands like
-	//	GetProvisioningMode should return with null buffer.
+	// GetProvisioningMode should return with null buffer.
 	try {
 		GetProvisioningStateCommand provisioningStateCommand;
 	}
@@ -888,7 +870,7 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 	}
 	//It may take the AMTHI time to work after ChangeToAMTSucceeds
 	for(int i = 0; i < 12; i++)
-    {
+	{
 		try {
 			GetCodeVersionCommand getCodeVersionCommand;
 			getCodeVersionCommand.getResponse(); // There was a version parsing and usage here, but removed
@@ -911,47 +893,42 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 		}
 
 		Sleep(5000);
-
-    }
+	}
 
 	status = AMT_STATUS_INTERNAL_ERROR;
-
 	UNS_ERROR("Error: ChangeToAMT Failed \n");
-
 
     return status;
 }
 
 unsigned int PTHI_Commands::ZTCActivate(const std::string &OTP, const std::string &PKIDNSSuffix, SHORT* provTLSMode)
 {
-	//if (CheckCredentials(_T("OpenCIRA")) != S_OK)
-	//	return E_ACCESSDENIED;
-
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 
-		char str[256];
-		LOCAL_AGENT_PARAMS param;
-		memset(&param,0,sizeof(LOCAL_AGENT_PARAMS));
-		bool alreadyActivated = false;
-		param.OneTimePassword = OTP;
-		param.DnsSuffix = PKIDNSSuffix;
-		param.Activate = true;
+	LOCAL_AGENT_PARAMS param;
+	memset(&param,0,sizeof(LOCAL_AGENT_PARAMS));
+	bool alreadyActivated = false;
+	param.OneTimePassword = OTP;
+	param.DnsSuffix = PKIDNSSuffix;
+	param.Activate = true;
 
-		rc = DiscoveryTest(param.Activate, alreadyActivated);
-		if(AMT_STATUS_SUCCESS == rc && param.Activate)
+	rc = DiscoveryTest(param.Activate, alreadyActivated);
+	if(AMT_STATUS_SUCCESS == rc && param.Activate)
+	{
+		if ((rc=Activate(param, alreadyActivated, provTLSMode))==0)
 		{
-			if ((rc=Activate(param, alreadyActivated, provTLSMode))==0)
-			{
-				sprintf(str,"Activate succeed\n");
-				rc= S_OK;
-			}
-			else
-				sprintf(str,"Activate failed ret=%d\n",rc);
+			UNS_DEBUG("%C", "Activate succeed\n");
+			rc = S_OK;
 		}
 		else
-			sprintf(str,"DiscoveryTest return ret=%d param.Activate=%d\n",rc,param.Activate);
-		OutputDebugStringA(str);
+		{
+			UNS_DEBUG("%C", "Activate failed ret=%d\n", rc);
+		}
+	}
+	else
+	{
+		UNS_DEBUG("%C", "DiscoveryTest return ret=%d param.Activate=%d\n", rc, param.Activate);
+	}
 
 	return rc;
 }
@@ -959,7 +936,6 @@ unsigned int PTHI_Commands::ZTCActivate(const std::string &OTP, const std::strin
 unsigned int PTHI_Commands::GetConfigServerData(std::wstring* Address, unsigned short* port)
 {
 	USES_CONVERSION;
-
 
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
@@ -1077,21 +1053,17 @@ unsigned int PTHI_Commands::ChangeToAMT()
 		UNS_ERROR("%C failed %C\n", lastFunction, e.what());
 		status = E_FAIL;
 	}
-
-	
 	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in %C %C\n", lastFunction, e.what());
 		status = E_FAIL;
 	}
 
-
 	return status;
 }
 
 unsigned int PTHI_Commands::StopConfiguration(void)
 {
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		StopConfigurationCommand command;
@@ -1204,7 +1176,6 @@ unsigned char PTHI_Commands::SetProvisioningTLSModeValues(unsigned char provTLSM
 	return 0;
 }
 
-
 unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 {
 	USES_CONVERSION;
@@ -1289,7 +1260,6 @@ unsigned int PTHI_Commands::getWebUIState(SHORT* pState)
 
 unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 {
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetRedirectionSessionsStateCommand command;
@@ -1402,7 +1372,6 @@ unsigned int PTHI_Commands::GetKVMSessionActivation(bool* activated)
 
 unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREnabled, bool *pKVMEnabled)
 {
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetRedirectionStateCommand command;
@@ -1512,7 +1481,7 @@ unsigned int PTHI_Commands::GetPortSettings(std::vector<EthernetPortEntry> &ethe
 		UNS_ERROR("Exception in GetTcpipParametersCommand %C\n", e.what());
 	}
 
-	return (rc);
+	return rc;
 }
 
 unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAccount)
