@@ -1,3 +1,10 @@
+## [2043.0.0.0]
+
+### Fixed
+ - WMIProv: drop unused code
+ - CIM_Framework: CMake: fix library dependencies
+ - AMT_COM_Interface: fix a typo in AMT_COM_Interface.idl
+
 ## [2042.0.0.0]
 
 ### Fixed
