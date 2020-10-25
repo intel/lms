@@ -1,3 +1,10 @@
+## [2044.0.0.0]
+
+### Fixed
+ - WMIProv: Add basic flow-tests WMI provider
+ - WiFiProfileSync: improve logging of profile add/update failures
+ - WMIProv: re-enable logging
+
 ## [2043.0.0.0]
 
 ### Fixed
