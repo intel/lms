@@ -72,10 +72,6 @@ add_executable (lms
   UNSMain.cpp
 )
 
-if (WIN32)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
-endif (WIN32)
-
 target_link_libraries (lms
   ACELIB
   LmsGMS_COMMON
@@ -98,14 +94,19 @@ target_link_libraries (lms
   $<$<BOOL:${WIN32}>:LmsWMIEventHandler>
 )
 
-install(TARGETS lms
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
 if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+  set_target_properties(lms PROPERTIES
+    COMPILE_PDB_NAME lms
+    COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+  )
   install (FILES $<TARGET_PDB_FILE:lms>
     DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
   )
 endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+
+install(TARGETS lms
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
 if (UNIX)
   configure_file (

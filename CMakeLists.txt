@@ -55,9 +55,16 @@ else (UNIX)
   set(DEFAULT_LINKER_FLAGS_RELWITHDEBINFO "${DEFAULT_LINKER_FLAGS_RELWITHDEBINFO} /GUARD:CF")
   add_definitions (/GS /sdl)
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SafeSEH /NXCompat /DynamicBase")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /INCREMENTAL:NO /DEBUG:FULL /OPT:REF /OPT:ICF /GUARD:CF")
+  set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /INCREMENTAL:NO /DEBUG:FULL /OPT:REF /OPT:ICF /GUARD:CF")
   add_definitions (/D UNICODE /D _UNICODE)
   add_compile_options ($<$<CONFIG:Release>:/O2>)
   add_compile_options (/MT$<$<CONFIG:Debug>:d>)
+  add_compile_options(/MP)
+  # Generate pdb
+  add_compile_options ($<$<CONFIG:Release>:/Zi>)
+
+  # Universal build
   if (BUILD_WIN_UNIVERSAL)
     set(MSVC_IGNORED_LIBRARIES "/NODEFAULTLIB:kernel32 /NODEFAULTLIB:advapi32 /NODEFAULTLIB:user32")
     find_library (ONE_CORE "OneCoreUap.lib")
