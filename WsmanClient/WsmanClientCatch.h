@@ -19,6 +19,13 @@
 		WSMAN_ERROR("Error: Exception in " func " %C\n", reason); \
 		return false; \
 	}
+#define CATCH_exception_return_AMT_code(func) \
+	catch (std::exception& e) \
+	{ \
+		const char* reason = e.what(); \
+		WSMAN_ERROR("Error: Exception in " func " %C\n", reason); \
+		return WSMAN_AMT_INTERNAL_ERROR; \
+	}
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \

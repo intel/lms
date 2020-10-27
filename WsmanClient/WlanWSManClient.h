@@ -1,9 +1,10 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
-#pragma once
 
+#ifndef _WLAN_WSMAN_CLIENT_H
+#define _WLAN_WSMAN_CLIENT_H
 
 #include "CIM_WiFiEndpointSettings.h"
 #include "BaseWSManClient.h"
@@ -15,7 +16,6 @@ typedef std::vector<std::shared_ptr<SingleMeProfile>> MeProfileList;
 
 class WSMAN_DLL_API WlanWSManClient : public BaseWSManClient
 {
-
 public:
 
 	WlanWSManClient(void);
@@ -24,8 +24,8 @@ public:
 
 	bool Enumerate(MeProfileList& wifiSettings);
 	bool DeleteProfile(SingleMeProfile& wifiSettings);
-	bool AddProfile(SingleMeProfile& settings);
-	bool UpdateProfile(SingleMeProfile& settings);
+	unsigned int AddProfile(SingleMeProfile& settings);
+	unsigned int UpdateProfile(SingleMeProfile& settings);
 
 	bool LocalProfileSynchronizationEnabled(bool &enabled);
 
@@ -34,3 +34,4 @@ private:
 
 	bool m_isInit;
 };
+#endif // _WLAN_WSMAN_CLIENT_H

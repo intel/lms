@@ -34,6 +34,14 @@ typedef enum _WSMAN_STATUS
 static const int AMT_NON_SECURE_PORT = 16992;
 static const int AMT_SECURE_PORT	 = 16993;
 
+// AMT errors
+enum
+{
+	WSMAN_AMT_ERROR_SUCCESS = 0x0,
+	WSMAN_AMT_INTERNAL_ERROR = 0x1,
+	WSMAN_AMT_UNSUPPORTED = 0x812,
+};
+
 class WSMAN_DLL_API BaseWSManClient
 {
 public:

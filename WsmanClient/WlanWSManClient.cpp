@@ -64,13 +64,13 @@ bool WlanWSManClient::LocalProfileSynchronizationEnabled(bool &enabled)
 		svc.Get();
 
 		unsigned int data = svc.localProfileSynchronizationEnabled();
-		WSMAN_DEBUG("WlanWSManClient::LocalProfileSynchronizationEnabled data %d\n", data);
+		WSMAN_DEBUG("WlanWSManClient::LocalProfileSynchronizationEnabled data %u\n", data);
 
 		enabled = data == 1 || data == 3;
 	}
 	CATCH_exception_return("WlanWSManClient::LocalProfileSynchronizationEnabled")
 
-		return true;
+	return true;
 }
 
 bool WlanWSManClient::Enumerate(MeProfileList &wifiSettings)
@@ -116,16 +116,16 @@ bool WlanWSManClient::DeleteProfile(SingleMeProfile& wifiSettings)
 }
 
 // Add Single Profile to ME
-bool WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
+unsigned int WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
 {
-	unsigned int retVal;
+	unsigned int ret = WSMAN_AMT_INTERNAL_ERROR;
 
 	WSMAN_DEBUG("WlanWSManClient::AddProfile\n");
 
 	if (!Init())
 	{
 		WSMAN_ERROR("AddProfile Init return false!\n");
-		return false;
+		return ret;
 	}
 
 	try
@@ -138,7 +138,7 @@ bool WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
 			wifiEndpoint.WsmanClient(m_client.get());
 			wifiEndpoint.Get();
 		}
-		CATCH_exception_return("WlanWSManClient::AddProfile wifiEndpoint")
+		CATCH_exception_return_AMT_code("WlanWSManClient::AddProfile wifiEndpoint")
 
 		// InstanceID
 		wifiSettings.InstanceID(InstanceIDUser + wifiSettings.ElementName());
@@ -149,38 +149,38 @@ bool WlanWSManClient::AddProfile(SingleMeProfile& wifiSettings)
 
 		input.WiFiEndpoint(wifiEndpoint.Reference());
 		input.WiFiEndpointSettingsInput(wifiSettings);
-		retVal = svc.AddWiFiSettings(input, output);
+		ret = svc.AddWiFiSettings(input, output);
 
-		WSMAN_DEBUG("WlanWSManClient::AddProfile AddWiFiSettings retVal %d\n", retVal);
+		WSMAN_DEBUG("WlanWSManClient::AddProfile AddWiFiSettings ret = %u\n", ret);
 	}
-	CATCH_exception_return("WlanWSManClient::AddProfile AddWiFiSettings")
+	CATCH_exception_return_AMT_code("WlanWSManClient::AddProfile AddWiFiSettings")
 
-	return true;
+	return ret;
 }
 
 // Update Single Profile
-bool WlanWSManClient::UpdateProfile(SingleMeProfile& wifiSettings)
+unsigned int WlanWSManClient::UpdateProfile(SingleMeProfile& wifiSettings)
 {
-	unsigned int retVal;
+	unsigned int ret = WSMAN_AMT_INTERNAL_ERROR;
 
 	if (!Init())
 	{
 		WSMAN_ERROR("UpdateProfile - Init return false!\n");
-		return false;
+		return ret;
 	}
 
 	try
 	{
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		AMT_WiFiPortConfigurationService svc(m_client.get());
-			
+
 		CIM_WiFiEndpoint wifiEndpoint;
 		try
 		{
 			wifiEndpoint.WsmanClient(m_client.get());
 			wifiEndpoint.Get();
 		}
-		CATCH_exception_return("WlanWSManClient::UpdateProfile wifiEndpoint")
+		CATCH_exception_return_AMT_code("WlanWSManClient::UpdateProfile wifiEndpoint")
 
 		// InstanceID
 		wifiSettings.InstanceID(InstanceIDUser + wifiSettings.ElementName());
@@ -190,12 +190,12 @@ bool WlanWSManClient::UpdateProfile(SingleMeProfile& wifiSettings)
 		AMT_WiFiPortConfigurationService::UpdateWiFiSettings_OUTPUT output;
 		input.WiFiEndpointSettings(wifiSettings.Reference());
 		input.WiFiEndpointSettingsInput(wifiSettings);
-		retVal = svc.UpdateWiFiSettings(input, output);
+		ret = svc.UpdateWiFiSettings(input, output);
 
-		WSMAN_DEBUG("WlanWSManClient::UpdateProfile UpdateWiFiSettings retVal %d\n", retVal);
+		WSMAN_DEBUG("WlanWSManClient::UpdateProfile UpdateWiFiSettings retVal %u\n", ret);
 
 	}
-	CATCH_exception_return("WlanWSManClient::UpdateProfile UpdateWiFiSettings")
+	CATCH_exception_return_AMT_code("WlanWSManClient::UpdateProfile UpdateWiFiSettings")
 
-	return true;
+	return ret;
 }

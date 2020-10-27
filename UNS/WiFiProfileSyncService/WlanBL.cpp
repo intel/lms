@@ -8,7 +8,6 @@
 #include "Tools.h"
 #include <string>
 #include <map>
-const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Settings ";
 
 typedef std::map<std::wstring, int> str_int_map_t;
 
@@ -223,7 +222,6 @@ bool wlanps::WlanBL::AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProf
 	int numMEPRofiles;
 	int meProfilesIndex;
 	bool isThisAMissingProfile;
-	bool wsmanStatus;
 
 	try
 	{
@@ -255,14 +253,27 @@ bool wlanps::WlanBL::AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProf
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C OS Profile has no match - Add Profile To ME !\n",
 					osProfilesIndex, currentOsProfile.c_str());
 				using namespace Intel::Manageability::Cim::Typed;
-				CIM_WiFiEndpointSettings			wifiSettings = { 0 };
+				CIM_WiFiEndpointSettings wifiSettings = { 0 };
 				PINTEL_PROFILE_DATA	pIntelProfileData = m_wlanOsProfiles[osProfilesIndex];
 				ret = trans2CIM(pIntelProfileData, wifiSettings);
 				if (ret)
 				{
-					wsmanStatus = wsmanClient.AddProfile(wifiSettings);
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C AddProfile completed %C [ret = %d]\n",
-						osProfilesIndex, currentOsProfile.c_str(), wsmanStatus == true ? "successfully" : "with Error", ret);
+					unsigned int wsmanStatus = wsmanClient.AddProfile(wifiSettings);
+					switch (wsmanStatus)
+					{
+					case WSMAN_AMT_ERROR_SUCCESS:
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C AddProfile completed\n",
+							osProfilesIndex, currentOsProfile.c_str());
+						break;
+					case WSMAN_AMT_UNSUPPORTED:
+						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C AddProfile rejected as unsupported by FW\n",
+							osProfilesIndex, currentOsProfile.c_str());
+						break;
+					default:
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: [%02d] %-25C AddProfile failed ret = %u\n",
+							osProfilesIndex, currentOsProfile.c_str(), wsmanStatus);
+						break;
+					}
 				}
 				else
 				{
@@ -286,7 +297,6 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 	bool retVal;
 	bool bFound = false;
 	bool bFoundMatch = false;
-	bool wsmanStatus;
 	unsigned long profileFlags = 0;
 	int numMEPRofiles;
 	int numOsProfiles;
@@ -334,7 +344,7 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Getting ME Profiles list\n");
 
 		// Get Profile list from ME
-		wsmanStatus = wsmanClient.Enumerate(MeProfileList);
+		bool wsmanStatus = wsmanClient.Enumerate(MeProfileList);
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.Enumerate completed %C\n",
 			wsmanStatus == true ? "successfully" : "with failure");
@@ -410,16 +420,42 @@ void wlanps::WlanBL::onConnectionComplete(PINTEL_PROFILE_DATA profileData)
 		if (bFound == true)
 		{
 			// Profile exists in ME Profile list -> Update Profile
-			wsmanStatus = wsmanClient.UpdateProfile(wifiSettings);
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] completed %C\n",
-				profileData->profile, wsmanStatus == true ? "successfully" : "with Exception");
+			unsigned int status = wsmanClient.UpdateProfile(wifiSettings);
+			switch (status)
+			{
+			case WSMAN_AMT_ERROR_SUCCESS:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] completed\n",
+					profileData->profile);
+				break;
+			case WSMAN_AMT_UNSUPPORTED:
+				UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] rejected as unsupported by FW\n",
+					profileData->profile);
+				break;
+			default:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] failed ret = %u\n",
+					profileData->profile, status);
+				break;
+			}
 		}
 		else
 		{
 			// Profile not exists in ME Profile list -> Add Profile
-			wsmanStatus = wsmanClient.AddProfile(wifiSettings);
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] completed %C\n",
-				profileData->profile, wsmanStatus == true ? "successfully" : "with Exception");
+			unsigned int status = wsmanClient.AddProfile(wifiSettings);
+			switch (status)
+			{
+			case WSMAN_AMT_ERROR_SUCCESS:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] completed\n",
+					profileData->profile);
+				break;
+			case WSMAN_AMT_UNSUPPORTED:
+				UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] rejected as unsupported by FW\n",
+					profileData->profile);
+				break;
+			default:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] failed ret = %u\n",
+					profileData->profile, status);
+				break;
+			}
 		}
 	}
 	catch (std::exception* e)
