@@ -2,7 +2,7 @@
 # Copyright (C) 2010-2020 Intel Corporation
 cmake_minimum_required(VERSION 3.12)
 
-add_library (AMT_COM_Interface STATIC
+add_library (AMT_COM_Interface OBJECT
   AMT_COM_Interface.cpp
   Manageability_Commands.cpp
   PTHI_Commands.cpp
