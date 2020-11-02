@@ -147,9 +147,17 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 			message = dynamic_cast<WPFS_Message_Block*>(mbPtr->data_block());
 			if (message != nullptr)
 			{
-				wlanps::WlanBL& wlanBL = wlanps::WlanBL::getInstance();
+				if (!m_mainService->GetPortForwardingStarted())
+				{
+					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %s: Port Forwarding did not start yet, aborting sync operation. \n", name().c_str());
+					m_syncRequiredButNoPfw = true;
+				}
+				else
+				{
+					wlanps::WlanBL& wlanBL = wlanps::WlanBL::getInstance();
 
-				wlanBL.onConnectionComplete(&message->_profileData);
+					wlanBL.onConnectionComplete(&message->_profileData);
+				}
 				return 1;
 			}
 			else
@@ -176,41 +184,20 @@ int WiFiProfileSyncService::handlePublishEvent(const GMS_AlertIndication & alert
 	switch (alert.category)
 	{
 		case CATEGORY_UNS:
-		{
 			switch (alert.id)
 			{
 				case EVENT_PORT_FORWARDING_SERVICE_AVAILABLE:
-				{
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: %s got EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
-					if (m_syncRequiredButNoPfw)
-					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: m_syncRequiredButNoPfw is true -> PerformSync...\n");
-
-						wlanps::WlanBL::getInstance().SyncProfiles();
-						m_syncRequiredButNoPfw = false;
-						return 1;
-					}
-					else
-					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: m_syncRequiredButNoPfw is false -> Do nothing...\n");
-					}
-				}
+					PerformSync();
 				break;
-
 				default:
-				{
 					ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WiFiProfileSyncService::Invalid Message id.\n")), -1);
-				}
 				break;
 			}
-		}
-		break;
-
+			break;
 		default:
-		{
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("WiFiProfileSyncService::Invalid Message category.\n")), -1);
-		}
-		break;
+			break;
 	}
 
 	return 1;

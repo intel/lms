@@ -9,7 +9,7 @@
 #include "WlanWSManClient.h"
 #include <mutex>
 
-namespace wlanps{
+namespace wlanps {
 
 	class WlanBL
 	{
@@ -41,7 +41,10 @@ namespace wlanps{
 		bool	FetchOsProfiles();
 		void	PrintInternalOsUserProfileList();
 		bool	CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
+		bool	UpdateProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
+
+		bool EnumerateMeProfiles(WlanWSManClient &wsmanClient, MeProfileList &profiles);
 	};
 }
 
-#endif
+#endif // __WLAN_BL_H_
