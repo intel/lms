@@ -71,9 +71,8 @@ call :VerifyAdminPrivileges
 IF %ERRORLEVEL%==1 EXIT /B 1
 echo SUCCESS
 
-set LMS_FILES=ACE.dll ComEventHandler.dll Configurator.dll EventManager.dll GmsCommon.dll HistoryEventHandler.dll HostChangesNotificationService.dll IPRefreshService.dll LMS.exe PartialFWUpdateService.dll PortForwardingService.dll PowerOperationsService.dll SharedStaticIPService.dll StatusEventHandler.dll TimeSyncService.dll WiFiProfileSyncService.dll WinLogEventHandler.dll WMIEventHandler.dll WsmanClient.dll
-
-set EXTERNAL_FILES=1100_PP_PFU.BIN 1105_PP_PFU.BIN 1106_PP_PFU.BIN 1108_PP_PFU.BIN 1200_PP_PFU.BIN 1300_PP_PFU.BIN FWUpdateLib_11.dll FWUpdateLib_12.dll
+set LMS_FILES=LMS.exe
+set EXTERNAL_FILES=*.BIN FWUpdateLib_11.dll FWUpdateLib_12.dll
 
 echo Verify installation files consistency
 call :VerifyLmsFilesExists %LMS_FILES%
