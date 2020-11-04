@@ -1,5 +1,5 @@
 name: lms
-version: "2001.0.0.0"
+version: "2046.1.0.0"
 summary: Intel(R) AMT Local Manageability Service
 description: Intel(R) Active Management Technology Local Manageability Service
  allows applications to access
@@ -9,6 +9,8 @@ description: Intel(R) Active Management Technology Local Manageability Service
 grade: stable
 confinement: strict
 base: core18
+architectures:
+ - build-on: amd64
 
 apps:
   lms:
@@ -36,7 +38,8 @@ parts:
   metee:
     plugin: cmake
     source: https://github.com/intel/metee.git
-    source-commit: 5ecadbc3d94588dd842b2ef243d597aad644d031
+    # MeTee 3.0
+    source-commit: 92e1597181d7faec3196847a4bf35ea1f881383f
     build-packages:
       - g++
       - make
@@ -45,7 +48,7 @@ parts:
     #configflags:
     #  - -DCMAKE_BUILD_TYPE=Debug
     source: https://github.com/intel/lms.git
-    source-commit: f90fa51f07514b7644cc57846c90e46b146b23ae
+    source-commit: 11e6713f794b560328746ac39653d595f01361dc
     build-packages:
       - g++
       - make
@@ -58,7 +61,7 @@ parts:
       - network-manager-dev
       - xsltproc
       - docbook-xsl
-      - libcurl4-dev
+      - libcurl4-openssl-dev
     stage-packages:
       - libace-6.4.5
       - libnl-3-200
