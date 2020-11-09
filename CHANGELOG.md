@@ -1,3 +1,18 @@
+## [2046.0.0.0]
+
+### Fixed
+ - WiFiProfileSync: improve logging of profile add/update failures
+ - CMake: fix spelling in options text
+ - CMake: make AMT_COM_interface object library
+ - WiFiProfileSync: add profile update in full sync
+ - snap: update snap template
+ - Windows: fix standalone install script
+
+### Added
+ - CMake: add PDB generation
+
+### Fixed
+
 ## [2044.0.0.0]
 
 ### Fixed
