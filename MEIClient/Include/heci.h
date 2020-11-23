@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -22,16 +22,16 @@ namespace Intel {
 
 			void Init();
 			void Deinit();
-			unsigned int ReceiveHeciMessage(unsigned char *buffer, int len, unsigned long timeout);
-			unsigned int SendHeciMessage(const unsigned char *buffer, int len, unsigned long timeout);
-			unsigned long GetBufferSize() const { return _bufSize; }
+			size_t ReceiveHeciMessage(unsigned char *buffer, size_t len, unsigned long timeout);
+			size_t SendHeciMessage(const unsigned char *buffer, size_t len, unsigned long timeout);
+			size_t GetBufferSize() const { return _bufSize; }
 			void* GetHandle();
 			void GetHeciDriverVersion(teeDriverVersion_t *heciVersion);
 		protected:
 			const GUID &_guid;
 			bool _initialized;
 			bool _verbose;
-			unsigned long _bufSize;
+			size_t _bufSize;
 
 			_TEEHANDLE _handle;
 		};

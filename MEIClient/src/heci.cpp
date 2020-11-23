@@ -75,7 +75,7 @@ void HECI::Deinit()
 	}
 }
 
-unsigned int HECI::ReceiveHeciMessage(unsigned char *buffer, int len, unsigned long timeout)
+size_t HECI::ReceiveHeciMessage(unsigned char *buffer, size_t len, unsigned long timeout)
 {
 	TEESTATUS ret;
 	size_t numberOfBytesRead;
@@ -90,7 +90,7 @@ unsigned int HECI::ReceiveHeciMessage(unsigned char *buffer, int len, unsigned l
 	return numberOfBytesRead;
 }
 
-unsigned int HECI::SendHeciMessage(const unsigned char *buffer, int len, unsigned long timeout)
+size_t HECI::SendHeciMessage(const unsigned char *buffer, size_t len, unsigned long timeout)
 {
 	TEESTATUS ret;
 	size_t numberOfBytesWritten;

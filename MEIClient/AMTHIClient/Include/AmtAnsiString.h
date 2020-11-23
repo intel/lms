@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2020 Intel Corporation
  */
 /*++
 
@@ -30,7 +30,7 @@ public :
 	std::vector<uint8_t> serialize();
 	std::string getString() {return m_str;}
 
-	unsigned int size()
+	size_t size()
 	{
 		if (m_nullTerminated)
 		{
@@ -39,9 +39,9 @@ public :
 		return m_str.size();
 	}
 
-	unsigned int bufSize()
+	uint32_t bufSize()
 	{
-		return size() + sizeof(uint16_t);
+		return static_cast<uint32_t>(size() + sizeof(uint16_t));
 	}
 
 	AmtAnsiString& operator= ( const AmtAnsiString& str )

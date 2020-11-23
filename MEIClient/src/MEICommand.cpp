@@ -38,8 +38,8 @@ namespace Intel {
 			std::vector<uint8_t> buffer = m_request->Serialize();
 			std::shared_ptr<HECI> heciClient(GenerateHECIClient(getGUID()));
 			heciClient->Init();
-			uint32_t inBuffSize = heciClient->GetBufferSize();
-			unsigned int bytesWritten = 0;
+			size_t inBuffSize = heciClient->GetBufferSize();
+			size_t bytesWritten = 0;
 			bytesWritten = heciClient->SendHeciMessage(&buffer[0], buffer.size(), 0);
 			if (bytesWritten != buffer.size())
 			{
