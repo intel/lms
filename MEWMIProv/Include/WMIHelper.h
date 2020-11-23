@@ -14,13 +14,7 @@
 #define ERROR_HANDLER(ReturnValue) \
 		if (ReturnValue != S_OK) \
 		{ \
-			if (ReturnValue != WMI_E_HECI_CONNECTION && \
-				ReturnValue != WMI_E_PTHI_CLIENT_CONNECTION && \
-				ReturnValue != WMI_E_FWUPD_CLIENT_CONNECTION && \
-				ReturnValue != WMI_E_UPID_CLIENT_CONNECTION) \
-			{ \
-				ReturnValue = WMI_E_MESTATUS_BASE + ReturnValue; \
-			} \
+			ReturnValue = WMI_E_MESTATUS_BASE + ReturnValue; \
 		} 
 
 HRESULT IsUserAdmin();

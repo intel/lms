@@ -346,13 +346,9 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 	try
 	{
 		do{
-
-			bool specified = false;
-
 			WSmanCommands wsmc;
 			ReturnValue = wsmc.TerminateKVMSession();
 			ERROR_HANDLER(ReturnValue);
-
 
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"TerminateKVMSession", &pOutParams.p);

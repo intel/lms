@@ -125,6 +125,7 @@ Audit_Record_WMI_Provider::Audit_Record_WMI_Provider(const MEAdminAudit &MEAudit
 	CACertificateSerial2 = MEAudit.CACertificateSerial2;
 	CACertificateSerial3 = MEAudit.CACertificateSerial3;
 	AdditionalCaSerialNums = MEAudit.AdditionalCaSerialNums;
+	IsOemDefault = MEAudit.IsOemDefault;
 	IsTimeValid = MEAudit.IsTimeValid;
 	ProvServerIP = MEAudit.ProvServerIP;
 	ProvServerFQDN = MEAudit.ProvServerFQDN;

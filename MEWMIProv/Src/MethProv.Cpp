@@ -37,11 +37,10 @@
 //
 //***************************************************************************
 
-CMethodPro::CMethodPro()
+CMethodPro::CMethodPro() :m_cRef(0), m_pWbemSvcs(NULL), m_pOutClass(NULL)
 {
-    InterlockedIncrement(&g_cObj);
-    return;
-   
+	InterlockedIncrement(&g_cObj);
+	return;
 }
 
 CMethodPro::~CMethodPro(void)

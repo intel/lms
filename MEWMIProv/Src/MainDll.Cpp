@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -171,7 +171,7 @@ STDAPI DllRegisterServer(void)
 {  
     char       szID[128];
     WCHAR      wcID[128];
-    char       szCLSID[128];
+    std::string szCLSID("Software\\classes\\CLSID\\");
     TCHAR      szModule[MAX_PATH + 1];
     char * pName = "IntelMEProv";
     char * pModel = "Both";
@@ -186,13 +186,11 @@ STDAPI DllRegisterServer(void)
 
     StringFromGUID2(CLSID_IntelMEProv, wcID, sizeof(wcID)/sizeof(WCHAR) - 1);
     wcstombs_s(intReturnValue, szID, sizeof(szID), wcID,  sizeof(szID));
-	StringCbCopyA(szCLSID, sizeof(szCLSID), "Software\\classes\\CLSID\\");
-	StringCbCatA(szCLSID, sizeof(szCLSID), szID);
-
+	szCLSID+= szID;
 
     // Create entries under CLSID
 
-	LONG lRet = RegCreateKeyExA( HKEY_LOCAL_MACHINE, szCLSID, 0, NULL,
+	LONG lRet = RegCreateKeyExA( HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, NULL,
                     REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, 
                     &hKey1, NULL );
 	if (lRet != ERROR_SUCCESS)
@@ -256,7 +254,7 @@ STDAPI DllUnregisterServer(void)
 {
 	char       szID[128];
     WCHAR      wcID[128];
-    char  szCLSID[128];
+    std::string szCLSID("Software\\classes\\CLSID\\");
 	size_t * intReturnValue = NULL;
     HKEY hKey;
 
@@ -267,12 +265,11 @@ STDAPI DllUnregisterServer(void)
 
     wcstombs_s(intReturnValue, szID, sizeof(szID), wcID, sizeof(szID));
 
-	StringCbCopyA(szCLSID, sizeof(szCLSID), "Software\\classes\\CLSID\\");
-	StringCbCatA(szCLSID, sizeof(szCLSID), szID);
+	szCLSID += szID;
 
-     // First delete the InProcServer subkey.
+    // First delete the InProcServer subkey.
 
-    DWORD dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, szCLSID, 0, KEY_WRITE, &hKey);
+    DWORD dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, KEY_WRITE, &hKey);
     if(dwRet == NO_ERROR)
     {
         RegDeleteKeyA(hKey, "InProcServer32");

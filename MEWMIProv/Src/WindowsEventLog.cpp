@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -14,6 +14,7 @@
 //*****************************************************************************
 #include "DebugPrints.h"
 #include "WindowsEventLog.h"
+#include <sstream>
 
 
 //*****************************************************************************
@@ -22,9 +23,8 @@
 WindowsEventLog::WindowsEventLog(	const char * pszLogName, 
 									const char * pszSrcName,  
 									unsigned long	dwNum,
-									const char * pszModuleName /*= NULL*/)
+									const char * pszModuleName /*= NULL*/) : _hEventLinker(NULL)
 {
-	
     TCHAR szPath[1024];
 
 	/*if pszModuleName is NULL, GetModuleHandle() will return the handle of the current process*/
@@ -133,15 +133,12 @@ void WindowsEventLog::AddEventSource(	const char * pszLogName,
 										const TCHAR * pszMsgDLL ,
 										unsigned long	dwNum)
 {
-	TCHAR szBuf[MAX_PATH]; 
-	
 	// Create the event source as a subkey of the log. 
-	wsprintf(szBuf, 
-		TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\%s\\%s"),
-		pszLogName, pszSrcName); 
+	std::basic_string<TCHAR> szBuf = _TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\") + std::basic_string<TCHAR>(pszLogName)
+		+ _TEXT("\\") + std::basic_string<TCHAR>(pszSrcName);
 
  	// creates or opens(if key already exists) the registry key
-	if (_RegistryKey.Create(HKEY_LOCAL_MACHINE, szBuf) == ERROR_SUCCESS)
+	if (_RegistryKey.Create(HKEY_LOCAL_MACHINE, szBuf.c_str()) == ERROR_SUCCESS)
 	{
 
 		// sets the default max size(512KB) of the event log file
@@ -171,14 +168,13 @@ void WindowsEventLog::AddEventSource(	const char * pszLogName,
 void WindowsEventLog::RemoveEventSource(const char * pszLogName,
 										const TCHAR *pszSrcName)
 {
-	TCHAR szBuf[MAX_PATH]; 
 	// Registry key for adding the event source name. 
 	CRegKey _RegistryKey;
 	// Create the event source as a subkey of the log. 
-	wsprintf(szBuf, 
-		TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\%s"),
-		pszLogName, pszSrcName); 
-	_RegistryKey.Open(HKEY_LOCAL_MACHINE, szBuf);
+	std::basic_string<TCHAR> szBuf = _TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\") + std::basic_string<TCHAR>(pszLogName)
+		+ _TEXT("\\") + std::basic_string<TCHAR>(pszSrcName);
+
+	_RegistryKey.Open(HKEY_LOCAL_MACHINE, szBuf.c_str());
 	_RegistryKey.DeleteSubKey(pszSrcName);
 	_RegistryKey.Close();
 }

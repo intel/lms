@@ -555,11 +555,10 @@ UINT PTHI_Commands::GetPID(std::wstring* pPID)
 	try {
 		GetPIDCommand command;
 		GET_PID_RESPONSE response = command.getResponse();
-		wchar_t PID[50];
-		swprintf(PID,50,L"%c%c%c%c-%c%c%c%c",
-			response.pid[0],response.pid[1],response.pid[2],response.pid[3],response.pid[4],
-			response.pid[5],response.pid[6],response.pid[7]);
-		pPID->assign(PID);
+
+		std::wstringstream str;
+		str << response.pid[0] << response.pid[1] << response.pid[2] << response.pid[3] << L"-" << response.pid[4] << response.pid[5] << response.pid[6] << response.pid[7];
+		pPID->assign(str.str());
 		rc = 0;
 	}
 	catch (AMTHIErrorException& e)
@@ -839,9 +838,8 @@ unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SH
  */
 unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivated)
 {
-	unsigned int  status = AMT_STATUS_SUCCESS ;
-	bool isReinit = false;
-	bool isNullBufferReceived = false;
+	unsigned int status = AMT_STATUS_SUCCESS ;
+
 	// In order to know if the mode is not AMT (i.e. NONE or ASF), basic commands like
 	// GetProvisioningMode should return with null buffer.
 	try {
@@ -868,8 +866,8 @@ unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivat
 	{
 		UNS_ERROR("GetProvisioningStateCommand failed %C\n", e.what());
 	}
-	//It may take the AMTHI time to work after ChangeToAMTSucceeds
-	for(int i = 0; i < 12; i++)
+	// It may take the AMTHI time to work after ChangeToAMTSucceeds
+	for (int i = 0; i < 12; i++)
 	{
 		try {
 			GetCodeVersionCommand getCodeVersionCommand;
@@ -906,11 +904,12 @@ unsigned int PTHI_Commands::ZTCActivate(const std::string &OTP, const std::strin
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 
 	LOCAL_AGENT_PARAMS param;
-	memset(&param,0,sizeof(LOCAL_AGENT_PARAMS));
 	bool alreadyActivated = false;
 	param.OneTimePassword = OTP;
 	param.DnsSuffix = PKIDNSSuffix;
+	param.Verbose = false;
 	param.Activate = true;
+	param.EnableIPv6 = false;
 
 	rc = DiscoveryTest(param.Activate, alreadyActivated);
 	if(AMT_STATUS_SUCCESS == rc && param.Activate)

@@ -149,19 +149,8 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 		bool cryptoFuseEnabled; 
 		PTHI_Commands pthic; 
 		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);		
+		ERROR_HANDLER(ReturnValue);
 		
-		if (ReturnValue != S_OK)
-		{
-			if (ReturnValue != WMI_E_HECI_CONNECTION &&
-				ReturnValue != WMI_E_PTHI_CLIENT_CONNECTION &&
-				ReturnValue != WMI_E_FWUPD_CLIENT_CONNECTION &&
-				ReturnValue != WMI_E_UPID_CLIENT_CONNECTION)
-			{
-				ReturnValue = WMI_E_MESTATUS_BASE + ReturnValue;
-			}
-
-		}
-
 		WMIGetMethodOParams(pClass, L"getLastMEResetReason", &pOutParams.p);
 		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
 		WMIPut<1>( pOutParams, L"ReasonCode", ReasonCode);
@@ -733,7 +722,6 @@ HRESULT ME_System_WMI_Provider::getUPID(
 
 	try
 	{
-		bool state = false;
 		uint32_t oemPlatformIdType = 0;
 		std::wstring oemPlatformId, csmePlatformId;
 

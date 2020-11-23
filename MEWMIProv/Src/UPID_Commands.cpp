@@ -52,7 +52,6 @@ uint32_t UPID_Commands::SetUPIDStateCommand(bool state)
 	
 	try {
 		SetUPIDFeatureStateCommand command(state);
-		UPID_PLATFORM_ID_FEATURE_STATE_SET_Response response = command.getResponse();
 		rc = 0;
 	}
 	catch (Intel::MEI_Client::UPID_Client::UPIDErrorException& e)
