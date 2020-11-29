@@ -33,6 +33,7 @@ void DependencyManager::ReadMountOrder()
 	m_mountOrder[7].push_back(GMS_WIFIPROFILESYNCSERVICE);
 	m_mountOrder[7].push_back(GMS_IPREFRESHSERVICE);
 	m_mountOrder[7].push_back(POWER_OPERATIONS_SERVICE);
+	m_mountOrder[7].push_back(GMS_WATCHDOGSERVICE);
 	m_mountOrder[8].push_back(AMT_ENABLE_LAST_SERVICE);
 	m_mountOrder[8].push_back(WAITING_FOR_PFW_LAST_SERVICE);
 	m_mountOrder[9].push_back(LAST_SERVICE);

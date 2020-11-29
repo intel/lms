@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="watchdog", ATTR{identity}=="iamt_wdt", SYMLINK+="iamt_watchdog"

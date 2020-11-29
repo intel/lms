@@ -59,6 +59,7 @@ const LmsRegStr VAL_KVM_SESSION_STARTED                 = LMS_REG_TEXT("KVM_SESS
 const LmsRegStr VAL_KVM_SESSION_STOPPED                 = LMS_REG_TEXT("KVM_SESSION_STOPPED");
 const LmsRegStr VAL_PORT_FORWARDING_SERVICE_UNAVAILABLE = LMS_REG_TEXT("PORT_FORWARDING_SERVICE_UNAVAILABLE");
 const LmsRegStr VAL_AMT_DISABLE_ATTEMPT                 = LMS_REG_TEXT("AMT_DISABLE_ATTEMPT");
+const LmsRegStr VAL_WATCHDOG_ERROR                      = LMS_REG_TEXT("WATCHDOG_ERROR");
 
 //default ctor
 GMSConfig::GMSConfig()
@@ -168,6 +169,8 @@ bool GMSConfig::LoadMachineConfig()
 	m_EventsToPublish.bind(PORT_FORWARDING_SERVICE_UNAVAILABLE, lval);
 	GetFromRegistry(LMS_REG_CONFIG_DATA, VAL_AMT_DISABLE_ATTEMPT, &lval, 1);
 	m_EventsToPublish.bind(AMT_DISABLE_ATTEMPT, lval);
+	GetFromRegistry(LMS_REG_CONFIG_DATA, VAL_FW_FATAL_ERROR, &lval, 1);
+	m_EventsToPublish.bind(WATCHDOG_ERROR, lval);
 
 	m_EventsToPublish.bind(UNS_WARNING_MESSAGE, 1);
 	m_EventsToPublish.bind(UNS_ERROR_MESSAGE,   1);

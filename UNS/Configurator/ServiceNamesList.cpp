@@ -48,6 +48,7 @@ void ServiceNamesList::Read(NamesGroup namesGroup)
 		AddName(POWER_OPERATIONS_SERVICE);
 		AddName(GMS_TIMESYNCSERVICE);
 		AddNameWin(GMS_WIFIPROFILESYNCSERVICE);
+		AddNameLinux(GMS_WATCHDOGSERVICE);
 		break;
 
 	case SKU_5_NO_LME_GROUP:

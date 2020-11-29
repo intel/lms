@@ -294,6 +294,7 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 		return;
 	}
 	SaveCurrentStatus(curProvState, AMT_PROVISIONING_STATE_S);
+	NotifyConfigurator(curProvState, AMT_PROVISION_CONF);
 }
 
 void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *alert)

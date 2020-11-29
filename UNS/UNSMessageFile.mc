@@ -483,6 +483,14 @@ Language=All
 Intel(R) AMT disable attempt detected
 .
 
+MessageId=2127
+Facility=Application
+Severity=Warning
+SymbolicName=WATCHDOG_ERROR
+Language=All
+Failed to send watchdog keepalive.
+.
+
 ;//***********************End of Event Definitions***********************
 
 ;#endif

@@ -65,6 +65,7 @@ add_subdirectory ("TimeSyncService" "TimeSyncService")
 add_subdirectory ("WinLogEventHandler" "WinLogEventHandler")
 if (UNIX)
   add_subdirectory ("DBusService" "DBusService")
+  add_subdirectory ("WatchdogService" "WatchdogService")
 endif (UNIX)
 add_subdirectory ("DataInterfaceBackend" "DataInterfaceBackend")
 
@@ -92,6 +93,7 @@ target_link_libraries (lms
   $<$<BOOL:${WIN32}>:LmsWiFiProfileSyncService>
   $<$<BOOL:${WIN32}>:LmsPartialFWUpdateService>
   $<$<BOOL:${WIN32}>:LmsWMIEventHandler>
+  $<$<BOOL:${UNIX}>:LmsWatchdogService>
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
@@ -118,7 +120,9 @@ if (UNIX)
     DESTINATION /lib/systemd/system/
   )
 
-  install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/70-persistent-mei.rules
+  install (FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/70-persistent-mei.rules
+    ${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/70-mei-wdt.rules
     DESTINATION /lib/udev/rules.d/
   )
 

@@ -142,3 +142,15 @@ LMS prints debug logs to the file, located at C:\Windows\SysWOW64\Gms.log. The f
 Messages with level DEBUG and up are logged by default. Use UNS/windows_scripts/lms_enable_logging_severity.bat script to set desired log level.
 
 LMS service should be restarted to pick up a new log level.
+
+## Watchdog
+
+The LMS on Linux contains a watchdog ticker service which ticks an AMT watchdog. This service uses device /dev/iamt_watchdog.
+Udev script (70-mei-wdt.rules) creates alias named 'iamt_watchdog' for watchdog device with identity 'iamt_wdt'.
+
+The service ticks watchdog if the AMT is provisioned and the mentioned alias is accesible to it.
+Ensure that the device alias exists to enable watchdog tick.
+Remove the device alias to stop watchdog tick by LMS.
+
+Note: Ubuntu-base systems blacklist watchdog kernel modules if no watchdog ticker running. One should unblacklist mei-wdt module manually.
+

@@ -158,6 +158,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define EVENT_FW_FATAL_ERROR                            282
 #define EVENT_AMT_DISABLE_ATTEMPT						283
+#define EVENT_WATCHDOG_ERROR                            284
 
 //note this should be updated when when adding events
 #define MAX_EVENT_NUM							290

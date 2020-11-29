@@ -381,6 +381,19 @@ bool CheckWiFiProfileSyncRequired()
 }
 #endif // WIN32
 
+bool CheckWatchdogRequired()
+{
+	UNS_DEBUG(L"Configurator::CheckWatchdogRequired\n");
+	DataStorageWrapper& ds = DSinstance();
+	unsigned long state = Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_PRE;
+	if (!ds.GetDataValue(AMT_PROVISIONING_STATE_S, state, true))
+	{
+		UNS_ERROR(L"Failed to get provisioning state\n");
+		return false;
+	}
+	return (state == Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_POST);
+}
+
 #ifdef WIN32
 namespace
 {
@@ -468,6 +481,7 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 	m_checkLoadMap[GMS_SHAREDSTATICIPSERVICE] = CheckSharedStaticIPLoad;
 	m_checkLoadMap[GMS_TIMESYNCSERVICE] = CheckTimeSyncStateLoad;
 	m_checkLoadMap[GMS_WIFIPROFILESYNCSERVICE] = CheckWiFiProfileSyncRequired;
+	m_checkLoadMap[GMS_WATCHDOGSERVICE] = CheckWatchdogRequired;
 
 	deferredResumeTimerId_ = -1;
 
@@ -1051,7 +1065,10 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				}
 				break;
 			}
-
+		case AMT_PROVISION_CONF:
+			UNS_DEBUG(L"Got AMT Provision Status: %d\n", conf->value);
+			OnToggleService(GMS_WATCHDOGSERVICE, conf->value == EVENT_PROVISIONING_STATE_POST);
+			break;
 		case PFW_ENABLE_CONF:
 		{
 			UNS_DEBUG(L"Got Port Forwarding Status: %d\n", conf->value);

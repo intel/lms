@@ -67,6 +67,8 @@ WinLogFilter::WinLogFilter()
 
 	eventsMap_.bind(EVENT_AMT_DISABLE_ATTEMPT, 				GmsEventType(UNS_GENERAL		, AMT_DISABLE_ATTEMPT));
 
+	eventsMap_.bind(EVENT_WATCHDOG_ERROR,					GmsEventType(UNS_GENERAL		, WATCHDOG_ERROR));
+
 }
 	
 bool

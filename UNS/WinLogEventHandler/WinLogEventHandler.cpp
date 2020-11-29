@@ -109,7 +109,8 @@ WinLogEventHandler::winLogging(GMS_AlertIndication* alert)
 		(et.id == MISSING_IMAGE_FILE_LANG)			|| (et.id == MISSING_IMAGE_FILE_WLAN) ||
 		(et.id == AGENT_PRSENCE_STOPED)				|| (et.id == AGENT_PRSENCE_EXPIRED) ||
 		(et.id == UNS_NETWORK_SYNC_UPDATE_FAILED)	|| (et.id == UNS_WARNING_MESSAGE) ||
-		(et.id == FW_FATAL_ERROR)					|| (et.id == EVENT_PORT_FORWARDING_SERVICE_UNAVAILABLE))
+		(et.id == FW_FATAL_ERROR)					|| (et.id == EVENT_PORT_FORWARDING_SERVICE_UNAVAILABLE) ||
+		(et.id == WATCHDOG_ERROR))
 	{
 		if (alert->MessageArguments.size() > 0)
 		{

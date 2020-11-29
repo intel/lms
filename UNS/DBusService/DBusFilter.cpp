@@ -44,6 +44,7 @@ bool DBusFilter::defaultInitialization(std::shared_ptr<DBusFilter> filter)
 		filter->addEvent(EVENT_AMT_ENABLE) &&
 		filter->addEvent(EVENT_AMT_DISABLE) &&
 		filter->addEvent(EVENT_FW_FATAL_ERROR) &&
+		filter->addEvent(EVENT_WATCHDOG_ERROR) &&
 
 		filter->addEvent(EVENT_NETWORK_TRAFFIC_TX_CEASED) &&
 		filter->addEvent(EVENT_NETWORK_CONNECTIVITY_TX_REDUCED) &&
