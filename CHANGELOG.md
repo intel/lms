@@ -1,3 +1,14 @@
+## [2049.0.0.0]
+
+### Fixed
+ - MEIClient: use size_t instead of int for buffer sizes
+ - WMIProvider: A bulk fix for programming issues
+ - MEIClient: Separate metee headers
+
+### Added
+ - Windows: PFU sideloading script
+ - Linux: add WatchdogService
+
 ## [2046.0.0.0]
 
 ### Fixed
