@@ -1067,7 +1067,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			}
 		case AMT_PROVISION_CONF:
 			UNS_DEBUG(L"Got AMT Provision Status: %d\n", conf->value);
-			OnToggleService(GMS_WATCHDOGSERVICE, conf->value == EVENT_PROVISIONING_STATE_POST);
+			OnToggleService(GMS_WATCHDOGSERVICE, conf->value == Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_POST);
 			break;
 		case PFW_ENABLE_CONF:
 		{
