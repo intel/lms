@@ -41,7 +41,6 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetSpriteParameters_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetSpriteParameters"));
 	regMap->at(TerminateRemedySessions_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("TerminateRemedySessions"));
 	regMap->at(GetAuditLogs_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetAuditLogs"));
-	regMap->at(GetATDeviceInfo_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetATDeviceInfo"));
 	regMap->at(GetTheFeatureState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetTheFeatureState"));
 	regMap->at(GetCustomerType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetCustomerType"));
 	regMap->at(GetMenageabiltyMode_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetMenageabiltyMode"));

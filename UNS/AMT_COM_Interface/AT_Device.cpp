@@ -10,40 +10,19 @@
 
 // AT_Device.cpp : Implementation of CAT_Device
 
+#include "global.h"
 #include "stdafx.h"
 #include "atlsafe.h"
 #include "AT_Device.h"
 #include "AT_Device_BE.h"
 #include "UNSRegistry.h"
 #include "DataStorageGenerator.h"
-// CAT_Device
 
 
-STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT* pState, BSTR* bstrInfo)
+STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT*, BSTR*)
 {
-	if (pState == nullptr || bstrInfo == nullptr)
-		return E_POINTER;
-
-#ifdef _DEBUG
-	if (GetFromRegistry(L"DebugData", L"ATState", pState))
-	{
-		return S_OK;
-	}
-#endif
-
-	if (CheckCredentials(GetATDeviceInfo_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	Intel::LMS::LMS_ERROR err = Intel::LMS::AT_Device_BE(GetGmsPortForwardingStarted()).GetATDeviceInfo(*pState);
-	if (err != Intel::LMS::ERROR_OK)
-		return LMSError2HRESULT(err);
-
-	char ValueStr[512];
-	memset(ValueStr, 0, 512);
-	ATL::CComBSTR bstr(ValueStr);
-	*bstrInfo = bstr.Detach();
-
-	return S_OK;
+	UNS_DEBUG(L"CAT_Device::GetATDeviceInfo - deprecated\n");
+	return E_NOINTERFACE;
 }
 
 STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)

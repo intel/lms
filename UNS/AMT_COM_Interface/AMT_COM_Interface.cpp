@@ -84,8 +84,6 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetAuditLogs_F, L"", true))
 		return 1;
-	if (false == ds.SetDataValue(GetATDeviceInfo_F, L"", true))
-		return 1;
 	if (false == ds.SetDataValue(GetTheFeatureState_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetCustomerType_F, L"", true))

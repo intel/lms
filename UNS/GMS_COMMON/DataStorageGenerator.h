@@ -50,7 +50,6 @@ enum DATA_NAME : unsigned int
 	GetSpriteParameters_F,
 	TerminateRemedySessions_F,
 	GetAuditLogs_F,
-	GetATDeviceInfo_F,
 	GetTheFeatureState_F,
 	GetCustomerType_F,
 	GetMenageabiltyMode_F,

@@ -93,7 +93,7 @@ interface IPTHI_Commands : IDispatch{
 	pointer_default(unique)
 ]
 interface IAT_Device : IDispatch{
-	[id(1), helpstring("method GetATDeviceInfo")] HRESULT GetATDeviceInfo([out] SHORT* pState, [out] BSTR* bstrInfo);
+	[id(1), helpstring("method GetATDeviceInfo (DEPRECATED)")] HRESULT GetATDeviceInfo([out] SHORT* pState, [out] BSTR* bstrInfo);
 	[id(2), helpstring("method GetAuditLogs")]HRESULT GetAuditLogs([out] BSTR* bstrAuditLogs);
 };
 [

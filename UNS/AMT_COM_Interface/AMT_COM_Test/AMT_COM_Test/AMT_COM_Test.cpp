@@ -415,7 +415,7 @@ TEST_F(AMT_COM_AT_Device, GetATDeviceInfo)
 {
 	SHORT State;
 	bstr_t strInfo;
-	ASSERT_NO_THROW_COM(amthi->GetATDeviceInfo(&State, &strInfo.GetBSTR()));
+	ASSERT_THROW_NOINTERFACE(amthi->GetATDeviceInfo(&State, &strInfo.GetBSTR()));
 }
 
 TEST_F(AMT_COM_AT_Device, GetAuditLogs)

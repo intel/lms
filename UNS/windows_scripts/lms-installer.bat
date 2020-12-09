@@ -352,7 +352,6 @@ echo "SetSpriteZoom"="" >> %TempRegistryFile%
 echo "GetSpriteParameters"="" >> %TempRegistryFile%
 echo "TerminateRemedySessions"="" >> %TempRegistryFile%
 echo "GetAuditLogs"="" >> %TempRegistryFile%
-echo "GetATDeviceInfo"="" >> %TempRegistryFile%
 echo "GetTheFeatureState"="" >> %TempRegistryFile%
 echo "GetCustomerType"="" >> %TempRegistryFile%
 echo "GetMenageabiltyMode"="" >> %TempRegistryFile%

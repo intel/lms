@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2017 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 #include "DataInterfaceBackend.h"
 #include <string>
@@ -13,7 +13,6 @@ namespace Intel {
 		public:
 			AT_Device_BE(bool isPfwup);
 
-			LMS_ERROR GetATDeviceInfo(short &pState);
 			LMS_ERROR GetAuditLogs(std::string &bstrAuditLogs);
 		};
 	}

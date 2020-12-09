@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 #include "AT_Device_BE.h"
 #include "global.h"
@@ -13,39 +13,6 @@ namespace Intel {
 
 		AT_Device_BE::AT_Device_BE(bool isPfwUp) :Common_BE(isPfwUp)
 		{
-		}
-
-		LMS_ERROR AT_Device_BE::GetATDeviceInfo(short &pState)
-		{
-			uint32_t res;
-			SMBIOS_Reader sm_reader;
-			res = sm_reader.CheckForSmbiosFlags();
-
-			if (res == SMBIOS_FOUND)
-			{
-				pState = sm_reader.pCapabilities.AT_Enrolled + 1;
-				return ERROR_OK;
-			}
-			else if (res == SMBIOS_NOT_FOUND)
-			{
-				pState = 0; // Disable
-			}
-			else /* SMBIOS_FAILURE */
-			{
-				pState = 0;
-				/*
-					///////////////////////////////
-					SMBIOS_FAILURE				2
-					ERROR_COCREATEINSTANCE		3
-					ERROR_COINITIALIZE			4
-					ERROR_SMBIOS_ENUMERATION	5
-					ERROR_WMI_CONNECT			6
-					ERROR_WMI_SET_PROXY			7
-					///////////////////////////////
-				*/
-				UNS_DEBUG(L"GetATInfo failed res=%d\n", res);
-			}
-			return ERROR_FAIL;
 		}
 
 		LMS_ERROR AT_Device_BE::GetAuditLogs(std::string &bstrAuditLogs)
