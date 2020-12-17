@@ -31,11 +31,14 @@ private:
 	void CloseWatchdog();
 	bool CheckIdentity();
 	bool SetTimeout();
+	void StartTimer();
+	void StartShortTimer();
 
 	int wd_fd;
 	const std::string wd_name;
 	const std::string wd_identity;
-	const time_t wd_interval = 120;
+	const time_t wd_interval = 120; // seconds
+	const time_t wd_short_interval = 1; // seconds
 	const int wd_fault_tolerance = 3;
 	int wd_faults;
 	int wd_last_error;

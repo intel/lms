@@ -10,10 +10,9 @@ int WatchdogService::init(int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"init");
 	initSubService(argc, argv);
-	ACE_Time_Value ace_interval ((wd_interval / 2) * GMS_ACE_SECOND);
-	ACE_Reactor::instance()->schedule_timer (this, 0,
-						 ACE_Time_Value::zero,
-						 ace_interval);
+	// Start timer to have first ping immidiately
+	ACE_Time_Value ace_interval((wd_interval / 2) * GMS_ACE_SECOND);
+	ACE_Reactor::instance()->schedule_timer(this, 0, ACE_Time_Value::zero, ace_interval);
 	startSubService();
 	return 0;
 }
@@ -126,7 +125,12 @@ bool WatchdogService::StartWatchdog()
 					  wd_name.c_str());
 			goto fail;
 		}
+		StartShortTimer();
 		goto out;
+	}
+	if (wd_faults)
+	{
+		StartTimer();
 	}
 	wd_faults = 0;
 	wd_last_error = 0;
@@ -176,10 +180,15 @@ void WatchdogService::PingWatchdog()
 	int ret = ::ioctl(wd_fd, WDIOC_KEEPALIVE, NULL);
 	if (ret == -1)
 	{
+		int error = errno;
 		UNS_ERROR(L"Watchdog device (%C) ping failed [%d]:%C\n",
-				  wd_name.c_str(), errno, strerror(errno));
+				  wd_name.c_str(), error, strerror(error));
 		CloseWatchdog();
-		return;
+		if (error == ENODEV)
+		{ // on resume we should try to send ping in short interval
+			wd_faults++;
+			StartShortTimer();
+		}
 	}
 }
 
@@ -197,4 +206,18 @@ void WatchdogService::CloseWatchdog()
 		::close(wd_fd);
 		wd_fd = -1;
 	}
+}
+
+void WatchdogService::StartTimer()
+{
+	ACE_Reactor::instance()->cancel_timer(this);
+	ACE_Time_Value ace_interval((wd_interval / 2) * GMS_ACE_SECOND);
+	ACE_Reactor::instance()->schedule_timer(this, 0, ace_interval, ace_interval);
+}
+
+void WatchdogService::StartShortTimer()
+{
+	ACE_Reactor::instance()->cancel_timer(this);
+	ACE_Time_Value ace_interval(wd_short_interval * GMS_ACE_SECOND);
+	ACE_Reactor::instance()->schedule_timer(this, 0, ace_interval, ace_interval);
 }
