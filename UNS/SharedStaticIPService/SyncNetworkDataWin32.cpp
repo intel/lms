@@ -44,7 +44,9 @@ bool SyncNetworkData::ValidateLinkStatus()
 	
 	for (int trialsCounter=1 ; trialsCounter<=3 ; trialsCounter++)
 	{
-		Sleep(1000); // otherwise, GetIpAddrTable function will not achieve all the adapters. (in case of Symc IP and changing the IP address of the adapter, the API will not avhieve the updated adapter. Bug 1304805284)
+		Sleep(1000); // otherwise, GetIpAddrTable function will not achieve all the adapters.
+		             // (in case of Symc IP and changing the IP address of the adapter,
+			     // the API will not achieve the updated adapter. Bug 1304805284)
 	
 		UNS_DEBUG(L"Trial # %d\n", trialsCounter);
 
@@ -74,7 +76,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 			if (pIPAddrTable->table[i].wType & MIB_IPADDR_DISCONNECTED)
 			{
 				res = false;
-				UNS_DEBUG(L"Address is on disconected interface\n");
+				UNS_DEBUG(L"Address is on disconnected interface\n");
 			}
 			else if (pIPAddrTable->table[i].wType & MIB_IPADDR_DELETED)
 			{

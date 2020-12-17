@@ -32,8 +32,8 @@ using namespace std;
 /*
 * AMTEthernetPortSettings: 
 * Link preference:	1 - ME
-*					2 - HOST
-*					3 - Reserved
+*			2 - HOST
+*			3 - Reserved
 */
 
 //TODO: Disable all AMTEthernetPortSettingsClient tests in case there's no wireless network
@@ -49,24 +49,24 @@ TEST(AMTEthernetPortSettingsClient, DISABLED_Get)
 		cout << "Link Preference: " << pLinkPreference << endl;
 		cout << "Link Control: " << pLinkControl << endl << endl;
 		cout << "Link Protection: " << pLinkProtection << endl << endl;
-	}	
+	}
 }
 
 TEST(AMTEthernetPortSettingsClient, DISABLED_Set1)
 {
 	Mock_AMT_EthernetPortSettings mock_settings;
 	unsigned int preference = 1;
-	AMT_EthernetPortSettings::SetLinkPreference_INPUT input;					 
+	AMT_EthernetPortSettings::SetLinkPreference_INPUT input;
 	input.LinkPreference(preference);
-	
+
 	ON_CALL(mock_settings, LinkControlExists()).WillByDefault(Return(true));
 	ON_CALL(mock_settings, LinkPreferenceExists()).WillByDefault(Return(true));
 	ON_CALL(mock_settings, LinkControl()).WillByDefault(Return(1));
 	ON_CALL(mock_settings, LinkPreference()).WillByDefault(Return(1));
 	//ON_CALL(mock_settings, SetLinkPreference(input)).WillByDefault(Return(1));
-	
+
 	AMTEthernetPortSettingsClient client;
-	EXPECT_TRUE(client.SetLinkPreference(1));	
+	EXPECT_TRUE(client.SetLinkPreference(1));
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
 	unsigned int pLinkProtection;
@@ -75,7 +75,7 @@ TEST(AMTEthernetPortSettingsClient, DISABLED_Set1)
 	if (ret){
 		EXPECT_EQ(1, pLinkPreference);
 		EXPECT_EQ(1, pLinkControl);
-	}	
+	}
 }
 
 TEST(AMTEthernetPortSettingsClient, DISABLED_Set2)
@@ -90,7 +90,7 @@ TEST(AMTEthernetPortSettingsClient, DISABLED_Set2)
 	if (ret){
 		EXPECT_EQ(2, pLinkPreference);
 		EXPECT_EQ(2, pLinkControl);
-	}	
+	}
 }
 
 TEST(AMTEthernetPortSettingsClient, DISABLED_SetInvalid)
@@ -105,12 +105,12 @@ TEST(AMTEthernetPortSettingsClient, DISABLED_SetInvalid)
 	if (ret){
 		EXPECT_NE((unsigned int)3, pLinkPreference);
 		EXPECT_NE((unsigned int)3, pLinkControl);
-	}	
+	}
 	EXPECT_TRUE(ret = settings.SetLinkPreference(345));
 	if (ret){
 		EXPECT_NE((unsigned int)345, pLinkPreference);
 		EXPECT_NE((unsigned int)345, pLinkControl);
-	}	
+	}
 }
 
 TEST(AMTFCFHWSmanClient, userInitiatedPolicyRule)
@@ -121,7 +121,7 @@ TEST(AMTFCFHWSmanClient, userInitiatedPolicyRule)
 	EXPECT_TRUE(ret = fcfh.userInitiatedPolicyRuleExists(&pExist));
 	if (ret){
 		cout << "Does user initiated policy rule exist: " << ((pExist!=0) ? "Yes" : "No") << endl;
-	}	
+	}
 }
 
 TEST(AMTFCFHWSmanClient, snmpEventSubscriber)
@@ -132,7 +132,7 @@ TEST(AMTFCFHWSmanClient, snmpEventSubscriber)
 	EXPECT_TRUE(ret = fcfh.snmpEventSubscriberExists(&pExist));
 	if (ret){
 		cout << "Does snmp event subscriber exist: " << ((pExist!=0) ? "Yes" : "No") << endl;
-	}	
+	}
 }
 
 TEST(AMTFCFHWSmanClient, CILAFilterCollectionSubscription)
@@ -143,7 +143,7 @@ TEST(AMTFCFHWSmanClient, CILAFilterCollectionSubscription)
 	EXPECT_TRUE(ret = fcfh.CILAFilterCollectionSubscriptionExists(&pExist));
 	if (ret){
 		cout << "Does CILA filter collection subscription exist: " << ((pExist!=0) ? "Yes" : "No") << endl << endl;
-	}	
+	}
 }
 
 TEST(AMTRedirectionServiceWSManClient, terminateSession)
@@ -357,7 +357,7 @@ TEST(TimeSynchronizationClient, syncLocalTime)
 	time_t rawtime;
 	rawtime = time(NULL);
 	cout << "Local time: " << rawtime << endl;
-	printTime(rawtime);	
+	printTime(rawtime);
 	AMTTime = (unsigned int)rawtime;
 	LastAMTTime = AMTTime;
 	ASSERT_TRUE(timeClient.SetAMTTime(AMTTime));
@@ -411,11 +411,10 @@ int main(int argc, char** argv)
 	argc = 2;
 	argv[1] = "--gtest_filter=*-*AMTEthernetPortSettingsClient*";
 	*/
-	
+
 	testing::InitGoogleMock(&argc, argv); 
 
 	//getchar(); // keep console window open until Return keystroke 
 
 	return RUN_ALL_TESTS();
 } 
-
