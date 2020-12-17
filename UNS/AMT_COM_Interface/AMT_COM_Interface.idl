@@ -68,7 +68,7 @@ interface IPTHI_Commands : IDispatch{
 	[id(29) , helpstring("method GetWLANLinkInfo")] HRESULT GetWLANLinkInfo([out] UINT* pPreference, [out] UINT* pControl, [out] UINT* pProtection);
 	[id(30) , helpstring("method SetLinkPreferenceToHost")] HRESULT SetLinkPreferenceToHost();
 	[id(31) , helpstring("method InitiateUserConnection(out ResponseStatus)")] HRESULT InitiateUserConnection([out] SHORT* pStatus);
-	[id(32), helpstring("method userInitiatedPolicyRuleExists (connetcion status - CIRA disabled/enabled)")] HRESULT userInitiatedPolicyRuleExists([out] SHORT* pStatus);
+	[id(32), helpstring("method userInitiatedPolicyRuleExists (connection status - CIRA disabled/enabled)")] HRESULT userInitiatedPolicyRuleExists([out] SHORT* pStatus);
 	[id(33), helpstring("method snmpEventSubscriberExists (snmpEvent existence - eventSubscriber exists/doesn't exists)")] HRESULT snmpEventSubscriberExists([out] SHORT* pExists);
 	[id(34), helpstring("method CILAFilterCollectionSubscriptionExists (filter Collection Subscription existence - Subscriber exists/doesn't exists)")] HRESULT CILAFilterCollectionSubscriptionExists([out] SHORT* pExists);
 	[id(35), helpstring("method UpdateScreenSettings (DEPRECATED)")] HRESULT UpdateScreenSettings([in] EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters);
