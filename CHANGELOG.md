@@ -1,3 +1,16 @@
+## [2052.0.0.0]
+
+### Fixed
+ - Watchdog: Linux: fix enable on provision
+ - CIM_Framework: openwsman: pull code till commit 52932db5a01573ddd5ea0fbdbd2aa8f2cf6834ae
+ - Watchdog: Linux: retry with short timeout on error
+
+### Added
+ - Linux: Add Watchdog documentation
+
+### Deprecated
+ - Remove AntiTheft code from IMSS and LMS COM. GetATDeviceInfo COM method is deprecated.
+
 ## [2049.0.0.0]
 
 ### Fixed
