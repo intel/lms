@@ -41,10 +41,8 @@ Alternatively, in order to use pre-compiled MeTee one can set the following envi
 
 #### OpenWsman library
 The in-tree copy of OpenWsman library is located at CIM_Framework/openwsman/ directory.
-The sources are from 2.6.9 version from [GitHub](https://github.com/Openwsman/openwsman) with local modifications:
-* Static analysis fixes
+The sources are from 2.7.0 version from [GitHub](https://github.com/Openwsman/openwsman) with local modifications:
 * Passwords are stored encrypted on Windows
-* CMake build enabled on Windows
 
 #### GoogleTest (only for builds with unit-tests enabled)
 
@@ -145,12 +143,14 @@ LMS service should be restarted to pick up a new log level.
 
 ## Watchdog
 
-The LMS on Linux contains a watchdog ticker service which ticks an AMT watchdog. This service uses device /dev/iamt_watchdog.
-Udev script (70-mei-wdt.rules) creates alias named 'iamt_watchdog' for watchdog device with identity 'iamt_wdt'.
+The LMS service on Linux contains a watchdog ticker sub-service which ticks the AMT watchdog. This service uses /dev/iamt_watchdog device node.
+LMS is packaged with a udev script (70-mei-wdt.rules) that creates an alias named '/dev/iamt_watchdog' for a watchdog device with identity 'iamt_wdt'.
 
-The service ticks watchdog if the AMT is provisioned and the mentioned alias is accesible to it.
-Ensure that the device alias exists to enable watchdog tick.
-Remove the device alias to stop watchdog tick by LMS.
+The watchdog sub-service pings the AMT watchdog if two conditions are met: The AMT is provisioned on the platform and the mentioned device node alias is accessible to the service.
 
-Note: Ubuntu-base systems blacklist watchdog kernel modules if no watchdog ticker running. One should unblacklist mei-wdt module manually.
+Note: Ubuntu-base systems usually blacklist watchdog kernel modules on default. One should unblacklist mei-wdt module manually in /etc/modprobe.d/blacklist-watchdog.conf
 
+On systems with more than one watchdog, usually the platform iTCO_wdt watchdog and with a standard watchdog ticker enabled, e.g. one provided by systemd, the ticker can acquire the AMT watchdog if AMT watchdog loads first and registers as /dev/watchdog0.
+To prevent that, one need to create an alias for platform watchdog iTCO and configure the standard ticker with that alias.
+
+The AMT watchdog can either report to the management console about system failure, but it can be configured to also perform system reboot. In this case do not enable the platform or other watchdog to prevent the collision.
