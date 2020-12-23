@@ -325,7 +325,7 @@ int PortForwardingService::resume()
 
 void PortForwardingService::BroadcastActive()
 {
-	if (!m_needBroadcastStarted && !m_needBroadcastStarted && !m_needBroadcastPfwActivated)
+	if (!m_needBroadcastStarted && !m_needBroadcastResumed && !m_needBroadcastPfwActivated)
 	{
 		return;
 	}
