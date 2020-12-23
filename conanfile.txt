@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2020 Intel Corporation
+[requires]
+metee/3.0.0@mesw/stable
+
+[generators]
+cmake
+cmake_find_package
+visual_studio
