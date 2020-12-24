@@ -1,3 +1,11 @@
+## [2052.1.0.0]
+
+### Fixed
+ - PortForwardingService: fix port forwarding started event condition
+
+### Changed
+ - Add option to pull metee from conan
+
 ## [2052.0.0.0]
 
 ### Fixed
