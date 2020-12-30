@@ -242,7 +242,10 @@ namespace WSManagement
 		string ret;
 		try
 		{
-			ret = cl->Invoke(resourceUri, methodName, content, s);
+			WsmanOptions options(FLAG_SUPRESS_100_CONTINUE);
+			options.setNamespace(cl->GetNamespace());
+			options.addSelectors(s);
+			ret = cl->Invoke(resourceUri, methodName, content, options);
 		}
 		catch (WsmanSoapFault &ex)
 		{
