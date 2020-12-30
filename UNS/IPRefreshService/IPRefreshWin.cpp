@@ -36,7 +36,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 
 		for (int i = 0; i < pInfo->NumAdapters; i++)
 		{
-			UNS_DEBUG(L"\tAdapter Name: %ws,\n", pInfo->Adapter[i].Name);
+			UNS_DEBUG(L"\tAdapter Name: %W,\n", pInfo->Adapter[i].Name);
 			UNS_DEBUG(L"\tAdapter Index: %d\n", pInfo->Adapter[i].Index);
 		}
     }
@@ -47,7 +47,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 	}
 	else
 	{
-		UNS_ERROR(L"GetInterfaceInfo failed Error: %lu.\n", dwRetVal);
+		UNS_ERROR(L"GetInterfaceInfo failed Error: %u.\n", dwRetVal);
 		return false;
 	}
 	
@@ -60,12 +60,12 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 		if (pInfo->Adapter[i].Index != adaptorID) continue;
 		if ((dwRetVal = IpRenewAddress(&pInfo->Adapter[i])) == NO_ERROR)
 		{
-			UNS_DEBUG(L"IP renew succeeded.\n");
+			UNS_DEBUG(L"IP renew succeeded. Adapter Index: %d\n", adaptorID);
 			publishIPRefreshEvent(nicType == 1);
 		}
 		else 
 		{
-			UNS_ERROR(L"IP renew failed.\n");
+			UNS_ERROR(L"IP renew failed. Adapter Index: %d Error: %u\n", adaptorID, dwRetVal);
 		}
 	}
 	return (dwRetVal == NO_ERROR);
