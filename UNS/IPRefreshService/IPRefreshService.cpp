@@ -73,12 +73,12 @@ bool IPRefreshService::GetMacAddresses(unsigned short adaptorType)
 		if (adaptorType == AMTHI_Client::WIRED)
 		{
 			wiredMacAddress = MacAddressToString(lanSettings.MacAddress,6);
-			UNS_DEBUG(L"UpdateMacAddress successfully - MacAddress=%C\n",wiredMacAddress.c_str());
+			UNS_DEBUG(L"Updated Wired Mac Address successfully - MacAddress=%C\n",wiredMacAddress.c_str());
 		}
 		else
 		{		
 			wirelessMacAddress = MacAddressToString(lanSettings.MacAddress,6);
-			UNS_DEBUG(L"UpdateMacAddress successfully - MacAddress=%C\n",wirelessMacAddress.c_str());
+			UNS_DEBUG(L"Updated Wireless Mac Address successfully - MacAddress=%C\n",wirelessMacAddress.c_str());
 		}		
 		res = true;
 	}
@@ -115,7 +115,7 @@ bool IPRefreshService::GetAdaptorIDs()
 		if (GetMacAddresses(AMTHI_Client::WIRELESS))
 			wirelessMacAddress_exisits = true;
 	}
-	if ((wiredMacAddress_exisits && (!wiredAdaptorID_updated)) || (wirelessMacAddress_exisits && (!wiredAdaptorID_updated)))
+	if ((wiredMacAddress_exisits && (!wiredAdaptorID_updated)) || (wirelessMacAddress_exisits && (!wirelessAdaptorID_updated)))
 	{
 		return FillAdaptorIDs();
 	}
