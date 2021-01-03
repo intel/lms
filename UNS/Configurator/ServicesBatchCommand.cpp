@@ -45,8 +45,10 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 			if (Execute(dependencies) == FAILURE)
 				ret = FAILURE;
 		}
-		else //no dependencies - let's do the requested operation!
+		// If all dependencies are no-op noone calls the configurator so re-check to continue execution
+		if (theAsyncActivationManager::instance()->ReadyToOperation(service, GetOperation()))
 		{
+			//no dependencies - let's do the requested operation!
 			theLoadedServices::instance()->LockService(service);
 			if(!DoOperation(service))
 			{
