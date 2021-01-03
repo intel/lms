@@ -711,6 +711,9 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		case WIRELESS_LINK_PREFERENCE_CHANGED: 
 			s << DisplayWirelessProfileLinkPreferenceChanged(extData, extendedDataLen);
 			break;
+		case WIRELESS_UEFI_PROFILE_SYNC:
+			s << DisplayWirelessProfileUefiEnabledChangedEvent(extData, extendedDataLen);
+			break;
 		}
 		break;
 	case EAC_APPID:
@@ -2419,6 +2422,34 @@ std::string AuditLogWSManClient::DisplayWirelessProfileLinkPreferenceChanged(uin
 	if (extendedDataLen >= sizeof (uint32_t)) 
 	{
 		ss << PrintUint32(extData, extendedDataLen, "Timeout", i);
+	}
+	return ss.str();
+}
+
+/*****************************************************************************
+ * Function that displays the wireless profile share with UEFI enabled setting changed event. 
+ * Arguments:
+ *  extData				- Extended data.
+ *  extendedDataLen		- Extended data length.
+ ****************************************************************************/
+std::string AuditLogWSManClient::DisplayWirelessProfileUefiEnabledChangedEvent(uint8_t* extData, uint8_t extendedDataLen)
+{
+	std::stringstream ss;
+	if (extendedDataLen >= sizeof(uint8_t))
+	{
+		ss << "UEFI WiFi Profile Share is ";
+		switch (extData[0])
+		{
+		case UEFI_WIFI_PROFILE_SHARE_DISABLED:
+			ss << "Disabled. ";
+			break;
+		case UEFI_WIFI_PROFILE_SHARE_ENABLED:
+			ss << "Enabled. ";
+			break;
+		default:
+			ss << "Unknown. ";
+			break;
+		}
 	}
 	return ss.str();
 }

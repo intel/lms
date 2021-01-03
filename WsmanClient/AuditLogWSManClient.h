@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2020 Intel Corporation
  */
 /*++
 
@@ -106,7 +106,7 @@ const static std::string appIdStrings[NUM_APPS] = { "Security Admin", "RCO", "Re
 									  "BIOS Management", "Screen Blanking", "Watchdog"};
 
 // Holds the final index of each id per event group
-const static unsigned int endStringsArrayIndices[NUM_APPS] = { 20, 10, 13, 2, 6, 3, 6, 4, 4, 7, 3, 5, 5, 5, 3, 0, 2, 2 };
+const static unsigned int endStringsArrayIndices[NUM_APPS] = { 20, 10, 13, 2, 6, 3, 6, 4, 4, 7, 3, 6, 5, 5, 3, 0, 2, 2 };
 
 const static std::string eventIdStrings[] = {/*Security*/
 										"Provisioning Started", // Removed - Intel(R) AMT 
@@ -159,7 +159,7 @@ const static std::string eventIdStrings[] = {/*Security*/
 										/*Wireless*/
 										"Wireless Profile Added","Wireless Profile Removed",
 										"Wireless Profile Updated", "Wireless local Profile Sync Enablement changed" , 
-										"Wireless Link Preference Changed",
+										"Wireless Link Preference Changed", "Wireless profile share with UEFI enabled setting changed",
 										/*EAC*/
 										"EAC Posture Signer SET","EAC Enabled","EAC Disabled",
 										"EAC Posture State Update","EAC Set Options",
@@ -337,7 +337,8 @@ typedef enum _WirelessConfigurationEventID
 	WIRELESS_PROFILE_REMOVED			= 1,
 	WIRELESS_PROFILE_UPDATED			= 2,
 	WIRELESS_PROFILE_SYNC				= 3,
-	WIRELESS_LINK_PREFERENCE_CHANGED	= 4
+	WIRELESS_LINK_PREFERENCE_CHANGED	= 4,
+	WIRELESS_UEFI_PROFILE_SYNC			= 5
 }WirelessConfigurationEventID;
 
 typedef enum _EACEventID
@@ -428,6 +429,12 @@ typedef enum _LinkPreferenceChangedType
    LINK_PREFERENCE_ME   = 1,
    LINK_PREFERENCE_HOST = 2
 }LinkPreferenceChangedType;
+
+typedef enum _UEFIWiFiProfileShareEnabled
+{
+	UEFI_WIFI_PROFILE_SHARE_DISABLED = 0,
+	UEFI_WIFI_PROFILE_SHARE_ENABLED = 1
+}UEFIWiFiProfileShare;
 
 typedef enum _EventLogFreezeType
 {
@@ -594,6 +601,7 @@ private:
 	std::string DisplayWirelessProfileUpdatedEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayWirelessProfileLinkPreferenceChanged(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayWirelessProfileSyncChangeEvent(uint8_t* extData, uint8_t extendedDataLen);
+	std::string DisplayWirelessProfileUefiEnabledChangedEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayEacSetOptionsEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayOptInPolicyChangeEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplaySendConsentCodeEvent(uint8_t* extData, uint8_t extendedDataLen);
