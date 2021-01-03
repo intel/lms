@@ -196,20 +196,20 @@ bool Configurator::MEIEnabled() const
 	FuncEntryExit<decltype(meiEnabled)> fee(this, L"MEIEnabled", meiEnabled);
 
 	HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
- 
+
 	if (!FAILED(hres))
 	{
 		// Connect to the root\cimv2 namespace with
 		// the current user and obtain pointer pSvc
 		// to make IWbemServices calls.
 		hres = loc->ConnectServer(L"ROOT\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &svc );
-    
+
 		if (!FAILED(hres))
 		{
 				IEnumWbemClassObject* enumerator = NULL;
 				hres = svc->ExecQuery(L"WQL",L"SELECT Status FROM Win32_PnPEntity where Caption =\"Intel(R) Management Engine Interface \"",
 										WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
-    
+
 				if (!FAILED(hres))
 				{
 					if (enumerator)//we have only one instance
@@ -237,7 +237,7 @@ bool Configurator::MEIEnabled() const
 			UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
 		}
 	}
-	else 
+	else
 	{
 		UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
 	}
@@ -366,7 +366,7 @@ bool CheckWiFiProfileSyncRequired()
 	enabled = !CheckIfServiceInstalled(ACE_TEXT("EvtEng"));
 	if (!enabled)
 		UNS_DEBUG(L"Configurator:: Have ProSet, LocalProfileSynchronization disabled\n");
-	
+
 	return enabled;
 }
 #else // WIN32
@@ -432,7 +432,7 @@ namespace
 		return dwRet == ERROR_SUCCESS ? std::move(data) : nullptr;
 	}
 }
-	
+
 
 bool Configurator::PasswordOnWakeupDisabled() const
 {
@@ -452,7 +452,7 @@ bool Configurator::PasswordOnWakeupDisabled() const
 	DWORD dataSize = 0;
 
 	auto acdcRes = ReadValue( (sPS.ACLineStatus == 1) ? PowerReadACValue : PowerReadDCValue, &dataSize);
-		
+
 	if (acdcRes == nullptr)
 		return result;
 
@@ -514,7 +514,7 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 }
 
 int Configurator::fini (void)
-{	
+{
 	FuncEntryExit<void> fee(this, L"fini");
 	theDependencyManager::close();
 	theLoadedServices::close();
@@ -528,7 +528,7 @@ int Configurator::fini (void)
 void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 {
 	FuncEntryExit<void> fee(this, L"Configurator::HandleAceMessage");
-	
+
 	switch (type) {
 			case MB_ME_CONFIGURED:
 			{
@@ -555,7 +555,7 @@ void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}break;
 		case MB_TASK_COMPLETED:
 			{
-				//Add the dummy services dependency which was removed back 
+				//Add the dummy services dependency which was removed back
 				UNS_DEBUG(L"TASK_COMPLETED\n");
 				if (m_onToggleService)
 				{
@@ -574,7 +574,7 @@ void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			}break;
 		default:
 			ExecuteTask(mbPtr);
-	}		
+	}
 }
 
 const ACE_TString Configurator::name()
@@ -638,7 +638,7 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 	if (theLoadedServices::instance()->IsActive(serviceName))
 	{
 		UNS_DEBUG(L"Deactivating %s\n", serviceName.c_str());
-			
+
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new StopServiceDataBlock(m_meiEnabled));
 		mbPtr->msg_type(MB_STOP_SERVICE);
@@ -648,17 +648,17 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 
 	//brutally killing - the service is loaded but not active
 	FiniAceService(serviceName);
-	
+
 	return true;
 }
-	
+
 bool Configurator::SuspendAceService(const ACE_TString &serviceName)
 {
 	FuncEntryExit<void> fee(this, L"SuspendAceService");
 	if (theLoadedServices::instance()->IsActive(serviceName))
 	{
 		UNS_DEBUG(L"Deactivating %s\n", serviceName.c_str());
-			
+
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new ACE_Data_Block());
 		mbPtr->msg_type(MB_SUSPEND_SERVICE);
@@ -788,10 +788,10 @@ namespace
 			return;
 
 		UNS_DEBUG(L"OverrideProsetAdapterSwitching value=%d\n", prosetOverride);
-		
+
 		try
 		{
-			using namespace Intel::MEI_Client::AMTHI_Client;			
+			using namespace Intel::MEI_Client::AMTHI_Client;
 			CFG_SetOverrideProsetAdapterSwitchingCommand cmd(prosetOverride);
 			AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE res = cmd.getResponse();
 			UNS_DEBUG(L"Set Proset status %d\n", res.Status);
@@ -810,9 +810,9 @@ void Configurator::ScanConfiguration()
 	FuncEntryExit<void> fee(this, L"ScanConfiguration");
 	ACE_Time_Value interval(5);
 	ACE_Reactor::instance()->schedule_timer (this, 0,interval,interval);
-	
+
 	try
-	{	
+	{
 		m_fwVer = GetFwVersion();
 
 		if (!m_SkuAndBrandScanned)
@@ -824,7 +824,7 @@ void Configurator::ScanConfiguration()
 		m_SkuAndBrandScanned = true;
 
 		DoOverrideProsetAdapterSwitching();
-		
+
 		ServicesBatchStartCommand batch;
 		ServiceNamesList services;
 
@@ -845,7 +845,7 @@ void Configurator::ScanConfiguration()
 				services.Read(SKU_5_GROUP);
 			}
 
-			switch (m_platform.Fields.Brand) 
+			switch (m_platform.Fields.Brand)
 			{
 				case Intel::MEI_Client::MKHI_Client::BrandAMT:
 				case Intel::MEI_Client::MKHI_Client::BrandStdMng:
@@ -853,9 +853,9 @@ void Configurator::ScanConfiguration()
 					{
 						if (!m_stateData.Fields.Amt)// Manageability disabled in MEBx
 							break;
-						
+
 						services.Read(MANAGABILITY_GROUP);
-						
+
 					}
 					break;
 				case Intel::MEI_Client::MKHI_Client::BrandSBT:
@@ -904,10 +904,10 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 		TaskCompleted();
 		return;
 	}
-	
+
 	m_onToggleService = true;
 	ServiceNamesList services;
-	services.AddName(service);	
+	services.AddName(service);
 	if(val) //start the service
 	{
 		theLoadedServices::instance()->AddServiceToLoad(service);
@@ -930,13 +930,13 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 			TaskCompleted();
 	}
 }
-	        
+
 void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 {
 	ServiceNamesList services;
 	FuncEntryExit<decltype(status)> fee(this, L"ChangeServiceState", status);
 
-	switch (status) 
+	switch (status)
 	{
 		// The unloading of service and all the ones that depends on it was finished.
 		case STATUS_UNLOADCOMPLETE:
@@ -1032,7 +1032,11 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			break;
 		case WIFI_PROFILE_SYNC_CONF:
 			UNS_DEBUG(L"Got WiFi Profile Sync Status: %d\n",  conf->value);
+#ifdef WIN32
 			OnToggleService(GMS_WIFIPROFILESYNCSERVICE, conf->value != 0);
+#else
+			TaskCompleted();
+#endif // WIN32
 			break;
 		case TIME_SYNC_CONF: //Handles the changes in the LocalTimeSyncEnable field in the FW
 			UNS_DEBUG(L"Got Time Sync Status: %d\n",  conf->value);
@@ -1042,13 +1046,13 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 		case AMT_ENABLE_CONF:
 			{
 				UNS_DEBUG(L"Got AMT Status: %d\n", conf->value);
-				
+
 				if(conf->value != 0)
 				{
 					ServiceNamesList services;
 					services.Read(MANAGABILITY_GROUP);
 					services.AddName(AMT_ENABLE_LAST_SERVICE);
-					
+
 					NamesList svc;
 					services.GetNames(svc);
 					NamesList::const_iterator endIt = svc.end();
@@ -1067,14 +1071,18 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			}
 		case AMT_PROVISION_CONF:
 			UNS_DEBUG(L"Got AMT Provision Status: %d\n", conf->value);
+#ifndef WIN32
 			OnToggleService(GMS_WATCHDOGSERVICE, conf->value == Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_POST);
+#else
+			TaskCompleted();
+#endif // !WIN32
 			break;
 		case PFW_ENABLE_CONF:
 		{
 			UNS_DEBUG(L"Got Port Forwarding Status: %d\n", conf->value);
 
 			if (conf->value != 0)
-			{		
+			{
 				NamesList servicesNames;
 				theLoadedServices::instance()->GetAllWaitingForPfwServices(servicesNames);
 				if (servicesNames.empty())
@@ -1090,7 +1098,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				{
 					theLoadedServices::instance()->AddServiceToLoad(*it);
 				}
-				
+
 				ServicesBatchStartCommand batch;
 				if (batch.Execute(servicesNames) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 				{
@@ -1122,7 +1130,7 @@ void Configurator::FiniAceService(const ACE_TString &serviceName)
 		UNS_ERROR(L"trying to stop not running service\n");
 		return;
 	}
-	
+
 	m_mainService->StopAceService(serviceName);
 	theLoadedServices::instance()->RemoveService(serviceName);
 
@@ -1164,11 +1172,11 @@ void Configurator::DeviceEventRequested(uint32_t dwEventType, bool wasOnOurGUID)
 	MessageBlockPtr mbEventPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 
 	UNS_DEBUG(L"Event %d\n", dwEventType);
-	
+
 	switch(dwEventType)
 	{
 #ifdef WIN32
-		case DBT_DEVICEQUERYREMOVE:	
+		case DBT_DEVICEQUERYREMOVE:
 			TaskCompleted();
 			break;
 		case DBT_DEVICEREMOVEPENDING:
@@ -1204,7 +1212,7 @@ void Configurator::DeviceEventRequested(uint32_t dwEventType, bool wasOnOurGUID)
 
 				StopAllServices(false);
 			}
-			break;  
+			break;
 #endif // WIN32
 		default:
 			TaskCompleted();
@@ -1219,7 +1227,7 @@ void Configurator::CancelDeferredResumeTimer()
 
 	ACE_Reactor::instance()->cancel_timer(deferredResumeTimerId_);
 	deferredResumeTimerId_ = -1;
-	return;	
+	return;
 }
 
 void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
@@ -1274,7 +1282,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 			case MB_CONFIGURATION_START:
 				{
 					UNS_DEBUG(L"got start event\n");
-					ScanConfiguration(); 
+					ScanConfiguration();
 				}break;
 			case MB_CONFIGURATION_STOP:
 				{
@@ -1317,7 +1325,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					//On ME12 and later, there is no need in the WA of deferred resume.
 					if (m_fwVer.FTMajor >= 12 || PasswordOnWakeupDisabled())
 					{
-						//doesn't set up time so MB_WTS_SESSION_UNLOCK will NOT call ResumeAllServices latter 
+						//doesn't set up time so MB_WTS_SESSION_UNLOCK will NOT call ResumeAllServices latter
 						ResumeAllServices();
 					}
 					else
@@ -1326,7 +1334,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 						// It will happen after some timeout
 
 						// Reason: Calling ResumeAllServices causes to all of LMS component refresh their state
-						// resulting in LOT of communication between LMS and FW 
+						// resulting in LOT of communication between LMS and FW
 						// However there are other process (such MFA) which also want to run flows on Resume against FW and
 						// These processes are very sensitive to any delay in the communications.
 						// So deferring LMS resume for some period of time event solves that problem
@@ -1350,15 +1358,15 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					m_mainService->SetPortForwardingStarted(true);
 
 					sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_AVAILABLE, ACE_TEXT("Port Forwarding Service started"));
-					
+
 					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 					pfwPtr->data_block(new ChangeConfiguration(PFW_ENABLE_CONF, 1));
 					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
 					this->putq(pfwPtr->duplicate());
-					
+
 					TaskCompleted();
 				}break;
-			case MB_PORT_FORWARDING_STOPPED: 
+			case MB_PORT_FORWARDING_STOPPED:
 				{
 					UNS_DEBUG(L"got PORT_FORWARDING_STOPPED event\n");
 
