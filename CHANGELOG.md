@@ -1,3 +1,19 @@
+## [2102.0.0.0]
+
+### Fixed
+ - CIM_Framework: CimOpenWsmanClient: add 100_SUPRESS to Invoke
+ - IPRefreshService: fix update of adapters list
+ - WifiProfileSync: preform sync only if required
+ - Configurator: avoid toggling services that does not exists
+ - Configurator: continue execution if dependencies are no-ops
+
+### Changed
+ - WMIProv: Build: use internal version
+
+### Added
+ - IP Refresh: add prints on failed refresh
+ - Audit Log: Add UEFI/CSME WiFi Profile Sharing report
+
 ## [2052.1.0.0]
 
 ### Fixed
