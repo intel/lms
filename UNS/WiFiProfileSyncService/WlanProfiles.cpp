@@ -6,14 +6,8 @@
 #include "WlanDefs.h"
 #include "WlanProfiles.h"
 
-wlanps::WlanProfiles::WlanProfiles() : m_hwlan(nullptr)
+wlanps::WlanProfiles::WlanProfiles(HANDLE wlanHandle) : m_hwlan(wlanHandle)
 {
-}
-
-bool wlanps::WlanProfiles::Init(HANDLE hwlan)
-{
-	m_hwlan = hwlan;
-	return true;
 }
 
 bool wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags)
@@ -122,12 +116,11 @@ bool wlanps::WlanProfiles::isLegalProfileName(const std::wstring &profileName)
 	return isLegal;
 }
 
-bool wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOsUserProfiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription)
+bool wlanps::WlanProfiles::GetProfiles(WlanOsProfileList &profiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription)
 {
 	// initialize variables
 	unsigned long dwResult = 0;
 	unsigned int i, j;
-	unsigned int numUserProfiles = 0;
 
 	// WlanEnumInterfaces
 	PWLAN_INTERFACE_INFO_LIST pIfList = nullptr;
@@ -173,12 +166,12 @@ bool wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numO
 
 				UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfileList num of items: %d\n", pProfileList->dwNumberOfItems);
 
-				// Loop over all OS profiles or until MAX_OS_USER_PROFILES User Profiles were found
-				for (j = 0; (j < pProfileList->dwNumberOfItems) && (numUserProfiles < MAX_OS_USER_PROFILES); j++)
+				// Loop over all OS profiles or until MAX_USER_PROFILES User Profiles were found
+				for (j = 0; (j < pProfileList->dwNumberOfItems) && (profiles.size() < MAX_USER_PROFILES); j++)
 				{
 					std::wstring auth = L"";
-					std::wstring enc  = L"";
-					std::wstring key  = L"";
+					std::wstring enc = L"";
+					std::wstring key = L"";
 					std::wstring ssid = L"";
 
 					pProfile = (WLAN_PROFILE_INFO *)&pProfileList->ProfileInfo[j];
@@ -219,14 +212,14 @@ bool wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numO
 						pProfileXml = nullptr;
 					}
 
-					if (!isSupportedEncription(enc, supportedEncription ))
+					if (!isSupportedEncription(enc, supportedEncription))
 					{
 						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: encription unsupported by LMS-PS %W for Profile %W\n",
 							enc.c_str(), pProfile->strProfileName);
 						continue;
 					}
 
-					if (!isSupportedAuthentication(auth, supportedAuthentication) )
+					if (!isSupportedAuthentication(auth, supportedAuthentication))
 					{
 						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported by LMS-PS %W for Profile %W\n",
 							auth.c_str(), pProfile->strProfileName);
@@ -234,38 +227,27 @@ bool wlanps::WlanProfiles::GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numO
 					}
 
 					//allocate new user profile data
-					PINTEL_PROFILE_DATA prof = (PINTEL_PROFILE_DATA)malloc(sizeof(INTEL_PROFILE_DATA));
+					std::shared_ptr<INTEL_PROFILE_DATA> prof(new INTEL_PROFILE_DATA);
 
-					if (prof != nullptr)
-					{
-						SecureZeroMemory(prof, sizeof(INTEL_PROFILE_DATA));
 
-						//Set the profile data
-						wcsncpy_s(prof->profile, pProfile->strProfileName, _countof(prof->profile));
-						memcpy_s(&prof->ifGuid, sizeof(prof->ifGuid), &pIfInfo->InterfaceGuid, sizeof(prof->ifGuid));
-						wcsncpy_s(prof->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
-						wcsncpy_s(prof->encr, INTEL_SHORT_DESCR_LEN, enc.c_str(), enc.length());
-						wcsncpy_s(prof->keyMaterial, INTEL_KEY_MATERIAL_LEN, key.c_str(), key.length());
-						wcsncpy_s(prof->SSID, ssid.c_str(), _countof(prof->SSID));
+					//Set the profile data
+					wcsncpy_s(prof->profile, pProfile->strProfileName, _countof(prof->profile));
+					memcpy_s(&prof->ifGuid, sizeof(prof->ifGuid), &pIfInfo->InterfaceGuid, sizeof(prof->ifGuid));
+					wcsncpy_s(prof->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
+					wcsncpy_s(prof->encr, INTEL_SHORT_DESCR_LEN, enc.c_str(), enc.length());
+					wcsncpy_s(prof->keyMaterial, INTEL_KEY_MATERIAL_LEN, key.c_str(), key.length());
+					wcsncpy_s(prof->SSID, ssid.c_str(), _countof(prof->SSID));
 
-						//update the list
-						profiles[numUserProfiles] = prof;
-						numUserProfiles++;
-					}
-					else
-					{
-						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Failed to allocate memory for new Profile -> Get out of the loop\n");
-						break;
-					}
+					//update the list
+					profiles.push_back(prof);
+
+					SecureZeroMemory(&key[0], key.size() * sizeof(WCHAR));
 				}
 			}
 		}
 	}
 
-	UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": numUserProfiles %d\n", numUserProfiles);
-
-	// Return the number of OS User Profiles
-	*numOsUserProfiles = numUserProfiles;
+	UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": numUserProfiles %d\n", profiles.size());
 
 	if (pProfileList != nullptr)
 	{

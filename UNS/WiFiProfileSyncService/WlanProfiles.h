@@ -24,15 +24,13 @@ namespace wlanps {
 
 	public:
 
-		WlanProfiles();
+		WlanProfiles(HANDLE hwlan);
 
 		~WlanProfiles() {};
 
-		bool Init(HANDLE hwlan);
-
 		bool GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags);
 
-		bool GetProfiles(PINTEL_PROFILE_DATA profiles[], int* numOsUserProfiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription);
+		bool GetProfiles(WlanOsProfileList &profiles, const authenticationSet_t &supportedAuthentication, const encriptionSet_t &supportedEncription);
 
 	private:
 		std::wstring xmlRead(const std::wstring &strXML, std::wstring strKey);

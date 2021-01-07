@@ -60,14 +60,6 @@ bool WiFiProfileSyncService::InitWlan()
 		return false;
 	}
 
-	wlanps::WlanBL&  wlanBL = wlanps::WlanBL::getInstance();
-
-	if (!wlanBL.Init(m_wlanHandle))
-	{
-		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__":  wlanBL.Init error\n");
-		return false;
-	}
-
 	wlanps::WlanNotifications&  wlanNotifications = wlanps::WlanNotifications::getInstance();
 
 	unsigned long retVal = wlanNotifications.Init(m_wlanHandle, this); // _hEvents, 
@@ -154,9 +146,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 				}
 				else
 				{
-					wlanps::WlanBL& wlanBL = wlanps::WlanBL::getInstance();
-
-					wlanBL.onConnectionComplete(&message->_profileData);
+					wlanps::WlanBL::onConnectionComplete(m_wlanHandle, &message->_profileData);
 				}
 				return 1;
 			}
@@ -218,5 +208,5 @@ void WiFiProfileSyncService::PerformSync()
 		return;
 	}
 
-	wlanps::WlanBL::getInstance().SyncProfiles();
+	wlanps::WlanBL::SyncProfiles(m_wlanHandle);
 }

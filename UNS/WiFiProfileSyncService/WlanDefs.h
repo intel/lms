@@ -6,13 +6,14 @@
 #define __WLAN_DEFS_H_
 
 #include <wlanapi.h>
+#include <vector>
+#include <memory>
 
 namespace wlanps {
 
 	const unsigned int INTEL_SHORT_DESCR_LEN = 32;
 	const unsigned int INTEL_KEY_MATERIAL_LEN = 64;
-	const unsigned int INTEL_MAX_USERPROFILES = 16;
-	const unsigned int MAX_OS_USER_PROFILES = 30;
+	const unsigned int MAX_USER_PROFILES = 16; // User Profiles DB maximum size
 
 	typedef struct INTEL_PROFILE_DATA_tag {
 		GUID  ifGuid;
@@ -21,7 +22,16 @@ namespace wlanps {
 		WCHAR auth[INTEL_SHORT_DESCR_LEN];
 		WCHAR encr[INTEL_SHORT_DESCR_LEN];
 		WCHAR keyMaterial[INTEL_KEY_MATERIAL_LEN];
+
+		void FreeKeyMaterial()
+		{
+			SecureZeroMemory(keyMaterial, INTEL_KEY_MATERIAL_LEN * sizeof(WCHAR));
+		}
+
 	}INTEL_PROFILE_DATA, *PINTEL_PROFILE_DATA;
+	
+	typedef std::vector<std::shared_ptr<INTEL_PROFILE_DATA>> WlanOsProfileList;
+
 
    enum AuthenticationMethods
    {

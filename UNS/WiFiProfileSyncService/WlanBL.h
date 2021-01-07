@@ -13,37 +13,21 @@ namespace wlanps {
 
 	class WlanBL
 	{
-	private:
-		WlanProfiles	    m_osProfiles;								// Operating System Profiles, in OS format
-		PINTEL_PROFILE_DATA m_wlanOsProfiles[MAX_OS_USER_PROFILES];		// Operating System Profiles, in Intel format
-		int                 m_numOsUserProfiles;
-
-		std::mutex      _updateMutex;
-
 	public:
-		~WlanBL();
-		static WlanBL& getInstance();
-
-		bool Init(HANDLE hwlan);
-
-		void SyncProfiles();
-
-		void onConnectionComplete(PINTEL_PROFILE_DATA profileData);
+		static void SyncProfiles(HANDLE hwlan);
+		static void onConnectionComplete(HANDLE hwlan, PINTEL_PROFILE_DATA profileData);
 
 	private:
-		WlanBL();
+		static std::mutex _updateMutex;
 
-		bool trans2CIM(PINTEL_PROFILE_DATA profileData, SingleMeProfile& wifiSettings);
-		void PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid);
-
-		void    CleanOsProfileList();
-		bool	AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
-		bool	FetchOsProfiles();
-		void	PrintInternalOsUserProfileList();
-		bool	CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
-		bool	UpdateProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList);
-
-		bool EnumerateMeProfiles(WlanWSManClient &wsmanClient, MeProfileList &profiles);
+		static bool trans2CIM(PINTEL_PROFILE_DATA profileData, SingleMeProfile& wifiSettings);
+		static void PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid);
+		static void CleanOsProfileList(WlanOsProfileList &wlanOsProfiles);
+		static bool AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles);
+		static bool FetchOsProfiles(HANDLE hwlan, WlanOsProfileList &wlanOsProfiles);
+		static void PrintInternalOsUserProfileList(WlanOsProfileList &wlanOsProfiles);
+		static bool CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles);
+		static bool EnumerateMeProfiles(WlanWSManClient &wsmanClient, MeProfileList &profiles);
 	};
 }
 
