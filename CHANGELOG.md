@@ -1,3 +1,14 @@
+## [2102.1.0.0]
+
+### Fixed
+ - WifiProfileSync: rewrite OS profile storage logic
+
+### Deprecated
+ - PartialFWUpdate: remove support for ME10 and older FW
+
+### Added
+ - WMI provider: add more test
+
 ## [2102.0.0.0]
 
 ### Fixed
