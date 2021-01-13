@@ -19,7 +19,6 @@ UTIL_SOURCES = u/buf.c  \
 
 libwsman_la_SOURCES = \
 	$(UTIL_SOURCES) \
-	crypt_utils.c \
 	wsman-libxml2-binding.c \
 	wsman-xml.c \
 	wsman-epr.c \

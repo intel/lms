@@ -2039,8 +2039,7 @@ wsmc_create_from_uri(const char* endpoint)
 			uri->path,
 			uri->scheme,
 			uri->user,
-			uri->pwd,
-			strlen(uri->pwd));
+			uri->pwd);
 	u_uri_free(uri);
 	return cl;
 }
@@ -2151,8 +2150,7 @@ wsmc_create(const char *hostname,
 		const char *path,
 		const char *scheme,
 		const char *username,
-		const char *password,
-		const size_t password_len)
+		const char *password)
 {
 #ifndef _WIN32
         dictionary *ini;
@@ -2186,8 +2184,7 @@ wsmc_create(const char *hostname,
 	wsc->data.port = port;
 	wsc->data.path = u_strdup(path ? path : "/wsman");
 	wsc->data.user = username ? u_strdup(username) : NULL;
-	wsc->data.pwd = password ? u_strndup(password, password_len) : NULL;
-	wsc->data.pwd_len = password_len;
+	wsc->data.pwd = password ? u_strdup(password) : NULL;
 	wsc->data.auth_set = 0;
 	wsc->initialized = 0;
 	wsc->transport_timeout = 0;
@@ -2242,7 +2239,7 @@ wsmc_release(WsManClient * cl)
 	}
 
 	if (cl->data.pwd) {
-		u_free(cl->data.pwd);
+		u_cleanfree(cl->data.pwd);
 		cl->data.pwd = NULL;
 	}
 
@@ -2291,7 +2288,7 @@ wsmc_release(WsManClient * cl)
           cl->proxy_data.proxy_username = NULL;
         }
         if (cl->proxy_data.proxy_password != NULL) {
-          u_free(cl->proxy_data.proxy_password);
+          u_cleanfree(cl->proxy_data.proxy_password);
           cl->proxy_data.proxy_password = NULL;
         }
         pthread_mutex_destroy(&cl->mutex);

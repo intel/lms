@@ -11,7 +11,6 @@ add_library (LmsWsmanClient STATIC
   AuditLogWSManClient.cpp
   BaseWSManClient.cpp
   CancelOptInClient.cpp
-  CryptUtils_w.cpp
   EthernetSettingsWSManClient.cpp
   HBPWSManClient.cpp
   HostBootReasonClient.cpp
@@ -38,7 +37,6 @@ target_link_libraries (LmsWsmanClient
   CPPCimFrameworkUntyped
   LmsMEIClient
   CimOpenWsmanClient
-  $<$<BOOL:${WIN32}>:Crypt32.lib>
 )
 
 target_include_directories (LmsWsmanClient PUBLIC

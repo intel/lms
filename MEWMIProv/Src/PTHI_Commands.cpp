@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -55,7 +55,6 @@
 #include "MNGChangeToAMTCommand.h"
 #include "DebugPrints.h"
 #include "GetKVMSessionStateCommand.h"
-#include "CryptUtils_w.h"
 
 #pragma comment (lib,"version")
 #pragma comment (lib,"Ws2_32")
@@ -1493,8 +1492,7 @@ unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAcc
 
 		if (response.Password.length() < CFG_MAX_ACL_PWD_LENGTH)
 		{
-			std::string encryptedPassword = WSmanCrypt::EncryptString(response.Password); //EncryptString will empty response.Password
-			LocalAccount->Password.assign(encryptedPassword);
+			LocalAccount->Password = response.Password;
 		}
 		rc = 0;
 	}

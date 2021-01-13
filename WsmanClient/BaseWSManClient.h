@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -42,6 +42,22 @@ enum
 	WSMAN_AMT_UNSUPPORTED = 0x812,
 };
 
+class WSMAN_DLL_API BaseWSManPassword
+{
+public:
+	BaseWSManPassword(): m_pwd(nullptr), m_size(0) {}
+	BaseWSManPassword(const char *pwd) : m_pwd(nullptr), m_size(0) { Set(pwd); }
+	BaseWSManPassword(const BaseWSManPassword&) = delete;
+	BaseWSManPassword &operator = (const BaseWSManPassword&) = delete;
+	~BaseWSManPassword();
+	void Set(const char *pwd);
+	const char* Get() { return m_pwd; }
+private:
+	void Clean();
+	char *m_pwd;
+	size_t m_size;
+};
+
 class WSMAN_DLL_API BaseWSManClient
 {
 public:
@@ -75,8 +91,7 @@ protected:
 
 private:
 	void Init();						// Initialize soap client.
-	std::string GetPassword();
-	bool GetLocalSystemAccount(std::string& user,std::string& password);
+	bool GetLocalSystemAccount();
 
 	friend class WsmanInitializer;
 	class WsmanInitializer
@@ -95,10 +110,9 @@ protected:
 	std::string							m_ip;
 private:
 	std::string							m_defaultUser;
-	std::string							m_defaultPass; //Encrypted
+	BaseWSManPassword					m_defaultPass;
 
 	static const std::string DEFAULT_USER;
-	static const std::string DEFAULT_PASS;
 
 	BaseWSManClient& operator= (const BaseWSManClient& ){ return *this; } //to avoid misuse
 

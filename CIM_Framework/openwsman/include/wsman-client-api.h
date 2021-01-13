@@ -230,8 +230,7 @@ typedef enum {
 					 const int port, const char *path,
 					 const char *scheme,
 					 const char *username,
-				     const char *password,
-					 const size_t password_len);
+					 const char *password);
 
 	/**
 	* Set request/response content encoding type. Default encoding type is "UTF-8"

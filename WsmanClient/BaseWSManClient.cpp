@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -10,19 +10,17 @@
 
 #include "BaseWSManClient.h"
 #include "WsmanClientLog.h"
-#include "CryptUtils_w.h"
 #include "CimOpenWsmanClient.h"
 #include "MEIClientException.h"
 #include "AMTHIErrorException.h"
 #include "GetLocalSystemAccountCommand.h"
 
 const std::string BaseWSManClient::DEFAULT_USER = "$$uns";
-const std::string BaseWSManClient::DEFAULT_PASS = "$$uns";
 
 //************************************************************************
 // Default Constructor.
 //************************************************************************
-BaseWSManClient::BaseWSManClient() : m_defaultUser(DEFAULT_USER), m_defaultPass(DEFAULT_PASS)
+BaseWSManClient::BaseWSManClient() : m_defaultUser(DEFAULT_USER)
 {
 	Init();
 }
@@ -30,7 +28,7 @@ BaseWSManClient::BaseWSManClient() : m_defaultUser(DEFAULT_USER), m_defaultPass(
 BaseWSManClient::BaseWSManClient(const std::string &defaultUser, 
 								 const std::string &defaultPass):
 	m_defaultUser(defaultUser),
-	m_defaultPass(defaultPass)
+	m_defaultPass(defaultPass.c_str())
 {
 	Init();
 }
@@ -40,20 +38,20 @@ BaseWSManClient::BaseWSManClient(const std::string &defaultUser,
 // Description	: Destructor.
 //************************************************************************
 BaseWSManClient::~BaseWSManClient()
-{		
+{
 }
 
 //************************************************************************
 // Name:		BaseWSManClient::Init
 // Description: Get AMT FQDN, and set wsman endpoint.
 //************************************************************************
-void BaseWSManClient::Init()	
+void BaseWSManClient::Init()
 {
 	m_ip = "localhost";
 
 	if ((m_defaultUser.empty()) || (m_defaultUser == "$$uns"))
 	{
-		GetLocalSystemAccount(m_defaultUser,m_defaultPass);
+		GetLocalSystemAccount();
 	}
 	
 	// Init some flags.
@@ -63,7 +61,7 @@ void BaseWSManClient::Init()
 
 //************************************************************************
 // Name			: SetEndpoint.
-// Description	: Set soap endpoint  	
+// Description	: Set soap endpoint
 //************************************************************************
 int BaseWSManClient::SetEndpoint()
 {
@@ -75,22 +73,12 @@ int BaseWSManClient::SetEndpoint()
 									  false,
 									  Intel::WSManagement::DIGEST,
 									  m_defaultUser,
-									  GetPassword()));	//In CIMFramework we will decrypt the password.
+									  m_defaultPass.Get()));
 
 	return WSMAN_STATUS_SUCCESS;
 }
 
-//************************************************************************
-// Name			: GetPassword.
-// Description	: Return encrypted password
-// Returns		: encrypted password in string class
-//************************************************************************
-std::string BaseWSManClient::GetPassword()
-{
-	return m_defaultPass;
-}
-
-bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& password)
+bool BaseWSManClient::GetLocalSystemAccount()
 {
 	bool rc=false;
 
@@ -100,13 +88,13 @@ bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& pass
 	{
 		MEIClient::AMTHI_Client::GetLocalSystemAccountCommand getLocalSystemAccountCommand;
 		MEIClient::AMTHI_Client::GET_LOCAL_SYSTEM_ACCOUNT_RESPONSE response = getLocalSystemAccountCommand.getResponse();
-		user = response.UserName;
-		password = WSmanCrypt::EncryptString(response.Password); //EncryptString will empty response.Password
-		rc= true;	
+		m_defaultUser = response.UserName;
+		m_defaultPass.Set(response.Password.c_str());
+		rc = true;
 	}
 	catch (MEIClient::AMTHI_Client::AMTHIErrorException& e)
 	{
-		unsigned int errNo =  e.getErr();
+		unsigned int errNo = e.getErr();
 		WSMAN_ERROR("GetLocalSystemAccountCommand failed ret=%d\n", errNo);
 	}
 	catch (MEIClient::MEIClientException& e)
@@ -116,7 +104,7 @@ bool BaseWSManClient::GetLocalSystemAccount(std::string& user, std::string& pass
 	}
 	catch (std::exception& e)
 	{
-		const char* reason =  e.what();
+		const char* reason = e.what();
 		WSMAN_ERROR("Exception in GetLocalSystemAccountCommand %C\n", reason);
 	}
 	return rc;
@@ -154,3 +142,39 @@ BaseWSManClient::WsmanInitializer::WsmanInitializer()
 }
 
 BaseWSManClient::WsmanInitializer BaseWSManClient::WsmanInitializer::initializer;
+
+
+//**********************
+// BaseWSManPassword
+//**********************
+
+typedef void* (*memset_t)(void*, int, size_t);
+
+// To make compiler always execute it
+static volatile memset_t memset_func = memset;
+
+BaseWSManPassword::~BaseWSManPassword()
+{
+	Clean();
+}
+
+void BaseWSManPassword::Set(const char *pwd)
+{
+	Clean();
+	if ((pwd == nullptr) || strlen(pwd) == 0)
+		return;
+
+	m_size = strlen(pwd) + 1;
+	m_pwd = new char[m_size];
+	memcpy(m_pwd, pwd, m_size);
+}
+
+void BaseWSManPassword::Clean()
+{
+	if (!m_pwd)
+		return;
+
+	memset_func(m_pwd, m_size, 0);
+	delete[] m_pwd;
+	m_pwd = nullptr;
+}

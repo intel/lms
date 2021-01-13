@@ -38,7 +38,6 @@ namespace WsmanClientNamespace
 				const string &auth_method = string("digest"),
 				const string &username = string(),
 				const string &password = string(),
-				const size_t password_len = 0,
 				// search for a client proxy address include proxy port
 				const string &proxy = string(),
 				// search for a client proxy user name

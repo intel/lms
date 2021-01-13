@@ -42,8 +42,7 @@ OpenWsmanClient::OpenWsmanClient(
 	const string &auth_method,
 	const string &username,
 	const string &password,
-	const size_t password_len,
-	 // proxy address include proxy port
+	// proxy address include proxy port
 	const string &proxy,
 	//proxy user name
 	const string &proxy_username,
@@ -65,8 +64,7 @@ OpenWsmanClient::OpenWsmanClient(
 		path.c_str(),
 		scheme.c_str(),
 		username.c_str(),
-		password.c_str(),
-		password_len);
+		password.c_str());
 	if (!cl) {
 		string error;
 		error.append("wsmc_create failed:");

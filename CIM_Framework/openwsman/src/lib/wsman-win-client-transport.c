@@ -53,7 +53,6 @@
 #include "wsman-xml.h"
 #include "wsman-debug.h"
 #include "wsman-client-transport.h"
-#include "crypt_utils.h"
 
 #define BUFLEN 8096
 #define MAX_NUM_OF_OIDS 2
@@ -403,7 +402,7 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 		}
 		bResults = WinHttpSetOption(request, WINHTTP_OPTION_PROXY_PASSWORD,
 				proxy_password, wcslen(proxy_password));
-		u_free(proxy_password);
+		u_cleanfreew(proxy_password);
 		if (!bResults)
 		{
 			lastErr = GetLastError();
@@ -510,28 +509,15 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 						bResults = 0;
 						break;
 					}
-
-					char* decryptedPassword = DecryptString(cl->data.pwd, cl->data.pwd_len);
-					if (decryptedPassword == NULL) {
-						u_free(pwd);
-						u_free(usr);
-						bDone = TRUE;
-						bResults = 0;
-						break;
-					}
-					pwd = convert_to_unicode(decryptedPassword);
+					pwd = convert_to_unicode(cl->data.pwd);
 					usr = convert_to_unicode(cl->data.user);
 					if ((pwd == NULL) || (usr == NULL)) {
 						if (pwd != NULL) {
-							memset(pwd, 0, (strlen(decryptedPassword) + 1) * sizeof(wchar_t)); //The size it fot from convert_to_unicode. strlen will not work here hence it contains NULLs
-							u_free(pwd);
+							u_cleanfreew(pwd);
 						}
 						if (usr != NULL) {
 							u_free(usr);
 						}
-						memset(decryptedPassword, 0, strlen(decryptedPassword));
-						u_free(decryptedPassword);
-
 						bDone = TRUE;
 						bResults = 0;
 						break;
@@ -541,11 +527,7 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 							dwSelectedScheme,
 							usr, pwd,
 							NULL);
-
-					memset(pwd, 0, (strlen(decryptedPassword) + 1) * sizeof(wchar_t)); //The size it fot from convert_to_unicode. strlen will not work here hence it contains NULLs
-					memset(decryptedPassword, 0, strlen(decryptedPassword));
-					u_free(decryptedPassword);
-					u_free(pwd);
+					u_cleanfreew(pwd);
 					u_free(usr);
 				}
 				if (cleanup_request_data(request)) {
@@ -632,27 +614,15 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 					bResults = 0;
 					break;
 				}
-
-				char* decryptedPassword = DecryptString(cl->data.pwd, cl->data.pwd_len);
-				if (decryptedPassword == NULL) {
-					bDone = TRUE;
-					bResults = 0;
-					break;
-				}
-
-				pwd = convert_to_unicode(decryptedPassword);
+				pwd = convert_to_unicode(cl->data.pwd);
 				usr = convert_to_unicode(cl->data.user);
 				if ((pwd == NULL) || (usr == NULL)) {
 					if (pwd != NULL) {
-						memset(pwd, 0, (strlen(decryptedPassword) + 1) * sizeof(wchar_t)); //The size it fot from convert_to_unicode. strlen will not work here hence it contains NULLs
-						u_free(pwd);
+						u_cleanfreew(pwd);
 					}
 					if (usr != NULL) {
 						u_free(usr);
 					}
-					memset(decryptedPassword, 0, strlen(decryptedPassword));
-					u_free(decryptedPassword);
-
 					bDone = TRUE;
 					bResults = 0;
 					break;
@@ -662,11 +632,7 @@ wsmc_handler(WsManClient * cl, WsXmlDocH rqstDoc, void *user_data)
 						dwSelectedScheme,
 						usr, pwd,
 						NULL);
-
-				memset(pwd, 0, (strlen(decryptedPassword) + 1) * sizeof(wchar_t)); //The size it fot from convert_to_unicode. strlen will not work here hence it contains NULLs
-				memset(decryptedPassword, 0, strlen(decryptedPassword));
-				u_free(decryptedPassword);
-				u_free(pwd);
+				u_cleanfreew(pwd);
 				u_free(usr);
 			}
 			if (cleanup_request_data(request)) {

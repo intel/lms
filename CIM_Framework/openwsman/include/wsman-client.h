@@ -63,7 +63,6 @@ extern "C" {
 		char *path;
 		char *user;
 		char *pwd;
-		size_t pwd_len;
 		char *scheme;
 		char *endpoint;
 		unsigned int auth_method;

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) 2003 - 2018 Intel Corporation  All Rights Reserved.
+// Copyright (c) 2003 - 2021 Intel Corporation  All Rights Reserved.
 //
 //  File:       CimOpenWsmanClient.cpp
 //
@@ -83,7 +83,6 @@ namespace WSManagement
 					connection.authmethod == DIGEST ? "digest" : "gss",
 					connection.username,
 					connection.password,
-					connection.password.size(),
 					connection.proxy_host,
 					connection.proxy_user,
 					connection.proxy_password

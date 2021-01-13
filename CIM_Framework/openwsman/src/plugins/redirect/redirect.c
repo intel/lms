@@ -266,10 +266,6 @@ WsManClient* setup_redirect_client(WsContextH cntx, char *ws_username, char *ws_
 {
 	
     WsManClient *cl = NULL;
-	const char *password, *username;
-
-	password = get_remote_password() ? get_remote_password() : ws_password;
-	username = get_remote_username() ? get_remote_username() : ws_username,
 
 	cl = wsmc_create(
 		get_remote_server() ,
@@ -277,7 +273,9 @@ WsManClient* setup_redirect_client(WsContextH cntx, char *ws_username, char *ws_
                 get_remote_url_path(),
                 get_remote_cainfo() ? "https" : "http",
 		/* wsmc_create duplicates the username/password passed, no need to duplicate again. */
-                username, password, strlen(password));
+                get_remote_username() ? get_remote_username() : ws_username,
+                get_remote_password() ? get_remote_password() : ws_password 
+         );
 
     if (cl == NULL){
 	error("Redirect Plugin: Error while creating the client for redirection");

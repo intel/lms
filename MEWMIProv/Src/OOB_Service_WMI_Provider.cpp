@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -13,7 +13,6 @@
 #include "pthi_commands.h"
 #include "WMIHelper.h"
 #include "MEProvMessageUtil.h" 
-#include "CryptUtils_w.h" 
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -812,7 +811,6 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	
 	std::wstring userNameWStr;
 	std::wstring passwordWStr;
-	std::string passwordStr;
 
 	bool success = false;
 	try
@@ -834,12 +832,8 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 			if (ReturnValue == S_OK)
 			{
 				success = true;
-				
-				userNameWStr = ToWStr(localAccount.UserName.c_str());
-
-				passwordStr = WSmanCrypt::DecryptString(localAccount.Password);
-				passwordWStr = ToWStr(passwordStr.c_str());
-
+				userNameWStr = ToWStr(localAccount.UserName);
+				passwordWStr = ToWStr(localAccount.Password);
 			}
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"GetLocalAdminCredentials", &pOutParams.p);
@@ -859,7 +853,6 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
 		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
-	std::fill(passwordStr.begin(), passwordStr.end(), 0);
 	std::fill(passwordWStr.begin(), passwordWStr.end(), 0);
 
 	std::stringstream messageStream;
