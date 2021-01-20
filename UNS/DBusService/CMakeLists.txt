@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2017-2020 Intel Corporation
+# Copyright (C) 2017-2021 Intel Corporation
 cmake_minimum_required(VERSION 3.1)
 
 configure_file (
@@ -63,7 +63,7 @@ pkg_check_modules(GIO_UNIX REQUIRED gio-unix-2.0)
 
 target_link_libraries(LmsDBusService
   LmsGMS_COMMON
-  ACELIB
+  ACE::ACE
   ${GIO_UNIX_LIBRARIES}
   DataInterfaceBackend
 )

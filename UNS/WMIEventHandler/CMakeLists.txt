@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2020 Intel Corporation
+# Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_library (LmsWMIEventHandler STATIC
@@ -9,7 +9,7 @@ add_library (LmsWMIEventHandler STATIC
 
 target_link_libraries (LmsWMIEventHandler
   LmsGMS_COMMON
-  ACELIB
+  ACE::ACE
   wbemuuid.lib
 )
 

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_executable (WsmanClientTest
@@ -17,7 +17,7 @@ target_link_libraries (WsmanClientTest
   gtest_main
   gmock_main
   LmsWsmanClient
-  ACELIB
+  ACE::ACE
   LmsMEIClient
 )
 

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2020 Intel Corporation
+# Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (WIN32)
@@ -74,7 +74,7 @@ add_executable (lms
 )
 
 target_link_libraries (lms
-  ACELIB
+  ACE::ACE
   LmsGMS_COMMON
   $<$<BOOL:${WIN32}>:AMT_COM_Interface>
   LmsConfigurator

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2020 Intel Corporation
+# Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 project (lms)
 
@@ -86,48 +86,8 @@ else (UNIX)
   endif (BUILD_WIN_UNIVERSAL)
 endif (UNIX)
 
-find_library (ACE_LIB ACE)
-find_path (ACE_H ace/ACE.h)
-
-if (ACE_LIB AND ACE_H)
-  add_library (ACELIB SHARED IMPORTED)
-  set_target_properties (ACELIB PROPERTIES IMPORTED_LOCATION ${ACE_LIB})
-  set_target_properties (ACELIB PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${ACE_H})
-else (ACE_LIB AND ACE_H)
-  if (WIN32)
-    add_library (ACELIB STATIC IMPORTED)
-  else (WIN32)
-    add_library (ACELIB SHARED IMPORTED)
-  endif (WIN32)
-  #ACE libraries compiled out-of-tree
-  if (NOT DEFINED ENV{ACE_ROOT})
-    message(FATAL_ERROR "Please define ACE_ROOT environment variable with path to ACE library sources.")
-  endif (NOT DEFINED ENV{ACE_ROOT})
-  set (ACE_ROOT $ENV{ACE_ROOT})
-  if (DEFINED ENV{ACE_LIB})
-    set (ACE_LIB_DIR $ENV{ACE_LIB})
-  else (DEFINED ENV{ACE_LIB})
-    set (ACE_LIB_DIR ${ACE_ROOT}/ace/)
-  endif (DEFINED ENV{ACE_LIB})
-  find_library (ACE_LIB_INT ACEs ACE PATHS ${ACE_LIB_DIR} NO_DEFAULT_PATH)
-  set_target_properties (ACELIB PROPERTIES
-    IMPORTED_LOCATION ${ACE_LIB_INT}
-    IMPORTED_IMPLIB ${ACE_LIB_INT}
-    INTERFACE_INCLUDE_DIRECTORIES ${ACE_ROOT}
-  )
-  if (WIN32)
-    add_definitions (/D ACE_AS_STATIC_LIBS)
-  else (WIN32)
-    list (APPEND CMAKE_INSTALL_RPATH ${ACE_LIB_DIR})
-    file (GLOB ACE_LIBS
-      ${ACE_LIB_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}ACE${CMAKE_SHARED_LIBRARY_SUFFIX}*
-    )
-    file (TO_CMAKE_PATH "${ACE_LIBS}" ACE_LIBS_F)
-    install (FILES ${ACE_LIBS_F}
-      DESTINATION ${LMS_LIBDIR}
-    )
-  endif (WIN32)
-endif (ACE_LIB AND ACE_H)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package(ACE REQUIRED)
 
 # for ver.h
 include_directories (Common)
