@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -144,9 +144,10 @@ bool Protocol::Init(InitParameters & params)
 	}
 
 #ifdef _REMOTE_SUPPORT
-	_checkRemoteSupport(true);
-#endif
+	res = _checkRemoteSupport(true);
+#else
 	res = true;
+#endif
 	return res;
 }
 
@@ -1920,14 +1921,14 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 		}
 	}
 
-	_updateEnterpriseAccessStatus(AdapterListInfo::GetLocalDNSSuffixList(), true);
-
-	return true;
+	return _updateEnterpriseAccessStatus(AdapterListInfo::GetLocalDNSSuffixList(), true);
 }
 
-void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay)
+bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay)
 {
-	FuncEntryExit<void> fee(this, L"_updateEnterpriseAccessStatus");
+	bool retVal = false;
+
+	FuncEntryExit<decltype(retVal)>(this, L"_updateEnterpriseAccessStatus", retVal);
 
 	bool raccess = false;
 	sockaddr_storage localIp;
@@ -1956,7 +1957,8 @@ void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 
 		if (!sendAnyWay && (raccess == _remoteAccessCurrentlyPossible))
 		{
-			return;
+			retVal = true;
+			return retVal;
 		}
 		_remoteAccessCurrentlyPossible = raccess;
 
@@ -2036,8 +2038,12 @@ void Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 		catch (Intel::MEI_Client::MEIClientException e)
 		{
 			UNS_ERROR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
+			return retVal;
 		}
 	}
+
+	retVal = true;
+	return retVal;
 }
 
 
