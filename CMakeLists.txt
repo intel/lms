@@ -31,6 +31,12 @@ else (WIN32)
   set (LMS_TESTDIR "${CMAKE_INSTALL_DATAROOTDIR}/lms/tests")
 endif (WIN32)
 
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  conan_basic_setup(NO_OUTPUT_DIRS)
+endif()
+
 string(APPEND CMAKE_CXX_FLAGS_DEBUG " -DDEBUG -D_DEBUG")
 string(APPEND CMAKE_C_FLAGS_DEBUG " -DDEBUG -D_DEBUG")
 

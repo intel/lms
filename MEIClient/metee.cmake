@@ -1,20 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2019-2020 Intel Corporation
+# Copyright (C) 2019-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-# Find install metee library
-if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
-  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  conan_basic_setup(NO_OUTPUT_DIRS)
-  find_package("metee")
-  if(METEE_FOUND)
-    set(LIBMETEE_LIB ${metee_LIBRARIES})
-    set(LIBMETEE_HEADER ${metee_INCLUDE_DIRS})
-  endif()
+find_package("metee")
+if(METEE_FOUND)
+  set(LIBMETEE_LIB ${metee_LIBRARIES})
+  set(LIBMETEE_HEADER ${metee_INCLUDE_DIRS})
 else()
-  find_library (LIBMETEE_LIB NAMES metee PATHS ENV METEE_LIB_PATH)
-  find_path (LIBMETEE_HEADER NAMES metee.h PATHS ENV METEE_HEADER_PATH)
+  find_library(LIBMETEE_LIB NAMES metee PATHS ENV METEE_LIB_PATH)
+  find_path(LIBMETEE_HEADER NAMES metee.h PATHS ENV METEE_HEADER_PATH)
 endif()
 
 if (${LIBMETEE_LIB} MATCHES "LIBMETEE_LIB-NOTFOUND" OR
