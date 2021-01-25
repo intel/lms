@@ -67,6 +67,7 @@ else (UNIX)
   add_compile_options ($<$<CONFIG:Release>:/O2>)
   add_compile_options (/MT$<$<CONFIG:Debug>:d>)
   add_compile_options(/MP)
+  add_compile_options(/sdl)
   # Generate pdb
   add_compile_options ($<$<CONFIG:Release>:/Zi>)
 
