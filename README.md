@@ -11,9 +11,11 @@ the Intel Management Engine Interface (MEI).
 #### ACE
 1. Download ACE library from [ACE Download page](http://download.dre.vanderbilt.edu/).
 2. Configure ACE_ROOT environmental variable with download location.
-3. Configure ACE_LIB environmental variables with %ACE_ROOT%\lib.
-4. Copy ace-config-win.h to ${ACE_ROOT}/ace/config.h - note that Windows LMS requires ACE compiled with WCHAR support.
-5. Build ACE library.
+3. Add "#define ACE_USES_WCHAR" to ${ACE_ROOT}/ace/config.h - note that Windows LMS requires ACE compiled with WCHAR support.
+4. Build ACE library.
+5. Configure ACE_LIBRARY environmental variable with compiled library full path.
+6. Configure ACE_INCLUDE_DIR environmental variable with full path to ace directory in ACE_ROOT.
+7. Configure ACE_DEFINITIONS if any compile definitions should be passed.
 
 #### libxml
 1. Download libxml from [GNOME Download page](https://gitlab.gnome.org/GNOME/libxml2/-/archive/master/libxml2-master.zip') and build it or use prebuilt binary.
@@ -29,6 +31,9 @@ the Intel Management Engine Interface (MEI).
    2. Configure ACE_ROOT environmental variable with download location.
    3. Configure ACE_LIB environmental variables with ${ACE_ROOT}/lib.
    4. Build ACE with default Linux configuration [Building and Installing ACE on UNIX](http://www.dre.vanderbilt.edu/~schmidt/DOC_ROOT/ACE/ACE-INSTALL.html#unix).
+   5. Configure ACE_LIBRARY environmental variable with compiled library full path.
+   6. Configure ACE_INCLUDE_DIR environmental variable with full path to ace directory in ACE_ROOT.
+   7. Configure ACE_DEFINITIONS if any compile definitions should be passed.
 
 ### Cross-platform
 
@@ -42,7 +47,7 @@ Alternatively, in order to use pre-compiled MeTee one can set the following envi
 #### OpenWsman library
 The in-tree copy of OpenWsman library is located at CIM_Framework/openwsman/ directory.
 The sources are from 2.7.0 version from [GitHub](https://github.com/Openwsman/openwsman) with local modifications:
-* Passwords are stored encrypted on Windows
+* Passwords are securely cleaned up
 
 #### GoogleTest (only for builds with unit-tests enabled)
 
