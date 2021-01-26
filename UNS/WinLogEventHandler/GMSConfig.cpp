@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -169,7 +169,7 @@ bool GMSConfig::LoadMachineConfig()
 	m_EventsToPublish.bind(PORT_FORWARDING_SERVICE_UNAVAILABLE, lval);
 	GetFromRegistry(LMS_REG_CONFIG_DATA, VAL_AMT_DISABLE_ATTEMPT, &lval, 1);
 	m_EventsToPublish.bind(AMT_DISABLE_ATTEMPT, lval);
-	GetFromRegistry(LMS_REG_CONFIG_DATA, VAL_FW_FATAL_ERROR, &lval, 1);
+	GetFromRegistry(LMS_REG_CONFIG_DATA, VAL_WATCHDOG_ERROR, &lval, 1);
 	m_EventsToPublish.bind(WATCHDOG_ERROR, lval);
 
 	m_EventsToPublish.bind(UNS_WARNING_MESSAGE, 1);
