@@ -1,4 +1,4 @@
-# Copyright (c) Intel Corporation, 2019-2020 All Rights Reserved.
+# Copyright (c) Intel Corporation, 2019-2021 All Rights Reserved.
 project(CimFrameworkAll)
 cmake_minimum_required(VERSION 3.1)
 
@@ -71,6 +71,7 @@ externalproject_add (openwsman
     -DENABLE_EVENTING_SUPPORT=OFF
     -DBUILD_SHARED_LIBS=OFF
     -DBUILD_LIBCIM=OFF
+    -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
     ${WSMAN_STATIC_RUNTIME}
     ${WSMAN_ARCH}
     ${USE_TOOLCHAIN}
