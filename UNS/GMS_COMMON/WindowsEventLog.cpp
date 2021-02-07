@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -59,20 +59,24 @@ WindowsEventLog::~WindowsEventLog()
 // Params  : CategoryID is the events category classification
 //			 EventID is the events event classification
 //*****************************************************************************
-void WindowsEventLog::LogEvent(	unsigned short CategoryID, unsigned long EventID, WORD	EventType)
+void WindowsEventLog::LogEvent(unsigned short CategoryID, unsigned long EventID, WORD	EventType)
 {
 	// Writes data to the event log
 	LogEvent(CategoryID, EventID, EventType, NULL, 0, NULL, 0);
-	
 }
 
-void WindowsEventLog::LogEvent(	unsigned short CategoryID, unsigned long EventID, WORD EventType, const ACE_TCHAR* message)
+void WindowsEventLog::LogEvent(unsigned short CategoryID, unsigned long EventID, WORD EventType, const ACE_TCHAR* message)
 {
-	ACE_TString szBuf = ACE_TString(message) + ACE_TEXT("\n");
-	const ACE_TCHAR *lpStrings[] = {szBuf.c_str()};
-	WORD NumOfStrings	= 1;
+	if (message == nullptr)
+	{
+		LogEvent(CategoryID, EventID, EventType, NULL, 0, NULL, 0);
+		return;
+	}
+
+	const ACE_TCHAR *lpStrings[] = { message };
+	WORD NumOfStrings = 1;
 	// Writes data to the event log
-	LogEvent(CategoryID, EventID, EventType, lpStrings,NumOfStrings, NULL, 0);
+	LogEvent(CategoryID, EventID, EventType, lpStrings, NumOfStrings, NULL, 0);
 }
 
 //*****************************************************************************
@@ -91,7 +95,7 @@ void WindowsEventLog::LogEvent(	unsigned short	CategoryID,
 								unsigned long	EventID, 
 								WORD			EventType, 
 								const ACE_TCHAR *	ArrayOfStrings[],
-								unsigned int	NumOfArrayStr, 
+								WORD			NumOfArrayStr, 
 								void *			RawData /*= NULL*/ , 
 								unsigned long	RawDataSize /*= 0*/)
 {
@@ -104,7 +108,7 @@ void WindowsEventLog::LogEvent(	unsigned short	CategoryID,
 				NULL,						// lpUserSid 
 				NumOfArrayStr,				// wNumStrings 
 				RawDataSize,				// dwDataSize 
-				ACE_TEXT_ALWAYS_WCHAR(ArrayOfStrings),				// lpStrings 
+				ArrayOfStrings,				// lpStrings 
 				RawData);					// lpRawData 
 	if (!rc)
 	{

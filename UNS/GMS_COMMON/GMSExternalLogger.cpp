@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2007, 2009-2019 Intel Corporation
+ * Copyright (C) 2006-2007, 2009-2021 Intel Corporation
  */
 /*++
 
@@ -118,16 +118,16 @@ void GMSExternalLogger::ServiceResume()
 	
 // Record Events for debugging.
 void GMSExternalLogger::DebugLog(const ACE_TString &message)
-{ 
+{
 	std::lock_guard<std::mutex> lock(m_StateSemaphore);
-	ACE_TString szBuf = message + ACE_TEXT("\n");
-	const ACE_TCHAR *lpStrings[] = {szBuf.c_str()};
+	const ACE_TCHAR *lpStrings[] = { message.c_str() };
 	unsigned int NumOfStrings = 1;
-	if (m_logger != NULL) {
-		m_logger->LogEvent(UNS_GENERAL, UNS_INFO_MESSAGE, EVENTLOG_INFORMATION_TYPE, lpStrings,NumOfStrings,NULL, 0);
+	if (m_logger != NULL)
+	{
+		m_logger->LogEvent(UNS_GENERAL, UNS_INFO_MESSAGE, EVENTLOG_INFORMATION_TYPE, lpStrings, NumOfStrings, NULL, 0);
 	}
 #ifndef NO_STDOUT_DEBUG_LOG
-	std::cout << szBuf.c_str();
+	std::cout << message.c_str();
 #endif
 }
 
@@ -136,15 +136,14 @@ void GMSExternalLogger::DebugLog(const ACE_TString &message)
 void GMSExternalLogger::WarningLog(const ACE_TString &message)
 {
 	std::lock_guard<std::mutex> lock(m_StateSemaphore);
-	ACE_TString szBuf = message + ACE_TEXT("\n");
-	const ACE_TCHAR *lpStrings[] = {szBuf.c_str()};
+	const ACE_TCHAR *lpStrings[] = { message.c_str() };
 	unsigned int NumOfStrings = 1;
-	if (m_logger != NULL) {
-		m_logger->LogEvent(UNS_GENERAL, UNS_WARNING_MESSAGE, EVENTLOG_WARNING_TYPE, lpStrings,NumOfStrings, 
-			NULL, 0);
+	if (m_logger != NULL)
+	{
+		m_logger->LogEvent(UNS_GENERAL, UNS_WARNING_MESSAGE, EVENTLOG_WARNING_TYPE, lpStrings, NumOfStrings, NULL, 0);
 	}
 #ifndef NO_STDOUT_DEBUG_LOG
-	std::cout << szBuf.c_str();
+	std::cout << message.c_str();
 #endif
 }
 
@@ -152,13 +151,12 @@ void GMSExternalLogger::WarningLog(const ACE_TString &message)
 void GMSExternalLogger::ErrorLog(const ACE_TString &message)
 {
 	std::lock_guard<std::mutex> lock(m_StateSemaphore);
-	ACE_TString szBuf = ACE_TEXT(" [LMS] ") + message + ACE_TEXT("\n");
-	const ACE_TCHAR *lpStrings[] = {szBuf.c_str()};
+	const ACE_TCHAR *lpStrings[] = { message.c_str() };
 	unsigned int NumOfStrings = 1;
 	if (m_logger != NULL) {
-		m_logger->LogEvent(UNS_GENERAL, UNS_ERROR_MESSAGE, EVENTLOG_ERROR_TYPE, lpStrings,NumOfStrings, NULL, 0);
+		m_logger->LogEvent(UNS_GENERAL, UNS_ERROR_MESSAGE, EVENTLOG_ERROR_TYPE, lpStrings, NumOfStrings, NULL, 0);
 	}
 #ifndef NO_STDOUT_DEBUG_LOG
-	std::cout << szBuf.c_str();
+	std::cout << message.c_str();
 #endif
 }

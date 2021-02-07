@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2019 Intel Corporation
+ * Copyright (C) 2006-2021 Intel Corporation
  */
 /*++
 
@@ -49,7 +49,7 @@ public:
 					unsigned long	EventID, 
 					WORD			EventType,
 					const ACE_TCHAR *	ArrayOfStrings[],
-					unsigned int	NumOfArrayStr, 
+					WORD	NumOfArrayStr, 
 					void *			RawData = NULL , 
 					unsigned long	RawDataSize = 0);
 

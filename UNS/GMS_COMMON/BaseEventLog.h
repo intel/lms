@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2007, 2009-2015 Intel Corporation
+ * Copyright (C) 2007, 2009-2021 Intel Corporation
  */
 /*++
 
@@ -65,7 +65,7 @@ public:
 	//*********************************************
 	virtual void LogEvent(unsigned short CategoryID,unsigned long	EventID
 		          , unsigned short EventType,const ACE_TCHAR * ArrayOfStrings[],
-				  unsigned int NumOfArrayStr, void * RawData=NULL, unsigned long RawDataSize=0)=0;
+				  unsigned short NumOfArrayStr, void * RawData=NULL, unsigned long RawDataSize=0)=0;
 };
 
 #endif //_BASE_LOG_H

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -63,7 +63,7 @@ void LinuxEventLog::LogEvent(unsigned short CategoryID,
 			     unsigned long EventID,
 			     unsigned short EventType,
 			     const ACE_TCHAR *ArrayOfStrings[],
-			     unsigned int NumOfArrayStr,
+			     unsigned short NumOfArrayStr,
 			     void *RawData,
 			     unsigned long RawDataSize)
 {
@@ -71,7 +71,7 @@ void LinuxEventLog::LogEvent(unsigned short CategoryID,
 		return;
 	std::string event = loadString(EventID);
 	//will replace '%i' with ArrayOfStrings[i]
-	for (unsigned int i=0; i < NumOfArrayStr; i++) {
+	for (unsigned short i=0; i < NumOfArrayStr; i++) {
 		std::ostringstream ss;
 		ss << "%" << i + 1;
 		std::string::size_type pos = event.find(ss.str());

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -33,7 +33,7 @@ public:
 			      const ACE_TCHAR *message);
 
 	virtual void LogEvent(unsigned short CategoryID,unsigned long EventID, unsigned short EventType,
-			      const ACE_TCHAR *ArrayOfStrings[], unsigned int NumOfArrayStr,
+			      const ACE_TCHAR *ArrayOfStrings[], unsigned short NumOfArrayStr,
 			      void *RawData=NULL, unsigned long RawDataSize=0);
 private:
 	std::string _ident;
