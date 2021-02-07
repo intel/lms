@@ -17,3 +17,6 @@ class LMSConan(ConanFile):
         else:
             if os.environ.get("LOCAL_ACE", None):
                 self.requires("ACE/6.5.11@mesw/stable")
+        gtest = os.environ.get("BUILD_TESTS", "0")
+        if gtest == "1" or gtest == "YES" or gtest == "Y" or gtest == "ON":
+            self.requires("gtest/1.10.0@mesw/stable")

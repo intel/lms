@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2013-2019 Intel Corporation
+# Copyright (C) 2013-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_executable (AMTHITestProject
@@ -7,7 +7,7 @@ add_executable (AMTHITestProject
 )
 
 target_link_libraries (AMTHITestProject
-  gtest_main
+  GTest::GTest
   LmsMEIClient
 )
 

@@ -14,8 +14,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 target_link_libraries (WsmanClientTest
-  gtest_main
-  gmock_main
+  GTest::GTest
   LmsWsmanClient
   ACE::ACE
   LmsMEIClient
