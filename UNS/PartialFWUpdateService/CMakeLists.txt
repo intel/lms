@@ -8,6 +8,7 @@ add_library (LmsPartialFWUpdateService STATIC
   PFWUpdateDllWrapperLegacy.cpp
   PFWUpdateDllWrapperME11.cpp
   PFWUpdateDllWrapperME12.cpp
+  PFWUpdateDllWrapperME16.cpp
   errorlist.c
 )
 

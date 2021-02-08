@@ -5,6 +5,7 @@
 #include "PFWUpdateDllWrapperFactory.h"
 #include "PFWUpdateDllWrapperME11.h"
 #include "PFWUpdateDllWrapperME12.h"
+#include "PFWUpdateDllWrapperME16.h"
 
 std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t fwVersion)
 {
@@ -17,6 +18,11 @@ std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t
 	{
 		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version 11. Loading ME11 DLL.\n");
 		return std::make_unique<PFWUpdateDllWrapperME11>();
+	}
+	if (fwVersion > 15)
+	{
+		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version %u. Loading ME16 DLL.\n", fwVersion);
+		return std::make_unique<PFWUpdateDllWrapperME16>();
 	}
 	UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version: %u. Loading ME12 DLL.\n", fwVersion);
 	return std::make_unique<PFWUpdateDllWrapperME12>();
