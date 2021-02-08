@@ -1,3 +1,23 @@
+## [2107.0.0.0]
+
+### Fixed
+ - Fix WatchdogError Registry Variable name
+ - Update external libraries part in README
+ - WindowsEventLog: Remove redundant linebreak from messages logged to Event Viewer
+ - CIM_Framework: fix CMake Win build
+
+### Changed
+ - Add password cleanup and remove the encryption
+ - CMake: link ACE in modern way
+ - Conan: use explicit static runtime (MT)
+ - CIM_Framework: OpenWsman: Debug: enable LinkTimeCodeGeneration
+ - Obtain GTest from Conan
+ - Obtain libxml2 and ACE from Conan
+
+### Added
+ - PortForwardingService: fail Init if updateEnterpriseAccessStatus failed
+ - CMake: Set /SDL Flag
+
 ## [2102.1.0.0]
 
 ### Fixed
