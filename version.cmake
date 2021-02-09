@@ -1,9 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2019 Intel Corporation
+# Copyright (C) 2010-2021 Intel Corporation
 
-set(VERSION_FILE "VERSION" CACHE STRING "Version file name")
-
-file (READ ${VERSION_FILE} LMS_VERSION_STRING)
+file (READ VERSION LMS_VERSION_STRING)
 string (STRIP "${LMS_VERSION_STRING}" LMS_VERSION_STRING)
 string (REPLACE "." ";" VER_LIST ${LMS_VERSION_STRING})
 list (GET VER_LIST 0 LMS_VERSION_MAJOR)
