@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
 //  File:		CimBase.h    
 //
@@ -89,7 +89,7 @@ namespace Typed
 		// Constructor.  Protected so that this class cannot be instantiated directly.
 		CimParam() {}
 
-		// Set a field or add a new one. For use by derived classs.
+		// Set a field or add a new one. For use by derived class.
 		void SetOrAddField(const string &name, const string &value)
 		{
 			_cimParamObject.SetOrAddField(name, value);

@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
-//  File: CimAnonymous.cpp  
+//  File: CimAnonymous.cpp
 //
-//  Contents: Class which represent unknown recieved class form the FW, implementation. 
+//  Contents: Class which represents unknown received class form the FW, implementation.
 //
 //----------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ namespace Manageability
 {
 namespace Cim
 {
-namespace Typed 
+namespace Typed
 {
 	CimAnonymous::CimAnonymous(ICimWsmanClient *client, const string &objectName,
 			const string &nameSpace, const string &prefix, const string &resourceURI)

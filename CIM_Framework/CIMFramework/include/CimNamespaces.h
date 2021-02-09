@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
 //  File:       CimNamespaces.h
 //
-//  Contents:   Give full specifcations of classes in use with their namespaces.
+//  Contents:   Give full specifications of classes in use with their namespaces.
 //
 //----------------------------------------------------------------------------
 

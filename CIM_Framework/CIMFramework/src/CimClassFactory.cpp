@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
 //  File:       CimClassFactory.cpp
 //
@@ -57,7 +57,7 @@ CimBase* CimClassFactory::CreateCimClass(const CimObject &object, const string &
 		ret = iter->second(object);
 		return ret;
 	}
-	throw CimException("Error in framework logic - recieved unknown class to create: " + className);
+	throw CimException("Error in framework logic - received unknown class to create: " + className);
 }
 
 

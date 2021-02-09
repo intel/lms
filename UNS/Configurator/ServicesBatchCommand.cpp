@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "ServicesBatchCommand.h"
 #include "DependancyManager.h"
@@ -34,7 +34,7 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 			ret = SUCCESS;
 		}
 
-		// if there are dependencies - call the command on them. the configurator will call
+		// if there are dependencies - call the command on them. The configurator will call
 		// "execute" again when the services that should have been completing the command before,
 		// have finished, and then execute will be called again.
 		if (!theAsyncActivationManager::instance()->ReadyToOperation(service, GetOperation()))
@@ -45,7 +45,7 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 			if (Execute(dependencies) == FAILURE)
 				ret = FAILURE;
 		}
-		// If all dependencies are no-op noone calls the configurator so re-check to continue execution
+		// If all dependencies are no-op no one calls the configurator so re-check to continue execution
 		if (theAsyncActivationManager::instance()->ReadyToOperation(service, GetOperation()))
 		{
 			//no dependencies - let's do the requested operation!

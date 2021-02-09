@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
 //  File:       CimDateTime.h
 //
@@ -239,7 +239,7 @@ namespace Intel
 
 				CimDateTimeBase* Init_pImpl(shared_ptr<CimDateTimeBase> other) const;
 
-				// Type converstion member function templates for internal _pImpl casts
+				// Type conversion member function templates for internal _pImpl casts
 				template<typename T>
 				const T& AsType() const
 				{

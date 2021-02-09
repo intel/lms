@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
-//  File: CimAnonymous.h      
+//  File: CimAnonymous.h
 //
-//  Contents: Class which represent unknown recieved class form the FW, definitions.
+//  Contents: Class which represent unknown received class form the FW, definitions.
 //
 //----------------------------------------------------------------------------
 

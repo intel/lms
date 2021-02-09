@@ -1,13 +1,13 @@
-# Copyright (c) Intel Corporation, 2019-2020 All Rights Reserved.
+# Copyright (c) Intel Corporation, 2019-2021 All Rights Reserved.
 cmake_minimum_required (VERSION 3.1)
 
-if (WIN32)  
+if (WIN32)
   set (XMLUtils_File "src/XMLUtils_MS.cpp")
 else()
   find_package (XercesC REQUIRED)
   set (XMLUtils_File "src/XMLUtils_XRCS.cpp")
   set (XML_LIBRARIES ${XercesC_LIBRARIES})
-endif()  
+endif()
 
 add_library (CPPCimFrameworkUntyped
   src/cdecode.cpp

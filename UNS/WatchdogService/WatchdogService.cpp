@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2021 Intel Corporation
  */
 #include "WatchdogService.h"
 #include "UNSEventsDefinition.h"
@@ -10,7 +10,7 @@ int WatchdogService::init(int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"init");
 	initSubService(argc, argv);
-	// Start timer to have first ping immidiately
+	// Start timer to have first ping immediately
 	ACE_Time_Value ace_interval((wd_interval / 2) * GMS_ACE_SECOND);
 	ACE_Reactor::instance()->schedule_timer(this, 0, ACE_Time_Value::zero, ace_interval);
 	startSubService();

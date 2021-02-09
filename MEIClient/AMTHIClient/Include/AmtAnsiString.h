@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 /*++
 
@@ -23,7 +23,7 @@ namespace AMTHI_Client
 class AmtAnsiString {
 public :
 	AmtAnsiString():m_str(""), m_nullTerminated(false){}
-	AmtAnsiString(std::vector<uint8_t>::const_iterator& first, std::vector<uint8_t>::const_iterator last, bool nullTerminated = true); //does "deserailize"
+	AmtAnsiString(std::vector<uint8_t>::const_iterator& first, std::vector<uint8_t>::const_iterator last, bool nullTerminated = true); //does "deserialize"
 	AmtAnsiString(const std::string &str, bool nullTerminated = true);
 	AmtAnsiString (const AmtAnsiString& str):m_str(str.m_str), m_nullTerminated(str.m_nullTerminated) {}
 

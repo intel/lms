@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2021  All Rights Reserved.
 //
 //  File:       CimData.h
 //
@@ -86,13 +86,13 @@ namespace Untyped
 		// Get the fields in the order in which they were added.
 		const VectorFieldData GetAllFields() const;
 
-		// Set the fields in the order they are in the fields paramater.
+		// Set the fields in the order they are in the fields parameter.
 		// This clears out any existing values first.
 		void ResetFields(const VectorFieldData &fields);
 
 
 	protected:
-		// Set the fields in the order they are in the fields paramater.
+		// Set the fields in the order they are in the fields parameter.
 		// This does not mess with any other fields.
 		void UpdateFields(const VectorFieldData &fields);
 
