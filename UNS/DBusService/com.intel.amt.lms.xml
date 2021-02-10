@@ -51,17 +51,6 @@
 <arg name="State" type="u" direction="out" />
 </method>
 <!--
-    GetFeaturesState (DEPRECATED):
-    @States: Feature states array (0 = NOT_PRESENT, 1 = DISABLED, 2 = ENABLED, 3 = AVAILABLE).
-
-    Retrieves all feature states in array.
-
-    Feature by array position:(0 = AMT, 1 = IRWT, 2 = QST, 3 = TDT, 4 = SOFTCREEK, 5 = VE, 6 = DT, 7 = NAND, 8 = MPC, 9 = ICC_OVER_CLOCK_IN, 10 = PAV, 11 = SPK, 12 = RCA, 13 = RPAT, 14 = IPV6, 15 = KVM, 16 = OCH, 17 = DAL, 18 = TLS, 19 = CILA, 20 = LAKEHOUSTON).
--->
-<method name="GetFeaturesState">
-<arg name="States" type="au" direction="out" />
-</method>
-<!--
     GetCustomerType:
     @CustomerType: 0 = CORPORATE, 1 = CONSUMER, 2 = WRONG_CUSTOMER_TYPE
 
@@ -69,15 +58,6 @@
 -->
 <method name="GetCustomerType">
 <arg name="CustomerType" type="u" direction="out" />
-</method>
-<!--
-    GetPlatformType (DEPRECATED):
-    @PlatformType: 0 = MOBILE, 1 = DESKTOP, 2 = SERVER, 3 = WORKSTATION
-
-    Retrieves platform type.
--->
-<method name="GetPlatformType">
-<arg name="PlatformType" type="u" direction="out" />
 </method>
 <!--
     GetMenageabiltyMode:
@@ -148,27 +128,6 @@
 <method name="GetLMSVersion">
 <arg name="Version" type="s" direction="out" />
 </method>
-<!--<method name="GetHeciVersion">
-<arg name="Version" type="s" direction="out" />
-</method>-->
-<!--
-    GetProvisioningMode (DEPRECATED):
-    @ProvisioningMode: 0 = NONE, 1 = ENTERPRISE, 2 = SMALL_BUSINESS, 3 = REMOTE_CONNECTIVITY_SERVICE
-
-    Retrieves FW provisioning mode.
--->
-<method name="GetProvisioningMode">
-<arg name="ProvisioningMode" type="u" direction="out" />
-</method>
-<!--
-    GetProvisioningTlsMode (DEPRECATED):
-    @ProvisioningTlsMode: 0 = UNKNOWN, 1 = PSK, 2 = PKI
-
-    Retrieves available provision TLS mode.
--->
-<method name="GetProvisioningTlsMode">
-<arg name="ProvisioningTlsMode" type="u" direction="out" />
-</method>
 <!--
     GetProvisioningState:
     @ProvisioningState: 0 = PRE, 1 = IN, 2 = POST
@@ -199,15 +158,6 @@
 -->
 <method name="GetUserInitiatedEnabled">
 <arg name="Status" type="u" direction="out" />
-</method>
-<!--
-    getWebUIState (DEPRECATED):
-    @State: 0 = ENABLED_TLS, 1 = NOT_TLS, 2 = DISABLED
-
-    Retrieves state of WebUI enablement.
--->
-<method name="getWebUIState">
-<arg name="State" type="u" direction="out" />
 </method>
 <!--
     GetPowerPolicy:
@@ -297,25 +247,11 @@
 <arg name="SystemUUID" type="s" direction="out" />
 </method>
 <!--
-    OpenUserInitiatedConnection (DEPRECATED):
-
-    Send command to initiate a user request for helpdesk services.
--->
-<method name="OpenUserInitiatedConnection">
-</method>
-<!--
     CloseUserInitiatedConnection:
 
     Send command to close a previously open connection.
 -->
 <method name="CloseUserInitiatedConnection">
-</method>
-<!--
-    TerminateKVMSession (DEPRECATED):
-
-    Sent command to terminate an active KVM session.
--->
-<method name="TerminateKVMSession">
 </method>
 <!--
     GetKVMRedirectionState:

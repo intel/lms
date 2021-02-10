@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2020 Intel Corporation
+ * Copyright (C) 2017-2021 Intel Corporation
  */
 #include "DBusService.h"
 #include "Manageability_Commands.h"
@@ -10,14 +10,6 @@
 namespace Intel {
 namespace DBus {
 namespace Manageability {
-
-	gboolean on_get_features_state(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
-				       gpointer user_data)
-	{
-		UNS_DEBUG(L"on_get_features_state - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
-		return true;
-	}
 
 	gboolean on_get_the_feature_state(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
                                           guint Feat, gpointer user_data)
@@ -46,14 +38,6 @@ namespace Manageability {
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", customer_type));
 		else
 			send_error(invocation, error);
-		return TRUE;
-	}
-
-	gboolean on_get_platform_type(LmsManageability *skeleton, GDBusMethodInvocation *invocation,
-				      gpointer user_data)
-	{
-		UNS_DEBUG(L"on_get_platform_type - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -127,12 +111,8 @@ namespace Manageability {
 		*skeleton_manageability = lms_manageability_skeleton_new();
 		g_signal_connect (*skeleton_manageability, "handle-get-the-feature-state",
 			G_CALLBACK (on_get_the_feature_state), user_data);
-		g_signal_connect (*skeleton_manageability, "handle-get-features-state",
-			G_CALLBACK (on_get_features_state), user_data);
 		g_signal_connect (*skeleton_manageability, "handle-get-customer-type",
 			G_CALLBACK (on_get_customer_type), user_data);
-		g_signal_connect (*skeleton_manageability, "handle-get-platform-type",
-			G_CALLBACK (on_get_platform_type), user_data);
 		g_signal_connect (*skeleton_manageability, "handle-get-menageabilty-mode",
 			G_CALLBACK (on_get_menageabilty_mode), user_data);
 		g_signal_connect (*skeleton_manageability, "handle-get-fwinfo",

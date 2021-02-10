@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2020 Intel Corporation
+ * Copyright (C) 2017-2021 Intel Corporation
  */
 #include "DBusService.h"
 #include "PTHI_Commands.h"
@@ -38,22 +38,6 @@ namespace PTHI {
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", version.c_str()));
 		else
 			send_error(invocation, error);
-		return TRUE;
-	}
-
-	gboolean on_get_provisioning_mode(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
-				gpointer user_data)
-	{
-		UNS_DEBUG(L"on_get_provisioning_mode - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
-		return TRUE;
-	}
-
-	gboolean on_get_provisioning_tls_mode(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
-				gpointer user_data)
-	{
-		UNS_DEBUG(L"on_get_provisioning_tls_mode - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -100,14 +84,6 @@ namespace PTHI {
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", state));
 		else
 			send_error(invocation, error);
-		return TRUE;
-	}
-
-	gboolean on_get_web_uistate(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
-				gpointer user_data)
-	{
-		UNS_DEBUG(L"on_get_web_uistate - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -250,14 +226,6 @@ namespace PTHI {
 		return TRUE;
 	}
 
-	gboolean on_open_user_initiated_connection(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
-				gpointer user_data)
-	{
-		UNS_DEBUG(L"on_open_user_initiated_connection - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
-		return TRUE;
-	}
-
 	gboolean on_close_user_initiated_connection(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
 				gpointer user_data)
 	{
@@ -269,14 +237,6 @@ namespace PTHI {
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
-		return TRUE;
-	}
-
-	gboolean on_terminate_kvmsession(LmsPTHI *skeleton, GDBusMethodInvocation *invocation,
-				gpointer user_data)
-	{
-		UNS_DEBUG(L"on_terminate_kvmsession - deprecated\n");
-		send_error(invocation, Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW);
 		return TRUE;
 	}
 
@@ -614,18 +574,12 @@ namespace PTHI {
 			G_CALLBACK (on_get_amtversion), user_data);
 		g_signal_connect (*skeleton, "handle-get-lmsversion",
 			G_CALLBACK (on_get_lmsversion), user_data);
-		g_signal_connect (*skeleton, "handle-get-provisioning-mode",
-			G_CALLBACK (on_get_provisioning_mode), user_data);
-		g_signal_connect (*skeleton, "handle-get-provisioning-tls-mode",
-			G_CALLBACK (on_get_provisioning_tls_mode), user_data);
 		g_signal_connect (*skeleton, "handle-get-provisioning-state",
 			G_CALLBACK (on_get_provisioning_state), user_data);
 		g_signal_connect (*skeleton, "handle-get-network-connection-status",
 			G_CALLBACK (on_get_network_connection_status), user_data);
 		g_signal_connect (*skeleton, "handle-get-user-initiated-enabled",
 			G_CALLBACK (on_get_user_initiated_enabled), user_data);
-		g_signal_connect (*skeleton, "handle-get-web-uistate",
-			G_CALLBACK (on_get_web_uistate), user_data);
 		g_signal_connect (*skeleton, "handle-get-power-policy",
 			G_CALLBACK (on_get_power_policy), user_data);
 		g_signal_connect (*skeleton, "handle-get-last-reset-reason",
@@ -640,12 +594,8 @@ namespace PTHI {
 			G_CALLBACK (on_get_ipv6_network_settings), user_data);
 		g_signal_connect (*skeleton, "handle-get-system-uuid",
 			G_CALLBACK (on_get_system_uuid), user_data);
-		g_signal_connect (*skeleton, "handle-open-user-initiated-connection",
-			G_CALLBACK (on_open_user_initiated_connection), user_data);
 		g_signal_connect (*skeleton, "handle-close-user-initiated-connection",
 			G_CALLBACK (on_close_user_initiated_connection), user_data);
-		g_signal_connect (*skeleton, "handle-terminate-kvmsession",
-			G_CALLBACK (on_terminate_kvmsession), user_data);
 		g_signal_connect (*skeleton, "handle-get-kvmredirection-state",
 			G_CALLBACK (on_get_kvmredirection_state), user_data);
 		g_signal_connect (*skeleton, "handle-set-sprite-language",

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2020 Intel Corporation
+# Copyright (C) 2010-2021 Intel Corporation
 """
 LMS DBus interface unit-tests
 
@@ -40,21 +40,9 @@ class ManageabilityTestCase(unittest.TestCase):
                     self.iface.GetTheFeatureState(i)
                 self.assertEqual(the_exp.exception.get_dbus_message(), 'Invalid argument')
 
-    def test_GetFeaturesState(self):
-        '''GetFeaturesState test method'''
-        with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
-            self.iface.GetFeaturesState()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
-
     def test_GetCustomerType(self):
         '''GetCustomerType test method'''
         self.iface.GetCustomerType()
-
-    def test_GetPlatformType(self):
-        '''GetPlatformType test method'''
-        with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
-            self.iface.GetPlatformType()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetMenageabiltyMode(self):
         '''GetMenageabiltyMode test method'''
@@ -96,18 +84,6 @@ class PTHITestCase(unittest.TestCase):
         '''GetLMSVersion test method'''
         self.iface.GetLMSVersion()
 
-    def test_GetProvisioningMode(self):
-        '''GetProvisioningMode test method'''
-        with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
-            self.iface.GetProvisioningMode()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
-
-    def test_GetProvisioningTlsMode(self):
-        '''GetProvisioningTlsMode test method'''
-        with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
-            self.iface.GetProvisioningTlsMode()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
-
     def test_GetProvisioningState(self):
         '''GetProvisioningState test method'''
         self.iface.GetProvisioningState()
@@ -119,12 +95,6 @@ class PTHITestCase(unittest.TestCase):
     def test_GetUserInitiatedEnabled(self):
         '''GetUserInitiatedEnabled test method'''
         self.iface.GetUserInitiatedEnabled()
-
-    def test_getWebUIState(self):
-        '''getWebUIState test method'''
-        with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
-            self.iface.getWebUIState()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetPowerPolicy(self):
         '''GetPowerPolicy test method'''
@@ -184,14 +154,7 @@ class PTHITestCase(unittest.TestCase):
     def test_UserInitiatedConnection(self):
         '''*UserInitiatedConnection test method'''
         self.iface.InitiateUserConnection()
-        self.iface.OpenUserInitiatedConnection()
         self.iface.CloseUserInitiatedConnection()
-
-    def test_TerminateKVMSession(self):
-        '''TerminateKVMSession test method'''
-        with self.assertRaises(dbus.exceptions.DBusException) as the_exp:
-            self.iface.TerminateKVMSession()
-        self.assertEqual(the_exp.exception.get_dbus_message(), 'Request is not supported by system')
 
     def test_GetKVMRedirectionState(self):
         '''GetKVMRedirectionState test method'''
