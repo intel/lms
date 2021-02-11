@@ -1,3 +1,15 @@
+## [2107.1.0.0]
+
+## Fixed
+ - LMS: fix style and spelling errors
+
+### Changed
+ - PartialFWUpdate: on WCOD update on ME16 and newer
+
+### Removed
+ - Linux: Build: drop ability to define external version
+ - DBus: remove deprecated methods
+
 ## [2107.0.0.0]
 
 ### Fixed
