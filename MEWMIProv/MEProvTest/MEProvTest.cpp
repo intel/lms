@@ -1,37 +1,29 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2021 Intel Corporation
  */
-
 #include <iostream>
-
 #include <comdef.h>
 #include <Wbemidl.h>
 #include <gtest/gtest.h>
+#include <atlsafe.h>
+#include <comutil.h>
+
+static const UINT32 AMT_STATUS_INVALID_AMT_MODE = 0x80873003;
 
 #pragma comment(lib, "wbemuuid.lib")
-class VariantVector
+class InputParam
 {
 public:
-	std::vector<VARIANT> vector;
-	auto size()
+	LPCWSTR name;
+	CIMTYPE_ENUMERATION type;
+	_variant_t value;
+	InputParam(LPCWSTR param_name, CIMTYPE_ENUMERATION param_type, _variant_t param_value)
 	{
-		return vector.size();
+		name = param_name;
+		type = param_type;
+		value = param_value;
 	}
-	auto push_back(VARIANT val)
-	{
-		vector.push_back(val);
-	}
-	VARIANT operator [] (int idx) const
-	{
-		return vector[idx];
-	}
-	~VariantVector()
-	{
-		for (int i = 0; i < vector.size(); ++i)
-			VariantClear(&vector[i]);
-	}
-
 };
 
 class MEProvTest : public ::testing::Test {
@@ -131,9 +123,8 @@ protected:
 		CoUninitialize();
 	}
 
-
 	template<class T> bool runCommandOneReturn(const wchar_t *method_name, const wchar_t *class_name, const wchar_t *arg_name,
-		int &return_value, T &value)
+		UINT32 &return_value, T &value)
 	{
 		// https://docs.microsoft.com/en-us/windows/win32/wmisdk/example--calling-a-provider-method
 		HRESULT hres;
@@ -156,14 +147,13 @@ protected:
 			std::cerr << "Could not execute method. Error code = 0x"
 				<< std::hex << hres << std::endl;
 			goto release;
-			
+
 		}
 		VARIANT varReturnValue;
 		hres = pOutParams->Get(_bstr_t(L"ReturnValue"), 0,
 			&varReturnValue, NULL, 0);
 		if (FAILED(hres))
 		{
-			
 			std::cerr << "failed to get returnval. Error code = 0x";
 			goto release;
 
@@ -201,27 +191,57 @@ release:
 		}
 		return true;
 	}
-	
-	bool runCommandMultipleArguments(const wchar_t* method_name, const wchar_t* class_name, int& return_value, 
-	const std::vector<std::string>& param_names, VariantVector &param_values)
+	bool runCommandMultipleArguments(const wchar_t* method_name,
+									 const wchar_t* class_name,
+									 UINT32& return_value,
+									 const std::vector<std::string>& out_param_names,
+									 std::vector<_variant_t>&out_param_values,
+									 std::vector<InputParam>& input_params)
 	{
-		
+
 		// https://docs.microsoft.com/en-us/windows/win32/wmisdk/example--calling-a-provider-method
-		va_list arguments;
 		HRESULT hres;
 		BSTR MethodName = SysAllocString(method_name);
 		BSTR ClassName = SysAllocString(class_name);
-		
 		IWbemClassObject* pClass = NULL;
 		IWbemClassObject* pOutParams = NULL;
-		hres = pSvc->GetObject(ClassName, 0, NULL, &pClass, NULL);
-		if (FAILED(hres))
+		IWbemClassObject* pInParamsDefinition = NULL;
+		IWbemClassObject* pClassInstance = NULL;
+		if (input_params.size() > 0)
 		{
-			std::cerr << "failed to get class name. Error code = 0x"<< std::hex << hres << std::endl;
-			goto release;
+			hres = pSvc->GetObject(ClassName, 0, NULL, &pClass, NULL);
+			if (FAILED(hres))
+			{
+				std::cerr << "failed to get class name. Error code = 0x" << std::hex << hres << std::endl;
+				goto release;
+			}
+			hres = pClass->GetMethod(MethodName, 0,&pInParamsDefinition, NULL);
+			if (FAILED(hres))
+			{
+				std::cerr << "failed to GetMethod. Error code = 0x" << std::hex << hres << std::endl;
+				goto release;
+			}
+
+			hres = pInParamsDefinition->SpawnInstance(0, &pClassInstance);
+			if (FAILED(hres))
+			{
+				std::cerr << "failed to SpawnInstance. Error code = 0x" << std::hex << hres << std::endl;
+				goto release;
+			}
+			for (std::vector<InputParam>::iterator it = input_params.begin(); it != input_params.end(); ++it)
+			{
+				hres = pClassInstance->Put(it->name, 0, &it->value, it->type);
+				if (FAILED(hres))
+				{
+					std::cerr << "failed put input param " << it->name << ". Error code = 0x" << std::hex << hres << std::endl;
+					goto release;
+				}
+			}
+
 		}
+
 		hres = pSvc->ExecMethod(ClassName, MethodName, 0,
-			NULL, NULL, &pOutParams, NULL);
+			NULL, pClassInstance, &pOutParams, NULL);
 		if (FAILED(hres))
 		{
 			std::cerr << "Could not execute method. Error code = 0x"
@@ -240,8 +260,8 @@ release:
 		}
 		return_value = varReturnValue.intVal;
 		VariantClear(&varReturnValue);
-		
-		for(std::vector<std::string>::const_iterator it = param_names.begin(); it != param_names.end(); ++it)
+
+		for(std::vector<std::string>::const_iterator it = out_param_names.begin(); it != out_param_names.end(); ++it)
 		{
 			VARIANT varEnabled;
 			hres = pOutParams->Get(_bstr_t((*it).c_str()), 0, &varEnabled, NULL, 0);
@@ -250,14 +270,13 @@ release:
 				std::cerr <<"failed to get val: "<< (*it).c_str()<<". Error code = 0x"<< std::hex << hres << std::endl;
 				goto release;
 			}
-			param_values.push_back(varEnabled);
+			out_param_values.push_back(varEnabled);
 		}
-		if (param_names.size() != param_values.size())
+		if (out_param_names.size() != out_param_values.size())
 		{
 			hres = E_FAIL;
 			goto release;
 		}
-		
 
 release:
 		SysFreeString(ClassName);
@@ -265,6 +284,14 @@ release:
 		if (pClass)
 		{
 			pClass->Release();
+		}
+		if (pClassInstance)
+		{
+			pClassInstance->Release();
+		}
+		if (pInParamsDefinition)
+		{
+			pInParamsDefinition->Release();
 		}
 		if (pOutParams)
 		{
@@ -276,8 +303,6 @@ release:
 		}
 		return true;
 	}
-	
-	
 };
 
 TEST_F(MEProvTest, GetFWVersion)
@@ -329,7 +354,7 @@ TEST_F(MEProvTest, GetFWVersion)
 TEST_F(MEProvTest, isWebUIEnabled)
 {
 	SHORT enabled = 0;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"isWebUIEnabled", L"AMT_Service", L"enabled", return_val, enabled);
@@ -345,7 +370,7 @@ TEST_F(MEProvTest, isWebUIEnabled)
 TEST_F(MEProvTest, GetProvisioningState)
 {
 	SHORT state = 0;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"GetProvisioningState", L"OOB_Service", L"state", return_val, state);
@@ -362,7 +387,7 @@ TEST_F(MEProvTest, GetProvisioningState)
 TEST_F(MEProvTest, GetAMTProvisioningMode)
 {
 	uint8_t mode;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"GetAMTProvisioningMode", L"OOB_Service", L"mode", return_val, mode);
@@ -379,7 +404,7 @@ TEST_F(MEProvTest, GetAMTProvisioningMode)
 TEST_F(MEProvTest, isRemoteConfigEnabled)
 {
 	bool enabled;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"isRemoteConfigEnabled", L"OOB_Service", L"enabled", return_val, enabled);
@@ -394,7 +419,7 @@ TEST_F(MEProvTest, isRemoteConfigEnabled)
 TEST_F(MEProvTest, GetActivationTLSMode)
 {
 	uint8_t mode;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"GetActivationTLSMode", L"OOB_Service", L"mode", return_val, mode);
@@ -404,14 +429,14 @@ TEST_F(MEProvTest, GetActivationTLSMode)
 	}
 	ASSERT_EQ(return_val, 0);
 	ASSERT_GE(mode, 0);
-	ASSERT_LE(mode, 2);
+	ASSERT_LE(mode, 2U);
 	std::wcout << " mode: " << mode << std::endl;
 }
 
 TEST_F(MEProvTest, isTLSEnabled)
 {
 	bool enabled;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"isTLSEnabled", L"OOB_Service", L"enabled", return_val, enabled);
@@ -423,11 +448,31 @@ TEST_F(MEProvTest, isTLSEnabled)
 	std::wcout << " enabled: " << enabled << std::endl;
 }
 
+TEST_F(MEProvTest, GetAMTFQDN)
+{
+	BSTR FQDN;
+	UINT32 return_val;
+	bool ret;
+
+	std::vector<std::string> out_param_names = { "FQDN" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"GetAMTFQDN", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	ASSERT_EQ(return_val, 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+	FQDN = (out_param_values[0]).bstrVal;
+	std::wcout << " FQDN: " << FQDN << std::endl;
+}
+
 //*********one out param ME system************
-TEST_F(MEProvTest, DISABLED_getUniquePlatformIDFeatureState)
+TEST_F(MEProvTest, getUniquePlatformIDFeatureState)
 {
 	bool state = false;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"getUniquePlatformIDFeatureState", L"ME_System", L"state", return_val, state);
@@ -435,14 +480,14 @@ TEST_F(MEProvTest, DISABLED_getUniquePlatformIDFeatureState)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_INVALID_AMT_MODE);
 	std::wcout << " state: " << state << std::endl;
 }
 
 TEST_F(MEProvTest, IsFirmwareUpdateEnabled)
 {
 	bool enabled = false;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"IsFirmwareUpdateEnabled", L"ME_System", L"enabled", return_val, enabled);
@@ -457,7 +502,7 @@ TEST_F(MEProvTest, IsFirmwareUpdateEnabled)
 TEST_F(MEProvTest, getLastMEResetReason)
 {
 	UINT32 ReasonCode;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
 
 	ret = runCommandOneReturn(L"getLastMEResetReason", L"ME_System", L"ReasonCode", return_val, ReasonCode);
@@ -466,49 +511,53 @@ TEST_F(MEProvTest, getLastMEResetReason)
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
-	ASSERT_GE(ReasonCode, 0);
-	ASSERT_LE(ReasonCode, 3);
+	ASSERT_GE(ReasonCode, 0U);
+	ASSERT_LE(ReasonCode, 3U);
 	std::wcout << " ReasonCode: " << ReasonCode << std::endl;
 }
-/*
-TEST_F(MEProvTest, DISABLED_getCurrentPowerPolicy)//todo write specialization to wsting
-{
-	std::wstring PowerPolicy;
-	int return_val;
-	bool ret;
 
-	ret = runCommandOneReturn(L"getCurrentPowerPolicy", L"ME_System", L"PowerPolicy", return_val, PowerPolicy);
+TEST_F(MEProvTest, getCurrentPowerPolicy)
+{
+	BSTR PowerPolicy;
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = { "PowerPolicy"};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"getCurrentPowerPolicy", L"ME_System", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+	PowerPolicy = (out_param_values[0]).bstrVal;
 	std::wcout << " PowerPolicy: " << PowerPolicy << std::endl;
 }
-*/
 
 //*********multiple out param ME system************
-TEST_F(MEProvTest, DISABLED_getUniquePlatformID)
+TEST_F(MEProvTest, getUniquePlatformID)
 {
 	UINT32 OEMPlatformIDType;
 	BSTR OEMPlatformID;
 	BSTR CSMEPlatformID;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> param_names = { "OEMPlatformIDType","OEMPlatformID","CSMEPlatformID" };
-	VariantVector param_values = {};
-	ret = runCommandMultipleArguments(L"getUniquePlatformID", L"ME_System", return_val, param_names, param_values);
+	std::vector<std::string> out_param_names = { "OEMPlatformIDType", "OEMPlatformID", "CSMEPlatformID" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"getUniquePlatformID", L"ME_System", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
-	ASSERT_EQ(param_values.size(), param_names.size());
-	OEMPlatformIDType = (param_values[0]).uintVal;
+	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_INVALID_AMT_MODE);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+	OEMPlatformIDType = (out_param_values[0]).uintVal;
 	std::wcout << " OEMPlatformIDType: " << OEMPlatformIDType << std::endl;
-	OEMPlatformID = (param_values[1]).bstrVal;
+	OEMPlatformID = (out_param_values[1]).bstrVal;
 	std::wcout << " OEMPlatformID: " << OEMPlatformID << std::endl;
-	CSMEPlatformID = (param_values[2]).bstrVal;
+	CSMEPlatformID = (out_param_values[2]).bstrVal;
 	std::wcout << " CSMEPlatformID: " << CSMEPlatformID << std::endl;
 }
 
@@ -516,62 +565,91 @@ TEST_F(MEProvTest, DISABLED_getFwUpdateOverrideParams)
 {
 	UINT32 Counter;
 	UINT32 OverrideQualifier;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> param_names = { "Counter","OverrideQualifier" };
-	VariantVector param_values = {};
-	ret = runCommandMultipleArguments(L"getFwUpdateOverrideParams", L"ME_System", return_val, param_names, param_values);
+	std::vector<std::string> out_param_names = { "Counter","OverrideQualifier" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params ={};
+	ret = runCommandMultipleArguments(L"getFwUpdateOverrideParams", L"ME_System", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
-	ASSERT_EQ(param_values.size(), param_names.size());
-	Counter = (param_values[0]).uintVal;
-	ASSERT_GE(Counter, 0);
-	ASSERT_LE(Counter, 255);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+	Counter = (out_param_values[0]).uintVal;
+	ASSERT_GE(Counter, 0U);
+	ASSERT_LE(Counter, 255U);
 	std::wcout << " Counter: " << Counter << std::endl;
-	OverrideQualifier = (param_values[1]).uintVal;
-	ASSERT_GE(OverrideQualifier, 0);
-	ASSERT_LE(OverrideQualifier, 2);
+	OverrideQualifier = (out_param_values[1]).uintVal;
+	ASSERT_GE(OverrideQualifier, 0U);
+	ASSERT_LE(OverrideQualifier, 2U);
 	std::wcout << " OverrideQualifier: " << OverrideQualifier << std::endl;
+}
+
+TEST_F(MEProvTest, getCapabilities)
+{
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = { "Capabilities","EnabledCapabilities" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"getCapabilities", L"ME_System", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	ASSERT_EQ(return_val, 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+	CComSafeArray<BSTR> Capabilities(out_param_values[0].parray);
+	std::wcout << " Capabilities: " << std::endl;
+	for (LONG i = Capabilities.GetLowerBound(); i <= Capabilities.GetUpperBound(); i++)
+	{
+		std::wcout << _com_util::ConvertBSTRToString(Capabilities.GetAt(i)) << std::endl;
+	}
+	CComSafeArray<BSTR> EnabledCapabilities(out_param_values[0].parray);
+	std::wcout << " EnabledCapabilities: " << std::endl;
+	for (LONG i = EnabledCapabilities.GetLowerBound(); i <= EnabledCapabilities.GetUpperBound(); i++)
+	{
+		std::wcout << _com_util::ConvertBSTRToString(EnabledCapabilities.GetAt(i)) << std::endl;
+	}
 }
 
 //*********multiple out param OOB************
 TEST_F(MEProvTest, GetRemoteAccessConnectionStatus)
 {
-	//todo ask what to test here
 	UINT32 NetworkConStatus;
 	UINT32 ConnectionTrigger;
 	BSTR MPshostName;
 	UINT32 RemoteAccessConStatus;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> param_names = { "NetworkConStatus","ConnectionTrigger", "MPshostName","RemoteAccessConStatus"};
-	VariantVector param_values = {};
-	ret = runCommandMultipleArguments(L"GetRemoteAccessConnectionStatus", L"OOB_Service", return_val, param_names, param_values);
+	std::vector<std::string> out_param_names = { "NetworkConStatus","ConnectionTrigger", "MPshostName","RemoteAccessConStatus"};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"GetRemoteAccessConnectionStatus", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
-	ASSERT_EQ(param_values.size(), param_names.size());
-	NetworkConStatus = (param_values[0]).uintVal;
-	ASSERT_GE(NetworkConStatus, 0);
-	ASSERT_LE(NetworkConStatus, 3);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+	NetworkConStatus = (out_param_values[0]).uintVal;
+	ASSERT_GE(NetworkConStatus, 0U);
+	ASSERT_LE(NetworkConStatus, 3U);
 	std::wcout << " NetworkConStatus: " << NetworkConStatus << std::endl;
 
-	ConnectionTrigger = (param_values[1]).uintVal;
-	ASSERT_GE(ConnectionTrigger, 0);
-	ASSERT_LE(ConnectionTrigger, 3);
+	ConnectionTrigger = (out_param_values[1]).uintVal;
+	ASSERT_GE(ConnectionTrigger, 0U);
+	ASSERT_LE(ConnectionTrigger, 3U);
 	std::wcout << " ConnectionTrigger: " << ConnectionTrigger << std::endl;
 
-	MPshostName = (param_values[2]).bstrVal;
+	MPshostName = (out_param_values[2]).bstrVal;
 	std::wcout << " MPshostName: " << MPshostName << std::endl;
 
-	RemoteAccessConStatus = (param_values[3]).uintVal;
-	ASSERT_GE(RemoteAccessConStatus, 0);
-	ASSERT_LE(RemoteAccessConStatus, 2);
+	RemoteAccessConStatus = (out_param_values[3]).uintVal;
+	ASSERT_GE(RemoteAccessConStatus, 0U);
+	ASSERT_LE(RemoteAccessConStatus, 2U);
 	std::wcout << " RemoteAccessConStatus: " << RemoteAccessConStatus << std::endl;
 }
 
@@ -579,22 +657,23 @@ TEST_F(MEProvTest, GetHelloPacketDestInfo)
 {
 	BSTR Address;
 	UINT16 ConfigServerListeningPort;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> param_names = { "Address","ConfigServerListeningPort" };
-	VariantVector param_values = {};
-	ret = runCommandMultipleArguments(L"GetHelloPacketDestInfo", L"OOB_Service", return_val, param_names, param_values);
+	std::vector<std::string> out_param_names = { "Address","ConfigServerListeningPort" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"GetHelloPacketDestInfo", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
-	ASSERT_EQ(param_values.size(), param_names.size());
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
-	Address = (param_values[0]).bstrVal;
+	Address = (out_param_values[0]).bstrVal;
 	std::wcout << " Address: " << Address << std::endl;
 
-	ConfigServerListeningPort = (param_values[1]).uintVal;
+	ConfigServerListeningPort = (out_param_values[1]).uintVal;
 	ASSERT_NE(ConfigServerListeningPort, 0);
 	std::wcout << " ConfigServerListeningPort: " << ConfigServerListeningPort << std::endl;
 
@@ -604,22 +683,23 @@ TEST_F(MEProvTest, GetLocalAdminCredentials)
 {
 	BSTR Username;
 	BSTR Password;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> param_names = { "Username","Password" };
-	VariantVector param_values = {};
-	ret = runCommandMultipleArguments(L"GetLocalAdminCredentials", L"OOB_Service", return_val, param_names, param_values);
+	std::vector<std::string> out_param_names = { "Username","Password" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"GetLocalAdminCredentials", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
-	ASSERT_EQ(param_values.size(), param_names.size());
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
-	Username = (param_values[0]).bstrVal;
+	Username = (out_param_values[0]).bstrVal;
 	std::wcout << " Username: " << Username << std::endl;
 
-	Password = (param_values[1]).bstrVal;
+	Password = (out_param_values[1]).bstrVal;
 	std::wcout << " Password: " << Password << std::endl;
 
 }
@@ -628,24 +708,183 @@ TEST_F(MEProvTest, GetProvisioningInfo)
 {
 	BSTR PKIDNSSuffix;
 	BSTR ConfigServerFQDN;
-	int return_val;
+	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> param_names = { "PKIDNSSuffix","ConfigServerFQDN" };
-	VariantVector param_values = {};
-	ret = runCommandMultipleArguments(L"GetProvisioningInfo", L"OOB_Service", return_val, param_names, param_values);
+	std::vector<std::string> out_param_names = { "PKIDNSSuffix","ConfigServerFQDN" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"GetProvisioningInfo", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
 		FAIL();
 	}
 	ASSERT_EQ(return_val, 0);
-	ASSERT_EQ(param_values.size(), param_names.size());
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
-	PKIDNSSuffix = (param_values[0]).bstrVal;
+	PKIDNSSuffix = (out_param_values[0]).bstrVal;
 	std::wcout << " PKIDNSSuffix: " << PKIDNSSuffix << std::endl;
 
-	ConfigServerFQDN = (param_values[1]).bstrVal;
+	ConfigServerFQDN = (out_param_values[1]).bstrVal;
 	std::wcout << " ConfigServerFQDN: " << ConfigServerFQDN << std::endl;
 
+}
+
+//*********multiple out param AMT service************
+TEST_F(MEProvTest, getKVMState)
+{
+	UINT32 hardEnabled;
+	UINT32 softEnabled;
+	bool active;
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = { "hardEnabled","softEnabled" ,"active"};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"getKVMState", L"AMT_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	ASSERT_EQ(return_val, 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+
+	hardEnabled = (out_param_values[0]).uintVal;
+	ASSERT_GE(hardEnabled, 0U);
+	ASSERT_LE(hardEnabled, 2U);
+	std::wcout << " hardEnabled: " << hardEnabled << std::endl;
+
+	softEnabled = (out_param_values[1]).uintVal;
+	ASSERT_GE(softEnabled, 0U);
+	ASSERT_LE(softEnabled, 2U);
+	std::wcout << " softEnabled: " << softEnabled << std::endl;
+
+	active = (out_param_values[2]).boolVal;
+	std::wcout << " active: " << active << std::endl;
+}
+
+TEST_F(MEProvTest, getSOLState)
+{
+	UINT32 hardEnabled;
+	UINT32 softEnabled;
+	bool active;
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = { "hardEnabled","softEnabled" ,"active" };
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"getSOLState", L"AMT_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	ASSERT_EQ(return_val, 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+
+	hardEnabled = (out_param_values[0]).uintVal;
+	ASSERT_GE(hardEnabled, 0U);
+	ASSERT_LE(hardEnabled, 2U);
+	std::wcout << " hardEnabled: " << hardEnabled << std::endl;
+
+	softEnabled = (out_param_values[1]).uintVal;
+	ASSERT_GE(softEnabled, 0U);
+	ASSERT_LE(softEnabled, 2U);
+	std::wcout << " softEnabled: " << softEnabled << std::endl;
+
+	active = (out_param_values[2]).boolVal;
+	std::wcout << " active: " << active << std::endl;
+}
+
+//*********no out param ME_System************
+TEST_F(MEProvTest, setUniquePlatformIDFeatureState)
+{
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = {};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params;
+	VARIANT state;
+	VariantInit(&state);
+	state.vt = VT_BOOL;
+	state.boolVal = false;
+	input_params.push_back(InputParam(L"state", CIM_EMPTY, state));
+	ret = runCommandMultipleArguments(L"setUniquePlatformIDFeatureState", L"ME_System", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_INVALID_AMT_MODE);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+}
+
+//*********no out param OOB************
+TEST_F(MEProvTest, CloseUserInitiatedConnection)
+{
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = {};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"CloseUserInitiatedConnection", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_TRUE(return_val == 0 );
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+}
+
+TEST_F(MEProvTest, OpenUserInitiatedConnection)
+{
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = {};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"OpenUserInitiatedConnection", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_TRUE(return_val == 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+}
+
+//*********multiple out param AMT service************
+TEST_F(MEProvTest, setSpriteZoom)
+{
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = {};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params;
+	VARIANT zoom;
+	VariantInit(&zoom);
+	zoom.vt = VT_BSTR;
+	zoom.bstrVal = SysAllocString(L"1");
+	input_params.push_back(InputParam(L"zoom", CIM_UINT8, zoom));
+	ret = runCommandMultipleArguments(L"setSpriteZoom", L"AMT_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_TRUE(return_val == 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+}
+
+TEST_F(MEProvTest, TerminateKVMSession)
+{
+	UINT32 return_val;
+	bool ret;
+	std::vector<std::string> out_param_names = {};
+	std::vector<_variant_t> out_param_values = {};
+	std::vector<InputParam> input_params = {};
+	ret = runCommandMultipleArguments(L"TerminateKVMSession", L"AMT_Service", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_TRUE(return_val == 0);
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
 int main(int argc, char **argv)
