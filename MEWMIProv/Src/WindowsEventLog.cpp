@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -20,15 +20,15 @@
 //*****************************************************************************
 // Construct with a specified event source name.
 //*****************************************************************************
-WindowsEventLog::WindowsEventLog(	const char * pszLogName, 
-									const char * pszSrcName,  
+WindowsEventLog::WindowsEventLog(	const TCHAR * pszLogName,
+									const TCHAR * pszSrcName,
 									unsigned long	dwNum,
-									const char * pszModuleName /*= NULL*/) : _hEventLinker(NULL)
+									const TCHAR * pszModuleName /*= NULL*/) : _hEventLinker(NULL)
 {
     TCHAR szPath[1024];
 
 	/*if pszModuleName is NULL, GetModuleHandle() will return the handle of the current process*/
-	if( GetModuleFileName(GetModuleHandleA(pszModuleName), szPath, 1023 ) == 0 ) {
+	if( GetModuleFileName(GetModuleHandle(pszModuleName), szPath, 1023 ) == 0 ) {
 		return;
 	}
 
@@ -37,7 +37,7 @@ WindowsEventLog::WindowsEventLog(	const char * pszLogName,
 	AddEventSource(pszLogName, pszSrcName, szPath, dwNum);
 	
 	// Returns a handle that links the source to the registry 	
-	_hEventLinker = RegisterEventSourceA(NULL,pszSrcName);
+	_hEventLinker = RegisterEventSource(NULL, pszSrcName);
     if (_hEventLinker == NULL) 
     {
         UNS_ERROR("Could not register the event source.\n"); 
@@ -128,8 +128,8 @@ void WindowsEventLog::LogEvent(	unsigned short	CategoryID,
 //				dwNum		The number of categories id the message file.
 //
 //////////////////////////////////////////////////////////////////////
-void WindowsEventLog::AddEventSource(	const char * pszLogName, 
-										const char * pszSrcName, 
+void WindowsEventLog::AddEventSource(	const TCHAR * pszLogName,
+										const TCHAR * pszSrcName,
 										const TCHAR * pszMsgDLL ,
 										unsigned long	dwNum)
 {
@@ -165,7 +165,7 @@ void WindowsEventLog::AddEventSource(	const char * pszLogName,
 	
 }
 
-void WindowsEventLog::RemoveEventSource(const char * pszLogName,
+void WindowsEventLog::RemoveEventSource(const TCHAR * pszLogName,
 										const TCHAR *pszSrcName)
 {
 	// Registry key for adding the event source name. 

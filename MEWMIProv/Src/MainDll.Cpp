@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -236,7 +236,7 @@ STDAPI DllRegisterServer(void)
     RegCloseKey(hKey1);
     RegCloseKey(hKey2);
 	
-	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, "MEProv.dll");
+	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
     return NOERROR;
 	
 }
@@ -282,7 +282,7 @@ STDAPI DllUnregisterServer(void)
         RegDeleteKeyA(hKey,szID);
         RegCloseKey(hKey);
     }
-	WindowsEventLog::RemoveEventSource(EVENT_LOG_APPLICATION, TEXT(ME_PPROV_NAME));
+	WindowsEventLog::RemoveEventSource(EVENT_LOG_APPLICATION, ME_PPROV_NAME);
     return NOERROR;
 
 }

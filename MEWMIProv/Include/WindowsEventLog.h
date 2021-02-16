@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -35,10 +35,10 @@ private:
 	CRegKey _RegistryKey;
 
 public:
-	WindowsEventLog(	const char * pszLogName, 
-						const char * pszSrcName,  
+	WindowsEventLog(	const TCHAR * pszLogName,
+						const TCHAR * pszSrcName,
 						unsigned long	dwNum,
-						const char * pszModuleName = NULL);			// Ctor.
+						const TCHAR * pszModuleName = NULL);			// Ctor.
 	virtual ~WindowsEventLog();				// Dtor.
 
 	// Wrapper for ReportEvent that take care of Handle and EventType
@@ -61,11 +61,11 @@ public:
 	// Add a new source name to the registry by opening a new registry subkey under 
 	// the Application key, adds a message-file name and a bitmask of supported types.
 
-	void AddEventSource(const char * pszLogName, // Application log or a custom log (e.g. "Application")
-						const char * pszSrcName, // event source name (e.g. "Intel (R) AMT").
+	void AddEventSource(const TCHAR * pszLogName, // Application log or a custom log (e.g. "Application")
+						const TCHAR * pszSrcName, // event source name (e.g. "Intel (R) AMT").
 						const TCHAR * pszMsgDLL , // path for message DLL
 						unsigned long	dwNum);     // number of categories
-	static void RemoveEventSource(const char * pszLogName, // Application log or a custom log (e.g. "Application")
+	static void RemoveEventSource(const TCHAR * pszLogName, // Application log or a custom log (e.g. "Application")
 						const TCHAR * pszSrcName); // event source name (e.g. "Intel (R) AMT").
 
 };

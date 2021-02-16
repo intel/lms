@@ -748,7 +748,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, hr);
-	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, "MEProv.dll");
+	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);
 
@@ -805,7 +805,7 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, hr);
-	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, "MEProv.dll");
+	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);
 	
