@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #ifndef __EVENTMANAGMENT_H_
 #define __EVENTMANAGMENT_H_
@@ -10,6 +10,7 @@
 #include "MessageBlockPtr.h"
 #include <memory>
 #include <vector>
+#include <string>
 #include "GMSCommonDllExport.h"
 
 enum { MB_SUBSCRIBE_EVENT = ACE_Message_Block::MB_USER,MB_UNSUBSCRIBE_EVENT,

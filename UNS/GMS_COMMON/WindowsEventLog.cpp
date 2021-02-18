@@ -15,6 +15,8 @@
 #include "global.h"
 #include "WindowsEventLog.h"
 #include <ace/SString.h>
+#include <string>
+
 //*****************************************************************************
 // Construct with a specified event source name.
 //*****************************************************************************

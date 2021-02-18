@@ -1,14 +1,15 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2020 Intel Corporation
+ * Copyright (C) 2018-2021 Intel Corporation
  */
 #ifndef __WLAN_PRFOFILES_H_
 #define __WLAN_PRFOFILES_H_
 
 #include <wlanapi.h>
 #include <winnt.h>
-#include <memory.h>
+#include <memory>
 #include <set>
+#include <string>
 
 namespace wlanps {
 

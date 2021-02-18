@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019 Intel Corporation
+ * Copyright (C) 2019-2021 Intel Corporation
  */
 #ifndef __PFWUPDATEDLLWRAPPERFACTORY_H_
 #define __PFWUPDATEDLLWRAPPERFACTORY_H_
 
 #include "PFWUpdateDllWrapper.h"
+#include <memory>
 
 class PFWUpdateDllWrapperFactory
 {

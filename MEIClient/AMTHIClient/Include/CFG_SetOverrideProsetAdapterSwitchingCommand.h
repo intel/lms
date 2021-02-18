@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 /*++
 
@@ -20,19 +20,19 @@ namespace MEI_Client
 {
 namespace AMTHI_Client
 {
-	typedef struct
+	typedef struct AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_REQUEST_t
 	{
 		uint32_t         OverrideEnabled;
 	}  AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_REQUEST;
 
-	typedef struct
+	typedef struct AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE_t
 	{
 		AMT_STATUS      Status;
 		void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator &end)
 		{
 			Intel::MEI_Client::parseData(Status, itr, end);
 		}
-	}  AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE;
+	} AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE;
 
 	class CFG_SetOverrideProsetAdapterSwitchingCommandRequest;
 	class CFG_SetOverrideProsetAdapterSwitchingCommand : public AMTHICommand

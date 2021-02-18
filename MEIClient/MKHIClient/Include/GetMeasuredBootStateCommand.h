@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2021 Intel Corporation
  */
 /*++
 
@@ -21,7 +21,7 @@ namespace Intel
 	{
 		namespace MKHI_Client
 		{
-			typedef struct
+			typedef struct MKHI_MEASURED_BOOT_STATE_t
 			{
 				MKHI_MSG_HEADER		Header;
 				uint8_t				State;

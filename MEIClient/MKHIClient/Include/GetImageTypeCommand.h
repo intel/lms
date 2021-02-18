@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 /*++
 
@@ -21,7 +21,7 @@ namespace Intel
 	{
 		namespace MKHI_Client
 		{
-			typedef struct
+			typedef struct MKHI_IMAGE_TYPE_t
 			{
 				MKHI_MSG_HEADER		Header;
 				uint32_t			ImageSignData;

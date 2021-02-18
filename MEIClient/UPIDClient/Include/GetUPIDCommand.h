@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2021 Intel Corporation
  */
 /*++
 
@@ -26,9 +26,9 @@ namespace Intel
 				UPID_OEM_PLATFORM_ID_TYPE_NOT_SET = 0,
 				UPID_OEM_PLATFORM_ID_TYPE_BINARY = 1,
 				UPID_OEM_PLATFORM_ID_TYPE_PRINTABLE_STRING = 2,
-			}   UPID_OEM_PLATFORM_ID_TYPE;
+			} UPID_OEM_PLATFORM_ID_TYPE;
 
-			typedef struct
+			typedef struct UPID_PLATFORM_ID_GET_Response_t
 			{
 				uint32_t                           PlatformIdType; //UPID_OEM_PLATFORM_ID_TYPE
 				uint8_t                            OEMPlatformId[UPID_LEN];
@@ -41,8 +41,7 @@ namespace Intel
 					parseData(CSMEPlatformId, itr, end);
 				}
 
-			}  UPID_PLATFORM_ID_GET_Response;
-
+			} UPID_PLATFORM_ID_GET_Response;
 
 			class GetUPIDRequest;
 			class GetUPIDCommand : public UPIDCommand

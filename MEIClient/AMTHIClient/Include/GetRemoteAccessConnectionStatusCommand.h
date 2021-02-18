@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 /*++
 
@@ -45,7 +45,7 @@ namespace Intel
 			} REMOTE_ACCESS_CONNECTION_TRIGGER;
 
 			//Response struct:
-			typedef struct 
+			typedef struct REMOTE_ACCESS_STATUS_t
 			{
 				AMT_NETWORK_CONNECTION_STATUS AmtNetworkConnectionStatus;
 				REMOTE_ACCESS_CONNECTION_STATUS RemoteAccessConnectionStatus;
