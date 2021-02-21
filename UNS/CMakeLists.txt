@@ -75,25 +75,25 @@ add_executable (lms
 
 target_link_libraries (lms
   ACE::ACE
-  LmsGMS_COMMON
+  GMS_COMMON
   $<$<BOOL:${WIN32}>:AMT_COM_Interface>
-  LmsConfigurator
-  $<$<BOOL:${WIN32}>:LmsCOMEventHandler>
-  $<$<BOOL:${UNIX}>:LmsDBusService>
-  LmsEventManager
-  LmsHistoryEventHandler
-  LmsHostChangesNotificationService
-  LmsPortForwardingService
-  LmsPowerOperationsService
-  LmsSharedStaticIPService
-  LmsStatusEventHandler
-  LmsTimeSyncService
-  LmsWinLogEventHandler
-  $<$<BOOL:${WIN32}>:LmsIPRefreshService>
-  $<$<BOOL:${WIN32}>:LmsWiFiProfileSyncService>
-  $<$<BOOL:${WIN32}>:LmsPartialFWUpdateService>
-  $<$<BOOL:${WIN32}>:LmsWMIEventHandler>
-  $<$<BOOL:${UNIX}>:LmsWatchdogService>
+  Configurator
+  $<$<BOOL:${WIN32}>:COMEventHandler>
+  $<$<BOOL:${UNIX}>:DBusService>
+  EventManager
+  HistoryEventHandler
+  HostChangesNotificationService
+  PortForwardingService
+  PowerOperationsService
+  SharedStaticIPService
+  StatusEventHandler
+  TimeSyncService
+  WinLogEventHandler
+  $<$<BOOL:${WIN32}>:IPRefreshService>
+  $<$<BOOL:${WIN32}>:WiFiProfileSyncService>
+  $<$<BOOL:${WIN32}>:PartialFWUpdateService>
+  $<$<BOOL:${WIN32}>:WMIEventHandler>
+  $<$<BOOL:${UNIX}>:WatchdogService>
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)

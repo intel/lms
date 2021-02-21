@@ -46,7 +46,7 @@ set_source_files_properties(
   PROPERTIES GENERATED TRUE
 )
 
-add_library(LmsDBusService STATIC
+add_library(DBusService STATIC
   DBusService.cpp
   DBusFilter.cpp
   DBusSkeleton.c
@@ -61,14 +61,14 @@ add_library(LmsDBusService STATIC
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GIO_UNIX REQUIRED gio-unix-2.0)
 
-target_link_libraries(LmsDBusService
-  LmsGMS_COMMON
+target_link_libraries(DBusService
+  GMS_COMMON
   ACE::ACE
   ${GIO_UNIX_LIBRARIES}
   DataInterfaceBackend
 )
 
-target_include_directories (LmsDBusService PUBLIC
+target_include_directories (DBusService PUBLIC
   ${GIO_UNIX_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
 )

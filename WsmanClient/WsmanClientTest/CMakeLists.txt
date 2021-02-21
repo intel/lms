@@ -15,9 +15,9 @@ endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 target_link_libraries (WsmanClientTest
   GTest::GTest
-  LmsWsmanClient
+  WsmanClient
   ACE::ACE
-  LmsMEIClient
+  MEIClient
 )
 
 install (TARGETS WsmanClientTest

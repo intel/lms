@@ -8,7 +8,7 @@ else (UNIX)
   set (SYNC_SRC SyncNetworkDataWin32.cpp)
 endif (UNIX)
 
-add_library (LmsSharedStaticIPService STATIC
+add_library (SharedStaticIPService STATIC
   SyncNetworkData.cpp
   ${SYNC_SRC}
   SharedStaticIPService.cpp
@@ -27,20 +27,20 @@ else (UNIX)
   set (NET_INCLUDE_DIRS "")
 endif (UNIX)
 
-target_compile_definitions (LmsSharedStaticIPService PRIVATE
+target_compile_definitions (SharedStaticIPService PRIVATE
   $<$<BOOL:${NETWORK_NM}>:USE_NM>
   $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
   SHAREDSTATICIPSERVICE_HAS_DLL=0
 )
 
-target_link_libraries (LmsSharedStaticIPService
-  LmsGMS_COMMON
+target_link_libraries (SharedStaticIPService
+  GMS_COMMON
   ACE::ACE
-  LmsWsmanClient
-  LmsMEIClient
+  WsmanClient
+  MEIClient
   ${NET_LIBRARIES}
 )
 
-target_include_directories (LmsSharedStaticIPService PRIVATE
+target_include_directories (SharedStaticIPService PRIVATE
   ${NET_INCLUDE_DIRS}
 )

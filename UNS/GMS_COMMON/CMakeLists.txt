@@ -19,7 +19,7 @@ else (UNIX)
   set (STRINGLOADER_SRC WindowsStringLoader.cpp)
 endif (UNIX)
 
-add_library (LmsGMS_COMMON STATIC
+add_library (GMS_COMMON STATIC
   EventHandler.cpp
   FuncEntryExit.cpp
   GMSExternalLogger.cpp
@@ -38,19 +38,19 @@ add_library (LmsGMS_COMMON STATIC
   ${STRINGLOADER_SRC}
 )
 
-target_link_libraries (LmsGMS_COMMON
+target_link_libraries (GMS_COMMON
   ACE::ACE
   ${SECLIBS}
   UNSMessageFileLib
 )
 
-target_compile_definitions (LmsGMS_COMMON PRIVATE
+target_compile_definitions (GMS_COMMON PRIVATE
   NO_STDOUT_DEBUG_LOG
   $<$<BOOL:${IGNORE_DLL_SIGNATURES}>:IGNORE_DLL_SIGNATURES>
 )
 
-target_compile_definitions (LmsGMS_COMMON PUBLIC
+target_compile_definitions (GMS_COMMON PUBLIC
   GMS_COMMON_NO_DLL
 )
 
-target_include_directories (LmsGMS_COMMON PUBLIC .)
+target_include_directories (GMS_COMMON PUBLIC .)

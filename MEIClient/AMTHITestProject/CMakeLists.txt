@@ -8,7 +8,7 @@ add_executable (AMTHITestProject
 
 target_link_libraries (AMTHITestProject
   GTest::GTest
-  LmsMEIClient
+  MEIClient
 )
 
 install (TARGETS AMTHITestProject

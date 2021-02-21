@@ -2,7 +2,7 @@
 # Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsWiFiProfileSyncService STATIC
+add_library (WiFiProfileSyncService STATIC
   WiFiProfileSyncService.cpp
   WiFiProfileSyncEventFilter.cpp
   WlanBL.cpp
@@ -10,14 +10,14 @@ add_library (LmsWiFiProfileSyncService STATIC
   WlanProfiles.cpp
 )
 
-target_link_libraries (LmsWiFiProfileSyncService
-  LmsGMS_COMMON
+target_link_libraries (WiFiProfileSyncService
+  GMS_COMMON
   ACE::ACE
-  LmsWsmanClient
+  WsmanClient
   Iphlpapi.lib
   wlanapi.lib
 )
 
-target_compile_definitions (LmsWiFiProfileSyncService PRIVATE
+target_compile_definitions (WiFiProfileSyncService PRIVATE
   WIFIPROFILESYNCSERVICE_HAS_DLL=0
 )

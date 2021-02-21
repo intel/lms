@@ -13,10 +13,10 @@ add_library (DataInterfaceBackend STATIC
 set_target_properties (DataInterfaceBackend PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries (DataInterfaceBackend
-  LmsGMS_COMMON
+  GMS_COMMON
   ACE::ACE
-  LmsMEIClient
-  LmsWsmanClient
+  MEIClient
+  WsmanClient
 )
 
 target_include_directories (DataInterfaceBackend PUBLIC

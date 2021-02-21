@@ -84,7 +84,7 @@ file (GLOB UPIDClient
   UPIDClient/Src/UPIDCommand.cpp
 )
 
-add_library (LmsMEIClient STATIC
+add_library (MEIClient STATIC
   src/MEICommand.cpp
   src/MEIparser.cpp
   src/heci.cpp
@@ -96,16 +96,14 @@ add_library (LmsMEIClient STATIC
   ${UPIDClient}
 )
 
-set_target_properties (LmsMEIClient PROPERTIES VERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsMEIClient PROPERTIES SOVERSION ${LMS_VERSION_STRING})
-set_target_properties (LmsMEIClient PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties (MEIClient PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries (LmsMEIClient
+target_link_libraries (MEIClient
   LIBMETEE
   $<$<BOOL:${WIN32}>:CfgMgr32.lib>
 )
 
-target_include_directories (LmsMEIClient PUBLIC
+target_include_directories (MEIClient PUBLIC
   "Include/"
   "AMTHIClient/Include/"
   "FWUpdateClient/Include/"

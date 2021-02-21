@@ -2,7 +2,7 @@
 # Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsPartialFWUpdateService STATIC
+add_library (PartialFWUpdateService STATIC
   PartialFWUpdateService.cpp
   PFWUpdateDllWrapperFactory.cpp
   PFWUpdateDllWrapperLegacy.cpp
@@ -12,12 +12,12 @@ add_library (LmsPartialFWUpdateService STATIC
   errorlist.c
 )
 
-target_link_libraries (LmsPartialFWUpdateService
-  LmsGMS_COMMON
+target_link_libraries (PartialFWUpdateService
+  GMS_COMMON
   ACE::ACE
-  LmsWsmanClient
+  WsmanClient
 )
 
-target_compile_definitions (LmsPartialFWUpdateService PRIVATE
+target_compile_definitions (PartialFWUpdateService PRIVATE
   PARTIALFWUPDATESERVICE_HAS_DLL=0
 )

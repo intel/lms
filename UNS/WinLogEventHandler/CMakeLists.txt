@@ -2,18 +2,18 @@
 # Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsWinLogEventHandler STATIC
+add_library (WinLogEventHandler STATIC
   WinLogFilter.cpp
   WinLogEventHandler.cpp
   GMSConfig.cpp
 )
 
-target_link_libraries (LmsWinLogEventHandler
+target_link_libraries (WinLogEventHandler
   ACE::ACE
-  LmsMEIClient
-  LmsGMS_COMMON
+  MEIClient
+  GMS_COMMON
 )
 
-target_compile_definitions (LmsWinLogEventHandler PRIVATE
+target_compile_definitions (WinLogEventHandler PRIVATE
   WINLOGEVENTHANDLER_HAS_DLL=0
 )

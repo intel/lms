@@ -8,7 +8,7 @@ else (UNIX)
   set (ADAPTER_SRC AdapterListInfoWin32.cpp)
 endif (UNIX)
 
-add_library (LmsPortForwardingService STATIC
+add_library (PortForwardingService STATIC
   Common.cpp
   LMEConnection.cpp
   PortForwardingService.cpp
@@ -30,21 +30,21 @@ else (UNIX)
   set (NET_INCLUDE_DIRS "")
 endif (UNIX)
 
-target_compile_definitions (LmsPortForwardingService PRIVATE
+target_compile_definitions (PortForwardingService PRIVATE
   _REMOTE_SUPPORT
   $<$<BOOL:${NETWORK_NM}>:USE_NM>
   $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
   PORTFORWARDINGSERVICE_HAS_DLL=0
 )
 
-target_link_libraries (LmsPortForwardingService
-  LmsGMS_COMMON
-  LmsWsmanClient
+target_link_libraries (PortForwardingService
+  GMS_COMMON
+  WsmanClient
   ACE::ACE
-  LmsMEIClient
+  MEIClient
   ${NET_LIBRARIES}
 )
 
-target_include_directories (LmsPortForwardingService PRIVATE
+target_include_directories (PortForwardingService PRIVATE
   ${NET_INCLUDE_DIRS}
 )

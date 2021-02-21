@@ -8,7 +8,7 @@ else (UNIX)
   set (IPREFRESH_SRC IPRefreshWin.cpp)
 endif (UNIX)
 
-add_library (LmsIPRefreshService STATIC
+add_library (IPRefreshService STATIC
   IPRefreshService.cpp
   ${IPREFRESH_SRC}
 )
@@ -24,17 +24,17 @@ else (UNIX)
   set (NET_INCLUDE_DIRS "")
 endif (UNIX)
 
-target_link_libraries (LmsIPRefreshService
-  LmsGMS_COMMON
+target_link_libraries (IPRefreshService
+  GMS_COMMON
   ACE::ACE
-  LmsMEIClient
+  MEIClient
   ${NET_LIBRARIES}
 )
 
-target_include_directories (LmsIPRefreshService PRIVATE
+target_include_directories (IPRefreshService PRIVATE
   ${NET_INCLUDE_DIRS}
 )
 
-target_compile_definitions (LmsIPRefreshService PRIVATE
+target_compile_definitions (IPRefreshService PRIVATE
   IPREFRESHSERVICE_HAS_DLL=0
 )

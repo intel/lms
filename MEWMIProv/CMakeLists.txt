@@ -56,8 +56,8 @@ target_compile_definitions (MEProv PRIVATE
 
 target_link_libraries (MEProv
   ACE::ACE
-  LmsMEIClient
-  LmsWsmanClient
+  MEIClient
+  WsmanClient
   wbemuuid.lib
 )
 

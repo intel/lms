@@ -2,7 +2,7 @@
 # Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsPowerOperationsService STATIC
+add_library (PowerOperationsService STATIC
   PowerEventFilter.cpp
   PowerOperationsService.cpp
 )
@@ -19,17 +19,17 @@ else (UNIX)
   set (PWR_INCLUDE_DIRS "")
 endif (UNIX)
 
-target_link_libraries (LmsPowerOperationsService
-  LmsGMS_COMMON
+target_link_libraries (PowerOperationsService
+  GMS_COMMON
   ACE::ACE
-  LmsWsmanClient
+  WsmanClient
   ${PWR_LIBRARIES}
 )
 
-target_include_directories (LmsPowerOperationsService PRIVATE
+target_include_directories (PowerOperationsService PRIVATE
   ${PWR_INCLUDE_DIRS}
 )
 
-target_compile_definitions (LmsPowerOperationsService PRIVATE
+target_compile_definitions (PowerOperationsService PRIVATE
   POWEROPERATIONSSERVICE_HAS_DLL=0
 )

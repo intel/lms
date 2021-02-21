@@ -2,18 +2,18 @@
 # Copyright (C) 2010-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
-add_library (LmsTimeSyncService STATIC
+add_library (TimeSyncService STATIC
   TimeSyncService.cpp
   TimeSyncEventFilter.cpp
 )
 
-target_link_libraries (LmsTimeSyncService
-  LmsGMS_COMMON
+target_link_libraries (TimeSyncService
+  GMS_COMMON
   ACE::ACE
-  LmsWsmanClient
-  LmsMEIClient
+  WsmanClient
+  MEIClient
 )
 
-target_compile_definitions (LmsTimeSyncService PRIVATE
+target_compile_definitions (TimeSyncService PRIVATE
   TIMESYNCSERVICE_HAS_DLL=0
 )

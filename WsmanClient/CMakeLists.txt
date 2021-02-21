@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.1)
 
 add_subdirectory ("${TOP_DIR}/CIM_Framework" "CIM_Framework")
 
-add_library (LmsWsmanClient STATIC
+add_library (WsmanClient STATIC
   AMTEthernetPortSettingsClient.cpp
   AMTFCFHWSmanClient.cpp
   AMTRedirectionServiceWSManClient.cpp
@@ -27,19 +27,19 @@ add_library (LmsWsmanClient STATIC
   WifiPortClient.cpp
 )
 
-target_compile_definitions (LmsWsmanClient PUBLIC
+target_compile_definitions (WsmanClient PUBLIC
   WSMAN_NO_DLL
 )
 
-target_link_libraries (LmsWsmanClient
+target_link_libraries (WsmanClient
   ACE::ACE
   CPPCIMFramework
   CPPCimFrameworkUntyped
-  LmsMEIClient
+  MEIClient
   CimOpenWsmanClient
 )
 
-target_include_directories (LmsWsmanClient PUBLIC
+target_include_directories (WsmanClient PUBLIC
   "./"
 )
 
