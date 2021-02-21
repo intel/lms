@@ -1,3 +1,18 @@
+## [2109.0.0.0]
+
+## Added
+ - MEIClient: UPID: Add value map for OEMPlatformIDType
+ - MEWMIProv: add tests for more interfaces
+
+## Fixed
+ - MEWMIProv: Test: fix conan imports
+ - LMS: Weak Manifest File Permission
+ - LMS: fix errors and warnings reported by VS2019
+ - WMIProv: fix build with unicode charset
+
+### Changed
+ - LMS: Conan: pick MeTee 3.0.1
+
 ## [2107.1.0.0]
 
 ## Fixed
