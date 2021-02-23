@@ -10,7 +10,6 @@ add_executable (WsmanClientTest
 
 if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
   target_compile_definitions (WsmanClientTest PRIVATE _CRT_SECURE_NO_WARNINGS)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE")
 endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 target_link_libraries (WsmanClientTest

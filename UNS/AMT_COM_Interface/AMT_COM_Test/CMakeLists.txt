@@ -7,10 +7,6 @@ add_executable (AMT_COM_Test
   AMT_COM_Test/stdafx.cpp
 )
 
-if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE")
-endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-
 target_link_libraries (AMT_COM_Test
   GTest::GTest
 )

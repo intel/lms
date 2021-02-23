@@ -69,7 +69,7 @@ if (UNIX)
 endif (UNIX)
 add_subdirectory ("DataInterfaceBackend" "DataInterfaceBackend")
 
-add_executable (lms
+add_executable (lms WIN32
   UNSMain.cpp
 )
 
@@ -100,7 +100,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
   set_target_properties(lms PROPERTIES
     COMPILE_PDB_NAME lms
     COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
-    LINK_FLAGS "/level='requireAdministrator' /uiAccess='false'"
+    LINK_FLAGS /MANIFESTUAC:"level='requireAdministrator' uiAccess='false'"
   )
   install (FILES $<TARGET_PDB_FILE:lms>
     DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
