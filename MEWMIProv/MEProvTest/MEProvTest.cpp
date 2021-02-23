@@ -10,7 +10,7 @@
 #include <comutil.h>
 
 static const UINT32 AMT_STATUS_INVALID_AMT_MODE = 0x80873003;
-
+static const UINT32 AMT_STATUS_NOT_PERMITTED = 0x80873010;
 #pragma comment(lib, "wbemuuid.lib")
 class InputParam
 {
@@ -829,7 +829,7 @@ TEST_F(MEProvTest, CloseUserInitiatedConnection)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0 );
+	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_NOT_PERMITTED);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
@@ -845,7 +845,7 @@ TEST_F(MEProvTest, OpenUserInitiatedConnection)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0);
+	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_NOT_PERMITTED);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
