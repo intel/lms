@@ -11,6 +11,8 @@
 
 static const UINT32 AMT_STATUS_INVALID_AMT_MODE = 0x80873003;
 static const UINT32 AMT_STATUS_NOT_PERMITTED = 0x80873010;
+static const UINT32 AMT_STATUS_NOT_READY = 0x80873002;
+
 #pragma comment(lib, "wbemuuid.lib")
 class InputParam
 {
@@ -25,6 +27,23 @@ public:
 		value = param_value;
 	}
 };
+
+bool isReturnValueValid(UINT32 return_val)
+{
+	if (return_val == 0 || return_val == AMT_STATUS_NOT_READY)
+		return true;
+	return false;
+}
+
+bool isReturnValueValidEx(UINT32 return_val, const std::vector<UINT32> &additional_values)
+{
+	if (return_val == 0 || return_val == AMT_STATUS_NOT_READY)
+		return true;
+	for (std::vector<UINT32>::const_iterator it = additional_values.begin(); it != additional_values.end(); ++it)
+		if (return_val == *it)
+			return true;
+	return false;
+}
 
 class MEProvTest : public ::testing::Test {
 protected:
@@ -362,7 +381,7 @@ TEST_F(MEProvTest, isWebUIEnabled)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	std::wcout << " enabled: " << enabled << std::endl;
 }
 
@@ -378,7 +397,7 @@ TEST_F(MEProvTest, GetProvisioningState)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_GE(state, 0);
 	ASSERT_LE(state, 3);
 	std::wcout << " state: " << state << std::endl;
@@ -395,7 +414,7 @@ TEST_F(MEProvTest, GetAMTProvisioningMode)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_GE(mode, 0);
 	ASSERT_LE(mode, 3);
 	std::wcout << " mode: " << mode << std::endl;
@@ -412,7 +431,7 @@ TEST_F(MEProvTest, isRemoteConfigEnabled)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	std::wcout << " enabled: " << enabled << std::endl;
 }
 
@@ -427,7 +446,7 @@ TEST_F(MEProvTest, GetActivationTLSMode)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_GE(mode, 0);
 	ASSERT_LE(mode, 2U);
 	std::wcout << " mode: " << mode << std::endl;
@@ -444,7 +463,7 @@ TEST_F(MEProvTest, isTLSEnabled)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	std::wcout << " enabled: " << enabled << std::endl;
 }
 
@@ -462,7 +481,7 @@ TEST_F(MEProvTest, GetAMTFQDN)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	FQDN = (out_param_values[0]).bstrVal;
 	std::wcout << " FQDN: " << FQDN << std::endl;
@@ -480,7 +499,7 @@ TEST_F(MEProvTest, getUniquePlatformIDFeatureState)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_INVALID_AMT_MODE);
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
 	std::wcout << " state: " << state << std::endl;
 }
 
@@ -495,7 +514,7 @@ TEST_F(MEProvTest, IsFirmwareUpdateEnabled)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	std::wcout << " enabled: " << enabled << std::endl;
 }
 
@@ -510,7 +529,7 @@ TEST_F(MEProvTest, getLastMEResetReason)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_GE(ReasonCode, 0U);
 	ASSERT_LE(ReasonCode, 3U);
 	std::wcout << " ReasonCode: " << ReasonCode << std::endl;
@@ -529,7 +548,7 @@ TEST_F(MEProvTest, getCurrentPowerPolicy)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	PowerPolicy = (out_param_values[0]).bstrVal;
 	std::wcout << " PowerPolicy: " << PowerPolicy << std::endl;
@@ -551,7 +570,7 @@ TEST_F(MEProvTest, getUniquePlatformID)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_INVALID_AMT_MODE);
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	OEMPlatformIDType = (out_param_values[0]).uintVal;
 	std::wcout << " OEMPlatformIDType: " << OEMPlatformIDType << std::endl;
@@ -575,7 +594,7 @@ TEST_F(MEProvTest, DISABLED_getFwUpdateOverrideParams)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	Counter = (out_param_values[0]).uintVal;
 	ASSERT_GE(Counter, 0U);
@@ -599,7 +618,7 @@ TEST_F(MEProvTest, getCapabilities)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	CComSafeArray<BSTR> Capabilities(out_param_values[0].parray);
 	std::wcout << " Capabilities: " << std::endl;
@@ -632,7 +651,7 @@ TEST_F(MEProvTest, GetRemoteAccessConnectionStatus)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	NetworkConStatus = (out_param_values[0]).uintVal;
 	ASSERT_GE(NetworkConStatus, 0U);
@@ -667,7 +686,7 @@ TEST_F(MEProvTest, GetHelloPacketDestInfo)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
 	Address = (out_param_values[0]).bstrVal;
@@ -693,7 +712,7 @@ TEST_F(MEProvTest, GetLocalAdminCredentials)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
 	Username = (out_param_values[0]).bstrVal;
@@ -718,7 +737,7 @@ TEST_F(MEProvTest, GetProvisioningInfo)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
 	PKIDNSSuffix = (out_param_values[0]).bstrVal;
@@ -745,7 +764,7 @@ TEST_F(MEProvTest, getKVMState)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
 	hardEnabled = (out_param_values[0]).uintVal;
@@ -777,7 +796,7 @@ TEST_F(MEProvTest, getSOLState)
 	{
 		FAIL();
 	}
-	ASSERT_EQ(return_val, 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 
 	hardEnabled = (out_param_values[0]).uintVal;
@@ -812,7 +831,7 @@ TEST_F(MEProvTest, setUniquePlatformIDFeatureState)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_INVALID_AMT_MODE);
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
@@ -829,7 +848,7 @@ TEST_F(MEProvTest, CloseUserInitiatedConnection)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_NOT_PERMITTED);
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_NOT_PERMITTED }));
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
@@ -845,7 +864,7 @@ TEST_F(MEProvTest, OpenUserInitiatedConnection)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0 || return_val == AMT_STATUS_NOT_PERMITTED);
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_NOT_PERMITTED }));
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
@@ -867,7 +886,7 @@ TEST_F(MEProvTest, setSpriteZoom)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
@@ -883,7 +902,7 @@ TEST_F(MEProvTest, TerminateKVMSession)
 	{
 		FAIL();
 	}
-	EXPECT_TRUE(return_val == 0);
+	EXPECT_PRED1(isReturnValueValid, return_val);
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
