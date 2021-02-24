@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2021 Intel Corporation
  */
 #include "gmock/gmock.h"
 #include <sstream>
@@ -13,7 +13,9 @@
 using namespace std;
 using namespace Intel::Manageability::Cim::Typed;
 
-
+#ifdef WIN32
+#define timegm _mkgmtime
+#endif
 
 TEST_F(AuditLogAccessor, formatTime0)
 {
@@ -30,7 +32,7 @@ TEST_F(AuditLogAccessor, formatTime1)
 	timeinfo.tm_hour = 0;
 	timeinfo.tm_min = 0;
 	timeinfo.tm_sec = 0;
-	time_t time = mktime(&timeinfo);
+	time_t time = timegm(&timeinfo);
 	string timestr = formatTime(&time);
 	ASSERT_EQ("1/1/1970 00:00:00", timestr);
 }
@@ -44,7 +46,7 @@ TEST_F(AuditLogAccessor, formatTime2)
 	timeinfo.tm_hour = 6;
 	timeinfo.tm_min = 32;
 	timeinfo.tm_sec = 4;
-	time_t time = mktime(&timeinfo);
+	time_t time = timegm(&timeinfo);
 	string timestr = formatTime(&time);
 	ASSERT_EQ("1/25/2042 06:32:04", timestr);
 }
@@ -58,7 +60,7 @@ TEST_F(AuditLogAccessor, formatTime3)
 	timeinfo.tm_hour = 21;
 	timeinfo.tm_min = 6;
 	timeinfo.tm_sec = 45;
-	time_t time = mktime(&timeinfo);
+	time_t time = timegm(&timeinfo);
 	string timestr = formatTime(&time);
 	ASSERT_EQ("8/2/2135 21:06:45", timestr);
 }
@@ -382,7 +384,7 @@ TEST_F(AuditLogAccessor, DisplayTimeStamp1)
 	timeinfo.tm_hour = 8;
 	timeinfo.tm_min = 32;
 	timeinfo.tm_sec = 4;
-	time_t time = mktime(&timeinfo);
+	time_t time = timegm(&timeinfo);
 	for (int k=sizeof(unsigned int)-1; k>=0; k--)
 	{
 		extData[k] = time%256;
@@ -809,7 +811,7 @@ TEST_F(AuditLogAccessor, DisplayNetworkTimeTimeSetEvent)
 	timeinfo.tm_hour = 8;
 	timeinfo.tm_min = 32;
 	timeinfo.tm_sec = 4;
-	time_t time = mktime(&timeinfo);
+	time_t time = timegm(&timeinfo);
 	for (int k=sizeof(unsigned int)-1; k>=0; k--)
 	{
 		extData[k] = time%256;
