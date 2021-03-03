@@ -6,12 +6,12 @@ set (MEPROV_MESSAGE_FILES
   ${CMAKE_CURRENT_BINARY_DIR}/MEProvMessageFile.h
   ${CMAKE_CURRENT_BINARY_DIR}/MEProvMessageFile.rc
 )
-find_program (MC_EXE mc REQUIRED)
+include(FindMC)
 #mc -v -r $(SolutionDir) -h $(SolutionDir) $(SolutionDir)MEProvMessageFile.mc
 add_custom_command (
   OUTPUT ${MEPROV_MESSAGE_FILES}
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/MEProvMessageFile.mc
-  COMMAND ${MC_EXE} -v -r ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/MEProvMessageFile.mc
+  COMMAND ${CMAKE_MC_COMPILER} -v -r ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/MEProvMessageFile.mc
 )
 
 add_custom_target (MEProvMessageFile

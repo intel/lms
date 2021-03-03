@@ -7,12 +7,12 @@ if (WIN32)
     ${PROJECT_BINARY_DIR}/UNSMessageFile.h
     ${PROJECT_BINARY_DIR}/UNSMessageFile.rc
   )
-  find_program (MC_EXE mc REQUIRED)
+  include(FindMC)
   #mc -v -r $(SolutionDir) -h $(SolutionDir) $(SolutionDir)UNSMessageFile.mc
   add_custom_command (
     OUTPUT ${UNS_MESSAGE_FILES}
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/UNSMessageFile.mc
-    COMMAND ${MC_EXE} -v -r ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/UNSMessageFile.mc
+    COMMAND ${CMAKE_MC_COMPILER} -v -r ${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/UNSMessageFile.mc
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
 else (WIN32)
