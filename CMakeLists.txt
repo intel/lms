@@ -60,12 +60,12 @@ if (UNIX)
      -fwrapv
   )
 else (UNIX)
-  set(DEFAULT_LINKER_FLAGS_RELEASE "${DEFAULT_LINKER_FLAGS_RELEASE} /GUARD:CF")
-  set(DEFAULT_LINKER_FLAGS_RELWITHDEBINFO "${DEFAULT_LINKER_FLAGS_RELWITHDEBINFO} /GUARD:CF")
-  add_compile_options(/GS /sdl)
+  add_compile_options(/GS)
+  add_compile_options(/sdl)
+  add_compile_options(/guard:cf)
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SafeSEH /NXCompat /DynamicBase")
-  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO /DEBUG:FULL /OPT:REF /OPT:ICF /GUARD:CF")
-  set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /INCREMENTAL:NO /DEBUG:FULL /OPT:REF /OPT:ICF /GUARD:CF")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO /DEBUG:FULL /OPT:REF /OPT:ICF /guard:cf")
+  set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /INCREMENTAL:NO /DEBUG:FULL /OPT:REF /OPT:ICF /guard:cf")
   add_definitions(/DUNICODE)
   add_definitions(/D_UNICODE)
   add_compile_options ($<$<CONFIG:Release>:/O2>)
@@ -75,13 +75,13 @@ else (UNIX)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
   endif()
   add_compile_options(/MP)
-  add_compile_options(/sdl)
-  # Generate pdb
+  add_compile_options(/W3)
+  #Generate pdb
   add_compile_options ($<$<CONFIG:Release>:/Zi>)
 
   # Universal build
   if (BUILD_WIN_UNIVERSAL)
-    set(MSVC_IGNORED_LIBRARIES "/NODEFAULTLIB:kernel32 /NODEFAULTLIB:advapi32 /NODEFAULTLIB:user32")
+    set(MSVC_IGNORED_LIBRARIES "/NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:advapi32.lib /NODEFAULTLIB:user32.lib /NODEFAULTLIB:setupapi.lib")
     find_library (ONE_CORE "OneCoreUap.lib")
     add_library (ONE_CORE_IMP SHARED IMPORTED)
     set_target_properties (ONE_CORE_IMP PROPERTIES
@@ -98,6 +98,7 @@ else (UNIX)
       ONE_CORE_IMP
       ONE_CORE_DL_IMP
     )
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MSVC_IGNORED_LIBRARIES}")
   endif (BUILD_WIN_UNIVERSAL)
 endif (UNIX)
 

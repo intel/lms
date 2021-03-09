@@ -59,6 +59,7 @@ externalproject_add (openwsman
     ${WSMAN_CLIENTPP_LIB}
   LIST_SEPARATOR | # Use the alternate list separator
   CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DBUILD_EXAMPLES=OFF
     -DBUILD_PYTHON=OFF
     -DBUILD_PYTHON3=OFF
