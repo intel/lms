@@ -32,7 +32,7 @@ WindowsEventLog::WindowsEventLog(	const TCHAR * pszLogName,
 		return;
 	}
 
-	UNS_DEBUG("GetModuleFileName: %C\n", szPath);
+	UNS_DEBUG("GetModuleFileName: %W\n", szPath);
     // First add a source name to the registry.
 	AddEventSource(pszLogName, pszSrcName, szPath, dwNum);
 	
