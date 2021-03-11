@@ -22,6 +22,13 @@ set_source_files_properties (
   PROPERTIES GENERATED TRUE
 )
 
+set_source_files_properties (
+  Src/MainDll.Cpp
+  Src/ClassFac.Cpp
+  Src/MethProv.Cpp
+  PROPERTIES LANGUAGE CXX
+)
+
 add_library (MEProv SHARED
   Src/AMT_Service_WMI_Provider.cpp
   Src/Audit_Record_WMI_Provider.cpp
@@ -40,6 +47,7 @@ add_library (MEProv SHARED
   Src/WMIHelper.cpp
   Src/WSmanCommands.cpp
   Src/UPID_Commands.cpp
+  MethProv.Def
   ${CMAKE_CURRENT_BINARY_DIR}/MEProvMessageFile.rc
   MEProv.rc
 )
