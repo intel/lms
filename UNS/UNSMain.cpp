@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2004-2006, 2009-2020 Intel Corporation
+ * Copyright (C) 2004-2006, 2009-2021 Intel Corporation
  */
 /*++
 
@@ -91,8 +91,10 @@ extern "C" int WINAPI _tWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstan
 			if (GMSsrv != NULL)
 			{
 				GMSsrv->stop();
-				delete GMSsrv;
+				while (!GMSsrv->GetStopped()) {}
+				GMSsrv->wait();
 			}
+			return 0;
 		}
 	}
 	return RunAMT_COM_Interface(nShowCmd);
