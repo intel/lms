@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -36,6 +36,7 @@ LMEConnection::LMEConnection(bool verbose): _txBuffer(NULL), _initState(INIT_STA
 
 LMEConnection::~LMEConnection()
 {
+	Deinit();
 }
 
 bool LMEConnection::IsInitialized()
