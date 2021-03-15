@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -53,7 +53,7 @@ HRESULT ME_System_WMI_Provider::DispatchMethods(
 				
 			}
 		}
-		else 
+		else
 		{
 			//there are no non static methods in this class
 			hr = WBEM_E_INVALID_METHOD;
@@ -84,12 +84,12 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 		do{
 			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
-			uint16 val;
-			std::vector<sint16> OperationalStatus;
+			uint16 val = 5;
+			std::vector<sint16> OperationalStatus({ 0 });
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
 
-			ReturnValue = GetMESystem(fwversion, CryptoFuseEnabled, val,
-										 OperationalStatus, type, segment, 
+			ReturnValue = GetMESystem(fwversion, CryptoFuseEnabled,
+										 type, segment,
 										 mode, capabilities, enabledCapabilities);
 			if (ReturnValue != S_OK)
 			{
@@ -146,8 +146,8 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 	{
 		CComPtr<IWbemClassObject> pOutParams;
 		uint32 ReasonCode=0;
-		bool cryptoFuseEnabled; 
-		PTHI_Commands pthic; 
+		bool cryptoFuseEnabled;
+		PTHI_Commands pthic;
 		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);		
 		ERROR_HANDLER(ReturnValue);
 		
@@ -337,16 +337,16 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 			return hr;
 		}
 
-		do 
+		do
 		{
 			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
-			uint16 val;
-			std::vector<sint16> OperationalStatus;
+			uint16 val = 5;
+			std::vector<sint16> OperationalStatus({ 0 });
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
 
-			hr = GetMESystem(fwversion, CryptoFuseEnabled, val,
-										 OperationalStatus, type, segment, 
+			hr = GetMESystem(fwversion, CryptoFuseEnabled,
+										 type, segment,
 										 mode, capabilities, enabledCapabilities);
 			if (hr != 0)
 				break;
@@ -399,20 +399,17 @@ ME_System_WMI_Provider::CUSTOMER_TYPE ME_System_WMI_Provider::GetPlatformTypeExt
 	return CORPORATE;
 }
 
-HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
-	std::vector<sint16>& OperationalStatus, uint32& type, uint32& segment,
-										 uint32& mode, uint32& capabilities, uint32& enabledCapabilities)
+HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& CryptoFuseEnabled,
+											uint32& type, uint32& segment,
+											uint32& mode, uint32& capabilities, uint32& enabledCapabilities)
 {
 	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, hr);
 
-	val  = 5;
-	uint32 sku = 0;
 	CryptoFuseEnabled = false;
 	fwversion = L"";
-	OperationalStatus.push_back(0);
 	PTHI_Commands pthic;
-	hr = pthic.GetAMTVersion(&fwversion, &sku);
+	hr = pthic.GetAMTVersion(&fwversion);
 	if (hr != 0)
 		return hr;
 	using namespace Intel::MEI_Client;
@@ -435,7 +432,7 @@ HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& Crypt
 					platformType=WORKSTATION;
 
 	//default value = CORPORATE, avoid uninitialized variable for security
-	CUSTOMER_TYPE customer = GetPlatformTypeExt(&platform); 
+	CUSTOMER_TYPE customer = GetPlatformTypeExt(&platform);
 
 	MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
 	MENAGEABILTY_MODE pMode;
@@ -461,7 +458,7 @@ HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& Crypt
 	return hr;
 }
 
-UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, 
+UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData,
 											   Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform)
 {
 	int amt = 0, stdMng = 0, l3 = 0, sbt = 0;
@@ -575,7 +572,7 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	}
 }
 
-HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, 
+HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform,
 													  MENAGEABILTY_MODE& pMode)
 {
 	HRESULT hr=S_OK;
@@ -583,19 +580,19 @@ HRESULT ME_System_WMI_Provider::MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Cl
 	switch(platform.Fields.Brand)
 	{
 
-	case Intel::MEI_Client::MKHI_Client::NoBrand: 
+	case Intel::MEI_Client::MKHI_Client::NoBrand:
 		pMode=NONE;
 		break;
-	case Intel::MEI_Client::MKHI_Client::BrandAMT: 
+	case Intel::MEI_Client::MKHI_Client::BrandAMT:
 		pMode=VPRO;
 		break;
-	case Intel::MEI_Client::MKHI_Client::BrandStdMng: 
+	case Intel::MEI_Client::MKHI_Client::BrandStdMng:
 		pMode=STANDARD;
 		break;
-	case Intel::MEI_Client::MKHI_Client::BrandL3: 
+	case Intel::MEI_Client::MKHI_Client::BrandL3:
 		pMode=L3;
 		break;
-	case Intel::MEI_Client::MKHI_Client::BrandSBT: 
+	case Intel::MEI_Client::MKHI_Client::BrandSBT:
 		pMode=SBT;
 		break;
 	default:

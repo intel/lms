@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -35,8 +35,8 @@ public:
 		IWbemObjectSink __RPC_FAR *pResponseHandler);
 
 	static HRESULT GetMESystem(
-		std::wstring& fwversion, bool& CryptoFuseEnabled, uint16& val,
-		std::vector<sint16>& OperationalStatus, uint32& type, uint32& segment, 
+		std::wstring& fwversion, bool& CryptoFuseEnabled,
+		uint32& type, uint32& segment,
 		uint32& mode, uint32& capabilities, uint32& enabledCapabilities);
 private:
 	typedef union _MEFWCAPS_SKU_INT
@@ -55,15 +55,15 @@ private:
 			UINT32   Dt          :1; //N/A since 8.0
 			UINT32   Nand      :1;
 			UINT32   Mpc        :1; //N/A since 8.0
-			UINT32   IccOverClockin :1; 
-			UINT32   Pav              :1; 
+			UINT32   IccOverClockin :1;
+			UINT32   Pav              :1;
 			UINT32   Spk              :1;//N/A since 8.0
 			UINT32   Rca              :1;//N/A since 8.0
-			UINT32   Rpat             :1;   //N/A since 8.0   
+			UINT32   Rpat             :1;   //N/A since 8.0
 			//UINT32   RpatCon          :1;   // To be removed
 			UINT32   Ipv6             :1;
-			UINT32   Kvm              :1; 
-			UINT32   Och              :1; 
+			UINT32   Kvm              :1;
+			UINT32   Och              :1;
 			UINT32   Vlan             :1; //N/A since 8.0
 			UINT32   Tls             :1;
 			UINT32   Cila             :1;
@@ -71,7 +71,7 @@ private:
 			UINT32	 L3				  :1;
 			UINT32	 DAL			  :1;
 			UINT32	 SBT			  :1;
-			UINT32   Reserved2        :8;   
+			UINT32   Reserved2        :8;
 		}Fields;
 	}MEFWCAPS_SKU_INT;
 
@@ -153,11 +153,11 @@ private:
 		IWbemServices*                 pNamespace);
 
 	static HRESULT MenageabiltyModeLogic(
-		Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE	        platform, 
+		Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE	        platform,
 		MENAGEABILTY_MODE&	pMode);
 
 	static uint32 GetCapabilities_int(
-		Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI		CapabilityData, 
+		Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI		CapabilityData,
 		Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE      Platform);
 
 	static void GetCapabilities(

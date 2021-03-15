@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -17,7 +17,7 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
+	USES_CONVERSION;
 
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
@@ -28,11 +28,9 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 	{
 		std::wstring fwversion = L"";
 		bool CryptoFuseEnabled = false;
-		uint16 val;
-		std::vector<sint16> OperationalStatus;
 		uint32 type, segment, mode, capabilities, enabledCapabilities;
-		ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled, val,
-									 OperationalStatus, type, segment, 
+		ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled,
+									 type, segment,
 									 mode, capabilities, enabledCapabilities);
 		if (ReturnValue != S_OK)
 		{
@@ -72,7 +70,7 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
+	USES_CONVERSION;
 
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
@@ -97,15 +95,13 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 			return hr;
 		}
 
-		do 
+		do
 		{
 			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
-			uint16 val;
-			std::vector<sint16> OperationalStatus;
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
-			ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled, val,
-										 OperationalStatus, type, segment, 
+			ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled,
+										 type, segment,
 										 mode, capabilities, enabledCapabilities);
 			if (ReturnValue != S_OK)
 			{

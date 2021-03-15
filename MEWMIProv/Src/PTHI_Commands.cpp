@@ -1084,7 +1084,7 @@ unsigned int PTHI_Commands::StopConfiguration(void)
 	return rc;
 }
 
-unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int* sku)
+unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion)
 {
 	USES_CONVERSION; 
 
@@ -1111,10 +1111,6 @@ unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion, unsigned int
 				{
 					AMTVersion->append(L".");
 					AMTVersion->append(itr->Version.begin(), itr->Version.end());
-				}
-				if (itr->Description.compare("Sku") == 0)
-				{
-					*sku = atoi(itr->Version.c_str());
 				}
 			}
 		}

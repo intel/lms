@@ -102,7 +102,7 @@ public:
 	UINT32 GetAMTState(UINT32* LastMEResetReason, bool *cryptoFuseEnabled);
 	UINT32 GetPowerPolicy(std::wstring* policy);
 	UINT32 StopConfiguration(void);
-	UINT32 GetAMTVersion(std::wstring* AMTVersion, UINT32* sku);
+	UINT32 GetAMTVersion(std::wstring* AMTVersion);
 	UINT32 GetMESetupAudit(MEAdminAudit *MEAudit);
 	UINT32 getWebUIState(SHORT* pState);
 	UINT32 GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER);
