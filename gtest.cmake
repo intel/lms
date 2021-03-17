@@ -32,11 +32,5 @@ if(NOT GTEST_FOUND)
                    EXCLUDE_FROM_ALL)
 
   # Add target
-  add_library(GTest::GTest UNKNOWN IMPORTED)
-  set_target_properties(GTest::GTest PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${GTEST_INCLUDE_DIRS}")
-  set_property(TARGET GTest::GTest APPEND PROPERTY IMPORTED_LOCATION "${GTEST_LIBRARIES}")
-  add_library(GTest::Main UNKNOWN IMPORTED)
-  set_target_properties(GTest::Main PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${GTEST_INCLUDE_DIRS}")
-  set_property(TARGET GTest::Main APPEND PROPERTY IMPORTED_LOCATION "${GTEST_MAIN_LIBRARIES}")
-
+  add_library(GTest::GTest ALIAS gmock_main)
 endif()
