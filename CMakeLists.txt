@@ -9,6 +9,7 @@ project (lms)
 option (BUILD_TESTS "Build tests" NO)
 option (BUILD_WIN_UNIVERSAL "Build Windows Universal App" NO)
 option (IGNORE_DLL_SIGNATURES "Skip Windows DLL signatures check" NO)
+option (BUILD_USE_CONAN "Use Conan for dependencies download" NO)
 if (UNIX)
   option (NETWORK_NM "Use NetworkManager in network manipulations" YES)
   option (NETWORK_CN "Use Connman in network manipulations" NO)
@@ -33,12 +34,6 @@ else (WIN32)
   set (LMS_BINPATH "${CMAKE_INSTALL_FULL_BINDIR}/lms")
   set (LMS_TESTDIR "${CMAKE_INSTALL_DATAROOTDIR}/lms/tests")
 endif (WIN32)
-
-if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
-  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  conan_basic_setup(NO_OUTPUT_DIRS)
-endif()
 
 string(APPEND CMAKE_CXX_FLAGS_DEBUG " -DDEBUG -D_DEBUG")
 string(APPEND CMAKE_C_FLAGS_DEBUG " -DDEBUG -D_DEBUG")
@@ -104,7 +99,22 @@ else (UNIX)
   endif (BUILD_WIN_UNIVERSAL)
 endif (UNIX)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+if(BUILD_USE_CONAN)
+  include(conan)
+  conan_cmake_autodetect(settings)
+  # conan.cmake failed to detect MT, force-replace it
+  string(REPLACE "compiler.runtime=MD" "compiler.runtime=MT" flags "${settings}")
+  if(BUILD_TESTS)
+    set(BUILD_TESTS_OPTION True)
+  else()
+    set(BUILD_TESTS_OPTION False)
+  endif()
+  conan_cmake_install(PATH_OR_REFERENCE ${CMAKE_CURRENT_SOURCE_DIR} SETTINGS ${flags} OPTIONS build_tests=${BUILD_TESTS_OPTION})
+endif()
+
 find_package(ACE REQUIRED)
 
 # for ver.h

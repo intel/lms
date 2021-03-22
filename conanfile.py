@@ -8,6 +8,8 @@ class LMSConan(ConanFile):
     name = "lms"
     generators = "cmake", "cmake_find_package", "visual_studio"
     settings = "os"
+    options = {"build_tests": [True, False]}
+    default_options = {"build_tests": False}
 
     def requirements(self):
         self.requires("metee/3.0.1@mesw/stable")
@@ -17,6 +19,5 @@ class LMSConan(ConanFile):
         else:
             if os.environ.get("LOCAL_ACE", None):
                 self.requires("ACE/6.5.11@mesw/stable")
-        gtest = os.environ.get("BUILD_TESTS", "0")
-        if gtest == "1" or gtest == "YES" or gtest == "Y" or gtest == "ON":
+        if self.options.build_tests:
             self.requires("gtest/1.10.0@mesw/stable")
