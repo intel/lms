@@ -1,3 +1,28 @@
+## [2113.0.0.0]
+
+### Added
+ - WMIProv: enable build with CMake
+ - CMake: add Windows SDK hint in find MC
+ - CMake: add Conan install code
+
+### Fixed
+ - CMake: Windows: fix build with 3.16
+ - WMIProvTest: account for unability to open remote session
+ - WSManClientTest: fix UTC time retrieval
+ - WMIProvTest: account for AMT not ready
+ - WMIProv: fix debug print in WindowsEventLog
+ - fix run in console mode
+ - PortForwadingService: call DeInit in LMEConnection destructor
+ - WMIProv: drop unused and unchnaged parameters from functions
+ - CMake: fix build with downloaded GTest
+
+### Changed
+ - CMake: drop Lms prefix from static libraries
+ - snap: make snapcraft.yaml static
+ - CMake: assorted Windows fixes
+ - MEWMIProv: CMake: compile files with non-standard capitalization and add export
+ - CMake: do not link default libraries in Universal build
+
 ## [2109.0.0.0]
 
 ## Added
@@ -61,7 +86,7 @@
 ### Fixed
  - CIM_Framework: CimOpenWsmanClient: add 100_SUPRESS to Invoke
  - IPRefreshService: fix update of adapters list
- - WifiProfileSync: preform sync only if required
+ - WifiProfileSync: perform sync only if required
  - Configurator: avoid toggling services that does not exists
  - Configurator: continue execution if dependencies are no-ops
 
