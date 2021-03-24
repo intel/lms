@@ -25,11 +25,11 @@
 
 ## [2109.0.0.0]
 
-## Added
+### Added
  - MEIClient: UPID: Add value map for OEMPlatformIDType
  - MEWMIProv: add tests for more interfaces
 
-## Fixed
+### Fixed
  - MEWMIProv: Test: fix conan imports
  - LMS: Weak Manifest File Permission
  - LMS: fix errors and warnings reported by VS2019
@@ -40,7 +40,7 @@
 
 ## [2107.1.0.0]
 
-## Fixed
+### Fixed
  - LMS: fix style and spelling errors
 
 ### Changed
