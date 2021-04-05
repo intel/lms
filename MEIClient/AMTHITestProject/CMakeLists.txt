@@ -9,6 +9,7 @@ add_executable (AMTHITestProject
 target_link_libraries (AMTHITestProject
   GTest::GTest
   MEIClient
+  $<$<BOOL:${WIN32}>:Ws2_32.lib>
 )
 
 install (TARGETS AMTHITestProject
