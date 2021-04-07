@@ -3,16 +3,7 @@
 cmake_minimum_required (VERSION 3.1)
 
 find_package("metee")
-if(METEE_FOUND)
-  set(LIBMETEE_LIB ${metee_LIBRARIES})
-  set(LIBMETEE_HEADER ${metee_INCLUDE_DIRS})
-else()
-  find_library(LIBMETEE_LIB NAMES metee PATHS ENV METEE_LIB_PATH)
-  find_path(LIBMETEE_HEADER NAMES metee.h PATHS ENV METEE_HEADER_PATH)
-endif()
-
-if (${LIBMETEE_LIB} MATCHES "LIBMETEE_LIB-NOTFOUND" OR
-    ${LIBMETEE_HEADER} MATCHES "LIBMETEE_HEADER-NOTFOUND")
+if(NOT METEE_FOUND)
   # Download and unpack metee at configure time
   configure_file (metee-down.cmake.in metee-download/CMakeLists.txt)
   execute_process (COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
@@ -46,12 +37,12 @@ if (${LIBMETEE_LIB} MATCHES "LIBMETEE_LIB-NOTFOUND" OR
   CMAKE_ARGS
     -DBUILD_MSVC_RUNTIME_STATIC=ON
   )
-endif ()
 
-add_library (LIBMETEE STATIC IMPORTED)
-set_target_properties (LIBMETEE PROPERTIES
-  IMPORTED_LOCATION ${LIBMETEE_LIB}
-  IMPORTED_IMPLIB ${LIBMETEE_LIB}
-  INTERFACE_INCLUDE_DIRECTORIES ${LIBMETEE_HEADER}
-)
-add_dependencies(LIBMETEE libmetee)
+  add_library (metee::metee STATIC IMPORTED)
+  set_target_properties (metee::metee PROPERTIES
+    IMPORTED_LOCATION ${LIBMETEE_LIB}
+    IMPORTED_IMPLIB ${LIBMETEE_LIB}
+    INTERFACE_INCLUDE_DIRECTORIES ${LIBMETEE_HEADER}
+  )
+  add_dependencies(metee::metee libmetee)
+endif()

@@ -98,7 +98,7 @@ add_library (MEIClient STATIC
 set_target_properties (MEIClient PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries (MEIClient
-  LIBMETEE
+  metee::metee
   $<$<BOOL:${WIN32}>:CfgMgr32.lib>
 )
 
