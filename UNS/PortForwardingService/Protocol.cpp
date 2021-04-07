@@ -133,7 +133,7 @@ bool Protocol::Init(InitParameters & params)
 	}
 #endif
 
-	long bufSize = _lme.GetHECI().GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
+	long bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
 	if (bufSize > 0) {
 		_rxSocketBuffer = new char[bufSize];
 		_rxSocketBufferSize = bufSize;

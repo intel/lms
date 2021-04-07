@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -290,7 +290,7 @@ public:
 	bool IsClientNotFound() { return _clientNotFound; }
 	//parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
 	void Deinit(bool signalSelect = false);
-	const Intel::MEI_Client::HECI& GetHECI();
+	size_t GetBufferSize() const;
 
 	enum INIT_STATES {
 		INIT_STATE_DISCONNECTED = 0,

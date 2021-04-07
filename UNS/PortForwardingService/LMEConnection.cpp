@@ -107,7 +107,7 @@ bool LMEConnection::Init(InitParameters & params)
 		_portIsOk.reset();
 
 		// launch RX thread
-		_txBuffer = new unsigned char[_heci->GetBufferSize()];
+		_txBuffer = new unsigned char[GetBufferSize()];
 		auto spawn_res = aceMgr_->spawn((ACE_THR_FUNC)_rxThreadFunc, this, THR_CANCEL_ENABLE, &_rxThread);
 		if (spawn_res == -1)
 		{
@@ -490,7 +490,7 @@ int LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned
 
 	APF_CHANNEL_DATA_MESSAGE *message;
 
-	if (len > _heci->GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE)) {
+	if (len > GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE)) {
 		return -1;
 	}
 
@@ -593,7 +593,7 @@ void LMEConnection::_doRX()
 	unsigned char *pCurrent;
 	int bytesRead;
 
-	std::vector<unsigned char> rxBufferVector(_heci->GetBufferSize());
+	std::vector<unsigned char> rxBufferVector(GetBufferSize());
 	unsigned char *rxBuffer = rxBufferVector.data();
 
 	const std::string apf_auth_password(APF_AUTH_PASSWORD);
@@ -601,7 +601,7 @@ void LMEConnection::_doRX()
 	while (true) {
 		int status = 1;
 
-		bytesRead = _receiveMessage(rxBuffer, _heci->GetBufferSize());
+		bytesRead = _receiveMessage(rxBuffer, GetBufferSize());
 
 		if (bytesRead < 0) {
 			Deinit(true);
@@ -993,7 +993,7 @@ void LMEConnection::_doRX()
 	}
 }
 
-const HECI& LMEConnection::GetHECI()
+size_t LMEConnection::GetBufferSize() const
 {
-	return *_heci;
+	return _heci->GetBufferSize();
 }
