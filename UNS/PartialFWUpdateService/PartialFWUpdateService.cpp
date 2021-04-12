@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -82,10 +82,8 @@ bool PartialFWUpdateEventsFilter::defaultInitialization(std::shared_ptr<PartialF
 }
 
 PartialFWUpdateService::PartialFWUpdateService() :
-	filter_(std::make_shared<PartialFWUpdateEventsFilter>()),
-	langID(PRIMARYLANGID(GetSystemDefaultLCID())),
-	mode(INITIAL_MODE),
-	schedPFUAfterResume_(false)
+	filter_(std::make_shared<PartialFWUpdateEventsFilter>()), m_PfuRequiredButNoPfw(false),
+	langID(PRIMARYLANGID(GetSystemDefaultLCID())), mode(INITIAL_MODE), schedPFUAfterResume_(false)
 {
 	PartialFWUpdateEventsFilter::defaultInitialization(filter_);
 
@@ -96,7 +94,7 @@ std::shared_ptr<EventsFilter> PartialFWUpdateService::getFilter()
 	return filter_;
 }
 
-int PartialFWUpdateService::init (int argc, ACE_TCHAR *argv[])
+int PartialFWUpdateService::init(int argc, ACE_TCHAR *argv[])
 {
 	int retVal = EventHandler::init(argc, argv);
 	if (retVal != 0)
@@ -104,9 +102,6 @@ int PartialFWUpdateService::init (int argc, ACE_TCHAR *argv[])
 		UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
 		return retVal;
 	}
-
-	initSubService(argc,argv);
-	m_PfuRequiredButNoPfw = false;
 
 	startSubService();
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -177,7 +177,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 			RegCloseKey(hKey);
 
-			bufCount = ExpandEnvironmentStrings(path, expandedPath, sizeof(expandedPath));
+			bufCount = ExpandEnvironmentStrings(path, expandedPath, sizeof(expandedPath)/sizeof(expandedPath[0]));
 			if (bufCount > MAX_PATH)
 			{
 				UNS_DEBUG(L"ExpandEnvironmentStrings: Too small buffer for expanding %W\n", path);

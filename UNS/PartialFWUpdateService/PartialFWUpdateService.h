@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #ifndef __PARTIALFWUPDATESERVICE_H_
 #define __PARTIALFWUPDATESERVICE_H_
@@ -21,12 +21,6 @@ typedef	enum	_LANGUAGE_FLOW_MODE
 	INITIAL_MODE,
 	MANUAL_MODE
 } LANGUAGE_FLOW_MODE;
-
-
-
-
-bool SetExpectedWithLocalOSLanguage();
-unsigned int getUCLanguageID();
 
 class PartialFWUpdateEventsFilter;
 

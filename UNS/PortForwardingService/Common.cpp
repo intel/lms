@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -129,7 +129,7 @@ std::wstring getErrMsg(unsigned long err)
 		err,
 		0,
 		buffer,
-		sizeof(buffer) - 1,
+		sizeof(buffer)/sizeof(buffer[0]) - 1,
 		0);
 	return std::wstring(buffer);
 #else
