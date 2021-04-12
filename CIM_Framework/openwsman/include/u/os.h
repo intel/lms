@@ -18,7 +18,7 @@ struct __timezone {
 
 #endif
 
-#if defined WIN32 && ! defined __CYGWIN__
+#if defined (WIN32) && ! defined (__CYGWIN__) && ! defined(__MINGW32__)
 #define strcasecmp      stricmp
 #define strncasecmp     strnicmp
 
@@ -51,14 +51,12 @@ pid_t getpid(void);
 typedef int ssize_t;
 #endif
 
-#define bzero(p, l) memset(p, 0, l)
-
 #endif // WIN32
 
 
 
 /* Define VA_COPY() to do the right thing for copying va_list variables. */
-#ifdef WIN32
+#ifdef _WIN32
 #  if defined (__GNUC__) && defined (__PPC__) && (defined (_CALL_SYSV) || defined (_WIN32))
 #    define VA_COPY(ap1, ap2) (*(ap1) = *(ap2))
 #  elif defined (VA_COPY_AS_ARRAY)
