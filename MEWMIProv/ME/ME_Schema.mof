@@ -30,5 +30,5 @@ Qualifier InternalOnly : string = null,
 #pragma include ("MEMofs/AMT_Service.mof")
 #pragma include ("MEmofs/AMT_EthernetPortSettings.mof")
 #pragma include ("MEmofs/ME_Event.mof")
-#pragma include ("MEmofs/CIM_ConcreteComponent.mof")
-#pragma include ("MEmofs/CIM_HostedService.mof")
+#pragma include ("MEmofs/AMT_ConcreteComponent.mof")
+#pragma include ("MEmofs/AMT_HostedService.mof")
