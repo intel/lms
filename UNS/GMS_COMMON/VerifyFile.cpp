@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2020 Intel Corporation
+ * Copyright (C) 2011-2021 Intel Corporation
  */
 #include "VerifyFile.h"
 #include "DataStorageGenerator.h"
@@ -14,6 +14,7 @@
 std::wstring VerifyFile::m_UNSPath;
 
 const std::wstring IntelCertificateName(L"Intel(R) Embedded Subsystems and IP Blocks Group");
+const std::wstring IntelCertificateName2(L"Intel Corporation");
 
 
 VerifyFile::VerifyFile(void)
@@ -398,7 +399,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 			} 
 			std::wstring certName(certNameMem.get());
 
-			if (certName == IntelCertificateName)
+			if (certName == IntelCertificateName || certName == IntelCertificateName2)
 			{
 				UNS_DEBUG(L"VerifyCertificateName: File is signed by Intel\n");
 				ret = true;
