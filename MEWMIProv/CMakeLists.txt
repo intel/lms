@@ -87,6 +87,8 @@ install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ME
   DESTINATION ${CMAKE_INSTALL_DOCDIR}
 )
 
+add_subdirectory ("WMIRegistrationService" "WMIRegistrationService")
+
 if (BUILD_TESTS)
   add_subdirectory ("MEProvTest" "MEProvTest")
 endif (BUILD_TESTS)
