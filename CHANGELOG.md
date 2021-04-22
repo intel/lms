@@ -1,3 +1,28 @@
+## [2117.0.0.0]
+
+### Added
+ - PortForwardingService: add GetBufferSize method
+ - Add support in new certificate signer name.
+ - MEWMIProv: Add INF registration service
+
+### Fixed
+ - Fix hierarchy in CHANGELOG
+ - MEIClient: AMTHITest: fix tests
+ - fix size of wchar_t buffers, initialize variable
+ - AMT_COM_Test: Add IsMeasuredBootState test
+ - AMT_COM_TEST: fix dependencies
+
+### Changed
+ - MEIClient: CMake: modernize metee import
+ - CIM_Framework: openwsman: updated code base
+ - MEWMIProv: rename duplicate mof files
+ - MEIClient: Separate metee headers
+ - COM: Replace Return Value of E_NOINTERFACE with E_NOTIMPL.
+
+### Removed
+ - MEWMIProv: drop unused comp.bat
+ - MEWMIProv: deprecate GetPID method
+
 ## [2113.0.0.0]
 
 ### Added
