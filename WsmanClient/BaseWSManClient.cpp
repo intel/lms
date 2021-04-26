@@ -49,7 +49,7 @@ void BaseWSManClient::Init()
 {
 	m_ip = "localhost";
 
-	if ((m_defaultUser.empty()) || (m_defaultUser == "$$uns"))
+	if ((m_defaultUser.empty()) || (m_defaultUser == DEFAULT_USER))
 	{
 		GetLocalSystemAccount();
 	}
@@ -63,8 +63,14 @@ void BaseWSManClient::Init()
 // Name			: SetEndpoint.
 // Description	: Set soap endpoint
 //************************************************************************
-int BaseWSManClient::SetEndpoint()
+void BaseWSManClient::SetEndpoint()
 {
+	if ((m_defaultUser.empty()) || (m_defaultUser == DEFAULT_USER))
+	{
+		if (!GetLocalSystemAccount())
+			throw std::runtime_error("Can't get local system account");
+	}
+
 	//Lock WsMan to prevent reentry
 	std::lock_guard<std::mutex> lock(WsManSemaphore());
 		
@@ -74,8 +80,6 @@ int BaseWSManClient::SetEndpoint()
 									  Intel::WSManagement::DIGEST,
 									  m_defaultUser,
 									  m_defaultPass.Get()));
-
-	return WSMAN_STATUS_SUCCESS;
 }
 
 bool BaseWSManClient::GetLocalSystemAccount()

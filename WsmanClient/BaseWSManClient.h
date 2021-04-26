@@ -69,7 +69,7 @@ public:
 	virtual ~BaseWSManClient();
 
 protected:
-	int SetEndpoint();		// Set endpoint for wsman request.
+	void SetEndpoint();		// Set endpoint for wsman request.
 	static std::mutex& WsManSemaphore();// For locking Wsman library
 
 	// Data members
