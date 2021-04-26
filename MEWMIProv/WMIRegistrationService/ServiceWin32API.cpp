@@ -9,48 +9,6 @@
 
 using tstring = std::wstring;
 
-
-//function forward declarations
-VOID
-WINAPI
-ServiceMain(DWORD, LPTSTR*);
-
-BOOL _Check_return_
-UpdateServiceStatus(
-    _In_ SERVICE_STATUS_HANDLE hHandle,
-    _In_     DWORD                 dwCurrentState,
-    _In_     DWORD                 dwWin32ExitCode
-    );
-
-VOID
-CALLBACK
-ServiceStopCallback(
-    _In_ PVOID   lpParameter,
-    _In_ BOOLEAN TimerOrWaitFired
-    );
-
-VOID
-ServiceStop(
-    _In_ DWORD ExitCode
-    );
-
-DWORD _Check_return_
-WINAPI
-ServiceRunningWorkerThread(
-    _In_ PVOID
-    );
-
-DWORD _Check_return_
-WINAPI
-ServiceStopWorkerThread(
-    _In_ PVOID lpThreadParameter
-    );
-
-DWORD _Check_return_
-ExecuteMofcomp(
-    tstring param
-    );
-
 //
 // Settings of the service
 //
@@ -70,9 +28,6 @@ SERVICE_STATUS_HANDLE StatusHandle     = NULL;
 volatile LONG         ControlFlags     = 0;
 HANDLE                StopRequestEvent = NULL;
 HANDLE                StopWaitObject   = NULL;
-
-
-
 
 VOID DbgPrint(_In_ const TCHAR* args, ...)
 {
@@ -147,103 +102,6 @@ tstring GetServiceState(_In_ DWORD currnetState)
     }
     return state;
 }
-
-_Check_return_
-DWORD
-WINAPI
-ServiceCtrlHandler(
-    _In_ DWORD Ctrl,
-    _In_ DWORD dwEventType,
-    _In_ LPVOID lpEventData,
-    _In_ LPVOID lpContext
-    )
-{
-    switch (Ctrl)
-    {
-    case SERVICE_CONTROL_STOP:
-        //
-        // Set service stop event
-        //
-        UpdateServiceStatus(StatusHandle, SERVICE_STOP_PENDING, ERROR_SUCCESS);
-        SetEvent(StopRequestEvent);
-        break;
-
-    default:
-        break;
-    }
-    return NO_ERROR;
-}
-
-VOID WINAPI ServiceMain(DWORD, LPTSTR*)
-{
-    DWORD Err = ERROR_SUCCESS;
-
-    DbgPrint(L"ServiceMain Entry");
-    StatusHandle = RegisterServiceCtrlHandlerExW((LPWSTR)SERVICE_NAME,
-                                                 ServiceCtrlHandler, NULL);
-
-    if (StatusHandle == NULL)
-    {
-        DbgPrint(L"RegisterServiceCtrlHandlerExW Failed");
-        Err = GetLastError();
-        goto cleanup;
-    }
-
-    UpdateServiceStatus(StatusHandle,
-                        SERVICE_START_PENDING,
-                        ERROR_SUCCESS);
-
-    //
-    // Register callback function for stop event
-    //
-    StopRequestEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-
-    if (StopRequestEvent == NULL)
-    {
-        Err = GetLastError();
-        DbgPrint(L"Event Creation Failed with Error", Err);
-        goto cleanup;
-    }
-
-    if (!RegisterWaitForSingleObject(&StopWaitObject,
-                                     StopRequestEvent,
-                                     ServiceStopCallback,
-                                     NULL,
-                                     INFINITE,
-                                     WT_EXECUTEONLYONCE | WT_EXECUTEINPERSISTENTTHREAD))
-    {
-        Err = GetLastError();
-        DbgPrint(L"RegisterWaitForSingleObject Failed with Error", Err);
-        goto cleanup;
-    }
-
-    UpdateServiceStatus(StatusHandle,
-                        SERVICE_START_PENDING,
-                        ERROR_SUCCESS);
-
-    //
-    // Queue the main service function for execution in a worker thread.
-    //
-    QueueUserWorkItem(&ServiceRunningWorkerThread,
-                      NULL,
-                      WT_EXECUTELONGFUNCTION);
-
-    UpdateServiceStatus(StatusHandle,
-                        SERVICE_RUNNING,
-                        ERROR_SUCCESS);
-
-    WriteToEventLog(EVENT_LOG_INFORMATION, MSG_SERVICE_START);
-
-cleanup:
-
-    if (Err != ERROR_SUCCESS)
-    {
-        ServiceStop(Err);
-    }
-
-    DbgPrint(L"ServiceMain Exit");
-}
-
 
 _Check_return_
 BOOL
@@ -375,6 +233,48 @@ end:
     return status;
 }
 
+VOID
+ServiceStop(
+    _In_ DWORD ExitCode
+)
+{
+    DbgPrint(L"ServiceStop Entry");
+    if (StatusHandle == NULL)
+    {
+        DbgPrint(L"StatusHandle is NULL");
+        return;
+    }
+    DWORD status = STATUS_SUCCESS;
+    UpdateServiceStatus(StatusHandle, SERVICE_STOP_PENDING, ExitCode);
+
+    // wait for service to register to WMI
+    while ((InterlockedOr(&ControlFlags, 0) & SERVICE_FLAGS_DONE) != 1);
+
+    tstring path = GetServicePath();
+    tstring removeParam = path + L"\\ME\\remove.mof";
+
+    DbgPrint(L"Starting WMI unregistration.");
+    status = ExecuteMofcomp(removeParam);
+    if (status != STATUS_SUCCESS)
+    {
+        DbgPrint(L"ExecuteMofcomp with %s failed.", removeParam);
+    }
+
+    if (StopWaitObject != NULL)
+    {
+        UnregisterWait(StopWaitObject);
+    }
+
+    if (StopRequestEvent != NULL)
+    {
+        CloseHandle(StopRequestEvent);
+    }
+
+    WriteToEventLog(EVENT_LOG_INFORMATION, MSG_SERVICE_STOP);
+    DbgPrint(L"ServiceStop Exit");
+    UpdateServiceStatus(StatusHandle, SERVICE_STOPPED, ExitCode);
+}
+
 _Check_return_
 DWORD
 WINAPI
@@ -426,24 +326,6 @@ end:
     return status;
 }
 
-VOID
-CALLBACK
-ServiceStopCallback(
-    _In_ PVOID   lpParameter,
-    _In_ BOOLEAN TimerOrWaitFired
-    )
-{
-    UNREFERENCED_PARAMETER(TimerOrWaitFired);
-
-    //
-    // Since wait object can not be unregistered in callback function, queue
-    // another thread
-    //
-    QueueUserWorkItem(ServiceStopWorkerThread,
-                      lpParameter,
-                      WT_EXECUTEDEFAULT);
-}
-
 _Check_return_
 DWORD
 WINAPI
@@ -459,45 +341,117 @@ ServiceStopWorkerThread(
 }
 
 VOID
-ServiceStop(
-    _In_ DWORD ExitCode
-    )
+CALLBACK
+ServiceStopCallback(
+    _In_ PVOID   lpParameter,
+    _In_ BOOLEAN TimerOrWaitFired
+)
 {
-    DbgPrint(L"ServiceStop Entry");
+    UNREFERENCED_PARAMETER(TimerOrWaitFired);
+
+    //
+    // Since wait object can not be unregistered in callback function, queue
+    // another thread
+    //
+    QueueUserWorkItem(ServiceStopWorkerThread,
+        lpParameter,
+        WT_EXECUTEDEFAULT);
+}
+
+_Check_return_
+DWORD
+WINAPI
+ServiceCtrlHandler(
+    _In_ DWORD Ctrl,
+    _In_ DWORD dwEventType,
+    _In_ LPVOID lpEventData,
+    _In_ LPVOID lpContext
+)
+{
+    switch (Ctrl)
+    {
+    case SERVICE_CONTROL_STOP:
+        //
+        // Set service stop event
+        //
+        UpdateServiceStatus(StatusHandle, SERVICE_STOP_PENDING, ERROR_SUCCESS);
+        SetEvent(StopRequestEvent);
+        break;
+
+    default:
+        break;
+    }
+    return NO_ERROR;
+}
+
+VOID WINAPI ServiceMain(DWORD, LPTSTR*)
+{
+    DWORD Err = ERROR_SUCCESS;
+
+    DbgPrint(L"ServiceMain Entry");
+    StatusHandle = RegisterServiceCtrlHandlerExW((LPWSTR)SERVICE_NAME,
+        ServiceCtrlHandler, NULL);
+
     if (StatusHandle == NULL)
     {
-        DbgPrint(L"StatusHandle is NULL");
-        return;
+        DbgPrint(L"RegisterServiceCtrlHandlerExW Failed");
+        Err = GetLastError();
+        goto cleanup;
     }
-    DWORD status = STATUS_SUCCESS;
-    UpdateServiceStatus(StatusHandle, SERVICE_STOP_PENDING, ExitCode);
 
-    // wait for service to register to WMI
-    while ((InterlockedOr(&ControlFlags, 0) & SERVICE_FLAGS_DONE) != 1);
+    UpdateServiceStatus(StatusHandle,
+        SERVICE_START_PENDING,
+        ERROR_SUCCESS);
 
-    tstring path = GetServicePath();
-    tstring removeParam = path + L"\\ME\\remove.mof";
+    //
+    // Register callback function for stop event
+    //
+    StopRequestEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-    DbgPrint(L"Starting WMI unregistration.");
-    status = ExecuteMofcomp(removeParam);
-    if (status != STATUS_SUCCESS)
+    if (StopRequestEvent == NULL)
     {
-        DbgPrint(L"ExecuteMofcomp with %s failed.", removeParam);
+        Err = GetLastError();
+        DbgPrint(L"Event Creation Failed with Error", Err);
+        goto cleanup;
     }
 
-    if (StopWaitObject != NULL)
+    if (!RegisterWaitForSingleObject(&StopWaitObject,
+        StopRequestEvent,
+        ServiceStopCallback,
+        NULL,
+        INFINITE,
+        WT_EXECUTEONLYONCE | WT_EXECUTEINPERSISTENTTHREAD))
     {
-        UnregisterWait(StopWaitObject);
+        Err = GetLastError();
+        DbgPrint(L"RegisterWaitForSingleObject Failed with Error", Err);
+        goto cleanup;
     }
 
-    if (StopRequestEvent != NULL)
+    UpdateServiceStatus(StatusHandle,
+        SERVICE_START_PENDING,
+        ERROR_SUCCESS);
+
+    //
+    // Queue the main service function for execution in a worker thread.
+    //
+    QueueUserWorkItem(&ServiceRunningWorkerThread,
+        NULL,
+        WT_EXECUTELONGFUNCTION);
+
+    UpdateServiceStatus(StatusHandle,
+        SERVICE_RUNNING,
+        ERROR_SUCCESS);
+
+    WriteToEventLog(EVENT_LOG_INFORMATION, MSG_SERVICE_START);
+
+cleanup:
+
+    if (Err != ERROR_SUCCESS)
     {
-        CloseHandle(StopRequestEvent);
+        ServiceStop(Err);
     }
 
-    WriteToEventLog(EVENT_LOG_INFORMATION, MSG_SERVICE_STOP);
-    DbgPrint(L"ServiceStop Exit");
-    UpdateServiceStatus(StatusHandle, SERVICE_STOPPED, ExitCode);
+    DbgPrint(L"ServiceMain Exit");
 }
 
 _Check_return_
