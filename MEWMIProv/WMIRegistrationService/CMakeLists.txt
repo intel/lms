@@ -37,7 +37,9 @@ target_include_directories(WMIRegistrationService PRIVATE
 
 target_link_libraries(WMIRegistrationService
   Shlwapi.lib
+  Pathcch.lib
 )
+
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
   set_target_properties(WMIRegistrationService PROPERTIES

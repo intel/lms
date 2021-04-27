@@ -5,6 +5,9 @@
 #include <sstream>
 #include "EventLog.h"
 #include "EventLogMessages.h" // auto generated form mc file
+#include "pathcch.h"
+#include "Shlobj.h"
+
 
 //
 // Settings of the service
@@ -45,26 +48,23 @@ _Check_return_
 std::wstring GetServicePath()
 {
     WCHAR szSource[MAX_PATH];
-    std::wstring path = {};
     std::wstring source;
 
     DWORD pathErr = GetModuleFileName(0, szSource, MAX_PATH);
     if (pathErr == 0)
     {
         DbgPrint(L"GetModuleFileName Failed with %ul ", GetLastError());
+    }
+
+    HRESULT hr = PathCchRemoveFileSpec(szSource, MAX_PATH);
+    if (hr != S_OK)
+    {
+        DbgPrint(L"PathCchRemoveExtension Failed with %ul ", hr);
         return std::wstring();
     }
     source = std::wstring(szSource);
-    std::wstring::size_type pos = source.find_last_of(L"\\/");
-    if (pos == std::wstring::npos)
-    {
-        DbgPrint(L"Find exe directory failed.");
-        return std::wstring();
-    }
-    path = source.substr(0, pos);
-
-    DbgPrint(L"Service exe path is %s" ,path.c_str());
-    return std::wstring(path.c_str());
+    DbgPrint(L"Service exe path is %s" , source.c_str());
+    return source;
 }
 
 std::wstring GetServiceState(_In_ DWORD currnetState)
@@ -146,40 +146,45 @@ DWORD ExecuteMofcomp(_In_ std::wstring param)
 {
     DWORD status = STATUS_SUCCESS;
     SHELLEXECUTEINFO info = { 0 };
-    std::wstring commandPath;
+    std::wstring path, mofcompPath, mofcompParams;
     DWORD exitCode, waitErr = 0;
     HRESULT err = S_OK;
     BOOL res = TRUE;
-    WCHAR systemFolder[MAX_PATH];
+    PWCHAR systemFolder;
     DbgPrint(L"ExecuteMofcomp Entry");
 
-    err = GetSystemDirectory(systemFolder, MAX_PATH);
-    if (err == 0)
+    err = SHGetKnownFolderPath(FOLDERID_System, 0, NULL, &systemFolder);
+    if (err != S_OK)
     {
-        DbgPrint(L"GetSystemDirectory failed with status %lu ", GetLastError());
+        DbgPrint(L"SHGetKnownFolderPath failed with status %lu ", GetLastError());
         status = STATUS_UNSUCCESSFUL;
         goto end;
     }
-    commandPath = systemFolder;
+    path = std::wstring(systemFolder);
+    //free allocated pointer
+    CoTaskMemFree(systemFolder);
 
-    commandPath += L"\\wbem\\mofcomp.exe";
-
-    if (!PathFileExists(commandPath.c_str()))
+    path += L"\\wbem\\mofcomp.exe";
+      
+    if (!PathFileExists(path.c_str()))
     {
         DbgPrint(L"PathFileExists failed");
         status = STATUS_UNSUCCESSFUL;
         goto end;
     }
+    
+    mofcompPath = L"\"" + path + L"\"";
+    mofcompParams = L"\"" + param + L"\"";
 
-    DbgPrint(L"Command path is: %s ", commandPath);
-    DbgPrint(L"Param is: %s ", param);
+    DbgPrint(L"mofcomp path is: %s ", mofcompPath);
+    DbgPrint(L"param is: %s ", mofcompParams);
 
     info.cbSize = sizeof(SHELLEXECUTEINFOW);
     info.fMask = SEE_MASK_DEFAULT | SEE_MASK_NOCLOSEPROCESS;
     info.hwnd = NULL;
     info.lpVerb = L"open";
-    info.lpFile = commandPath.c_str();
-    info.lpParameters = param.c_str();
+    info.lpFile = mofcompPath.c_str();
+    info.lpParameters = mofcompParams.c_str();
     info.lpDirectory = NULL;
     info.nShow = SW_SHOW;
 
@@ -242,15 +247,17 @@ VOID ServiceStop(_In_ DWORD ExitCode)
     while ((InterlockedOr(&ControlFlags, 0) & SERVICE_FLAGS_DONE) != 1);
 
     std::wstring path = GetServicePath();
-    std::wstring removeParam = path + L"\\ME\\remove.mof";
-
-    DbgPrint(L"Starting WMI unregistration.");
-    status = ExecuteMofcomp(removeParam);
-    if (status != STATUS_SUCCESS)
+    if (!path.empty())
     {
-        DbgPrint(L"ExecuteMofcomp with %s failed.", removeParam);
-    }
+        std::wstring removeParam = path + L"\\ME\\remove.mof";
 
+        DbgPrint(L"Starting WMI unregistration.");
+        status = ExecuteMofcomp(removeParam);
+        if (status != STATUS_SUCCESS)
+        {
+            DbgPrint(L"ExecuteMofcomp with %s failed.", removeParam);
+        }
+    }
     if (StopWaitObject != NULL)
     {
         UnregisterWait(StopWaitObject);
