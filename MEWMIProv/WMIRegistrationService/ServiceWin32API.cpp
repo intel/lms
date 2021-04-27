@@ -6,9 +6,6 @@
 #include "EventLog.h"
 #include "EventLogMessages.h" // auto generated form mc file
 
-
-using tstring = std::wstring;
-
 //
 // Settings of the service
 //
@@ -17,7 +14,7 @@ const unsigned int SERVICE_FLAGS_STARTED = 0x0;
 const unsigned int SERVICE_FLAGS_DONE = 0x1;
 const unsigned int WAIT_FOR_COMPILITION_IN_MILLI = 1000000;
 const unsigned int STATUS_SUCCESS = 0;
-const int STATUS_UNSUCCESSFUL = -1;
+const unsigned int STATUS_UNSUCCESSFUL = -1;
 const unsigned int SERVICE_WAIT_HINT_TIME = 30000; // 30 seconds
 const unsigned int DEBUG_MSG_LEN = 260;
 
@@ -29,11 +26,11 @@ volatile LONG         ControlFlags     = 0;
 HANDLE                StopRequestEvent = NULL;
 HANDLE                StopWaitObject   = NULL;
 
-VOID DbgPrint(_In_ const TCHAR* args, ...)
+VOID DbgPrint(_In_ const wchar_t* args, ...)
 {
-    tstring dbgPrefix = SERVICE_NAME;
+    std::wstring dbgPrefix = SERVICE_NAME;
     dbgPrefix += L": ";
-    TCHAR msg[DEBUG_MSG_LEN + 1];
+    wchar_t msg[DEBUG_MSG_LEN + 1];
     //no point in checking return code, nothing to do if fails.
     wcscpy_s(msg, DEBUG_MSG_LEN, dbgPrefix.c_str());
     va_list varl;
@@ -45,34 +42,34 @@ VOID DbgPrint(_In_ const TCHAR* args, ...)
 }
 
 _Check_return_
-tstring GetServicePath()
+std::wstring GetServicePath()
 {
     WCHAR szSource[MAX_PATH];
-    tstring path = {};
-    tstring source;
+    std::wstring path = {};
+    std::wstring source;
 
     DWORD pathErr = GetModuleFileName(0, szSource, MAX_PATH);
     if (pathErr == 0)
     {
         DbgPrint(L"GetModuleFileName Failed with %ul ", GetLastError());
-        return tstring();
+        return std::wstring();
     }
-    source = tstring(szSource);
-    tstring::size_type pos = source.find_last_of(L"\\/");
-    if (pos == tstring::npos)
+    source = std::wstring(szSource);
+    std::wstring::size_type pos = source.find_last_of(L"\\/");
+    if (pos == std::wstring::npos)
     {
         DbgPrint(L"Find exe directory failed.");
-        return tstring();
+        return std::wstring();
     }
     path = source.substr(0, pos);
 
     DbgPrint(L"Service exe path is %s" ,path.c_str());
-    return tstring(path.c_str());
+    return std::wstring(path.c_str());
 }
 
-tstring GetServiceState(_In_ DWORD currnetState)
+std::wstring GetServiceState(_In_ DWORD currnetState)
 {
-    tstring state;
+    std::wstring state;
     switch (currnetState)
     {
     case SERVICE_STOPPED:
@@ -103,9 +100,7 @@ tstring GetServiceState(_In_ DWORD currnetState)
     return state;
 }
 
-_Check_return_
-BOOL
-UpdateServiceStatus(
+BOOL UpdateServiceStatus(
     _In_ SERVICE_STATUS_HANDLE hHandle,
     _In_  DWORD  dwCurrentState,
     _In_  DWORD  dwWin32ExitCode
@@ -147,12 +142,11 @@ UpdateServiceStatus(
 }
 
 _Check_return_
-DWORD
-ExecuteMofcomp(_In_ tstring param)
+DWORD ExecuteMofcomp(_In_ std::wstring param)
 {
     DWORD status = STATUS_SUCCESS;
     SHELLEXECUTEINFO info = { 0 };
-    tstring commandPath;
+    std::wstring commandPath;
     DWORD exitCode, waitErr = 0;
     HRESULT err = S_OK;
     BOOL res = TRUE;
@@ -233,10 +227,7 @@ end:
     return status;
 }
 
-VOID
-ServiceStop(
-    _In_ DWORD ExitCode
-)
+VOID ServiceStop(_In_ DWORD ExitCode)
 {
     DbgPrint(L"ServiceStop Entry");
     if (StatusHandle == NULL)
@@ -250,8 +241,8 @@ ServiceStop(
     // wait for service to register to WMI
     while ((InterlockedOr(&ControlFlags, 0) & SERVICE_FLAGS_DONE) != 1);
 
-    tstring path = GetServicePath();
-    tstring removeParam = path + L"\\ME\\remove.mof";
+    std::wstring path = GetServicePath();
+    std::wstring removeParam = path + L"\\ME\\remove.mof";
 
     DbgPrint(L"Starting WMI unregistration.");
     status = ExecuteMofcomp(removeParam);
@@ -276,19 +267,15 @@ ServiceStop(
 }
 
 _Check_return_
-DWORD
-WINAPI
-ServiceRunningWorkerThread(
-    _In_ PVOID
-    )
+DWORD WINAPI ServiceRunningWorkerThread(_In_ PVOID)
 {
     DWORD status = STATUS_SUCCESS;
-    tstring buildParam, registerParam = { 0 };
+    std::wstring buildParam, registerParam = { 0 };
     DbgPrint(L"ServiceRunningWorkerThread Entry");
 
     InterlockedOr(&ControlFlags, SERVICE_FLAGS_STARTED);
 
-    tstring path = GetServicePath();
+    std::wstring path = GetServicePath();
     if (path.empty())
     {
         DbgPrint(L"GetServicePath failed.");
@@ -327,28 +314,18 @@ end:
 }
 
 _Check_return_
-DWORD
-WINAPI
-ServiceStopWorkerThread(
-    _In_ PVOID lpThreadParameter
-    )
+DWORD WINAPI ServiceStopWorkerThread(_In_ PVOID /*lpThreadParameter*/)
 {
-    UNREFERENCED_PARAMETER(lpThreadParameter);
-
     ServiceStop(ERROR_SUCCESS);
 
     return 0;
 }
 
-VOID
-CALLBACK
-ServiceStopCallback(
+VOID CALLBACK ServiceStopCallback(
     _In_ PVOID   lpParameter,
-    _In_ BOOLEAN TimerOrWaitFired
+    _In_ BOOLEAN /*TimerOrWaitFired*/
 )
 {
-    UNREFERENCED_PARAMETER(TimerOrWaitFired);
-
     //
     // Since wait object can not be unregistered in callback function, queue
     // another thread
@@ -359,9 +336,7 @@ ServiceStopCallback(
 }
 
 _Check_return_
-DWORD
-WINAPI
-ServiceCtrlHandler(
+DWORD WINAPI ServiceCtrlHandler(
     _In_ DWORD Ctrl,
     _In_ DWORD dwEventType,
     _In_ LPVOID lpEventData,
