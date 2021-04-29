@@ -1,3 +1,17 @@
+## [2118.0.0.0]
+
+### Fixed
+ - WsManClient: bail out on get admin credentials failure
+ - MEWMIProv: WMIRegistrationService: change service cpp file name
+ - MEWMIProv: WMIRegistrationService: Security changes
+ - MEWMIProv: WMIRegistrationService: code style
+ - MEWMIProv: WMIRegistrationService: avoid forward declarations
+ - MEWMIProv: WMIRegistrationService: add to CMake build
+ - MEWMIProv: Fix variable shadowing
+
+### Removed
+ - Remove obsolete files which removal was missed in previous patches
+
 ## [2117.0.0.0]
 
 ### Added
