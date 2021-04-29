@@ -25,7 +25,7 @@ set_source_files_properties(
 
 add_executable(WMIRegistrationService
   EventLog.cpp
-  ServiceWin32API.cpp
+  WMIRegistrationService.cpp
   WMIRegistrationService.rc
   ${CMAKE_CURRENT_BINARY_DIR}/EventLogMessages.rc
 )
