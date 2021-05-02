@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -203,13 +203,12 @@ bool Configurator::MEIEnabled() const
 		// the current user and obtain pointer pSvc
 		// to make IWbemServices calls.
 		hres = loc->ConnectServer(L"ROOT\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &svc );
-
 		if (!FAILED(hres))
 		{
 				IEnumWbemClassObject* enumerator = NULL;
-				hres = svc->ExecQuery(L"WQL",L"SELECT Status FROM Win32_PnPEntity where Caption =\"Intel(R) Management Engine Interface \"",
-										WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
-
+				hres = svc->ExecQuery(L"WQL",
+					L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'",
+					WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
 				if (!FAILED(hres))
 				{
 					if (enumerator)//we have only one instance
@@ -224,6 +223,10 @@ bool Configurator::MEIEnabled() const
 							{
 								meiEnabled = true;
 							}
+						}
+						else
+						{
+							UNS_ERROR(L"isMEIEnabled() failed to enumerate device %d\n", hr);
 						}
 					}
 				}
