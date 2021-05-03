@@ -15,9 +15,9 @@ class LMSConan(ConanFile):
         self.requires("metee/3.0.1@mesw/stable")
         if self.settings.os == "Windows":
             self.requires("libxml2/2.9.10@mesw/stable")
-            self.requires("ACE/6.5.11@mesw/stable")
+            self.requires("ACE/7.0.1@mesw/stable")
         else:
             if os.environ.get("LOCAL_ACE", None):
-                self.requires("ACE/6.5.11@mesw/stable")
+                self.requires("ACE/7.0.1@mesw/stable")
         if self.options.build_tests:
             self.requires("gtest/1.10.0@mesw/stable")
