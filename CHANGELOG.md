@@ -1,3 +1,11 @@
+## [2119.0.0.0]
+
+### Fixed
+ - Configurator: adhere for new MEI device naming scheme
+
+### Changed
+ - Build: use ACE 7.0.1
+
 ## [2118.0.0.0]
 
 ### Fixed
