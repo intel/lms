@@ -755,7 +755,9 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to get FW status", 8725);
 		return res;
 	}
+
 	UNS_DEBUG(L"Current language %d\n", currentLang);
+	UNS_DEBUG(L"Requested language %s%d\n", defaultLangSet ? "(System Default) " : "", languageID);
 
 	UINT32 expectedLang = 0;
 	if(!client.GetExpectedLanguage((unsigned short*)&expectedLang))
@@ -903,10 +905,12 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 
 	if (isWcodPfuNeeded)
 	{
+		UNS_DEBUG(L"WCOD PFU is required\n");
 		res &= invokePartialFWUpdateFlow(WLAN_MODULE, WOCD_ID);
 	}
 	if (isLoclPfuNeeded)
 	{
+		UNS_DEBUG(L"LOCL PFU is required\n");
 		res &= updateLanguageChangeCode(requiredLanguage, INITIAL_MODE);
 	}
 	return res;
