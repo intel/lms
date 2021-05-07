@@ -71,6 +71,7 @@ add_subdirectory ("DataInterfaceBackend" "DataInterfaceBackend")
 
 add_executable (lms WIN32
   UNSMain.cpp
+  $<$<BOOL:${WIN32}>:${PROJECT_BINARY_DIR}/UNSMessageFile.rc>
 )
 
 target_link_libraries (lms
