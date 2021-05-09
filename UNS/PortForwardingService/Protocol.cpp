@@ -296,7 +296,6 @@ void Protocol::Deinit()
 		}
 #endif
 
-		_signalPipe.close();
 		{
 			std::lock_guard<std::mutex> l(_channelsLock);
 
@@ -341,7 +340,6 @@ void Protocol::Deinit()
 				_rxSocketBufferSize = 0;
 			}
 
-			_sockets_active = false;
 			_handshakingStatus = NOT_INITIATED;
 			_pfwdService = NOT_STARTED;
 			_AmtProtVersion.MajorVersion = 0;
