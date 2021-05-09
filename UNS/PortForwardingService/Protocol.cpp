@@ -471,6 +471,9 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 	hints.ai_flags = AI_NUMERICHOST | AI_PASSIVE;
+#ifndef WIN32
+	hints.ai_flags |= AI_ADDRCONFIG;
+#endif // !WIN32
 
 	std::stringstream ss;
 	ss << port;
