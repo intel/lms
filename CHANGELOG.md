@@ -1,3 +1,12 @@
+## [2120.0.0.0]
+
+### Fixed
+ - Log what language change is done during partial fw update
+ - CMake: Windows: pull messages resource in
+ - PortForwardingService: do not close signal pipe
+ - PortForwardingService: Linux: don't fail on IPv4-only systems
+ - WMEWMIProv: Fix incorrect spelling in WMI Provider event
+
 ## [2119.0.0.0]
 
 ### Fixed
