@@ -12,6 +12,7 @@
 static const UINT32 AMT_STATUS_INVALID_AMT_MODE = 0x80873003;
 static const UINT32 AMT_STATUS_NOT_PERMITTED = 0x80873010;
 static const UINT32 AMT_STATUS_NOT_READY = 0x80873002;
+static const std::string REQUEST = "SELECT * FROM ";
 
 #pragma comment(lib, "wbemuuid.lib")
 class InputParam
@@ -44,10 +45,9 @@ bool isReturnValueValidEx(UINT32 return_val, const std::vector<UINT32> &addition
 			return true;
 	return false;
 }
-
 class MEProvTest : public ::testing::Test {
 protected:
-	IWbemLocator *pLoc;
+	IWbemLocator  *pLoc;
 	IWbemServices *pSvc;
 
 	MEProvTest() : pLoc(NULL), pSvc(NULL)
@@ -142,8 +142,8 @@ protected:
 		CoUninitialize();
 	}
 
-	template<class T> bool runCommandOneReturn(const wchar_t *method_name, const wchar_t *class_name, const wchar_t *arg_name,
-		UINT32 &return_value, T &value)
+	template<class T> bool runCommandOneReturn(const wchar_t* method_name, const wchar_t* class_name, const wchar_t* arg_name,
+		UINT32& return_value, T& value)
 	{
 		// https://docs.microsoft.com/en-us/windows/win32/wmisdk/example--calling-a-provider-method
 		HRESULT hres;
@@ -193,7 +193,7 @@ protected:
 		value = static_cast<T>(varEnabled.llVal);
 		VariantClear(&varEnabled);
 
-release:
+	release:
 		SysFreeString(ClassName);
 		SysFreeString(MethodName);
 		if (pClass)
@@ -210,6 +210,7 @@ release:
 		}
 		return true;
 	}
+
 	bool runCommandMultipleArguments(const wchar_t* method_name,
 									 const wchar_t* class_name,
 									 UINT32& return_value,
@@ -234,7 +235,7 @@ release:
 				std::cerr << "failed to get class name. Error code = 0x" << std::hex << hres << std::endl;
 				goto release;
 			}
-			hres = pClass->GetMethod(MethodName, 0,&pInParamsDefinition, NULL);
+			hres = pClass->GetMethod(MethodName, 0, &pInParamsDefinition, NULL);
 			if (FAILED(hres))
 			{
 				std::cerr << "failed to GetMethod. Error code = 0x" << std::hex << hres << std::endl;
@@ -280,13 +281,13 @@ release:
 		return_value = varReturnValue.intVal;
 		VariantClear(&varReturnValue);
 
-		for(std::vector<std::string>::const_iterator it = out_param_names.begin(); it != out_param_names.end(); ++it)
+		for (std::vector<std::string>::const_iterator it = out_param_names.begin(); it != out_param_names.end(); ++it)
 		{
 			VARIANT varEnabled;
 			hres = pOutParams->Get(_bstr_t((*it).c_str()), 0, &varEnabled, NULL, 0);
 			if (FAILED(hres))
 			{
-				std::cerr <<"failed to get val: "<< (*it).c_str()<<". Error code = 0x"<< std::hex << hres << std::endl;
+				std::cerr << "failed to get val: " << (*it).c_str() << ". Error code = 0x" << std::hex << hres << std::endl;
 				goto release;
 			}
 			out_param_values.push_back(varEnabled);
@@ -322,51 +323,329 @@ release:
 		}
 		return true;
 	}
+
+	void releaseArgs(std::vector<IUnknown*> args)
+	{
+		for (auto& arg : args)
+		{
+			if (arg)
+			{
+				arg->Release();
+			}
+		}
+	}
+
+	void queryForObject(IEnumWbemClassObject*& pEnumerator, std::string objectName)
+	{
+		std::string request(REQUEST + objectName);
+		HRESULT hres = pSvc->ExecQuery(
+			bstr_t("WQL"),
+			bstr_t(request.c_str()),
+			WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+			NULL,
+			&pEnumerator);
+
+		if (FAILED(hres))
+		{
+			std::cerr << "Query for operating system name: " << objectName << " failed. Error code = 0x"
+				<< std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator});
+			FAIL();
+		}
+
+	}
 };
 
+//*********enumerators************
 TEST_F(MEProvTest, GetFWVersion)
 {
+	//checks that element inside each object exists.
+	//doesn't check if the list is empty (doesn't contain abny object)
 	// https://docs.microsoft.com/en-us/windows/win32/wmisdk/example--getting-wmi-data-from-the-local-computer
 	IEnumWbemClassObject* pEnumerator = NULL;
 	HRESULT hres;
+	std::string objectName = "ME_System";
+	queryForObject(pEnumerator, objectName);
+	IWbemClassObject* pclsObj = NULL;
+	ULONG uReturn = 0;
+	while (pEnumerator)
+	{
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		if (FAILED(hres))
+		{
+			std::cerr << "pEnumerator->Next failed. Error code = 0x"
+				<< std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+			FAIL();
+		}
+		if (0 == uReturn)
+		{
+			break;
+		}
+		// Get the value of the property
+		VARIANT vtProp;
+		hres = pclsObj->Get(L"FWVersion", 0, &vtProp, 0, 0);
+		std::wcout << " FWVersion: " << vtProp.bstrVal << std::endl;
+		ASSERT_GE(wcslen(vtProp.bstrVal), 9U);
+		ASSERT_LE(wcslen(vtProp.bstrVal), 15U);
+		VariantClear(&vtProp);
+		pclsObj->Release();
+		pclsObj = NULL;
 
+	}
+	pEnumerator->Release();
+}
+
+TEST_F(MEProvTest, AMT_SetupAuditRecord)
+{
+	// checks only AMT_SetupAuditRecord.
+	//doesn't check that element inside each object exists.
+	//checks that the list is not empty (doesn't contain abny object)
+	IEnumWbemClassObject* pEnumerator = NULL;
+	HRESULT hres;
+	IWbemClassObject* pclsObj = NULL;
+	ULONG uReturn = 0;
+	int items_count = 0;
 	hres = pSvc->ExecQuery(
 		bstr_t("WQL"),
-		bstr_t("SELECT * FROM ME_System"),
+		bstr_t("SELECT * FROM AMT_SetupAuditRecord"),
 		WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
 		NULL,
 		&pEnumerator);
-
-	if (FAILED(hres))
+	if (hres == WBEM_E_PROVIDER_FAILURE)
+	{
+		goto release;
+	}
+	else if (FAILED(hres))
 	{
 		std::cerr << "Query for operating system name failed. Error code = 0x"
 			<< std::hex << hres << std::endl;
+		releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
 		FAIL();
 	}
-
-	IWbemClassObject* pclsObj = NULL;
-	ULONG uReturn = 0;
-
 	while (pEnumerator)
 	{
-		HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		if (FAILED(hres))
+		{
+			if (hres == WBEM_E_PROVIDER_FAILURE)
+			{
+				std::cerr << "pEnumerator->Next failed. Error code = 0x" << std::hex << hres << std::endl;
+				std::cerr << "error is ignored" << std::endl;
+				goto release;
+			}
+			std::cerr << "pEnumerator->Next failed. Error code = 0x" << std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+			FAIL();
+		}
+		if (0 == uReturn)
+		{
+			break;
+		}
+		else
+		{
+			items_count++;
+		}
+		if (pclsObj)
+		{
+			pclsObj->Release();
+			pclsObj = NULL;
+		}
+	}
+	ASSERT_GE(items_count, 1);
+release:
+	releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+}
+
+TEST_F(MEProvTest, CIM_ConcreteComponent)
+{
+	//checks that element inside each object exists.
+	//checks that the list is not empty (doesn't contain abny object)
+	IEnumWbemClassObject* pEnumerator = NULL;
+	HRESULT hres;
+	IWbemClassObject* pclsObj = NULL;
+	ULONG uReturn = 0;
+	int items_count = 0;
+	VARIANT vtProp;
+	std::string objectName = "CIM_ConcreteComponent";
+	queryForObject(pEnumerator, objectName);
+	while (pEnumerator)
+	{
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		if (FAILED(hres))
+		{
+			std::cerr << "pEnumerator->Next failed. Error code = 0x"
+				<< std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+			FAIL();
+		}
+		if (0 == uReturn)
+		{
+			break;
+		}
+		else
+		{
+			items_count++;
+			hres = pclsObj->Get(L"GroupComponent", 0, &vtProp, 0, 0);
+			if (FAILED(hres))
+			{
+				std::cerr << "query for var GroupComponent failed. Error code = 0x"
+					<< std::hex << hres << std::endl;
+				releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+				FAIL();
+			}
+			std::wcout << "GroupComponent: " << vtProp.bstrVal << std::endl;
+			VariantClear(&vtProp);
+		}
+		if (pclsObj)
+		{
+			pclsObj->Release();
+			pclsObj = NULL;
+		}
+	}
+	ASSERT_GE(items_count, 1);
+	releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+}
+
+TEST_F(MEProvTest, AMT_EthernetPortSettings)
+{
+	//checks that element inside each object exists.
+	//checks that the list is not empty (doesn't contain abny object)
+	IEnumWbemClassObject* pEnumerator = NULL;
+	HRESULT hres;
+	IWbemClassObject* pclsObj = NULL;
+	ULONG uReturn = 0;
+	int items_count = 0;
+	VARIANT vtProp;
+	std::string objectName = "AMT_EthernetPortSettings";
+	queryForObject(pEnumerator, objectName);
+	while (pEnumerator)
+	{
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		if (FAILED(hres))
+		{
+			std::cerr << "pEnumerator->Next failed. Error code = 0x"
+				<< std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+
+			FAIL();
+		}
 		if (0 == uReturn)
 		{
 			break;
 		}
 
-		VARIANT vtProp;
-
-		// Get the value of the property
-		hr = pclsObj->Get(L"FWVersion", 0, &vtProp, 0, 0);
-		std::wcout << " FWVersion: " << vtProp.bstrVal << std::endl;
-		ASSERT_GE(wcslen(vtProp.bstrVal), 9U);
-		ASSERT_LE(wcslen(vtProp.bstrVal), 15U);
-		VariantClear(&vtProp);
-
-		pclsObj->Release();
+		else
+		{
+			items_count++;
+			hres = pclsObj->Get(L"DefaultGateway", 0, &vtProp, 0, 0);
+			if (FAILED(hres))
+			{
+				std::cerr << "query for var DefaultGateway failed. Error code = 0x"
+					<< std::hex << hres << std::endl;
+				releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+				FAIL();
+			}
+			std::wcout << " DefaultGateway: " << vtProp.bstrVal << std::endl;
+			VariantClear(&vtProp);
+		}
+		if (pclsObj)
+		{
+			pclsObj->Release();
+			pclsObj = NULL;
+		}
 	}
-	pEnumerator->Release();
+	releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+	ASSERT_GE(items_count, 1);
+}
+
+TEST_F(MEProvTest, CIM_HostedService)
+{
+	//checks that element inside each object exists.
+	//doesn't check that the list is not empty (doesn't contain abny object)
+	IEnumWbemClassObject* pEnumerator = NULL;
+	HRESULT hres;
+	IWbemClassObject* pclsObj = NULL;
+	ULONG uReturn = 0;
+	VARIANT vtProp;
+	std::string objectName = "CIM_HostedService";
+	queryForObject(pEnumerator, objectName);
+	while (pEnumerator)
+	{
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		if (FAILED(hres))
+		{
+			std::cerr << "pEnumerator->Next failed. Error code = 0x"
+				<< std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+
+			FAIL();
+		}
+		if (0 == uReturn)
+		{
+			break;
+		}
+
+		else
+		{
+			hres = pclsObj->Get(L"Antecedent", 0, &vtProp, 0, 0);
+			if (FAILED(hres))
+			{
+				std::cerr << "query for var Antecedent failed. Error code = 0x"
+					<< std::hex << hres << std::endl;
+				releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+				FAIL();
+			}
+			std::wcout << "Antecedent: " << vtProp.bstrVal << std::endl;
+			VariantClear(&vtProp);
+		}
+		if (pclsObj)
+		{
+			pclsObj->Release();
+			pclsObj = NULL;
+		}
+	}
+	releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+}
+
+TEST_F(MEProvTest, AMT_ProvisioningCertificateHash)
+{
+	//doesn't check that element inside each object exists.
+	//checks that the list is not empty (doesn't contain abny object)
+	IEnumWbemClassObject* pEnumerator = NULL;
+	HRESULT hres;
+	IWbemClassObject* pclsObj = NULL;
+	ULONG uReturn = 0;
+	int items_count = 0;
+	std::string objectName = "AMT_ProvisioningCertificateHash";
+	queryForObject(pEnumerator, objectName);
+	while (pEnumerator)
+	{
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+		if (FAILED(hres))
+		{
+			std::cerr << "pEnumerator->Next failed. Error code = 0x"
+				<< std::hex << hres << std::endl;
+			releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+			FAIL();
+		}
+
+		if (0 == uReturn)
+		{
+			break;
+		}
+		else
+		{
+			items_count++;
+		}
+		if (pclsObj)
+		{
+			pclsObj->Release();
+			pclsObj = NULL;
+		}
+	}
+	releaseArgs(std::vector<IUnknown*> {pEnumerator, pclsObj});
+	ASSERT_GE(items_count, 1);
 }
 
 //*********one out param AMT service************
@@ -540,7 +819,7 @@ TEST_F(MEProvTest, getCurrentPowerPolicy)
 	BSTR PowerPolicy;
 	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> out_param_names = { "PowerPolicy"};
+	std::vector<std::string> out_param_names = { "PowerPolicy" };
 	std::vector<_variant_t> out_param_values = {};
 	std::vector<InputParam> input_params = {};
 	ret = runCommandMultipleArguments(L"getCurrentPowerPolicy", L"ME_System", return_val, out_param_names, out_param_values, input_params);
@@ -588,7 +867,7 @@ TEST_F(MEProvTest, DISABLED_getFwUpdateOverrideParams)
 	bool ret;
 	std::vector<std::string> out_param_names = { "Counter","OverrideQualifier" };
 	std::vector<_variant_t> out_param_values = {};
-	std::vector<InputParam> input_params ={};
+	std::vector<InputParam> input_params = {};
 	ret = runCommandMultipleArguments(L"getFwUpdateOverrideParams", L"ME_System", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
 	{
@@ -643,7 +922,7 @@ TEST_F(MEProvTest, GetRemoteAccessConnectionStatus)
 	UINT32 RemoteAccessConStatus;
 	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> out_param_names = { "NetworkConStatus","ConnectionTrigger", "MPshostName","RemoteAccessConStatus"};
+	std::vector<std::string> out_param_names = { "NetworkConStatus","ConnectionTrigger", "MPshostName","RemoteAccessConStatus" };
 	std::vector<_variant_t> out_param_values = {};
 	std::vector<InputParam> input_params = {};
 	ret = runCommandMultipleArguments(L"GetRemoteAccessConnectionStatus", L"OOB_Service", return_val, out_param_names, out_param_values, input_params);
@@ -756,7 +1035,7 @@ TEST_F(MEProvTest, getKVMState)
 	bool active;
 	UINT32 return_val;
 	bool ret;
-	std::vector<std::string> out_param_names = { "hardEnabled","softEnabled" ,"active"};
+	std::vector<std::string> out_param_names = { "hardEnabled","softEnabled" ,"active" };
 	std::vector<_variant_t> out_param_values = {};
 	std::vector<InputParam> input_params = {};
 	ret = runCommandMultipleArguments(L"getKVMState", L"AMT_Service", return_val, out_param_names, out_param_values, input_params);
@@ -906,7 +1185,7 @@ TEST_F(MEProvTest, TerminateKVMSession)
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
