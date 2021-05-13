@@ -113,13 +113,25 @@ install(TARGETS lms
 )
 
 if (UNIX)
+  include(FindPkgConfig)
+  pkg_check_modules(SYSTEMD "systemd")
+  if(SYSTEMD_FOUND)
+    execute_process(COMMAND ${PKG_CONFIG_EXECUTABLE}
+                    --variable=systemdsystemunitdir systemd
+                    OUTPUT_VARIABLE SYSTEMD_SERVICES_INSTALL_DIR)
+    string(REGEX REPLACE "[ \t\n]+" "" SYSTEMD_SERVICES_INSTALL_DIR
+           "${SYSTEMD_SERVICES_INSTALL_DIR}")
+  else()
+    set(SYSTEMD_SERVICES_INSTALL_DIR "/lib/systemd/system/")
+  endif()
+
   configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/lms.service.in"
     "${CMAKE_CURRENT_BINARY_DIR}/lms.service"
   )
 
   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/lms.service
-    DESTINATION /lib/systemd/system/
+    DESTINATION ${SYSTEMD_SERVICES_INSTALL_DIR}
   )
 
   install (FILES
