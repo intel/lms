@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include <atlsafe.h>
 #include "gtest/gtest.h"
-#import "..\..\..\Release\LMS.exe"
+#import "AMT_COM_Interface.tlb"
 
 #define ASSERT_THROW_COM_(func, err)                                           \
 	try {                                                                  \
