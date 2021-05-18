@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -91,8 +91,6 @@ public:
 	UINT32 isRemoteConfigEnabled(bool* enabled);
 	UINT32 GetRemoteAccessConnectionStatus(SHORT* ConnectionTrigger, SHORT* NetworkConStatus, std::wstring* MPshostName, SHORT* RemoteAccessConStatus);
 
-
-	UINT32 GetPID(std::wstring* pPID);
 	UINT32 GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN);
 	UINT32 GetAMTFQDN(std::wstring* FQDN);
 	UINT32 ZTCActivate(const std::string &OTP, const std::string &PKIDNSSuffix, SHORT* mode);
@@ -112,8 +110,7 @@ public:
 	UINT32 GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAccount);
 	UINT32 GetKVMSessionActivation(bool* activated);
 	UINT32 Unprovision();
-    
+
 	UINT32 OpenCIRA(void);
 	UINT32 CloseCIRA(void);
-
 };

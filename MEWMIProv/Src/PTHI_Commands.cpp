@@ -29,7 +29,6 @@
 #include "GetLanInterfaceSettingsCommand.h"
 #include "GetProvisioningModeCommand.h"
 #include "GetProvisioningStateCommand.h"
-#include "GetPIDCommand.h"
 #include "GetZeroTouchEnabledCommand.h"
 #include "GetDNSSuffixCommand.h"
 #include "GetRemoteAccessConnectionStatusCommand.h"
@@ -541,37 +540,6 @@ UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetProvisioningStateCommand %C\n", e.what());
-	}
-
-	return rc;
-}
-
-UINT PTHI_Commands::GetPID(std::wstring* pPID)
-{
-	USES_CONVERSION;
-
-	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-	try {
-		GetPIDCommand command;
-		GET_PID_RESPONSE response = command.getResponse();
-
-		std::wstringstream str;
-		str << response.pid[0] << response.pid[1] << response.pid[2] << response.pid[3] << L"-" << response.pid[4] << response.pid[5] << response.pid[6] << response.pid[7];
-		pPID->assign(str.str());
-		rc = 0;
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetPIDCommand failed ret=%d\n", e.getErr());
-		rc = e.getErr();
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetPIDCommand failed %C\n",e.what());
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in GetPIDCommand %C\n", e.what());
 	}
 
 	return rc;

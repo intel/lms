@@ -267,33 +267,9 @@ HRESULT OOB_Service_WMI_Provider::GetPID(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	uint32 ReturnValue = 0;
-	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+	uint32 hr = WBEM_E_NOT_SUPPORTED;
 
-	try
-	{
-		std::wstring pid = L"";
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetPID(&pid);
-		
-		ERROR_HANDLER(ReturnValue);
-		
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetPID", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"PID", pid);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
-	}
-	catch(...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
-	}
-
-	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	pResponseHandler->SetStatus(0, hr, NULL, NULL);
 	return hr;
 }
 

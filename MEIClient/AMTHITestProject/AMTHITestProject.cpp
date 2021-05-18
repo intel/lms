@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2021 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
@@ -25,7 +25,6 @@
 #include "GetLanInterfaceSettingsCommand.h"
 #include "GetLastHostResetReasonCommand.h"
 #include "GetLocalSystemAccountCommand.h"
-#include "GetPIDCommand.h"
 #include "GetProvisioningModeCommand.h"
 #include "GetProvisioningStateCommand.h"
 #include "GetProvisioningTlsModeCommand.h"
@@ -271,23 +270,6 @@ TEST(instantiate, testGetLocalSystemAcountCommand)
 		cout<<endl;
 	);
 }
-
-
-
-TEST(instantiate, testGetPIDCommand) 
-{
-	EXPECT_NO_THROW(
-		GetPIDCommand getPIDCommand;
-		struct GET_PID_RESPONSE pid = getPIDCommand.getResponse();
-		cout << "\nPID: ";
-		for (int i =0; i <8 ; i++ ){
-			cout << pid.pid[i];
-		}
-		cout << endl;
-	);
-}
-
-
 
 TEST(instantiate, testGetProvisioningModeCommand) 
 {
