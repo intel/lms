@@ -313,7 +313,7 @@ HRESULT LMSError2HRESULT(Intel::LMS::LMS_ERROR err)
 	case Intel::LMS::ERROR_NOT_AVAILABLE_NOW:
 		return E_NOT_VALID_STATE;
 	case Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW:
-		return E_NOINTERFACE;
+		return E_NOTIMPL;
 	default:
 		return E_FAIL;
 	}
@@ -413,7 +413,7 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningMode(SHORT* pProvisioningMode)
 		return E_POINTER;
 
 	UNS_DEBUG(L"CPTHI_Commands::GetProvisioningMode - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
@@ -422,7 +422,7 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
 		return E_POINTER;
 
 	UNS_DEBUG(L"CPTHI_Commands::GetProvisioningTlsMode - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
@@ -526,7 +526,7 @@ STDMETHODIMP CPTHI_Commands::getWebUIState(SHORT* pState)
 		return E_POINTER;
 
 	UNS_DEBUG(L"CPTHI_Commands::getWebUIState - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
@@ -835,7 +835,7 @@ STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 STDMETHODIMP CPTHI_Commands::OpenUserInitiatedConnection()
 {
 	UNS_DEBUG(L"CPTHI_Commands::OpenUserInitiatedConnection - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::CloseUserInitiatedConnection()
@@ -854,7 +854,7 @@ STDMETHODIMP CPTHI_Commands::CloseUserInitiatedConnection()
 STDMETHODIMP CPTHI_Commands::TerminateKVMSession()
 {
 	UNS_DEBUG(L"CPTHI_Commands::TerminateKVMSession - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARIANT_BOOL* pConnected)
@@ -890,7 +890,7 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT*)
 {
 	UNS_DEBUG(L"CPTHI_Commands::GetSpriteLanguage - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
@@ -911,7 +911,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 STDMETHODIMP CPTHI_Commands::GetSpriteZoom(SHORT*)
 {
 	UNS_DEBUG(L"CPTHI_Commands::GetSpriteZoom - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::GetSpriteParameters(SHORT* pLanguage, SHORT* pZoom)
@@ -1216,7 +1216,7 @@ STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExis
 STDMETHODIMP CPTHI_Commands::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS)
 {
 	UNS_DEBUG(L"CPTHI_Commands::UpdateScreenSettings - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CPTHI_Commands::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, SHORT numOfDisplays)
@@ -1267,7 +1267,7 @@ STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR,
 
 {
 	UNS_DEBUG(L"CPTHI_Commands::ProxyAddProxyEntry - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 inline std::string ConvertBStrToString(BSTR bstr)

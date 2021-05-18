@@ -22,7 +22,7 @@
 	}                                                                      \
 
 #define ASSERT_THROW_INVALIDARG(func)  ASSERT_THROW_COM_(func, E_INVALIDARG)
-#define ASSERT_THROW_NOINTERFACE(func) ASSERT_THROW_COM_(func, E_NOINTERFACE)
+#define ASSERT_THROW_NOTIMPL(func)  ASSERT_THROW_COM_(func, E_NOTIMPL)
 
 #define ASSERT_NO_THROW_COM(func)                                              \
 	try {                                                                  \
@@ -43,8 +43,7 @@
 		}                                                              \
 	}                                                                      \
 
-#define ASSERT_MAY_THROW_NOINTERFACE(func) \
-	ASSERT_MAY_THROW_COM_(func, E_NOINTERFACE)
+#define ASSERT_MAY_THROW_NOTIMPL(func) ASSERT_MAY_THROW_COM_(func, E_NOTIMPL)
 
 /* ------------------------- AMT_COM_Manageability ----------------------- */
 class AMT_COM_Manageability : public ::testing::Test {
@@ -67,7 +66,7 @@ protected:
 TEST_F(AMT_COM_Manageability, GetFeaturesState)
 {
 	SAFEARRAY *states;
-	ASSERT_THROW_NOINTERFACE(amthi->GetFeaturesState(&states));
+	ASSERT_THROW_NOTIMPL(amthi->GetFeaturesState(&states));
 }
 
 TEST_F(AMT_COM_Manageability, GetTheFeatureState)
@@ -93,7 +92,7 @@ TEST_F(AMT_COM_Manageability, GetCustomerType)
 TEST_F(AMT_COM_Manageability, GetPlatformType)
 {
 	enum AMT_COM_InterfaceLib::PLATFORM_TYPE Type;
-	ASSERT_THROW_NOINTERFACE(amthi->GetPlatformType(&Type));
+	ASSERT_THROW_NOTIMPL(amthi->GetPlatformType(&Type));
 }
 
 TEST_F(AMT_COM_Manageability, GetMenageabiltyMode)
@@ -127,7 +126,7 @@ TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
 TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
 {
 	VARIANT_BOOL state;
-	ASSERT_MAY_THROW_NOINTERFACE(amthi->IsMeasuredBootState(&state));
+	ASSERT_MAY_THROW_NOTIMPL(amthi->IsMeasuredBootState(&state));
 }
 
 /* ------------------------- AMT_COM_PTHI ----------------------- */
@@ -171,13 +170,13 @@ TEST_F(AMT_COM_PTHI, GetHeciVersion)
 TEST_F(AMT_COM_PTHI, GetProvisioningMode)
 {
 	SHORT Mode;
-	ASSERT_THROW_NOINTERFACE(amthi->GetProvisioningMode(&Mode));
+	ASSERT_THROW_NOTIMPL(amthi->GetProvisioningMode(&Mode));
 }
 
 TEST_F(AMT_COM_PTHI, GetProvisioningTlsMode)
 {
 	SHORT Mode;
-	ASSERT_THROW_NOINTERFACE(amthi->GetProvisioningTlsMode(&Mode));
+	ASSERT_THROW_NOTIMPL(amthi->GetProvisioningTlsMode(&Mode));
 }
 
 TEST_F(AMT_COM_PTHI, GetProvisioningState)
@@ -227,7 +226,7 @@ TEST_F(AMT_COM_PTHI, GetUserInitiatedEnabled)
 TEST_F(AMT_COM_PTHI, getWebUIState)
 {
 	SHORT Mode;
-	ASSERT_THROW_NOINTERFACE(amthi->getWebUIState(&Mode));
+	ASSERT_THROW_NOTIMPL(amthi->getWebUIState(&Mode));
 }
 
 TEST_F(AMT_COM_PTHI, GetPowerPolicy)
@@ -296,13 +295,13 @@ TEST_F(AMT_COM_PTHI, UserInitiatedConnection)
 {
 	SHORT Status;
 	ASSERT_NO_THROW_COM(amthi->InitiateUserConnection(&Status));
-	ASSERT_THROW_NOINTERFACE(amthi->OpenUserInitiatedConnection());
+	ASSERT_THROW_NOTIMPL(amthi->OpenUserInitiatedConnection());
 	ASSERT_NO_THROW_COM(amthi->CloseUserInitiatedConnection());
 }
 
 TEST_F(AMT_COM_PTHI, TerminateKVMSession)
 {
-	ASSERT_THROW_NOINTERFACE(amthi->TerminateKVMSession());
+	ASSERT_THROW_NOTIMPL(amthi->TerminateKVMSession());
 }
 
 TEST_F(AMT_COM_PTHI, GetKVMRedirectionState)
@@ -316,11 +315,11 @@ TEST_F(AMT_COM_PTHI, Sprite)
 {
 	SHORT Language;
 	ASSERT_NO_THROW_COM(amthi->SetSpriteLanguage(1));
-	ASSERT_THROW_NOINTERFACE(amthi->GetSpriteLanguage(&Language));
+	ASSERT_THROW_NOTIMPL(amthi->GetSpriteLanguage(&Language));
 
 	SHORT Zoom;
 	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(2));
-	ASSERT_THROW_NOINTERFACE(amthi->GetSpriteZoom(&Zoom));
+	ASSERT_THROW_NOTIMPL(amthi->GetSpriteZoom(&Zoom));
 
 	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&Language, &Zoom));
 	EXPECT_EQ(Language, 1);
@@ -366,7 +365,7 @@ TEST_F(AMT_COM_PTHI, UpdateScreenSettings)
 {
 	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters = 
 	{ {0,1,2,3,4,5} };
-	ASSERT_THROW_NOINTERFACE(amthi->UpdateScreenSettings(eExtendedDisplayParameters));
+	ASSERT_THROW_NOTIMPL(amthi->UpdateScreenSettings(eExtendedDisplayParameters));
 }
 
 TEST_F(AMT_COM_PTHI, UpdateScreenSettings2)
@@ -396,7 +395,7 @@ TEST_F(AMT_COM_PTHI, ProxyAddProxyEntry)
 	USHORT proxy_port = 0;
 	CComSafeArray<BYTE> gateway_mac_address(6);
 	bstr_t network_dns_suffix = "1.2.3.4";
-	ASSERT_THROW_NOINTERFACE(amthi->ProxyAddProxyEntry(proxy_fqdn, proxy_port, gateway_mac_address.Detach(), network_dns_suffix));
+	ASSERT_THROW_NOTIMPL(amthi->ProxyAddProxyEntry(proxy_fqdn, proxy_port, gateway_mac_address.Detach(), network_dns_suffix));
 }
 
 /* ------------------------- AMT_COM_AT_Device ----------------------- */
@@ -421,7 +420,7 @@ TEST_F(AMT_COM_AT_Device, GetATDeviceInfo)
 {
 	SHORT State;
 	bstr_t strInfo;
-	ASSERT_THROW_NOINTERFACE(amthi->GetATDeviceInfo(&State, &strInfo.GetBSTR()));
+	ASSERT_THROW_NOTIMPL(amthi->GetATDeviceInfo(&State, &strInfo.GetBSTR()));
 }
 
 TEST_F(AMT_COM_AT_Device, GetAuditLogs)
@@ -456,7 +455,7 @@ TEST_F(AMT_COM_UNSAlert, GetIMSSEventHistory)
 
 TEST_F(AMT_COM_UNSAlert, ResetUNSstartedEvent)
 {
-	ASSERT_THROW_NOINTERFACE(amthi->ResetUNSstartedEvent());
+	ASSERT_THROW_NOTIMPL(amthi->ResetUNSstartedEvent());
 }
 
 TEST_F(AMT_COM_UNSAlert, RiseAlert)

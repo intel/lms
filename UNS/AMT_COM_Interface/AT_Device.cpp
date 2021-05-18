@@ -22,7 +22,7 @@
 STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT*, BSTR*)
 {
 	UNS_DEBUG(L"CAT_Device::GetATDeviceInfo - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)

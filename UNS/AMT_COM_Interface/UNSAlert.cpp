@@ -64,5 +64,5 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()
 {
 	UNS_DEBUG(L"CUNSAlert::ResetUNSstartedEvent - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }

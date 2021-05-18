@@ -81,7 +81,7 @@ HRESULT CManageability_Commands::GetFeaturesState(SAFEARRAY** ppStates)
 		return E_POINTER;
 
 	UNS_DEBUG(L"CManageability_Commands::GetFeaturesState - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
@@ -112,7 +112,7 @@ HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
 		return E_POINTER;
 
 	UNS_DEBUG(L"CManageability_Commands::GetPlatformType - deprecated\n");
-	return E_NOINTERFACE;
+	return E_NOTIMPL;
 }
 
 HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
