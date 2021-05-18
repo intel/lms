@@ -11,11 +11,13 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <metee.h>
 #include "heci.h"
 #include "HECIException.h"
 
 namespace Intel {
 namespace MEI_Client {
+HECI::HECI(const GUID &guid, bool verbose) : _guid(guid), _initialized(false), _verbose(verbose), _bufSize(0), _handle(new _TEEHANDLE) {}
 
 HECI::~HECI()
 {
@@ -39,22 +41,22 @@ void HECI::Init()
 	std::stringstream err;
 	for (std::vector<const char*>::const_iterator it = devices.begin();
 	    it != devices.end(); it++) {
-		ret = TeeInit(&_handle, &_guid, *it);
+		ret = TeeInit(_handle.get(), &_guid, *it);
 		if (!TEE_IS_SUCCESS(ret)) {
 			err << ((*it) ? *it : "NULL") << " init " << ret << " ";
 			continue;
 		}
 
-		ret = TeeConnect(&_handle);
+		ret = TeeConnect(_handle.get());
 		if (!TEE_IS_SUCCESS(ret)) {
 			err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
 			if (ret == TEE_CLIENT_NOT_FOUND)
 				client_not_found = true;
-			TeeDisconnect(&_handle);
+			TeeDisconnect(_handle.get());
 			continue;
 		}
 
-		_bufSize = _handle.maxMsgLen;
+		_bufSize = _handle->maxMsgLen;
 		_initialized = true;
 		return;
 	}
@@ -70,7 +72,7 @@ void HECI::Init()
 void HECI::Deinit()
 {
 	if (_initialized) {
-		TeeDisconnect(&_handle);
+		TeeDisconnect(_handle.get());
 		_initialized = false;
 	}
 }
@@ -81,9 +83,9 @@ size_t HECI::ReceiveHeciMessage(unsigned char *buffer, size_t len, unsigned long
 	size_t numberOfBytesRead;
 
 	if (!_initialized)
-		throw HECIException("Not initialized");
+		throw HECIException("Not initialized", TEE_INTERNAL_ERROR);
 
-	ret = TeeRead(&_handle, buffer, len, &numberOfBytesRead, timeout);
+	ret = TeeRead(_handle.get(), buffer, len, &numberOfBytesRead, timeout);
 	if (!TEE_IS_SUCCESS(ret))
 		throw HECIException("Read failed", ret);
 
@@ -96,7 +98,7 @@ size_t HECI::SendHeciMessage(const unsigned char *buffer, size_t len, unsigned l
 	size_t numberOfBytesWritten;
 
 	if (!_initialized)
-		throw HECIException("Not initialized");
+		throw HECIException("Not initialized", TEE_INTERNAL_ERROR);
 
 #ifdef __linux__
 	// Workaround for Linux kernels before 4.17
@@ -104,7 +106,7 @@ size_t HECI::SendHeciMessage(const unsigned char *buffer, size_t len, unsigned l
 	timeout = 0;
 #endif // __linux__
 
-	ret = TeeWrite(&_handle, buffer, len, &numberOfBytesWritten, timeout);
+	ret = TeeWrite(_handle.get(), buffer, len, &numberOfBytesWritten, timeout);
 	if (!TEE_IS_SUCCESS(ret))
 		throw HECIException("Write failed", ret);
 
@@ -114,20 +116,47 @@ size_t HECI::SendHeciMessage(const unsigned char *buffer, size_t len, unsigned l
 void* HECI::GetHandle()
 {
 	if (!_initialized)
-		throw HECIException("Not initialized");
+		throw HECIException("Not initialized", TEE_INTERNAL_ERROR);
 
-	return reinterpret_cast<void*>(TeeGetDeviceHandle(&_handle));
+	return reinterpret_cast<void*>(TeeGetDeviceHandle(_handle.get()));
 }
 
-void HECI::GetHeciDriverVersion(teeDriverVersion_t *heciVersion)
+void HECI::GetHeciDriverVersion(std::string& ver)
 {
-	TEESTATUS ret;
-
 	if (!_initialized)
-		throw HECIException("Not initialized");
+		throw HECIException("Not initialized", TEE_INTERNAL_ERROR);
 
-	ret = GetDriverVersion(&_handle, heciVersion);
+	teeDriverVersion_t heciVersion = { 0 };
+	TEESTATUS ret = GetDriverVersion(_handle.get(), &heciVersion);
 	if (!TEE_IS_SUCCESS(ret))
 		throw HECIException("GetDriverVersion failed", ret);
+
+	std::stringstream ss;
+	ss << heciVersion.major << "."
+		<< heciVersion.minor << "."
+		<< heciVersion.hotfix << "."
+		<< heciVersion.build;
+	ver = ss.str();
+}
+
+std::string heci_category_t::message(int ev) const {
+#define TEE_ERR_STATE(state) case TEE_##state: return #state
+	switch (ev) {
+		TEE_ERR_STATE(SUCCESS);
+		TEE_ERR_STATE(INTERNAL_ERROR);
+		TEE_ERR_STATE(DEVICE_NOT_FOUND);
+		TEE_ERR_STATE(DEVICE_NOT_READY);
+		TEE_ERR_STATE(INVALID_PARAMETER);
+		TEE_ERR_STATE(UNABLE_TO_COMPLETE_OPERATION);
+		TEE_ERR_STATE(TIMEOUT);
+		TEE_ERR_STATE(NOTSUPPORTED);
+		TEE_ERR_STATE(CLIENT_NOT_FOUND);
+		TEE_ERR_STATE(BUSY);
+		TEE_ERR_STATE(DISCONNECTED);
+		TEE_ERR_STATE(INSUFFICIENT_BUFFER);
+	default:
+		return std::to_string(ev);
+	}
+#undef TEE_ERR_STATE
 }
 }} // namespace

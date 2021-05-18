@@ -25,12 +25,12 @@ namespace Intel {
 			return GenerateHECIClient(LME_GUID, verbose);
 		}
 
-		void GetHeciDriverVersion(teeDriverVersion_t *heciVersion)
+		void GetHeciDriverVersion(std::string& ver)
 		{
 			GUID guid(HECI_AMTHI_GUID);
 			std::shared_ptr<HECI> heciClient(new HECI(guid));
 			heciClient->Init();
-			heciClient->GetHeciDriverVersion(heciVersion);
+			heciClient->GetHeciDriverVersion(ver);
 		}
 
 		void MEICommand::Transact()

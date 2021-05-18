@@ -240,18 +240,9 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetHeciVersion(std::string &sVersion)
 		{
-			teeDriverVersion_t HeciVersion;
-
 			try
 			{
-				Intel::MEI_Client::GetHeciDriverVersion(&HeciVersion);
-				std::stringstream ss;
-				ss << HeciVersion.major << "."
-				   << HeciVersion.minor << "."
-				   << HeciVersion.hotfix << "." 
-				   << HeciVersion.build;
-
-				sVersion = ss.str();
+				Intel::MEI_Client::GetHeciDriverVersion(sVersion);
 				return ERROR_OK;
 			}
 			CATCH_HECIException(L"GetHeciVersion")
