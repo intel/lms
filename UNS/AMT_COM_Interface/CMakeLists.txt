@@ -17,7 +17,6 @@ set_target_properties (AMT_COM_Interface PROPERTIES POSITION_INDEPENDENT_CODE ON
 
 target_compile_definitions (AMT_COM_Interface PRIVATE
   _CRT_NON_CONFORMING_WCSTOK
-  _CRT_SECURE_NO_WARNINGS
 )
 
 target_link_libraries (AMT_COM_Interface
@@ -60,22 +59,6 @@ set_source_files_properties(
  GENERATED TRUE
 )
 
-# find_program (TLBIMP TlbImp REQUIRED)
-
-# $(SolutionDir)..\Tools\mssdk\TlbImp $(OutDir)LMS.exe /out: AMT_COM_InterfaceLib.dll
-# add_custom_command (
-  # OUTPUT AMT_COM_InterfaceLib.dll
-  # DEPENDS ${PROJECT_BINARY_DIR}/UNS/${CMAKE_CFG_INTDIR}/lms.exe
-  # COMMAND ${TLBIMP} ${PROJECT_BINARY_DIR}/UNS/${CMAKE_CFG_INTDIR}/lms.exe /out: AMT_COM_InterfaceLib.dll
-  # COMMENT "Generate AMT_COM_InterfaceLib.dll for PIcon"
-# )
-
-# add_custom_target (AMT_COM_INTERFACELIB_SRC ALL
-  # DEPENDS AMT_COM_InterfaceLib.dll
-# )
-
-# add_dependencies(AMT_COM_INTERFACELIB_SRC lms)
-
-# add_library(AMT_COM_INTERFACEDLL SHARED IMPORTED)
-# set_target_properties (AMT_COM_INTERFACEDLL PROPERTIES IMPORTED_LOCATION AMT_COM_InterfaceLib.dll)
-# add_dependencies(AMT_COM_INTERFACEDLL AMT_COM_INTERFACELIB_SRC)
+if (BUILD_TESTS)
+  add_subdirectory ("AMT_COM_Test" "AMT_COM_Test")
+endif (BUILD_TESTS)
