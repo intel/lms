@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "PortForwardingService.h"
 
@@ -213,7 +213,10 @@ public:
 				}
 
 
+				// Make one more loop through testcancel as the Stop request
+				// can come while the thread is sleeping.
 				UNS_DEBUG(L"Connected to HECI driver\n");
+				continue;
 			}
 
 			if (!m_prot.SocketsCreated())
