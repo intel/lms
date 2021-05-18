@@ -124,6 +124,12 @@ TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
 	ASSERT_MAY_THROW_NOINTERFACE(amthi->IsMeasuredBootState(&state));
 }
 
+TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
+{
+	VARIANT_BOOL state;
+	ASSERT_MAY_THROW_NOINTERFACE(amthi->IsMeasuredBootState(&state));
+}
+
 /* ------------------------- AMT_COM_PTHI ----------------------- */
 class AMT_COM_PTHI : public ::testing::Test {
 protected:
