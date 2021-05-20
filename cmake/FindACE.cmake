@@ -21,11 +21,11 @@ endif()
 
 if(ACE_INCLUDE_DIR AND EXISTS "${ACE_INCLUDE_DIR}/ace/Version.h")
    file(STRINGS "${ACE_INCLUDE_DIR}/ace/Version.h" ace_version_str
-         REGEX "^#define[\t ]+ACE_VERSION[\t ]+\".*\"")
+        REGEX "^#define[\t ]+ACE_VERSION[\t ]+\".*\"")
 
-    string(REGEX REPLACE "^#define[\t ]+ACE_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
+   string(REGEX REPLACE "^#define[\t ]+ACE_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
            ACE_VERSION_STRING "${ace_version_str}")
-    unset(ace_version_str)
+   unset(ace_version_str)
 endif()
 
 set(ACE_INCLUDE_DIRS ${ACE_INCLUDE_DIR})

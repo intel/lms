@@ -5,7 +5,7 @@ find_path(METEE_INCLUDE_DIR
           PATHS /usr/include ENV METEE_HEADER_PATH
 )
 
-find_library(METEE_LIBRARY metee 
+find_library(METEE_LIBRARY metee
              PATHS ENV METEE_LIB_PATH
 )
 

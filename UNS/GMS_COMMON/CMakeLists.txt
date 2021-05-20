@@ -8,7 +8,7 @@ if (UNIX)
 else (UNIX)
   set (EVENTLOG_SRC WindowsEventLog.cpp)
   set (VERIFYFILE_SRC VerifyFile.cpp)
-  set (SECLIBS 
+  set (SECLIBS
     crypt32.lib
     WinTrust.lib
     version.lib
