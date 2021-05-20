@@ -206,9 +206,9 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"AMT_EthernetPortSettings"));
 
 			BREAKIF(WMIPut<1>(obj, L"ElementName", L"Intel(r) AMT Ethernet Port Settings"));
-			WCHAR str[256];
-			swprintf_s(str, 256, L"Intel(r) AMT Ethernet Port Settings %d",num);
-			BREAKIF(WMIPut<1>(obj, L"InstanceID", str));
+			WCHAR strEthPort[256];
+			swprintf_s(strEthPort, 256, L"Intel(r) AMT Ethernet Port Settings %d",num);
+			BREAKIF(WMIPut<1>(obj, L"InstanceID", strEthPort));
 
 			BREAKIF(WMIPut<1>(obj, L"MACAddress", entry.MACAddress));
 			BREAKIF(WMIPut<1>(obj, L"LinkIsUp", entry.LinkIsUp));
