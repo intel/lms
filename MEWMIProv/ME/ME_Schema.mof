@@ -2,26 +2,26 @@
 //Copyright (C) 2009-2012 Intel Corporation
 
 #PRAGMA AUTORECOVER
-#pragma include ("cim_schema/Core/CIM_ManagedElement.mof")
-#pragma include ("cim_schema/System/CIM_RecordForLog.mof")
-#pragma include ("cim_schema/System/CIM_LogEntry.mof")
-#pragma include ("cim_schema/User/CIM_Credential.mof")
-#pragma include ("cim_schema/Core/CIM_ManagedSystemElement.mof")
-#pragma include ("cim_schema/Core/CIM_LogicalElement.mof")
-#pragma include ("cim_schema/Core/CIM_Job.mof")
-#pragma include ("cim_schema/Core/CIM_ConcreteJob.mof")
-#pragma include ("cim_schema/Core/CIM_EnabledLogicalElement.mof")
-#pragma include ("cim_schema/Core/CIM_System.mof")
-#pragma include ("cim_schema/System/CIM_ComputerSystem.mof")
-#pragma include ("cim_schema/Core/CIM_Service.mof")
-#pragma include ("cim_schema/Core/CIM_Dependency.mof")
-#pragma include ("cim_schema/Core/CIM_SettingData.mof") 
-#pragma include ("cim_schema/Core/CIM_Dependency.mof")
-#pragma include ("cim_schema/Core/CIM_Component.mof")
+#pragma include ("schema/Core/CIM_ManagedElement.mof")
+#pragma include ("schema/System/CIM_RecordForLog.mof")
+#pragma include ("schema/System/CIM_LogEntry.mof")
+#pragma include ("schema/User/CIM_Credential.mof")
+#pragma include ("schema/Core/CIM_ManagedSystemElement.mof")
+#pragma include ("schema/Core/CIM_LogicalElement.mof")
+#pragma include ("schema/Core/CIM_Job.mof")
+#pragma include ("schema/Core/CIM_ConcreteJob.mof")
+#pragma include ("schema/Core/CIM_EnabledLogicalElement.mof")
+#pragma include ("schema/Core/CIM_System.mof")
+#pragma include ("schema/System/CIM_ComputerSystem.mof")
+#pragma include ("schema/Core/CIM_Service.mof")
+#pragma include ("schema/Core/CIM_Dependency.mof")
+#pragma include ("schema/Core/CIM_SettingData.mof")
+#pragma include ("schema/Core/CIM_Dependency.mof")
+#pragma include ("schema/Core/CIM_Component.mof")
 
 //for implemnetation notes, internal use only
-Qualifier InternalOnly : string = null, 
-    Scope(any), 
+Qualifier InternalOnly : string = null,
+    Scope(any),
     Flavor(EnableOverride, ToSubclass, Translatable);
 #pragma include ("MEMofs/AMT_SetupAuditRecord.mof")
 #pragma include ("MEMofs/AMT_ProvisioningCertificateHash.mof")
