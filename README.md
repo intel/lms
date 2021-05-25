@@ -99,17 +99,12 @@ Note: The DLL signature check tests Intel(R) signatures, so external build shoul
 
 ### Linux
 
-#### Debian-base distributions
-
-1. Create `build` directory
-2. Run `cmake -DCMAKE_INSTALL_PREFIX=/usr <srcdir>` from the `build` directory
-3. Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb)
-
-#### Other distributions
-
-1. Create `build` directory
-2. Run `cmake <srcdir>` from the `build` directory
-3. Run `make -j$(nproc)` from the `build` directory to build project
+1. Create `build` directory.
+2. Run `cmake <srcdir>` from the `build` directory.
+   One may need to add -DCMAKE_INSTALL_PREFIX=/usr for installation to match the distribution default (e.g. Debian-based distribution, CentOS, etc.).
+   This is important for DBus and syslog configuration files.
+3. Run `make -j$(nproc)` from the `build` directory to build project or
+   Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb).
 
 ## Install
 
