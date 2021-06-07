@@ -7,7 +7,7 @@
 @file: AuditLogWSManClient.cpp
 
 --*/
-#define _CRT_SECURE_NO_WARNINGS
+
 #include "AuditLogWSManClient.h"
 #include <time.h>
 #include <iomanip>
