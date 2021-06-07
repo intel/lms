@@ -120,12 +120,6 @@ TEST_F(AMT_COM_Manageability, GetPMCVersion)
 TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
 {
 	VARIANT_BOOL state;
-	ASSERT_MAY_THROW_NOINTERFACE(amthi->IsMeasuredBootState(&state));
-}
-
-TEST_F(AMT_COM_Manageability, IsMeasuredBootState)
-{
-	VARIANT_BOOL state;
 	ASSERT_MAY_THROW_NOTIMPL(amthi->IsMeasuredBootState(&state));
 }
 
