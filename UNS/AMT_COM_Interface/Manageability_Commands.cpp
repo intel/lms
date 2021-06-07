@@ -216,7 +216,6 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"IsMeasuredBootState", (SHORT*)pState))
 	{
-		UNS_DEBUG(L"CPTHI_Commands::IsMeasuredBootState DEBUG mode, got from registry %d\n", *pState);
 		return S_OK;
 	}
 #endif
