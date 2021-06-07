@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2020 Intel Corporation
+# Copyright (C) 2020-2021 Intel Corporation
 cmake_minimum_required (VERSION 3.10)
 
 add_executable (MEProvTest
@@ -7,7 +7,7 @@ add_executable (MEProvTest
 )
 
 target_link_libraries (MEProvTest
-  gtest_main
+  GTest::GTest
 )
 
 install (TARGETS MEProvTest
