@@ -1,3 +1,25 @@
+## [2122.0.0.0]
+
+### Fixed
+ - WsmanClient: Test: drop unneeded print in TimeSynchronizationClient
+ - WsmanClient: drop unneeded _CRT_SECURE_NO_WARNINGS define
+ - SharedStaticIPService: fix WinSock2 header resolution
+ - AMT_COM_Interface: use VISTA macro
+ - AMT_COM_Interface: drop not needed debug print
+ - AMT_COM_Interface: Test: drop duplicate IsMeasuredBootState test
+ - MEWMIProv: Test: CMake: link gtest in modern way
+ - README: write better info about install prefix
+ - MEWMIProv: rename cim_schema to schema
+ - PortForwarding: Retry testcancel after connecting to HECI
+ - CMake: Linux: take path for systemd unit from pkgconfig
+
+### Added
+ - MEWMIProv: test: add enumerators tests
+ - CMake: add LMS_LIBDIR_DBG also for Linux compilation
+
+### Changed
+ - use libxml2 2.9.11
+
 ## [2120.0.0.0]
 
 ### Fixed
