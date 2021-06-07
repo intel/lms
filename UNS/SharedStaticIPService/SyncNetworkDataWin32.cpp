@@ -8,9 +8,9 @@
 
 --*/
 
+#include "global.h"
 #include <winsock2.h>
 #include <iphlpapi.h>
-#include "global.h"
 #include "SyncNetworkData.h"
 #include "Tools.h"
 
