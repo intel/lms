@@ -357,7 +357,6 @@ TEST(TimeSynchronizationClient, syncLocalTime)
 	time_t rawtime;
 	rawtime = time(NULL);
 	cout << "Local time: " << rawtime << endl;
-	printTime(rawtime);
 	AMTTime = (unsigned int)rawtime;
 	LastAMTTime = AMTTime;
 	ASSERT_TRUE(timeClient.SetAMTTime(AMTTime));
