@@ -51,7 +51,7 @@ public:
 	BaseWSManPassword &operator = (const BaseWSManPassword&) = delete;
 	~BaseWSManPassword();
 	void Set(const char *pwd);
-	const char* Get() { return m_pwd; }
+	const char* Get() { return (m_pwd) ? m_pwd : ""; }
 private:
 	void Clean();
 	char *m_pwd;
