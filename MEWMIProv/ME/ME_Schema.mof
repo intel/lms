@@ -16,7 +16,6 @@
 #pragma include ("schema/Core/CIM_Service.mof")
 #pragma include ("schema/Core/CIM_Dependency.mof")
 #pragma include ("schema/Core/CIM_SettingData.mof")
-#pragma include ("schema/Core/CIM_Dependency.mof")
 #pragma include ("schema/Core/CIM_Component.mof")
 
 //for implemnetation notes, internal use only
