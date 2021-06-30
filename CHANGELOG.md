@@ -1,3 +1,13 @@
+## [2127.0.0.0]
+
+### Fixed
+ - WsmanClient: avoid returning NULL password
+ - MEWMIProv: replace schema with s in mof paths
+ - MEWMIProv: drop duplicate include from schema
+
+### Changed
+ - Build: use MeTee 3.1.0
+
 ## [2122.0.0.0]
 
 ### Fixed
