@@ -1,3 +1,26 @@
+## [2141.0.0.0]
+
+### Fixed
+ - StatusEventHandler: request display status when port forwarding is available
+ - StatusEventHandler: Avoid error print in GetAMTEthernetPortSettings on devices without wireless
+ - AMT_COM_Interface: fix buffer size provided to wcscpy_s
+ - AMT_COM_Interface: fix credentials check
+ - Remove USES_CONVERSION macro usage
+ - PortForwardingService: drop superfluous null check
+ - openwsman: wsman-client: add NULL checks
+ - snap: drop not needed connect to mei plug
+ - PartialFWUpdateService: fix dll state error print
+ - StatusEventHandler: make variable unsigned
+ - MEIClient: AMTHIClient: remove unused CERT_HASH_MAX_NUMBER
+ - DataInterfaceBackend: use right macro for win api return codes
+ - AMT_COM_Interface: CheckCredentials don't check if unsigned is not negative
+ - AMT_COM_Interface: fix return code of DelRegKeys
+ - AMT_COM_Interface: account for NULL in hDevNotify
+
+### Added
+ - AMT_COM_Interface: Add GetPlatformServiceRecord and GetPlatformServiceRecordRaw
+ - AMT_COM_Interface: Add GetUPIDFeatureState and SetUPIDFeatureState
+
 ## [2127.0.0.0]
 
 ### Fixed
