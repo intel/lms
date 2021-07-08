@@ -129,7 +129,6 @@ int
 	case MB_SRVICE_UP:
 		firstPullForEvents();
 		GenerateEvents();
-		requestDisplaySettings();
 		return 0;
 	case MB_PUBLISH_EVENT:
 		pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
@@ -398,7 +397,6 @@ void  StatusEventHandler::handleUNSEvents(const GMS_AlertIndication *alert)
 	{
 	case EVENT_PORT_FORWARDING_SERVICE_AVAILABLE:
 		firstPullForEvents();
-		checkForBootReason();
 		GeneratePortFwrdRelatedEvents();
 		break;
 	}
@@ -654,6 +652,8 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 		return;
 	}
 
+	checkForBootReason();
+
 	GenerateSharedStaticIPEvents(AMTState);
 	GenerateTimeSyncEvents(AMTState);
 	GenerateWiFiProfileSyncEvents(AMTState);
@@ -663,8 +663,9 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 	GenerateUCEvents(AMTState);
 
 	GenerateWLANEvents();
-}
 
+	requestDisplaySettings();
+}
 
 void StatusEventHandler::GenerateEACEvents(bool AMTstate)
 {
