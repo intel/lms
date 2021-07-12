@@ -1274,3 +1274,22 @@ inline std::string ConvertBStrToString(BSTR bstr)
 {
 	return (SysStringLen(bstr) == 0) ? std::string() : std::string(ATL::CW2A(bstr));
 }
+
+STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
+{
+	if (bstrPSR == nullptr)
+		return E_POINTER;
+
+	if (CheckCredentials(GetPlatformServiceRecord_F) != S_OK)
+		return E_ACCESSDENIED;
+
+	std::string PSR;
+
+	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).GetPlatformServiceRecord(PSR);
+	if (err != Intel::LMS::ERROR_OK)
+		return LMSError2HRESULT(err);
+
+	ATL::CComBSTR bstr(PSR.c_str());
+	*bstrPSR = bstr.Detach();
+	return S_OK;
+}

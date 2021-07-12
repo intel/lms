@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 // AMT_COM_Interface.idl : IDL source for AMT_COM_Interface
 //
@@ -80,8 +80,7 @@ interface IPTHI_Commands : IDispatch{
 																					[in]  SAFEARRAY(BYTE)      gateway_mac_address,
 																					[in]  BSTR                 network_dns_suffix);
 	[id(40), helpstring("method userInitiatedPolicyRuleForLocalMpsExists (Local MPS is configured with a User Initiated trigger)")] HRESULT userInitiatedPolicyRuleForLocalMpsExists([out] SHORT* pStatus);
-
-
+	[id(41), helpstring("method GetPlatformServiceRecord")] HRESULT GetPlatformServiceRecord([out] BSTR* bstrPSR);
 };
 
 [

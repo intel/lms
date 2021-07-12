@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -111,7 +111,7 @@ public:
 								   USHORT		proxy_port,
 								   SAFEARRAY*	gateway_mac_address,
 								   BSTR			network_dns_suffix);
-
+	STDMETHOD(GetPlatformServiceRecord)(BSTR* bstrPSR);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(PTHI_Commands), CPTHI_Commands)
