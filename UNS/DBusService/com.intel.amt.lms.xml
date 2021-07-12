@@ -39,7 +39,7 @@
 <interface name='com.intel.amt.lms.Manageability'>
 <!--
     GetTheFeatureState:
-    @Feature: 0 = AMT, 1 = IRWT, 2 = QST, 3 = TDT, 4 = SOFTCREEK, 5 = VE, 7 = NAND, 9 = ICC_OVER_CLOCK_IN, 10 = PAV, 11 = SPK, 12 = RCA, 13 = RPAT, 14 = IPV6, 15 = KVM, 16 = OCH, 17 = DAL, 18 = TLS, 19 = CILA, 20 = LAKEHOUSTON
+    @Feature: 0 = AMT, 1 = IRWT, 2 = QST, 3 = TDT, 4 = SOFTCREEK, 5 = VE, 7 = NAND, 9 = ICC_OVER_CLOCK_IN, 10 = PAV, 11 = SPK, 12 = RCA, 13 = RPAT, 14 = IPV6, 15 = KVM, 16 = OCH, 17 = DAL, 18 = TLS, 19 = CILA, 20 = LAKEHOUSTON, 21 = PSR
     @State: 0 = NOT_PRESENT, 1 = DISABLED, 2 = ENABLED, 3 = AVAILABLE
 
     Retrieves feature state by feature id.

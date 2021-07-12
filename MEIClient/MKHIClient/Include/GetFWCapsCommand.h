@@ -38,7 +38,7 @@ namespace Intel
 					uint32_t Amt:1;
 					uint32_t Irwt:1; //Intel Remote Wake Tech
 					uint32_t Qst:1; //Quiet System Technology
-					uint32_t Tdt:1; //Anti-Theft
+					uint32_t PSR:1; //Platform Service Record (was: Anti-Theft)
 					uint32_t SoftCreek:1; //Intel Capability Licensing Service (aka CLS)
 					uint32_t Ve:1; //Virtualization Engine
 					uint32_t Nand35:1;

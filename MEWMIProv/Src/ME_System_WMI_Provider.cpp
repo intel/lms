@@ -477,7 +477,7 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	MEFWCAPS_SKU_INT capabilities;
 	capabilities.Data = 0;
 	capabilities.Fields.Amt = amt;
-	capabilities.Fields.Tdt = CapabilityData.Fields.Tdt;
+	capabilities.Fields.Tdt = 0; // was CapabilityData.Fields.Tdt;
 	capabilities.Fields.SoftCreek = CapabilityData.Fields.SoftCreek;
 	capabilities.Fields.Ve = CapabilityData.Fields.Ve;
 	capabilities.Fields.Nand = 0; // bit 9 is not used anymore for NAND since 9.0 project

@@ -137,7 +137,7 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Qst, StateData.Fields.Qst, AvailData.Fields.Qst);
 					break;
 				case TDT:
-					pState = FeatureStateLogic(CapabilityData.Fields.Tdt, StateData.Fields.Tdt, AvailData.Fields.Tdt);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Tdt, StateData.Fields.Tdt, AvailData.Fields.Tdt);
 					break;
 				case SOFTCREEK:
 					pState = FeatureStateLogic(CapabilityData.Fields.SoftCreek, StateData.Fields.SoftCreek, AvailData.Fields.SoftCreek);
@@ -192,6 +192,9 @@ namespace Intel {
 				case LAKEHOUSTON:
 					pState = FeatureStateLogic(CapabilityData.Fields.LakeHouston, StateData.Fields.LakeHouston, AvailData.Fields.LakeHouston);
 					break;
+				case PSR:
+					pState = FeatureStateLogic(CapabilityData.Fields.PSR, StateData.Fields.PSR, AvailData.Fields.PSR);
+				break;
 				default:
 					return ERROR_INVALIDARG;
 				}
