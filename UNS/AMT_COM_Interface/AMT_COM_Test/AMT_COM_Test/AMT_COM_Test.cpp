@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 // AMT_COM_Test.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
+#include <comdef.h>
 #include <atlsafe.h>
 #include "gtest/gtest.h"
 #import "AMT_COM_Interface.tlb"
@@ -390,6 +391,12 @@ TEST_F(AMT_COM_PTHI, ProxyAddProxyEntry)
 	CComSafeArray<BYTE> gateway_mac_address(6);
 	bstr_t network_dns_suffix = "1.2.3.4";
 	ASSERT_THROW_NOTIMPL(amthi->ProxyAddProxyEntry(proxy_fqdn, proxy_port, gateway_mac_address.Detach(), network_dns_suffix));
+}
+
+TEST_F(AMT_COM_PTHI, GetPlatformServiceRecord)
+{
+	bstr_t bstrPSR;
+	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecord(&bstrPSR.GetBSTR()));
 }
 
 /* ------------------------- AMT_COM_AT_Device ----------------------- */
