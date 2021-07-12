@@ -37,6 +37,7 @@
 #include "GetProvisioningStateCommand.h"
 #include "GetRedirectionSessionsStateCommand.h"
 #include "GetAMTStateCommand.h"
+#include "PSRGetPlatformServiceRecordCommand.h"
 #include "KVMScreenSettingClient.h"
 #include "Tools.h"
 #include "EventManagment.h"
@@ -72,6 +73,13 @@ namespace Intel {
 		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	}
 
+#define CATCH_PSRErrorException(func) \
+	catch (Intel::MEI_Client::PSR_Client::PSRErrorException& e) \
+	{ \
+		unsigned int errNo = e.getErr(); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+	}
+
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \
@@ -98,6 +106,20 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				}
 			}
 			return uuidStr.str();
+		}
+
+		std::string timeToString(uint32_t timestamp)
+		{
+			struct tm time_tm;
+			time_t time_ = timestamp;
+#ifdef WIN32
+			gmtime_s(&time_tm, &time_);
+#else
+			gmtime_r(&time_, &time_tm);
+#endif // WIN32
+			char time_s[128];
+			strftime(time_s, 128, "%c", &time_tm);
+			return time_s;
 		}
 
 		PTHI_Commands_BE::PTHI_Commands_BE(bool isPfwUp) : Common_BE(isPfwUp)
@@ -877,6 +899,107 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
 
 			return ERROR_OK;
+		}
+
+		std::string genesisFieldToString(const uint8_t *info)
+		{
+			return std::string(info, info + Intel::MEI_Client::PSR_Client::PSR_GENESIS_FIELD_INFO_SIZE).c_str();
+		}
+
+		std::string formatPSRPrefix(const std::string& item)
+		{
+			std::stringstream parsed;
+
+			parsed << "<Data>\n<Item><![CDATA[" << item << "]]></Item>" << std::endl;
+			parsed << "<Value><![CDATA[";
+			return parsed.str();
+		}
+
+		std::string formatPSRSuffix()
+		{
+			std::stringstream parsed;
+
+			parsed << "]]></Value>\n</Data>" << std::endl;
+			return parsed.str();
+		}
+
+		template<class T>
+		std::string formatPSRField(const std::string& item, const T& value)
+		{
+			std::stringstream parsed;
+
+			parsed << formatPSRPrefix(item) << value << formatPSRSuffix();
+			return parsed.str();
+		}
+
+		LMS_ERROR PTHI_Commands_BE::GetPlatformServiceRecord(std::string& strPSR)
+		{
+			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce;
+			std::stringstream parsed;
+
+			try
+			{
+				Intel::MEI_Client::PSR_Client::PSRGetPlatformServiceRecordCommand psrGetPlatformServiceRecordCommand(nonce);
+				Intel::MEI_Client::PSR_Client::PSR_GET_RESPONSE psr = psrGetPlatformServiceRecordCommand.getResponse();
+
+				parsed << "<?xml version=\"1.0\"?>\n<MsInfo>\n<Category name=\"Platform Service Record\">\n";
+
+				parsed << "<Category name=\"General\">" << std::endl;
+				parsed << formatPSRField("LogState", psr.log_state);
+				parsed << formatPSRPrefix("PSRVersion") << psr.psr_version_major << "." << psr.psr_version_minor << formatPSRSuffix();
+				parsed << formatPSRField("PSRID", uuidToString(psr.psrid));
+				parsed << formatPSRPrefix("UPID") << "0x";
+				for (size_t k = 0; k < Intel::MEI_Client::PSR_Client::UPID_PLATFORM_ID_LENGTH; k++)
+					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.upid[k];
+				parsed << formatPSRSuffix();
+				parsed << "</Category>" << std::endl;
+
+				parsed << "<Category name=\"Genesis\">" << std::endl;
+				parsed << formatPSRField("Date", timeToString(psr.genesis_info.genesis_date));
+				parsed << formatPSRField("OEM Info", genesisFieldToString(psr.genesis_info.oem_info));
+				parsed << formatPSRField("OEM Make Info", genesisFieldToString(psr.genesis_info.oem_make_info));
+				parsed << formatPSRField("OEM Model Info", genesisFieldToString(psr.genesis_info.oem_model_info));
+				parsed << formatPSRField("Manufacture country", genesisFieldToString(psr.genesis_info.manuf_country));
+				parsed << formatPSRPrefix("OEM Data") << "0x";
+				for (size_t i = 0; i < Intel::MEI_Client::PSR_Client::PSR_GENESIS_DATA_STORE_INFO_SIZE; i++)
+					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.genesis_info.oem_data_store[i];
+				parsed << formatPSRSuffix();
+				parsed << "</Category>" << std::endl;
+
+				parsed << "<Category name=\"Ledger\">" << std::endl;
+				parsed << formatPSRPrefix("S0 (seconds)") << std::dec << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
+				parsed << formatPSRField("S0 to S5", psr.ledger_info.s0_to_s5_counter);
+				parsed << formatPSRField("S0 to S4", psr.ledger_info.s0_to_s4_counter);
+				parsed << formatPSRField("S0 to S3", psr.ledger_info.s0_to_s3_counter);
+				parsed << formatPSRField("Warm Resets", psr.ledger_info.warm_reset_counter);
+				parsed << "</Category>" << std::endl;
+
+				parsed << "<Category name=\"Events\">" << std::endl;
+				for (uint32_t i = 0; i < psr.events_count && i < Intel::MEI_Client::PSR_Client::PSR_CRITICAL_EVENTS_NUM_MAX; i++)
+				{
+					parsed << "<Category name=\"Event " << (unsigned int)psr.events_info[i].event_id << "\">" << std::endl;
+					parsed << formatPSRField("ID", (unsigned int)psr.events_info[i].event_id);
+					parsed << formatPSRField("Time", timeToString(psr.events_info[i].timestamp));
+					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::hex << psr.events_info[i].data << formatPSRSuffix();
+					parsed << "</Category>" << std::endl;
+				}
+				parsed << "</Category>" << std::endl;
+
+				parsed << "</Category>" << std::endl;
+				parsed << "</MsInfo>" << std::endl;
+				strPSR = parsed.str();
+				return ERROR_OK;
+			}
+			CATCH_PSRErrorException(L"PSRGetPlatformServiceRecordCommand")
+			catch (const Intel::MEI_Client::HeciNoClientException& e)
+			{
+				const char* reason = e.what();
+				UNS_DEBUG(L"Exception in PSRGetPlatformServiceRecordCommand %C\n", reason);
+				return ERROR_NOT_SUPPORTED_BY_FW;
+			}
+			CATCH_MEIClientException(L"PSRGetPlatformServiceRecordCommand")
+			CATCH_exception(L"PSRGetPlatformServiceRecordCommand")
+			return ERROR_FAIL;
 		}
 	}
 }

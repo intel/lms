@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -65,6 +65,7 @@ namespace Intel {
 			LMS_ERROR CILAFilterCollectionSubscriptionExists(short &pExist);
 			LMS_ERROR UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays);
 			LMS_ERROR GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology);
+			LMS_ERROR GetPlatformServiceRecord(std::string& strPSR);
 		};
 	}
 }
