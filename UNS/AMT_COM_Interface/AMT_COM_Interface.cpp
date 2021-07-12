@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -111,6 +111,8 @@ HRESULT AddRegKeys()
 	if (false == ds.SetDataValue(UserInitiatedPolicyRuleForLocalMpsExists_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(IsMeasuredBootState_F, L"", true))
+		return 1;
+	if (false == ds.SetDataValue(GetPlatformServiceRecord_F, L"Administrators", true))
 		return 1;
 
 	if (false == ds.DeleteDataVal(NETWORK_TRAFFIC_TX_CEASED_))

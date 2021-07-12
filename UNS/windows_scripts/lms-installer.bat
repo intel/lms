@@ -1,5 +1,5 @@
 @REM SPDX-License-Identifier: Apache-2.0
-@REM Copyright (C) 2010-2020 Intel Corporation
+@REM Copyright (C) 2010-2021 Intel Corporation
 @echo off
 REM - This script installs LMS on the current machine.
 REM - Run it from folder containing all required files (you'll be notified when missing one)
@@ -366,6 +366,7 @@ echo "UpdateScreenSettings"="" >> %TempRegistryFile%
 echo "GetRedirectionSessionLinkTechnology"="" >> %TempRegistryFile%
 echo "UserInitiatedPolicyRuleForLocalMpsExists"="" >> %TempRegistryFile%
 echo "GetMeasuredBootState"="" >> %TempRegistryFile%
+echo "GetPlatformServiceRecord"="Administrators" >> %TempRegistryFile%
 
 REGEDIT /S %TempRegistryFile%
 

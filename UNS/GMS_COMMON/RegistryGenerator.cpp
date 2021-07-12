@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "RegistryStorage.h"
 #include "DataStorageGenerator.h"
@@ -79,6 +79,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(WIFI_PROFILE_SYNC_ENABLE_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE, LMS_REG_TEXT("WIFI_PROFILE_SYNC_ENABLE"));
 	regMap->at(LMSLoggingSeverity) = RegEntry(LMS_REG, LMS_REG_TEXT("LMSLoggingSeverity"));
 	regMap->at(IsMeasuredBootState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetMeasuredBootState"));
+	regMap->at(GetPlatformServiceRecord_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetPlatformServiceRecord"));
 	//When adding to this regMap - add to the same place you added to the DataStorageGenerator.h!!!!
 	return regMap;
 }
