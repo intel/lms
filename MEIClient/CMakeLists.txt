@@ -83,6 +83,11 @@ file (GLOB UPIDClient
   UPIDClient/Src/UPIDCommand.cpp
 )
 
+file (GLOB PSRClient
+  PSRClient/Src/PSRCommand.cpp
+  PSRClient/Src/PSRGetPlatformServiceRecordCommand.cpp
+)
+
 add_library (MEIClient STATIC
   src/MEICommand.cpp
   src/MEIparser.cpp
@@ -93,6 +98,7 @@ add_library (MEIClient STATIC
   ${ManageabilityClient}
   ${MKHIClient}
   ${UPIDClient}
+  ${PSRClient}
 )
 
 set_target_properties (MEIClient PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -110,6 +116,7 @@ target_include_directories (MEIClient PUBLIC
   "ManageabilityClient/Include/"
   "MKHIClient/Include/"
   "UPIDClient/Include/"
+  "PSRClient/Include/"
 )
 if (BUILD_TESTS)
   add_subdirectory ("AMTHITestProject" "AMTHITestProject")
