@@ -188,7 +188,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 		return hr;
 	}
 
-	if (dwImp != SecurityImpersonation)
+	if ((dwImp != SecurityImpersonation) && (dwImp != SecurityIdentification))
 	{
 		//DBGERROR(LOCATION, _T("Wrong security TokenImpersonationLevel (%d)"), dwImp);
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
@@ -197,7 +197,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	}
 
 	bRes =::GetTokenInformation(hThreadTok, TokenUser, NULL, 0, &dwBytesReturned);
-	if (bRes == 0)
+	if ((bRes == FALSE) && (GetLastError() != ERROR_INSUFFICIENT_BUFFER))
 	{
 		CloseHandle(hThreadTok);
 		return S_FALSE;
@@ -221,9 +221,9 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	}
 
 	DWORD dwUserNameSize = MAX_BUFFER_LENGTH;
-    DWORD dwDomainNameSize = 15;
+	DWORD dwDomainNameSize = 15;
 	WCHAR szUserName[MAX_BUFFER_LENGTH + 1];
-    WCHAR szDomainName[15 + 1];
+	WCHAR szDomainName[15 + 1];
 	SID_NAME_USE snu;
 
 	bRes = ::LookupAccountSidW(0, ((PTOKEN_USER)m_pUserTokenInfo)->User.Sid, szUserName,
@@ -234,7 +234,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	//DBGTRACE(_T("Connect User is %s, szDomainName %s"),szUserName,szDomainName);
 
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups, NULL, 0, &dwBytesReturned);
-	if (bRes == FALSE || dwBytesReturned < sizeof(TOKEN_GROUPS))
+	if (bRes == FALSE && (GetLastError() != ERROR_INSUFFICIENT_BUFFER))
 	{
 		CloseHandle(hThreadTok);
 		return S_FALSE;//STATUS_SECURITY_PROBLEM;
