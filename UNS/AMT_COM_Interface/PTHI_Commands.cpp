@@ -1293,3 +1293,27 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
 	*bstrPSR = bstr.Detach();
 	return S_OK;
 }
+
+STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
+{
+	if (binPSR == nullptr)
+		return E_POINTER;
+
+	if (CheckCredentials(GetPlatformServiceRecordRaw_F) != S_OK)
+		return E_ACCESSDENIED;
+
+	std::vector<uint8_t> PSR;
+
+	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).GetPlatformServiceRecordRaw(PSR);
+	if (err != Intel::LMS::ERROR_OK)
+		return LMSError2HRESULT(err);
+
+	ATL::CComSafeArray<BYTE> arr(PSR.size());
+	for (size_t i = 0; i < PSR.size(); i++)
+	{
+		arr.SetAt(i, PSR[i]);
+	}
+	*binPSR = arr.Detach();
+
+	return S_OK;
+}

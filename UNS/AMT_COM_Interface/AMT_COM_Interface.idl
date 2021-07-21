@@ -81,6 +81,7 @@ interface IPTHI_Commands : IDispatch{
 																					[in]  BSTR                 network_dns_suffix);
 	[id(40), helpstring("method userInitiatedPolicyRuleForLocalMpsExists (Local MPS is configured with a User Initiated trigger)")] HRESULT userInitiatedPolicyRuleForLocalMpsExists([out] SHORT* pStatus);
 	[id(41), helpstring("method GetPlatformServiceRecord")] HRESULT GetPlatformServiceRecord([out] BSTR* bstrPSR);
+	[id(42), helpstring("method GetPlatformServiceRecordRaw")] HRESULT GetPlatformServiceRecordRaw([out] SAFEARRAY(BYTE)* binPSR);
 };
 
 [

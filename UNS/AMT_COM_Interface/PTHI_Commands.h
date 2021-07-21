@@ -112,6 +112,7 @@ public:
 								   SAFEARRAY*	gateway_mac_address,
 								   BSTR			network_dns_suffix);
 	STDMETHOD(GetPlatformServiceRecord)(BSTR* bstrPSR);
+	STDMETHOD(GetPlatformServiceRecordRaw)(SAFEARRAY** binPSR);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(PTHI_Commands), CPTHI_Commands)
