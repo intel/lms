@@ -38,6 +38,8 @@
 #include "GetRedirectionSessionsStateCommand.h"
 #include "GetAMTStateCommand.h"
 #include "PSRGetPlatformServiceRecordCommand.h"
+#include "GetUPIDFeatureStateCommand.h"
+#include "SetUPIDFeatureStateCommand.h"
 #include "KVMScreenSettingClient.h"
 #include "Tools.h"
 #include "EventManagment.h"
@@ -75,6 +77,13 @@ namespace Intel {
 
 #define CATCH_PSRErrorException(func) \
 	catch (Intel::MEI_Client::PSR_Client::PSRErrorException& e) \
+	{ \
+		unsigned int errNo = e.getErr(); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+	}
+
+#define CATCH_UPIDErrorException(func) \
+	catch (Intel::MEI_Client::UPID_Client::UPIDErrorException& e) \
 	{ \
 		unsigned int errNo = e.getErr(); \
 		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
@@ -1025,6 +1034,48 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			}
 			CATCH_MEIClientException(L"GetPlatformServiceRecordRaw")
 			CATCH_exception(L"GetPlatformServiceRecordRaw")
+			return ERROR_FAIL;
+		}
+
+		LMS_ERROR PTHI_Commands_BE::GetUPIDFeatureState(bool& state)
+		{
+			try
+			{
+				Intel::MEI_Client::UPID_Client::GetUPIDFeatureStateCommand command;
+				Intel::MEI_Client::UPID_Client::UPID_PLATFORM_ID_FEATURE_STATE_GET_Response response = command.getResponse();
+				state = response.FeatureEnabled;
+
+				return ERROR_OK;
+			}
+			CATCH_UPIDErrorException(L"GetUPIDStateCommand")
+			catch (const Intel::MEI_Client::HeciNoClientException& e)
+			{
+				const char* reason = e.what();
+				UNS_DEBUG(L"Exception in GetUPIDFeatureStateCommand %C\n", reason);
+				return ERROR_NOT_SUPPORTED_BY_FW;
+			}
+			CATCH_MEIClientException(L"GetUPIDStateCommand")
+			CATCH_exception(L"GetUPIDStateCommand")
+			return ERROR_FAIL;
+		}
+
+		LMS_ERROR PTHI_Commands_BE::SetUPIDFeatureState(bool state)
+		{
+			try
+			{
+				Intel::MEI_Client::UPID_Client::SetUPIDFeatureStateCommand command(state);
+
+				return ERROR_OK;
+			}
+			CATCH_UPIDErrorException(L"SetUPIDStateCommand")
+			catch (const Intel::MEI_Client::HeciNoClientException& e)
+			{
+				const char* reason = e.what();
+				UNS_DEBUG(L"Exception in SetUPIDFeatureStateCommand %C\n", reason);
+				return ERROR_NOT_SUPPORTED_BY_FW;
+			}
+			CATCH_MEIClientException(L"SetUPIDStateCommand")
+			CATCH_exception(L"SetUPIDStateCommand")
 			return ERROR_FAIL;
 		}
 	}

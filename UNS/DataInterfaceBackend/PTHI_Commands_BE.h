@@ -67,6 +67,8 @@ namespace Intel {
 			LMS_ERROR GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology);
 			LMS_ERROR GetPlatformServiceRecord(std::string& strPSR);
 			LMS_ERROR GetPlatformServiceRecordRaw(std::vector<uint8_t>& binPSR);
+			LMS_ERROR GetUPIDFeatureState(bool& state);
+			LMS_ERROR SetUPIDFeatureState(bool state);
 		};
 	}
 }
