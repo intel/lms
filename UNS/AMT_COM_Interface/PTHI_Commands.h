@@ -113,6 +113,8 @@ public:
 								   BSTR			network_dns_suffix);
 	STDMETHOD(GetPlatformServiceRecord)(BSTR* bstrPSR);
 	STDMETHOD(GetPlatformServiceRecordRaw)(SAFEARRAY** binPSR);
+	STDMETHOD(GetUPIDFeatureState)(VARIANT_BOOL* pState);
+	STDMETHOD(SetUPIDFeatureState)(VARIANT_BOOL State);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(PTHI_Commands), CPTHI_Commands)

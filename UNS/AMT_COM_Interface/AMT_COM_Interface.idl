@@ -82,6 +82,8 @@ interface IPTHI_Commands : IDispatch{
 	[id(40), helpstring("method userInitiatedPolicyRuleForLocalMpsExists (Local MPS is configured with a User Initiated trigger)")] HRESULT userInitiatedPolicyRuleForLocalMpsExists([out] SHORT* pStatus);
 	[id(41), helpstring("method GetPlatformServiceRecord")] HRESULT GetPlatformServiceRecord([out] BSTR* bstrPSR);
 	[id(42), helpstring("method GetPlatformServiceRecordRaw")] HRESULT GetPlatformServiceRecordRaw([out] SAFEARRAY(BYTE)* binPSR);
+	[id(43), helpstring("method GetUPIDFeatureState")] HRESULT GetUPIDFeatureState([out] VARIANT_BOOL* pState);
+	[id(44), helpstring("method SetUPIDFeatureState")] HRESULT SetUPIDFeatureState([in] VARIANT_BOOL State);
 };
 
 [

@@ -1317,3 +1317,34 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
 
 	return S_OK;
 }
+
+STDMETHODIMP CPTHI_Commands::GetUPIDFeatureState(VARIANT_BOOL* pState)
+{
+	if (pState == nullptr)
+		return E_POINTER;
+
+	if (CheckCredentials(GetUPIDFeatureState_F) != S_OK)
+		return E_ACCESSDENIED;
+
+	bool state = false;
+	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).GetUPIDFeatureState(state);
+	if (err != Intel::LMS::ERROR_OK)
+		return LMSError2HRESULT(err);
+
+	*pState = (VARIANT_BOOL)state;
+
+	return S_OK;
+}
+
+STDMETHODIMP CPTHI_Commands::SetUPIDFeatureState(VARIANT_BOOL State)
+{
+	if (CheckCredentials(SetUPIDFeatureState_F) != S_OK)
+		return E_ACCESSDENIED;
+
+	bool state = State;
+	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).SetUPIDFeatureState(state);
+	if (err != Intel::LMS::ERROR_OK)
+		return LMSError2HRESULT(err);
+
+	return S_OK;
+}
