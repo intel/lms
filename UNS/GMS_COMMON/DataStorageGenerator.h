@@ -90,6 +90,8 @@ enum DATA_NAME : unsigned int
 	IsMeasuredBootState_F,
 	GetPlatformServiceRecord_F,
 	GetPlatformServiceRecordRaw_F,
+	GetUPIDFeatureState_F,
+	SetUPIDFeatureState_F,
 
 	DATA_NAME_MAX_SENTINEL
 };

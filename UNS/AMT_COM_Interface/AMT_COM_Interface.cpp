@@ -116,6 +116,10 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetPlatformServiceRecordRaw_F, L"Administrators", true))
 		return 1;
+	if (false == ds.SetDataValue(GetUPIDFeatureState_F, L"", true))
+		return 1;
+	if (false == ds.SetDataValue(SetUPIDFeatureState_F, L"Administrators", true))
+		return 1;
 
 	if (false == ds.DeleteDataVal(NETWORK_TRAFFIC_TX_CEASED_))
 		return 1;

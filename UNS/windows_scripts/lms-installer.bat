@@ -368,6 +368,8 @@ echo "UserInitiatedPolicyRuleForLocalMpsExists"="" >> %TempRegistryFile%
 echo "GetMeasuredBootState"="" >> %TempRegistryFile%
 echo "GetPlatformServiceRecord"="Administrators" >> %TempRegistryFile%
 echo "GetPlatformServiceRecordRaw"="Administrators" >> %TempRegistryFile%
+echo "GetUPIDFeatureState"="" >> %TempRegistryFile%
+echo "SetUPIDFeatureState"="Administrators" >> %TempRegistryFile%
 
 REGEDIT /S %TempRegistryFile%
 
