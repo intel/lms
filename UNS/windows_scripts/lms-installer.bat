@@ -367,6 +367,7 @@ echo "GetRedirectionSessionLinkTechnology"="" >> %TempRegistryFile%
 echo "UserInitiatedPolicyRuleForLocalMpsExists"="" >> %TempRegistryFile%
 echo "GetMeasuredBootState"="" >> %TempRegistryFile%
 echo "GetPlatformServiceRecord"="Administrators" >> %TempRegistryFile%
+echo "GetPlatformServiceRecordRaw"="Administrators" >> %TempRegistryFile%
 
 REGEDIT /S %TempRegistryFile%
 

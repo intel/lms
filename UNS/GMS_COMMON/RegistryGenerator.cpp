@@ -80,6 +80,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(LMSLoggingSeverity) = RegEntry(LMS_REG, LMS_REG_TEXT("LMSLoggingSeverity"));
 	regMap->at(IsMeasuredBootState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetMeasuredBootState"));
 	regMap->at(GetPlatformServiceRecord_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetPlatformServiceRecord"));
+	regMap->at(GetPlatformServiceRecordRaw_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetPlatformServiceRecordRaw"));
 	//When adding to this regMap - add to the same place you added to the DataStorageGenerator.h!!!!
 	return regMap;
 }

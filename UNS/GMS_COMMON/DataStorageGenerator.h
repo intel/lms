@@ -89,6 +89,7 @@ enum DATA_NAME : unsigned int
 	LMSLoggingSeverity,
 	IsMeasuredBootState_F,
 	GetPlatformServiceRecord_F,
+	GetPlatformServiceRecordRaw_F,
 
 	DATA_NAME_MAX_SENTINEL
 };
