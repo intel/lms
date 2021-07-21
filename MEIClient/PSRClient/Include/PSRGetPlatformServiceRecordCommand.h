@@ -132,6 +132,15 @@ namespace Intel
 					parseArray(certificates, PSR_MAX_CERT_CHAIN_SIZE, itr, end);
 				}
 			};
+
+			struct PSR_GET_RESPONSE_RAW
+			{
+				uint8_t data[sizeof(struct PSR_GET_RESPONSE)];
+				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator& end)
+				{
+					parseData(data, itr, end);
+				}
+			};
 			#pragma pack()
 
 			class PSRGetPlatformServiceRecordRequest;
@@ -170,6 +179,21 @@ namespace Intel
 
 				std::array<uint8_t, PSR_NONCE_SIZE> user_nonce;
 			};
+
+			class PSRGetPlatformServiceRecordRawCommand : public PSRCommand
+			{
+			public:
+				PSRGetPlatformServiceRecordRawCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce);
+				virtual ~PSRGetPlatformServiceRecordRawCommand() {}
+
+				PSR_GET_RESPONSE_RAW getResponse();
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer);
+
+				std::shared_ptr<PSRCommandResponse<PSR_GET_RESPONSE_RAW>> m_response;
+			};
+
 		} // namespace PSR_Client
 	} // namespace MEI_Client
 } // namespace Intel
