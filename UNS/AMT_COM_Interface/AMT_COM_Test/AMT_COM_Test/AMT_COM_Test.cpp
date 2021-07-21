@@ -399,6 +399,12 @@ TEST_F(AMT_COM_PTHI, GetPlatformServiceRecord)
 	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecord(&bstrPSR.GetBSTR()));
 }
 
+TEST_F(AMT_COM_PTHI, GetPlatformServiceRecordRaw)
+{
+	SAFEARRAY* binPSR;
+	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecordRaw(&binPSR));
+}
+
 /* ------------------------- AMT_COM_AT_Device ----------------------- */
 class AMT_COM_AT_Device : public ::testing::Test {
 protected:
