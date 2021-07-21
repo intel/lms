@@ -1001,5 +1001,31 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			CATCH_exception(L"PSRGetPlatformServiceRecordCommand")
 			return ERROR_FAIL;
 		}
+
+		LMS_ERROR PTHI_Commands_BE::GetPlatformServiceRecordRaw(std::vector<uint8_t>& binPSR)
+		{
+			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce;
+			std::stringstream parsed;
+
+			try
+			{
+				Intel::MEI_Client::PSR_Client::PSRGetPlatformServiceRecordRawCommand psrGetPlatformServiceRecordCommand(nonce);
+				Intel::MEI_Client::PSR_Client::PSR_GET_RESPONSE_RAW psr = psrGetPlatformServiceRecordCommand.getResponse();
+
+				binPSR.assign(psr.data, psr.data + sizeof(psr.data));
+
+				return ERROR_OK;
+			}
+			CATCH_PSRErrorException(L"GetPlatformServiceRecordRaw")
+			catch (const Intel::MEI_Client::HeciNoClientException& e)
+			{
+				const char* reason = e.what();
+				UNS_DEBUG(L"Exception in GetPlatformServiceRecordRaw %C\n", reason);
+				return ERROR_NOT_SUPPORTED_BY_FW;
+			}
+			CATCH_MEIClientException(L"GetPlatformServiceRecordRaw")
+			CATCH_exception(L"GetPlatformServiceRecordRaw")
+			return ERROR_FAIL;
+		}
 	}
 }

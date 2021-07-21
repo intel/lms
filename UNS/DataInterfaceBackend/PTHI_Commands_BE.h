@@ -66,6 +66,7 @@ namespace Intel {
 			LMS_ERROR UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays);
 			LMS_ERROR GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology);
 			LMS_ERROR GetPlatformServiceRecord(std::string& strPSR);
+			LMS_ERROR GetPlatformServiceRecordRaw(std::vector<uint8_t>& binPSR);
 		};
 	}
 }
