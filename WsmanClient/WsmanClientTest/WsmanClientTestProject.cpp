@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2021 Intel Corporation
  */
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -36,23 +36,23 @@ using namespace std;
 *			3 - Reserved
 */
 
-//TODO: Disable all AMTEthernetPortSettingsClient tests in case there's no wireless network
-TEST(AMTEthernetPortSettingsClient, DISABLED_Get)
+TEST(AMTEthernetPortSettingsClient, Get)
 {
 	AMTEthernetPortSettingsClient settings;
 	unsigned int pLinkPreference = 0;
 	unsigned int pLinkControl = 0;
 	unsigned int pLinkProtection = 0;
+	bool pIsLink = false;
 	bool ret = false;
-	EXPECT_TRUE(ret = settings.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection));
-	if (ret){
+	EXPECT_TRUE(ret = settings.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection, &pIsLink));
+	if (ret && pIsLink){
 		cout << "Link Preference: " << pLinkPreference << endl;
 		cout << "Link Control: " << pLinkControl << endl << endl;
 		cout << "Link Protection: " << pLinkProtection << endl << endl;
 	}
 }
 
-TEST(AMTEthernetPortSettingsClient, DISABLED_Set1)
+TEST(AMTEthernetPortSettingsClient, Set1)
 {
 	Mock_AMT_EthernetPortSettings mock_settings;
 	unsigned int preference = 1;
@@ -70,44 +70,47 @@ TEST(AMTEthernetPortSettingsClient, DISABLED_Set1)
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
 	unsigned int pLinkProtection;
+	bool pIsLink = false;
 	bool ret = false;
-	EXPECT_TRUE(ret = client.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection));
-	if (ret){
+	EXPECT_TRUE(ret = client.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection, &pIsLink));
+	if (ret && pIsLink){
 		EXPECT_EQ(1, pLinkPreference);
 		EXPECT_EQ(1, pLinkControl);
 	}
 }
 
-TEST(AMTEthernetPortSettingsClient, DISABLED_Set2)
+TEST(AMTEthernetPortSettingsClient, Set2)
 {
 	AMTEthernetPortSettingsClient settings;
 	EXPECT_TRUE(settings.SetLinkPreference(2));
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
 	unsigned int pLinkProtection;
+	bool pIsLink = false;
 	bool ret = false;
-	EXPECT_TRUE(ret = settings.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection));
-	if (ret){
+	EXPECT_TRUE(ret = settings.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection, &pIsLink));
+	if (ret && pIsLink){
 		EXPECT_EQ(2, pLinkPreference);
 		EXPECT_EQ(2, pLinkControl);
 	}
 }
 
-TEST(AMTEthernetPortSettingsClient, DISABLED_SetInvalid)
+TEST(AMTEthernetPortSettingsClient, SetInvalid)
 {
 	AMTEthernetPortSettingsClient settings;
 	EXPECT_TRUE(settings.SetLinkPreference(3));
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
 	unsigned int pLinkProtection;
+	bool pIsLink = false;
 	bool ret = false;
-	EXPECT_TRUE(ret = settings.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection));
-	if (ret){
+	EXPECT_TRUE(ret = settings.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection, &pIsLink));
+	if (ret && pIsLink){
 		EXPECT_NE((unsigned int)3, pLinkPreference);
 		EXPECT_NE((unsigned int)3, pLinkControl);
 	}
 	EXPECT_TRUE(ret = settings.SetLinkPreference(345));
-	if (ret){
+	if (ret && pIsLink){
 		EXPECT_NE((unsigned int)345, pLinkPreference);
 		EXPECT_NE((unsigned int)345, pLinkControl);
 	}

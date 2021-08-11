@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "StatusEventHandler.h"
@@ -819,9 +819,15 @@ void StatusEventHandler::GenerateWLANEvents()
 
 	AMTEthernetPortSettingsClient client;
 	unsigned int linkPreference, linkControl, linkProtection; 
-	if(!client.GetAMTEthernetPortSettings(&linkPreference, &linkControl, &linkProtection))
+	bool isLink = false;
+	if(!client.GetAMTEthernetPortSettings(&linkPreference, &linkControl, &linkProtection, &isLink))
 	{
 		UNS_ERROR(L"StatusEventHandler: GetAMTEthernetPortSettings failed\n");
+		return;
+	}
+	if(!isLink)
+	{
+		UNS_DEBUG(L"No wireless link available\n");
 		return;
 	}
 

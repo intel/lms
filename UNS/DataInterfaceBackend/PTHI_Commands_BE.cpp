@@ -718,7 +718,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return ERROR_NOT_AVAILABLE_NOW;
 
 			AMTEthernetPortSettingsClient Client;
-			if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection))
+			bool isLink = false;
+			if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection, &isLink))
 				return ERROR_FAIL;
 
 			UNS_DEBUG(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);

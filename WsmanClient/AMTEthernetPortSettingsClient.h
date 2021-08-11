@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -22,12 +22,13 @@ public:
 	AMTEthernetPortSettingsClient(const std::string &User, const std::string &Password);
 	virtual ~AMTEthernetPortSettingsClient();
 
-	bool GetAMTEthernetPortSettings(unsigned int* pLinkPreference, unsigned int* pLinkControl, unsigned int* pLinkProtection);
+	bool GetAMTEthernetPortSettings(unsigned int* pLinkPreference, unsigned int* pLinkControl, unsigned int* pLinkProtection, bool* pIsLink);
 	bool SetLinkPreference(unsigned int LinkPreference);
 
 private:
 	bool Init(bool forceGet = false, bool actionGet = false);
 	bool m_isInit;
+	bool m_isLink;
 
 	unsigned int	m_LinkControl;
 	unsigned int	m_LinkPreference;

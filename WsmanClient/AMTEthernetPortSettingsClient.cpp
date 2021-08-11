@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -14,12 +14,12 @@
 #include "WsmanClientCatch.h"
 
 AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient() :
-	m_isInit(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
+	m_isInit(false), m_isLink(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
 {
 }
 
 AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
+	BaseWSManClient(User, Password), m_isInit(false), m_isLink(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
 {
 }
 
@@ -31,6 +31,7 @@ bool AMTEthernetPortSettingsClient::Init(bool forceGet, bool actionGet)
 {
 	if (!forceGet && m_isInit) return true;
 	m_isInit = false;
+	m_isLink = false;
 	
 
 	try 
@@ -59,7 +60,7 @@ bool AMTEthernetPortSettingsClient::Init(bool forceGet, bool actionGet)
 				{
 					m_LinkControl = currSetting->LinkControl();
 					m_LinkPreference = currSetting->LinkPreference();
-					m_isInit = true;
+					m_isLink = true;
 				}
 				if(currSetting->WLANLinkProtectionLevelExists())
 				{
@@ -67,6 +68,7 @@ bool AMTEthernetPortSettingsClient::Init(bool forceGet, bool actionGet)
 					if(m_LinkProtection == 0)
 						m_LinkProtection = 1;
 				}
+				m_isInit = true;
 			}
 			else // action Set
 			{				
@@ -88,7 +90,7 @@ bool AMTEthernetPortSettingsClient::Init(bool forceGet, bool actionGet)
 	return false;
 }
 
-bool AMTEthernetPortSettingsClient::GetAMTEthernetPortSettings(unsigned int* pLinkPreference, unsigned int* pLinkControl, unsigned int* pLinkProtection)
+bool AMTEthernetPortSettingsClient::GetAMTEthernetPortSettings(unsigned int* pLinkPreference, unsigned int* pLinkControl, unsigned int* pLinkProtection, bool* pIsLink)
 {	
 	if (!Init(true,true))
 		return false;
@@ -98,6 +100,7 @@ bool AMTEthernetPortSettingsClient::GetAMTEthernetPortSettings(unsigned int* pLi
 	*pLinkPreference=m_LinkPreference;
 	*pLinkControl=m_LinkControl;
 	*pLinkProtection=m_LinkProtection;
+	*pIsLink=m_isLink;
 
 	return true;
 }
