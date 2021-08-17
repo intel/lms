@@ -30,8 +30,8 @@
 static bool ReadPermissionsFromReg(DATA_NAME funcName, std::set<std::wstring>& groups)
 {
 	bool rc = false;
-	WCHAR val[1024];
-	size_t valSz = sizeof(val);
+	const size_t valSz = 1024;
+	WCHAR val[valSz];
 	WCHAR seps[]  = L",;";
 	WCHAR* token;
 	WCHAR* context = nullptr;
