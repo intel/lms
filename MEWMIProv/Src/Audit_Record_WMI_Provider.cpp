@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -17,8 +17,6 @@ HRESULT Audit_Record_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
-
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
@@ -114,7 +112,6 @@ HRESULT Audit_Record_WMI_Provider::EnumerateAuditRecord(std::vector<Audit_Record
 
 Audit_Record_WMI_Provider::Audit_Record_WMI_Provider(const MEAdminAudit &MEAudit, const std::wstring &instanceID)
 {
-	USES_CONVERSION;
 	InstanceID = instanceID;
 	ProvisioningTLSMode = MEAudit.ProvisioningTLSMode;
 	SecureDNS = MEAudit.SecureDNS;
@@ -144,8 +141,6 @@ HRESULT Audit_Record_WMI_Provider::GetAudit_Record(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
-
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);

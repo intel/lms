@@ -17,8 +17,6 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION;
-
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
 	uint32 hr = 1;
@@ -70,8 +68,6 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION;
-
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -18,8 +18,6 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
-
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
@@ -70,8 +68,6 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 
 HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::vector<EthernetPortSettings_WMI_Provider>& settingsVec, uint32& ReturnValue)
 {
-	USES_CONVERSION; 
-
 	ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
@@ -160,8 +156,6 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
-
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);

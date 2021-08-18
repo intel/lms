@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -1272,7 +1272,5 @@ STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR,
 
 inline std::string ConvertBStrToString(BSTR bstr)
 {
-	USES_CONVERSION;
-
 	return (SysStringLen(bstr) == 0) ? std::string() : std::string(ATL::CW2A(bstr));
 }

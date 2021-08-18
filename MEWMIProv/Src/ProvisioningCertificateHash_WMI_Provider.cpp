@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -18,8 +18,6 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION;
-	
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
@@ -66,8 +64,6 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 
 HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(std::vector<ProvisioningCertificateHash_WMI_Provider>& enumVec, uint32& ReturnValue)
 {
-	USES_CONVERSION;
-	
 	ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);

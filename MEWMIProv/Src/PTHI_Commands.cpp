@@ -342,8 +342,6 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 {
-	USES_CONVERSION;
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetFQDNCommand command;
@@ -572,8 +570,6 @@ unsigned int PTHI_Commands::isRemoteConfigEnabled(bool* enabled)
 
 unsigned int PTHI_Commands::GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN)
 {
-	USES_CONVERSION;
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetDNSSuffixCommand command;
@@ -601,8 +597,6 @@ unsigned int PTHI_Commands::GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std
 
 unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTrigger, SHORT* NetworkConStatus, std::wstring* MPshostName, SHORT* RemoteAccessConStatus )
 {
-	USES_CONVERSION;
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetRemoteAccessConnectionStatusCommand command;
@@ -901,8 +895,6 @@ unsigned int PTHI_Commands::ZTCActivate(const std::string &OTP, const std::strin
 
 unsigned int PTHI_Commands::GetConfigServerData(std::wstring* Address, unsigned short* port)
 {
-	USES_CONVERSION;
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetConfigServerDataCommand command;
@@ -970,8 +962,6 @@ AMT_STATUS_UNSUPPORTED_OBJECT	StateDataIdentifier is not recognized or not suppo
 
 unsigned int PTHI_Commands::GetPowerPolicy(std::wstring* policy)
 {
-	USES_CONVERSION;
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetCurrentPowerPolicyCommand command;
@@ -1054,8 +1044,6 @@ unsigned int PTHI_Commands::StopConfiguration(void)
 
 unsigned int PTHI_Commands::GetAMTVersion(std::wstring* AMTVersion)
 {
-	USES_CONVERSION; 
-
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetCodeVersionCommand command;
@@ -1140,7 +1128,6 @@ unsigned char PTHI_Commands::SetProvisioningTLSModeValues(unsigned char provTLSM
 
 unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 {
-	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 
 	try {
@@ -1249,7 +1236,6 @@ unsigned int PTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 
 unsigned int PTHI_Commands::GetCertificateHash(std::vector<HashEntry> &hashlist)
 {
-	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		EnumerateHashHandlesCommand command;
@@ -1362,7 +1348,6 @@ unsigned int PTHI_Commands::GetRedirectionState(bool *pSolEnable, bool *pIDEREna
 
 unsigned int PTHI_Commands::GetPortSettings(std::vector<EthernetPortEntry> &ethernetPortList)
 {
-	USES_CONVERSION;
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
 		GetTcpipParametersCommand TcpIPparametersCommand;

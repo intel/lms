@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2021 Intel Corporation
  */
 /*++
 
@@ -20,8 +20,6 @@ HRESULT Concrete_Component_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
-
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
@@ -113,7 +111,6 @@ HRESULT Concrete_Component_WMI_Provider::Enumerate(
 
 bool Concrete_Component_WMI_Provider::IsGroupOobService(CComBSTR groupREF_BSTR)
 {
-	USES_CONVERSION;
 	CComBSTR groupREF_int(groupREF_BSTR);
 	groupREF_int.ToLower();
 	std::wstring groupREF(groupREF_int);
@@ -283,8 +280,6 @@ HRESULT Concrete_Component_WMI_Provider::GetConcrete_Component(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	USES_CONVERSION; 
-
 	uint32 hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);

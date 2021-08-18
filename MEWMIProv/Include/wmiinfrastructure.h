@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2003-2020 Intel Corporation
+ * Copyright (C) 2003-2021 Intel Corporation
  */
 /*++
 
@@ -147,7 +147,7 @@ struct _ATL_AutomationType<std::wstring>
     do{                                                                     \
         HRESULT hr = exp;                                                   \
         if(hr != S_OK)                                                      \
-        {				                                                    \
+        {                                                                   \
 			UNS_ERROR("Bad WMI param\n");                                   \
 			return hr;                                                      \
         }                                                                   \
@@ -234,11 +234,11 @@ HRESULT WMIGet(         IWbemServices*      srv,
 
 template<bool log>
 static
-HRESULT WMIGet(         IWbemServices*      srv,
+HRESULT WMIGet(IWbemServices*      srv,
 			   IWbemClassObject*   obj,
 			   BSTR                name,
 			   std::wstring&       var,
-			   bool&				specified)
+			   bool&               specified)
 {
 	_variant_t  val;
 
@@ -443,7 +443,7 @@ HRESULT  WMIPut(
                         std::wstring&       var)
 {
 	variant_t  val(var.c_str());
-	
+
 	if (0 == wcscmp(name, L"Password")) //Zero the memory of the decrypted password
 	{
 		HRESULT hr = obj->Put(name, 0, &val, 0);
@@ -1100,7 +1100,7 @@ HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std:
 	}
 	unsigned long ulNumKeys;
 	hr = pIKeyList->GetCount(&ulNumKeys);
-	
+
 	if(FAILED(hr))
 	{
 		return hr;
@@ -1112,10 +1112,10 @@ HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std:
 	{
 		return WBEM_E_OUT_OF_MEMORY;
 	}
-	CComVariant vValue;		
+	CComVariant vValue;
 	unsigned long ulApparentCimType;
 	for (unsigned long i = 0; i < ulNumKeys; i++)
-	{			
+	{
 		uKeyNameBufferSize = 256;
 		hr = pIKeyList->GetKey2(i, 0L, &uKeyNameBufferSize,
 								wKeyName, &vValue, &ulApparentCimType);
@@ -1133,19 +1133,17 @@ HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std:
 }
 static HRESULT WMIHandleSetStatus(IWbemServices* pNamespace,IWbemObjectSink  __RPC_FAR* pResponseHandler,unsigned long hrInput)
 {
-	USES_CONVERSION;
 	try
 	{
 		if (hrInput == STATUS_SUCCESS)
 		{
 			pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, hrInput,NULL, NULL);
-		   return  S_OK;
+			return S_OK;
 		}
 		// not ok.
-   		CComPtr<IWbemClassObject> obj;
+		CComPtr<IWbemClassObject> obj;
 		do
 		{
-						
 			HRESULT  hr;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"__ExtendedStatus"));
 			std::wstringstream str;
@@ -1162,7 +1160,7 @@ static HRESULT WMIHandleSetStatus(IWbemServices* pNamespace,IWbemObjectSink  __R
 	{
 		UNS_ERROR("%C Bad catch", __FUNCTION__);
 	}
-    return  S_OK;
+	return S_OK;
 }
 
 #endif

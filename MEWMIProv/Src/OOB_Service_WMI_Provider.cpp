@@ -168,7 +168,6 @@ HRESULT OOB_Service_WMI_Provider::Activate(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	USES_CONVERSION; 
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
@@ -720,7 +719,6 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	USES_CONVERSION; 
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, hr);
@@ -777,7 +775,6 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	USES_CONVERSION; 
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
 	EntryExitLog log(__FUNCTION__, hr);
