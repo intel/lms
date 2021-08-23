@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 #include "SoapHandler.h"
 #include "global.h"
@@ -163,10 +163,6 @@ bool SOAP_Handler::HandleCimAlert(const std::string &TestMessageId, const std::s
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	GMS_AlertIndication* alert = new GMS_AlertIndication();
-	if (!alert)
-	{
-		return false;
-	}
 
 	if (!CimToEventTranslator::instance().translate(TestMessageId, TestMessageArg, TestMessageText, *alert))
 	{
@@ -180,5 +176,4 @@ bool SOAP_Handler::HandleCimAlert(const std::string &TestMessageId, const std::s
 	UNS_DEBUG(L"Soapserver:: publish LMS Event(category %d,Id %d, message %s\n", alert->category, alert->id, alert->Message.c_str());
 	event_sent = true;
 	return true;
-
 }
