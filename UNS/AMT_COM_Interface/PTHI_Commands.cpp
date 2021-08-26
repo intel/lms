@@ -268,7 +268,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	GroupsSet.clear();
 	bHasAccess = HasAccessByBuiltinGroup(WinBuiltinAdministratorsSid, groups, GroupsSet);
 
-	if (!bHasAccess && (funcName >= 0)) // if user is admin or system there is no need to check for other groups
+	if (!bHasAccess) // if user is admin or system there is no need to check for other groups
 	{
 		if (rc)
 		{
