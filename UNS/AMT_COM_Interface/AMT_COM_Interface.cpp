@@ -307,7 +307,7 @@ public:
 			CAMT_COM_InterfaceModule::UninitializeCom();
 		}
 #endif
-		if (!UnregisterDeviceNotification(hDevNotify))
+		if ((hDevNotify != NULL) && !UnregisterDeviceNotification(hDevNotify))
 		{
 			UNS_DEBUG(L"UnregisterDeviceNotification failed \n");
 		}
