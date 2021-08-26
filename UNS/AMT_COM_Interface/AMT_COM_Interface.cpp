@@ -126,7 +126,7 @@ HRESULT AddRegKeys()
 	return 0;
 }
 
-HRESULT DelRegKeys()
+bool DelRegKeys()
 {
 	//The following function will remove all the keys the UNS uses
 	return DSinstance().CleanDataStorage();
@@ -385,7 +385,7 @@ public:
 	HRESULT UnregisterServer(BOOL bUnRegTypeLib, const CLSID* pCLSID = NULL) throw()
 	{
 		HRESULT hr = __super::UnregisterServer(bUnRegTypeLib, pCLSID);
-		if (FAILED(DelRegKeys()))
+		if (!DelRegKeys())
 		{
 			UNS_DEBUG(L"UnregisterServer:: Failed to clean all registry values\n");
 		}
