@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2021 Intel Corporation
  */
 /*++
 
@@ -112,8 +112,6 @@ enum CFG_PROVISIONING_MODE	//uint32_t
 
 const uint8_t AMT_MAJOR_VERSION = 1;
 const uint8_t AMT_MINOR_VERSION = 1;
-
-static const uint32_t CERT_HASH_MAX_NUMBER = 23;
 #pragma pack()
 
 class AMTHICommand : public Intel::MEI_Client::MEICommand
