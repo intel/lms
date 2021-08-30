@@ -189,13 +189,13 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			ServiceKey += ServiceName;
 			RetValue = RegOpenKeyEx(HKEY_LOCAL_MACHINE, ServiceKey.c_str(), 0, KEY_QUERY_VALUE, &hKey);
 
-			if (RetValue != ERROR_OK)
+			if (RetValue != ERROR_SUCCESS)
 			{
 				UNS_DEBUG(L"GetServiceVersion:RegOpenKeyEx failed err=%d\n", RetValue);
 				return ERROR_FAIL;
 			}
 			RetValue = RegQueryValueEx(hKey, L"ImagePath", NULL, NULL, (LPBYTE)path, &pathBufSize);
-			if ((RetValue != ERROR_OK) || (pathBufSize > MAX_PATH))
+			if ((RetValue != ERROR_SUCCESS) || (pathBufSize > MAX_PATH))
 			{
 				UNS_DEBUG(L"GetServiceVersion:RegQueryValueEx failed err=%d\n", RetValue);
 				RegCloseKey(hKey);
