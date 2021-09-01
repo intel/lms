@@ -1518,11 +1518,11 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 	KVMWSManClient Client;
 	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	USER_CONSENT_POLICY UserConsentPolicy;
-	short state;
+	unsigned short state;
 
-	if (Client.KVMRedirectionState((unsigned short*)&state))
+	if (Client.KVMRedirectionState(&state))
 	{
-		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%d \n",state);
+		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%u\n", state);
 		switch (state)
 		{
 		case KVM_ENABLED_AND_CONNECTED: 
@@ -1541,7 +1541,7 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 			connected=KVM_STOPPED;
 			return true;
 		default:
-			UNS_ERROR(L"Wrong KVMRedirectionState=%d\n",state);
+			UNS_ERROR(L"Wrong KVMRedirectionState=%u\n", state);
 			return false;
 		}
 	}
