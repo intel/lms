@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019 Intel Corporation
+ * Copyright (C) 2019-2021 Intel Corporation
  */
 #include "PFWUpdateDllWrapperME11.h"
 #include "fwupdatelib_ME11.h"
@@ -50,12 +50,11 @@ PFWUpdateDllWrapperME11::PFWUpdateDllWrapperME11(void)
 
 	static enum LoadFwDllState loadDllState = LFDS_INITIAL;
 
-	if (loadDllState != LFDS_INITIAL)
+	if ((loadDllState != LFDS_INITIAL) && (loadDllState != LFDS_SUCCESS))
 	{
-		if (loadDllState != LFDS_SUCCESS) 
-		{
-			throw std::exception("Dll state: " + loadDllState);
-		}
+		std::stringstream str;
+		str << "Dll state: " << loadDllState;
+		throw std::exception(str.str().c_str());
 	}
 	loadDllState = LFDS_FAILURE;
 
