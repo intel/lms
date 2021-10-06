@@ -14,8 +14,8 @@
 #include "WindowsStringLoader.h"
 #else
 #include <syslog.h>
-#include "version.h"
 #endif // WIN32
+#include "version.h"
 #include "StringsDefinitions.h"
 #include "DataStorageGenerator.h"
 
@@ -326,6 +326,7 @@ int GmsService::svc(void)
 	ACE_LOG_MSG->priority_mask(requiredLoggingMask, ACE_Log_Msg::PROCESS);
 
 	UNS_DEBUG(L"GmsService:Starting service\n");
+	UNS_DEBUG(L"LMS Version: %d.%d.%d.%d\n", MAJOR_VERSION, MINOR_VERSION, QUICK_FIX_NUMBER, VER_BUILD);
 	 
 	reactor()->owner(ACE_Thread::self());
 
