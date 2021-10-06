@@ -9,7 +9,7 @@
 #include "Tools.h"
 #include "UNSEventsDefinition.h"
 
-#include "HECIException.h"
+#include "LMEClient.h"
 #include "AMTHICommand.h"
 #include "GetFWVersionCommand.h"
 #include "GetFWCapsCommand.h"
@@ -46,7 +46,6 @@ bool Configurator::IsLMEExists() const
 {
 	auto res = true;
 	FuncEntryExit<decltype(res)> fee(this, L"IsLMEExists", res);
-	std::unique_ptr<Intel::MEI_Client::HECI> heci(Intel::MEI_Client::GenerateLMEClient());
 
 	for (int i = 1; i <= NUM_RETRIES; i++)
 	{
@@ -54,22 +53,20 @@ bool Configurator::IsLMEExists() const
 
 		try
 		{
-			heci->Init(); // heci init succeeded => LME exists
+			Intel::MEI_Client::LME_Client::LMEClient heci;
+			heci.Connect(); // heci init succeeded => LME exists
 			UNS_DEBUG(L"heci Init succeeded\n");
-			heci->Deinit();
 			return res;
 		}
-		catch (Intel::MEI_Client::HeciNoClientException& e)
+		catch (const Intel::MEI_Client::MEIClientExceptionNoClient& e)
 		{
-			heci->Deinit();
 			UNS_WARNING(L"Heci init failed, LME doesn't exist. %C\n", e.what());
 			res = false;
 			return res;
 		}
-		catch(Intel::MEI_Client::HECIException& e)
+		catch (const Intel::MEI_Client::MEIClientException& e)
 		{
 			// heci init failed with another error than missing LME - retry a few times before defining as failure
-			heci->Deinit();
 			UNS_ERROR(L"Heci init failed. %C\n", e.what());
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(LME_EXISTS_LOOP_DELAY));

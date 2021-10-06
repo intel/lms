@@ -11,7 +11,6 @@
 #ifndef __LME_CONNECTION_H__
 #define __LME_CONNECTION_H__
 #include "global.h"
-#include "heci.h"
 
 #include <memory>
 #include <mutex>
@@ -20,6 +19,7 @@
 #include <ace/Thread.h>
 #include <ace/Thread_Manager.h>
 #include <ace/Event.h>
+#include "LMEClient.h"
 #include "LMS_if_constants.h"
 #include "FuncEntryExit.h"
 
@@ -291,7 +291,7 @@ public:
 	bool IsClientNotFound() const { return _clientNotFound; }
 	//parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
 	void Deinit(bool signalSelect = false);
-	size_t GetBufferSize() const { return _heci->GetBufferSize(); }
+	size_t GetBufferSize() const { try { return _heci.GetBufferSize(); } catch (const Intel::MEI_Client::MEIClientException&) { return 0; }}
 	unsigned int GetPortForwardingPort() const { return m_portForwardingPort; }
 
 	enum INIT_STATES {
@@ -308,8 +308,8 @@ private:
 
 	void DeinitInternal();
 	void _doRX();
-	ssize_t _receiveMessage(unsigned char *buffer, size_t len);
-	bool _sendMessage(unsigned char *buffer, size_t len);
+	bool _sendMessage(const std::vector<uint8_t> &buffer);
+	bool _sendCommandMessage(uint8_t command);
 
 	std::vector<uint8_t> _txBuffer;
 
@@ -317,9 +317,8 @@ private:
 	SignalSelectCallback _signalSelectCallback; //callback for waking the service from the Select() to allow re-initilization 
 	void *_cbParam;
 	std::mutex _initLock;
-	std::mutex _sendMessageLock;
 	INIT_STATES _initState;
-	std::unique_ptr<Intel::MEI_Client::HECI> _heci;
+	Intel::MEI_Client::LME_Client::LMEClient _heci;
 	ACE_Event _threadStartedEvent;
 	ACE_Event _portIsOk;
 	unsigned int m_portForwardingPort;

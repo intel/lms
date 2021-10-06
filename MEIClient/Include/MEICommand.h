@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 /*++
 
@@ -10,7 +10,7 @@
 
 #ifndef __MEI_COMMAND_H__
 #define __MEI_COMMAND_H__
-#include "heci.h"
+#include <meteepp.h>
 #include "MEIClientException.h"
 #include <cstdint>
 #include <memory>
@@ -23,7 +23,7 @@ namespace MEI_Client
 {
 class MEICommandRequest;
 
-HECI* GenerateLMEClient(bool verbose = false);
+intel::security::metee heciClientByGUID(const GUID& guid);
 void GetHeciDriverVersion(std::string &ver);
 
 class MEICommand

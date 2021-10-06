@@ -1,12 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2025 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
 #include "AMTHICommand.h"
 #include "MEIClientException.h"
-#include "HECIException.h"
 
 #include "gtest/gtest.h"
 
@@ -542,7 +541,7 @@ TEST(MCHI, testReadFileExCommand)
 			<< " 0x" << (uint32_t)theFile.Data[3]
 			<< std::endl;
 	}
-	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+	catch (const Intel::MEI_Client::MEIClientExceptionNoClient&) {}
 	catch (const Intel::MEI_Client::MCHI_Client::MCHIErrorExceptionNoFile&) {}
 }
 
@@ -554,7 +553,7 @@ TEST(UPID, testGetUPIDFeatureSupportCommand)
 		UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response support = getSupport.getResponse();
 		EXPECT_EQ(support.platformIdSupported & ~(UPID_PLATFORM_ID_UPID_IS_SUPPORTED | UPID_PLATFORM_ID_ATTESTATION_IS_SUPPORTED), 0);
 	}
-	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+	catch (const Intel::MEI_Client::MEIClientExceptionNoClient&) {}
 }
 
 TEST(UPID, testGetUPIDFeatureOSControlCommand)
@@ -564,7 +563,7 @@ TEST(UPID, testGetUPIDFeatureOSControlCommand)
 		GetUPIDFeatureOSControlCommand getOSControl;
 		UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response support = getOSControl.getResponse();
 	}
-	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+	catch (const Intel::MEI_Client::MEIClientExceptionNoClient&) {}
 }
 
 TEST(Manageabiltiy, testMNGIsChangeToAMTEnabledCommand)

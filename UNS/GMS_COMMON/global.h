@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2011, 2013-2023 Intel Corporation
+ * Copyright (C) 2006-2011, 2013-2025 Intel Corporation
  */
 //----------------------------------------------------------------------------
 //
@@ -29,7 +29,7 @@
 
 #ifndef WIN32
 typedef void* HDEVNOTIFY;
-typedef void* HANDLE;
+typedef int HANDLE;
 typedef int SOCKET;
 #define _strnicmp strncasecmp
 static inline int GetLastError() {return errno;}

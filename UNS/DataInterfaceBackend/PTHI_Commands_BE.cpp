@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -26,7 +26,6 @@
 #include "CloseUserInitiatedConnectionCommand.h"
 #include "GetSystemDefenseStateCommand.h"
 #include "MEIClientException.h"
-#include "HECIException.h"
 #include "AMTHIErrorException.h"
 #include "GetIPv6LanInterfaceStatusCommand.h"
 #include "GetUUIDCommand.h"
@@ -53,14 +52,6 @@
 
 namespace Intel {
 	namespace LMS {
-
-#define CATCH_HECIException(func) \
-	catch (Intel::MEI_Client::HECIException& e) \
-	{ \
-		const char* reason = e.what(); \
-		UNS_DEBUG(func L" HECIException failed %C\n", reason); \
-	}
-
 #define CATCH_MEIClientException(func) \
 	catch (Intel::MEI_Client::MEIClientException& e) \
 	{ \
@@ -89,8 +80,8 @@ namespace Intel {
 		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
-#define CATCH_NoClientExceptionReturn(func) \
-	catch (const Intel::MEI_Client::HeciNoClientException& e) \
+#define CATCH_MEIClientExceptionNoClient(func) \
+	catch (const Intel::MEI_Client::MEIClientExceptionNoClient& e) \
 	{ \
 		const char* reason = e.what(); \
 		UNS_DEBUG(L"Exception in " func " %C\n", reason); \
@@ -119,7 +110,7 @@ namespace Intel {
 		unsigned int errNo = e.getErr(); \
 		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	} \
-	CATCH_NoClientExceptionReturn(func) \
+	CATCH_MEIClientExceptionNoClient(func) \
 	CATCH_MEIClientException(func) \
 	CATCH_exception(func) \
 	return LMS_ERROR::FAIL;
@@ -208,7 +199,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::GetHeciDriverVersion(sVersion);
 				return LMS_ERROR::OK;
 			}
-			CATCH_HECIException(L"GetHeciVersion")
 			CATCH_AMTHIErrorException(L"GetHeciVersion")
 			CATCH_MEIClientException(L"GetHeciVersion")
 			CATCH_exception(L"GetHeciVersion")
@@ -1131,7 +1121,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"PSRGetPlatformServiceRecordCommand")
-			CATCH_NoClientExceptionReturn(L"PSRGetPlatformServiceRecordCommand")
+			CATCH_MEIClientExceptionNoClient(L"PSRGetPlatformServiceRecordCommand")
 			CATCH_MEIClientException(L"PSRGetPlatformServiceRecordCommand")
 			CATCH_exception(L"PSRGetPlatformServiceRecordCommand")
 			return LMS_ERROR::FAIL;
@@ -1150,7 +1140,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"GetPlatformServiceRecordRaw")
-			CATCH_NoClientExceptionReturn(L"GetPlatformServiceRecordRaw")
+			CATCH_MEIClientExceptionNoClient(L"GetPlatformServiceRecordRaw")
 			CATCH_MEIClientException(L"GetPlatformServiceRecordRaw")
 			CATCH_exception(L"GetPlatformServiceRecordRaw")
 			return LMS_ERROR::FAIL;
@@ -1167,7 +1157,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_UPIDErrorException(L"GetUPIDStateCommand")
-			CATCH_NoClientExceptionReturn(L"GetUPIDStateCommand")
+			CATCH_MEIClientExceptionNoClient(L"GetUPIDStateCommand")
 			CATCH_MEIClientException(L"GetUPIDStateCommand")
 			CATCH_exception(L"GetUPIDStateCommand")
 			return LMS_ERROR::FAIL;
@@ -1182,7 +1172,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_UPIDErrorException(L"SetUPIDStateCommand")
-			CATCH_NoClientExceptionReturn(L"SetUPIDStateCommand")
+			CATCH_MEIClientExceptionNoClient(L"SetUPIDStateCommand")
 			CATCH_MEIClientException(L"SetUPIDStateCommand")
 			CATCH_exception(L"SetUPIDStateCommand")
 			return LMS_ERROR::FAIL;

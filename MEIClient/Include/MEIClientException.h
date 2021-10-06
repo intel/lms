@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -34,11 +34,19 @@ namespace Intel { namespace MEI_Client {
 			: std::system_error(err, cat, what) {}
 		virtual ~MEIClientException() noexcept {}
 	};
+
 	class MEIClientExceptionZeroBuffer : public MEIClientException
 	{
 	public:
 		MEIClientExceptionZeroBuffer(const std::string &what, int err = 0) : MEIClientException(what, err) {}
 		virtual ~MEIClientExceptionZeroBuffer() noexcept {}
+	};
+
+	class MEIClientExceptionNoClient : public MEIClientException
+	{
+	public:
+		MEIClientExceptionNoClient(const std::string &what, int err = 0) : MEIClientException(what, err) {}
+		virtual ~MEIClientExceptionNoClient() noexcept {}
 	};
 } /* namespace MEI_Client */ } /* namespace Intel */
 
