@@ -60,6 +60,7 @@ externalproject_add (openwsman
   LIST_SEPARATOR | # Use the alternate list separator
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}
     -DBUILD_EXAMPLES=OFF
     -DBUILD_PYTHON=OFF
     -DBUILD_PYTHON3=OFF
