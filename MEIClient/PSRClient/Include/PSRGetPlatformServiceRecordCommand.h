@@ -165,14 +165,14 @@ namespace Intel
 				virtual ~PSRGetPlatformServiceRecordRequest() {}
 
 			private:
-				virtual unsigned int requestHeaderCommandNumber()
+				virtual uint8_t requestHeaderCommandNumber()
 				{
-					return (int)PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET;
+					return static_cast<uint8_t>(PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET);
 				}
 
-				virtual uint32_t requestDataSize()
+				virtual uint16_t requestDataSize()
 				{
-					return sizeof(PSR_GET_REQUEST);
+					return static_cast<uint8_t>(sizeof(PSR_GET_REQUEST));
 				}
 
 				virtual std::vector<uint8_t> SerializeData();

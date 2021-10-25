@@ -88,8 +88,8 @@ namespace Intel
 
 				std::vector<uint8_t> serializeHeader(const PSR_MSG_HEADER& header);
 				//returns the PSR command number (in the header) of the request command
-				virtual uint32_t requestHeaderCommandNumber() = 0;
-				virtual uint32_t requestDataSize() = 0;
+				virtual uint8_t requestHeaderCommandNumber() = 0;
+				virtual uint16_t requestDataSize() = 0;
 				virtual std::vector<uint8_t> SerializeData()
 				{
 					//default no data
