@@ -28,8 +28,8 @@ namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
 	{
 	public:
 		FWUpdateErrorException(unsigned int err) : MEIClientException(err, fwupd_category) {}
-		virtual ~FWUpdateErrorException() throw (){}
-		virtual unsigned int getErr() const throw()
+		virtual ~FWUpdateErrorException() noexcept {}
+		virtual unsigned int getErr() const noexcept
 		{
 			return code().value();
 		}

@@ -51,8 +51,8 @@ namespace Intel { namespace MEI_Client { namespace PSR_Client {
 	{
 	public:
 		PSRErrorException(unsigned int err): MEIClientException(err, psr_category){}
-		virtual ~PSRErrorException() throw (){}
-		virtual unsigned int getErr() const throw()
+		virtual ~PSRErrorException() noexcept {}
+		virtual unsigned int getErr() const noexcept
 		{
 			return code().value();
 		}

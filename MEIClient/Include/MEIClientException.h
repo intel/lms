@@ -32,13 +32,13 @@ namespace Intel { namespace MEI_Client {
 		MEIClientException(int err, const std::error_category& cat) : std::system_error(err, cat) {}
 		MEIClientException(int err, const std::error_category& cat, const std::string& what)
 			: std::system_error(err, cat, what) {}
-		virtual ~MEIClientException() throw (){}
+		virtual ~MEIClientException() noexcept {}
 	};
 	class MEIClientExceptionZeroBuffer : public MEIClientException
 	{
 	public:
 		MEIClientExceptionZeroBuffer(const std::string &what, int err = 0) : MEIClientException(what, err) {}
-		virtual ~MEIClientExceptionZeroBuffer() throw () {}
+		virtual ~MEIClientExceptionZeroBuffer() noexcept {}
 	};
 } /* namespace MEI_Client */ } /* namespace Intel */
 

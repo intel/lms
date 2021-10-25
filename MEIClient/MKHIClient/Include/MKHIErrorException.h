@@ -75,8 +75,8 @@ namespace Intel { namespace MEI_Client { namespace MKHI_Client {
 	{
 	public:
 		MKHIErrorException(unsigned int err): MEIClientException(err, mkhi_category){}
-		virtual ~MKHIErrorException() throw (){}
-		virtual unsigned int getErr() const throw()
+		virtual ~MKHIErrorException() noexcept {}
+		virtual unsigned int getErr() const noexcept
 		{
 			return code().value();
 		}

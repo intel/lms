@@ -49,8 +49,8 @@ namespace Intel { namespace MEI_Client { namespace Manageability_Client {
 	{
 	public:
 		ManageabilityErrorException(unsigned int err) : MEIClientException(err, manageability_category) {}
-		virtual ~ManageabilityErrorException() throw (){}
-		virtual unsigned int getErr() const throw()
+		virtual ~ManageabilityErrorException() noexcept {}
+		virtual unsigned int getErr() const noexcept
 		{
 			return code().value();
 		}

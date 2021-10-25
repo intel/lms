@@ -42,8 +42,8 @@ namespace Intel {
 			{
 			public:
 				UPIDErrorException(unsigned int err) : MEIClientException(err, upid_category) {}
-				virtual ~UPIDErrorException() throw (){}
-				virtual unsigned int getErr() const throw()
+				virtual ~UPIDErrorException() noexcept {}
+				virtual unsigned int getErr() const noexcept
 				{
 					return code().value();
 				}

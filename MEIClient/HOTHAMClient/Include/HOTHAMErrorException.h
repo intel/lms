@@ -28,8 +28,8 @@ namespace Intel { namespace MEI_Client { namespace HOTHAM_Client {
 	{
 	public:
 		HOTHAMErrorException(unsigned int err) : MEIClientException(err, hotham_category) {}
-		virtual ~HOTHAMErrorException() throw (){}
-		virtual unsigned int getErr() const throw()
+		virtual ~HOTHAMErrorException() noexcept {}
+		virtual unsigned int getErr() const noexcept
 		{
 			return code().value();
 		}
