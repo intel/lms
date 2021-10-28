@@ -81,21 +81,9 @@ else (UNIX)
     set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_CXX_STANDARD_LIBRARIES})
     set(MSVC_IGNORED_LIBRARIES "/NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:advapi32.lib /NODEFAULTLIB:user32.lib /NODEFAULTLIB:setupapi.lib /NODEFAULTLIB:gdi32.lib /NODEFAULTLIB:winspool.lib /NODEFAULTLIB:shell32.lib /NODEFAULTLIB:ole32.lib /NODEFAULTLIB:oleaut32.lib  /NODEFAULTLIB:comdlg32.lib /NODEFAULTLIB:advapi32.lib")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MSVC_IGNORED_LIBRARIES}")
-    find_library (ONE_CORE "OneCoreUap.lib")
-    add_library (ONE_CORE_IMP SHARED IMPORTED)
-    set_target_properties (ONE_CORE_IMP PROPERTIES
-      IMPORTED_LOCATION ${ONE_CORE}
-      IMPORTED_IMPLIB ${ONE_CORE}
-    )
-    find_library (ONE_CORE_DL "OneCoreUap_downlevel.lib")
-    add_library (ONE_CORE_DL_IMP SHARED IMPORTED)
-    set_target_properties (ONE_CORE_DL_IMP PROPERTIES
-      IMPORTED_LOCATION ${ONE_CORE_DL}
-      IMPORTED_IMPLIB ${ONE_CORE_DL}
-    )
     link_libraries (
-      ONE_CORE_IMP
-      ONE_CORE_DL_IMP
+      OneCoreUap.lib
+      OneCoreUap_downlevel.lib
     )
   endif (BUILD_WIN_UNIVERSAL)
 endif (UNIX)
