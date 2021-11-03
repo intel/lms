@@ -7,6 +7,10 @@ add_executable (AMT_COM_Test
   AMT_COM_Test/stdafx.cpp
 )
 
+target_compile_definitions (AMT_COM_Test PUBLIC
+  /MP1
+)
+
 target_link_libraries (AMT_COM_Test
   GTest::GTest
 )
