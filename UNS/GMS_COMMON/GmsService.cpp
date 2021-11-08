@@ -297,7 +297,7 @@ int GmsService::svc(void)
 #endif // WIN32
 
 	DataStorageWrapper& ds = DSinstance();
-	unsigned long severity;
+	unsigned long severity = LMS_DEBUG;
 	if (ds.GetDataValue(LMSLoggingSeverity, severity, true))
 	{
 		UNS_DEBUG(L"Logging Severity from Registry: %d\n", severity);

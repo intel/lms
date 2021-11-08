@@ -2192,7 +2192,7 @@ int Protocol::_handleFQDNChange(const char *fqdn)
 	std::ifstream ifp(inFileName);
 	std::stringstream tmp;
 	std::string line;
-	char lastChar;
+	char lastChar = 0;
 
 	if (!ifp.is_open()) {
 		UNS_ERROR(L"failed to open hosts file for reading\n");

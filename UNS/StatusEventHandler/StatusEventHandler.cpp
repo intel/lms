@@ -301,7 +301,7 @@ void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *a
 	if (alert->id == EVENT_SYSTEM_DEFENCE_CHANGE)// System Defense Changed (may be started, finished, other level)
 	{		
 		//This cause recreating the event and by this UNS keep sending this event.
-		bool SystemDefenseState;
+		bool SystemDefenseState = 0;
 		if (GetSystemDefenseState(SystemDefenseState))
 		{				
 			SaveCurrentStatus(SystemDefenseState, SYS_DEF_ACTIVE_S);
@@ -530,7 +530,7 @@ void StatusEventHandler::NotifyIPRefresh(int eventType)
 bool StatusEventHandler::StatusChanged(DATA_NAME storageName, uint32_t state)
 {
 	DataStorageWrapper& ds = DSinstance();	
-	unsigned long prevState;
+	unsigned long prevState = 0;
 
 	if (ds.GetDataValue(storageName, prevState, true))
 	{
@@ -1330,7 +1330,7 @@ void StatusEventHandler::firstPullForEvents(void)
 
 	// provisioning state		
 	AMTHI_Client::AMT_PROVISIONING_STATE prevProvState = AMTHI_Client::PROVISIONING_STATE_PRE;
-	unsigned long val;
+	unsigned long val = 0;
 	if (!ds.GetDataValue(AMT_PROVISIONING_STATE_S, val, true))
 	{
 		if (m_prevCustomerType == CORPORATE)
@@ -1368,7 +1368,7 @@ void StatusEventHandler::checkForBootReason()
 		bool bNewRemoteReboot=false;
 		if (Reason==0) 	// RemoteControl=0, Other=1
 		{
-			unsigned long prevRemoteRebootTimeStamp;
+			unsigned long prevRemoteRebootTimeStamp = 0;
 
 			if (ds.GetDataValue(REMOTE_REBOOT_S, prevRemoteRebootTimeStamp))
 			{
@@ -1620,7 +1620,7 @@ void StatusEventHandler::requestDisplaySettings()
 	FuncEntryExit<void> fee(this, L"requestDisplaySettings");
 	// Check if the machine is provisioned and KVM enabled
 	DataStorageWrapper& ds = DSinstance();	
-	unsigned long state;
+	unsigned long state = 0;
 	if (!ds.GetDataValue(KVM_ENABLE_S, state, true))
 	{
 		UNS_ERROR(L"Failed to get KVM status\n");
