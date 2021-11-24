@@ -16,9 +16,7 @@ target_link_libraries (WiFiProfileSyncService
   WsmanClient
   Iphlpapi.lib
   wlanapi.lib
-  delayimp.lib
 )
-set_target_properties(WiFiProfileSyncService PROPERTIES LINK_FLAGS "/DELAYLOAD:wlanapi.dll")
 
 target_compile_definitions (WiFiProfileSyncService PRIVATE
   WIFIPROFILESYNCSERVICE_HAS_DLL=0

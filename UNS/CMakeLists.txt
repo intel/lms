@@ -95,6 +95,7 @@ target_link_libraries (lms
   $<$<BOOL:${WIN32}>:PartialFWUpdateService>
   $<$<BOOL:${WIN32}>:WMIEventHandler>
   $<$<BOOL:${UNIX}>:WatchdogService>
+  $<$<BOOL:${WIN32}>:Delayimp.lib>
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
@@ -106,6 +107,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
   install (FILES $<TARGET_PDB_FILE:lms>
     DESTINATION ${LMS_LIBDIR_DBG} OPTIONAL
   )
+  target_link_options(lms PUBLIC "/DELAYLOAD:wlanapi.dll")
 endif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 install(TARGETS lms
