@@ -59,6 +59,7 @@
 #include <sstream>
 #include <iostream>
 #include <string>
+#include <algorithm>
 #ifdef __linux__
 	#include <netinet/ip.h>
 	#include <sys/socket.h>
