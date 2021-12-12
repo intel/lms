@@ -1,3 +1,30 @@
+## [2151.0.0.0]
+
+### Fixed
+ - MEIClient: AMTHITestProject: add algorithm include
+ - CMake: Windows: fix delayed import
+ - download GTest from main branch
+ - initialize variables filled by reference
+ - openwsman: wsman-win-client-transport: plug leak in error path
+ - CMake: fix universal build
+ - AMT_COM_Interface: Test: build in one process
+ - CIM_Framework: CMake: pass CMAKE_SYSTEM_VERSION to openwsman
+ - openwsman: wsman-win-client-transport: initialize certificate pointer
+ - openwsman: iniparser: fix buffer size
+
+### Added
+ - add lms version to logs
+
+### Changed
+ - MEIClient: download MeTee 3.1.0
+ - Conan: Use ACE 7.0.4
+ - linux: replace 0 to ? in bdf in udev rule
+ - MEIClient: replace throw() with noexcept
+ - MEIClient: PSRClient: fix methods return types
+
+### Removed
+ - remove unused properties file
+
 ## [2141.0.0.0]
 
 ### Fixed
