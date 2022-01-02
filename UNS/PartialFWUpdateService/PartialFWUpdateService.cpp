@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -777,21 +777,21 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		}
 	}
 
-	if (currentLang == languageID)
+	// If on INIT_MODE, perform PFU even if new language equals current one,
+	// Use case: PFU from corrupted PFU Partition (0 in FW) to English (0)
+	if (mode == MANUAL_MODE && currentLang == languageID)
 	{
 		UNS_DEBUG(L"Current language is the requested one\n");
-		if (mode==MANUAL_MODE)
+		if (defaultLangSet)
 		{
-			if(defaultLangSet)
-			{
-				DSinstance().DeleteDataVal(LastLanguageUpdate);
-			}
-			else
-			{
-				DSinstance().SetDataValue(LastLanguageUpdate, languageID, true);
-			}
-			publishPartialFWUpgrade_end(LANGUAGE_MODULE, 0);
+			DSinstance().DeleteDataVal(LastLanguageUpdate);
 		}
+		else
+		{
+			DSinstance().SetDataValue(LastLanguageUpdate, languageID, true);
+		}
+		publishPartialFWUpgrade_end(LANGUAGE_MODULE, 0);
+
 		res = true;
 		return res;
 	}
