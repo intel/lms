@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -945,6 +945,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		{
 			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce;
 			std::stringstream parsed;
+			bool have_rtc_reset = false;
 
 			try
 			{
@@ -986,9 +987,16 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "<Category name=\"Events\">" << std::endl;
 				for (uint32_t i = 0; i < psr.events_count && i < Intel::MEI_Client::PSR_Client::PSR_CRITICAL_EVENTS_NUM_MAX; i++)
 				{
+					const uint8_t PSR_EVENT_PRTC_FAILURE = 19;
+
 					parsed << "<Category name=\"Event " << (unsigned int)psr.events_info[i].event_id << "\">" << std::endl;
 					parsed << formatPSRField("ID", (unsigned int)psr.events_info[i].event_id);
-					parsed << formatPSRField("Time", timeToString(psr.events_info[i].timestamp));
+					if (psr.events_info[i].event_id == PSR_EVENT_PRTC_FAILURE)
+						have_rtc_reset = true;
+					if (have_rtc_reset)
+						parsed << formatPSRPrefix("Time") << psr.events_info[i].timestamp << " seconds after RTC clear" << formatPSRSuffix();
+					else
+						parsed << formatPSRField("Time", timeToString(psr.genesis_info.genesis_date + psr.events_info[i].timestamp));
 					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::hex << psr.events_info[i].data << formatPSRSuffix();
 					parsed << "</Category>" << std::endl;
 				}
