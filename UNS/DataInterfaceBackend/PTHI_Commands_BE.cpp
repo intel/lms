@@ -960,7 +960,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRField("PSRID", uuidToString(psr.psrid));
 				parsed << formatPSRPrefix("UPID") << "0x";
 				for (size_t k = 0; k < Intel::MEI_Client::PSR_Client::UPID_PLATFORM_ID_LENGTH; k++)
-					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.upid[k];
+					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.upid[k] << std::dec;
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
@@ -972,12 +972,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRField("Manufacture country", genesisFieldToString(psr.genesis_info.manuf_country));
 				parsed << formatPSRPrefix("OEM Data") << "0x";
 				for (size_t i = 0; i < Intel::MEI_Client::PSR_Client::PSR_GENESIS_DATA_STORE_INFO_SIZE; i++)
-					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.genesis_info.oem_data_store[i];
+					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.genesis_info.oem_data_store[i] << std::dec;
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Ledger\">" << std::endl;
-				parsed << formatPSRPrefix("S0 (seconds)") << std::dec << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
+				parsed << formatPSRPrefix("S0 (seconds)") << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
 				parsed << formatPSRField("S0 to S5", psr.ledger_info.s0_to_s5_counter);
 				parsed << formatPSRField("S0 to S4", psr.ledger_info.s0_to_s4_counter);
 				parsed << formatPSRField("S0 to S3", psr.ledger_info.s0_to_s3_counter);
@@ -997,7 +997,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 						parsed << formatPSRPrefix("Time") << psr.events_info[i].timestamp << " seconds after RTC clear" << formatPSRSuffix();
 					else
 						parsed << formatPSRField("Time", timeToString(psr.genesis_info.genesis_date + psr.events_info[i].timestamp));
-					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::hex << psr.events_info[i].data << formatPSRSuffix();
+					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::hex << psr.events_info[i].data << std::dec << formatPSRSuffix();
 					parsed << "</Category>" << std::endl;
 				}
 				parsed << "</Category>" << std::endl;
