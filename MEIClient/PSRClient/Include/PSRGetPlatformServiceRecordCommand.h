@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  */
 /*++
 
@@ -34,6 +34,23 @@ namespace Intel
 
 			const size_t PSR_GENESIS_FIELD_INFO_SIZE = 64;
 			const size_t PSR_GENESIS_DATA_STORE_INFO_SIZE = 1024;
+
+			const uint8_t PSR_LOG_NOT_STARTED = 0;
+			const uint8_t PSR_LOG_STARTED = 1;
+			const uint8_t PSR_LOG_STOPPED = 2;
+
+			const uint8_t PSR_EVENT_START = 8;
+			const uint8_t PSR_EVENT_STOP = 9;
+			const uint8_t PSR_EVENT_MAX_EVENT = 10;
+			const uint8_t PSR_EVENT_RP_INF_FAIL = 16;
+			const uint8_t PSR_EVENT_PSR_MISSING = 17;
+			const uint8_t PSR_EVENT_PSR_INVALID = 18;
+			const uint8_t PSR_EVENT_PRTC_FAILURE = 19;
+			const uint8_t PSR_EVENT_RECOVERY_STATE = 20;
+			const uint8_t PSR_EVENT_DAM_STATE = 21;
+			const uint8_t PSR_EVENT_UNLOCK_STTE = 22;
+			const uint8_t PSR_EVENT_SVN_INCREASE = 23;
+			const uint8_t PSR_EVENT_CHASSIS_INTRUSION = 32;
 
 			#pragma pack(1)
 			struct PSR_GET_REQUEST

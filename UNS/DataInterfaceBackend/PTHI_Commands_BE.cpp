@@ -943,8 +943,28 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetPlatformServiceRecord(std::string& strPSR)
 		{
-			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce;
+			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce = { 0 };
 			std::stringstream parsed;
+			std::map<uint32_t, std::string> log_states = {
+				{Intel::MEI_Client::PSR_Client::PSR_LOG_NOT_STARTED, "Not started"},
+				{Intel::MEI_Client::PSR_Client::PSR_LOG_STARTED, "Started"},
+				{Intel::MEI_Client::PSR_Client::PSR_LOG_STOPPED, "Stopped"},
+			};
+			std::map<uint8_t, std::string> events = {
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_START, "Start log"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_STOP, "End log"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_MAX_EVENT, "Max event number reached"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_RP_INF_FAIL, "Replay protection infrastructure failure"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PSR_MISSING, "PSR is missing"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PSR_INVALID, "PSR is invalid"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE, "PRTC failure"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_RECOVERY_STATE, "CSME entered recovery/disabled/SKU mismatch state"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_DAM_STATE, "CSME entered DAM state"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_UNLOCK_STTE, "CSME entered unlock state"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SVN_INCREASE, "SVN increase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_CHASSIS_INTRUSION, "Chassis intrusion"},
+			};
+			std::string state_str, event_str;
 			bool have_rtc_reset = false;
 
 			try
@@ -955,12 +975,20 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "<?xml version=\"1.0\"?>\n<MsInfo>\n<Category name=\"Platform Service Record\">\n";
 
 				parsed << "<Category name=\"General\">" << std::endl;
-				parsed << formatPSRField("LogState", psr.log_state);
+				try
+				{
+					state_str = log_states.at(psr.log_state);
+				}
+				catch (std::out_of_range const&)
+				{
+					state_str = "Unknown";
+				}
+				parsed << formatPSRField("LogState", state_str);
 				parsed << formatPSRPrefix("PSRVersion") << psr.psr_version_major << "." << psr.psr_version_minor << formatPSRSuffix();
 				parsed << formatPSRField("PSRID", uuidToString(psr.psrid));
-				parsed << formatPSRPrefix("UPID") << "0x";
+				parsed << formatPSRPrefix("UPID");
 				for (size_t k = 0; k < Intel::MEI_Client::PSR_Client::UPID_PLATFORM_ID_LENGTH; k++)
-					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.upid[k] << std::dec;
+					parsed << "0x" << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.upid[k] << std::dec << " ";
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
@@ -970,9 +998,9 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRField("OEM Make Info", genesisFieldToString(psr.genesis_info.oem_make_info));
 				parsed << formatPSRField("OEM Model Info", genesisFieldToString(psr.genesis_info.oem_model_info));
 				parsed << formatPSRField("Manufacture country", genesisFieldToString(psr.genesis_info.manuf_country));
-				parsed << formatPSRPrefix("OEM Data") << "0x";
+				parsed << formatPSRPrefix("OEM Data");
 				for (size_t i = 0; i < Intel::MEI_Client::PSR_Client::PSR_GENESIS_DATA_STORE_INFO_SIZE; i++)
-					parsed << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.genesis_info.oem_data_store[i] << std::dec;
+					parsed << "0x" << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.genesis_info.oem_data_store[i] << std::dec << " ";
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
@@ -987,11 +1015,17 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "<Category name=\"Events\">" << std::endl;
 				for (uint32_t i = 0; i < psr.events_count && i < Intel::MEI_Client::PSR_Client::PSR_CRITICAL_EVENTS_NUM_MAX; i++)
 				{
-					const uint8_t PSR_EVENT_PRTC_FAILURE = 19;
-
-					parsed << "<Category name=\"Event " << (unsigned int)psr.events_info[i].event_id << "\">" << std::endl;
+					try
+					{
+						event_str = events.at(psr.events_info[i].event_id);
+					}
+					catch (std::out_of_range const&)
+					{
+						event_str = "Reserved";
+					}
+					parsed << "<Category name=\"" << event_str << "\">" << std::endl;
 					parsed << formatPSRField("ID", (unsigned int)psr.events_info[i].event_id);
-					if (psr.events_info[i].event_id == PSR_EVENT_PRTC_FAILURE)
+					if (psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE)
 						have_rtc_reset = true;
 					if (have_rtc_reset)
 						parsed << formatPSRPrefix("Time") << psr.events_info[i].timestamp << " seconds after RTC clear" << formatPSRSuffix();
@@ -1021,7 +1055,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetPlatformServiceRecordRaw(std::vector<uint8_t>& binPSR)
 		{
-			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce;
+			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce = { 0 };
 			std::stringstream parsed;
 
 			try
