@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -257,28 +257,8 @@ namespace Intel {
 
 		LMS_ERROR Manageability_Commands_BE::GetFWInfo(std::string &pMEBxVersion, unsigned long &pBiosBootState, bool &pCryptoFuseEnable, bool &pLocalFWupdateEnable)
 		{
-			MEBX_BIOS_VER version;
-
-			//use SMBIOS to get MEBx version
-			SMBIOS_Reader sm_reader;
-			if (sm_reader.CheckForSmbiosFlags() == 0)
-			{
-				version.MEBxMajor = sm_reader.pCapabilities.MEBx_Major;
-				version.MEBxMinor = sm_reader.pCapabilities.MEBx_Minor;
-				version.MEBxHotFix = sm_reader.pCapabilities.MEBx_Hotfix;
-				version.MEBxBuildNo = sm_reader.pCapabilities.MEBx_Build;
-			}
-			else
-			{
-				return ERROR_FAIL;
-			}
-
-			std::stringstream ss;
-			ss << version.MEBxMajor << "." << version.MEBxMinor << "." << version.MEBxHotFix << ".";
-			ss << std::setfill('0') << std::setw(4) << version.MEBxBuildNo;
-			pMEBxVersion = ss.str();
-
 			bool isME12andUp = true;
+			bool isME16andUp = true;
 			try
 			{
 				Intel::MEI_Client::MKHI_Client::GetFWVersionCommand getFWVersionCommand;
@@ -287,10 +267,43 @@ namespace Intel {
 				{
 					isME12andUp = false;
 				}
+				if (res.FTMajor < 16)
+				{
+					isME16andUp = false;
+				}
 			}
 			CATCH_MKHIErrorException(L"GetFWVersionCommand")
 			CATCH_MEIClientException(L"GetFWVersionCommand")
 			CATCH_exception(L"GetFWVersionCommand")
+
+			if (isME16andUp)
+			{
+				//MEBx is integrated into BIOS RC, no separate version
+				pMEBxVersion = "";
+			}
+			else
+			{
+				MEBX_BIOS_VER version;
+
+				//use SMBIOS to get MEBx version
+				SMBIOS_Reader sm_reader;
+				if (sm_reader.CheckForSmbiosFlags() == 0)
+				{
+					version.MEBxMajor = sm_reader.pCapabilities.MEBx_Major;
+					version.MEBxMinor = sm_reader.pCapabilities.MEBx_Minor;
+					version.MEBxHotFix = sm_reader.pCapabilities.MEBx_Hotfix;
+					version.MEBxBuildNo = sm_reader.pCapabilities.MEBx_Build;
+				}
+				else
+				{
+					return ERROR_FAIL;
+				}
+
+				std::stringstream ss;
+				ss << version.MEBxMajor << "." << version.MEBxMinor << "." << version.MEBxHotFix << ".";
+				ss << std::setfill('0') << std::setw(4) << version.MEBxBuildNo;
+				pMEBxVersion = ss.str();
+			}
 
 			if (isME12andUp)
 			{
