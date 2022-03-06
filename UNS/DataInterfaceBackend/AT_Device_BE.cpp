@@ -1,10 +1,9 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 #include "AT_Device_BE.h"
 #include "global.h"
-#include "SMBIOS_Reader.h"
 #include "AuditLogWSManClient.h"
 #include <vector>
 
