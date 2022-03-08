@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -934,15 +934,16 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 	}
 }
 
-void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
+void Configurator::ChangeServiceState(ACE_TString &serviceName, SERVICE_STATUS_TYPE status)
 {
 	ServiceNamesList services;
-	FuncEntryExit<decltype(status)> fee(this, L"ChangeServiceState", status);
+	FuncEntryExit<void> fee(this, L"ChangeServiceState");
 
-	switch (status)
+	UNS_DEBUG(L"ChangeServiceState: %d\n", status);
+	switch (status) 
 	{
 		// The unloading of service and all the ones that depends on it was finished.
-		case STATUS_UNLOADCOMPLETE:
+		case SERVICE_STATUS_TYPE::UNLOADCOMPLETE:
 			FiniAceService(serviceName);
 			//Refreshing the waiting list of services that might have been waiting to the service
 			if(theAsyncActivationManager::instance()->RefreshOnUnload(services))
@@ -958,7 +959,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		// Loading the service and the ones it depends on was completed.
-		case STATUS_LOADCOMPLETE:
+		case SERVICE_STATUS_TYPE::LOADCOMPLETE:
 			theLoadedServices::instance()->AddService(serviceName);
 			//Raising MEI Enabled event.
 			if(m_gotMeiEnabled && (serviceName.compare(STATUS_EVENT_HANDLER) == 0))
@@ -981,7 +982,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		// Suspending the service and the ones that depended on it was finished
-		case STATUS_SUSPENDCOMPLETE:
+		case SERVICE_STATUS_TYPE::SUSPENDCOMPLETE:
 			theLoadedServices::instance()->SetActive(serviceName, false);
 			CompleteSuspendAceService(serviceName);
 			//Refreshing the waiting list of services that might have been waiting for the service to suspend
@@ -998,7 +999,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		// Resuming the service and the ones that depended on it was finished
-		case STATUS_RESUMECOMPLETE:
+		case SERVICE_STATUS_TYPE::RESUMECOMPLETE:
 			theLoadedServices::instance()->SetActive(serviceName);
 			//Refreshing the waiting list of services that might have been waiting for the service to resume
 			if (theAsyncActivationManager::instance()->RefreshOnResume(services))
@@ -1026,14 +1027,14 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 
 int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 {
-	FuncEntryExit<decltype(conf->type)> fee(this, L"UpdateConfiguration", conf->type);
+	FuncEntryExit<void> fee(this, L"UpdateConfiguration");
 	switch(conf->type)
 	{
-		case IP_SYNC_CONF:
+		case CONFIGURATION_TYPE::IP_SYNC_CONF:
 			UNS_DEBUG(L"Got Static IP Status: %d\n", conf->value);
 			OnToggleService(GMS_SHAREDSTATICIPSERVICE, (bool) conf->value);
 			break;
-		case WIFI_PROFILE_SYNC_CONF:
+		case CONFIGURATION_TYPE::WIFI_PROFILE_SYNC_CONF:
 			UNS_DEBUG(L"Got WiFi Profile Sync Status: %d\n",  conf->value);
 #ifdef WIN32
 			OnToggleService(GMS_WIFIPROFILESYNCSERVICE, conf->value != 0);
@@ -1041,12 +1042,12 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			TaskCompleted();
 #endif // WIN32
 			break;
-		case TIME_SYNC_CONF: //Handles the changes in the LocalTimeSyncEnable field in the FW
+		case CONFIGURATION_TYPE::TIME_SYNC_CONF: //Handles the changes in the LocalTimeSyncEnable field in the FW
 			UNS_DEBUG(L"Got Time Sync Status: %d\n",  conf->value);
 			//Starts or stops the service according to the configuration change
 			OnToggleService(GMS_TIMESYNCSERVICE, (bool) conf->value);
 			break;
-		case AMT_ENABLE_CONF:
+		case CONFIGURATION_TYPE::AMT_ENABLE_CONF:
 			{
 				UNS_DEBUG(L"Got AMT Status: %d\n", conf->value);
 
@@ -1072,7 +1073,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				}
 				break;
 			}
-		case AMT_PROVISION_CONF:
+		case CONFIGURATION_TYPE::AMT_PROVISION_CONF:
 			UNS_DEBUG(L"Got AMT Provision Status: %d\n", conf->value);
 #ifndef WIN32
 			OnToggleService(GMS_WATCHDOGSERVICE, conf->value == Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_POST);
@@ -1080,7 +1081,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			TaskCompleted();
 #endif // !WIN32
 			break;
-		case PFW_ENABLE_CONF:
+		case CONFIGURATION_TYPE::PFW_ENABLE_CONF:
 		{
 			UNS_DEBUG(L"Got Port Forwarding Status: %d\n", conf->value);
 
@@ -1118,7 +1119,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			break;
 		}
 		default:
-			UNS_ERROR(L"Configurator::Invalid Message\n");
+			UNS_ERROR(L"Configurator::Invalid Message %d\n", conf->type);
 			return -1;
 	}
 	return 0;
@@ -1363,7 +1364,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_AVAILABLE, ACE_TEXT("Port Forwarding Service started"));
 
 					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-					pfwPtr->data_block(new ChangeConfiguration(PFW_ENABLE_CONF, 1));
+					pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
 					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
 					this->putq(pfwPtr->duplicate());
 

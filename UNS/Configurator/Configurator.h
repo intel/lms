@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #ifndef __CONFIGURATOR_H_
 #define __CONFIGURATOR_H_
@@ -62,7 +62,7 @@ private:
 
 	//ongoing configuration
 	int UpdateConfiguration(const ChangeConfiguration *conf);
-	void ChangeServiceState(ACE_TString &serviceName, int status);
+	void ChangeServiceState(ACE_TString &serviceName, SERVICE_STATUS_TYPE status);
 	void FiniAceService(const ACE_TString &serviceName);
 	void OnToggleService(const ACE_TString &service, bool val);
 	bool CompleteSuspendAceService(const ACE_TString &serviceName);

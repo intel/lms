@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 
 #include "GmsSubService.h"
@@ -69,7 +69,7 @@ int GmsSubService::closeSubService()
 {
 	FuncEntryExit<void> fee(this, L"closeSubService");
 
-	sendStatusChanged(STATUS_UNLOADCOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::UNLOADCOMPLETE);
 
 	UNS_DEBUG(L"%s\n",name().c_str());
 	return 0;
@@ -77,7 +77,7 @@ int GmsSubService::closeSubService()
 
 int GmsSubService::suspendSubService()
 {
-	sendStatusChanged(STATUS_SUSPENDCOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::SUSPENDCOMPLETE);
 
 	UNS_DEBUG(L"%s suspendSubService()\n",name().c_str());
 	return 0;
@@ -87,7 +87,7 @@ int GmsSubService::startSubService()
 {
 	FuncEntryExit<void> fee(this, L"startSubService");
 
-	sendStatusChanged(STATUS_LOADCOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::LOADCOMPLETE);
 
 	UNS_DEBUG(L"%s, 0x%X\n",name().c_str(), this);
 	return 0;
@@ -107,7 +107,7 @@ int GmsSubService::suspend()
 
 int GmsSubService::resume() 
 {
-	sendStatusChanged(STATUS_RESUMECOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::RESUMECOMPLETE);
 
 	UNS_DEBUG(L"%s service Resumed\n",name().c_str());
 	return 0;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #ifndef __EVENTMANAGMENT_H_
 #define __EVENTMANAGMENT_H_
@@ -113,7 +113,7 @@ public:
 	bool meiEnabled_;
 };
 
-typedef enum
+enum class CONFIGURATION_TYPE
 {
 	ME_ENABLE_CONF,
 	AMT_ENABLE_CONF,
@@ -123,12 +123,12 @@ typedef enum
 	WIFI_PROFILE_SYNC_CONF,
 	AMT_PROVISION_CONF,
 	WRONG_CONFIGURATION_TYPE
-} CONFIGURATION_TYPE;
+};
 
 class GMS_COMMON_EXPORT ChangeConfiguration: public ACE_Data_Block
 {
 public:
-	ChangeConfiguration() : type(WRONG_CONFIGURATION_TYPE), value(0)  {};	// Default constructor
+	ChangeConfiguration() : type(CONFIGURATION_TYPE::WRONG_CONFIGURATION_TYPE), value(0)  {};	// Default constructor
 	ChangeConfiguration(const ChangeConfiguration& other): // Copy constructor
 		type(other.type),
 			value(other.value){};
@@ -185,21 +185,21 @@ public:
 	bool m_meiEnabled;
 };
 
-	typedef enum
-	{
-		STATUS_UNLOADCOMPLETE,
-		STATUS_LOADCOMPLETE,
-		STATUS_SUSPENDCOMPLETE,
-		STATUS_RESUMECOMPLETE,
-		SERVICE_STATUS_UNKNOWN,
-	} SERVICE_STATUS_TYPE;
+enum class SERVICE_STATUS_TYPE
+{
+	UNLOADCOMPLETE,
+	LOADCOMPLETE,
+	SUSPENDCOMPLETE,
+	RESUMECOMPLETE,
+	UNKNOWN,
+};
 
 class GMS_COMMON_EXPORT ServiceStatus: public ACE_Data_Block
 {
 public:
-	ServiceStatus() : serviceName(), status(SERVICE_STATUS_UNKNOWN) {};	// Default constructor
+	ServiceStatus() : serviceName(), status(SERVICE_STATUS_TYPE::UNKNOWN) {}; // Default constructor
 	ServiceStatus(const ServiceStatus& other): serviceName(other.serviceName),status(other.status){};// Copy constructor
-	ServiceStatus(const ACE_TString &o_serviceName, SERVICE_STATUS_TYPE o_status) :
+	ServiceStatus(const ACE_TString &o_serviceName, SERVICE_STATUS_TYPE o_status):
 		serviceName(o_serviceName),
 		status(o_status){};
 	virtual ~ServiceStatus(){}; // Destructor

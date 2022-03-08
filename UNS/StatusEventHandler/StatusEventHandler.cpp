@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "StatusEventHandler.h"
@@ -203,19 +203,19 @@ void StatusEventHandler::handleGeneralEvents(const GMS_AlertIndication *alert)
 		break;
 	case EVENT_ME_ENABLE :
 		SaveCurrentStatus(1,ME_ENABLE_S);
-		NotifyConfigurator(1,ME_ENABLE_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::ME_ENABLE_CONF);
 		break;
 	case EVENT_ME_DISABLE:
 		SaveCurrentStatus(0,ME_ENABLE_S);
-		NotifyConfigurator(0,ME_ENABLE_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::ME_ENABLE_CONF);
 		break;
 	case EVENT_AMT_ENABLE :
 		SaveCurrentStatus(2,AMT_ENABLE_S);
-		NotifyConfigurator(1,AMT_ENABLE_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::AMT_ENABLE_CONF);
 		break;
 	case EVENT_AMT_DISABLE:
 		SaveCurrentStatus(1,AMT_ENABLE_S);
-		NotifyConfigurator(0,AMT_ENABLE_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::AMT_ENABLE_CONF);
 		break;
 	case EVENT_AGENT_1:
 	case EVENT_AGENT_2:
@@ -293,7 +293,7 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 		return;
 	}
 	SaveCurrentStatus(curProvState, AMT_PROVISIONING_STATE_S);
-	NotifyConfigurator(curProvState, AMT_PROVISION_CONF);
+	NotifyConfigurator(curProvState, CONFIGURATION_TYPE::AMT_PROVISION_CONF);
 }
 
 void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *alert)
@@ -407,13 +407,13 @@ void  StatusEventHandler::handleIPSyncEvents(const GMS_AlertIndication *alert)
 	{
 	case EVENT_IP_SYNC_DISABLE:
 		SaveCurrentStatus(0,IP_SYNC_ENABLE_S);
-		NotifyConfigurator(0,IP_SYNC_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::IP_SYNC_CONF);
 		break;
 	case EVENT_IP_SYNC_ENABLE:
 		SaveCurrentStatus(1,IP_SYNC_ENABLE_S);
-		NotifyConfigurator(1,IP_SYNC_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::IP_SYNC_CONF);
 		break;
-	case EVENT_IP_REFRESH_LAN:						
+	case EVENT_IP_REFRESH_LAN:
 		UNS_DEBUG(L"IPRefresh LAN\n");
 		NotifyIPRefresh(MB_IPREFRESH_LAN);
 		break;
@@ -473,11 +473,11 @@ void  StatusEventHandler::handleWlanEvents(const GMS_AlertIndication *alert)
 		break;
 	case EVENT_WLAN_PROFILE_SYNC_DISABLE:
 		SaveCurrentStatus(0, WIFI_PROFILE_SYNC_ENABLE_S);
-		NotifyConfigurator(0, WIFI_PROFILE_SYNC_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::WIFI_PROFILE_SYNC_CONF);
 		break;
 	case EVENT_WLAN_PROFILE_SYNC_ENABLE:
 		SaveCurrentStatus(1, WIFI_PROFILE_SYNC_ENABLE_S);
-		NotifyConfigurator(1, WIFI_PROFILE_SYNC_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::WIFI_PROFILE_SYNC_CONF);
 		break;
 	case EVENT_WIRELESS_STATE_CHANGED:
 		{
@@ -490,21 +490,21 @@ void  StatusEventHandler::handleWlanEvents(const GMS_AlertIndication *alert)
 		}
 	}
 }
+
 void StatusEventHandler::handleTimeSyncEvents(const GMS_AlertIndication *alert)
 {
 	switch (alert->id)
 	{
 	case EVENT_TIME_SYNC_DISABLE:
 		SaveCurrentStatus(0,TIME_SYNC_ENABLE_S);
-		NotifyConfigurator(0,TIME_SYNC_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::TIME_SYNC_CONF);
 		break;
 	case EVENT_TIME_SYNC_ENABLE:
 		SaveCurrentStatus(1,TIME_SYNC_ENABLE_S);
-		NotifyConfigurator(1,TIME_SYNC_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::TIME_SYNC_CONF);
 		break;
 	}
 }
-
 
 bool StatusEventHandler::SaveCurrentStatus(uint32_t status,DATA_NAME storageName)
 {
