@@ -127,7 +127,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			gmtime_r(&time_, &time_tm);
 #endif // WIN32
 			char time_s[128];
-			strftime(time_s, 128, "%c", &time_tm);
+			strftime(time_s, 128, "%FT%RZ", &time_tm);
 			return time_s;
 		}
 
@@ -951,21 +951,27 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{Intel::MEI_Client::PSR_Client::PSR_LOG_STOPPED, "Stopped"},
 			};
 			std::map<uint8_t, std::string> events = {
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_START, "Start log"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_STOP, "End log"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_MAX_EVENT, "Max event number reached"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_RP_INF_FAIL, "Replay protection infrastructure failure"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PSR_MISSING, "PSR is missing"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PSR_INVALID, "PSR is invalid"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE, "PRTC failure"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_RECOVERY_STATE, "CSME entered recovery/disabled/SKU mismatch state"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_DAM_STATE, "CSME entered DAM state"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_UNLOCK_STTE, "CSME entered unlock state"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SVN_INCREASE, "SVN increase"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_CHASSIS_INTRUSION, "Chassis intrusion"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_START, "Log Started"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_STOP, "Log Ended"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_MAX_EVENT, "Log Full"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_RP_INF_FAIL, "Replay Protection Infrastructure Failure"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PSR_MISSING, "Log Missing"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PSR_INVALID, "Log Integrity Compromised"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE, "PRTC Reset"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_RECOVERY_STATE, "Log in Recovery State"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_DAM_STATE, "DAM State Entered"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_UNLOCK_STTE, "Unlocked State Entered"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SVN_INCREASE, "PSR SVN Incremented"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_CHASSIS_INTRUSION, "Chassis Intrusion Detected"},
 			};
 			std::string state_str, event_str;
-			bool have_rtc_reset = false;
+			enum class TIMER_FAIL
+			{
+				NO,
+				PRTC,
+				RP
+			};
+			TIMER_FAIL have_timer_fail = TIMER_FAIL::NO;
 
 			try
 			{
@@ -983,21 +989,21 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{
 					state_str = "Unknown";
 				}
-				parsed << formatPSRField("LogState", state_str);
-				parsed << formatPSRPrefix("PSRVersion") << psr.psr_version_major << "." << psr.psr_version_minor << formatPSRSuffix();
-				parsed << formatPSRField("PSRID", uuidToString(psr.psrid));
-				parsed << formatPSRPrefix("UPID");
+				parsed << formatPSRField("Log State", state_str);
+				parsed << formatPSRPrefix("PSR Version") << psr.psr_version_major << "." << psr.psr_version_minor << formatPSRSuffix();
+				parsed << formatPSRField("Platform Service Record ID", uuidToString(psr.psrid));
+				parsed << formatPSRPrefix("Unique Platform ID");
 				for (size_t k = 0; k < Intel::MEI_Client::PSR_Client::UPID_PLATFORM_ID_LENGTH; k++)
 					parsed << "0x" << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.upid[k] << std::dec << " ";
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Genesis\">" << std::endl;
-				parsed << formatPSRField("Date", timeToString(psr.genesis_info.genesis_date));
-				parsed << formatPSRField("OEM Info", genesisFieldToString(psr.genesis_info.oem_info));
-				parsed << formatPSRField("OEM Make Info", genesisFieldToString(psr.genesis_info.oem_make_info));
-				parsed << formatPSRField("OEM Model Info", genesisFieldToString(psr.genesis_info.oem_model_info));
-				parsed << formatPSRField("Manufacture country", genesisFieldToString(psr.genesis_info.manuf_country));
+				parsed << formatPSRField("Log Start Date", timeToString(psr.genesis_info.genesis_date));
+				parsed << formatPSRField("OEM Name", genesisFieldToString(psr.genesis_info.oem_info));
+				parsed << formatPSRField("OEM Make", genesisFieldToString(psr.genesis_info.oem_make_info));
+				parsed << formatPSRField("OEM Model", genesisFieldToString(psr.genesis_info.oem_model_info));
+				parsed << formatPSRField("Country of Manufacturer", genesisFieldToString(psr.genesis_info.manuf_country));
 				parsed << formatPSRPrefix("OEM Data");
 				for (size_t i = 0; i < Intel::MEI_Client::PSR_Client::PSR_GENESIS_DATA_STORE_INFO_SIZE; i++)
 					parsed << "0x" << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)psr.genesis_info.oem_data_store[i] << std::dec << " ";
@@ -1005,11 +1011,11 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Ledger\">" << std::endl;
-				parsed << formatPSRPrefix("S0 (seconds)") << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
-				parsed << formatPSRField("S0 to S5", psr.ledger_info.s0_to_s5_counter);
-				parsed << formatPSRField("S0 to S4", psr.ledger_info.s0_to_s4_counter);
-				parsed << formatPSRField("S0 to S3", psr.ledger_info.s0_to_s3_counter);
-				parsed << formatPSRField("Warm Resets", psr.ledger_info.warm_reset_counter);
+				parsed << formatPSRPrefix("S0 Run Time In Seconds") << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
+				parsed << formatPSRField("S0 to S5 Transition Count", psr.ledger_info.s0_to_s5_counter);
+				parsed << formatPSRField("S0 to S4 Transition Count", psr.ledger_info.s0_to_s4_counter);
+				parsed << formatPSRField("S0 to S3 Transition Count", psr.ledger_info.s0_to_s3_counter);
+				parsed << formatPSRField("Warm Reset Count", psr.ledger_info.warm_reset_counter);
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Events\">" << std::endl;
@@ -1021,17 +1027,34 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					}
 					catch (std::out_of_range const&)
 					{
-						event_str = "Reserved";
+						event_str = "Unknown";
 					}
 					parsed << "<Category name=\"" << event_str << "\">" << std::endl;
-					parsed << formatPSRField("ID", (unsigned int)psr.events_info[i].event_id);
-					if (psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE)
-						have_rtc_reset = true;
-					if (have_rtc_reset)
-						parsed << formatPSRPrefix("Time") << psr.events_info[i].timestamp << " seconds after RTC clear" << formatPSRSuffix();
-					else
-						parsed << formatPSRField("Time", timeToString(psr.genesis_info.genesis_date + psr.events_info[i].timestamp));
-					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::hex << psr.events_info[i].data << std::dec << formatPSRSuffix();
+					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
+					switch (psr.events_info[i].event_id)
+					{
+					case Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE:
+						have_timer_fail = TIMER_FAIL::PRTC;
+						parsed << formatPSRField("Time", "Unknown");
+						break;
+					case Intel::MEI_Client::PSR_Client::PSR_EVENT_RP_INF_FAIL:
+						have_timer_fail = TIMER_FAIL::RP;
+						parsed << formatPSRField("Time", "Unknown");
+						break;
+					default:
+						switch (have_timer_fail)
+						{
+						case TIMER_FAIL::PRTC:
+							parsed << formatPSRPrefix("Time") << psr.events_info[i].timestamp << " seconds since PRTC Reset event" << formatPSRSuffix();
+							break;
+						case TIMER_FAIL::RP:
+							parsed << formatPSRPrefix("Time") << psr.events_info[i].timestamp << " seconds since Failure event" << formatPSRSuffix();
+							break;
+						default:
+							parsed << formatPSRField("Time", timeToString(psr.genesis_info.genesis_date + psr.events_info[i].timestamp));
+							break;
+						}
+					}
 					parsed << "</Category>" << std::endl;
 				}
 				parsed << "</Category>" << std::endl;
