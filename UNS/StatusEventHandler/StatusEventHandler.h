@@ -141,7 +141,7 @@ private:
 	bool GetSystemDefenseState(bool& SysDefState);
 	bool GetMEState(bool& MEState);
 
-	bool GetAlarmClockBootEvent(SX_STATES &previousSXState);
+	bool GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES &previousSXState);
 
 	// Publish Provisioning event while LMS was stopped
 	void publishProvisioningEvent(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE state);
@@ -199,8 +199,8 @@ private:
 	// Publish Remote Reboot event
 	void publishRemoteRebootEvent();
 	//publish Host boot by Alarm clock
-	void publishAlarmClockBoot(SX_STATES previousSXState);
-	ACE_TString GetSXState(SX_STATES previousSXState);
+	void publishAlarmClockBoot(HostBootReasonClient::SX_STATES previousSXState);
+	ACE_TString GetSXState(HostBootReasonClient::SX_STATES previousSXState);
 
 	void SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State);
 	// Get the network settings (need for populate the MAC address)

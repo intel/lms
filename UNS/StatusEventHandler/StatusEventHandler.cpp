@@ -1383,7 +1383,7 @@ void StatusEventHandler::checkForBootReason()
 			m_prevManageMode== SBT ||
 			m_prevManageMode== VPRO)
 		{
-			SX_STATES previousSXState;
+			HostBootReasonClient::SX_STATES previousSXState;
 			if (GetAlarmClockBootEvent(previousSXState))
 			{
 				publishAlarmClockBoot(previousSXState);
@@ -1412,38 +1412,38 @@ void StatusEventHandler::publishRemoteRebootEvent()
 }
 
 //publish Host boot by Alarm clock
-void StatusEventHandler::publishAlarmClockBoot(SX_STATES previousSXState)
+void StatusEventHandler::publishAlarmClockBoot(HostBootReasonClient::SX_STATES previousSXState)
 {
 	std::vector<ACE_TString>  MessageArguments;
 	MessageArguments.push_back(GetSXState(previousSXState));
 	raiseGMS_AlertIndication(CATEGORY_GENERAL, EVENT_ALARM_CLOCK_BOOT, getDateTime(), ACTIVE_MESSAGEID, ALARM_CLOCK_BOOT_STR, MessageArguments);
 }
 
-ACE_TString StatusEventHandler::GetSXState(SX_STATES previousSXState)
+ACE_TString StatusEventHandler::GetSXState(HostBootReasonClient::SX_STATES previousSXState)
 {
 	ACE_TString ret;
 	switch (previousSXState)
 	{
 
-	case SX_Other:
+	case HostBootReasonClient::SX_STATES::Other:
 		ret = ACE_TEXT("Other");
 		break;
-	case SX_S0:
+	case HostBootReasonClient::SX_STATES::S0:
 		ret = ACE_TEXT("S0");
 		break;
-	case SX_S1:
+	case HostBootReasonClient::SX_STATES::S1:
 		ret = ACE_TEXT("S1");
 		break;
-	case SX_S2:
+	case HostBootReasonClient::SX_STATES::S2:
 		ret = ACE_TEXT("S2");
 		break;
-	case SX_S3:
+	case HostBootReasonClient::SX_STATES::S3:
 		ret = ACE_TEXT("S3");
 		break;
-	case SX_S4:
+	case HostBootReasonClient::SX_STATES::S4:
 		ret = ACE_TEXT("S4");
 		break;
-	case SX_S5:
+	case HostBootReasonClient::SX_STATES::S5:
 		ret = ACE_TEXT("S5");
 		break;
 	default:
@@ -1487,15 +1487,15 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 	return true;
 }
 
-bool StatusEventHandler::GetAlarmClockBootEvent(SX_STATES &previousSXState)
+bool StatusEventHandler::GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES &previousSXState)
 {
 	HostBootReasonClient client;
 
-	HOST_RESET_REASON int_resetReason;
-	SX_STATES int_previousSXState;
+	HostBootReasonClient::HOST_RESET_REASON int_resetReason;
+	HostBootReasonClient::SX_STATES int_previousSXState;
 	if (client.GetHostResetReason(int_resetReason, int_previousSXState))
 	{
-		if (int_resetReason == Alarm)
+		if (int_resetReason == HostBootReasonClient::HOST_RESET_REASON::Alarm)
 		{
 			previousSXState = int_previousSXState;
 			return true;
