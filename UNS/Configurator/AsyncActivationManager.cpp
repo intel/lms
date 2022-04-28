@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 
 #include "global.h"
@@ -23,7 +23,6 @@ void AsyncActivationManager::AddToWaiting(const ACE_TString &service, NamesSet &
 	//todo set timeout
 }
 
-
 void AsyncActivationManager::RemoveWaiting(NamesList &services, NamesSet &waitSet)
 {
 	for (NamesList::iterator it = services.begin(); it != services.end(); ++it)
@@ -33,27 +32,24 @@ void AsyncActivationManager::RemoveWaiting(NamesList &services, NamesSet &waitSe
 	}
 }
 
-
-
-
 bool AsyncActivationManager::RefreshOnLoad(ServiceNamesList &services)
 {
-	return RefreshOnOperation(services, OP_LOAD);
+	return RefreshOnOperation(services, OpType::OP_LOAD);
 }
 
 bool AsyncActivationManager::RefreshOnUnload(ServiceNamesList &services)
 {
-	return RefreshOnOperation(services, OP_UNLOAD);
+	return RefreshOnOperation(services, OpType::OP_UNLOAD);
 }
 
 bool AsyncActivationManager::RefreshOnSuspend( ServiceNamesList &services )
 {
-	return RefreshOnOperation(services, OP_SUSPEND);
+	return RefreshOnOperation(services, OpType::OP_SUSPEND);
 }
 
 bool AsyncActivationManager::RefreshOnResume( ServiceNamesList &services )
 {
-	return RefreshOnOperation(services, OP_RESUME);
+	return RefreshOnOperation(services, OpType::OP_RESUME);
 }
 
 bool AsyncActivationManager::RefreshOnOperation( ServiceNamesList &services, OpType operation)
@@ -88,32 +84,22 @@ bool AsyncActivationManager::RefreshOnOperation( ServiceNamesList &services, OpT
 
 bool AsyncActivationManager::ReadyToUnload(const ACE_TString &service) 
 {
-	bool ret = ReadyToOperation(service, OP_UNLOAD);
-
-	return ret;
+	return ReadyToOperation(service, OpType::OP_UNLOAD);
 }
 
 bool AsyncActivationManager::ReadyToLoad(const ACE_TString &service) 
 {
-	bool ret = ReadyToOperation(service, OP_LOAD);
-
-	return ret;
+	return ReadyToOperation(service, OpType::OP_LOAD);
 }
 
 bool AsyncActivationManager::ReadyToSuspend( const ACE_TString &service )
 {
-	bool ret = ReadyToOperation(service, OP_SUSPEND);
-
-	return ret;
-
+	return ReadyToOperation(service, OpType::OP_SUSPEND);
 }
 
 bool AsyncActivationManager::ReadyToResume( const ACE_TString &service )
 {
-	bool ret = ReadyToOperation(service, OP_RESUME);
-
-	return ret;
-
+	return ReadyToOperation(service, OpType::OP_RESUME);
 }
 
 bool AsyncActivationManager::ReadyToOperation(const ACE_TString &service, OpType operation, bool addTolist)
@@ -125,7 +111,7 @@ bool AsyncActivationManager::ReadyToOperation(const ACE_TString &service, OpType
 
 	NamesList dependencies;
 
-	if ((operation == OP_LOAD) || (operation == OP_RESUME))
+	if ((operation == OpType::OP_LOAD) || (operation == OpType::OP_RESUME))
 		depMan->GetServiceDependecies(service, dependencies);
 	else
 		depMan->GetDependeciesOf(service, dependencies);
@@ -139,16 +125,16 @@ bool AsyncActivationManager::ReadyToOperation(const ACE_TString &service, OpType
 		ACE_TString &dep = *it;
 		switch(operation)
 		{
-		case OP_LOAD:
+		case OpType::OP_LOAD:
 			isReady &= loadedServices->IsLoaded(dep);
 			break;
-		case OP_UNLOAD:
+		case OpType::OP_UNLOAD:
 			isReady &= !loadedServices->IsLoaded(dep);
 			break;
-		case OP_RESUME:
+		case OpType::OP_RESUME:
 			isReady &= loadedServices->IsActive(dep);
 			break;
-		case OP_SUSPEND:
+		case OpType::OP_SUSPEND:
 			isReady &= !loadedServices->IsActive(dep);
 			break;
 		}
@@ -169,10 +155,8 @@ bool AsyncActivationManager::ReadyToOperation(const ACE_TString &service, OpType
 
 NamesSet& AsyncActivationManager::GetWaiting(OpType operation)
 {
-	return (operation == OP_LOAD) ? m_waitForLoad :
-		(operation == OP_UNLOAD) ? m_waitForUnload :
-		(operation == OP_SUSPEND) ? m_waitForSuspend :
+	return (operation == OpType::OP_LOAD) ? m_waitForLoad :
+		(operation == OpType::OP_UNLOAD) ? m_waitForUnload :
+		(operation == OpType::OP_SUSPEND) ? m_waitForSuspend :
 		m_waitForResume;
 }
-
-

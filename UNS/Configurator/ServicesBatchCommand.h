@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2019 Intel Corporation
+ * Copyright (C) 2011-2022 Intel Corporation
  */
 #ifndef __SERVICES_BATCH_COMMAND_H_
 #define __SERVICES_BATCH_COMMAND_H_
@@ -13,7 +13,7 @@
 class ServicesBatchCommand
 {
 public:
-	typedef enum { SUCCESS, NOTHING_TO_DO, FAILURE } ExecuteCommandResult;
+	enum class ExecuteCommandResult { SUCCESS, NOTHING_TO_DO, FAILURE } ;
 	virtual ~ServicesBatchCommand() {}
 	
 	static void SetServicesManager(IServicesManager *servicesManager)
@@ -46,7 +46,7 @@ private:
 	virtual bool DoneCriteria(const ACE_TString &service) const
 		{return theLoadedServices::instance()->IsLoaded(service);}
 	virtual AsyncActivationManager::OpType GetOperation() const 
-		{return  AsyncActivationManager::OP_LOAD;}
+		{return  AsyncActivationManager::OpType::OP_LOAD;}
 	virtual void GetPrerequisites(const ACE_TString &service, ServiceNamesList &dependencies ) const
 		{fillDependencies(service, dependencies);}
 };
@@ -62,7 +62,7 @@ private:
 	virtual bool DoneCriteria(const ACE_TString &service) const
 		{return !theLoadedServices::instance()->IsLoaded(service);}
 	virtual AsyncActivationManager::OpType GetOperation() const 
-		{return  AsyncActivationManager::OP_UNLOAD;}
+		{return  AsyncActivationManager::OpType::OP_UNLOAD;}
 	virtual void GetPrerequisites(const ACE_TString &service, ServiceNamesList &dependencies ) const
 		{fillDependencies(service, dependencies, false);}
 };
@@ -79,7 +79,7 @@ private:
 		{return theLoadedServices::instance()->IsLoaded(service) &&
 			    theLoadedServices::instance()->IsActive(service);}	
 	virtual AsyncActivationManager::OpType GetOperation() const 
-		{return  AsyncActivationManager::OP_RESUME;}
+		{return  AsyncActivationManager::OpType::OP_RESUME;}
 	virtual void GetPrerequisites(const ACE_TString &service, ServiceNamesList &dependencies ) const
 		{fillDependencies(service, dependencies);}
 };
@@ -96,7 +96,7 @@ private:
 		{return theLoadedServices::instance()->IsLoaded(service) &&
 			    !theLoadedServices::instance()->IsActive(service);}	
 	virtual AsyncActivationManager::OpType GetOperation() const
-		{return  AsyncActivationManager::OP_SUSPEND;}
+		{return  AsyncActivationManager::OpType::OP_SUSPEND;}
 	virtual void GetPrerequisites(const ACE_TString &service, ServiceNamesList &dependencies ) const
 		{fillDependencies(service, dependencies, false);}
 };

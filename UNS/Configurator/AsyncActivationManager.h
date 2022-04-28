@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2015 Intel Corporation
+ * Copyright (C) 2011-2022 Intel Corporation
  */
 #ifndef __ASYNC_MANAGER_H_
 #define __ASYNC_MANAGER_H_
@@ -15,7 +15,7 @@
 class AsyncActivationManager
 {
 public:
-	typedef enum{OP_LOAD, OP_UNLOAD, OP_RESUME, OP_SUSPEND} OpType;
+	enum class OpType {OP_LOAD, OP_UNLOAD, OP_RESUME, OP_SUSPEND};
 
 	AsyncActivationManager(int loadTimeout = 10000, int unloadTimeout = 10000);
 	// The below ReadyX() functions returns true if the service is ready for X
