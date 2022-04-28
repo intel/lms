@@ -1516,18 +1516,18 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%u\n", state);
 		switch (state)
 		{
-		case KVM_ENABLED_AND_CONNECTED: 
+		case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_CONNECTED:
 			enable=true;
 			connected = KVM_STATE::KVM_STARTED;
 			if (GetUserConsentState(&UserConsentState, &UserConsentPolicy) &&
 			   (UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED))
 				connected = KVM_STATE::KVM_REQUESTED;
 			return true;
-		case KVM_DISABLED: 
+		case KVM_REDIRECTION_SAP_STATE_KVM_DISABLED:
 			enable=false;
 			connected = KVM_STATE::KVM_STOPPED;
 			return true;
-		case KVM_ENABLED_AND_DISCONNECTED: 
+		case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_DISCONNECTED:
 			enable=true;
 			connected = KVM_STATE::KVM_STOPPED;
 			return true;
