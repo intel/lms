@@ -110,7 +110,7 @@ namespace Intel {
 		LMS_ERROR Manageability_Commands_BE::GetTheFeatureState(FEATURES feat, FEATURE_STATE &pState)
 		{
 			if ((feat < 0) || (feat >= FEATURES_NUM))
-				return ERROR_INVALIDARG;
+				return LMS_ERROR::INVALIDARG;
 
 			try
 			{
@@ -196,14 +196,14 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.PSR, StateData.Fields.PSR, AvailData.Fields.PSR);
 				break;
 				default:
-					return ERROR_INVALIDARG;
+					return LMS_ERROR::INVALIDARG;
 				}
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_MKHIErrorException(L"GetTheFeatureState")
 			CATCH_MEIClientException(L"GetTheFeatureState")
 			CATCH_exception(L"GetTheFeatureState")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
@@ -229,13 +229,13 @@ namespace Intel {
 
 				pType = GetPlatformTypeExt(&Platform);
 				if (pType == WRONG_CUSTOMER_TYPE)
-					return ERROR_UNEXPECTED;
-				return ERROR_OK;
+					return LMS_ERROR::UNEXPECTED;
+				return LMS_ERROR::OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeExt")
 			CATCH_MEIClientException(L"GetPlatformTypeExt")
 			CATCH_exception(L"GetPlatformTypeExt")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetMenageabiltyMode(MENAGEABILTY_MODE &pMode)
@@ -247,12 +247,12 @@ namespace Intel {
 
 				MenageabiltyModeLogic(Platform, pMode);
 				UNS_DEBUG(L"CManageability_Commands::GetMenageabiltyMode platform=0x%X MenageabilityMode=%d\n", Platform, pMode);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeCommand")
 			CATCH_MEIClientException(L"GetPlatformTypeCommand")
 			CATCH_exception(L"GetPlatformTypeCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetFWInfo(std::string &pMEBxVersion, unsigned long &pBiosBootState, bool &pCryptoFuseEnable, bool &pLocalFWupdateEnable)
@@ -296,7 +296,7 @@ namespace Intel {
 				}
 				else
 				{
-					return ERROR_FAIL;
+					return LMS_ERROR::FAIL;
 				}
 
 				std::stringstream ss;
@@ -365,7 +365,7 @@ namespace Intel {
 			CATCH_exception(L"GetFWUpdateStateCommand")
 			UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
 				pMEBxVersion.c_str(), pBiosBootState, pCryptoFuseEnable, pLocalFWupdateEnable);
-			return ERROR_OK;
+			return LMS_ERROR::OK;
 		}
 
 #define FPT_PARTITION_NAME_PMCP 0x50434D50 /**< "PMCP" Partition Name*/
@@ -396,7 +396,7 @@ namespace Intel {
 					if (res.NumOfModules != 1)
 					{
 						UNS_DEBUG(L"GetFWVersionCommand returned wrong number of modules %d\n", res.NumOfModules);
-						return ERROR_FAIL;
+						return LMS_ERROR::FAIL;
 					}
 
 					std::stringstream ss;
@@ -406,18 +406,18 @@ namespace Intel {
 					ss << std::setfill('0') << std::setw(4) << res.ManifestData[0].Version.Build;
 					pFwVer = ss.str();
 
-					return ERROR_OK;
+					return LMS_ERROR::OK;
 				}
 				CATCH_MKHIErrorException(L"GetImageFWVersionCommand")
 				CATCH_MEIClientException(L"GetImageFWVersionCommand")
 				CATCH_exception(L"GetImageFWVersionCommand")
-				return ERROR_FAIL;
+				return LMS_ERROR::FAIL;
 			}
 			else
 			{
 				// No PMCP partition in FW < 12
 				pFwVer = "";
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 		}
 
@@ -430,18 +430,18 @@ namespace Intel {
 				pState = measuredBootState.State != 0;
 
 				UNS_DEBUG("measuredBootState=%d\n", pState);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
 				UNS_DEBUG(L"GetMeasuredBootStateCommand failed ret=%d\n", errNo);
 				if (errNo == Intel::MEI_Client::MKHI_Client::MKHI_STATUS_INVALID_COMMAND) 
-					return ERROR_NOT_SUPPORTED_BY_FW;
+					return LMS_ERROR::NOT_SUPPORTED_BY_FW;
 			}
 			CATCH_MEIClientException(L"GetMeasuredBootStateCommand")
 			CATCH_exception(L"GetMeasuredBootStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 	}
 }

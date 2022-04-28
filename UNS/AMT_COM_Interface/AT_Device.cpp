@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -36,7 +36,7 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 	std::string AuditLogs;
 	
 	Intel::LMS::LMS_ERROR err = Intel::LMS::AT_Device_BE(GetGmsPortForwardingStarted()).GetAuditLogs(AuditLogs);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(AuditLogs.c_str());

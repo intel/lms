@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -167,7 +167,7 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetFWInfo(MEBxVersion, BiosBootState, CryptoFuseEnable, LocalFWupdateEnable);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(MEBxVersion.c_str());
@@ -199,7 +199,7 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetPMCVersion(FwVer);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(FwVer.c_str());
@@ -227,7 +227,7 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 
 	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.IsMeasuredBootState(state);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pState = state ? VARIANT_TRUE : VARIANT_FALSE;

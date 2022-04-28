@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2020 Intel Corporation
+ * Copyright (C) 2017-2022 Intel Corporation
  */
 #include "DBus_Commands.h"
 namespace Intel {
@@ -12,23 +12,23 @@ namespace DBus {
 		gint code;
 		switch (error)
 		{
-		case Intel::LMS::ERROR_UNEXPECTED:
+		case Intel::LMS::LMS_ERROR::UNEXPECTED:
 			code = G_IO_ERROR_INVALID_ARGUMENT;
 			str = "Unexpected argument";
 			break;
-		case Intel::LMS::ERROR_INVALIDARG:
+		case Intel::LMS::LMS_ERROR::INVALIDARG:
 			code = G_IO_ERROR_INVALID_ARGUMENT;
 			str = "Invalid argument";
 			break;
-		case Intel::LMS::ERROR_NOT_AVAILABLE_NOW:
+		case Intel::LMS::LMS_ERROR::NOT_AVAILABLE_NOW:
 			code = G_IO_ERROR_BUSY;
 			str = "Service is not available now";
 			break;
-		case Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW:
+		case Intel::LMS::LMS_ERROR::NOT_SUPPORTED_BY_FW:
 			code = G_IO_ERROR_NOT_SUPPORTED;
 			str = "Request is not supported by system";
 			break;
-		case Intel::LMS::ERROR_FAIL:
+		case Intel::LMS::LMS_ERROR::FAIL:
 		default:
 			code = G_IO_ERROR_FAILED;
 			str = "Internal error";

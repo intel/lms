@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2021 Intel Corporation
+ * Copyright (C) 2017-2022 Intel Corporation
  */
 #include "DBusService.h"
 #include "Manageability_Commands.h"
@@ -19,7 +19,7 @@ namespace Manageability {
 		FEATURE_STATE state = NOT_PRESENT;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetTheFeatureState((FEATURES)Feat, state);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", state));
 		else
 			send_error(invocation, error);
@@ -34,7 +34,7 @@ namespace Manageability {
 		CUSTOMER_TYPE customer_type = WRONG_CUSTOMER_TYPE;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetCustomerType(customer_type);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", customer_type));
 		else
 			send_error(invocation, error);
@@ -49,7 +49,7 @@ namespace Manageability {
 		MENAGEABILTY_MODE menageabilty_mode = NOT_KNOWN;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetMenageabiltyMode(menageabilty_mode);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", menageabilty_mode));
 		else
 			send_error(invocation, error);
@@ -67,7 +67,7 @@ namespace Manageability {
 		bool LocalFWupdateEnable = false;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetFWInfo(MEBxVersion, BiosBootState, CryptoFuseEnable, LocalFWupdateEnable);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(subb)", MEBxVersion.c_str(), BiosBootState, CryptoFuseEnable, LocalFWupdateEnable));
 		else
 			send_error(invocation, error);
@@ -83,7 +83,7 @@ namespace Manageability {
 
 		Intel::LMS::LMS_ERROR error =
 			Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).GetPMCVersion(version);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", version.c_str()));
 		else
 			send_error(invocation, error);
@@ -98,7 +98,7 @@ namespace Manageability {
 		bool Status = false;
 
 		Intel::LMS::LMS_ERROR error = Intel::LMS::Manageability_Commands_BE(th->GetGmsPortForwardingStarted()).IsMeasuredBootState(Status);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
 		else
 			send_error(invocation, error);

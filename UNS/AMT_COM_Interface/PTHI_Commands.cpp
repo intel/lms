@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -302,17 +302,17 @@ HRESULT LMSError2HRESULT(Intel::LMS::LMS_ERROR err)
 {
 	switch (err)
 	{
-	case Intel::LMS::ERROR_OK:
+	case Intel::LMS::LMS_ERROR::OK:
 		return S_OK;
-	case Intel::LMS::ERROR_FAIL:
+	case Intel::LMS::LMS_ERROR::FAIL:
 		return E_FAIL;
-	case Intel::LMS::ERROR_UNEXPECTED:
+	case Intel::LMS::LMS_ERROR::UNEXPECTED:
 		return E_UNEXPECTED;
-	case Intel::LMS::ERROR_INVALIDARG:
+	case Intel::LMS::LMS_ERROR::INVALIDARG:
 		return E_INVALIDARG;
-	case Intel::LMS::ERROR_NOT_AVAILABLE_NOW:
+	case Intel::LMS::LMS_ERROR::NOT_AVAILABLE_NOW:
 		return E_NOT_VALID_STATE;
-	case Intel::LMS::ERROR_NOT_SUPPORTED_BY_FW:
+	case Intel::LMS::LMS_ERROR::NOT_SUPPORTED_BY_FW:
 		return E_NOTIMPL;
 	default:
 		return E_FAIL;
@@ -340,7 +340,7 @@ STDMETHODIMP CPTHI_Commands::GetAMTVersion(BSTR* AMTVersion)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetAMTVersion(sAMTVersion);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(sAMTVersion.c_str());
@@ -369,7 +369,7 @@ STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
 	std::string sLMSVersion;
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetLMSVersion(sLMSVersion);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(sLMSVersion.c_str());
@@ -398,7 +398,7 @@ STDMETHODIMP CPTHI_Commands::GetHeciVersion(BSTR* sVersion)
 	std::string sHeciVersion;
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetHeciVersion(sHeciVersion);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(sHeciVersion.c_str());
@@ -450,7 +450,7 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetProvisioningState(ProvisioningState);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pProvisioningState = (SHORT)ProvisioningState;
@@ -486,7 +486,7 @@ STDMETHODIMP CPTHI_Commands::GetNetworkConnectionStatus(SHORT* pStatus, SHORT* p
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetNetworkConnectionStatus(Status, ConnectionType, ConnectionTrigger);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pStatus = (SHORT)Status;
@@ -547,7 +547,7 @@ STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetPowerPolicy(sPolicy);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(sPolicy.c_str());
@@ -600,7 +600,7 @@ STDMETHODIMP CPTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 	uint32_t SOL, IDER;
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetRedirectionStatus(SOL, IDER);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pSOL = (SHORT)SOL;
@@ -632,7 +632,7 @@ STDMETHODIMP CPTHI_Commands::GetSystemDefenseStatus(SHORT* pStatus)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetSystemDefenseStatus(Status);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pStatus = (SHORT)Status;
@@ -680,7 +680,7 @@ STDMETHODIMP CPTHI_Commands::GetNetworkSettings(SHORT ConnectionType,    // WIRE
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetNetworkSettings(ConnectionType, DhcpEnabled,
 	                            sIpAddress, sMacAddress, *pLinkStatus, *pWirelessControl, *pWirelessConfEnabled);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pDhcpEnabled = (SHORT)DhcpEnabled;
@@ -768,7 +768,7 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetIPv6NetworkSettings(ConnectionType, sIPv6DefaultRouter,
 	                            sPrimaryDNS, sSecondaryDNS, Response, Ipv6Enable);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(sIPv6DefaultRouter.c_str());
@@ -824,7 +824,7 @@ STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 	std::string sUUID;
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetSystemUUID(sUUID);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(sUUID.c_str());
@@ -879,7 +879,7 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetKVMRedirectionState(enabled, connected);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pEnabled = enabled ? TRUE : FALSE;
@@ -900,9 +900,9 @@ STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.SetSpriteLanguage(Language);
-	if (err == Intel::LMS::ERROR_NOT_AVAILABLE_NOW)
+	if (err == Intel::LMS::LMS_ERROR::NOT_AVAILABLE_NOW)
 		return E_NOT_VALID_STATE;
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return E_FAIL;
 
 	return S_OK;
@@ -937,7 +937,7 @@ STDMETHODIMP CPTHI_Commands::GetSpriteParameters(SHORT* pLanguage, SHORT* pZoom)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetSpriteParameters(lang, zoom);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pLanguage = lang;
@@ -953,7 +953,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteZoom(SHORT Zoom)
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.SetSpriteZoom(Zoom);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	return S_OK;
@@ -1002,7 +1002,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 
 	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
 	Intel::LMS::LMS_ERROR err = be.GetConfigurationInfo(*pControlMode, *pProvisioningMethod, CreationTimeStampStr, CertHash);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(CreationTimeStampStr.c_str());
@@ -1286,7 +1286,7 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
 	std::string PSR;
 
 	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).GetPlatformServiceRecord(PSR);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(PSR.c_str());
@@ -1305,7 +1305,7 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
 	std::vector<uint8_t> PSR;
 
 	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).GetPlatformServiceRecordRaw(PSR);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComSafeArray<BYTE> arr(PSR.size());
@@ -1328,7 +1328,7 @@ STDMETHODIMP CPTHI_Commands::GetUPIDFeatureState(VARIANT_BOOL* pState)
 
 	bool state = false;
 	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).GetUPIDFeatureState(state);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pState = (VARIANT_BOOL)state;
@@ -1343,7 +1343,7 @@ STDMETHODIMP CPTHI_Commands::SetUPIDFeatureState(VARIANT_BOOL State)
 
 	bool state = State;
 	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingStarted()).SetUPIDFeatureState(state);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	return S_OK;

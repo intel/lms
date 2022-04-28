@@ -17,7 +17,7 @@ namespace Intel {
 		LMS_ERROR AT_Device_BE::GetAuditLogs(std::string &bstrAuditLogs)
 		{
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			std::string parsedRecords;
 			AuditLogWSManClient client;
@@ -27,7 +27,7 @@ namespace Intel {
 			try
 			{
 				if (!client.readLogsFromFW(base64Records))
-					return ERROR_FAIL;
+					return LMS_ERROR::FAIL;
 
 				UNS_DEBUG(L"get %d logs\n", base64Records.size());
 				for (unsigned int i = 0; i < base64Records.size(); i++)
@@ -40,14 +40,14 @@ namespace Intel {
 				if (client.parseLogs(parsedRecords, records))
 				{
 					bstrAuditLogs = parsedRecords;
-					return ERROR_OK;
+					return LMS_ERROR::OK;
 				}
 			}
 			catch (...)
 			{
 				UNS_DEBUG(L"Error reading from AuditLog!\n");
 			}
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 	}
 }
