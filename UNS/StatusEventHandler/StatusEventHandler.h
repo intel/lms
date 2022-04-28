@@ -83,19 +83,20 @@ typedef enum _KVM_STATE
 	KVM_REQUESTED,
 	KVM_DATA_CHANNEL
 } KVM_STATE;
-typedef enum _WLAN_CONTROL_STATE
-{
-	ME_CONTROL = 1,
-	HOST_CONTROL = 2
-}WLAN_CONTROL_STATE;
 
-typedef enum _WLAN_PROTECTION_STATE
-{
-	PROTECTION_OFF = 1,
-	PROTECTION_PASSIVE = 2,
-	PROTECTION_HIGH = 3,
-	NOT_EXIST = 5
-}WLAN_PROTECTION_STATE;
+	enum class WLAN_CONTROL_STATE
+	{
+		ME_CONTROL = 1,
+		HOST_CONTROL = 2
+	};
+
+	enum class WLAN_PROTECTION_STATE
+	{
+		PROTECTION_OFF = 1,
+		PROTECTION_PASSIVE = 2,
+		PROTECTION_HIGH = 3,
+		NOT_EXIST = 5
+	};
 
 	void publishEvent(int action, PUBLISHEVENTS ex);
 	//// Publish KVM state event while UNS was stopped
@@ -127,6 +128,8 @@ protected:
 private:
 
 	bool SaveCurrentStatus(uint32_t status,DATA_NAME storageName);
+	bool SaveCurrentStatus(WLAN_CONTROL_STATE status);
+	bool SaveCurrentStatus(WLAN_PROTECTION_STATE status);
 	void NotifyConfigurator(int status, CONFIGURATION_TYPE RegValueName);
 	void NotifyIPRefresh(int RegValueName);
 	bool StatusChanged(DATA_NAME storageName, uint32_t state);
@@ -135,8 +138,8 @@ private:
 	void CheckForStatusChange(DATA_NAME storageName,FEATURE_STATE state);
 	void CheckForStatusChange(DATA_NAME storageName,UC_STATE state);
 	void CheckForStatusChange(DATA_NAME storageName,KVM_STATE state);
-	void CheckForStatusChange(DATA_NAME storageName, WLAN_PROTECTION_STATE state);
-	void CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state);
+	void CheckForStatusChange(WLAN_PROTECTION_STATE state);
+	void CheckForStatusChange(WLAN_CONTROL_STATE state);
 
 	bool GetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE& ProvState);
 	bool GetSolIderState(bool& SOLState, bool& IDERState);

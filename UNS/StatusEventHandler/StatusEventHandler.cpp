@@ -457,19 +457,19 @@ void  StatusEventHandler::handleWlanEvents(const GMS_AlertIndication *alert)
 	switch (alert->id)
 	{
 	case EVENT_WLAN_CONTROL_ME:
-		SaveCurrentStatus(ME_CONTROL, LINK_CONTROL_S);
+		SaveCurrentStatus(WLAN_CONTROL_STATE::ME_CONTROL);
 		break;
 	case EVENT_WLAN_CONTROL_HOST:
-		SaveCurrentStatus(HOST_CONTROL, LINK_CONTROL_S);
+		SaveCurrentStatus(WLAN_CONTROL_STATE::HOST_CONTROL);
 		break;
 	case EVENT_WLAN_PROTECTION_ON_HIGH:
-		SaveCurrentStatus(PROTECTION_HIGH, LINK_PROTECTION_S);
+		SaveCurrentStatus(WLAN_PROTECTION_STATE::PROTECTION_HIGH);
 		break;
 	case EVENT_WLAN_PROTECTION_ON_PASSIVE:
-		SaveCurrentStatus(PROTECTION_PASSIVE, LINK_PROTECTION_S);
+		SaveCurrentStatus(WLAN_PROTECTION_STATE::PROTECTION_PASSIVE);
 		break;
 	case EVENT_WLAN_PROTECTION_OFF:
-		SaveCurrentStatus(PROTECTION_OFF, LINK_PROTECTION_S);
+		SaveCurrentStatus(WLAN_PROTECTION_STATE::PROTECTION_OFF);
 		break;
 	case EVENT_WLAN_PROFILE_SYNC_DISABLE:
 		SaveCurrentStatus(0, WIFI_PROFILE_SYNC_ENABLE_S);
@@ -509,6 +509,15 @@ void StatusEventHandler::handleTimeSyncEvents(const GMS_AlertIndication *alert)
 bool StatusEventHandler::SaveCurrentStatus(uint32_t status,DATA_NAME storageName)
 {
 	return DSinstance().SetDataValue(storageName, status,true); 
+}
+bool StatusEventHandler::SaveCurrentStatus(WLAN_CONTROL_STATE status)
+{
+	return DSinstance().SetDataValue(LINK_CONTROL_S, static_cast<uint32_t>(status), true);
+}
+
+bool StatusEventHandler::SaveCurrentStatus(WLAN_PROTECTION_STATE status)
+{
+	return DSinstance().SetDataValue(LINK_PROTECTION_S, static_cast<uint32_t>(status), true);
 }
 
 void StatusEventHandler::NotifyConfigurator(int status,CONFIGURATION_TYPE RegValueName)
@@ -575,15 +584,15 @@ void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,KVM_STATE st
 		publishEvent(state, PUBLISHEVENTS::KVMACTIVITY);
 }
 
-void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state)
+void StatusEventHandler::CheckForStatusChange(WLAN_CONTROL_STATE state)
 {
-	if(StatusChanged(storageName, (uint32_t)state))
+	if(StatusChanged(LINK_CONTROL_S, static_cast<uint32_t>(state)))
 		PublishWlanControlEvent(state);
 }
 
-void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName, WLAN_PROTECTION_STATE state)
+void StatusEventHandler::CheckForStatusChange(WLAN_PROTECTION_STATE state)
 {
-	if(StatusChanged(storageName, (uint32_t)state))
+	if(StatusChanged(LINK_PROTECTION_S, static_cast<uint32_t>(state)))
 		PublishWlanProtectionEvent(state);
 }
 
@@ -831,9 +840,9 @@ void StatusEventHandler::GenerateWLANEvents()
 		return;
 	}
 
-	CheckForStatusChange(LINK_CONTROL_S, (WLAN_CONTROL_STATE)linkControl);
-	if(linkProtection != NOT_EXIST)
-		CheckForStatusChange(LINK_PROTECTION_S, (WLAN_PROTECTION_STATE)linkProtection);
+	CheckForStatusChange(static_cast<WLAN_CONTROL_STATE>(linkControl));
+	if(linkProtection != static_cast<int>(WLAN_PROTECTION_STATE::NOT_EXIST))
+		CheckForStatusChange(static_cast<WLAN_PROTECTION_STATE>(linkProtection));
 }
 
 namespace 
@@ -1578,15 +1587,15 @@ void StatusEventHandler::PublishWlanProtectionEvent(WLAN_PROTECTION_STATE state)
 	unsigned long id = EVENT_GENERAL_DEFAULT;
 	switch(state)
 	{
-	case PROTECTION_HIGH:
+	case WLAN_PROTECTION_STATE::PROTECTION_HIGH:
 		id = EVENT_WLAN_PROTECTION_ON_HIGH;
 		message = LINK_PROTECTION_HIGH_MSG;
 		break;
-	case PROTECTION_PASSIVE:
+	case WLAN_PROTECTION_STATE::PROTECTION_PASSIVE:
 		id =EVENT_WLAN_PROTECTION_ON_PASSIVE;
 		message = LINK_PROTECTION_PASSIVE_MSG;
 		break;
-	case PROTECTION_OFF:
+	case WLAN_PROTECTION_STATE::PROTECTION_OFF:
 		id =EVENT_WLAN_PROTECTION_OFF;
 		message = LINK_PROTECTION_OFF_MSG;
 		break;
@@ -1601,11 +1610,11 @@ void StatusEventHandler::PublishWlanControlEvent(WLAN_CONTROL_STATE state)
 
 	switch(state)
 	{
-	case ME_CONTROL:
+	case WLAN_CONTROL_STATE::ME_CONTROL:
 		id = EVENT_WLAN_CONTROL_ME;
 		message = LINK_CONTROL_ME_MSG;
 		break;
-	case HOST_CONTROL:
+	case WLAN_CONTROL_STATE::HOST_CONTROL:
 		id = EVENT_WLAN_CONTROL_HOST;
 		message = LINK_CONTROL_HOST_MSG;
 		break;
