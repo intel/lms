@@ -484,7 +484,7 @@ void  StatusEventHandler::handleWlanEvents(const GMS_AlertIndication *alert)
 			bool enabled = false;
 			if (GetLocalProfileSynchronizationEnabled(enabled))
 			{
-				CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, WIFIPROFILESYNCENABLE);
+				CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, PUBLISHEVENTS::WIFIPROFILESYNCENABLE);
 			}
 			break;
 		}
@@ -572,7 +572,7 @@ void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,UC_STATE sta
 void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,KVM_STATE state)
 {
 	if(StatusChanged(storageName, (uint32_t)state))
-		publishEvent(state,KVMACTIVITY);
+		publishEvent(state, PUBLISHEVENTS::KVMACTIVITY);
 }
 
 void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state)
@@ -678,7 +678,7 @@ void StatusEventHandler::GenerateEACEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(EAC_ENABLE_S,EACEnabled,EACENABLE);//TODO:: to check if it is needed when AMTState!=true
+	CheckForStatusChange(EAC_ENABLE_S,EACEnabled, PUBLISHEVENTS::EACENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
 void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
@@ -695,7 +695,7 @@ void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(IP_SYNC_ENABLE_S,IPSyncEnabled,IPSYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
+	CheckForStatusChange(IP_SYNC_ENABLE_S,IPSyncEnabled, PUBLISHEVENTS::IPSYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
 void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
@@ -712,7 +712,7 @@ void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, WIFIPROFILESYNCENABLE);
+	CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, PUBLISHEVENTS::WIFIPROFILESYNCENABLE);
 }
 
 void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
@@ -730,7 +730,7 @@ void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(TIME_SYNC_ENABLE_S,timeSyncEnabled,TIMESYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
+	CheckForStatusChange(TIME_SYNC_ENABLE_S,timeSyncEnabled, PUBLISHEVENTS::TIMESYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
 void StatusEventHandler::GenerateSOLIDEREvents(bool AMTstate)
@@ -744,8 +744,8 @@ void StatusEventHandler::GenerateSOLIDEREvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(SOL_ACTIVE_S,SOLState,SOL);
-	CheckForStatusChange(IDER_ACTIVE_S,IDERState,IDER);
+	CheckForStatusChange(SOL_ACTIVE_S,SOLState, PUBLISHEVENTS::SOL);
+	CheckForStatusChange(IDER_ACTIVE_S,IDERState, PUBLISHEVENTS::IDER);
 }
 
 void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
@@ -761,7 +761,7 @@ void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
 			UNS_ERROR(L"StatusEventHandler: GetKVMRedirectionState failed\n");
 		}
 	}
-	CheckForStatusChange(KVM_ENABLE_S,KVMEnable,KVMSTATE);
+	CheckForStatusChange(KVM_ENABLE_S,KVMEnable, PUBLISHEVENTS::KVMSTATE);
 	CheckForStatusChange(KVM_SESSION_S,KVMState);
 
 	// If generating KVM_REQUESTED event, don't also generate UC_REQUESTED event
@@ -810,7 +810,7 @@ void StatusEventHandler::GenerateMEEvents()
 		UNS_ERROR(L"StatusEventHandler: GetMEState failed\n");
 		return;
 	}
-	CheckForStatusChange(ME_ENABLE_S,MEState,MESTATE);
+	CheckForStatusChange(ME_ENABLE_S,MEState, PUBLISHEVENTS::MESTATE);
 }
 
 void StatusEventHandler::GenerateWLANEvents()
@@ -1076,25 +1076,25 @@ void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
 
 	switch (ev)
 	{
-	case SOL:
+	case PUBLISHEVENTS::SOL:
 		category 	= CATEGORY_REMOTE_DIAGNOSTIC;  
 		id 			= action ? EVENT_REMOTE_SOL_STARTED : EVENT_REMOTE_SOL_ENDED;
 		Message		= SOL_SESSION; 
 		actionstr	= action ? STARTED_STR : ENDED_STR;
 		break;
-	case IDER:
+	case PUBLISHEVENTS::IDER:
 		category 	= CATEGORY_REMOTE_DIAGNOSTIC;
 		id 			= action ? EVENT_REMOTE_IDER_STARTED : EVENT_REMOTE_IDER_ENDED;
 		Message		+=IDER_SESSION; 
 		actionstr	= action ? STARTED_STR : ENDED_STR;
 		break;
-	case KVMSTATE:
+	case PUBLISHEVENTS::KVMSTATE:
 		category 	= CATEGORY_KVM;
 		id 			= action ? EVENT_KVM_ENABLED : EVENT_KVM_DISABLED;
 		Message		= KVM_TEXT;
 		actionstr	= action ? ENABLED_STR : DISABLED_STR;
 		break;
-	case KVMACTIVITY:
+	case PUBLISHEVENTS::KVMACTIVITY:
 		category 	= CATEGORY_KVM;	
 		Message		= KVM_SESSION;
 		switch (action)
@@ -1117,37 +1117,37 @@ void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
 			break;
 		}
 		break;
-	case MANAGEMODE:
+	case PUBLISHEVENTS::MANAGEMODE:
 		category 	= CATEGORY_GENERAL;
 		id 			= EVENT_CONTROL_MODE_CHANGE;
 		break;
-	case MESTATE:
+	case PUBLISHEVENTS::MESTATE:
 		category 	= CATEGORY_GENERAL;
 		id 			= action ? EVENT_ME_ENABLE : EVENT_ME_DISABLE;      
 		Message		+=ME_STATE;
 		actionstr 	= action ? ENABLED_STR : DISABLED_STR;   
 		break;
-	case HECISTATE:
+	case PUBLISHEVENTS::HECISTATE:
 		category 	= CATEGORY_UNS;
 		id 			= action ? EVENT_SERVICE_HECI_ENABLE : EVENT_SERVICE_HECI_DISABLE;      
 		Message		= MEI_DRIVER;
 		actionstr 	= action ? ENABLED_STR : DISABLED_STR;   
 		break;	
-	case EACENABLE:
+	case PUBLISHEVENTS::EACENABLE:
 		category 	= CATEGORY_EAC;
 		id 			= action ? EVENT_EAC_ENABLED : EVENT_EAC_DISABLED;
 		break;
-	case IPSYNCENABLE:
+	case PUBLISHEVENTS::IPSYNCENABLE:
 		category 	= CATEGORY_IPSYNC;
 		Message		= IP_SYNC_ENABLE;
 		id 			= action ? EVENT_IP_SYNC_ENABLE : EVENT_IP_SYNC_DISABLE;
 		actionstr 	= action ? ENABLED_STR : DISABLED_STR; 
 		break;
-	case WIFIPROFILESYNCENABLE:
+	case PUBLISHEVENTS::WIFIPROFILESYNCENABLE:
 		category	= CATEGORY_WLAN;
 		id			= action ? EVENT_WLAN_PROFILE_SYNC_ENABLE : EVENT_WLAN_PROFILE_SYNC_DISABLE;
 		break;
-	case TIMESYNCENABLE:
+	case PUBLISHEVENTS::TIMESYNCENABLE:
 		category 	= CATEGORY_TIMESYNC;
 		Message		= TIME_SYNC_ENABLE;
 		id 			= action ? EVENT_TIME_SYNC_ENABLE : EVENT_TIME_SYNC_DISABLE;

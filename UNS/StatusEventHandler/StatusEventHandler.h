@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #ifndef __STATUSEVENTHANDLER_H_
 #define __STATUSEVENTHANDLER_H_
@@ -30,24 +30,26 @@ enum DATA_NAME : unsigned int;
 
 class STATUSEVENTHANDLER_Export StatusEventHandler : public EventHandler
 {
-	public:
+public:
 
-		StatusEventHandler();
-typedef enum _PUBLISHEVENTS
-{
-	SOL,
-	IDER,
-	SYSDEF,
-	KVMSTATE,
-	KVMACTIVITY,
-	MANAGEMODE,
-	MESTATE,
-	HECISTATE,
-	EACENABLE,
-	IPSYNCENABLE,
-	TIMESYNCENABLE,
-	WIFIPROFILESYNCENABLE
-} PUBLISHEVENTS;
+	StatusEventHandler();
+
+	enum class PUBLISHEVENTS
+	{
+		SOL,
+		IDER,
+		SYSDEF,
+		KVMSTATE,
+		KVMACTIVITY,
+		MANAGEMODE,
+		MESTATE,
+		HECISTATE,
+		EACENABLE,
+		IPSYNCENABLE,
+		TIMESYNCENABLE,
+		WIFIPROFILESYNCENABLE
+	};
+
 typedef enum _UC_STATE
 {
 	UC_ENDED,
