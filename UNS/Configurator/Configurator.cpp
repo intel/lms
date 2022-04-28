@@ -831,21 +831,21 @@ void Configurator::ScanConfiguration()
 		ServicesBatchStartCommand batch;
 		ServiceNamesList services;
 
-		services.Read(DUMMY_SERVICES);
+		services.Read(NamesGroup::DUMMY_SERVICES);
 
 		if(m_platform.Fields.ImageType != Intel::MEI_Client::MKHI_Client::ME_FULL_8MB)
 		{
-			services.Read(SKU_1_5_GROUP);
+			services.Read(NamesGroup::SKU_1_5_GROUP);
 		}
 		else
 		{
 			if (!m_LME_exists)
 			{
-				services.Read(SKU_5_NO_LME_GROUP);
+				services.Read(NamesGroup::SKU_5_NO_LME_GROUP);
 			}
 			else
 			{
-				services.Read(SKU_5_GROUP);
+				services.Read(NamesGroup::SKU_5_GROUP);
 			}
 
 			switch (m_platform.Fields.Brand)
@@ -856,9 +856,9 @@ void Configurator::ScanConfiguration()
 					{
 						if (!m_stateData.Fields.Amt)// Manageability disabled in MEBx
 							break;
-
-						services.Read(MANAGABILITY_GROUP);
-
+						
+						services.Read(NamesGroup::MANAGABILITY_GROUP);
+						
 					}
 					break;
 				case Intel::MEI_Client::MKHI_Client::BrandSBT:
@@ -1054,7 +1054,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				if(conf->value != 0)
 				{
 					ServiceNamesList services;
-					services.Read(MANAGABILITY_GROUP);
+					services.Read(NamesGroup::MANAGABILITY_GROUP);
 					services.AddName(AMT_ENABLE_LAST_SERVICE);
 
 					NamesList svc;
