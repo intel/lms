@@ -352,7 +352,7 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 	switch (alert->id)
 	{
 	case EVENT_KVM_SESSION_REQUESTED:
-		SaveCurrentStatus(KVM_REQUESTED,KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_REQUESTED);
 		if (m_UserConsentPolicy != NOT_REQUIRED)
 		{
 			GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);
@@ -360,7 +360,7 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		}
 		break;
 	case EVENT_KVM_SESSION_STARTED:
-		SaveCurrentStatus(KVM_STARTED,KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_STARTED);
 		if ((m_UserConsentPolicy != NOT_REQUIRED)&&(m_prevUserConsentState != OPT_IN_STATE_RECEIVED) &&	(m_prevUserConsentState != OPT_IN_STATE_IN_SESSION))
 		{
 			m_prevUserConsentState=OPT_IN_STATE_IN_SESSION; 
@@ -369,7 +369,7 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		m_KVM = 1;
 		break;
 	case EVENT_KVM_SESSION_STOPPED:
-		SaveCurrentStatus(KVM_STOPPED,KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_STOPPED);
 		m_KVM = 0;
 		GetUserConsentState(&UserConsentState,&m_UserConsentPolicy); // get policy (can't be change after UNS started by wsman command)
 		SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
@@ -387,7 +387,7 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		SaveCurrentStatus(1,KVM_ENABLE_S);
 		break;
 	case EVENT_KVM_DATA_CHANNEL:
-		SaveCurrentStatus(KVM_DATA_CHANNEL, KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_DATA_CHANNEL);
 		break;
 	}
 }
@@ -510,6 +510,12 @@ bool StatusEventHandler::SaveCurrentStatus(uint32_t status,DATA_NAME storageName
 {
 	return DSinstance().SetDataValue(storageName, status,true); 
 }
+
+bool StatusEventHandler::SaveCurrentStatus(KVM_STATE status)
+{
+	return DSinstance().SetDataValue(KVM_SESSION_S, static_cast<uint32_t>(status), true);
+}
+
 bool StatusEventHandler::SaveCurrentStatus(WLAN_CONTROL_STATE status)
 {
 	return DSinstance().SetDataValue(LINK_CONTROL_S, static_cast<uint32_t>(status), true);
@@ -581,7 +587,7 @@ void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,UC_STATE sta
 void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,KVM_STATE state)
 {
 	if(StatusChanged(storageName, (uint32_t)state))
-		publishEvent(state, PUBLISHEVENTS::KVMACTIVITY);
+		publishKVMActivityEvent(state);
 }
 
 void StatusEventHandler::CheckForStatusChange(WLAN_CONTROL_STATE state)
@@ -762,7 +768,7 @@ void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
 	FuncEntryExit<void> fee(this, L"GenerateKVMRedirectionEvents");
 
 	bool KVMEnable = false;
-	KVM_STATE KVMState=KVM_STOPPED;
+	KVM_STATE KVMState = KVM_STATE::KVM_STOPPED;
 	if (AMTstate)
 	{
 		if (!GetKVMRedirectionState(KVMEnable, KVMState))
@@ -775,7 +781,7 @@ void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
 
 	// If generating KVM_REQUESTED event, don't also generate UC_REQUESTED event
 	// since both events have the same string
-	if (KVMState == KVM_REQUESTED && StatusChanged(USER_CONSENT_S, UC_REQUESTED))
+	if (KVMState == KVM_STATE::KVM_REQUESTED && StatusChanged(USER_CONSENT_S, UC_REQUESTED))
 		SaveCurrentStatus(UC_REQUESTED, USER_CONSENT_S);
 }
 
@@ -1070,23 +1076,22 @@ FEATURE_STATE StatusEventHandler::FeatureStateLogic(bool CapabilityBit, bool Sta
 //   SOL started/stopped,
 //   IDER started/stopped,
 //   System Defence started/stopped,
-//   KVM started/stopped,
 //   KVM enabled/disabled,
 //   REMOTE ASSIST enabled/disabled,
 //   Manageabilty mode changed,
 //   ME STATE enabled/disabled
 //	 TimeSync state enabled/disabled
-void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
+void StatusEventHandler::publishEvent(bool action,PUBLISHEVENTS ev)
 {
 	unsigned short	category; 
-	unsigned long	id = EVENT_GENERAL_DEFAULT;      
+	unsigned long	id = EVENT_GENERAL_DEFAULT;
 	ACE_TString   Message;  
 	ACE_TString	  actionstr;
 
 	switch (ev)
 	{
 	case PUBLISHEVENTS::SOL:
-		category 	= CATEGORY_REMOTE_DIAGNOSTIC;  
+		category 	= CATEGORY_REMOTE_DIAGNOSTIC;
 		id 			= action ? EVENT_REMOTE_SOL_STARTED : EVENT_REMOTE_SOL_ENDED;
 		Message		= SOL_SESSION; 
 		actionstr	= action ? STARTED_STR : ENDED_STR;
@@ -1103,44 +1108,21 @@ void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
 		Message		= KVM_TEXT;
 		actionstr	= action ? ENABLED_STR : DISABLED_STR;
 		break;
-	case PUBLISHEVENTS::KVMACTIVITY:
-		category 	= CATEGORY_KVM;	
-		Message		= KVM_SESSION;
-		switch (action)
-		{
-		case KVM_REQUESTED:
-			id			= EVENT_KVM_SESSION_REQUESTED;
-			actionstr	= REQUESTED_STR;
-			break;
-		case KVM_STARTED:
-			id 			= EVENT_KVM_SESSION_STARTED;
-			actionstr	= STARTED_STR;
-			break;
-		case KVM_STOPPED:
-			id 			= EVENT_KVM_SESSION_STOPPED;
-			actionstr	= STOPED_STR;
-			break;
-		case KVM_DATA_CHANNEL:
-			id			= EVENT_KVM_DATA_CHANNEL;
-			actionstr	= DATA_CHANNEL_STR;
-			break;
-		}
-		break;
 	case PUBLISHEVENTS::MANAGEMODE:
 		category 	= CATEGORY_GENERAL;
 		id 			= EVENT_CONTROL_MODE_CHANGE;
 		break;
 	case PUBLISHEVENTS::MESTATE:
 		category 	= CATEGORY_GENERAL;
-		id 			= action ? EVENT_ME_ENABLE : EVENT_ME_DISABLE;      
+		id 			= action ? EVENT_ME_ENABLE : EVENT_ME_DISABLE;
 		Message		+=ME_STATE;
-		actionstr 	= action ? ENABLED_STR : DISABLED_STR;   
+		actionstr 	= action ? ENABLED_STR : DISABLED_STR;
 		break;
 	case PUBLISHEVENTS::HECISTATE:
 		category 	= CATEGORY_UNS;
-		id 			= action ? EVENT_SERVICE_HECI_ENABLE : EVENT_SERVICE_HECI_DISABLE;      
+		id 			= action ? EVENT_SERVICE_HECI_ENABLE : EVENT_SERVICE_HECI_DISABLE;
 		Message		= MEI_DRIVER;
-		actionstr 	= action ? ENABLED_STR : DISABLED_STR;   
+		actionstr 	= action ? ENABLED_STR : DISABLED_STR;
 		break;	
 	case PUBLISHEVENTS::EACENABLE:
 		category 	= CATEGORY_EAC;
@@ -1165,7 +1147,7 @@ void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
 	default:
 		return;
 	}
-	Message += actionstr;   
+	Message += actionstr;
 	raiseGMS_AlertIndication(category,id,getDateTime(),ACTIVE_MESSAGEID,Message);
 }
 
@@ -1536,18 +1518,18 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 		{
 		case KVM_ENABLED_AND_CONNECTED: 
 			enable=true;
-			connected=KVM_STARTED;
+			connected = KVM_STATE::KVM_STARTED;
 			if (GetUserConsentState(&UserConsentState, &UserConsentPolicy) &&
 			   (UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED))
-				connected=KVM_REQUESTED;
+				connected = KVM_STATE::KVM_REQUESTED;
 			return true;
 		case KVM_DISABLED: 
 			enable=false;
-			connected=KVM_STOPPED;
+			connected = KVM_STATE::KVM_STOPPED;
 			return true;
 		case KVM_ENABLED_AND_DISCONNECTED: 
 			enable=true;
-			connected=KVM_STOPPED;
+			connected = KVM_STATE::KVM_STOPPED;
 			return true;
 		default:
 			UNS_ERROR(L"Wrong KVMRedirectionState=%u\n", state);
@@ -1621,6 +1603,35 @@ void StatusEventHandler::PublishWlanControlEvent(WLAN_CONTROL_STATE state)
 	}
 
 	raiseGMS_AlertIndication(CATEGORY_WLAN,id,getDateTime(),ACTIVE_MESSAGEID,message);
+}
+
+void StatusEventHandler::publishKVMActivityEvent(KVM_STATE action)
+{
+	unsigned long id = EVENT_GENERAL_DEFAULT;
+	ACE_TString Message(KVM_SESSION);
+	ACE_TString actionstr;
+
+	switch (action)
+	{
+	case KVM_STATE::KVM_REQUESTED:
+		id = EVENT_KVM_SESSION_REQUESTED;
+		actionstr = REQUESTED_STR;
+		break;
+	case KVM_STATE::KVM_STARTED:
+		id = EVENT_KVM_SESSION_STARTED;
+		actionstr = STARTED_STR;
+		break;
+	case KVM_STATE::KVM_STOPPED:
+		id = EVENT_KVM_SESSION_STOPPED;
+		actionstr = STOPED_STR;
+		break;
+	case KVM_STATE::KVM_DATA_CHANNEL:
+		id = EVENT_KVM_DATA_CHANNEL;
+		actionstr = DATA_CHANNEL_STR;
+		break;
+	}
+	Message += actionstr;
+	raiseGMS_AlertIndication(CATEGORY_KVM, id, getDateTime(), ACTIVE_MESSAGEID, Message);
 }
 
 // Request display settings from IMSS - called only after the machine state was updated in the registry 

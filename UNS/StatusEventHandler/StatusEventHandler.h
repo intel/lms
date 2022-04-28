@@ -76,13 +76,14 @@ typedef enum _KVM_REDIRECTION_SAP_STATE
 	KVM_DISABLED = 3,
 	KVM_ENABLED_AND_DISCONNECTED = 6
 } KVM_REDIRECTION_SAP_STATE;
-typedef enum _KVM_STATE
-{
-	KVM_STOPPED,
-	KVM_STARTED,
-	KVM_REQUESTED,
-	KVM_DATA_CHANNEL
-} KVM_STATE;
+
+	enum class KVM_STATE
+	{
+		KVM_STOPPED,
+		KVM_STARTED,
+		KVM_REQUESTED,
+		KVM_DATA_CHANNEL
+	};
 
 	enum class WLAN_CONTROL_STATE
 	{
@@ -98,7 +99,7 @@ typedef enum _KVM_STATE
 		NOT_EXIST = 5
 	};
 
-	void publishEvent(int action, PUBLISHEVENTS ex);
+	void publishEvent(bool action, PUBLISHEVENTS ex);
 	//// Publish KVM state event while UNS was stopped
 	void publishUCStateEvent(UC_STATE state);
 
@@ -128,6 +129,7 @@ protected:
 private:
 
 	bool SaveCurrentStatus(uint32_t status,DATA_NAME storageName);
+	bool SaveCurrentStatus(KVM_STATE status);
 	bool SaveCurrentStatus(WLAN_CONTROL_STATE status);
 	bool SaveCurrentStatus(WLAN_PROTECTION_STATE status);
 	void NotifyConfigurator(int status, CONFIGURATION_TYPE RegValueName);
@@ -171,6 +173,8 @@ private:
 
 	// Publish AMT enabled event
 	void publishAMTEnabledEvent(bool enable);
+
+	void publishKVMActivityEvent(KVM_STATE action);
 
 	static FEATURE_STATE FeatureStateLogic(bool CapabilityBit, bool StateBit);
 	static void MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, MENAGEABILTY_MODE* pMode);
