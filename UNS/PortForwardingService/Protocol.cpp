@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -79,8 +79,8 @@ int CALLBACK ConditionAcceptFunc(
 Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSocketBuffer(0), _rxSocketBufferSize(0),
 					   _eventLogWrn(nullptr), _eventLogDbg(nullptr), _eventLogParam(nullptr), _clientNotFound(false)
 {
-	_handshakingStatus = NOT_INITIATED;
-	_pfwdService = NOT_STARTED;
+	_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
+	_pfwdService = SERVICE_STATUS::NOT_STARTED;
 	_AmtProtVersion.MajorVersion = 0;
 	_AmtProtVersion.MinorVersion = 0;
 #ifdef _REMOTE_SUPPORT
@@ -121,9 +121,9 @@ bool Protocol::Init(InitParameters & params)
 	{
 		std::lock_guard<std::mutex> l(_versionLock);
 
-		if (_handshakingStatus == NOT_INITIATED) {
+		if (_handshakingStatus == VERSION_HANDSHAKING::NOT_INITIATED) {
 			_lme.ProtocolVersion(MAX_PROT_VERSION);
-			_handshakingStatus = INITIATED;
+			_handshakingStatus = VERSION_HANDSHAKING::INITIATED;
 		}
 	}
 #ifdef _REMOTE_SUPPORT
@@ -340,8 +340,8 @@ void Protocol::Deinit()
 				_rxSocketBufferSize = 0;
 			}
 
-			_handshakingStatus = NOT_INITIATED;
-			_pfwdService = NOT_STARTED;
+			_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
+			_pfwdService = SERVICE_STATUS::NOT_STARTED;
 			_AmtProtVersion.MajorVersion = 0;
 			_AmtProtVersion.MinorVersion = 0;
 		}
@@ -399,7 +399,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	if (setsockopt(s, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
 		       (char *)&optval, sizeof(optval)) == SOCKET_ERROR) {
 		UNS_ERROR(L"Error: Can't bind socket using exclusive address\n");
-		status = NOT_EXCLUSIVE_ADDRESS;
+		status = SOCKET_STATUS::NOT_EXCLUSIVE_ADDRESS;
 		return false;
 	}
 
@@ -410,7 +410,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	l.l_onoff = 0;
 	l.l_linger = 0;
 	if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *)&l, sizeof(l)) == SOCKET_ERROR) {
-		status = LINGER_ERROR;
+		status = SOCKET_STATUS::LINGER_ERROR;
 		return false;
 	}
 	return true;
@@ -422,7 +422,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
 		UNS_ERROR(L"Error: Can't set SO_REUSEADDR option %d\n", errno);
-		status = CANT_REUSE_ADDRESS;
+		status = SOCKET_STATUS::CANT_REUSE_ADDRESS;
 		return false;
 	}
 
@@ -433,7 +433,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
 		UNS_ERROR(L"Error: Can't set IPV6_V6ONLY option %d\n", errno);
-		status = NO_IPV6_V6ONLY;
+		status = SOCKET_STATUS::NO_IPV6_V6ONLY;
 		return false;
 	}
 	return true;
@@ -449,7 +449,7 @@ SOCKET Protocol::_createSocket(const addrinfo *caddr, SOCKET_STATUS &status)
 
 	SOCKET s = socket(addr.ai_family, addr.ai_socktype, addr.ai_protocol);
 	if (s == INVALID_SOCKET) {
-		status = NOT_CREATED;
+		status = SOCKET_STATUS::NOT_CREATED;
 		return INVALID_SOCKET;
 	}
 
@@ -462,7 +462,7 @@ SOCKET Protocol::_createSocket(const addrinfo *caddr, SOCKET_STATUS &status)
 
 vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int port, SOCKET_STATUS &status,bool cond_accept)
 {
-	status = NOT_CREATED;
+	status = SOCKET_STATUS::NOT_CREATED;
 	vector<SOCKET> vs;
 	bool error = false;
 	addrinfo *result = NULL, *resultCopy = NULL, hints;
@@ -499,7 +499,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 		{
 			UNS_ERROR(L"Error %d in binding server socket.\n", WSAGetLastError());
 			_closeSocket(s);
-			status = NOT_BINDED;
+			status = SOCKET_STATUS::NOT_BINDED;
 			error = true;
 			break;
 		}
@@ -511,7 +511,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 			{
 				UNS_ERROR(L"Error: Can't bind socket using exclusive address\n");
 				_closeSocket(s);
-				status = CONDITIONAL_ACCEPT_ERROR;
+				status = SOCKET_STATUS::CONDITIONAL_ACCEPT_ERROR;
 				error = true;
 				break;
 			}
@@ -519,12 +519,12 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 #endif // WIN32
 		if (listen(s, 5) == SOCKET_ERROR) {
 			_closeSocket(s);
-			status = NOT_LISTENED;
+			status = SOCKET_STATUS::NOT_LISTENED;
 			error = true;
 			break;
 		}
 
-		status = ACTIVE;
+		status = SOCKET_STATUS::ACTIVE;
 		vs.push_back(s);
 	}
 	if (error)
@@ -540,7 +540,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 
 	if (vs.size() > 0)
 	{
-		status = ACTIVE;
+		status = SOCKET_STATUS::ACTIVE;
 	}
 	return vs;
 }
@@ -1094,7 +1094,7 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 		case APF_USERAUTH_REQUEST:
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if (_handshakingStatus != AGREED) {
+				if (_handshakingStatus != VERSION_HANDSHAKING::AGREED) {
 					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
 					Deinit();
 					return false;
@@ -1111,7 +1111,7 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 		case APF_CHANNEL_WINDOW_ADJUST:
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if ((_handshakingStatus != AGREED) || (_pfwdService != STARTED)) {
+				if ((_handshakingStatus != VERSION_HANDSHAKING::AGREED) || (_pfwdService != SERVICE_STATUS::STARTED)) {
 					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
 					Deinit();
 					return false;
@@ -1187,7 +1187,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					UNS_DEBUG(L"Accepting service: %C\n", serviceRequestMessage->ServiceName.c_str());
 					if (serviceRequestMessage->ServiceName.compare(APF_SERVICE_PFWD) == 0){
 						std::lock_guard<std::mutex> l(_versionLock);
-						_pfwdService = STARTED;
+						_pfwdService = SERVICE_STATUS::STARTED;
 					}
 				}
 				else {
@@ -1229,10 +1229,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				LMEProtocolVersionMessage *versionMessage = (LMEProtocolVersionMessage *)message;
 				switch (_handshakingStatus) {
-					case AGREED:
-					case NOT_INITIATED:
+					case VERSION_HANDSHAKING::AGREED:
+					case VERSION_HANDSHAKING::NOT_INITIATED:
 						_lme.ProtocolVersion(MAX_PROT_VERSION);
-					case INITIATED:
+					case VERSION_HANDSHAKING::INITIATED:
 						if (VersionCompare(MIN_PROT_VERSION.MajorVersion, MIN_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
 
@@ -1252,7 +1252,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
 							_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
 						}
-						_handshakingStatus = AGREED;
+						_handshakingStatus = VERSION_HANDSHAKING::AGREED;
 						break;
 					default:
 						_lme.Disconnect(APF_DISCONNECT_BY_APPLICATION);
@@ -1351,7 +1351,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 									serverSockets = _createServerSocket(AF_UNSPEC, tcpForwardRequestMessage->Port,
 										socketStatus,true);
 
-									if ((serverSockets.size() == 0) || (socketStatus != Protocol::ACTIVE)) {
+									if ((serverSockets.size() == 0) || (socketStatus != Protocol::SOCKET_STATUS::ACTIVE)) {
 										// Log in Event Log
 										UNS_ERROR(L"Cannot listen at port %d\n", tcpForwardRequestMessage->Port);
 

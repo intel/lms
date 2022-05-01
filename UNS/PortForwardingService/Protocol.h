@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -55,7 +55,7 @@ public:
 	static const LMEProtocolVersionMessage MIN_PROT_VERSION; 
 	static const LMEProtocolVersionMessage MAX_PROT_VERSION;
 
-	enum SOCKET_STATUS {
+	enum class SOCKET_STATUS {
 		ACTIVE = 0,
 		NOT_CREATED,
 		LINGER_ERROR,
@@ -149,13 +149,13 @@ private:
 	mutable std::mutex _remoteAccessLock;
 #endif
 
-	enum VERSION_HANDSHAKING {
+	enum class VERSION_HANDSHAKING {
 		NOT_INITIATED,
 		INITIATED,
 		AGREED
 	};
 
-	enum SERVICE_STATUS {
+	enum class SERVICE_STATUS {
 		NOT_STARTED,
 		STARTED,
 	};
