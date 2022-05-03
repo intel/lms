@@ -991,8 +991,36 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_UNLOCK_STTE, "Unlocked State Entered"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SVN_INCREASE, "PSR SVN Incremented"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_CHASSIS_INTRUSION, "Chassis Intrusion Detected"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_SHOCK, "Excessive Shock"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_OPERATIONAL_TEMPERATURE, "Excessive Operational Temperature"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE, "Erase"},
 			};
-			std::string state_str, event_str;
+			std::map<uint32_t, std::string> capaiblity_states = {
+				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_NOT_SUPPORTED, "Not supported"},
+				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_SUPPORTED, "Supported"},
+			};
+			const size_t PSR_CAPABILITIES_NUM = 5;
+			std::array<std::string, PSR_CAPABILITIES_NUM> capaiblity_names = {
+			"Chassis Intrusion",
+			"Excessive Operational Temperature",
+			"Excessive Shock",
+			"Remote Platform Erase",
+			"Local Platform Erase",
+			};
+			std::map<uint32_t, std::string> erase_event_source = {
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_RPE, "Remote Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_LPE, "Local Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_OTHER, "Other"},
+			};
+			std::map<uint32_t, std::string> erase_event_action = {
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_ALL_SSD, "Secure Erase All SSDs"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_VERIFY_STORAGE, "Verify Storage Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_TPM_CLEAR, "TPM Clear"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_OEM_CUSTOM, "OEM Custom Action"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_CLEAR_BIOS, "Clear BIOS NVM Variables"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_RELOAD_BIOS, "BIOS Reload of Golden Config"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_ME_UNCONFIG, "ME Unconfigure"},
+			};
 			enum class TIMER_FAIL
 			{
 				NO,
@@ -1009,15 +1037,16 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "<?xml version=\"1.0\"?>\n<MsInfo>\n<Category name=\"Platform Service Record\">\n";
 
 				parsed << "<Category name=\"General\">" << std::endl;
+				parsed << formatPSRPrefix("Log State");
 				try
 				{
-					state_str = log_states.at(psr.log_state);
+					parsed << log_states.at(psr.log_state);
 				}
 				catch (std::out_of_range const&)
 				{
-					state_str = "Unknown";
+					parsed << "Unknown (" << psr.log_state << ")";
 				}
-				parsed << formatPSRField("Log State", state_str);
+				parsed << formatPSRSuffix();
 				parsed << formatPSRPrefix("PSR Version") << psr.psr_version_major << "." << psr.psr_version_minor << formatPSRSuffix();
 				parsed << formatPSRField("Platform Service Record ID", uuidToString(psr.psrid));
 				parsed << formatPSRPrefix("Unique Platform ID");
@@ -1038,27 +1067,93 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
+				if (psr.fw_version_major >= 2)
+				{
+					parsed << "<Category name=\"Capabilities\">" << std::endl;
+					for (uint32_t i = 0; i < PSR_CAPABILITIES_NUM; i++)
+					{
+						parsed << formatPSRPrefix(capaiblity_names[i]);
+						try
+						{
+							parsed << capaiblity_states.at(psr.capabilities[i]);
+						}
+						catch (std::out_of_range const&)
+						{
+							parsed << "Unknown (" << psr.capabilities[i] << ")";
+						}
+						parsed << formatPSRSuffix();
+					}
+					parsed << "</Category>" << std::endl;
+				}
+
 				parsed << "<Category name=\"Ledger\">" << std::endl;
 				parsed << formatPSRPrefix("S0 Run Time In Seconds") << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
 				parsed << formatPSRField("S0 to S5 Transition Count", psr.ledger_info.s0_to_s5_counter);
 				parsed << formatPSRField("S0 to S4 Transition Count", psr.ledger_info.s0_to_s4_counter);
 				parsed << formatPSRField("S0 to S3 Transition Count", psr.ledger_info.s0_to_s3_counter);
 				parsed << formatPSRField("Warm Reset Count", psr.ledger_info.warm_reset_counter);
+				if (psr.fw_version_major >= 2)
+				{
+					parsed << formatPSRField("ISH Connection Count", psr.ledger_info.ish_connection_counter);
+					parsed << formatPSRField("CSME Reset Count", psr.ledger_info.csme_reset_counter);
+					parsed << formatPSRField("PRTC Reset Count", psr.ledger_info2.prtc_reset_counter);
+					parsed << formatPSRField("Log in Recovery State Count", psr.ledger_info2.recovery_state_counter);
+					parsed << formatPSRField("DAM State Entered Count", psr.ledger_info2.dam_state_counter);
+					parsed << formatPSRField("Unlocked State Entered Count", psr.ledger_info2.unlocked_state_counter);
+					parsed << formatPSRField("PSR SVN Incremented Count", psr.ledger_info2.psr_svn_increment_counter);
+					parsed << formatPSRField("Excessive Shock Count", psr.ledger_info2.excessive_shock_counter);
+					parsed << formatPSRField("Excessive Operational Temperature Count", psr.ledger_info2.excessive_temp_counter);
+				}
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Events\">" << std::endl;
 				for (uint32_t i = 0; i < psr.events_count && i < Intel::MEI_Client::PSR_Client::PSR_CRITICAL_EVENTS_NUM_MAX; i++)
 				{
+					parsed << "<Category name=\"";
 					try
 					{
-						event_str = events.at(psr.events_info[i].event_id);
+						parsed << events.at(psr.events_info[i].event_id);
 					}
 					catch (std::out_of_range const&)
 					{
-						event_str = "Unknown";
+						parsed << "Unknown (" << psr.events_info[i].event_id << ")";
 					}
-					parsed << "<Category name=\"" << event_str << "\">" << std::endl;
+					parsed << "\">" << std::endl;
 					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
+					if (psr.fw_version_major >= 2 && psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE)
+					{ // print erase sub id data
+						parsed << "<Category name=\"Data\">" << std::endl;
+						uint32_t sub_id = psr.events_info[i].event_sub_id[0] + (psr.events_info[i].event_sub_id[1] << 8) +
+							(psr.events_info[i].event_sub_id[2] << 16);
+						uint32_t action = (sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_MASK) >>
+							Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_OFFSET;
+						uint32_t source = (sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_MASK) >>
+							Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_OFFSET;
+						parsed << formatPSRField("Status",
+							(sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_STATUS_MASK) ? "Success" : "Fail");
+						parsed << formatPSRPrefix("Action");
+						try
+						{
+							parsed << erase_event_action.at(action);
+						}
+						catch (std::out_of_range const&)
+						{
+							parsed << "Unknown (" << action << ")";
+						}
+						parsed << formatPSRSuffix();
+						parsed << formatPSRPrefix("Source");
+						try
+						{
+							parsed << erase_event_source.at(source);
+						}
+						catch (std::out_of_range const&)
+						{
+							parsed << "Unknown (" << source << ")";
+						}
+						parsed << formatPSRSuffix();
+
+						parsed << "</Category>" << std::endl;
+					}
 					switch (psr.events_info[i].event_id)
 					{
 					case Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE:
