@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -12,6 +12,9 @@
 #include "RegistryCache.h"
 #include <climits>
 #include <memory>
+
+const unsigned long REG_SZ = 1ul;
+const unsigned long REG_DWORD = 4ul;
 
 DECLARE_CACHE()
 
@@ -59,7 +62,7 @@ bool
 RegistryStorage::GetDataValue(DATA_NAME name, std::string& value, bool withCache)
 {
 	CHECK_NAME_VALID(name)
-	ValueTypes requestedType = VAL_STR;
+	unsigned long requestedType = REG_SZ;
 
 
 	RegEntry entry = _regMap->at(name);
@@ -113,7 +116,7 @@ bool
 RegistryStorage::GetDataValue(DATA_NAME name, std::wstring& value, bool withCache)
 {
 	CHECK_NAME_VALID(name)
-	ValueTypes requestedType = VAL_STR;
+	unsigned long requestedType = REG_SZ;
 	RegEntry entry = _regMap->at(name);
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
@@ -142,7 +145,7 @@ bool
 RegistryStorage::GetDataValue(DATA_NAME name, unsigned long& value, bool withCache)
 {
 	CHECK_NAME_VALID(name)
-	ValueTypes requestedType = VAL_ULONG;
+	unsigned long requestedType = REG_DWORD;
 	RegEntry entry = _regMap->at(name);
 	
 	const LmsRegStr &key = entry.first;
@@ -168,7 +171,7 @@ RegistryStorage::SetDataValue(DATA_NAME name, const std::string& value, bool wit
 {
 	CHECK_NAME_VALID(name)
 	RegEntry entry = _regMap->at(name);
-	unsigned long type = VAL_STR;
+	unsigned long type = REG_SZ;
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
@@ -181,7 +184,7 @@ RegistryStorage::SetDataValue(DATA_NAME name, const std::wstring& value, bool wi
 {
 	CHECK_NAME_VALID(name)
 	RegEntry entry = _regMap->at(name);
-	unsigned long type = VAL_STR;
+	unsigned long type = REG_SZ;
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
 	
@@ -193,7 +196,7 @@ RegistryStorage::SetDataValue(DATA_NAME name, unsigned long value, bool withCach
 {
 	CHECK_NAME_VALID(name)
 	RegEntry entry = _regMap->at(name);
-	unsigned long type = VAL_ULONG;
+	unsigned long type = REG_DWORD;
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
