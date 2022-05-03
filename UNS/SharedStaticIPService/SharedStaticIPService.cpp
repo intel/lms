@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 
 #include "SharedStaticIPService.h"
@@ -130,7 +130,7 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 #endif // WIN32
 
 	ACE_Time_Value interval (CheckDNSInterval);
-	if (ACE_Reactor::instance()->schedule_timer(this, (void*)(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE), interval, interval) == -1)
+	if (ACE_Reactor::instance()->schedule_timer(this, (void*)(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE), interval, interval) == -1)
 	{
 		UNS_ERROR(L"failed to schedule timer first time\n");
 		return -1;
@@ -183,7 +183,7 @@ SharedStaticIPService::handle_signal (int, siginfo_t *, ucontext_t *)
 			return 0;
 		}
 	}
-	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
+	MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, Immediately);
 	return 0;
 }
 #else
@@ -192,7 +192,7 @@ int SharedStaticIPService::handle_input(ACE_HANDLE)
 	FuncEntryExit<void> fee(this, L"handle_input");
 
 	nl_recvmsgs_default(m_sock);
-	MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
+	MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, Immediately);
 	return 0;
 }
 #endif // WIN32
@@ -241,8 +241,6 @@ void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 	UNS_DEBUG(L"%d\n", State);
 	bool enabled = false;
 	unsigned long TimerInterval = 0;
-	//bool dataChanged = false; //, isEmptyAddress = false, IPv4Enabled = false;
-
 
 	if (!m_mainService->GetPortForwardingStarted()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting HandleState operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
@@ -251,51 +249,50 @@ void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 	}
 
 	switch (State)
-			{
-			case SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE:
+	{
+	case SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE:
 
-				if (GetSharedStaticIpState(&enabled))
-				{
-					MoveToState(enabled ?
-										SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_ENABLED :
-										SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_DISABLED,
-								Immediately);
-				}
-				else
-				{
-					MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, CheckDNSInterval);
-				}
-				break;
+		if (GetSharedStaticIpState(&enabled))
+		{
+			MoveToState(enabled ?
+								SSIP_Message_Block::SSIP_STATE::SHAREDSTATICIPSTATE_ENABLED :
+								SSIP_Message_Block::SSIP_STATE::SHAREDSTATICIPSTATE_DISABLED,
+						Immediately);
+		}
+		else
+		{
+			MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, CheckDNSInterval);
+		}
+		break;
 
-			case SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_DISABLED:
-				MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, CheckDNSInterval);
-				break;
+	case SSIP_Message_Block::SSIP_STATE::SHAREDSTATICIPSTATE_DISABLED:
+		MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, CheckDNSInterval);
+		break;
 
-			case SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_ENABLED:
+	case SSIP_Message_Block::SSIP_STATE::SHAREDSTATICIPSTATE_ENABLED:
 
-				if (!NetworkSettingsChanged())
-				{
-					MoveToState(SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_ENABLED, CheckDNSInterval);
-					break;
-				}
+		if (!NetworkSettingsChanged())
+		{
+			MoveToState(SSIP_Message_Block::SSIP_STATE::SHAREDSTATICIPSTATE_ENABLED, CheckDNSInterval);
+			break;
+		}
 
-				if (SyncSettings(TimerInterval))
-				{
-					MoveToState(SSIP_Message_Block::SSIP_SHAREDSTATICIPSTATE_ENABLED, TimerInterval);
-				}
-				else
-				{
-					MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, CheckDNSInterval);
-				}
-				break;
+		if (SyncSettings(TimerInterval))
+		{
+			MoveToState(SSIP_Message_Block::SSIP_STATE::SHAREDSTATICIPSTATE_ENABLED, TimerInterval);
+		}
+		else
+		{
+			MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, CheckDNSInterval);
+		}
+		break;
 
-			default:
-				UNS_ERROR(L"Error state: %d\n", State);
-				MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, CheckDNSInterval);
-				break;
+	default:
+		UNS_ERROR(L"Error state: %d\n", State);
+		MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, CheckDNSInterval);
+		break;
 
-			}
-
+	}
 }
 
 //Note : the return value is not used (see EventHandler::HandleAceMessage)
@@ -335,7 +332,6 @@ int SharedStaticIPService::handle_event (MessageBlockPtr mbPtr )
 	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("SharedStaticIPService::Invalid Message.\n")), -1);
 }
 
-
 int SharedStaticIPService::handlePublishEvent(const GMS_AlertIndication & alert)
 {
 	switch (alert.category)
@@ -349,7 +345,7 @@ int SharedStaticIPService::handlePublishEvent(const GMS_AlertIndication & alert)
 			if (m_HandleStateRequiredButNoPfw)
 			{
 				m_HandleStateRequiredButNoPfw = false;
-				MoveToState(SSIP_Message_Block::SSIP_GETSHAREDSTATICIPSTATE, Immediately);
+				MoveToState(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE, Immediately);
 				return 1;
 			}
 			break;
@@ -378,7 +374,6 @@ bool SharedStaticIPService::GetSharedStaticIpState(bool * isEnabled)
 	FuncEntryExit<void> fee(this, L"GetSharedStaticIpState");
 	if (m_syncNetData.getSharedStaticIpState(isEnabled))
 	{
-		//TimerInterval = CheckDNSInterval;
 		m_SyncRetries = 0;
 		m_SyncStaticIP = true;	// Need to sync the settings for the first time
 	}
@@ -435,7 +430,6 @@ bool SharedStaticIPService::NetworkSettingsChanged()
 	return res;
 }
 
-
 bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 {
 	bool res = false;
@@ -478,8 +472,6 @@ bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 	return res;
 }
 
-
-
 bool SharedStaticIPService::setTimer(unsigned long Interval, SSIP_Message_Block::SSIP_STATE State)
 {
 	FuncEntryExit<void> fee(this, L"setTimer");
@@ -499,7 +491,6 @@ bool SharedStaticIPService::setTimer(unsigned long Interval, SSIP_Message_Block:
 	return true;
 }
 
-
 void SharedStaticIPService::SyncFwUpdateFailed()
 {
 	FuncEntryExit<void> fee(this, L"SyncFwUpdateFailed");
@@ -507,15 +498,12 @@ void SharedStaticIPService::SyncFwUpdateFailed()
 	sendAlertIndicationMessage(CATEGORY_IPSYNC, EVENT_IP_SYNC_FW_UPDATE_FAILED, SYNC_FW_UPDATE_FAILED);
 }
 
-
 void SharedStaticIPService::SyncValidationFailed()
 {
 	FuncEntryExit<void> fee(this, L"SyncValidationFailed");
 
 	sendAlertIndicationMessage(CATEGORY_IPSYNC, EVENT_IP_SYNC_VALIDATION_FAILED, SYNC_VALIDATION_FAILED);
 }
-
-
 
 bool SharedStaticIPService::UpdateMacAddress()
 {
