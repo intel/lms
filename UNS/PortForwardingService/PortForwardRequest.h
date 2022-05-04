@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -17,7 +17,7 @@ typedef int (*IsConnectionPermittedCallback) (void *const param, SOCKET s, socka
 
 class PortForwardRequest {
 public:
-	enum PORT_FORWARD_REQUEST_STATUS {
+	enum class PORT_FORWARD_REQUEST_STATUS {
 		NOT_ACTIVE,
 		PENDING_REQUEST,
 		LISTENING 
@@ -26,7 +26,7 @@ public:
 	PortForwardRequest(const std::string &bindedAddress, int port, const std::vector<SOCKET> &listeningSockets, 
 		IsConnectionPermittedCallback cb, bool isLocal) :
 		_bindedAddress(bindedAddress), _port(port), _local(isLocal), _listeningSockets(listeningSockets), _cb(cb),
-		_status(NOT_ACTIVE), _channelCount(0) {}
+		_status(PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE), _channelCount(0) {}
 
 	const std::string GetBindedAddress() const { return _bindedAddress; }
 	const unsigned int GetPort() const { return _port;}

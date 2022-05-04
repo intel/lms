@@ -828,7 +828,7 @@ PortForwardRequest* Protocol::_findFWReq(SOCKET sock, unsigned int port, sockadd
 
 		for (; it2 != it->second.end(); it2++) {
 
-			if (((*it2)->GetStatus() == PortForwardRequest::LISTENING) &&
+			if (((*it2)->GetStatus() == PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::LISTENING) &&
 				((*it2)->IsConnectionPermitted(this, sock, caller_addr) == 1))
 			{
 					ret = *it2;
@@ -1071,7 +1071,7 @@ void Protocol::_closePortForwardRequest(PortForwardRequest *p)
 		return;
 	}
 
-	if ((*it2)->GetStatus() == PortForwardRequest::NOT_ACTIVE) {
+	if ((*it2)->GetStatus() == PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE) {
 
 		vector<SOCKET> serverSockets = (*it2)->GetListeningSockets();
 		delete (*it2);
@@ -1317,7 +1317,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 										PortForwardRequestList::iterator it2 = it->second.begin();
 										bool exists = false;
 										for (; it2 != it->second.end(); it2++) {
-											if (((*it2)->GetStatus() != PortForwardRequest::NOT_ACTIVE) &&
+											if (((*it2)->GetStatus() != PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE) &&
 												((*it2)->GetBindedAddress().compare(tcpForwardRequestMessage->Address) == 0)) {
 												exists = true;
 												break;
@@ -1393,8 +1393,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 									portForwardRequest->SetStatus(
 										(cb == _isLocalCallback)?
-										PortForwardRequest::LISTENING :
-									PortForwardRequest::PENDING_REQUEST);
+										PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::LISTENING :
+										PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::PENDING_REQUEST);
 									_failureReported[tcpForwardRequestMessage->Port] = false;
 
 									_signalSelect();
@@ -1470,7 +1470,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							for (; it2 != it->second.end(); it2++) {
 								if (((*it2)->GetBindedAddress().compare(tcpForwardCancelRequestMessage->Address) == 0) &&
 									//((*it2)->GetPort() == tcpForwardCancelRequestMessage->Port)) {
-									((*it2)->GetStatus() != PortForwardRequest::NOT_ACTIVE)) {
+									((*it2)->GetStatus() != PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE)) {
 										found = true;
 										break;
 								}
@@ -1478,7 +1478,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 							if (found) {
 
-								(*it2)->SetStatus(PortForwardRequest::NOT_ACTIVE);
+								(*it2)->SetStatus(PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE);
 
 								if ((*it2)->GetChannelCount() == 0) {
 									_closePortForwardRequest(*it2);
@@ -1978,8 +1978,8 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 			for (PortForwardRequestList::iterator it2 = it->second.begin();
 					it2 != it->second.end(); it2++) {
 
-				if ((*it2)->GetStatus() == PortForwardRequest::PENDING_REQUEST) {
-					(*it2)->SetStatus(PortForwardRequest::LISTENING);
+				if ((*it2)->GetStatus() == PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::PENDING_REQUEST) {
+					(*it2)->SetStatus(PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::LISTENING);
 				}
 			}
 		}
