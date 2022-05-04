@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2018 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -14,7 +14,7 @@
 
 class Channel {
 public:
-	enum CHANNEL_STATUS {
+	enum class CHANNEL_STATUS {
 		NOT_OPENED,
 		OPEN,
 		WAITING_CLOSE,
@@ -23,9 +23,9 @@ public:
 
 	static const unsigned int LMS_WINDOW_SIZE = 4095;
 
-	Channel(PortForwardRequest *portForwardRequest, SOCKET socket) : 
-			_recipientChannel(0), _senderChannel((unsigned int)socket), _socket(socket), _txWindow(0), _rxWindow(LMS_WINDOW_SIZE), _status(NOT_OPENED),
-			_portForwardRequest(portForwardRequest){}
+	Channel(PortForwardRequest *portForwardRequest, SOCKET socket) :
+		_recipientChannel(0), _senderChannel((unsigned int)socket), _socket(socket), _txWindow(0), _rxWindow(LMS_WINDOW_SIZE),
+		_status(CHANNEL_STATUS::NOT_OPENED), _portForwardRequest(portForwardRequest){}
 	virtual ~Channel() {}
 
 	Channel(const Channel &orig) :

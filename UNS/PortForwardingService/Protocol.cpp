@@ -733,7 +733,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	_setNonBlocking(s_new, true);
 
 	Channel *c = new SocketChannel(portForwardRequest,s_new);
-	c->SetStatus(Channel::NOT_OPENED);
+	c->SetStatus(Channel::CHANNEL_STATUS::NOT_OPENED);
 
 	std::lock_guard<std::mutex> l(_channelsLock);
 
@@ -883,7 +883,7 @@ int Protocol::Select()
 		ChannelMap::iterator it = _openChannels.begin();
 
 		for (; it != _openChannels.end(); it++) {
-			if ((it->second->GetStatus() == Channel::OPEN) &&
+			if ((it->second->GetStatus() == Channel::CHANNEL_STATUS::OPEN) &&
 				(it->second->GetTxWindow() > 0) &&
 				(dynamic_cast<SocketChannel*>(it->second))) {
 				SOCKET socket = it->second->GetSocket();
@@ -1018,7 +1018,7 @@ out:
 			it->second->RemoveBytesTxWindow(res);
 		}
 		else {
-			it->second->SetStatus(Channel::WAITING_CLOSE);
+			it->second->SetStatus(Channel::CHANNEL_STATUS::WAITING_CLOSE);
 			_lme.ChannelClose(c->GetRecipientChannel());
 		}
 	}
@@ -1633,7 +1633,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				c->AddBytesTxWindow(channelOpenMessage->InitialWindow);
 				c->SetRecipientChannel(channelOpenMessage->SenderChannel);
-				c->SetStatus(Channel::OPEN);
+				c->SetStatus(Channel::CHANNEL_STATUS::OPEN);
 
 				std::lock_guard<std::mutex> l(_channelsLock);
 				_openChannels[c->GetSenderChannel()] = c;
@@ -1663,7 +1663,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				ChannelMap::iterator it = _openChannels.find(channelOpenSuccessMessage->RecipientChannel);
 				if (it != _openChannels.end()) {
-					it->second->SetStatus(Channel::OPEN);
+					it->second->SetStatus(Channel::CHANNEL_STATUS::OPEN);
 					it->second->SetRecipientChannel(channelOpenSuccessMessage->SenderChannel);
 					it->second->AddBytesTxWindow(channelOpenSuccessMessage->InitialWindow);
 				}
@@ -1736,12 +1736,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					if (it != _openChannels.end()) {
 						Channel *c = it->second;
 						switch(c->GetStatus()) {
-							case Channel::OPEN:
-								c->SetStatus(Channel::CLOSED);
+							case Channel::CHANNEL_STATUS::OPEN:
+								c->SetStatus(Channel::CHANNEL_STATUS::CLOSED);
 								_lme.ChannelClose(c->GetRecipientChannel());
 								UNS_TRACE(L"Channel %d was closed by AMT.\n", c->GetSenderChannel());
 								break;
-							case Channel::WAITING_CLOSE:
+							case Channel::CHANNEL_STATUS::WAITING_CLOSE:
 								UNS_TRACE(L"Received reply by AMT on closing channel %d.\n", c->GetSenderChannel());
 								break;
 						}
@@ -1782,7 +1782,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				ChannelMap::iterator it = _openChannels.find(channelDataMessage->RecipientChannel);
 				if (it != _openChannels.end()) {
-					if ((it->second->GetStatus() == Channel::OPEN) || (it->second->GetStatus() == Channel::WAITING_CLOSE)) {
+					if ((it->second->GetStatus() == Channel::CHANNEL_STATUS::OPEN) || (it->second->GetStatus() == Channel::CHANNEL_STATUS::WAITING_CLOSE)) {
 
 						if (it->second->GetRxWindow() < channelDataMessage->Data.size()) {
 							return;
@@ -1802,11 +1802,11 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						_lme.ChannelWindowAdjust(it->second->GetRecipientChannel(), channelDataMessage->Data.size());
 						if (request_close)
 						{
-							if (it->second->GetStatus() == Channel::OPEN)
+							if (it->second->GetStatus() == Channel::CHANNEL_STATUS::OPEN)
 							{
 								UNS_DEBUG(L"[%u:%u] closing socket, as requested\n",	
 									it->second->GetSenderChannel(), it->second->GetRecipientChannel());
-								it->second->SetStatus(Channel::WAITING_CLOSE);
+								it->second->SetStatus(Channel::CHANNEL_STATUS::WAITING_CLOSE);
 								_lme.ChannelClose(it->second->GetRecipientChannel());
 							}
 						}
