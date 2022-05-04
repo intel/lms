@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2020 Intel Corporation
+ * Copyright (C) 2018-2022 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
@@ -11,7 +11,6 @@
 
 namespace wlanps {
 	const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Settings ";
-	typedef std::map<std::wstring, int> str_int_map_t;
 
 	authenticationSet_t supportedAuthentication = { L"open", L"WPAPSK", L"WPA2PSK", L"WPA3SAE", L"OWE" };
 	encriptionSet_t supportedEncription = { L"WEP", L"TKIP", L"AES", L"none" };
@@ -409,26 +408,26 @@ namespace wlanps {
 		static const unsigned short WEPPriority = 7;
 		static const unsigned short NoneEncPriority = 8;
 
-		int auth = 1;
-		int encr = 1;
+		unsigned short auth = AuthenticationMethodOther;
+		unsigned short encr = EncryptionMethodOther;
 		int priority = 8;
 
 		// translate to CIM_WiFiEndpointSettings
-		static const str_int_map_t authMap = {
+		static const std::map<std::wstring, unsigned short> authMap = {
 			{ L"open",    AuthenticationMethodOpenSystem },
 			{ L"WPAPSK",  AuthenticationMethodWPAPSK },
 			{ L"WPA2PSK", AuthenticationMethodWPA2PSK },
 			{ L"WPA3SAE", AuthenticationMethodWPA3SAE },
-			{ L"OWE", AuthenticationMethodWPA3OWE }
+			{ L"OWE",     AuthenticationMethodWPA3OWE }
 		};
-		static const str_int_map_t encrMap = {
+		static const std::map<std::wstring, unsigned short> encrMap = {
 			{ L"WEP",  EncryptionMethodWEP },
 			{ L"TKIP", EncryptionMethodTKIP },
 			{ L"AES",  EncryptionMethodCCMP }, // CCMP
 			{ L"none", EncryptionMethodNone }
 		};
 
-		static const str_int_map_t priorityMap = {
+		static const std::map<std::wstring, int> priorityMap = {
 			{ L"WEP",  WEPPriority },
 			{ L"TKIP", TKIPPriority },
 			{ L"AES",  Priority802_11x_AES }, // CCMP
@@ -467,7 +466,7 @@ namespace wlanps {
 		return true;
 	}
 
-	void WlanBL::PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid)
+	void WlanBL::PrintWifiSetting(unsigned short auth, unsigned short enc, int prio, wchar_t* elementName, wchar_t* ssid)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: wifiSettings Profile=%-25W, ssid=%-25W prio=%d auth=%d enc=%d\n",
 			elementName, ssid, prio, auth, enc);
