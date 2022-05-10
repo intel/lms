@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019 Intel Corporation
+ * Copyright (C) 2019-2022 Intel Corporation
  */
 #ifndef __PFWUPDATEDLLWRAPPER_H_
 #define __PFWUPDATEDLLWRAPPER_H_
@@ -14,33 +14,8 @@
 
 #define FPUPUBLIC_LMS_NAME_MACRO(x) FPUPUBLIC_LMS_QUOTE(x)
 
-#define MAXIMUM_IPU_SUPPORTED		4
-
-#define FWU_GENERAL					8707;
-
-#define WOCD_ID						0x444f4357  
-#define LOCL_ID						0x4C434F4C
-
-#define INIT_WAIT_SEC				1
-
-typedef enum
-{
-	FWU_ENV_MANUFACTURING = 0,   // Manufacturing update
-	FWU_ENV_IFU,                 // Independent Firmware update
-}FWU_ENVIRONMENT;
-
-/** @brief Defines a generic version structure used in the software build process. This structure will be used to
-*   represent versions of ROM, FW and Recovery modules.
-*/
-typedef struct _VERSION
-{
-	uint16_t      Major;
-	uint16_t      Minor;
-	uint16_t      Hotfix;
-	uint16_t      Build;
-}VERSION;
-
-
+const unsigned int WOCD_ID = 0x444f4357;
+const unsigned int LOCL_ID = 0x4C434F4C;
 
 class PFWUpdateDllWrapper 
 {

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019-2021 Intel Corporation
+ * Copyright (C) 2019-2022 Intel Corporation
  */
 #include "PFWUpdateDllWrapperME11.h"
 #include "fwupdatelib_ME11.h"
@@ -40,6 +40,7 @@ typedef enum _PT_RESET_TYPE
 
 
 #define PROGRESS_WAIT_SEC			1
+#define INIT_WAIT_SEC				1
 
 static std::wstring ME11_Dll_Name(L"FWUpdateLib_11.dll");
 
@@ -238,7 +239,7 @@ uint32_t PFWUpdateDllWrapperME11::performPFWU(uint32_t partialID, const std::wst
 	try
 	{
 		char* _pwd = NULL;
-		unsigned int UpdateEnvironment = FWU_ENV_MANUFACTURING;
+		unsigned int UpdateEnvironment = 0; // FWU_ENV_MANUFACTURING
 		_UUID OemID = { 0,0,0,0 };
 		UPDATE_FLAGS_LIB update_flags = { 0,0,0 };
 		IPU_UPDATED_INFO IpuUpdatedInfo;
