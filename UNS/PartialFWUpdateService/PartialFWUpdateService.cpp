@@ -431,7 +431,7 @@ bool PartialFWUpdateService::LoadFwUpdateLibDll()
 			GetFWVersionCommand  getFWVersionCommand;
 			GET_FW_VER_RESPONSE version = getFWVersionCommand.getResponse();
 
-			pfwuWrapper = PFWUpdateDllWrapperFactory::Create(version.FTMajor);
+			pfwuWrapper = PFWUpdateDllWrapperFactory::Create(version.FTMajor, version.FTMinor);
 		}
 		return true;
 	}

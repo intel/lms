@@ -1,29 +1,29 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019-2021 Intel Corporation
+ * Copyright (C) 2019-2022 Intel Corporation
  */
 #include "PFWUpdateDllWrapperFactory.h"
 #include "PFWUpdateDllWrapperME11.h"
 #include "PFWUpdateDllWrapperME12.h"
 #include "PFWUpdateDllWrapperME16.h"
 
-std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t fwVersion)
+std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t fwVersionMajor, uint16_t fwVersionMinor)
 {
-	if (fwVersion < 11)
+	if (fwVersionMajor < 11)
 	{
-		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got unsupported version: %u.\n", fwVersion);
+		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got unsupported version: %u.%u.\n", fwVersionMajor, fwVersionMinor);
 		throw std::exception("PFWUpdateDllWrapperFactory got unsupported version");
 	}
-	if (fwVersion == 11)
+	if (fwVersionMajor == 11)
 	{
 		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version 11. Loading ME11 DLL.\n");
 		return std::make_unique<PFWUpdateDllWrapperME11>();
 	}
-	if (fwVersion > 15)
+	if (fwVersionMajor > 15 || ((fwVersionMajor == 15) && (fwVersionMinor == 20)))
 	{
-		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version %u. Loading ME16 DLL.\n", fwVersion);
+		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version %u.%u. Loading ME16 DLL.\n", fwVersionMajor, fwVersionMinor);
 		return std::make_unique<PFWUpdateDllWrapperME16>();
 	}
-	UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version: %u. Loading ME12 DLL.\n", fwVersion);
+	UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version: %u.%u. Loading ME12 DLL.\n", fwVersionMajor, fwVersionMinor);
 	return std::make_unique<PFWUpdateDllWrapperME12>();
 }
