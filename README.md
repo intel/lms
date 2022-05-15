@@ -29,7 +29,6 @@ the Intel Management Engine Interface (MEI).
  * Alternatively:
    1. Download ACE library from [ACE Download page](http://download.dre.vanderbilt.edu/).
    2. Configure ACE_ROOT environmental variable with download location.
-   3. Configure ACE_LIB environmental variables with ${ACE_ROOT}/lib.
    4. Build ACE with default Linux configuration [Building and Installing ACE on UNIX](http://www.dre.vanderbilt.edu/~schmidt/DOC_ROOT/ACE/ACE-INSTALL.html#unix).
    5. Configure ACE_LIBRARY environmental variable with compiled library full path.
    6. Configure ACE_INCLUDE_DIR environmental variable with full path to ace directory in ACE_ROOT.
@@ -64,15 +63,17 @@ To skip automatic download one can download it manually to Common/googletest dir
 * cmake
 * C++ compiler
 * python3
+* debuild (if DEB package is required)
+* rpmbuild (if RPM package is required)
 
 #### Libraries
 
-* gio-2.0 (libglib2.0-dev package in Debian)
-* libcurl (libcurl4-openssl-dev package in Debian)
-* libxerces-c (libxerces-c-dev package in Debian)
-* libnl-3 (libnl-3-dev package in Debian)
-* libnl-route-3 (libnl-route-3-dev package in Debian)
-* libxml2 (libxml2-dev package in Debian)
+* gio-2.0 (libglib2.0-dev package in Debian, glib2-devel in RHEL)
+* libcurl (libcurl4-openssl-dev package in Debian, libcurl-devel in RHEL)
+* libxerces-c (libxerces-c-dev package in Debian, xerces-c-devel in RHEL)
+* libnl-3 (libnl-3-dev package in Debian, libnl3-devel in RHEL)
+* libnl-route-3 (libnl-route-3-dev package in Debian, not needed on RHEL)
+* libxml2 (libxml2-dev package in Debian, libxml2-devel in RHEL)
 
 ##### Optional dependencies for building DBus interface documentation:
 * xsltproc
@@ -104,7 +105,7 @@ Note: The DLL signature check tests Intel(R) signatures, so external build shoul
    One may need to add -DCMAKE_INSTALL_PREFIX=/usr for installation to match the distribution default (e.g. Debian-based distribution, CentOS, etc.).
    This is important for DBus and syslog configuration files.
 3. Run `make -j$(nproc)` from the `build` directory to build project or
-   Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb).
+   Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb) and RHEL package (e.g. lms-1.0.0-Linux.rpm)
 
 ## Install
 
@@ -118,6 +119,10 @@ Note: The DLL signature check tests Intel(R) signatures, so external build shoul
 #### Debian-base distributions
 
 1. `sudo dpkg -i <generated .deb package>`
+
+#### RHEL-base distributions
+
+1. `sudo rpm -i <generated .rpm package>`
 
 #### Other distributions
 
