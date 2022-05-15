@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2021 Intel Corporation
+# Copyright (C) 2021-2022 Intel Corporation
 find_path(ACE_INCLUDE_DIR
-          NAMES ace/ACE.h
-          PATHS /usr/include
+          NAMES ACE.h
+          HINTS ENV ACE_INCLUDE_DIR
+          PATHS /usr/include/ace
 )
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -13,9 +14,9 @@ else()
   set(ACE_LIB_NAMES_STATIC aces ACEs)
 endif()
 
-find_library(ACE_LIBRARY NAMES ${ACE_LIB_NAMES})
+find_library(ACE_LIBRARY NAMES ${ACE_LIB_NAMES} HINTS ENV ACE_LIBRARY)
 if (${ACE_LIBRARY} MATCHES "ACE_LIBRARY-NOTFOUND")
-  find_library(ACE_LIBRARY NAMES ${ACE_LIB_NAMES_STATIC})
+  find_library(ACE_LIBRARY NAMES ${ACE_LIB_NAMES_STATIC} HINTS ENV ACE_LIBRARY)
   set(ACE_DEFINITIONS "ACE_AS_STATIC_LIBS")
 endif()
 
@@ -43,4 +44,5 @@ if(ACE_FOUND AND NOT TARGET ACE::ACE)
   set_target_properties(ACE::ACE PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ACE_INCLUDE_DIRS}")
   set_target_properties(ACE::ACE PROPERTIES INTERFACE_COMPILE_OPTIONS "${ACE_DEFINITIONS}")
   set_property(TARGET ACE::ACE APPEND PROPERTY IMPORTED_LOCATION "${ACE_LIBRARY}")
+  set_property(TARGET ACE::ACE PROPERTY INTERFACE_LINK_LIBRARIES dl)
 endif()
