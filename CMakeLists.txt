@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
+# Copyright (C) 2010-2022 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 if (NOT ${CMAKE_VERSION} VERSION_LESS "3.15.0")
   cmake_policy(SET CMP0091 NEW)
 endif()
 project (lms)
+
+set(LICENSE Apache)
 
 option (BUILD_TESTS "Build tests" NO)
 option (BUILD_WIN_UNIVERSAL "Build Windows Universal App" NO)
@@ -143,15 +145,53 @@ add_custom_target (dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 if (UNIX)
   #Debian Specific
-  set (CPACK_DEBIAN_PACKAGE_SECTION "utils")
-  set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-  set (CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
+  find_program(DEB_EXE debuild)
+  if(DEB_EXE)
+    list(APPEND CPACK_GENERATOR "DEB")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+    set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+    set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
 
-  set (CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
-    "${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/postinst;${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/prerm"
-  )
+    set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+      "${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/postinst;${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/prerm"
+    )
 
-  set (CPACK_GENERATOR "DEB")
+    list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS gio-2.0)
+    list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS libcurl)
+    list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS libxerces-c)
+    list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS libnl-3)
+    list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS libnl-route-3)
+    list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS libxml2)
+  endif(DEB_EXE)
+
+  # RPM Specific
+  find_program(RPM_EXE rpmbuild)
+  if(RPM_EXE)
+    list(APPEND CPACK_GENERATOR "RPM")
+    set(CPACK_RPM_PACKAGE_RELEASE 1)
+    set(CPACK_RPM_PACKAGE_LICENSE ${LICENSE})
+    set(CPACK_RPM_PACKAGE_GROUP "System Tools")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib/systemd")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib/systemd/system")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib/udev")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib/udev/rules.d")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/etc/dbus-1")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/etc/dbus-1/system.d")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/share/dbus-1")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/share/dbus-1/system-services")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/etc/logrotate.d")
+    list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/etc/rsyslog.d")
+
+    list(APPEND CPACK_RPM_RELOCATION_PATHS "/lib/udev/rules.d")
+    list(APPEND CPACK_RPM_RELOCATION_PATHS "/etc/rsyslog.d")
+    list(APPEND CPACK_RPM_RELOCATION_PATHS "/etc/logrotate.d")
+    list(APPEND CPACK_RPM_RELOCATION_PATHS "/etc/dbus-1/system.d")
+
+    set(CPACK_RPM_POST_INSTALL_SCRIPT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/postinst)
+    set(CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/prerm)
+  endif(RPM_EXE)
 else (UNIX)
   set (CPACK_GENERATOR "ZIP")
 endif (UNIX)
