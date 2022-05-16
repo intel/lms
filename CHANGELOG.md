@@ -1,3 +1,25 @@
+## [2222.0.0.0]
+
+### Fixed
+ - PFU from corrupted partition should always occur
+ - DataInterfaceBackend: fix PSR event timestamp print
+ - DataInterfaceBackend: fix PSR event number print
+ - DataInterfaceBackend: no mebx version on ME16 and up
+ - DataInterfaceBackend: Fix strings and formats in PSR
+
+### Added
+ - WMIProv: WMIRegistrationService: uninstall IMSS
+ - CMake: process ACE paths from environment
+ - CMake: add option for rpm pack and improve deb pack
+ - README: add RPM-based systems build instructions
+
+### Changed
+ - DataInterfaceBackend: beautify PSR parsing
+ - conan: use libxml2 2.9.13
+
+### Removed
+ - DataInterfaceBackend: drop unused include
+
 ## [2151.0.0.0]
 
 ### Fixed
