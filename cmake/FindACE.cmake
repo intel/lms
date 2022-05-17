@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (C) 2021-2022 Intel Corporation
 find_path(ACE_INCLUDE_DIR
-          NAMES ACE.h
+          NAMES ace/ACE.h
           HINTS ENV ACE_INCLUDE_DIR
-          PATHS /usr/include/ace
+          PATHS /usr/include
 )
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)

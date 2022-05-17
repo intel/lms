@@ -14,7 +14,7 @@ the Intel Management Engine Interface (MEI).
 3. Add "#define ACE_USES_WCHAR" to ${ACE_ROOT}/ace/config.h - note that Windows LMS requires ACE compiled with WCHAR support.
 4. Build ACE library.
 5. Configure ACE_LIBRARY environmental variable with compiled library full path.
-6. Configure ACE_INCLUDE_DIR environmental variable with full path to ace directory in ACE_ROOT.
+6. Configure ACE_INCLUDE_DIR environmental variable with full path to ACE_ROOT.
 7. Configure ACE_DEFINITIONS if any compile definitions should be passed.
 
 #### libxml
@@ -31,7 +31,7 @@ the Intel Management Engine Interface (MEI).
    2. Configure ACE_ROOT environmental variable with download location.
    4. Build ACE with default Linux configuration [Building and Installing ACE on UNIX](http://www.dre.vanderbilt.edu/~schmidt/DOC_ROOT/ACE/ACE-INSTALL.html#unix).
    5. Configure ACE_LIBRARY environmental variable with compiled library full path.
-   6. Configure ACE_INCLUDE_DIR environmental variable with full path to ace directory in ACE_ROOT.
+   6. Configure ACE_INCLUDE_DIR environmental variable with full path to ACE_ROOT.
    7. Configure ACE_DEFINITIONS if any compile definitions should be passed.
 
 ### Cross-platform
