@@ -1,3 +1,9 @@
+## [2226.0.0.0]
+
+### Fixed
+- CMake: fix debian package dependencies
+- PartialFWUpdateService: use ADL PFU Dll for EGS
+
 ## [2222.0.0.0]
 
 ### Fixed
