@@ -21,9 +21,9 @@ extern "C"
 #define FWUPARTIALUPDATEFROMFILE_DLL_NAME		FwuPartialUpdateFromFile
 #define FWUCHECKUPDATEPROGRESS_DLL_NAME			FwuCheckUpdateProgress
 
-#define FWUPATITIONINSTANCES_DLL_NAME_str		FPUPUBLIC_LMS_NAME_MACRO(FWUPATITIONINSTANCES_DLL_NAME)
-#define FWUPARTIALUPDATEFROMFILE_DLL_NAME_str	FPUPUBLIC_LMS_NAME_MACRO(FWUPARTIALUPDATEFROMFILE_DLL_NAME)
-#define FWUCHECKUPDATEPROGRESS_DLL_NAME_str		FPUPUBLIC_LMS_NAME_MACRO(FWUCHECKUPDATEPROGRESS_DLL_NAME)
+#define FWUPATITIONINSTANCES_DLL_NAME_str       FPUPUBLIC_LMS_NAME_MACRO(FWUPATITIONINSTANCES_DLL_NAME)
+#define FWUPARTIALUPDATEFROMFILE_DLL_NAME_str   FPUPUBLIC_LMS_NAME_MACRO(FWUPARTIALUPDATEFROMFILE_DLL_NAME)
+#define FWUCHECKUPDATEPROGRESS_DLL_NAME_str     FPUPUBLIC_LMS_NAME_MACRO(FWUCHECKUPDATEPROGRESS_DLL_NAME)
 
 struct PFWUpdateDllWrapperME18::FUNCTIONS
 {
@@ -131,7 +131,7 @@ uint32_t PFWUpdateDllWrapperME18::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 		}
 		UNS_DEBUG(L"isPfwuRequired LOCL: currentInstanceId=%u, expectedInstanceId=%u\n", currentInstanceId, expectedInstanceId);
 		if (currentInstanceId == 0 ||
-			currentInstanceId != expectedInstanceId)
+            currentInstanceId != expectedInstanceId)
 		{
 			isLoclPfuRequired = true;
 			requiredLanguage = expectedInstanceId - 1;

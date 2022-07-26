@@ -20,7 +20,7 @@ std::unique_ptr<PFWUpdateDllWrapper> PFWUpdateDllWrapperFactory::Create(uint16_t
 		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version 11. Loading ME11 DLL.\n");
 		return std::make_unique<PFWUpdateDllWrapperME11>();
 	}
-	if(fwVersionMajor >= 18) {
+	if (fwVersionMajor >= 18) {
 		UNS_DEBUG(L"PFWUpdateDllWrapperFactory got version %u.%u. Loading ME18 DLL.\n", fwVersionMajor, fwVersionMinor);
 		return std::make_unique<PFWUpdateDllWrapperME18>();
 	}
