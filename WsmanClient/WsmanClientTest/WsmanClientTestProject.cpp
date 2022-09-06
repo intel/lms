@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2021 Intel Corporation
+ * Copyright (C) 2013-2022 Intel Corporation
  */
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -382,7 +382,7 @@ TEST(TimeSynchronizationClient, syncUTCTime)
 	time(&rawtime);
 	ASSERT_NE(rawtime, -1);
 	tmpTime = gmtime(&rawtime);
-	UTCTime = mktime(tmpTime);
+	UTCTime = static_cast<unsigned int>(mktime(tmpTime));
 	cout << "UTC time: \t";
 	printTime(UTCTime);
 	int diff = UTCTime-AMTTime;
