@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 /*++
 
@@ -36,19 +36,19 @@ namespace Intel
 					uint32_t MngFull:1;
 					uint32_t MngStd:1;
 					uint32_t Amt:1;
-					uint32_t Irwt:1; //Intel Remote Wake Tech
-					uint32_t Qst:1; //Quiet System Technology
+					uint32_t Irwt:1; //Intel Remote Wake Tech //N/A since 8.0
+					uint32_t Qst:1; //Quiet System Technology //N/A since 8.0
 					uint32_t PSR:1; //Platform Service Record (was: Anti-Theft)
 					uint32_t SoftCreek:1; //Intel Capability Licensing Service (aka CLS)
-					uint32_t Ve:1; //Virtualization Engine
-					uint32_t Nand35:1;
-					uint32_t Nand29:1;
-					uint32_t ThermReport:1;
-					uint32_t IccOverClockin:1;
+					uint32_t Ve:1; //Virtualization Engine //N/A since 9.0
+					uint32_t Nand35:1; //N/A since 9.5
+					uint32_t Nand29:1; //N/A since 9.5
+					uint32_t ThermReport:1; //N/A since 9.5
+					uint32_t IccOverClockin:1; //N/A
 					uint32_t Pav:1; //Protected Audio Video Path
-					uint32_t Spk:1;
+					uint32_t Spk:1; //N/A since 8.0
 					uint32_t Rca:1;
-					uint32_t Rpat:1;
+					uint32_t Rpat:1; //N/A since 8.0
 					uint32_t Hap:1;
 					uint32_t Ipv6:1;
 					uint32_t Kvm:1;

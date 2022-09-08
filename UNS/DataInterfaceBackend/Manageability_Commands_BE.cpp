@@ -131,10 +131,10 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt, AvailData.Fields.Amt);
 					break;
 				case IRWT:
-					pState = FeatureStateLogic(CapabilityData.Fields.Irwt, StateData.Fields.Irwt, AvailData.Fields.Irwt);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Irwt, StateData.Fields.Irwt, AvailData.Fields.Irwt);
 					break;
 				case QST:
-					pState = FeatureStateLogic(CapabilityData.Fields.Qst, StateData.Fields.Qst, AvailData.Fields.Qst);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Qst, StateData.Fields.Qst, AvailData.Fields.Qst);
 					break;
 				case TDT:
 					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Tdt, StateData.Fields.Tdt, AvailData.Fields.Tdt);
@@ -143,33 +143,33 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.SoftCreek, StateData.Fields.SoftCreek, AvailData.Fields.SoftCreek);
 					break;
 				case VE:
-					pState = FeatureStateLogic(CapabilityData.Fields.Ve, StateData.Fields.Ve, AvailData.Fields.Ve);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Ve, StateData.Fields.Ve, AvailData.Fields.Ve);
 					break;
 					//this feature doesn't exist in the MKHI command
 					/*case DT:
 							pState=FeatureStateLogic(CapabilityData.Fields.Dt, StateData.Fields.Dt, AvailData.Fields.Dt);
 							break;*/
 				case NAND:
-					pState = FeatureStateLogic(CapabilityData.Fields.Nand29, StateData.Fields.Nand29, AvailData.Fields.Nand29);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Nand29, StateData.Fields.Nand29, AvailData.Fields.Nand29);
 					break;
 					//this feature doesn't exist in the MKHI command
 					/*case MPC:
 							pState=FeatureStateLogic(CapabilityData.Fields.Mpc, StateData.Fields.Mpc, AvailData.Fields.Mpc);
 							break;*/
 				case ICC_OVER_CLOCK_IN:
-					pState = FeatureStateLogic(CapabilityData.Fields.IccOverClockin, StateData.Fields.IccOverClockin, AvailData.Fields.IccOverClockin);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.IccOverClockin, StateData.Fields.IccOverClockin, AvailData.Fields.IccOverClockin);
 					break;
 				case PAV:
 					pState = FeatureStateLogic(CapabilityData.Fields.Pav, StateData.Fields.Pav, AvailData.Fields.Pav);
 					break;
 				case SPK:
-					pState = FeatureStateLogic(CapabilityData.Fields.Spk, StateData.Fields.Spk, AvailData.Fields.Spk);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Spk, StateData.Fields.Spk, AvailData.Fields.Spk);
 					break;
 				case RCA:
 					pState = FeatureStateLogic(CapabilityData.Fields.Rca, StateData.Fields.Rca, AvailData.Fields.Rca);
 					break;
 				case RPAT:
-					pState = FeatureStateLogic(CapabilityData.Fields.Rpat, StateData.Fields.Rpat, AvailData.Fields.Rpat);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Rpat, StateData.Fields.Rpat, AvailData.Fields.Rpat);
 					break;
 				case IPV6:
 					pState = FeatureStateLogic(CapabilityData.Fields.Ipv6, StateData.Fields.Ipv6, AvailData.Fields.Ipv6);

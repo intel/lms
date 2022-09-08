@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -479,9 +479,9 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	capabilities.Fields.Amt = amt;
 	capabilities.Fields.Tdt = 0; // was CapabilityData.Fields.Tdt;
 	capabilities.Fields.SoftCreek = CapabilityData.Fields.SoftCreek;
-	capabilities.Fields.Ve = CapabilityData.Fields.Ve;
+	capabilities.Fields.Ve = 0; // was CapabilityData.Fields.Ve;
 	capabilities.Fields.Nand = 0; // bit 9 is not used anymore for NAND since 9.0 project
-	capabilities.Fields.IccOverClockin = CapabilityData.Fields.IccOverClockin;
+	capabilities.Fields.IccOverClockin = 0; // was  CapabilityData.Fields.IccOverClockin;
 	capabilities.Fields.Pav = CapabilityData.Fields.Pav;
 	capabilities.Fields.Ipv6 = CapabilityData.Fields.Ipv6;
 	capabilities.Fields.Kvm = CapabilityData.Fields.Kvm;
@@ -514,14 +514,6 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"SBT");
 	}
-	if (CapabilityData.Fields.Irwt)
-	{
-		capabilities.push_back(L"IRWT");
-	}
-	if (CapabilityData.Fields.Qst)
-	{
-		capabilities.push_back(L"QST");
-	}
 	if (CapabilityData.Fields.Tdt)
 	{
 		capabilities.push_back(L"TDT");
@@ -529,18 +521,6 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	if (CapabilityData.Fields.SoftCreek)
 	{
 		capabilities.push_back(L"SoftCreek");
-	}
-	if (CapabilityData.Fields.Ve)
-	{
-		capabilities.push_back(L"VE");
-	}
-	if (CapabilityData.Fields.Nand)
-	{
-		capabilities.push_back(L"NAND");
-	}
-	if (CapabilityData.Fields.IccOverClockin)
-	{
-		capabilities.push_back(L"ICC Over Clocking");
 	}
 	if (CapabilityData.Fields.Pav)
 	{
