@@ -40,7 +40,7 @@ OpenWsmanClient::OpenWsmanClient(
 	const string &auth_method,
 	const string &username,
 	const string &password,
-	// proxy address include proxy port
+	 // proxy address include proxy port
 	const string &proxy,
 	//proxy user name
 	const string &proxy_username,
