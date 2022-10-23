@@ -13,8 +13,12 @@
 #include <climits>
 #include <memory>
 
+#ifndef REG_SZ
 const unsigned long REG_SZ = 1ul;
+#endif // REG_SZ
+#ifndef REG_DWORD
 const unsigned long REG_DWORD = 4ul;
+#endif // REG_DWORD
 
 DECLARE_CACHE()
 
