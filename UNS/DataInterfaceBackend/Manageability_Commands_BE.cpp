@@ -53,17 +53,6 @@ namespace Intel {
 		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
 	}
 
-		//MEBx version
-		struct MEBX_BIOS_VER
-		{
-
-			uint16_t   MEBxMinor;
-			uint16_t   MEBxMajor;
-			uint16_t   MEBxBuildNo;
-			uint16_t   MEBxHotFix;
-		};
-
-
 		void MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, MENAGEABILTY_MODE &pMode)
 		{
 			switch (platform.Fields.Brand)
@@ -283,25 +272,17 @@ namespace Intel {
 			}
 			else
 			{
-				MEBX_BIOS_VER version;
-
 				//use SMBIOS to get MEBx version
 				SMBIOS_Reader sm_reader;
-				if (sm_reader.CheckForSmbiosFlags() == 0)
-				{
-					version.MEBxMajor = sm_reader.pCapabilities.MEBx_Major;
-					version.MEBxMinor = sm_reader.pCapabilities.MEBx_Minor;
-					version.MEBxHotFix = sm_reader.pCapabilities.MEBx_Hotfix;
-					version.MEBxBuildNo = sm_reader.pCapabilities.MEBx_Build;
-				}
-				else
+				if (sm_reader.CheckForSmbiosFlags() != 0)
 				{
 					return LMS_ERROR::FAIL;
 				}
-
 				std::stringstream ss;
-				ss << version.MEBxMajor << "." << version.MEBxMinor << "." << version.MEBxHotFix << ".";
-				ss << std::setfill('0') << std::setw(4) << version.MEBxBuildNo;
+				ss << sm_reader.pCapabilities.MEBx_Major << "." <<
+					sm_reader.pCapabilities.MEBx_Minor << "." <<
+					sm_reader.pCapabilities.MEBx_Hotfix << ".";
+				ss << std::setfill('0') << std::setw(4) << sm_reader.pCapabilities.MEBx_Build;
 				pMEBxVersion = ss.str();
 			}
 
@@ -368,7 +349,7 @@ namespace Intel {
 			return LMS_ERROR::OK;
 		}
 
-#define FPT_PARTITION_NAME_PMCP 0x50434D50 /**< "PMCP" Partition Name*/
+		static const uint32_t FPT_PARTITION_NAME_PMCP = 0x50434D50; /**< "PMCP" Partition Name*/
 
 		LMS_ERROR Manageability_Commands_BE::GetPMCVersion(std::string &pFwVer)
 		{
