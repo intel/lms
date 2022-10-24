@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -53,7 +53,7 @@ bool KVMWSManClient::TerminateKVMSession(void)
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
 		unsigned int returnVal = m_service.TerminateSession();
-		if (returnVal != WSMAN_STATUS_SUCCESS)
+		if (returnVal != WSMAN_AMT_ERROR_SUCCESS)
 		{
 			WSMAN_DEBUG("ERROR: IPS_KVMRedirectionSettingData.TerminateSessiin returned %d\n", returnVal);
 			return false;
