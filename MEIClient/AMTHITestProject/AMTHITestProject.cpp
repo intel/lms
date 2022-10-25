@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2021 Intel Corporation
+ * Copyright (C) 2013-2022 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
 #include "stdafx.h"
 #include "AMTHICommand.h"
 #include "MEIClientException.h"
+#include "HECIException.h"
 
 #include "gtest/gtest.h"
 
@@ -53,6 +54,8 @@
 #include "GetMESetupAuditRecordCommand.h"
 #include "SetEnterpriseAccessCommand.h"
 #include "SetHostFQDNCommand.h"
+
+#include "ReadFileExCommand.h"
 
 #include "MEIparser.h"
 
@@ -587,6 +590,23 @@ TEST(MKHI, testGetFWUpdateStateCommand)
 	FW_UPDATE_STATE MKHIres = getPT.getResponse();
 	EXPECT_LE((uint32_t)FW_UPDATE_DISABLED, MKHIres.Data);
 	EXPECT_GE((uint32_t)FW_UPDATE_PASSWORD_PROTECTED, MKHIres.Data);
+}
+
+TEST(MCHI, testReadFileExCommand)
+{
+	try
+	{
+		Intel::MEI_Client::MCHI_Client::ReadFileExCommand readFileEx(Intel::MEI_Client::MCHI_Client::MCA_FILE_ID::SKU_MGR_QUALIFIED_BRAND_ENTITLEMENTS, 0, 4, 0);
+		Intel::MEI_Client::MCHI_Client::READ_FILE_EX_RESPONSE theFile = readFileEx.getResponse();
+		EXPECT_EQ(4, theFile.Data.size());
+		std::cout << "SKU_MGR_QUALIFIED_BRAND_ENTITLEMENTS data " << std::hex << "0x" << (uint32_t)theFile.Data[0]
+			<< " 0x" << (uint32_t)theFile.Data[1]
+			<< " 0x" << (uint32_t)theFile.Data[2]
+			<< " 0x" << (uint32_t)theFile.Data[3]
+			<< std::endl;
+	}
+	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+	catch (const Intel::MEI_Client::MCHI_Client::MCHIErrorExceptionNoFile&) {}
 }
 
 TEST(MEIParser,too_small_data)

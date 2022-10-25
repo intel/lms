@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
+# Copyright (C) 2010-2022 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 include (metee.cmake)
@@ -88,6 +88,11 @@ file (GLOB PSRClient
   PSRClient/Src/PSRGetPlatformServiceRecordCommand.cpp
 )
 
+file (GLOB MCHIClient
+  MCHIClient/Src/ReadFileExCommand.cpp
+  MCHIClient/Src/MCHICommand.cpp
+)
+
 add_library (MEIClient STATIC
   src/MEICommand.cpp
   src/MEIparser.cpp
@@ -99,6 +104,7 @@ add_library (MEIClient STATIC
   ${MKHIClient}
   ${UPIDClient}
   ${PSRClient}
+  ${MCHIClient}
 )
 
 set_target_properties (MEIClient PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -117,6 +123,7 @@ target_include_directories (MEIClient PUBLIC
   "MKHIClient/Include/"
   "UPIDClient/Include/"
   "PSRClient/Include/"
+  "MCHIClient/Include/"
 )
 if (BUILD_TESTS)
   add_subdirectory ("AMTHITestProject" "AMTHITestProject")
