@@ -40,6 +40,7 @@
 #include "PSRGetPlatformServiceRecordCommand.h"
 #include "GetUPIDFeatureStateCommand.h"
 #include "SetUPIDFeatureStateCommand.h"
+#include "ReadFileExCommand.h"
 #include "KVMScreenSettingClient.h"
 #include "Tools.h"
 #include "EventManagment.h"
@@ -88,6 +89,13 @@ namespace Intel {
 		unsigned int errNo = e.getErr(); \
 		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	}
+#define CATCH_NoClientExceptionReturn(func) \
+	catch (const Intel::MEI_Client::HeciNoClientException& e) \
+	{ \
+		const char* reason = e.what(); \
+		UNS_DEBUG(L"Exception in " func " %C\n", reason); \
+		return LMS_ERROR::NOT_SUPPORTED_BY_FW; \
+	}
 
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
@@ -95,6 +103,22 @@ namespace Intel {
 		const char* reason = e.what(); \
 		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
 	}
+
+#define CATCH_MCHIErrorExceptionAllReturn(func) \
+	catch (const Intel::MEI_Client::MCHI_Client::MCHIErrorExceptionNoFile&) \
+	{ \
+		UNS_DEBUG(func L" failed NoFile\n"); \
+		return LMS_ERROR::NOT_SUPPORTED_BY_FW; \
+	} \
+	catch (Intel::MEI_Client::MCHI_Client::MCHIErrorException& e) \
+	{ \
+		unsigned int errNo = e.getErr(); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+	} \
+	CATCH_NoClientExceptionReturn(func) \
+	CATCH_MEIClientException(func) \
+	CATCH_exception(func) \
+	return LMS_ERROR::FAIL;
 
 template<typename T, size_t SIZE>
 constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
@@ -1065,12 +1089,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"PSRGetPlatformServiceRecordCommand")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in PSRGetPlatformServiceRecordCommand %C\n", reason);
-				return LMS_ERROR::NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"PSRGetPlatformServiceRecordCommand")
 			CATCH_MEIClientException(L"PSRGetPlatformServiceRecordCommand")
 			CATCH_exception(L"PSRGetPlatformServiceRecordCommand")
 			return LMS_ERROR::FAIL;
@@ -1091,12 +1110,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"GetPlatformServiceRecordRaw")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in GetPlatformServiceRecordRaw %C\n", reason);
-				return LMS_ERROR::NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"GetPlatformServiceRecordRaw")
 			CATCH_MEIClientException(L"GetPlatformServiceRecordRaw")
 			CATCH_exception(L"GetPlatformServiceRecordRaw")
 			return LMS_ERROR::FAIL;
@@ -1113,12 +1127,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_UPIDErrorException(L"GetUPIDStateCommand")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in GetUPIDFeatureStateCommand %C\n", reason);
-				return LMS_ERROR::NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"GetUPIDStateCommand")
 			CATCH_MEIClientException(L"GetUPIDStateCommand")
 			CATCH_exception(L"GetUPIDStateCommand")
 			return LMS_ERROR::FAIL;
@@ -1133,15 +1142,29 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				return LMS_ERROR::OK;
 			}
 			CATCH_UPIDErrorException(L"SetUPIDStateCommand")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in SetUPIDFeatureStateCommand %C\n", reason);
-				return LMS_ERROR::NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"SetUPIDStateCommand")
 			CATCH_MEIClientException(L"SetUPIDStateCommand")
 			CATCH_exception(L"SetUPIDStateCommand")
 			return LMS_ERROR::FAIL;
+		}
+
+		LMS_ERROR PTHI_Commands_BE::SkuMgrQualifiedBrandEntitlements(unsigned int& data)
+		{
+			try
+			{
+				Intel::MEI_Client::MCHI_Client::ReadFileExCommand readFileEx(
+					Intel::MEI_Client::MCHI_Client::MCA_FILE_ID::SKU_MGR_QUALIFIED_BRAND_ENTITLEMENTS, 0, sizeof(unsigned int), 0);
+				Intel::MEI_Client::MCHI_Client::READ_FILE_EX_RESPONSE response = readFileEx.getResponse();
+				if (response.Data.size() != sizeof(unsigned int))
+				{
+					UNS_DEBUG("Data size is wrong %zu != %zu\n", response.Data.size(), sizeof(unsigned int));
+					return LMS_ERROR::FAIL;
+				}
+				uint8_t* p = (uint8_t*)&data;
+				std::copy(response.Data.begin(), response.Data.end(), p);
+				return LMS_ERROR::OK;
+			}
+			CATCH_MCHIErrorExceptionAllReturn(L"SkuMgrQualifiedBrandEntitlements")
 		}
 	}
 }
