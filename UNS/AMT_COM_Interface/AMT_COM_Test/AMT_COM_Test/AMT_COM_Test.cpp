@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 // AMT_COM_Test.cpp : Defines the entry point for the console application.
 //
@@ -403,6 +403,12 @@ TEST_F(AMT_COM_PTHI, GetPlatformServiceRecordRaw)
 {
 	SAFEARRAY* binPSR;
 	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecordRaw(&binPSR));
+}
+
+TEST_F(AMT_COM_PTHI, SkuMgrQualifiedBrandEntitlements)
+{
+	UINT Data;
+	ASSERT_MAY_THROW_NOTIMPL(amthi->SkuMgrQualifiedBrandEntitlements(&Data));
 }
 
 /* ------------------------- AMT_COM_AT_Device ----------------------- */

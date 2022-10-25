@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -115,6 +115,7 @@ public:
 	STDMETHOD(GetPlatformServiceRecordRaw)(SAFEARRAY** binPSR);
 	STDMETHOD(GetUPIDFeatureState)(VARIANT_BOOL* pState);
 	STDMETHOD(SetUPIDFeatureState)(VARIANT_BOOL State);
+	STDMETHOD(SkuMgrQualifiedBrandEntitlements)(UINT* Data);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(PTHI_Commands), CPTHI_Commands)

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 // AMT_COM_Interface.idl : IDL source for AMT_COM_Interface
 //
@@ -84,6 +84,7 @@ interface IPTHI_Commands : IDispatch{
 	[id(42), helpstring("method GetPlatformServiceRecordRaw")] HRESULT GetPlatformServiceRecordRaw([out] SAFEARRAY(BYTE)* binPSR);
 	[id(43), helpstring("method GetUPIDFeatureState")] HRESULT GetUPIDFeatureState([out] VARIANT_BOOL* pState);
 	[id(44), helpstring("method SetUPIDFeatureState")] HRESULT SetUPIDFeatureState([in] VARIANT_BOOL State);
+	[id(45), helpstring("method SkuMgrQualifiedBrandEntitlements")] HRESULT SkuMgrQualifiedBrandEntitlements([out] UINT* Data);
 };
 
 [

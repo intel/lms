@@ -1348,3 +1348,13 @@ STDMETHODIMP CPTHI_Commands::SetUPIDFeatureState(VARIANT_BOOL State)
 
 	return S_OK;
 }
+
+STDMETHODIMP CPTHI_Commands::SkuMgrQualifiedBrandEntitlements(UINT* Data)
+{
+	if (CheckCredentials(SkuMgrQualifiedBrandEntitlements_F) != S_OK)
+		return E_ACCESSDENIED;
+
+	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::LMS_ERROR err = be.SkuMgrQualifiedBrandEntitlements(*Data);
+	return LMSError2HRESULT(err);
+}
