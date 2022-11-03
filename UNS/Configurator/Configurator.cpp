@@ -856,9 +856,9 @@ void Configurator::ScanConfiguration()
 					{
 						if (!m_stateData.Fields.Amt)// Manageability disabled in MEBx
 							break;
-						
+
 						services.Read(NamesGroup::MANAGABILITY_GROUP);
-						
+
 					}
 					break;
 				case Intel::MEI_Client::MKHI_Client::BrandSBT:
@@ -940,7 +940,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, SERVICE_STATUS_T
 	FuncEntryExit<void> fee(this, L"ChangeServiceState");
 
 	UNS_DEBUG(L"ChangeServiceState: %d\n", status);
-	switch (status) 
+	switch (status)
 	{
 		// The unloading of service and all the ones that depends on it was finished.
 		case SERVICE_STATUS_TYPE::UNLOADCOMPLETE:

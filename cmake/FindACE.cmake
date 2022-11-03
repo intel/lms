@@ -25,7 +25,7 @@ if(ACE_INCLUDE_DIR AND EXISTS "${ACE_INCLUDE_DIR}/ace/Version.h")
         REGEX "^#define[\t ]+ACE_VERSION[\t ]+\".*\"")
 
    string(REGEX REPLACE "^#define[\t ]+ACE_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
-           ACE_VERSION_STRING "${ace_version_str}")
+          ACE_VERSION_STRING "${ace_version_str}")
    unset(ace_version_str)
 endif()
 

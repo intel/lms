@@ -234,7 +234,7 @@ HRESULT WMIGet(         IWbemServices*      srv,
 
 template<bool log>
 static
-HRESULT WMIGet(IWbemServices*      srv,
+HRESULT WMIGet(         IWbemServices*      srv,
 			   IWbemClassObject*   obj,
 			   BSTR                name,
 			   std::wstring&       var,

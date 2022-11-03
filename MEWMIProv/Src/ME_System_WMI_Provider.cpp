@@ -148,7 +148,7 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 		uint32 ReasonCode=0;
 		bool cryptoFuseEnabled;
 		PTHI_Commands pthic;
-		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);		
+		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);
 		ERROR_HANDLER(ReturnValue);
 		
 		WMIGetMethodOParams(pClass, L"getLastMEResetReason", &pOutParams.p);
