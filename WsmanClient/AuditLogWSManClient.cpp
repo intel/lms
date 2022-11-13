@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -56,7 +56,7 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 			}
 	
 			totalRecordsCount = output.TotalRecordCount();
-			unsigned int outputSize = output.EventRecords().size();
+			unsigned int outputSize = (unsigned int)output.EventRecords().size();
 			// Insert Records to new vector
 			for(unsigned int i=0; i<outputSize; i++)
 			{
@@ -98,7 +98,7 @@ bool AuditLogWSManClient::AuditLogRecordFromBinaryBase64Data( BinaryData binaryR
 	try
 	{
 		unsigned char* recordPtr = binaryRecord.data();
-		unsigned int recordLen = binaryRecord.size();
+		size_t recordLen = binaryRecord.size();
 		
 		if (recordLen < sizeof(structedRecord.AuditAppID))
 			return false;
