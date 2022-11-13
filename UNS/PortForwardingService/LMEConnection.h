@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -284,7 +284,7 @@ public:
 	bool ChannelOpenReplaySuccess(uint32_t recipient, uint32_t sender);
 	bool ChannelOpenReplayFailure(uint32_t recipient, uint32_t reason);
 	bool ChannelClose(uint32_t recipient);
-	int  ChannelData(uint32_t recipient, uint32_t len, unsigned char *buffer);
+	ssize_t ChannelData(uint32_t recipient, uint32_t len, unsigned char *buffer);
 	bool ChannelWindowAdjust(uint32_t recipient, uint32_t len);
 	bool IsSelfDisconnect() { return _selfDisconnect; }
 	bool IsClientNotFound() { return _clientNotFound; }
@@ -306,8 +306,8 @@ private:
 
 	void DeinitInternal();
 	void _doRX();
-	int _receiveMessage(unsigned char *buffer, int len);
-	int _sendMessage(unsigned char *buffer, int len);
+	ssize_t _receiveMessage(unsigned char *buffer, size_t len);
+	ssize_t _sendMessage(unsigned char *buffer, size_t len);
 
 	unsigned char *_txBuffer;
 

@@ -133,7 +133,7 @@ bool Protocol::Init(InitParameters & params)
 	}
 #endif
 
-	long bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
+	size_t bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
 	if (bufSize > 0) {
 		_rxSocketBuffer = new char[bufSize];
 		_rxSocketBufferSize = bufSize;
@@ -1897,12 +1897,12 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 			Intel::MEI_Client::AMTHI_Client::GET_DNS_SUFFIX_LIST_RESPONSE response = getDNSSuffixListCommand.getResponse();
 			std::lock_guard<std::mutex> l(_AMTDNSLock);
 			_AMTDNSSuffixes.clear();
-			unsigned int n = response.HashHandles.size();
+			size_t n = response.HashHandles.size();
 			if (n > 0)
 			{
 				vector<string> dnsSuffixes;
 				string ss;
-				for (unsigned i = 0; i < n; i++)
+				for (size_t i = 0; i < n; i++)
 				{
 					char c = response.HashHandles[i];
 					if (c == '\0')

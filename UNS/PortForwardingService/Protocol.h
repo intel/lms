@@ -127,7 +127,7 @@ private:
 
 	typedef std::vector<PortForwardRequest *> PortForwardRequestList;
 	typedef std::map<unsigned int, PortForwardRequestList> PortMap;
-	typedef std::map<unsigned int, Channel *> ChannelMap;
+	typedef std::map<SOCKET, Channel *> ChannelMap;
 
 	LMEConnection _lme;
 
@@ -139,7 +139,7 @@ private:
 	std::mutex _channelsLock;
 	std::mutex _deleteLock;
 	char *_rxSocketBuffer;
-	unsigned long _rxSocketBufferSize;
+	size_t _rxSocketBufferSize;
 
 #ifdef _REMOTE_SUPPORT
 	std::vector<std::string> _AMTDNSSuffixes;
