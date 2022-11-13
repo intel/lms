@@ -50,9 +50,9 @@ private:
 
 	bool RegDelnode(const LmsRegStr &lpSubKey);
 	bool DeleteRegEntry(RegEntry& entry);
-	bool GetRegistryData(void* value, unsigned long* valsz, unsigned long* type,
+	bool GetRegistryData(void* value, size_t* valsz, unsigned long* type,
 		const LmsRegStr &key, const LmsRegStr &valueName, bool withCache);
-	bool SetRegistryData(const void* value, unsigned long valsz, unsigned long type,
+	bool SetRegistryData(const void* value, size_t valsz, unsigned long type,
 		const LmsRegStr &key, const LmsRegStr &valueName, bool withCache);
 	
 	RegistryStorage(const std::shared_ptr<RegEntryMap> &regMap, const std::shared_ptr<MajorSubKeysList> &keyList);

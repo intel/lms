@@ -73,7 +73,7 @@ RegistryStorage::GetDataValue(DATA_NAME name, std::string& value, bool withCache
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = 0;
+	size_t valsz = 0;
 	unsigned long type;
 			
 	if (GetRegistryData(NULL, &valsz, &type, key, value_name, withCache) == true)
@@ -107,7 +107,7 @@ RegistryStorage::ValueExists(DATA_NAME name)
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = 0;
+	size_t valsz = 0;
 	unsigned long type;
 	if (GetRegistryData(NULL, &valsz, &type, key, value_name, false) == true)
 	{
@@ -124,7 +124,7 @@ RegistryStorage::GetDataValue(DATA_NAME name, std::wstring& value, bool withCach
 	RegEntry entry = _regMap->at(name);
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = 0;
+	size_t valsz = 0;
 	unsigned long type;
 	if (GetRegistryData(NULL, &valsz, &type, key, value_name, withCache) == true)
 	{
@@ -132,7 +132,7 @@ RegistryStorage::GetDataValue(DATA_NAME name, std::wstring& value, bool withCach
 		{
 			return false;
 		}
-		unsigned long wsize = valsz / sizeof(wchar_t);
+		size_t wsize = valsz / sizeof(wchar_t);
 		std::unique_ptr<wchar_t[]> newVal(new wchar_t[wsize + 1]);
 		if(GetRegistryData(newVal.get(), &valsz, &type, key, value_name, withCache)!=true)
 		{
@@ -154,7 +154,7 @@ RegistryStorage::GetDataValue(DATA_NAME name, unsigned long& value, bool withCac
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = sizeof(value);
+	size_t valsz = sizeof(value);
 	unsigned long type;
 	
 	if (GetRegistryData(&value, &valsz, &type, key, value_name, withCache) == true)

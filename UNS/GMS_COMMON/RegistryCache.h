@@ -27,7 +27,7 @@ private:
 
 public:
 
-	static bool GetData(void *value, unsigned long *valsz, unsigned long *type,
+	static bool GetData(void *value, size_t *valsz, unsigned long *type,
 						const LmsRegStr &base0, const LmsRegStr &key,
 						const LmsRegStr &valuename)
 	{
@@ -89,7 +89,7 @@ public:
 		return res;
 	}
 	
-	static void SetData(const void *value, unsigned long valsz, unsigned long type,
+	static void SetData(const void *value, size_t valsz, unsigned long type,
 						const LmsRegStr &base0, const LmsRegStr &key,
 						const LmsRegStr &valuename)
 	{
