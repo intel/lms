@@ -6,7 +6,7 @@
 //
 //  Contents:   Represents the Remote Access Service in the Intel(R) AMT subsystem.
 //
-//              This file was automatically generated from AMT_RemoteAccessService.mof,  version: 4.0.0
+//              This file was automatically generated from AMT_RemoteAccessService.mof,  version: 5.0.0
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_REMOTEACCESSSERVICE_H
@@ -93,10 +93,10 @@ namespace Typed
 			// Optional, A reference to a certificate. Required if AuthMethod is set to mutual authentication
 			void Certificate(const CimReference &value); 
 
-			// Optional, A Username to be used for the connection with the MPS if Username-Pwd authentication is used. Limited to 16 alphanumeric characters
+			// Optional, A Username to be used for the connection with the MPS if Username-Pwd authentication is used. Limited to 64 alphanumeric characters
 			void Username(const string &value); 
 
-			// Optional, A Password to be used for the connection with the MPS if Username-Pwd authentication is used. Limited to 16 characters
+			// Optional, A Password to be used for the connection with the MPS if Username-Pwd authentication is used. Limited to 64 characters
 			void Password(const string &value); 
 
 			// Optional, A common name used when AccessInfo is an IP address.

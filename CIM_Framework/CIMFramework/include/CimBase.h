@@ -87,7 +87,7 @@ namespace Typed
 
 	protected:
 		// Constructor.  Protected so that this class cannot be instantiated directly.
-		CimParam() {}
+		CimParam(): _cimParamObject(){}
 
 		// Set a field or add a new one. For use by derived class.
 		void SetOrAddField(const string &name, const string &value)
@@ -152,7 +152,7 @@ namespace Typed
 		private:
 			CimObject::CimKeys cimObjectKeys;
 		protected:
-			CimKeys() { }
+			CimKeys():cimObjectKeys(){ }
 			virtual ~CimKeys() {}
 			const string &GetKey(const string &name) const
 			{

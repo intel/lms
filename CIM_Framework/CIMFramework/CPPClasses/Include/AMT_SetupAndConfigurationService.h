@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_CredentialManagementService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 8);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_CredentialManagementService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 8);
 			}
 		}
 
@@ -137,6 +137,30 @@ namespace Typed
 
 		// Remove PasswordModel field.
 		void RemovePasswordModel(); 
+
+		// Optional, The domain name provided by DHCP server (DHCP option 15) 
+		const string DhcpDNSSuffix() const;
+
+		// Optional, The domain name provided by DHCP server (DHCP option 15) 
+		void DhcpDNSSuffix(const string &value); 
+
+		// Is true if the field DhcpDNSSuffix exists in the current object, otherwise is false.
+		bool DhcpDNSSuffixExists() const;
+
+		// Remove DhcpDNSSuffix field.
+		void RemoveDhcpDNSSuffix(); 
+
+		// Optional, The DNS suffix for provisioning purposes provided in Mebx 
+		const string TrustedDNSSuffix() const;
+
+		// Optional, The DNS suffix for provisioning purposes provided in Mebx 
+		void TrustedDNSSuffix(const string &value); 
+
+		// Is true if the field TrustedDNSSuffix exists in the current object, otherwise is false.
+		bool TrustedDNSSuffixExists() const;
+
+		// Remove TrustedDNSSuffix field.
+		void RemoveTrustedDNSSuffix(); 
 
 		// Commits pending configuration commands made to the Intel(R) AMT device. Completes configuration when in "IN-provisioning" state
 		virtual unsigned int CommitChanges();
@@ -272,7 +296,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_CredentialManagementService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 8);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -282,14 +306,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_CredentialManagementService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 8);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_CredentialManagementService::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 6);
+			CimBase::SetMetaData(childMetaData, _metadata, 8);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

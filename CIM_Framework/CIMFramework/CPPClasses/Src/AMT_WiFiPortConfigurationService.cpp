@@ -22,6 +22,7 @@ namespace Typed
 		{"localProfileSynchronizationEnabled", false, false, false },
 		{"LastConnectedSsidUnderMeControl", false, false, false },
 		{"NoHostCsmeSoftwarePolicy", false, false, false },
+		{"UEFIWiFiProfileShareEnabled", false, false, false },
 	};
 	// class fields
 	const unsigned int AMT_WiFiPortConfigurationService::localProfileSynchronizationEnabled() const
@@ -77,6 +78,25 @@ namespace Typed
 	void AMT_WiFiPortConfigurationService::RemoveNoHostCsmeSoftwarePolicy()
 	{
 		RemoveField("NoHostCsmeSoftwarePolicy");
+	}
+
+	const bool AMT_WiFiPortConfigurationService::UEFIWiFiProfileShareEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("UEFIWiFiProfileShareEnabled"), ret);
+		return ret;
+	}
+	void AMT_WiFiPortConfigurationService::UEFIWiFiProfileShareEnabled(const bool value)
+	{
+		SetOrAddField("UEFIWiFiProfileShareEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_WiFiPortConfigurationService::UEFIWiFiProfileShareEnabledExists() const
+	{
+		return ContainsField("UEFIWiFiProfileShareEnabled");
+	}
+	void AMT_WiFiPortConfigurationService::RemoveUEFIWiFiProfileShareEnabled()
+	{
+		RemoveField("UEFIWiFiProfileShareEnabled");
 	}
 
 	CimBase *AMT_WiFiPortConfigurationService::CreateFromCimObject(const CimObject &object)
@@ -222,24 +242,6 @@ namespace Typed
 		CimEmptyParam input;
 		CimEmptyParam output;
 		return Invoke("DeleteAllUserProfiles", input, output);
-	}
-	const CimFieldAttribute AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill_INPUT::_metadata[] = {
-		{"ApplicationRequestedRfKill", false, true },
-	};
-	void AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill_INPUT::ApplicationRequestedRfKill(const bool value)
-	{
-		SetOrAddField("ApplicationRequestedRfKill", TypeConverter::TypeToString(value));
-	}
-	const VectorFieldData AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill_INPUT::GetAllFields() const
-	{
-		VectorFieldData ret;
-		ret = sortData(_metadata, 1);
-		return ret;
-	}
-	unsigned int AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill(const SetApplicationRequestedRfKill_INPUT &input)
-	{
-		CimEmptyParam output;
-		return Invoke("SetApplicationRequestedRfKill", input, output);
 	}
 	const string AMT_WiFiPortConfigurationService::CLASS_NAME = "AMT_WiFiPortConfigurationService";
 	const string AMT_WiFiPortConfigurationService::CLASS_URI = "http://intel.com/wbem/wscim/1/amt-schema/1/AMT_WiFiPortConfigurationService";

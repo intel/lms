@@ -123,10 +123,10 @@ namespace Typed
 			// Required, The time value received from invoking GetLowAccuracyTimeSynch().
 			void Ta0(const unsigned int value); 
 
-			// Required, The remote client timestamp after getting a response from GetLowAccuracyTimeSynch(). should be in a range between January 1 2004 and December 31 2029.
+			// Required, The remote client timestamp after getting a response from GetLowAccuracyTimeSynch(). should be greater than January 1 2004.
 			void Tm1(const unsigned int value); 
 
-			// Required, The remote client timestamp obtained immediately prior to invoking this method. should be in a range between January 1 2004 and December 31 2029.
+			// Required, The remote client timestamp obtained immediately prior to invoking this method. should be greater than January 1 2004.
 			void Tm2(const unsigned int value); 
 
 			const VectorFieldData GetAllFields() const;
@@ -134,7 +134,7 @@ namespace Typed
 			static const CimFieldAttribute _metadata[];
 		};
 
-		// This method is used to synchronize the Intel(R) AMT device's internal clock with an external clock. Intel(R) AMT Release 2.0 constrains this value to a range between January 1 2004 and December 31 2029.
+		// This method is used to synchronize the Intel(R) AMT device's internal clock with an external clock. Intel(R) AMT Release 2.0 constrains this value to be greater than January 1 2004.
 		virtual unsigned int SetHighAccuracyTimeSynch(const SetHighAccuracyTimeSynch_INPUT &input);
 
 		//Input parameter for function EnableLocalTimeSync

@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 
@@ -102,6 +102,18 @@ namespace Typed
 		// Remove MaxMpsPerPolicy field.
 		void RemoveMaxMpsPerPolicy(); 
 
+		// Optional, The maximum number of Proxy Entry Points that can be configured on the Intel(R) AMT device for remote access.
+		const unsigned int MaxTotalProxyEntryPoints() const;
+
+		// Optional, The maximum number of Proxy Entry Points that can be configured on the Intel(R) AMT device for remote access.
+		void MaxTotalProxyEntryPoints(const unsigned int value); 
+
+		// Is true if the field MaxTotalProxyEntryPoints exists in the current object, otherwise is false.
+		bool MaxTotalProxyEntryPointsExists() const;
+
+		// Remove MaxTotalProxyEntryPoints field.
+		void RemoveMaxTotalProxyEntryPoints(); 
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -120,7 +132,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -130,14 +142,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_Capabilities::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 3);
+			CimBase::SetMetaData(childMetaData, _metadata, 4);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

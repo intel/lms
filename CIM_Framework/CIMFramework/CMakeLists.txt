@@ -38,9 +38,6 @@ add_library (CPPCIMFramework STATIC
   CPPClasses/Src/AMT_GeneralSettings.cpp
   CPPClasses/Src/AMT_GeneralSystemDefenseCapabilities.cpp
   CPPClasses/Src/AMT_Hdr8021Filter.cpp
-  CPPClasses/Src/AMT_HeuristicPacketFilterInterfacePolicy.cpp
-  CPPClasses/Src/AMT_HeuristicPacketFilterSettings.cpp
-  CPPClasses/Src/AMT_HeuristicPacketFilterStatistics.cpp
   CPPClasses/Src/AMT_InterfacePolicy.cpp
   CPPClasses/Src/AMT_IPHeadersFilter.cpp
   CPPClasses/Src/AMT_KerberosSettingData.cpp
@@ -73,8 +70,6 @@ add_library (CPPCIMFramework STATIC
   CPPClasses/Src/AMT_SystemDefensePolicyInService.cpp
   CPPClasses/Src/AMT_SystemDefenseService.cpp
   CPPClasses/Src/AMT_SystemPowerScheme.cpp
-  CPPClasses/Src/AMT_ThirdPartyDataStorageAdministrationService.cpp
-  CPPClasses/Src/AMT_ThirdPartyDataStorageService.cpp
   CPPClasses/Src/AMT_TimeSynchronizationService.cpp
   CPPClasses/Src/AMT_TLSCredentialContext.cpp
   CPPClasses/Src/AMT_TLSProtocolEndpointCollection.cpp
@@ -97,7 +92,6 @@ add_library (CPPCIMFramework STATIC
   CPPClasses/Src/CIM_AuthenticationService.cpp
   CPPClasses/Src/CIM_AuthorizationService.cpp
   CPPClasses/Src/CIM_AuthorizedPrivilege.cpp
-  CPPClasses/Src/CIM_Battery.cpp
   CPPClasses/Src/CIM_BIOSElement.cpp
   CPPClasses/Src/CIM_BIOSFeatureBIOSElements.cpp
   CPPClasses/Src/CIM_BIOSFeature.cpp
@@ -252,6 +246,8 @@ add_library (CPPCIMFramework STATIC
   CPPClasses/Src/IPS_HostBasedSetupService.cpp
   CPPClasses/Src/IPS_HostBootReason.cpp
   CPPClasses/Src/IPS_HostIpSettings.cpp
+  CPPClasses/Src/IPS_HTTPProxyAccessPoint.cpp
+  CPPClasses/Src/IPS_HTTPProxyService.cpp
   CPPClasses/Src/IPS_IderSessionUsingPort.cpp
   CPPClasses/Src/IPS_IEEE8021xSettings.cpp
   CPPClasses/Src/IPS_IPv6PortSettings.cpp

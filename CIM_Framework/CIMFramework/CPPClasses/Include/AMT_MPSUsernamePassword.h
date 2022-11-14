@@ -6,7 +6,7 @@
 //
 //  Contents:   A username and password used to access an MPS.
 //
-//              This file was automatically generated from AMT_MPSUsernamePassword.mof,  version: 6.0.0
+//              This file was automatically generated from AMT_MPSUsernamePassword.mof,  version: 7.0.0
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_MPSUSERNAMEPASSWORD_H

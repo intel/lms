@@ -25,6 +25,7 @@ namespace Typed
 		{"X509IssuerName", false, false, false },
 		{"X509SerialNumber", false, false, false },
 		{"AcceptNonSecureConnections", false, false, false },
+		{"NonSecureConnectionsSupported", false, false, false },
 	};
 	// class fields
 	const bool AMT_TLSSettingData::MutualAuthentication() const
@@ -137,6 +138,25 @@ namespace Typed
 	void AMT_TLSSettingData::RemoveAcceptNonSecureConnections()
 	{
 		RemoveField("AcceptNonSecureConnections");
+	}
+
+	const bool AMT_TLSSettingData::NonSecureConnectionsSupported() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("NonSecureConnectionsSupported"), ret);
+		return ret;
+	}
+	void AMT_TLSSettingData::NonSecureConnectionsSupported(const bool value)
+	{
+		SetOrAddField("NonSecureConnectionsSupported", TypeConverter::TypeToString(value));
+	}
+	bool AMT_TLSSettingData::NonSecureConnectionsSupportedExists() const
+	{
+		return ContainsField("NonSecureConnectionsSupported");
+	}
+	void AMT_TLSSettingData::RemoveNonSecureConnectionsSupported()
+	{
+		RemoveField("NonSecureConnectionsSupported");
 	}
 
 	CimBase *AMT_TLSSettingData::CreateFromCimObject(const CimObject &object)

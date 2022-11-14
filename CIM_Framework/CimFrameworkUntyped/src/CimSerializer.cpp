@@ -577,8 +577,6 @@ namespace Untyped
 				string name = attributes.find(attribute)->second;
 				string value = tmp.ToString(false);//tmp.GetTextValue();
 
-				string objectName, nameSpace, prefix, resourceURI;
-
 				// Because we can have multiple instances of tag and value in a
 				// document, we want to keep all the values together with their
 				// tag, so we have to loop over the existing vector string pair to

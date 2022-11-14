@@ -36,7 +36,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_NetworkPortConfigurationService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 
@@ -47,7 +47,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_NetworkPortConfigurationService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 
@@ -105,6 +105,18 @@ namespace Typed
 
 		// Remove NoHostCsmeSoftwarePolicy field.
 		void RemoveNoHostCsmeSoftwarePolicy(); 
+
+		// Optional, When true, WiFi profile share with UEFI is allowed
+		const bool UEFIWiFiProfileShareEnabled() const;
+
+		// Optional, When true, WiFi profile share with UEFI is allowed
+		void UEFIWiFiProfileShareEnabled(const bool value); 
+
+		// Is true if the field UEFIWiFiProfileShareEnabled exists in the current object, otherwise is false.
+		bool UEFIWiFiProfileShareEnabledExists() const;
+
+		// Remove UEFIWiFiProfileShareEnabled field.
+		void RemoveUEFIWiFiProfileShareEnabled(); 
 
 		//Input parameter for function AddWiFiSettings
 		class CIMFRAMEWORK_API AddWiFiSettings_INPUT : public CimParam
@@ -215,27 +227,6 @@ namespace Typed
 		// Deletes all the instances of CIM_WiFiEndpointSettings and CIM_IEEE8021xSettings that were created by local user applications. Also deletes all the associations that reference the instances of CIM_WiFiEndpointSettings and CIM_IEEE8021xSettings that were deleted.
 		virtual unsigned int DeleteAllUserProfiles();
 
-		//Input parameter for function SetApplicationRequestedRfKill
-		class CIMFRAMEWORK_API SetApplicationRequestedRfKill_INPUT : public CimParam
-		{
-		public:
-			// Class Constructor
-			SetApplicationRequestedRfKill_INPUT() : CimParam() {}
-
-			// Class Destructor
-			~SetApplicationRequestedRfKill_INPUT(){}
-
-			// Required, Indicates the adapter switching state
-			void ApplicationRequestedRfKill(const bool value); 
-
-			const VectorFieldData GetAllFields() const;
-		private:
-			static const CimFieldAttribute _metadata[];
-		};
-
-		// Notifies Intel(R) AMT WLAN that SW RF Kill is due to Host Adapter Switching
-		virtual unsigned int SetApplicationRequestedRfKill(const SetApplicationRequestedRfKill_INPUT &input);
-
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -254,7 +245,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_NetworkPortConfigurationService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -264,14 +255,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_NetworkPortConfigurationService::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_NetworkPortConfigurationService::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 3);
+			CimBase::SetMetaData(childMetaData, _metadata, 4);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

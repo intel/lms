@@ -6,7 +6,7 @@
 //
 //  Contents:   Capabilities and management of the Processor LogicalDevice.
 //
-//              This file was automatically generated from CIM_Processor.mof,  version: 2.45.0
+//              This file was automatically generated from CIM_Processor.mof,  version: 2.51.0
 //
 //----------------------------------------------------------------------------
 #ifndef CIM_PROCESSOR_H

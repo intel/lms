@@ -111,6 +111,7 @@ namespace Typed
 		// 	* TKIP (3): shall indicate that the desired encryption method is Temporal Key Integrity Protocol (TKIP). This value should be used only if AuthenticationMethod contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* CCMP (4): shall indicate that the desired encryption method is Counter Mode with Cipher Block Chaining Message Authentication Code Protocol (CCMP). This value should be used only if AuthenticationMethod contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* None (5): shall indicate that no encryption is desired. This value should be used only if AuthenticationMethod contains 2 ("Open System") or 3 ("Shared Key").
+		// 	* GCMP 256 (32768): shall indicate that the desired encryption method is GCMP. This value should be used only if AuthenticationMethod contains 6 ("WPA2 PSK"), 7 ("WPA2 IEEE 802.1x") or 32768 ("WPA3 SAE").
 		const unsigned short EncryptionMethod() const;
 
 		// Optional, EncryptionMethod shall specify the 802.11 encryption method used when the settings are applied. 	* Other (1): shall indicate that the desired encryption method is not specified in the list below. If this value is used, OtherEncryptionMethod should not be NULL and should not be empty.
@@ -118,6 +119,7 @@ namespace Typed
 		// 	* TKIP (3): shall indicate that the desired encryption method is Temporal Key Integrity Protocol (TKIP). This value should be used only if AuthenticationMethod contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* CCMP (4): shall indicate that the desired encryption method is Counter Mode with Cipher Block Chaining Message Authentication Code Protocol (CCMP). This value should be used only if AuthenticationMethod contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* None (5): shall indicate that no encryption is desired. This value should be used only if AuthenticationMethod contains 2 ("Open System") or 3 ("Shared Key").
+		// 	* GCMP 256 (32768): shall indicate that the desired encryption method is GCMP. This value should be used only if AuthenticationMethod contains 6 ("WPA2 PSK"), 7 ("WPA2 IEEE 802.1x") or 32768 ("WPA3 SAE").
 		void EncryptionMethod(const unsigned short value); 
 
 		// Is true if the field EncryptionMethod exists in the current object, otherwise is false.
@@ -145,6 +147,8 @@ namespace Typed
 		// 	* WPA IEEE 802.1x (5): shall indicate that the desired authentication method is WPA (Wi-Fi Protected Access) IEEE 802.1x. AuthenticationMethod should contain 5 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 PSK (6): shall indicate that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) PSK (Pre-Shared Key). AuthenticationMethod should containt 6 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 IEEE 802.1x (7): shall indicated that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) IEEE 802.1x. AuthenticationMethod should contain 7 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
+		// 	* WPA3 SAE IEEE 802.1x (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
+		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")
 		const unsigned short AuthenticationMethod() const;
 
 		// Optional, AuthenticationMethod shall specify the 802.11 authentication method used when the settings are applied. 	* Other (1): shall indicate that the desired authentication method is not specified in the list below. If AuthenticationMethod contains 1, OtherAuthenticationMethod should not be NULL and should not be empty.
@@ -154,6 +158,8 @@ namespace Typed
 		// 	* WPA IEEE 802.1x (5): shall indicate that the desired authentication method is WPA (Wi-Fi Protected Access) IEEE 802.1x. AuthenticationMethod should contain 5 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 PSK (6): shall indicate that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) PSK (Pre-Shared Key). AuthenticationMethod should containt 6 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 IEEE 802.1x (7): shall indicated that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) IEEE 802.1x. AuthenticationMethod should contain 7 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
+		// 	* WPA3 SAE IEEE 802.1x (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
+		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")
 		void AuthenticationMethod(const unsigned short value); 
 
 		// Is true if the field AuthenticationMethod exists in the current object, otherwise is false.

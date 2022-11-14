@@ -18,7 +18,29 @@ namespace Cim
 {
 namespace Typed 
 {
+	const CimFieldAttribute AMT_AuthorizationService::_metadata[] = {
+		{"AllowHttpQopAuthOnly", false, false, false },
+	};
 	// class fields
+	const unsigned int AMT_AuthorizationService::AllowHttpQopAuthOnly() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("AllowHttpQopAuthOnly"), ret);
+		return ret;
+	}
+	void AMT_AuthorizationService::AllowHttpQopAuthOnly(const unsigned int value)
+	{
+		SetOrAddField("AllowHttpQopAuthOnly", TypeConverter::TypeToString(value));
+	}
+	bool AMT_AuthorizationService::AllowHttpQopAuthOnlyExists() const
+	{
+		return ContainsField("AllowHttpQopAuthOnly");
+	}
+	void AMT_AuthorizationService::RemoveAllowHttpQopAuthOnly()
+	{
+		RemoveField("AllowHttpQopAuthOnly");
+	}
+
 	CimBase *AMT_AuthorizationService::CreateFromCimObject(const CimObject &object)
 	{
 		AMT_AuthorizationService *ret = NULL;

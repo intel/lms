@@ -234,8 +234,9 @@ namespace Typed
 
 			// Required, The signing algorithm that the FW should use for signing the certificate request
 			// Legal values:
-			// SHA1-RSA: 0
-			// SHA256-RSA: 1
+			// SHA1: 0
+			// SHA256: 1
+			// SHA384: 2
 			// Reserved: ..
 			void SigningAlgorithm(const unsigned int value); 
 
