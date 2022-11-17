@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -178,7 +178,7 @@ void BaseWSManPassword::Clean()
 	if (!m_pwd)
 		return;
 
-	memset_func(m_pwd, m_size, 0);
+	memset_func(m_pwd, 0, m_size);
 	delete[] m_pwd;
 	m_pwd = nullptr;
 }
