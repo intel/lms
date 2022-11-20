@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -37,7 +37,10 @@ public:
 	static HRESULT GetMESystem(
 		std::wstring& fwversion, bool& CryptoFuseEnabled,
 		uint32& type, uint32& segment,
-		uint32& mode, uint32& capabilities, uint32& enabledCapabilities);
+		uint32& mode, uint32& capabilities, uint32& enabledCapabilities,
+		bool& uniquePlatformIDFeatureSupported,
+		bool& uniquePlatformIDFeatureOSControlState,
+		bool& uniquePlatformIDFeatureState);
 private:
 	typedef union _MEFWCAPS_SKU_INT
 	{
@@ -181,4 +184,16 @@ private:
 		IWbemClassObject __RPC_FAR*    pInParams,
 		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 		IWbemServices*                 pNamespace);
+
+	static HRESULT getUniquePlatformIDFeatureSupported(
+		IWbemClassObject* pClass,
+		IWbemClassObject __RPC_FAR* pInParams,
+		IWbemObjectSink  __RPC_FAR* pResponseHandler,
+		IWbemServices* pNamespace);
+
+	static HRESULT getUniquePlatformIDFeatureOSControlState(
+		IWbemClassObject* pClass,
+		IWbemClassObject __RPC_FAR* pInParams,
+		IWbemObjectSink  __RPC_FAR* pResponseHandler,
+		IWbemServices* pNamespace);
 };

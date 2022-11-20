@@ -27,9 +27,13 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 		std::wstring fwversion = L"";
 		bool CryptoFuseEnabled = false;
 		uint32 type, segment, mode, capabilities, enabledCapabilities;
+		bool uniquePlatformIDFeatureSupported;
+		bool uniquePlatformIDFeatureOSControlState;
+		bool uniquePlatformIDFeatureState;
 		ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled,
 									 type, segment,
-									 mode, capabilities, enabledCapabilities);
+									 mode, capabilities, enabledCapabilities, uniquePlatformIDFeatureSupported,
+									 uniquePlatformIDFeatureOSControlState, uniquePlatformIDFeatureState);
 		if (ReturnValue != S_OK)
 		{
 			return hr;
@@ -96,9 +100,13 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 			std::wstring fwversion = L"";
 			bool CryptoFuseEnabled = false;
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
+			bool uniquePlatformIDFeatureSupported;
+			bool uniquePlatformIDFeatureOSControlState;
+			bool uniquePlatformIDFeatureState;
 			ReturnValue = ME_System_WMI_Provider::GetMESystem(fwversion, CryptoFuseEnabled,
 										 type, segment,
-										 mode, capabilities, enabledCapabilities);
+										 mode, capabilities, enabledCapabilities, uniquePlatformIDFeatureSupported,
+										 uniquePlatformIDFeatureOSControlState, uniquePlatformIDFeatureState);
 			if (ReturnValue != S_OK)
 			{
 				hr = WBEM_E_INVALID_ASSOCIATION;

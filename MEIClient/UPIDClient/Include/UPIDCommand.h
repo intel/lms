@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2022 Intel Corporation
  */
 /*++
 
@@ -127,10 +127,17 @@ namespace Intel
 					}
 
 					UPID_HECI_HEADER *header = (UPID_HECI_HEADER *)&buffer[0];
-					if (header->Feature != getFeatureID() || header->Command != getCommandID() ||
-						header->ByteCount != (buffer.size() - sizeof(UPID_HECI_HEADER)))
+					if (header->Feature != getFeatureID())
+					{
+						throw MEIClientException("Error: UPID Feature number is incorrect.");
+					}
+					if (header->Command != getCommandID())
 					{
 						throw MEIClientException("Error: UPID Command number is incorrect.");
+					}
+					if (header->ByteCount != (buffer.size() - sizeof(UPID_HECI_HEADER)))
+					{
+						throw MEIClientException("Error: UPID ByteCount is incorrect.");
 					}
 
 					UPID_STATUS *status = (UPID_STATUS*)&(buffer[sizeof(UPID_HECI_HEADER)]);

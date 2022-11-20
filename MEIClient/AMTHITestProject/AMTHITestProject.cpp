@@ -57,6 +57,9 @@
 
 #include "ReadFileExCommand.h"
 
+#include "GetUPIDFeatureSupportCommand.h"
+#include "GetUPIDFeatureOSControlCommand.h"
+
 #include "MEIparser.h"
 
 #include <sstream>
@@ -72,6 +75,7 @@
 using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 using namespace Intel::MEI_Client::MKHI_Client;
+using namespace Intel::MEI_Client::UPID_Client;
 
 TEST(instantiate, testOpenAndCloseUserInitiatedConnectionCommand)
 {
@@ -607,6 +611,27 @@ TEST(MCHI, testReadFileExCommand)
 	}
 	catch (const Intel::MEI_Client::HeciNoClientException&) {}
 	catch (const Intel::MEI_Client::MCHI_Client::MCHIErrorExceptionNoFile&) {}
+}
+
+TEST(UPID, testGetUPIDFeatureSupportCommand)
+{
+	try
+	{
+		GetUPIDFeatureSupportCommand getSupport;
+		UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response support = getSupport.getResponse();
+		EXPECT_EQ(support.platformIdSupported & ~(UPID_PLATFORM_ID_UPID_IS_SUPPORTED | UPID_PLATFORM_ID_ATTESTATION_IS_SUPPORTED), 0);
+	}
+	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+}
+
+TEST(UPID, testGetUPIDFeatureOSControlCommand)
+{
+	try
+	{
+		GetUPIDFeatureOSControlCommand getOSControl;
+		UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response support = getOSControl.getResponse();
+	}
+	catch (const Intel::MEI_Client::HeciNoClientException&) {}
 }
 
 TEST(MEIParser,too_small_data)

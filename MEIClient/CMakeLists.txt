@@ -78,7 +78,9 @@ file (GLOB MKHIClient
 
 file (GLOB UPIDClient
   UPIDClient/Src/GetUPIDCommand.cpp
+  UPIDClient/Src/GetUPIDFeatureOSControlCommand.cpp
   UPIDClient/Src/GetUPIDFeatureStateCommand.cpp
+  UPIDClient/Src/GetUPIDFeatureSupportCommand.cpp
   UPIDClient/Src/SetUPIDFeatureStateCommand.cpp
   UPIDClient/Src/UPIDCommand.cpp
 )
