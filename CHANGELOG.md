@@ -1,3 +1,9 @@
+## [2250.0.0.0]
+
+### Fixed
+ - openwsman: fix memory cleanup
+ - WsmanClient: fix memory cleanup
+
 ## [2245.0.0.0]
 
 ### Fixed
