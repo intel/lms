@@ -25,6 +25,8 @@ public:
 	virtual uint32_t performPFWU(uint32_t partialID, const std::wstring& imagePath) = 0;
 	
 	virtual void printPfwuReturnCode(uint32_t status) = 0; 
+
+	virtual ~PFWUpdateDllWrapper() { }
 };
 
 #endif /* __PFWUPDATEDLLWRAPPER_H_ */
