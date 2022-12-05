@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -67,7 +67,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 			{
 				CreationTimeStamp = toUNSDateFormat(m_HostProvisioningRecord.CreationTimeStamp().Serialize());
 			}
-			*pProvisioningMethod = Host;
+			*pProvisioningMethod = ProvisioningMethod_Host;
 		}
 		else
 		{
@@ -75,7 +75,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 			{
 				
 				CreationTimeStamp = toUNSDateFormat(m_RemoteProvisioningRecord.CreationTimeStamp().Serialize());
-				*pProvisioningMethod = Remote;
+				*pProvisioningMethod = ProvisioningMethod_Remote;
 				if (m_RemoteProvisioningRecord.SelectedHashDataExists())
 				{
 					// hash data
@@ -105,7 +105,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 					{
 						CreationTimeStamp = toUNSDateFormat(m_ManualProvisioningRecord.CreationTimeStamp().Serialize());
 					}
-					*pProvisioningMethod = Manual;
+					*pProvisioningMethod = ProvisioningMethod_Manual;
 				}
 				else
 				{
@@ -115,14 +115,14 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 						{
 							CreationTimeStamp = toUNSDateFormat(m_AdminProvisioningRecord.CreationTimeStamp().Serialize());
 						}
-						*pProvisioningMethod = Reserved1; //Admin;
+						*pProvisioningMethod = ProvisioningMethod_Reserved1; //Admin;
 						WSMAN_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C !!!!!!!!!!\n", CreationTimeStamp.c_str());
 					}
 					else
 					{
 						ppCertHash.resize(0);
 						CreationTimeStamp = "";
-						*pProvisioningMethod = NotSupported;
+						*pProvisioningMethod = ProvisioningMethod_NotSupported;
 					}
 				}
 			}

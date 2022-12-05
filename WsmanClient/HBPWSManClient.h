@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -19,25 +19,18 @@
 #include "BaseWSManClient.h"
 #include <vector>
 
-
-// ProvisioningMethodEnum defined in previous FW mof of IPS_ProvisioningAuditRecord
-//	ValueMap { "0", "1", "2", "3", "4", "5", "6",  ".."},
-//      Values { "Unknown", "Reserved", "Un-provisioned", "TLS-PSK", "TLS-PKI","Host Activated", "Manual", "Reserved"}]
-typedef enum _ProvisioningMethodEnum {
-	UnknownProv = 0,
-	Reserved1 = 1,
-	Unprovisioned = 2,
-	Remote = 3,
-	Remote_TLSPKI = 4,
-	Host = 5,
-	Manual = 6,
-	Reserved2 = 7,
-	NotSupported = 100
-} ProvisioningMethodEnum;
-
 class WSMAN_DLL_API HBPWSManClient : public BaseWSManClient
 {
 public:
+	// ProvisioningMethodEnum defined in previous FW mof of IPS_ProvisioningAuditRecord
+	//	ValueMap { "0", "1", "2", "3", "4", "5", "6",  ".."},
+	//      Values { "Unknown", "Reserved", "Un-provisioned", "TLS-PSK", "TLS-PKI","Host Activated", "Manual", "Reserved"}]
+	short ProvisioningMethod_Reserved1 = 1;
+	short ProvisioningMethod_Remote = 3;
+	short ProvisioningMethod_Host = 5;
+	short ProvisioningMethod_Manual = 6;
+	short ProvisioningMethod_NotSupported = 100;
+
 	HBPWSManClient();
 	virtual ~HBPWSManClient();
 
