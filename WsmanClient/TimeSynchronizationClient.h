@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2019 Intel Corporation
+ * Copyright (C) 2011-2022 Intel Corporation
  */
 /*++
 
@@ -18,12 +18,9 @@
 class WSMAN_DLL_API TimeSynchronizationClient : public BaseWSManClient
 {
 public:
-	enum ENABLED_STATE
-	{
-		DEFAULT_TRUE = 0,
-		CONFIGURED_TRUE,
-		TIMESYNC_DISABLED //These is FALSE value if the LocalTimeSyncEnabled FW property.
-	};
+	unsigned int TIMESYNCSTATE_DEFAULT_TRUE = 0;
+	unsigned int TIMESYNCSTATE_CONFIGURED_TRUE = 1;
+	unsigned int TIMESYNCSTATE_TIMESYNC_DISABLED = 2; //These is FALSE value if the LocalTimeSyncEnabled FW property.
 
 	TimeSynchronizationClient();
 	TimeSynchronizationClient(const std::string &User, const std::string &Password);
@@ -43,7 +40,7 @@ private:
 	Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService m_service;
 	UNLOCK_AFTER;
 
-	ENABLED_STATE m_TimeSyncState;
+	unsigned int m_TimeSyncState;
 };
 
 #endif //_TimeSynchronizationClient_H
