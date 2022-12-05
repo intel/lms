@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2007, 2009-2015 Intel Corporation
+ * Copyright (C) 2007, 2009-2022 Intel Corporation
  */
 /*++
 
@@ -18,11 +18,6 @@
 #define _BASE_LOG_H
 
 #include <stdlib.h>
-
-#define ERROR_EVENT 0
-#define DEBUG_EVENT 1
-#define WARNING_EVENT 2
-
 
 class BaseEventLog 
 {
