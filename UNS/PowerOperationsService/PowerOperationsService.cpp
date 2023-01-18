@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 // PowerOperationsService.cpp : Defines the exported functions for the DLL application.
 
@@ -505,7 +505,7 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 }
 
 //returns 0 on success, -1 otherwise
-int PowerOperationsService::handleRemoteGracefulPowerEvents(GMS_AlertIndication OrgEvent)
+int PowerOperationsService::handleRemoteGracefulPowerEvents(const GMS_AlertIndication &OrgEvent)
 {
 	switch (OrgEvent.id)
 	{
