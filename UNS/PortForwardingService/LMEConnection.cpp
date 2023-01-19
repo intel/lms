@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -77,6 +77,14 @@ bool LMEConnection::Init(InitParameters & params)
 		try
 		{
 			_heci->Init();
+
+			// Register Device Notification
+			if (_devNotify != nullptr)
+			{
+				HANDLE drvHandle = _heci.get()->GetHandle();
+				if (drvHandle)
+					_devNotify(_devNotifyParam, &_notifyHandle, drvHandle, true);
+			}
 		}
 		catch (HeciNoClientException& e)
 		{
@@ -95,15 +103,7 @@ bool LMEConnection::Init(InitParameters & params)
 			return res;
 		}
 
-		// Register Device Notification
-		if (_devNotify != nullptr)
-		{
-			HANDLE drvHandle = _heci.get()->GetHandle();
-			if (drvHandle)
-				_devNotify(_devNotifyParam, &_notifyHandle, drvHandle, true);
-		}
-
-		// resert events
+		// reset events
 		_portIsOk.reset();
 
 		// launch RX thread
