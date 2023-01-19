@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 
 #include "global.h"
@@ -490,7 +490,12 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 	if (type == 0) return false; 
 
 	ACE_Service_Object *obj = static_cast<ACE_Service_Object *>(type->object ()); 
-	ACE_Task *subServiceTask = dynamic_cast<ACE_Task*>(obj); 
+	ACE_Task *subServiceTask = dynamic_cast<ACE_Task*>(obj);
+	if (subServiceTask == nullptr)
+	{
+		UNS_ERROR(L"GmsService: sending message - Object is not an ACE_Task\n");
+		return false;
+	}
 	subServiceTask->putq(mb->duplicate()); 
 
 	return true;
