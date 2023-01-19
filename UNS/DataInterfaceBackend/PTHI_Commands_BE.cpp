@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -731,9 +731,10 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 			unsigned int ReturnValue;
 			CancelOptInClient _CancelOptInClient;
-			short policy, state;
+			short policy = 0, state = 0;
 
-			_CancelOptInClient.GetUserConsentState(&state, &policy);
+			if (!_CancelOptInClient.GetUserConsentState(&state, &policy))
+				return LMS_ERROR::FAIL;
 			if (state != 0) // cancel consent only if consent started
 			{
 				for (int i = 0; i < TERMINATEREMEDYSESSIONS_RETRIES; i++)
