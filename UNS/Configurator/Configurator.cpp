@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -306,9 +306,9 @@ bool CheckTimeSyncStateLoad()
 	return ret && timeSyncState;
 }
 
+#ifdef WIN32
 namespace
 {
-#ifdef WIN32
 	bool CheckIfServiceInstalled(const ACE_TString & ServiceName)
 	{
 		bool result = false;
@@ -328,17 +328,9 @@ namespace
 		CloseServiceHandle(h_scm);
 		return result;
 	}
-#else
-bool CheckIfServiceInstalled(const ACE_TString & ServiceName)
-	{
-		UNS_DEBUG(L"Configurator:: CheckIfServiceInstalled not implemented\n");
-		return true;
-	}
-#endif
 }
 
 //check if service WiFiProfileSync should be loaded
-#ifdef WIN32
 bool CheckWiFiProfileSyncRequired()
 {
 	bool enabled;
