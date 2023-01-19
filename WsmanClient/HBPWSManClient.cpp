@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -56,7 +56,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 
 				std::stringstream stream;
 				stream << "CertificateHash len = " << temp_data_length << " data: ";
-				for (unsigned short i=0; i<temp_data_length; i++)
+				for (unsigned int i = 0; i < temp_data_length; i++)
 				{
 					ppCertHash[i]=temp_data[i];
 					stream << " " << std::hex << temp_data[i];
