@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -26,7 +26,7 @@ EthernetSettingsWSManClient::~EthernetSettingsWSManClient()
 
 unsigned int EthernetSettingsWSManClient::Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings)
 {
-	unsigned int retValue = ERROR_UNKNOWN_ERROR;
+	unsigned int retValue;
 
 	try {
 		if (!m_endpoint)
