@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2022 Intel Corporation
+ * Copyright (C) 2011-2023 Intel Corporation
  */
 /*++
 
@@ -113,16 +113,19 @@ bool TimeSynchronizationClient::SetAMTTime(unsigned int time)
 	if (!Init())
 		return false;
 	
-	Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService::SetHighAccuracyTimeSynch_INPUT input;
 	unsigned int currTime = 0;
 	if (!GetAMTTime(currTime))
 	{
 		return false;
 	}
-	input.Ta0(currTime);
-	input.Tm1(time);
-	input.Tm2(time);
-	try{
+
+	try {
+		Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService::SetHighAccuracyTimeSynch_INPUT input;
+
+		input.Ta0(currTime);
+		input.Tm1(time);
+		input.Tm2(time);
+
 		int ret = m_service.SetHighAccuracyTimeSynch(input);
 		if (ret != 0)
 		{
