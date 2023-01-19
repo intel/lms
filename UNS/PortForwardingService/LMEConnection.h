@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -245,6 +245,9 @@ class LMEConnection {
 public:
 	LMEConnection(bool verbose = false);
 	~LMEConnection();
+
+	LMEConnection(const LMEConnection&) = delete;
+	LMEConnection& operator = (const LMEConnection&) = delete;
 
 	struct InitParameters
 		{
