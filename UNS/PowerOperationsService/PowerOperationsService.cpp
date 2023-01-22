@@ -24,12 +24,14 @@ const ACE_TString EVENT_REMOTE_HIBERNATE_FAILED_MSG(ACE_TEXT("Remote administrat
 
 //for graceful shutdown
 #ifdef DEBUG
-	const unsigned int SHUTDOWN_TIMEOUT = 72000;//only for localization!!
+const unsigned int SHUTDOWN_TIMEOUT = 72000;//only for localization!!
 #else
 const unsigned int SHUTDOWN_TIMEOUT = 60;
 #endif
-const unsigned int MAX_PWR_OPR_ATTEMPTS =  3; //max attempts on ERROR_NOT_READY
+#ifdef WIN32
+const unsigned int MAX_PWR_OPR_ATTEMPTS = 3; //max attempts on ERROR_NOT_READY
 const unsigned int RETRY_TIMEOUT = 30;
+#endif
 const ACE_TString DEFAULT_SHUTDOWN_MSG(ACE_TEXT("The remote administrator has initiated a shutdown on this computer..."));
 const ACE_TString DEFAULT_REBOOT_MSG(ACE_TEXT("The remote administrator has initiated a reboot on this computer..."));
 
