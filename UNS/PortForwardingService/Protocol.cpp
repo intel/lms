@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -2012,7 +2012,7 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 			_remoteAccessEnabledInAMT = true;
 			printf("Remote access is allowed. This state is deprecated.\n");
 		}
-		catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
+		catch (const Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 		{
 			switch (e.getErr())
 			{
@@ -2036,7 +2036,12 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 				break;
 			}
 		}
-		catch (Intel::MEI_Client::MEIClientException e)
+		catch (const Intel::MEI_Client::MEIClientException& e)
+		{
+			UNS_ERROR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
+			return retVal;
+		}
+		catch (const std::exception& e)
 		{
 			UNS_ERROR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
 			return retVal;
