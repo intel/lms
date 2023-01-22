@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -29,7 +29,7 @@ public:
 		_status(PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE), _channelCount(0) {}
 
 	const std::string GetBindedAddress() const { return _bindedAddress; }
-	const unsigned int GetPort() const { return _port;}
+	unsigned int GetPort() const { return _port;}
 	const std::vector<SOCKET> & GetListeningSockets() const { return _listeningSockets; }
 	int IsConnectionPermitted(void *param,SOCKET sock,sockaddr_storage* caller_addr)
 	{ if (_cb != NULL) { return _cb(param,sock,caller_addr);} else return -1; }
