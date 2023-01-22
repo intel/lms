@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2022 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #include <gio/gio.h>
 
@@ -101,7 +101,7 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 	Intel::DBus::AT_Device::on_bus_acquired(connection, &th->m_skeleton_device, th->m_father);
 	Intel::DBus::UNSAlert::on_bus_acquired(connection, &th->m_skeleton_alert, th->m_father);
 	th->m_have_bus = true;
-	for (auto alert : th->m_store)
+	for (const auto& alert : th->m_store)
 		th->send_alarm(&alert);
 	th->m_store.clear();
 	UNS_DEBUG(L"Main DBus Thread on_bus_acquired %d\n", ret);
