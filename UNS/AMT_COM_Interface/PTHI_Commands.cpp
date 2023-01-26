@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -92,7 +92,7 @@ bool HasAccessByBuiltinGroup(WELL_KNOWN_SID_TYPE WinBuiltinSid, TOKEN_GROUPS *gr
 
 	WCHAR szGrpName[MAX_BUFFER_LENGTH + 1], gszDomainName[15+1];
 	SID_NAME_USE snu;
-	for (WORD i = 0; i < groups->GroupCount; i++)
+	for (DWORD i = 0; i < groups->GroupCount; i++)
 	{
 		DWORD dwUserNameSize = MAX_BUFFER_LENGTH, dwDomainNameSize = 15;
 		::LookupAccountSidW(NULL, groups->Groups[i].Sid,
