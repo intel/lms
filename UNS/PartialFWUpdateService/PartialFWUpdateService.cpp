@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -450,11 +450,13 @@ public:
 		major(_major), minor(_minor), hotfix(_hotfix), build(_build) {}
 	PFUBase& operator = (const PFUBase &other)
 	{
-		major = other.major;
-		minor = other.minor;
-		hotfix = other.hotfix;
-		build = other.build;
-
+		if (this != &other)
+		{
+			major = other.major;
+			minor = other.minor;
+			hotfix = other.hotfix;
+			build = other.build;
+		}
 		return *this;
 	}
 	PFUBase(const PFUBase &other)
@@ -544,9 +546,11 @@ public:
 	}
 	PFUFile& operator = (const PFUFile &other)
 	{
-		PFUBase::operator=(other);
-		filename = other.filename;
-
+		if (this != &other)
+		{
+			PFUBase::operator=(other);
+			filename = other.filename;
+		}
 		return *this;
 	}
 	PFUFile(const PFUFile &other) : PFUBase(other)
