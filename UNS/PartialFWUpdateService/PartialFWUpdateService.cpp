@@ -751,19 +751,19 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 	}
 
 	SIOWSManClient client;
-	UINT32 currentLang = 0;
+	unsigned short currentLang = 0;
 
-	if (!client.GetSpriteLanguage((unsigned short*)&currentLang))
+	if (!client.GetSpriteLanguage(&currentLang))
 	{
 		publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
 		return res;
 	}
 
-	UNS_DEBUG(L"Current language %d\n", currentLang);
+	UNS_DEBUG(L"Current language %u\n", (unsigned int)currentLang);
 	UNS_DEBUG(L"Requested language %s%d\n", defaultLangSet ? "(System Default) " : "", languageID);
 
-	UINT32 expectedLang = 0;
-	if(!client.GetExpectedLanguage((unsigned short*)&expectedLang))
+	unsigned short expectedLang = 0;
+	if(!client.GetExpectedLanguage(&expectedLang))
 	{
 		UNS_ERROR(L"Failed to get expected language\n");
 		publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
@@ -932,24 +932,24 @@ bool PartialFWUpdateService::SetExpectedWithLocalOSLanguage() const
 	{
 		unsigned short lang = (unsigned short)getUCLanguageID();
 		SIOWSManClient wsman;
-		UINT32 expectedLang = 0;
+		unsigned short expectedLang = 0;
 
-		if (!wsman.GetExpectedLanguage((unsigned short*)&expectedLang))
+		if (!wsman.GetExpectedLanguage(&expectedLang))
 		{
-			UNS_ERROR(L"GetExpectedLanguage failure - lang %d\n",expectedLang);
+			UNS_ERROR(L"GetExpectedLanguage failure - lang %u\n", (unsigned int)expectedLang);
 			return res;
 		}
-		UNS_DEBUG(L"expectedLang: %d\n", expectedLang);
+		UNS_DEBUG(L"expectedLang: %d\n", (unsigned int)expectedLang);
 
 		if (lang != expectedLang)
 		{
 			if (wsman.SetExpectedLanguage(lang))
 			{
-				UNS_DEBUG(L"SetExpectedLanguage success - set lang %d\n",lang);
+				UNS_DEBUG(L"SetExpectedLanguage success - set lang %u\n", (unsigned int)lang);
 			}
 			else
 			{
-				UNS_ERROR(L"SetExpectedLanguage failure - set lang %d\n",lang);
+				UNS_ERROR(L"SetExpectedLanguage failure - set lang %u\n", (unsigned int)lang);
 				return res;
 			}
 		}
