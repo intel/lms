@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "COMEventHandler.h"
 #include <atlbase.h>
@@ -83,7 +83,7 @@
 			CComPtr<IUnknown> pUnk;
 			rc=pUnk.CoCreateInstance(uiid);	
 			UNS_DEBUG(L"COMEventHandler::COMLogging - after CoCreateInstance\n");
-			static char* emptyStr = "";
+			static const char* emptyStr = "";
 			if ((rc==S_OK) && (pUnk!=NULL))
 			{
 				CComPtr<IUNSAlert> pI;
