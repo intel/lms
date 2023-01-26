@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -220,12 +220,11 @@ public:
 		return NO_ERROR;
 	}
 
-	void ServiceMain(DWORD dwArgc, LPTSTR* lpszArgv) throw()
+	void ServiceMain(DWORD /*dwArgc*/, LPTSTR* /*lpszArgv*/) throw()
 	{
 		ACEInitializer Initializer;
 		// next lines copied from AtlBase::ServiceMain - because we must use RegisterServiceCtrlHandlerEx
-		lpszArgv;
-		dwArgc;
+
 		// Register the control request handler
 		m_status.dwCurrentState = SERVICE_START_PENDING;
 		m_hServiceStatus = RegisterServiceCtrlHandlerEx(m_szServiceName,sServiceCtrlHandler, NULL);
