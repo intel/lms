@@ -84,7 +84,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 					ppCertHash.resize(temp_data_length);
 					std::stringstream stream;
 					stream << "CertificateHash len = " << temp_data_length << " data: ";
-					for (unsigned short i=0; i<temp_data_length; i++)
+					for (unsigned int i=0; i<temp_data_length; i++)
 					{
 						ppCertHash[i]=temp_data[i];
 						stream << " " << std::hex << temp_data[i];
