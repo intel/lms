@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019 Intel Corporation
+ * Copyright (C) 2019-2023 Intel Corporation
  */
 #ifndef __PFWUPDATEDLLWRAPPERME12_H_
 #define __PFWUPDATEDLLWRAPPERME12_H_
@@ -12,7 +12,9 @@ class PFWUpdateDllWrapperME12 : public PFWUpdateDllWrapper
 public:
 	PFWUpdateDllWrapperME12();
 	~PFWUpdateDllWrapperME12();
-	
+	PFWUpdateDllWrapperME12(const PFWUpdateDllWrapperME12&) = delete;
+	PFWUpdateDllWrapperME12& operator = (const PFWUpdateDllWrapperME12&) = delete;
+
 	uint32_t waitForFwInitDone();
 	uint32_t isPfwuRequired(bool& isLoclPfuRequired, bool& isWcodPfurequired, uint32_t& requiredLanguage);
 	uint32_t performPFWU(uint32_t partialID, const std::wstring& imagePath);
