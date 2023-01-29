@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2021-2022 Intel Corporation
+# Copyright (C) 2021-2023 Intel Corporation
 from conans import ConanFile
 import os
 
@@ -12,7 +12,7 @@ class LMSConan(ConanFile):
     default_options = {"build_tests": False}
 
     def requirements(self):
-        self.requires("metee/3.1.0@mesw/stable")
+        self.requires("metee/3.1.5@mesw/stable")
         if self.settings.os == "Windows":
             self.requires("libxml2/2.10.3@mesw/stable")
             self.requires("ACE/7.0.7@mesw/stable")
