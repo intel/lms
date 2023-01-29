@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __WIN_LOG_FILTER_H_
 #define __WIN_LOG_FILTER_H_
@@ -8,7 +8,6 @@
 #include "EventManagment.h"
 #include <ace/Map_Manager.h>
 #include <ace/Null_Mutex.h>
-#include "GMSConfig.h"
 
 class WinLogFilter: public EventsFilter
 {
@@ -21,7 +20,8 @@ public:
 	bool toSubscribe(const GMS_AlertIndication* alert, GmsEventType& et) const ;
 private:
 	ACE_Map_Manager<int,GmsEventType,ACE_Null_Mutex> eventsMap_;
-	GMSConfig GMSConfig_;
+	bool CheckEventToPublish(unsigned long EventID) const;
+	ACE_Map_Manager <unsigned long, int, ACE_Null_Mutex> m_EventsToPublish;
 };
 
 #endif /* __WIN_LOG_FILTER_H_ */

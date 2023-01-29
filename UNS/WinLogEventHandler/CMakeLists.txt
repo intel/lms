@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
+# Copyright (C) 2010-2023 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_library (WinLogEventHandler STATIC
   WinLogFilter.cpp
   WinLogEventHandler.cpp
-  GMSConfig.cpp
 )
 
 target_link_libraries (WinLogEventHandler
