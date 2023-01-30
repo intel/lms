@@ -197,87 +197,37 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		}
 
 #ifdef WIN32
-		LMS_ERROR GetServiceVersion(const std::wstring &ServiceName, std::string &sVersion)
+		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string& sVersion)
 		{
-			HKEY hKey;
-			wchar_t path[MAX_PATH + 1];//BUFSIZE
-			wchar_t expandedPath[MAX_PATH + 1];
-			DWORD pathBufSize = MAX_PATH;//BUFSIZE
-			LONG RetValue;
 			DWORD dwHandle = 0;
-			DWORD bufCount = MAX_PATH;
-
-			BYTE* FileValues = NULL;
 			DWORD FileSize;
-			std::wstring ServiceKey(L"SYSTEM\\CurrentControlSet\\Services\\");
-			ServiceKey += ServiceName;
-			RetValue = RegOpenKeyEx(HKEY_LOCAL_MACHINE, ServiceKey.c_str(), 0, KEY_QUERY_VALUE, &hKey);
+			WCHAR Filename[MAX_PATH + 1] = { 0 };
 
-			if (RetValue != ERROR_SUCCESS)
+			if (GetModuleFileNameW(NULL, Filename, MAX_PATH) == 0)
 			{
-				UNS_DEBUG(L"GetServiceVersion:RegOpenKeyEx failed err=%d\n", RetValue);
-				return LMS_ERROR::FAIL;
-			}
-			RetValue = RegQueryValueEx(hKey, L"ImagePath", NULL, NULL, (LPBYTE)path, &pathBufSize);
-			if ((RetValue != ERROR_SUCCESS) || (pathBufSize > MAX_PATH))
-			{
-				UNS_DEBUG(L"GetServiceVersion:RegQueryValueEx failed err=%d\n", RetValue);
-				RegCloseKey(hKey);
-				return LMS_ERROR::FAIL;
-			}
-			/* Even if the function returns ERROR_SUCCESS,
-			 * the application should ensure that the string is properly terminated before using it.
-			 */
-			path[pathBufSize] = '\0';
-
-			RegCloseKey(hKey);
-
-			bufCount = ExpandEnvironmentStrings(path, expandedPath, sizeof(expandedPath)/sizeof(expandedPath[0]));
-			if (bufCount > MAX_PATH)
-			{
-				UNS_DEBUG(L"ExpandEnvironmentStrings: Too small buffer for expanding %W\n", path);
-				return LMS_ERROR::FAIL;
-			}
-			else if (bufCount == 0)
-			{
-				UNS_DEBUG(L"ExpandEnvironmentStrings failed.\n");
+				UNS_DEBUG(L"GetServiceVersion:GetModuleFileName failed with err=%d\n", GetLastError());
 				return LMS_ERROR::FAIL;
 			}
 
-			wchar_t* formattedPath, *EndPath;
-			if (expandedPath[0] == '"')
-			{
-				formattedPath = &expandedPath[1];
-				EndPath = wcschr(formattedPath, '"');
-				if (EndPath != NULL)
-					*EndPath = 0;
-			}
-			else
-			{
-				formattedPath = &expandedPath[0];
-			}
-
-			FileSize = GetFileVersionInfoSize((LPTSTR)formattedPath, &dwHandle);
+			FileSize = GetFileVersionInfoSize(Filename, &dwHandle);
 			if (FileSize == 0)
 			{
 				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
 				return LMS_ERROR::FAIL;
 			}
 
-			FileValues = new BYTE[FileSize];
-			if (GetFileVersionInfo((LPTSTR)formattedPath, NULL, FileSize, FileValues) == 0)
+			std::vector<BYTE> FileValues(FileSize);
+			if (GetFileVersionInfo(Filename, NULL, FileSize, FileValues.data()) == 0)
 			{
-				delete[] FileValues;
 				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
 				return LMS_ERROR::FAIL;
 			}
 
 			VS_FIXEDFILEINFO *fileQuerInfo;
 			UINT InfoSize = 0;
-			if (!VerQueryValue(FileValues, TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
+			if (!VerQueryValue(FileValues.data(), TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
 				!InfoSize || InfoSize < sizeof(VS_FIXEDFILEINFO)) 
 			{
-				delete[] FileValues;
 				UNS_DEBUG(L"GetServiceVersion:VerQueryValue failed err=%d\n", GetLastError());
 				return LMS_ERROR::FAIL;
 			}
@@ -287,8 +237,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			   << HIWORD(fileQuerInfo->dwProductVersionLS) << "."
 			   << LOWORD(fileQuerInfo->dwProductVersionLS);
 			sVersion = ss.str();
-
-			delete[] FileValues;
 
 			return LMS_ERROR::OK;
 		}
@@ -306,12 +254,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			CATCH_exception(L"GetHeciVersion")
 			return LMS_ERROR::FAIL;
 		}
-
-		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string &sVersion)
-		{
-			return GetServiceVersion(L"LMS", sVersion);
-		}
-
 #else
 		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string &sVersion)
 		{
