@@ -71,7 +71,7 @@
 		}
 
 		GUID uiid= {0x64417EAE, 0x2E0E, 0x45E8, 0xA8, 0xC1, 0x03, 0x28, 0x4E, 0x3D, 0x35, 0x87};
-		HRESULT rc = S_FALSE;
+		HRESULT rc;
 		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 		if (hr != S_OK && hr != S_FALSE)
 		{
