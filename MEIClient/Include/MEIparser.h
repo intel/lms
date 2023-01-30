@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #ifndef __PARSER_H__
 #define __PARSER_H__
@@ -167,6 +167,10 @@ void parseComplexArray (std::vector<T>& v,std::vector<uint8_t>::const_iterator& 
 	for (uint32_t i = 0; i<count; ++i)
 		v[i].parse(itr,end);
 }
+
+#ifndef BIT
+#define BIT(nr) (1 << (nr))
+#endif // BIT
 } // namespace MEI_Client
 } // namespace Intel
 

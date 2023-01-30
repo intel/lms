@@ -55,6 +55,8 @@
 #include "GetUPIDFeatureSupportCommand.h"
 #include "GetUPIDFeatureOSControlCommand.h"
 
+#include "MNGIsChangeToAMTEnabledCommand.h"
+
 #include "MEIparser.h"
 
 #include <sstream>
@@ -569,6 +571,12 @@ TEST(UPID, testGetUPIDFeatureOSControlCommand)
 		UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response support = getOSControl.getResponse();
 	}
 	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+}
+
+TEST(Manageabiltiy, testMNGIsChangeToAMTEnabledCommand)
+{
+	Intel::MEI_Client::Manageability_Client::MNGIsChangeToAMTEnabledCommand cmd;
+	Intel::MEI_Client::Manageability_Client::IsChangedEnabledResponse res = cmd.getResponse();
 }
 
 TEST(MEIParser,too_small_data)

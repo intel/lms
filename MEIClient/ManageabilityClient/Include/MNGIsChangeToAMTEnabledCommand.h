@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,11 +22,22 @@ namespace Intel
 		{
 			struct IsChangedEnabledResponse
 			{
-				uint32_t Enabled;
+				bool Enabled;
+				bool CurrentOperationalState;
+				bool TlsOnLocalPorts;
+
+				const uint8_t ENABLED_MASK = BIT(0);
+				const uint8_t CURRENTOPERATIONALSTATE_MASK = BIT(1);
+				const uint8_t TLSONLOCALPORTS_MASK = BIT(6);
+				const uint8_t ISNEWINTERFACEVERSION_MASK = BIT(7);
 
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
 				{
-					Intel::MEI_Client::parseData(*this, itr, end);
+					uint8_t buf;
+					Intel::MEI_Client::parseData(buf, itr, end);
+					Enabled = buf & ENABLED_MASK;
+					CurrentOperationalState = (buf & CURRENTOPERATIONALSTATE_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
+					TlsOnLocalPorts = (buf & TLSONLOCALPORTS_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
 				}
 			};
 
