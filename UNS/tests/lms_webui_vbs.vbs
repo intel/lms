@@ -1,14 +1,14 @@
 ' SPDX-License-Identifier: Apache-2.0
-' Copyright (C) 2019 Intel Corporation
+' Copyright (C) 2019-2023 Intel Corporation
 
 On Error Resume Next
 MyError = 0
 set http = CreateObject("microsoft.xmlhttp")
-http.open "GET","http://127.0.0.1:16992",false
+http.open "GET","http://127.0.0.1:16993",false
 http.send
 htmlpage = http.responsetext
 If Err.Number <> 0 Then
-' WScript.Echo "Http Get at 127.0.0.1:16992 failed"
+' WScript.Echo "Http Get at 127.0.0.1:16993 failed"
   Err.Clear
   MyError=1
 else TestString = InStr("htmlpage", "Active Management Technology")
