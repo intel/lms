@@ -25,19 +25,8 @@
 #include <sstream>
 
 //Localized strings to load
-unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
-#define numOfStrings 2
-
-
-typedef enum _LOGGINGSEVERITY
-{
-	LMS_TRACE=1,
-	LMS_DEBUG,
-	LMS_WARNING,
-	LMS_ERROR,
-	LMS_CRITICAL
-} LOGGINGSEVERITY;
-
+static unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
+static const size_t numOfStrings = 2;
 
 GmsService::GmsService(void) : stopped(false), loading(false), 
 #ifdef WIN32
@@ -297,31 +286,30 @@ int GmsService::svc(void)
 #endif // WIN32
 
 	DataStorageWrapper& ds = DSinstance();
-	unsigned long severity = LMS_DEBUG;
+	unsigned long severity = 2; //LMS_DEBUG
 	if (ds.GetDataValue(LMSLoggingSeverity, severity, true))
 	{
 		UNS_DEBUG(L"Logging Severity from Registry: %d\n", severity);
 		switch (severity)
 		{
-		case LMS_TRACE:
+		case 1: //LMS_TRACE
 			requiredLoggingMask = mask;
 			break;
-		case LMS_DEBUG:
+		case 2: //LMS_DEBUG
 			requiredLoggingMask = mask & ~LM_TRACE;
 			break;
-		case LMS_WARNING:
+		case 3: //LMS_WARNING
 			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG;
 			break;
-		case LMS_ERROR:
+		case 4: //LMS_ERROR
 			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING;
 			break;
-		case LMS_CRITICAL:
+		case 5: //LMS_CRITICAL
 			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING & ~LM_ERROR;
 			break;
 		default:
 			break;
 		}
-
 	}
 	ACE_LOG_MSG->priority_mask(requiredLoggingMask, ACE_Log_Msg::PROCESS);
 
@@ -332,7 +320,6 @@ int GmsService::svc(void)
 
 	GMSExternalLogger::instance().ServiceStart();
 
-	
 #ifdef WIN32
 	if (!VerifyFile::Init())
 	{
@@ -341,12 +328,11 @@ int GmsService::svc(void)
 		return 0;
 	}
 
-
 	UNS_DEBUG(L"loading strings\n");
-	WindowsStringLoader loader;
-	std::vector<unsigned int> ids(strings,strings+numOfStrings);
 	try
 	{
+		WindowsStringLoader loader;
+		std::vector<unsigned int> ids(strings, strings + numOfStrings);
 		StringManager::instance()->loadStrings(loader,ids);
 	}
 	catch(...)
@@ -355,14 +341,12 @@ int GmsService::svc(void)
 	}
 #endif // WIN32
 
-
 	if (!StartAceService(GMS_CONFIGURATOR))
 	{
 		stopped = loading = true;
 		UNS_ERROR(L"StartAceService failed, Shutting down.\n");
 		return 0;
 	}
-	
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ChangeConfiguration());
@@ -388,7 +372,6 @@ int GmsService::svc(void)
 	}
 
 	ACE_Service_Repository::instance()->remove(GMS_CONFIGURATOR.c_str());
-	
 
 	// Cleanly terminate connections, terminate threads.
 	UNS_DEBUG(L"Shutting down\n");
