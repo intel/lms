@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2022 Intel Corporation
+ * Copyright (C) 2018-2023 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
 #include "WlanBL.h"
 #include "Tools.h"
+#include "GmsService.h"
 #include <string>
 #include <map>
 
@@ -82,7 +83,7 @@ namespace wlanps {
 
 		bool wsmanStatus;
 		MeProfileList MeProfileList;
-		WlanWSManClient wsmanClient;
+		WlanWSManClient wsmanClient(theService::instance()->GetPortForwardingPort());
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerating ME (CSME FW) Profiles, Wait for it...\n");
 		if (!EnumerateMeProfiles(wsmanClient, MeProfileList))
@@ -240,7 +241,7 @@ namespace wlanps {
 		bool bFound = false;
 		bool bFoundMatch = false;
 		unsigned long profileFlags = 0;
-		WlanWSManClient wsmanClient;
+		WlanWSManClient wsmanClient(theService::instance()->GetPortForwardingPort());
 		MeProfileList MeProfileList;
 
 

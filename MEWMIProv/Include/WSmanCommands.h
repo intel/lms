@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -33,11 +33,16 @@ typedef struct _EthernetPortEntryWSMan
 
 class WSmanCommands
 {
-	public:
-		UINT32 setSpriteZoom(short zoom);
-		UINT32 TerminateKVMSession(void);
-		UINT32 isKVMActive(bool* enabled, bool* active);
-		UINT32 GetPortSettings(std::vector<EthernetPortEntryWSMan> &ethernetPortList);
-		UINT32 isSOLEnabled(bool* enabled);
-		UINT32 isIDEREnabled(bool* enabled);
+public:
+	WSmanCommands();
+
+	UINT32 setSpriteZoom(short zoom);
+	UINT32 TerminateKVMSession(void);
+	UINT32 isKVMActive(bool* enabled, bool* active);
+	UINT32 GetPortSettings(std::vector<EthernetPortEntryWSMan> &ethernetPortList);
+	UINT32 isSOLEnabled(bool* enabled);
+	UINT32 isIDEREnabled(bool* enabled);
+
+private:
+	unsigned int m_port;
 };

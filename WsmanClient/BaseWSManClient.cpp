@@ -20,15 +20,15 @@ const std::string BaseWSManClient::DEFAULT_USER = "$$uns";
 //************************************************************************
 // Default Constructor.
 //************************************************************************
-BaseWSManClient::BaseWSManClient() : m_defaultUser(DEFAULT_USER)
+BaseWSManClient::BaseWSManClient(unsigned int port) : m_port(port), m_defaultUser(DEFAULT_USER)
 {
 	Init();
 }
 
-BaseWSManClient::BaseWSManClient(const std::string &defaultUser, 
-								 const std::string &defaultPass):
-	m_defaultUser(defaultUser),
-	m_defaultPass(defaultPass.c_str())
+BaseWSManClient::BaseWSManClient(unsigned int port,
+								 const std::string &defaultUser,
+								 const std::string &defaultPass) :
+	m_port(port), m_defaultUser(defaultUser), m_defaultPass(defaultPass.c_str())
 {
 	Init();
 }
@@ -75,8 +75,8 @@ void BaseWSManClient::SetEndpoint()
 	std::lock_guard<std::mutex> lock(WsManSemaphore());
 		
 	m_client.reset(new Intel::WSManagement::CimOpenWsmanClient(m_ip,
-									  AMT_NON_SECURE_PORT,
-									  false,
+									  m_port,
+									  (m_port == AMT_SECURE_PORT),
 									  Intel::WSManagement::DIGEST,
 									  m_defaultUser,
 									  m_defaultPass.Get()));

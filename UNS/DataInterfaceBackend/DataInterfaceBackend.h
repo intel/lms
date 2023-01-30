@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2022 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #ifndef DATA_INTERFACE_BE_H
 #define DATA_INTERFACE_BE_H
@@ -13,10 +13,10 @@ namespace Intel {
 		class Common_BE
 		{
 		public:
-			Common_BE(bool isPfwUp) :m_isPfwUp(isPfwUp) {};
+			Common_BE(unsigned int port) : m_port(port) {};
 
 		protected:
-			bool m_isPfwUp;
+			const unsigned int m_port;
 		};
 
 

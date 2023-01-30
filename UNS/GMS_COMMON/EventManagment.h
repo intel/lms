@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __EVENTMANAGMENT_H_
 #define __EVENTMANAGMENT_H_
@@ -210,7 +210,6 @@ public:
 	SERVICE_STATUS_TYPE 	status;      // the new status
 };
 
-
 class GMS_COMMON_EXPORT PortForwardingStoppedBlock : public ACE_Data_Block
 {
 public:
@@ -222,4 +221,17 @@ public:
 
 	bool m_publishFailure;														// Data members
 };
+
+class GMS_COMMON_EXPORT PortForwardingStartedBlock : public ACE_Data_Block
+{
+public:
+	PortForwardingStartedBlock() : m_portForwardingPort(0) {}; // Default constructor
+	PortForwardingStartedBlock(const PortForwardingStartedBlock& other) : m_portForwardingPort(other.m_portForwardingPort) {}; // Copy constructor
+	PortForwardingStartedBlock(unsigned int portForwardingPort) : m_portForwardingPort(portForwardingPort) {}
+	virtual ~PortForwardingStartedBlock() {}; // Destructor
+	PortForwardingStartedBlock& operator=(const PortForwardingStartedBlock& other) = delete;
+
+	unsigned int m_portForwardingPort; // Data members
+};
+
 #endif /* __EVENTMANAGMENT_H_ */

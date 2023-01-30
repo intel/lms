@@ -155,7 +155,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			return time_s;
 		}
 
-		PTHI_Commands_BE::PTHI_Commands_BE(bool isPfwUp) : Common_BE(isPfwUp)
+		PTHI_Commands_BE::PTHI_Commands_BE(unsigned int port) : Common_BE(port)
 		{
 		}
 
@@ -554,12 +554,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetKVMRedirectionState(bool &pEnabled, bool &pConnected)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
-				KVMWSManClient WSClient;
+				KVMWSManClient WSClient(m_port);
 				bool MEBxState = false;
 				if (!WSClient.GetMEBxState(&MEBxState))
 				{
@@ -615,12 +615,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetSpriteParameters(unsigned short &pLanguage, unsigned short &pZoom)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
-				SIOWSManClient Client;
+				SIOWSManClient Client(m_port);
 				if (Client.GetSpriteParameters(&pLanguage, &pZoom) != true)
 					return LMS_ERROR::FAIL;
 
@@ -636,12 +636,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteZoom(unsigned short Zoom)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
-				SIOWSManClient Client;
+				SIOWSManClient Client(m_port);
 				if (Client.SetSpriteZoom(Zoom))
 					return LMS_ERROR::OK;
 			}
@@ -652,12 +652,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		LMS_ERROR PTHI_Commands_BE::GetConfigurationInfo(short &pControlMode, short &pProvisioningMethod,
 			std::string &pCreationTimeStamp, std::vector<unsigned char> &ppCertHash)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
-				HBPWSManClient HBPWSManClient_obj;
+				HBPWSManClient HBPWSManClient_obj(m_port);
 				std::string CreationTimeStampStr;
 				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
 					return LMS_ERROR::FAIL;
@@ -675,24 +675,24 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		const long TERMINATEREMEDYSESSIONS_RETRY_TIMEOUT = 2000;
 		LMS_ERROR PTHI_Commands_BE::TerminateRemedySessions(void)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
 				LMS_ERROR ret = LMS_ERROR::FAIL;
-				KVMWSManClient _KVMWSManClient;
+				KVMWSManClient _KVMWSManClient(m_port);
 				if (_KVMWSManClient.TerminateKVMSession())
 					ret = LMS_ERROR::OK;
 				// Terminate IDER, SOL sessions
-				AMTRedirectionServiceWSManClient _AMTRedirectionServiceWSManClient;
+				AMTRedirectionServiceWSManClient _AMTRedirectionServiceWSManClient(m_port);
 				if (_AMTRedirectionServiceWSManClient.TerminateSession(1)) //SOL
 					ret = LMS_ERROR::OK;
 				if (_AMTRedirectionServiceWSManClient.TerminateSession(0)) // IDER
 					ret = LMS_ERROR::OK;
 
 				unsigned int ReturnValue;
-				CancelOptInClient _CancelOptInClient;
+				CancelOptInClient _CancelOptInClient(m_port);
 				short policy = 0, state = 0;
 
 				if (!_CancelOptInClient.GetUserConsentState(&state, &policy))
@@ -718,13 +718,13 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetUserConsentState(short &pState, USER_CONSENT_POLICY &pPolicy)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
 				short UserConsentPolicy;
-				CancelOptInClient _CancelOptInClient;
+				CancelOptInClient _CancelOptInClient(m_port);
 				if (!_CancelOptInClient.GetUserConsentState(&pState, &UserConsentPolicy))
 					return LMS_ERROR::FAIL;
 				pPolicy = static_cast<USER_CONSENT_POLICY>(UserConsentPolicy);
@@ -739,12 +739,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetWLANLinkInfo(unsigned int &pPreference, unsigned int &pControl, unsigned int &pProtection)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
-				AMTEthernetPortSettingsClient Client;
+				AMTEthernetPortSettingsClient Client(m_port);
 				bool isLink = false;
 				if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection, &isLink))
 					return LMS_ERROR::FAIL;
@@ -759,12 +759,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::SetLinkPreferenceToHost(void)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try
 			{
-				AMTEthernetPortSettingsClient Client;
+				AMTEthernetPortSettingsClient Client(m_port);
 				if (Client.SetLinkPreference(2))
 					return LMS_ERROR::OK;
 			}
@@ -806,11 +806,11 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::userInitiatedPolicyRuleExists(short &pStatus)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try {
-				AMTFCFHWSmanClient Client;
+				AMTFCFHWSmanClient Client(m_port);
 				if (Client.userInitiatedPolicyRuleExists(&pStatus))
 					return LMS_ERROR::OK;
 			}
@@ -821,11 +821,11 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::userInitiatedPolicyRuleForLocalMpsExists(short &pStatus)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try {
-				AMTFCFHWSmanClient Client;
+				AMTFCFHWSmanClient Client(m_port);
 				if (Client.userInitiatedPolicyRuleForLocalMpsExists(&pStatus))
 					return LMS_ERROR::OK;
 			}
@@ -837,11 +837,11 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::snmpEventSubscriberExists(short &pExist)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try {
-				AMTFCFHWSmanClient Client;
+				AMTFCFHWSmanClient Client(m_port);
 				if (Client.snmpEventSubscriberExists(&pExist))
 					return LMS_ERROR::OK;
 			}
@@ -852,11 +852,11 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::CILAFilterCollectionSubscriptionExists(short &pExist)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try {
-				AMTFCFHWSmanClient Client;
+				AMTFCFHWSmanClient Client(m_port);
 				if (Client.CILAFilterCollectionSubscriptionExists(&pExist))
 					return LMS_ERROR::OK;
 			}
@@ -867,11 +867,11 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try {
-				KVMScreenSettingClient Client;
+				KVMScreenSettingClient Client(m_port);
 				KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
 
 				for (size_t i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
@@ -893,25 +893,25 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
 			try {
 				if (sessionType == SOL_S)
 				{
-					IPSSolSessionUsingPortClient solClient;
+					IPSSolSessionUsingPortClient solClient(m_port);
 					if (solClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
 						return LMS_ERROR::FAIL;
 				}
 				else if (sessionType == IDER_S)
 				{
-					IPSIderSessionUsingPortClient iderClient;
+					IPSIderSessionUsingPortClient iderClient(m_port);
 					if (iderClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
 						return LMS_ERROR::FAIL;
 				}
 				else if (sessionType == KVM_S)
 				{
-					IPSKVMSessionUsingPortClient kvmClient;
+					IPSKVMSessionUsingPortClient kvmClient(m_port);
 					if (kvmClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
 						return LMS_ERROR::FAIL;
 				}

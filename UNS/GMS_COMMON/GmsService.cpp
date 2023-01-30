@@ -32,7 +32,7 @@ GmsService::GmsService(void) : stopped(false), loading(false),
 #ifdef WIN32
 	m_hServiceHandle(NULL),
 #endif // WIN32
-	m_closeHeciHandle(NULL), m_notifyHeciEnable(NULL), m_portForwardingService(NULL), m_isPortForwardingStarted(false)
+	m_closeHeciHandle(NULL), m_notifyHeciEnable(NULL), m_portForwardingService(NULL), m_portForwardingPort(0)
 {
 #ifdef WIN32
 	svc_status_.dwControlsAccepted=SERVICE_ACCEPT_STOP |SERVICE_ACCEPT_PAUSE_CONTINUE|SERVICE_ACCEPT_POWEREVENT|SERVICE_ACCEPT_SHUTDOWN;
@@ -484,12 +484,12 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 	return true;
 }
 
-bool GmsService::GetPortForwardingStarted()
+unsigned int GmsService::GetPortForwardingPort() const
 {
-	return m_isPortForwardingStarted;
+	return m_portForwardingPort;
 }
 
-void GmsService::SetPortForwardingStarted(bool isPfwStarted)
+void GmsService::SetPortForwardingPort(unsigned int portForwardingPort)
 {
-	m_isPortForwardingStarted = isPfwStarted;
+	m_portForwardingPort = portForwardingPort;
 }

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -51,7 +51,7 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
 	std::wstring EventHistory;
 
-	Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.GetIMSSEventHistory(EventHistory);
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);

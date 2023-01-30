@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -14,7 +14,7 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-AuditLogWSManClient::AuditLogWSManClient() : m_isInit(false)
+AuditLogWSManClient::AuditLogWSManClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 

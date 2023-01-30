@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -19,8 +19,8 @@
 class WSMAN_DLL_API KVMWSManClient : public BaseWSManClient
 {
 public:
-	KVMWSManClient();
-	KVMWSManClient(const std::string &User, const std::string &Password);
+	KVMWSManClient(unsigned int port);
+	KVMWSManClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~KVMWSManClient();
 
 	/*Actual soap actions!*/

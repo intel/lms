@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "StatusEventHandler.h"
@@ -440,9 +440,9 @@ void  StatusEventHandler::handleUserConsentEvents(const GMS_AlertIndication *ale
 		m_prevUserConsentState = OPT_IN_STATE_NOT_STARTED;
 		UNS_DEBUG(L"ExtendEvent EVENT_USER_CONSENT_ENDED\n");
 		break;
-	case EVENT_USER_CONSENT_CONFIGURATION_CHANGED:   
+	case EVENT_USER_CONSENT_CONFIGURATION_CHANGED:
 
-		if (!m_mainService->GetPortForwardingStarted()) {
+		if (!m_mainService->GetPortForwardingPort()) {
 			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GenerateUCEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 			break;
 		}
@@ -653,7 +653,7 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 {
 	FuncEntryExit<void> fee(this, L"GeneratePortFwrdRelatedEvents");
 
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GeneratePortFwrdRelatedEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		return;
 	}
@@ -703,7 +703,7 @@ void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 	bool IPSyncEnabled = false;//TODO::to check if it is the right default value
 	if (AMTstate)
 	{
-		SyncIpClient syncIpClient;
+		SyncIpClient syncIpClient(m_mainService->GetPortForwardingPort());
 		if (!syncIpClient.GetSharedStaticIpState(&IPSyncEnabled)) 
 		{
 			UNS_ERROR(L"StatusEventHandler: GetIPSyncState failed\n");
@@ -737,7 +737,7 @@ void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
 	bool timeSyncEnabled = false;
 	if (AMTstate)
 	{
-		TimeSynchronizationClient timeClient;
+		TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
 
 		if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncEnabled))
 		{
@@ -832,7 +832,7 @@ void StatusEventHandler::GenerateWLANEvents()
 {
 	FuncEntryExit<void> fee(this, L"GenerateWLANEvents");
 
-	AMTEthernetPortSettingsClient client;
+	AMTEthernetPortSettingsClient client(m_mainService->GetPortForwardingPort());
 	unsigned int linkPreference, linkControl, linkProtection; 
 	bool isLink = false;
 	if(!client.GetAMTEthernetPortSettings(&linkPreference, &linkControl, &linkProtection, &isLink))
@@ -1192,7 +1192,7 @@ void StatusEventHandler::SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Clien
  
 bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_POLICY* pPolicy)
 {
-	CancelOptInClient _CancelOptInClient;
+	CancelOptInClient _CancelOptInClient(m_mainService->GetPortForwardingPort());
 	short UserConsentPolicy;
 	short UserConsentState;
 
@@ -1207,7 +1207,7 @@ bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_
 #ifdef WIN32
 bool StatusEventHandler::GetLocalProfileSynchronizationEnabled(bool &enabled)
 {
-	WlanWSManClient WlanWSMan;
+	WlanWSManClient WlanWSMan(m_mainService->GetPortForwardingPort());
 	bool ret;
 
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
@@ -1489,7 +1489,7 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 
 bool StatusEventHandler::GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES &previousSXState)
 {
-	HostBootReasonClient client;
+	HostBootReasonClient client(m_mainService->GetPortForwardingPort());
 
 	HostBootReasonClient::HOST_RESET_REASON int_resetReason;
 	HostBootReasonClient::SX_STATES int_previousSXState;
@@ -1506,7 +1506,7 @@ bool StatusEventHandler::GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES 
 
 bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connected)
 {
-	KVMWSManClient Client;
+	KVMWSManClient Client(m_mainService->GetPortForwardingPort());
 	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	USER_CONSENT_POLICY UserConsentPolicy;
 	unsigned short state;

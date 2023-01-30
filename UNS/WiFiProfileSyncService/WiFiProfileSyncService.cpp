@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2020 Intel Corporation
+ * Copyright (C) 2018-2023 Intel Corporation
  */
 #include "WiFiProfileSyncService.h"
 #include "WlanBL.h"
@@ -139,7 +139,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 			message = dynamic_cast<WPFS_Message_Block*>(mbPtr->data_block());
 			if (message != nullptr)
 			{
-				if (!m_mainService->GetPortForwardingStarted())
+				if (!m_mainService->GetPortForwardingPort())
 				{
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %s: Port Forwarding did not start yet, aborting sync operation. \n", name().c_str());
 					m_syncRequiredButNoPfw = true;
@@ -201,7 +201,7 @@ void WiFiProfileSyncService::PerformSync()
 {
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"...\n");
 
-	if (!m_mainService->GetPortForwardingStarted())
+	if (!m_mainService->GetPortForwardingPort())
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %s: Port Forwarding did not start yet, aborting sync operation. \n", name().c_str());
 		m_syncRequiredButNoPfw = true;

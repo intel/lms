@@ -277,7 +277,7 @@ bool CheckSharedStaticIPLoad()
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
 	{
-		SyncIpClient syncIpClient;
+		SyncIpClient syncIpClient(theService::instance()->GetPortForwardingPort());
 		ret = syncIpClient.GetSharedStaticIpState(&sharedStaticIP);
 		if (ret)
 			break;
@@ -296,7 +296,7 @@ bool CheckTimeSyncStateLoad()
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
 	{
-		TimeSynchronizationClient timeClient;
+		TimeSynchronizationClient timeClient(theService::instance()->GetPortForwardingPort());
 		ret = timeClient.GetLocalTimeSyncEnabledState(timeSyncState);
 		if (ret)
 			break;
@@ -336,7 +336,7 @@ bool CheckWiFiProfileSyncRequired()
 	bool enabled;
 	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
 
-	WifiPortClient WifiPort;
+	WifiPortClient WifiPort(theService::instance()->GetPortForwardingPort());
 	size_t ports = 0;
 	bool ret = WifiPort.PortsNum(ports);
 	if (!ret)
@@ -348,7 +348,7 @@ bool CheckWiFiProfileSyncRequired()
 		return enabled;
 	}
 
-	WlanWSManClient WlanWSMan;
+	WlanWSManClient WlanWSMan(theService::instance()->GetPortForwardingPort());
 	enabled = true;
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
 	if (!ret)
@@ -595,7 +595,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 	{
 		UNS_DEBUG(L"%s: needSpecialCheck\n", serviceName.c_str());
 
-		if (!m_mainService->GetPortForwardingStarted()) {
+		if (!m_mainService->GetPortForwardingPort()) {
 			UNS_DEBUG(L"%s: Port Forwarding did not start yet, delay StartAceService operation till Port Forwarding start.\n", serviceName.c_str());
 			theLoadedServices::instance()->RemoveServiceToLoad(serviceName);
 			theLoadedServices::instance()->UnlockService(serviceName);
@@ -1351,7 +1351,14 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 				{
 					UNS_DEBUG(L"got PORT_FORWARDING_STARTED event\n");
 
-					m_mainService->SetPortForwardingStarted(true);
+					PortForwardingStartedBlock* pfwStartedMsg = dynamic_cast<PortForwardingStartedBlock*> (mbPtr->data_block());
+					if (pfwStartedMsg == NULL)
+					{
+						UNS_ERROR(L"Invalid Port Forwarding Started Message\n");
+						TaskCompleted();
+						return;
+					}
+					m_mainService->SetPortForwardingPort(pfwStartedMsg->m_portForwardingPort);
 
 					sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_AVAILABLE, ACE_TEXT("Port Forwarding Service started"));
 
@@ -1376,7 +1383,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					bool publishFailure = pfwStoppedMsg->m_publishFailure;
 					UNS_DEBUG(L"Publish Failure: %d\n", publishFailure);
 
-					m_mainService->SetPortForwardingStarted(false);
+					m_mainService->SetPortForwardingPort(0);
 
 					if (publishFailure) {
 						sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_UNAVAILABLE, ACE_TEXT("Port Forwarding Service failed"));
@@ -1402,6 +1409,9 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 			case MB_PORT_FORWARDING_STOPPED:
 				taskMbPtr->data_block(new PortForwardingStoppedBlock(*((PortForwardingStoppedBlock*)mbPtr->data_block())));
 				break;
+			case MB_PORT_FORWARDING_STARTED:
+				taskMbPtr->data_block(new PortForwardingStartedBlock(*((PortForwardingStartedBlock*)mbPtr->data_block())));
+			break;
 			default:
 				taskMbPtr->data_block(new ACE_Data_Block());
 		}

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2022 Intel Corporation
+ * Copyright (C) 2011-2023 Intel Corporation
  */
 /*++
 
@@ -22,8 +22,8 @@ public:
 	unsigned int TIMESYNCSTATE_CONFIGURED_TRUE = 1;
 	unsigned int TIMESYNCSTATE_TIMESYNC_DISABLED = 2; //These is FALSE value if the LocalTimeSyncEnabled FW property.
 
-	TimeSynchronizationClient();
-	TimeSynchronizationClient(const std::string &User, const std::string &Password);
+	TimeSynchronizationClient(unsigned int port);
+	TimeSynchronizationClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~TimeSynchronizationClient();
 
 	bool GetAMTTime(unsigned int & time);

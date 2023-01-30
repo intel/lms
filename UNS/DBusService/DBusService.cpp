@@ -184,7 +184,7 @@ int DBusService::handle_event(MessageBlockPtr mbPtr)
 	return 0;
 }
 
-bool DBusService::GetGmsPortForwardingStarted()
+bool DBusService::GetGmsPortForwardingPort()
 {
-	return m_mainService->GetPortForwardingStarted();
+	return m_mainService->GetPortForwardingPort();
 }

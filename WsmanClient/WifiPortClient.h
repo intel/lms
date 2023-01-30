@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -16,7 +16,7 @@
 class WSMAN_DLL_API WifiPortClient : public BaseWSManClient
 {
 public:
-	WifiPortClient();
+	WifiPortClient(unsigned int port);
 	virtual ~WifiPortClient();
 
 	bool PortsNum(size_t &ports);

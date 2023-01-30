@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -18,8 +18,8 @@
 class WSMAN_DLL_API AMTEthernetPortSettingsClient : public BaseWSManClient
 {
 public:
-	AMTEthernetPortSettingsClient();
-	AMTEthernetPortSettingsClient(const std::string &User, const std::string &Password);
+	AMTEthernetPortSettingsClient(unsigned int port);
+	AMTEthernetPortSettingsClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~AMTEthernetPortSettingsClient();
 
 	bool GetAMTEthernetPortSettings(unsigned int* pLinkPreference, unsigned int* pLinkControl, unsigned int* pLinkProtection, bool* pIsLink);

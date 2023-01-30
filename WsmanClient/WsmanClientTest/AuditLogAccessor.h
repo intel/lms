@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "gmock/gmock.h"
 #include <sstream>
@@ -12,6 +12,8 @@
 
 class AuditLogAccessor : public ::testing::Test 
 {
+public:
+	AuditLogAccessor() : m_auditLog(0) {}
 protected:
 
 	AuditLogWSManClient m_auditLog;

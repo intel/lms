@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "IPS_KvmSessionUsingPort.h"
 #include "AMT_EthernetPortSettings.h"
@@ -8,11 +8,12 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient() : m_LinkTechnology(0)
+IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient(unsigned int port) : BaseWSManClient(port), m_LinkTechnology(0)
 {
 }
 
-IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password), m_LinkTechnology(0)
+IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_LinkTechnology(0)
 {
 }
 

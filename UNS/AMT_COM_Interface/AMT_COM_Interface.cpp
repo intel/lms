@@ -141,9 +141,9 @@ private:
 	static GmsService* GMSsrv;
 public:
 
-	static bool getGmsPortForwardingStarted()
+	static unsigned int getGmsPortForwardingPort()
 	{
-		return GMSsrv->GetPortForwardingStarted();
+		return GMSsrv->GetPortForwardingPort();
 	}
 
 	DECLARE_LIBID(LIBID_AMT_COM_InterfaceLib)
@@ -402,7 +402,7 @@ int RunAMT_COM_Interface(int nShowCmd)
 	return _AtlModule.WinMain(nShowCmd);
 }
 
-bool GetGmsPortForwardingStarted()
+unsigned int GetGmsPortForwardingPort()
 {
-	return CAMT_COM_InterfaceModule::getGmsPortForwardingStarted();
+	return CAMT_COM_InterfaceModule::getGmsPortForwardingPort();
 }

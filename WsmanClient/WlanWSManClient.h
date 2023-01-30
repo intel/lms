@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 
 #ifndef _WLAN_WSMAN_CLIENT_H
@@ -18,7 +18,7 @@ class WSMAN_DLL_API WlanWSManClient : public BaseWSManClient
 {
 public:
 
-	WlanWSManClient(void);
+	WlanWSManClient(unsigned int port);
 
 	virtual ~WlanWSManClient(void);
 

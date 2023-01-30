@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 
 #include "SharedStaticIPService.h"
@@ -242,7 +242,7 @@ void SharedStaticIPService::HandleState(SSIP_Message_Block::SSIP_STATE State)
 	bool enabled = false;
 	unsigned long TimerInterval = 0;
 
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting HandleState operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		m_HandleStateRequiredButNoPfw = true;
 		return;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -17,7 +17,7 @@
 class WSMAN_DLL_API SIOWSManClient : public BaseWSManClient
 {
 public:
-	SIOWSManClient();
+	SIOWSManClient(unsigned int port);
 	virtual ~SIOWSManClient();
 
 	/*Actual soap actions!*/

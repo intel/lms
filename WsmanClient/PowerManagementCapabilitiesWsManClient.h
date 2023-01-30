@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -22,8 +22,8 @@
 class WSMAN_DLL_API PowerManagementCapabilitiesClient : public BaseWSManClient
 {
 public:
-	PowerManagementCapabilitiesClient();
-	PowerManagementCapabilitiesClient(const std::string &User, const std::string &Password);
+	PowerManagementCapabilitiesClient(unsigned int port);
+	PowerManagementCapabilitiesClient(unsigned int port, const std::string &User, const std::string &Password);
 	bool GetPowerOperationsSupport(bool & support);
 	virtual ~PowerManagementCapabilitiesClient();
 

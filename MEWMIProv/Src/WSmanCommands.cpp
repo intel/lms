@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -17,10 +17,18 @@
 #include "AMTRedirectionServiceWSManClient.h"
 #include "EthernetSettingsWSManClient.h"
 #include "StringManipulator.h"
+#include "MNGIsChangeToAMTEnabledCommand.h"
+
+WSmanCommands::WSmanCommands()
+{
+	Intel::MEI_Client::Manageability_Client::MNGIsChangeToAMTEnabledCommand cmd;
+	Intel::MEI_Client::Manageability_Client::IsChangedEnabledResponse res = cmd.getResponse();
+	m_port = (res.TlsOnLocalPorts) ? AMT_SECURE_PORT : AMT_NON_SECURE_PORT;
+}
 
 UINT32 WSmanCommands::setSpriteZoom(short zoom)
 {
-	SIOWSManClient sio;
+	SIOWSManClient sio(m_port);
 	if (sio.SetSpriteZoom(zoom) != true)
 		return 1;
 	else
@@ -29,7 +37,7 @@ UINT32 WSmanCommands::setSpriteZoom(short zoom)
 
 UINT32 WSmanCommands::TerminateKVMSession(void)
 {
-	KVMWSManClient kvm;
+	KVMWSManClient kvm(m_port);
 
 	if (kvm.TerminateKVMSession() != true)
 		return 1;
@@ -40,7 +48,7 @@ UINT32 WSmanCommands::TerminateKVMSession(void)
 
 UINT32 WSmanCommands::isIDEREnabled(bool *enabled)
 {
-	AMTRedirectionServiceWSManClient redirectionClient;
+	AMTRedirectionServiceWSManClient redirectionClient(m_port);
 	unsigned short state;
 	*enabled = false;
 
@@ -69,7 +77,7 @@ UINT32 WSmanCommands::isIDEREnabled(bool *enabled)
 
 UINT32 WSmanCommands::isSOLEnabled(bool *enabled)
 {
-	AMTRedirectionServiceWSManClient redirectionClient;
+	AMTRedirectionServiceWSManClient redirectionClient(m_port);
 	unsigned short state;
 	*enabled = false;
 
@@ -98,7 +106,7 @@ UINT32 WSmanCommands::isSOLEnabled(bool *enabled)
 
 UINT32 WSmanCommands::isKVMActive(bool* enabled, bool* active)
 {
-	KVMWSManClient kvm;
+	KVMWSManClient kvm(m_port);
 	unsigned short state;
 	*enabled = false;
 
@@ -128,7 +136,7 @@ UINT32 WSmanCommands::isKVMActive(bool* enabled, bool* active)
 
 UINT32 WSmanCommands::GetPortSettings(std::vector<EthernetPortEntryWSMan> &ethernetPortList)
 {
-	EthernetSettingsWSManClient client;
+	EthernetSettingsWSManClient client(m_port);
 	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
 	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
 

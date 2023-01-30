@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -17,8 +17,8 @@
 class WSMAN_DLL_API HostBootReasonClient : public BaseWSManClient
 {
 public:
-	HostBootReasonClient();
-	HostBootReasonClient(const std::string &User, const std::string &Password);
+	HostBootReasonClient(unsigned int port);
+	HostBootReasonClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~HostBootReasonClient();
 
 	enum class HOST_RESET_REASON {

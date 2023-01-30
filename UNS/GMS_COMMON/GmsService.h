@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef _GMS_SERVICE
 #define _GMS_SERVICE
@@ -81,8 +81,8 @@ public:
 	void NotifyHeciEnable();
 	std::mutex m_HECINotifyMutex;
 
-	bool GetPortForwardingStarted();
-	void SetPortForwardingStarted(bool isPfwStarted);
+	unsigned int GetPortForwardingPort() const;
+	void SetPortForwardingPort(unsigned int portForwardingPort);
 
 
 private:
@@ -94,7 +94,7 @@ private:
 	HeciEventCallBack m_closeHeciHandle;
 	HeciEventCallBack m_notifyHeciEnable;
 	void* m_portForwardingService;
-	bool m_isPortForwardingStarted;
+	unsigned int m_portForwardingPort;
 
 	typedef std::map<ACE_TString, ACE_Static_Svc_Descriptor&> svc_map;
 	svc_map m_svcMap;

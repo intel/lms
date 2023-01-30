@@ -26,7 +26,7 @@ const uint32_t LMEConnection::RX_WINDOW_SIZE = 1024; // TBD Choose optimal windo
 
 LMEConnection::LMEConnection(bool verbose): _txBuffer(NULL), _initState(INIT_STATE_DISCONNECTED),
 				_cb(NULL), _signalSelectCallback(nullptr), _cbParam(NULL), _heci(GenerateLMEClient(verbose)),
-				_threadStartedEvent(1), _portIsOk(1),
+				_threadStartedEvent(1), _portIsOk(1), m_portForwardingPort(0),
 				_selfDisconnect(false), _clientNotFound(false), aceMgr_(nullptr), _rxThread(0)
 {
 	_devNotify = NULL;
@@ -151,6 +151,7 @@ void LMEConnection::DeinitInternal()
 {
 	_heci->Deinit();
 	_initState = INIT_STATE_DISCONNECTED;
+	m_portForwardingPort = 0;
 
 	if (aceMgr_)
 		aceMgr_->cancel(_rxThread, 0);
@@ -773,8 +774,10 @@ void LMEConnection::_doRX()
 
 						_cb(_cbParam, &tcpForwardRequest, sizeof(tcpForwardRequest), &status);
 
-						if (tcpForwardRequest.Port == AMT_NON_SECURE_PORT && status == 0)
+						if (status == 0 && m_portForwardingPort == 0 &&
+							(tcpForwardRequest.Port == AMT_NON_SECURE_PORT || tcpForwardRequest.Port == AMT_SECURE_PORT))
 						{
+							m_portForwardingPort = tcpForwardRequest.Port;
 							UNS_DEBUG(L"_portIsOk\n");
 							_portIsOk.signal();
 						}

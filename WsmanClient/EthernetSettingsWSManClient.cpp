@@ -11,12 +11,12 @@
 #include "EthernetSettingsWSManClient.h"
 #include "WsmanClientLog.h"
 
-EthernetSettingsWSManClient::EthernetSettingsWSManClient() : m_isInit(false)
+EthernetSettingsWSManClient::EthernetSettingsWSManClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 
-EthernetSettingsWSManClient::EthernetSettingsWSManClient(const std::string &userName, const std::string &password) :
-	BaseWSManClient(userName, password), m_isInit(false)
+EthernetSettingsWSManClient::EthernetSettingsWSManClient(unsigned int port, const std::string &userName, const std::string &password) :
+	BaseWSManClient(port, userName, password), m_isInit(false)
 {
 }
 

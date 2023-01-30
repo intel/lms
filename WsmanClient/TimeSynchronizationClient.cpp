@@ -12,12 +12,13 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
+TimeSynchronizationClient::TimeSynchronizationClient(unsigned int port) :
+	BaseWSManClient(port), m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
 {
 }
 
-TimeSynchronizationClient::TimeSynchronizationClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
+TimeSynchronizationClient::TimeSynchronizationClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
 {
 }
 

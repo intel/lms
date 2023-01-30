@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -42,12 +42,12 @@ enum PowerStates
 	GRACEFUL_RESET = 14
 };
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient() : m_isInit(false)
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false)
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_isInit(false)
 {
 }
 

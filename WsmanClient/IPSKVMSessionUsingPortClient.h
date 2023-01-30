@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #ifndef _IPS_KVM_SESSION_USING_PORT_CLIENT_H
 #define _IPS_KVM_SESSION_USING_PORT_CLIENT_H
@@ -10,8 +10,8 @@
 class WSMAN_DLL_API IPSKVMSessionUsingPortClient : public BaseWSManClient
 {
 public:
-	IPSKVMSessionUsingPortClient();
-	IPSKVMSessionUsingPortClient(const std::string &User, const std::string &Password);
+	IPSKVMSessionUsingPortClient(unsigned int port);
+	IPSKVMSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~IPSKVMSessionUsingPortClient();
 
 	bool GetSessionLinkTechnology(short *pLinkTechnology);

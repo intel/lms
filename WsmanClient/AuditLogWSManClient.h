@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -536,7 +536,7 @@ typedef std::vector<unsigned char> BinaryData;
 class WSMAN_DLL_API AuditLogWSManClient : public BaseWSManClient
 {
 public:
-	AuditLogWSManClient();
+	AuditLogWSManClient(unsigned int port);
 	virtual ~AuditLogWSManClient();
 
 	bool readLogsFromFW(std::vector<Intel::Manageability::Cim::Utils::Base64> &records);

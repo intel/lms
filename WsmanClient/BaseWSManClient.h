@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -47,8 +47,8 @@ class WSMAN_DLL_API BaseWSManClient
 public:
 
 	// Constructors and Destructor.
-	BaseWSManClient();
-	BaseWSManClient(const std::string &defaultUser, const std::string &defaultPass);
+	BaseWSManClient(unsigned int port);
+	BaseWSManClient(unsigned int port, const std::string &defaultUser, const std::string &defaultPass);
 
 	virtual ~BaseWSManClient();
 
@@ -92,6 +92,7 @@ private:
 protected:
 	std::shared_ptr<Intel::WSManagement::ICimWsmanClient>			m_client;		// WSMan client.
 	std::string							m_ip;
+	unsigned int						m_port;
 private:
 	std::string							m_defaultUser;
 	BaseWSManPassword					m_defaultPass;

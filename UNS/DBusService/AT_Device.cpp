@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2022 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #include "DBusService.h"
 #include "AT_Device.h"
@@ -19,7 +19,7 @@ namespace AT_Device {
 		std::string logs;
 
 		Intel::LMS::LMS_ERROR error =
-			Intel::LMS::AT_Device_BE(th->GetGmsPortForwardingStarted()).GetAuditLogs(logs);
+			Intel::LMS::AT_Device_BE(th->GetGmsPortForwardingPort()).GetAuditLogs(logs);
 		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", logs.c_str()));
 		else

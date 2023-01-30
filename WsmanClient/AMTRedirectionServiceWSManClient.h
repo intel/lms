@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 #pragma once
 
@@ -21,7 +21,7 @@ class WSMAN_DLL_API AMTRedirectionServiceWSManClient :
 	public BaseWSManClient
 {
 public:
-	AMTRedirectionServiceWSManClient(void);
+	AMTRedirectionServiceWSManClient(unsigned int port);
 	virtual ~AMTRedirectionServiceWSManClient(void);
 	bool TerminateSession(unsigned int SessionType);
 	bool RedirectionState(unsigned short *state);

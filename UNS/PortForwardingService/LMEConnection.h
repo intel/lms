@@ -294,6 +294,7 @@ public:
 	//parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
 	void Deinit(bool signalSelect = false);
 	size_t GetBufferSize() const;
+	unsigned int GetPortForwardingPort() const { return m_portForwardingPort; }
 
 	enum INIT_STATES {
 		INIT_STATE_DISCONNECTED = 0,
@@ -324,6 +325,7 @@ private:
 	std::unique_ptr<Intel::MEI_Client::HECI> _heci;
 	ACE_Event _threadStartedEvent;
 	ACE_Event _portIsOk;
+	unsigned int m_portForwardingPort;
 
 	HDEVNOTIFY _notifyHandle;
 	DeviceNotifyCallBack  _devNotify;

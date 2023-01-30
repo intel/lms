@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -9,6 +9,7 @@
 --*/
 #include "SyncNetworkData.h"
 #include "SyncIpClient.h"
+#include "GmsService.h"
 
 #include "global.h" 
 
@@ -46,7 +47,7 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	std::string GateWay;
 	std::string PrimaryDNS;
 	std::string SecondaryDNS;
-	SyncIpClient syncIpClient;	
+	SyncIpClient syncIpClient(theService::instance()->GetPortForwardingPort());
 
 	if (!syncIpClient.GetNetworkData(DHCPEnabled, IPAddress, SubNet, GateWay, PrimaryDNS, SecondaryDNS))
 	{
@@ -149,7 +150,7 @@ bool SyncNetworkData::getSharedStaticIpState(bool* state)
 
 	FuncEntryExit<decltype(res)> fee(this, L"getSharedStaticIpState", res);
 
-	SyncIpClient syncIpClient;
+	SyncIpClient syncIpClient(theService::instance()->GetPortForwardingPort());
 	res = syncIpClient.GetSharedStaticIpState(state);
 	return res;
 }

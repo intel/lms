@@ -13,8 +13,8 @@
 #include "WsmanClientCatch.h"
 #include <sstream>
 
-HBPWSManClient::HBPWSManClient() :
-	m_isInit(false), m_HostBasedSetupServiceGot(false), m_HostProvisioningRecordGot(false),
+HBPWSManClient::HBPWSManClient(unsigned int port) :
+	BaseWSManClient(port), m_isInit(false), m_HostBasedSetupServiceGot(false), m_HostProvisioningRecordGot(false),
 	m_RemoteProvisioningRecordGot(false), m_ManualProvisioningRecordGot(false), m_AdminProvisioningRecordGot(false)
 {
 }

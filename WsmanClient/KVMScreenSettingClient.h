@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -22,8 +22,8 @@ class WSMAN_DLL_API KVMScreenSettingClient : public BaseWSManClient
 public:
 	static const unsigned int MAX_DISPLAY_NUMBER = 4;
 
-	KVMScreenSettingClient();
-	KVMScreenSettingClient(const std::string &User, const std::string &Password);
+	KVMScreenSettingClient(unsigned int port);
+	KVMScreenSettingClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~KVMScreenSettingClient();
 
 	struct ScreenSettings

@@ -420,14 +420,14 @@ void PowerOperationsService::loadStrings() {}
 
 void PowerOperationsService::addPowerCapabilities()
 {
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		m_addCapabilitiesRequiredButNoPfw = true;
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting addPowerCapabilities operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		return;
 	}
 	//update graceful power capabilities
 	UNS_DEBUG(L"adding graceful power operations\n");
-	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient;
+	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient(m_mainService->GetPortForwardingPort());
 	bool sleep,hibernate;
 	getPowerCapabilities(sleep,hibernate);
 	UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep,hibernate);

@@ -92,7 +92,7 @@ namespace Intel {
 		}
 
 
-		Manageability_Commands_BE::Manageability_Commands_BE(bool isPfwUp) : Common_BE(isPfwUp)
+		Manageability_Commands_BE::Manageability_Commands_BE(unsigned int port) : Common_BE(port)
 		{
 		}
 

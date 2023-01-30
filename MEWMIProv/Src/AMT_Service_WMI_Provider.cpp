@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -164,6 +164,12 @@ HRESULT AMT_Service_WMI_Provider::getSOLState(
 
 		pResponseHandler->Indicate(1, &pOutParams.p);
 	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
 	catch(...)
 	{
 		UNS_ERROR("%C Bad catch", __FUNCTION__);
@@ -235,6 +241,12 @@ HRESULT AMT_Service_WMI_Provider::getIDERState(
 		WMIPut<1>( pOutParams, L"active", IDERactive);
 
 		pResponseHandler->Indicate(1, &pOutParams.p);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 	catch(...)
 	{
@@ -321,6 +333,12 @@ HRESULT AMT_Service_WMI_Provider::getKVMState(
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while(0);
 	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
 	catch(...)
 	{
 		UNS_ERROR("%C Bad catch", __FUNCTION__);
@@ -355,6 +373,12 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while(0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 	catch(...)
 	{
@@ -399,6 +423,12 @@ HRESULT AMT_Service_WMI_Provider::setSpriteZoom(
 			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while(0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 	catch(...)
 	{

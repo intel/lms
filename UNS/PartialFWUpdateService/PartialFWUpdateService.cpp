@@ -750,7 +750,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		languageID = getUCLanguageID();
 	}
 
-	SIOWSManClient client;
+	SIOWSManClient client(m_mainService->GetPortForwardingPort());
 	unsigned short currentLang = 0;
 
 	if (!client.GetSpriteLanguage(&currentLang))
@@ -846,7 +846,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, LANGUAGE_FLOW_MODE _mo
 	FuncEntryExit<decltype(res)>(this, L"partialFWUpdate", res);
 
 
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting partialFWUpdate operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		m_PfuRequiredButNoPfw = true;
 		return res;
@@ -931,7 +931,7 @@ bool PartialFWUpdateService::SetExpectedWithLocalOSLanguage() const
 	if (!retVal)
 	{
 		unsigned short lang = (unsigned short)getUCLanguageID();
-		SIOWSManClient wsman;
+		SIOWSManClient wsman(m_mainService->GetPortForwardingPort());
 		unsigned short expectedLang = 0;
 
 		if (!wsman.GetExpectedLanguage(&expectedLang))

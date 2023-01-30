@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 #include <locale>
 #include <codecvt>
@@ -18,7 +18,7 @@ typedef Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings CIM_WiFiEndpo
 typedef Intel::Manageability::Cim::Typed::CIM_WiFiEndpoint CIM_WiFiEndpoint;
 typedef Intel::Manageability::Cim::Typed::AMT_WiFiPortConfigurationService AMT_WiFiPortConfigurationService;
 
-WlanWSManClient::WlanWSManClient(void): m_isInit(false)
+WlanWSManClient::WlanWSManClient(unsigned int port): BaseWSManClient(port), m_isInit(false)
 {
 }
 

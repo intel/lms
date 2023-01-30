@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -18,8 +18,8 @@
 class WSMAN_DLL_API SyncIpClient : public BaseWSManClient
 {
 public:
-	SyncIpClient();
-	SyncIpClient(const std::string &User, const std::string &Password);
+	SyncIpClient(unsigned int port);
+	SyncIpClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~SyncIpClient();
 
 	bool GetNetworkData(bool& DHCPEnabled, std::string& IPAddress, std::string& SubNet, std::string& GateWay,

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -20,12 +20,12 @@
 
 namespace CimTyped = Intel::Manageability::Cim::Typed;
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient() : m_isInit(false)
+AMTFCFHWSmanClient::AMTFCFHWSmanClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false)
+AMTFCFHWSmanClient::AMTFCFHWSmanClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_isInit(false)
 {
 }
 

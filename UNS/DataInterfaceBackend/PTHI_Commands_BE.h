@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -18,7 +18,7 @@ namespace Intel {
 		class PTHI_Commands_BE : Common_BE
 		{
 		public:
-			PTHI_Commands_BE(bool isPfwup);
+			PTHI_Commands_BE(unsigned int port);
 
 			LMS_ERROR GetAMTVersion(std::string &sAMTVersion);
 #ifdef WIN32

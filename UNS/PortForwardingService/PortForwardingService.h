@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __PORTFORWARDINGSERVICE_H_
 #define __PORTFORWARDINGSERVICE_H_
@@ -38,7 +38,7 @@ class PORTFORWARDINGSERVICE_Export PortForwardingService : public GmsSubService
 	void AddDebugToMessageLog(const char* message);
 	HDEVNOTIFY _registerDeviceNotifications(HANDLE drvHandle);
 	void _unregisterDeviceNotifications(HDEVNOTIFY notifyHandle);
-	void BroadcastActive();
+	void BroadcastActive(unsigned int portForwardingPort);
 	void BroadcastFailure(bool failure);
 
 	bool GetUnregisterDeviceEvents();

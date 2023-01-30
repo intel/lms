@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -12,11 +12,11 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-CancelOptInClient::CancelOptInClient() : m_isInit(false)
+CancelOptInClient::CancelOptInClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
-CancelOptInClient::CancelOptInClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false)
+CancelOptInClient::CancelOptInClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_isInit(false)
 {
 }
 
