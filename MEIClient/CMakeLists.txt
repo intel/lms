@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2022 Intel Corporation
+# Copyright (C) 2010-2023 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 include (metee.cmake)
@@ -25,9 +25,7 @@ file (GLOB AMTHIClient
   AMTHIClient/Src/GetLastHostResetReasonCommand.cpp
   AMTHIClient/Src/GetLocalSystemAccountCommand.cpp
   AMTHIClient/Src/GetMESetupAuditRecordCommand.cpp
-  AMTHIClient/Src/GetProvisioningModeCommand.cpp
   AMTHIClient/Src/GetProvisioningStateCommand.cpp
-  AMTHIClient/Src/GetProvisioningTlsModeCommand.cpp
   AMTHIClient/Src/GetRedirectionSessionsStateCommand.cpp
   AMTHIClient/Src/GetRedirectionStateCommand.cpp
   AMTHIClient/Src/GetRemoteAccessConnectionStatusCommand.cpp
@@ -42,8 +40,6 @@ file (GLOB AMTHIClient
   AMTHIClient/Src/SetDNSSuffixCommand.cpp
   AMTHIClient/Src/SetEnterpriseAccessCommand.cpp
   AMTHIClient/Src/SetHostFQDNCommand.cpp
-  AMTHIClient/Src/SetProvisioningServerOTPCommand.cpp
-  AMTHIClient/Src/StartConfigurationExCommand.cpp
   AMTHIClient/Src/StopConfigurationCommand.cpp
   AMTHIClient/Src/UnprovisionCommand.cpp
 )
@@ -60,7 +56,6 @@ file (GLOB HOTHAMClient
 
 file (GLOB ManageabilityClient
   ManageabilityClient/Src/ManageabiltiyCommand.cpp
-  ManageabilityClient/Src/MNGChangeToAMTCommand.cpp
   ManageabilityClient/Src/MNGIsChangeToAMTEnabledCommand.cpp
 )
 

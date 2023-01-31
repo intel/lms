@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2022 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
@@ -26,9 +26,7 @@
 #include "GetLanInterfaceSettingsCommand.h"
 #include "GetLastHostResetReasonCommand.h"
 #include "GetLocalSystemAccountCommand.h"
-#include "GetProvisioningModeCommand.h"
 #include "GetProvisioningStateCommand.h"
-#include "GetProvisioningTlsModeCommand.h"
 #include "GetRedirectionSessionsStateCommand.h"
 #include "GetRedirectionStateCommand.h"
 #include "GetRemoteAccessConnectionStatusCommand.h"
@@ -41,8 +39,6 @@
 #include "GetZeroTouchEnabledCommand.h"
 #include "OpenUserInitiatedConnectionCommand.h"
 #include "SetDNSSuffixCommand.h"
-#include "SetProvisioningServerOTPCommand.h"
-#include "StartConfigurationExCommand.h"
 #include "StopConfigurationCommand.h"
 #include "UnprovisionCommand.h"
 
@@ -304,19 +300,6 @@ TEST(instantiate, testGetLocalSystemAcountCommand)
 	);
 }
 
-TEST(instantiate, testGetProvisioningModeCommand) 
-{
-	EXPECT_NO_THROW(
-		GetProvisioningModeCommand provisioningModeCommand;
-		PROVISIONING_MODE_SETTINGS provMode = provisioningModeCommand.getResponse();
-		cout << "\nprovisioning mode \nLegacyMode: " << provMode.LegacyMode <<
-			"\nProvisioning Mode: " << (provMode.ProvisioningMode == CFG_PROVISIONING_MODE_NONE) ? "none" : "enterprise";
-		cout << endl;
-	);
-}
-
-
-
 TEST(instantiate, testGetProvisioningStateCommand) 
 {
 	EXPECT_NO_THROW(
@@ -326,20 +309,6 @@ TEST(instantiate, testGetProvisioningStateCommand)
 		cout << endl;
 	);
 }
-
-
-
-TEST(instantiate, testGetProvisioningTlsModeCommand) 
-{
-	EXPECT_NO_THROW(
-		GetProvisioningTLSModeCommand provisioningTlsCommand;
-		PROV_TLS_MODE_RESPONSE re = provisioningTlsCommand.getResponse();
-		cout << "\nProvisioning TLS Mode (0-PROV_UNKNOWN, 1-PSK, 2-PKI): " << re.ProvTLSMode;
-		cout << endl;
-	);
-}
-
-
 
 TEST(instantiate, testGetRedirectionSessionsStateCommand)
 {
@@ -493,37 +462,6 @@ TEST(instantiate, testGetWebUIStateCommand)
 		cout << endl;
 	);
 }
-
-TEST(instantiate, testSetProvisioningServerOTPCommand)
-{
-	cout << "Set Provisioning Server OTP to Admin!123" << std::endl;
-	try {
-		SetProvisioningServerOTPCommand SetprovSOTPCommand("Admin!123");
-	}
-	catch (const AMTHIErrorException &ex) {
-		if (ex.getErr() != AMT_STATUS_INVALID_PT_MODE)
-			FAIL() << "AMTHIErrorException with error " << ex.getErr();
-	}
-}
-
-TEST(instantiate, DISABLED_testStartConfigurationExCommand)
-{
-	cout << "Start Configuration (Extended) with IPv6 enabled" << std::endl;
-	try {
-		StartConfigurationExCommand configExCommand(true);
-	}
-	catch (const AMTHIErrorException &ex) {
-		if (ex.getErr() == AMT_STATUS_INVALID_PT_MODE)
-			return;
-		FAIL() << "AMTHIErrorException with error " << ex.getErr();
-	}
-	EXPECT_NO_THROW(
-		cout << "\nStop Configuration" << endl;
-		StopConfigurationCommand scc;
-	);
-}
-
-
 
 TEST(instantiate, DISABLED_testUnprovisionCommand)
 {

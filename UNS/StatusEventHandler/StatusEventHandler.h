@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __STATUSEVENTHANDLER_H_
 #define __STATUSEVENTHANDLER_H_
@@ -19,7 +19,7 @@
 #include "EventHandler.h"
 #include "StatusEventFilter.h"
 #include "AMT_COM_Interface_defs.h"
-#include "GetProvisioningStateCommand.h"
+#include "AMTHICommand.h"
 #include "GetPlatformTypeCommand.h"
 #include "HostBootReasonClient.h"
 #include "STATUSEVENTHANDLER_export.h"

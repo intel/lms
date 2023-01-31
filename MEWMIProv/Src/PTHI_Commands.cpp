@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -24,10 +24,8 @@
 #include "OpenUserInitiatedConnectionCommand.h"
 #include "GetFQDNCommand.h"
 #include "CloseUserInitiatedConnectionCommand.h"
-#include "GetProvisioningTlsModeCommand.h"
 #include "GetSecurityParametersCommand.h"
 #include "GetLanInterfaceSettingsCommand.h"
-#include "GetProvisioningModeCommand.h"
 #include "GetProvisioningStateCommand.h"
 #include "GetZeroTouchEnabledCommand.h"
 #include "GetDNSSuffixCommand.h"
@@ -48,10 +46,7 @@
 #include "GetLocalSystemAccountCommand.h"
 #include "UnprovisionCommand.h"
 #include "SetDNSSuffixCommand.h"
-#include "SetProvisioningServerOTPCommand.h"
-#include "StartConfigurationExCommand.h"
 #include "MNGIsChangeToAMTEnabledCommand.h"
-#include "MNGChangeToAMTCommand.h"
 #include "DebugPrints.h"
 #include "GetKVMSessionStateCommand.h"
 
@@ -413,32 +408,6 @@ unsigned int PTHI_Commands::CloseCIRA(void)
 	return rc;
 }
 
-unsigned int PTHI_Commands::GetProvisioningTlsMode(SHORT* pProvisioningTlsMode)
-{
-	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-	try {
-		GetProvisioningTLSModeCommand command;
-		PROV_TLS_MODE_RESPONSE response = command.getResponse();
-		*pProvisioningTlsMode = response.ProvTLSMode;
-		rc = 0;
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetProvisioningTlsModeCommand failed ret=%d\n", e.getErr());
-		rc = e.getErr();
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetProvisioningTlsModeCommand failed %C\n",e.what());
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in GetProvisioningTlsModeCommand %C\n", e.what());
-	}
-
-	return rc;
-}
-
 unsigned int PTHI_Commands::GetTLSEnabled(bool* enabled)
 {
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
@@ -486,32 +455,6 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
-	}
-
-	return rc;
-}
-
-unsigned int PTHI_Commands::GetProvisioningMode(unsigned char& mode)
-{
-	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-	try {
-		GetProvisioningModeCommand command;
-		PROVISIONING_MODE_SETTINGS response = command.getResponse();
-		mode = (unsigned char)response.ProvisioningMode;
-		rc = 0;
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("GetProvisioningModeCommand failed ret=%d\n", e.getErr());
-		rc = e.getErr();
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("GetProvisioningModeCommand failed %C\n",e.what());
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in GetProvisioningModeCommand %C\n", e.what());
 	}
 
 	return rc;
@@ -624,275 +567,6 @@ unsigned int PTHI_Commands::GetRemoteAccessConnectionStatus(SHORT* ConnectionTri
 	return rc;
 }
 
-typedef struct _LOCAL_AGENT_PARAMS
-{
-	std::string	OneTimePassword;
-	std::string	DnsSuffix;
-	bool			Verbose;
-	bool            Activate;
-	bool			EnableIPv6;
-} LOCAL_AGENT_PARAMS;
-
-/*
- * Calls to Activate AMT configuration.
- * Arguments:
- *  param - Local agent parameters structure
- * Return values:
- *  PT_STATUS_SUCCESS - on success for get amt configuration data
- *  appropriate error value defined in StatusCodeDefinitions.h - on failure
- */
-unsigned int Activate(const LOCAL_AGENT_PARAMS &param, bool alreadyActivated, SHORT* provTlsMode)
-{
-	unsigned int status = 0;
-	bool ztcEnabled;
-	ProvTLSMode_t provisioningTlsMode;
-
-	CFG_PROVISIONING_STATE provstate;
-	bool isDNSSet = false;
-	bool isOTPSet = false;
-	bool setDNSOrOTPWhileAmtActivated = false;
-	std::string lastFunction;
-
-	try 
-	{
-	do {
-		// ZTC enabled
-		lastFunction = "GetZeroTouchEnabledCommand";
-		GetZeroTouchEnabledCommand zeroTouchCommand;
-		ztcEnabled = zeroTouchCommand.getResponse().ZTCEnabled;
-		if(!ztcEnabled && 0!= param.OneTimePassword.length())
-		{
-			status = AMT_STATUS_INVALID_PT_MODE;
-			break;
-		}
-		// Get provisioning TLS mode
-		lastFunction = "GetProvisioningTLSModeCommand";
-		GetProvisioningTLSModeCommand provTLSCommand;
-		provisioningTlsMode = provTLSCommand.getResponse().ProvTLSMode;
-
-
-		*provTlsMode = static_cast<SHORT>(provisioningTlsMode);
-		if(PSK == provisioningTlsMode && 0!= param.OneTimePassword.length())
-		{
-			status = PTSDK_STATUS_INVALID_PARAM;
-			break;
-		}
-		if(PSK != provisioningTlsMode && ztcEnabled )
-		{
-			if(0 != param.DnsSuffix.length())
-			{
-				lastFunction = "SetDNSSuffixCommand";
-				SetDNSSuffixCommand setDNSSuffixCommand(param.DnsSuffix);
-				lastFunction = "GetDNSSuffixCommand";
-				GetDNSSuffixCommand getDNSSuffixCommand;
-				std::string tempDnsSuffix = getDNSSuffixCommand.getResponse();
-
-				if (tempDnsSuffix.compare(param.DnsSuffix) != 0)
-				{
-					status=AMT_STATUS_INTERNAL_ERROR;
-					UNS_ERROR("Error: SetDNSSuffix Failed\n");
-					break;
-				}
-				isDNSSet = true;
-			}
-			if(0 != param.OneTimePassword.length())
-			{
-				lastFunction = "SetProvisioningServerOTPCommand";
-				SetProvisioningServerOTPCommand setOTPCommand(param.OneTimePassword);
-				isOTPSet = true;
-			}
-		}
-
-		if (!alreadyActivated)
-		{
-			try{
-				lastFunction = "StartConfigurationExCommand";
-				StartConfigurationExCommand startConfCommand(param.EnableIPv6);
-			}
-			catch (AMTHIErrorException& e)
-			{
-				status = e.getErr();
-			}
-			if(AMT_STATUS_SUCCESS != status && AMT_STATUS_CERTIFICATE_NOT_READY != status)
-			{
-				// This code deals with the situation that AMT is already activated
-				// (so the StartConfiguration fails) but the DNS or OTP were set:
-				// In this case we want to expose a positive message to the user
-				// indicating the success of the DNS or OTP set
-				if ((PT_STATUS_INVALID_PT_MODE == status) && (isDNSSet || isOTPSet))
-				{
-					setDNSOrOTPWhileAmtActivated = true;
-					status = AMT_STATUS_SUCCESS;
-				}
-				break;
-			}
-			else if(AMT_STATUS_CERTIFICATE_NOT_READY == status)
-			{
-				if(PSK == provisioningTlsMode)
-				{
-					break;
-				}
-				else
-				{
-					for(int i = 0; i < 20; i++)
-					{
-						Sleep(30000);
-						// provisioning state
-						try {
-							GetProvisioningStateCommand getProvStateCommand;
-							provstate = getProvStateCommand.getResponse();
-							break;
-						}
-						catch (...)
-						{
-							UNS_ERROR("Error: StartConfiguration Failed\n");
-						}
-					}
-					if(AMT_STATUS_SUCCESS  == status && PROVISIONING_STATE_IN != provstate.ProvisioningState)
-					{
-						status = AMT_STATUS_INVALID_PROVISIONING_STATE;
-						break;
-					}
-				}
-			}
-		}
-
-	}while(0);
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("%C failed ret=%d\n", lastFunction, e.getErr());
-		status = e.getErr();
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("%C failed %C\n",lastFunction, e.what());
-		status = AMT_STATUS_INTERNAL_ERROR;
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in %C %C\n",lastFunction, e.what());
-		status = AMT_STATUS_INTERNAL_ERROR;
-	}
-
-	if (!setDNSOrOTPWhileAmtActivated)
-	{
-		if(AMT_STATUS_SUCCESS == status)
-		{
-			UNS_DEBUG("AMT Config Activate Succeeded\n");
-		}
-		else
-		{
-			UNS_ERROR("AMT Config Activate Failed\n");
-		}
-	}
-	return status;
-}
-
-/*
- * Calls to DiscoveryTest for check AMT configuration.
- * Arguments:
- *  isActivate - if this test running for start amt configuration
- * Return values:
- *  AMT_STATUS_SUCCESS - on success for get amt configuration data
- *  appropriate error value defined in StatusCodeDefinitions.h - on failure
- */
-unsigned int PTHI_Commands::DiscoveryTest(bool isActivate, bool & alreadyActivated)
-{
-	unsigned int status = AMT_STATUS_SUCCESS ;
-
-	// In order to know if the mode is not AMT (i.e. NONE or ASF), basic commands like
-	// GetProvisioningMode should return with null buffer.
-	try {
-		GetProvisioningStateCommand provisioningStateCommand;
-	}
-	catch (const MEIClientExceptionZeroBuffer&)
-	{
-		if(!isActivate)
-		{
-			return status;
-		}
-		status= ChangeToAMT();
-		if (status == AMT_STATUS_SUCCESS)
-		{
-			Sleep(CHANGE_TO_AMT_TIMEOUT);
-		}
-		else
-		{
-			UNS_ERROR("Error: ChangeToAMT Failed with status %C\n", status);
-			return status;
-		}
-	}
-	catch (const MEIClientException& e)
-	{
-		UNS_ERROR("GetProvisioningStateCommand failed %C\n", e.what());
-	}
-	// It may take the AMTHI time to work after ChangeToAMTSucceeds
-	for (int i = 0; i < 12; i++)
-	{
-		try {
-			GetCodeVersionCommand getCodeVersionCommand;
-			getCodeVersionCommand.getResponse(); // There was a version parsing and usage here, but removed
-			return status;
-		}
-		catch (AMTHIErrorException& e)
-		{
-			//in case reached here the AMTHI engine in the FW works and other problem ocured - so, no need to continue try
-			UNS_ERROR("GetCodeVersionCommand failed ret=%d\n", e.getErr());
-			status = e.getErr();
-			return status;
-		}
-		catch (MEIClientException& e)
-		{
-			UNS_ERROR("GetCodeVersionCommand failed %C\n", e.what());
-		}
-		catch (std::exception& e)
-		{
-			UNS_ERROR("Exception in GetCodeVersionCommand %C\n", e.what());
-		}
-
-		Sleep(5000);
-	}
-
-	status = AMT_STATUS_INTERNAL_ERROR;
-	UNS_ERROR("Error: ChangeToAMT Failed \n");
-
-    return status;
-}
-
-unsigned int PTHI_Commands::ZTCActivate(const std::string &OTP, const std::string &PKIDNSSuffix, SHORT* provTLSMode)
-{
-	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-
-	LOCAL_AGENT_PARAMS param;
-	bool alreadyActivated = false;
-	param.OneTimePassword = OTP;
-	param.DnsSuffix = PKIDNSSuffix;
-	param.Verbose = false;
-	param.Activate = true;
-	param.EnableIPv6 = false;
-
-	rc = DiscoveryTest(param.Activate, alreadyActivated);
-	if(AMT_STATUS_SUCCESS == rc && param.Activate)
-	{
-		if ((rc=Activate(param, alreadyActivated, provTLSMode))==0)
-		{
-			UNS_DEBUG("%C", "Activate succeed\n");
-			rc = S_OK;
-		}
-		else
-		{
-			UNS_DEBUG("%C", "Activate failed ret=%d\n", rc);
-		}
-	}
-	else
-	{
-		UNS_DEBUG("%C", "DiscoveryTest return ret=%d param.Activate=%d\n", rc, param.Activate);
-	}
-
-	return rc;
-}
-
 unsigned int PTHI_Commands::GetConfigServerData(std::wstring* Address, unsigned short* port)
 {
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
@@ -983,39 +657,6 @@ unsigned int PTHI_Commands::GetPowerPolicy(std::wstring* policy)
 	}
 
 	return rc;
-}
-/*
- * Change SKU to AMT
- */
-unsigned int PTHI_Commands::ChangeToAMT()
-{
-	unsigned int status = AMT_STATUS_SUCCESS;
-	std::string lastFunction ="";
-	try {
-		lastFunction = "MNGIsChangeToAMTEnabledCommand";
-		MNGIsChangeToAMTEnabledCommand isChangedToAMTCommand;
-		IsChangedEnabledResponse isChangedResponse = isChangedToAMTCommand.getResponse();
-
-		if (isChangedResponse.Enabled)
-		{
-			lastFunction = "MNGChangeToAMTCommand";
-			MNGChangeToAMTCommand changeToAMTCommand;
-			status = changeToAMTCommand.getResponse().Status;
-			UNS_DEBUG("MNGChangeToAMTCommand status returned is %d\n", status);
-		}
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("%C failed %C\n", lastFunction, e.what());
-		status = E_FAIL;
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in %C %C\n", lastFunction, e.what());
-		status = E_FAIL;
-	}
-
-	return status;
 }
 
 unsigned int PTHI_Commands::StopConfiguration(void)
