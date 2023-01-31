@@ -94,6 +94,7 @@ namespace Intel
 					connection.oid
 #endif // WIN32
 				);
+				cl->AllowSelfSignedServerCert();
 			}
 			catch (GeneralWsmanException& ex)
 			{
