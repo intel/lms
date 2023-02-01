@@ -202,12 +202,12 @@ bool Configurator::MEIEnabled() const
 		// Connect to the root\cimv2 namespace with
 		// the current user and obtain pointer pSvc
 		// to make IWbemServices calls.
-		hres = loc->ConnectServer(L"ROOT\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &svc );
+		hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
 		if (!FAILED(hres))
 		{
 				IEnumWbemClassObject* enumerator = NULL;
-				hres = svc->ExecQuery(L"WQL",
-					L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'",
+				hres = svc->ExecQuery(CComBSTR(L"WQL"),
+					CComBSTR(L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'"),
 					WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
 				if (!FAILED(hres))
 				{
