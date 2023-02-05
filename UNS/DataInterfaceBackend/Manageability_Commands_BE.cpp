@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -273,17 +273,21 @@ namespace Intel {
 			else
 			{
 				//use SMBIOS to get MEBx version
-				SMBIOS_Reader sm_reader;
-				if (sm_reader.CheckForSmbiosFlags() != 0)
+				try
 				{
-					return LMS_ERROR::FAIL;
+					SMBIOS_Reader sm_reader;
+					if (sm_reader.CheckForSmbiosFlags() != 0)
+					{
+						return LMS_ERROR::FAIL;
+					}
+					std::stringstream ss;
+					ss << sm_reader.pCapabilities.MEBx_Major << "." <<
+						sm_reader.pCapabilities.MEBx_Minor << "." <<
+						sm_reader.pCapabilities.MEBx_Hotfix << ".";
+					ss << std::setfill('0') << std::setw(4) << sm_reader.pCapabilities.MEBx_Build;
+					pMEBxVersion = ss.str();
 				}
-				std::stringstream ss;
-				ss << sm_reader.pCapabilities.MEBx_Major << "." <<
-					sm_reader.pCapabilities.MEBx_Minor << "." <<
-					sm_reader.pCapabilities.MEBx_Hotfix << ".";
-				ss << std::setfill('0') << std::setw(4) << sm_reader.pCapabilities.MEBx_Build;
-				pMEBxVersion = ss.str();
+				CATCH_exception(L"SMBIOS_Reader")
 			}
 
 			if (isME12andUp)
