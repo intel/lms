@@ -39,7 +39,6 @@
 #include "GetZeroTouchEnabledCommand.h"
 #include "OpenUserInitiatedConnectionCommand.h"
 #include "SetDNSSuffixCommand.h"
-#include "StopConfigurationCommand.h"
 #include "UnprovisionCommand.h"
 
 #include "GetFWCapsCommand.h"

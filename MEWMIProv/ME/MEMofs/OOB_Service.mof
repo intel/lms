@@ -80,7 +80,7 @@ class OOB_Service : CIM_Service {
 	uint8 provTLSMode);
 
 
-   [Description ("Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation"): Amended, static, implemented]
+   [Description ("Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation (Deprected)"): Amended, static, implemented]
    uint32 CancelActivation ();
 
    

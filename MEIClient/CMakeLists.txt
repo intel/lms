@@ -40,7 +40,6 @@ file (GLOB AMTHIClient
   AMTHIClient/Src/SetDNSSuffixCommand.cpp
   AMTHIClient/Src/SetEnterpriseAccessCommand.cpp
   AMTHIClient/Src/SetHostFQDNCommand.cpp
-  AMTHIClient/Src/StopConfigurationCommand.cpp
   AMTHIClient/Src/UnprovisionCommand.cpp
 )
 

@@ -557,38 +557,9 @@ HRESULT OOB_Service_WMI_Provider::CancelActivation(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	uint32 ReturnValue = 0;
-	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+	uint32 hr = WBEM_E_NOT_SUPPORTED;
 
-	if (IsUserAdmin() == S_FALSE)
-	{
-		hr = WBEM_E_ACCESS_DENIED;
-		pResponseHandler->SetStatus(0, hr, NULL, NULL);
-		return hr;
-	}
-
-	try
-	{
-		PTHI_Commands pthic;
-		ReturnValue = pthic.StopConfiguration();
-
-		ERROR_HANDLER(ReturnValue);
-
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"CloseUserInitiatedConnection", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
-	}
-	catch(...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
-	}
-
-	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	pResponseHandler->SetStatus(0, hr, NULL, NULL);
 	return hr;
 }
 

@@ -93,7 +93,6 @@ public:
 	UINT32 GetConfigServerData(std::wstring* Address, unsigned short* port);
 	UINT32 GetAMTState(unsigned int* LastMEResetReason, bool *cryptoFuseEnabled);
 	UINT32 GetPowerPolicy(std::wstring* policy);
-	UINT32 StopConfiguration(void);
 	UINT32 GetAMTVersion(std::wstring* AMTVersion);
 	UINT32 GetMESetupAudit(MEAdminAudit *MEAudit);
 	UINT32 getWebUIState(SHORT* pState);

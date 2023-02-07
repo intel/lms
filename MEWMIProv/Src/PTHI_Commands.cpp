@@ -33,7 +33,6 @@
 #include "GetConfigServerDataCommand.h"
 #include "GetAMTStateCommand.h"
 #include "GetCurrentPowerPolicyCommand.h"
-#include "StopConfigurationCommand.h"
 #include "GetCodeVersionCommand.h"
 #include "GetFWVersionCommand.h"
 #include "GetMESetupAuditRecordCommand.h"
@@ -654,30 +653,6 @@ unsigned int PTHI_Commands::GetPowerPolicy(std::wstring* policy)
 	catch (std::exception& e)
 	{
 		UNS_ERROR("Exception in GetPowerPolicy %C\n", e.what());
-	}
-
-	return rc;
-}
-
-unsigned int PTHI_Commands::StopConfiguration(void)
-{
-	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
-	try {
-		StopConfigurationCommand command;
-		rc = 0;
-	}
-	catch (AMTHIErrorException& e)
-	{
-		UNS_ERROR("StopConfigurationCommand failed ret=%d\n", e.getErr());
-		rc = e.getErr();
-	}
-	catch (MEIClientException& e)
-	{
-		UNS_ERROR("StopConfigurationCommand failed %C\n",e.what());
-	}
-	catch (std::exception& e)
-	{
-		UNS_ERROR("Exception in StopConfigurationCommand %C\n", e.what());
 	}
 
 	return rc;
