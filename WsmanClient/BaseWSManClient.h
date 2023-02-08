@@ -98,7 +98,7 @@ private:
 
 	static const std::string DEFAULT_USER;
 
-	BaseWSManClient& operator= (const BaseWSManClient& ){ return *this; } //to avoid misuse
+	BaseWSManClient& operator= (const BaseWSManClient&) = delete; //to avoid misuse
 
 };
 
