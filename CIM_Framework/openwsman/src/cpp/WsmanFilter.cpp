@@ -34,7 +34,7 @@ WsmanFilter::WsmanFilter(const NameValuePairs *s)
 
 WsmanFilter& WsmanFilter::operator=(const WsmanFilter &other)
 {
-	if (*this != other)
+	if (this != &other)
 		filter = filter_copy(other.getFilter());
 	return *this;
 }
