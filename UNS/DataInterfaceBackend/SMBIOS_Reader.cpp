@@ -152,6 +152,8 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	BSTR bstrMsg;
 	BOOL uninitCom = FALSE;
 	IEnumWbemClassObject* penum = NULL;
+	IWbemLocator* ploc = NULL;
+	IWbemServices* psvc = NULL;
 
     // WMI Initialize COM.
     hr =  CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -168,8 +170,6 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 
     // WMI interface locator for host
 
-	IWbemLocator* ploc = nullptr;
-
     hr = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER,
 						  __uuidof(IWbemLocator), (LPVOID *)&ploc);
 
@@ -179,8 +179,6 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 		ret = ERROR_COCREATEINSTANCE;
 		goto comfailure;
     }
-
-    IWbemServices* psvc = 0;
 
     // Now connect to the wmi namespace to make call for IWbemServices
 
