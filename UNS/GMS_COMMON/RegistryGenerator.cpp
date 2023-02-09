@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "RegistryStorage.h"
 #include "DataStorageGenerator.h"
@@ -72,7 +72,6 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(LINK_PROTECTION_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE,LMS_REG_TEXT("Link Protection"));
 	regMap->at(GetRedirectionSessionLinkTechnology_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetRedirectionSessionLinkTechnology"));
 	regMap->at(TIME_SYNC_ENABLE_S) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_AMT_STATE,LMS_REG_TEXT("Time Sync Enable"));
-	regMap->at(OverrideProsetAdapterSwitching) = RegEntry(LMS_REG,LMS_REG_TEXT("OverrideProsetAdapterSwitching"));
 	regMap->at(UserInitiatedPolicyRuleForLocalMpsExists_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("UserInitiatedPolicyRuleForLocalMpsExists"));
 	regMap->at(FLogSize) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("FLogSize"));
 	regMap->at(GetPMCVersion_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetPMCVersion"));

@@ -79,7 +79,6 @@ enum DATA_NAME : unsigned int
 	LINK_PROTECTION_S,
 	GetRedirectionSessionLinkTechnology_F,
 	TIME_SYNC_ENABLE_S,
-	OverrideProsetAdapterSwitching,
 	UserInitiatedPolicyRuleForLocalMpsExists_F,
 	FLogSize,
 	GetPMCVersion_F,

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2011, 2013-2019 Intel Corporation
+ * Copyright (C) 2006-2011, 2013-2023 Intel Corporation
  */
 //----------------------------------------------------------------------------
 //
@@ -16,7 +16,7 @@
 //===================================================
 //  INCLUDES
 //===================================================
-#define _WIN32_WINNT _WIN32_WINNT_VISTA 
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 
 #include <ace/Log_Msg.h>
 
