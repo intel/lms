@@ -102,7 +102,6 @@ private:
 
 	long deferredResumeTimerId_;
 
-	void DoOverrideProsetAdapterSwitching() const;
 	bool PasswordOnWakeupDisabled() const;
 };
 

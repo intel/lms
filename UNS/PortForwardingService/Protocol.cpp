@@ -16,7 +16,6 @@
 
 #include <tchar.h>
 #include <iostream>
-const int local_socket_domain = AF_INET; // To make Win8.1 happy (it can't work with AF_LOCAL)
 #else
 #include <errno.h>
 
@@ -24,7 +23,6 @@ const int local_socket_domain = AF_INET; // To make Win8.1 happy (it can't work 
 #define SOCKET_ERROR            (-1)
 static inline int closesocket(int fd) {return close(fd);}
 #define WSAEWOULDBLOCK EINPROGRESS
-const int local_socket_domain = AF_LOCAL;
 
 #if defined SHUT_RDWR && !defined SD_BOTH
 #  define SD_BOTH SHUT_RDWR
@@ -1657,7 +1655,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					c = new SocketChannel(NULL, s);
 				}
 				else {// SOAP message, no real socket
-					SOCKET s = socket(local_socket_domain, SOCK_STREAM, 0); // Dummy socket for a map
+					SOCKET s = socket(AF_LOCAL, SOCK_STREAM, 0); // Dummy socket for a map
 					if (s == INVALID_SOCKET) {
 						UNS_ERROR(L"Unable to open direct channel to address %C.\n",
 							channelOpenMessage->Address.c_str());
