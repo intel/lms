@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2022 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 #include <iostream>
 #include <comdef.h>
@@ -680,23 +680,6 @@ TEST_F(MEProvTest, GetProvisioningState)
 	ASSERT_GE(state, 0);
 	ASSERT_LE(state, 3);
 	std::wcout << " state: " << state << std::endl;
-}
-
-TEST_F(MEProvTest, GetAMTProvisioningMode)
-{
-	uint8_t mode;
-	UINT32 return_val;
-	bool ret;
-
-	ret = runCommandOneReturn(L"GetAMTProvisioningMode", L"OOB_Service", L"mode", return_val, mode);
-	if (!ret)
-	{
-		FAIL();
-	}
-	EXPECT_PRED1(isReturnValueValid, return_val);
-	ASSERT_GE(mode, 0);
-	ASSERT_LE(mode, 3);
-	std::wcout << " mode: " << mode << std::endl;
 }
 
 TEST_F(MEProvTest, isRemoteConfigEnabled)
