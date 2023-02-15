@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -36,7 +36,6 @@ namespace Intel
 				}
 			} GET_REDIRECTION_SESSIONS_STATE_RESPONSE;
 
-			class GetRedirectionSessionsStateRequest;
 			class GetRedirectionSessionsStateCommand : public AMTHICommand
 			{
 			public:

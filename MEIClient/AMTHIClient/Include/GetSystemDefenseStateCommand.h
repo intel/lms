@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -32,7 +32,6 @@ namespace Intel
 				}
 			} GET_SYSTEM_DEFENSE_STATE_RESPONSE;
 
-			class GetSystemDefenseStateRequest;
 			class GetSystemDefenseStateCommand : public AMTHICommand
 			{
 			public:

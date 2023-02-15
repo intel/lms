@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -34,7 +34,6 @@ namespace AMTHI_Client
 		}
 	} AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE;
 
-	class CFG_SetOverrideProsetAdapterSwitchingCommandRequest;
 	class CFG_SetOverrideProsetAdapterSwitchingCommand : public AMTHICommand
 	{
 	public:

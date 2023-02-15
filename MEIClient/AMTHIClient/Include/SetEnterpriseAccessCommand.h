@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -29,7 +29,7 @@ namespace Intel
 			};
 
 			const static uint32_t HOST_IP_ADDRESS_SIZE = 16;
-			class SetEnterpriseAccessRequest;
+
 			class SetEnterpriseAccessCommand : public AMTHICommand
 			{
 			public:

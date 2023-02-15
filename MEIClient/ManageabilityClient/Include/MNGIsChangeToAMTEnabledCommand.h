@@ -41,7 +41,6 @@ namespace Intel
 				}
 			};
 
-			class MNGIsChangeToAMTEnabledRequest;
 			class MNGIsChangeToAMTEnabledCommand : public ManageabilityCommand
 			{
 			public:

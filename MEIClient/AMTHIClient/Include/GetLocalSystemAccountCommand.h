@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -46,7 +46,6 @@ namespace Intel
 				}
 			};
 
-			class GetLocalSystemAccountRequest;
 			class GetLocalSystemAccountCommand : public AMTHICommand
 			{
 			public:

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2021-2022 Intel Corporation
+ * Copyright (C) 2021-2023 Intel Corporation
  */
 /*++
 
@@ -160,7 +160,6 @@ namespace Intel
 			};
 			#pragma pack()
 
-			class PSRGetPlatformServiceRecordRequest;
 			class PSRGetPlatformServiceRecordCommand : public PSRCommand
 			{
 			public:

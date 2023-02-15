@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -31,8 +31,6 @@ namespace Intel
 				}
 			}  UPID_PLATFORM_ID_FEATURE_STATE_GET_Response;
 
-
-			class GetUPIDFeatureStateRequest;
 			class GetUPIDFeatureStateCommand : public UPIDCommand
 			{
 			public:

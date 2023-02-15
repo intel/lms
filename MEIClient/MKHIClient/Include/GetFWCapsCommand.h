@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -73,7 +73,6 @@ namespace Intel
 				}
 			};
 
-			class GetFWCapsRequest;
 			class GetFWCapsCommand : public MKHICommand
 			{
 			public:

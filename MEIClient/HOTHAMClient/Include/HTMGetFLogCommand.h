@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -24,7 +24,6 @@ namespace Intel
 			typedef struct _HTM_CMD_FLOG_RESP
 			{
 				uint32_t   response;
-				//uint32_t   data[];
 			} HTM_CMD_FLOG_RESP;
 
 			typedef struct _GET_FLOG_RESP
@@ -38,8 +37,6 @@ namespace Intel
 				}
 			} GET_FLOG_RESP;
 
-
-			class HTMGetFatalErrorsRequest;
 			class HTMGetFatalErrorsCommand : public HOTHAMCommand
 			{
 			public:

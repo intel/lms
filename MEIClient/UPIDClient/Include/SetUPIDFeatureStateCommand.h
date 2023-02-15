@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -34,7 +34,6 @@ namespace Intel
 				uint8_t         featureState;
 			}  UPID_PLATFORM_ID_FEATURE_STATE_SET_Request;
 
-			class SetUPIDFeatureStateRequest;
 			class SetUPIDFeatureStateCommand : public UPIDCommand
 			{
 			public:
