@@ -48,16 +48,11 @@ namespace Intel
 			class SetHostFQDNRequest : public AMTHICommandRequest
 			{
 			public:
-				SetHostFQDNRequest(const std::string &FQDN) : _FQDN (FQDN){}
+				SetHostFQDNRequest(const std::string &FQDN) : AMTHICommandRequest(REQUEST_COMMAND_NUMBER), _FQDN (FQDN) {}
 				virtual ~SetHostFQDNRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400005B;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

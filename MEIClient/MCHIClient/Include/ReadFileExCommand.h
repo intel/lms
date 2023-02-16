@@ -72,27 +72,15 @@ namespace Intel
 			{
 			public:
 				ReadFileExRequest(uint32_t fileID, uint32_t offset, uint32_t dataSize, uint8_t flags) :
-					request{ fileID, offset, dataSize, flags } {}
+					MCHICommandRequest(REQUEST_COMMAND_NUMBER, MCHI_GROUP_ID_MCA), request{ fileID, offset, dataSize, flags } {}
 				virtual ~ReadFileExRequest() {}
 
 			private:
-
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0xA;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the MCHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(READ_FILE_EX_REQUEST);
-				}
-
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MCHI document)
-					return MCHI_GROUP_ID_MCA;
 				}
 				virtual std::vector<uint8_t> SerializeData();
 				READ_FILE_EX_REQUEST request;

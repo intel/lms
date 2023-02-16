@@ -64,29 +64,11 @@ namespace Intel
 			class GetFWVersionRequest : public MKHICommandRequest
 			{
 			public:
-				GetFWVersionRequest() {}
+				GetFWVersionRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID) {}
 				virtual ~GetFWVersionRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_GEN_GROUP_ID;
-				}
-
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

@@ -103,17 +103,13 @@ namespace Intel
 			class GetIPv6LanInterfaceStatusRequest : public AMTHICommandRequest
 			{
 			public:
-				GetIPv6LanInterfaceStatusRequest(const uint32_t interfaceIndex):m_interfaceIndex(interfaceIndex) {}	//INTERFACE_SETTINGS
+				GetIPv6LanInterfaceStatusRequest(const uint32_t interfaceIndex):
+					m_interfaceIndex(interfaceIndex), AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {} //INTERFACE_SETTINGS
 				virtual ~GetIPv6LanInterfaceStatusRequest() {}
 
 			private:
 				uint32_t m_interfaceIndex;	//INTERFACE_SETTINGS
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000052;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

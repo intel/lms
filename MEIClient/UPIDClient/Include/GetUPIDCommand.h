@@ -62,23 +62,8 @@ namespace Intel
 			class GetUPIDRequest : public UPIDRequest
 			{
 			public:
-				GetUPIDRequest() {}
+				GetUPIDRequest() : UPIDRequest(UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_GET) {}
 				virtual ~GetUPIDRequest() {}
-
-			private:
-				virtual uint8_t requestHeaderFeatureID()
-				{
-					return UPID_COMMAND_FEATURE_PLATFORM_ID;
-				}
-				virtual uint8_t requestHeaderCommandID()
-				{
-					return UPID_COMMAND_PLATFORM_ID_GET;
-				}
-				virtual uint16_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace UPID_Client
 	} // namespace MEI_Client

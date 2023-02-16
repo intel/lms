@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -28,7 +28,7 @@ namespace Intel {
 			std::vector<uint8_t> AMTHICommandRequest::Serialize()
 			{
 				AMTHI_MESSAGE_HEADER header =
-				{ {AMT_MAJOR_VERSION,AMT_MINOR_VERSION}, 0, {requestHeaderCommandNumber()}, requestDataSize() };
+				{ {AMT_MAJOR_VERSION,AMT_MINOR_VERSION}, 0, {m_requestHeaderCommandNumber}, requestDataSize() };
 				std::vector<uint8_t> output = serializeHeader(header);
 				std::vector<uint8_t> dataOutput = SerializeData();
 				output.insert(output.end(), dataOutput.begin(), dataOutput.end());

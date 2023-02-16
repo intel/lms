@@ -56,17 +56,13 @@ namespace Intel
 			class GetLanInterfaceSettingRequest : public AMTHICommandRequest
 			{
 			public:
-				GetLanInterfaceSettingRequest(const uint32_t interfaceSettings):m_interfaceSettings(interfaceSettings) {}	//INTERFACE_SETTINGS
+				GetLanInterfaceSettingRequest(const uint32_t interfaceSettings):
+					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_interfaceSettings(interfaceSettings) {} //INTERFACE_SETTINGS
 				virtual ~GetLanInterfaceSettingRequest() {}
 
 			private:
 				uint32_t m_interfaceSettings;	//INTERFACE_SETTINGS
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000048;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

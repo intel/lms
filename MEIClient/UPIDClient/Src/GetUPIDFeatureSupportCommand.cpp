@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2022 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -27,11 +27,6 @@ namespace Intel {
 			void GetUPIDFeatureSupportCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
 				m_response = std::make_shared<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response>>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_SUPPORT_GET);
-			}
-
-			std::vector<uint8_t> GetUPIDFeatureSupportRequest::SerializeData()
-			{
-				return std::vector<uint8_t>();
 			}
 		} /* namespace UPID_Client */
 	} /* namespace MEI_Client */

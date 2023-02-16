@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -102,23 +102,23 @@ private:
 class MKHICommandRequest: public Intel::MEI_Client::MEICommandRequest
 {
 public:
-	MKHICommandRequest() {}
+	MKHICommandRequest(uint32_t requestHeaderCommandNumber, uint32_t requestHeaderGroupID) :
+		m_requestHeaderCommandNumber(requestHeaderCommandNumber), m_requestHeaderGroupID(requestHeaderGroupID) {}
 	virtual ~MKHICommandRequest() {}
 	virtual std::vector<uint8_t> Serialize();
 
 private:
-
 	std::vector<uint8_t> serializeHeader(const MKHI_MSG_HEADER& header);
-	//returns the AMTHI command number (in the header) of the request command
-	virtual uint32_t requestHeaderCommandNumber() = 0;
-	virtual uint32_t requestHeaderGroupID() = 0;
-	virtual uint32_t requestDataSize() = 0;
+	virtual uint32_t requestDataSize() { return 0; };
 	virtual std::vector<uint8_t> SerializeData()
 	{
 		//default no data
 		std::vector<uint8_t> tmp;
 		return tmp;
 	}
+	//the AMTHI command number (in the header) of the request command
+	uint32_t m_requestHeaderCommandNumber;
+	uint32_t m_requestHeaderGroupID;
 };
 
 template <typename T>

@@ -45,16 +45,12 @@ namespace Intel
 			class SetDNSSuffixRequest : public AMTHICommandRequest
 			{
 			public:
-				SetDNSSuffixRequest(const std::string &suffix):m_str(suffix, false) {} //should check if the null terminated is needed or not
+				SetDNSSuffixRequest(const std::string &suffix) :
+					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_str(suffix, false) {} //should check if the null terminated is needed or not
 				virtual ~SetDNSSuffixRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400002F;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

@@ -53,25 +53,17 @@ namespace Intel
 			class SetUPIDFeatureStateRequest : public UPIDRequest
 			{
 			public:
-				SetUPIDFeatureStateRequest(bool featureState) : _featureState(featureState) {}
+				SetUPIDFeatureStateRequest(bool featureState) :
+					UPIDRequest(UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_SET), _featureState(featureState) {}
 				virtual ~SetUPIDFeatureStateRequest() {}
 
 			private:
-				virtual uint8_t requestHeaderFeatureID()
-				{
-					return UPID_COMMAND_FEATURE_PLATFORM_ID;
-				}
-				virtual uint8_t requestHeaderCommandID()
-				{
-					return UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_SET;
-				}
 				virtual uint16_t requestDataSize()
 				{
 					return sizeof(UPID_PLATFORM_ID_FEATURE_STATE_SET_Request);
 				}
 				virtual std::vector<uint8_t> SerializeData();
 				bool _featureState;
-
 			};
 		} // namespace UPID_Client
 	} // namespace MEI_Client

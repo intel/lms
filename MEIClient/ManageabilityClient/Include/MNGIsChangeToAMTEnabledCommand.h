@@ -76,12 +76,6 @@ namespace Intel
 					//this is the sub command number (taken from the AMTHI document)
 					return REQUEST_SUB_CMD;
 				}
-				virtual uint8_t requestDataSize()
-				{
-					return 0;
-				}
-
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

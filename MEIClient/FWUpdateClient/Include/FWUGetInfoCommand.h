@@ -72,8 +72,6 @@ namespace Intel
 					//this is the command number (taken from the AMTHI document)
 					return REQUEST_COMMAND_NUMBER;
 				}
-
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace FWUpadate_Client
 	} // namespace MEI_Client

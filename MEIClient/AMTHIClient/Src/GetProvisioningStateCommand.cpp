@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -29,12 +29,6 @@ namespace Intel {
 			{
 				std::shared_ptr<AMTHICommandResponse<CFG_PROVISIONING_STATE>> tmp(new AMTHICommandResponse<CFG_PROVISIONING_STATE>(buffer, RESPONSE_COMMAND_NUMBER));
 				m_response = tmp;
-			}
-
-			std::vector<uint8_t> GetProvisioningStateRequest::SerializeData()
-			{
-				std::vector<uint8_t> output;
-				return output;
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

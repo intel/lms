@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -27,11 +27,5 @@ namespace Intel { namespace MEI_Client { namespace HOTHAM_Client {
 	{
 		std::shared_ptr<HOTHAMCommandResponse<GET_FLOG_RESP>> tmp(new HOTHAMCommandResponse<GET_FLOG_RESP>(buffer));
 		m_response = tmp;
-	}
-
-	std::vector<uint8_t> HTMGetFatalErrorsRequest::SerializeData()
-	{
-		std::vector<uint8_t> output;
-		return output;
 	}
 } /* namespace HOTHAM_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

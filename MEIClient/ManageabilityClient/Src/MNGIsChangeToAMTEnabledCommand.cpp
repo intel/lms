@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -27,11 +27,5 @@ namespace Intel { namespace MEI_Client { namespace Manageability_Client {
 	{
 		std::shared_ptr<ManageabilityCommandResponse<IsChangedEnabledResponse>> tmp(new ManageabilityCommandResponse<IsChangedEnabledResponse>(buffer));
 		m_response = tmp;
-	}
-
-	std::vector<uint8_t> MNGIsChangeToAMTEnabledRequest::SerializeData()
-	{
-		std::vector<uint8_t> output;
-		return output;
 	}
 } /* namespace Manageability_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

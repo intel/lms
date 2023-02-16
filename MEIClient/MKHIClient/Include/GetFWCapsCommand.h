@@ -95,29 +95,17 @@ namespace Intel
 			class GetFWCapsRequest : public MKHICommandRequest
 			{
 			public:
-				GetFWCapsRequest(CapsRule rule) {m_rule.Data=rule;}
+				GetFWCapsRequest(CapsRule rule) : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID) { m_rule.Data=rule; }
 				virtual ~GetFWCapsRequest() {}
 
 			private:
 				RULE_ID m_rule;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(RULE_ID);
 				}
-
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_FWCAPS_GROUP_ID;
-				}
-
 				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace MKHI_Client

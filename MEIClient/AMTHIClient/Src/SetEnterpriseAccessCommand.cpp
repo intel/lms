@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -14,7 +14,7 @@ namespace Intel {
 	namespace MEI_Client {
 		namespace AMTHI_Client {
 			SetEnterpriseAccessRequest::SetEnterpriseAccessRequest(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess) :
-				_Flags(Flags), _HostIPAddress(HostIPAddress), _EnterpiseAccess(EnterpiseAccess)
+				AMTHICommandRequest(REQUEST_COMMAND_NUMBER), _Flags(Flags), _HostIPAddress(HostIPAddress), _EnterpiseAccess(EnterpiseAccess)
 			{
 				if (_HostIPAddress.size() != HOST_IP_ADDRESS_SIZE)
 				{

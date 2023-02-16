@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2022 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -77,17 +77,15 @@ namespace Intel
 			class UPIDRequest : public Intel::MEI_Client::MEICommandRequest
 			{
 			public:
-				UPIDRequest() {}
+				UPIDRequest(uint8_t requestHeaderFeatureID, uint8_t requestHeaderCommandID) :
+					m_requestHeaderFeatureID(requestHeaderFeatureID), m_requestHeaderCommandID(requestHeaderCommandID) {}
 				virtual ~UPIDRequest() {}
 				virtual std::vector<uint8_t> Serialize();
 
 			private:
 				std::vector<uint8_t> serializeHeader(const UPID_HECI_HEADER& header);
-				//return the UPID feature\command number (in the header) of the request command
-				virtual uint8_t requestHeaderFeatureID() = 0;
-				virtual uint8_t requestHeaderCommandID() = 0;
 				//return total length not including the message header
-				virtual uint16_t requestDataSize() = 0;
+				virtual uint16_t requestDataSize() { return 0; };
 
 				virtual std::vector<uint8_t> SerializeData()
 				{
@@ -95,6 +93,9 @@ namespace Intel
 					std::vector<uint8_t> tmp;
 					return tmp;
 				}
+				// the UPID feature\command number (in the header) of the request command
+				uint8_t m_requestHeaderFeatureID;
+				uint8_t m_requestHeaderCommandID;
 			};
 
 			template <typename T>

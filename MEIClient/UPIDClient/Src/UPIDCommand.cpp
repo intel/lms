@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -22,7 +22,7 @@ namespace Intel {
 
 			std::vector<uint8_t> UPIDRequest::Serialize()
 			{
-				UPID_HECI_HEADER header = { requestHeaderFeatureID(), requestHeaderCommandID(), requestDataSize() };
+				UPID_HECI_HEADER header = { m_requestHeaderFeatureID, m_requestHeaderCommandID, requestDataSize() };
 				std::vector<uint8_t> output = serializeHeader(header);
 				std::vector<uint8_t> dataOutput = SerializeData();
 				output.insert(output.end(), dataOutput.begin(), dataOutput.end());

@@ -59,11 +59,6 @@ namespace AMTHI_Client
 
 	private:
 		static const uint32_t REQUEST_COMMAND_NUMBER = 0x4000086;
-		virtual unsigned int requestHeaderCommandNumber()
-		{
-			//this is the command number (taken from the AMTHI document)
-			return REQUEST_COMMAND_NUMBER;
-		}
 
 		virtual uint32_t requestDataSize()
 		{

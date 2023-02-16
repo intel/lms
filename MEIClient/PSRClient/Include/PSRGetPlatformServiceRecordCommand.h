@@ -177,20 +177,15 @@ namespace Intel
 			class PSRGetPlatformServiceRecordRequest : public PSRCommandRequest
 			{
 			public:
-				PSRGetPlatformServiceRecordRequest(const std::array<uint8_t, PSR_NONCE_SIZE> &_nonce) : user_nonce(_nonce) {}
+				PSRGetPlatformServiceRecordRequest(const std::array<uint8_t, PSR_NONCE_SIZE> &_nonce) : 
+					PSRCommandRequest(PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET), user_nonce(_nonce) {}
 				virtual ~PSRGetPlatformServiceRecordRequest() {}
 
 			private:
-				virtual uint8_t requestHeaderCommandNumber()
-				{
-					return static_cast<uint8_t>(PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET);
-				}
-
 				virtual uint16_t requestDataSize()
 				{
 					return static_cast<uint8_t>(sizeof(PSR_GET_REQUEST));
 				}
-
 				virtual std::vector<uint8_t> SerializeData();
 
 				std::array<uint8_t, PSR_NONCE_SIZE> user_nonce;

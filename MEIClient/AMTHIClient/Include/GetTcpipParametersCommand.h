@@ -71,21 +71,11 @@ namespace Intel
 			class GetTcpipParametersRequest : public AMTHICommandRequest
 			{
 			public:
-				GetTcpipParametersRequest() {}
+				GetTcpipParametersRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetTcpipParametersRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000006;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

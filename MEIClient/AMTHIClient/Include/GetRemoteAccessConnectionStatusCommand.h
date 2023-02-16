@@ -82,23 +82,11 @@ namespace Intel
 			class GetRemoteAccessConnectionStatusRequest : public AMTHICommandRequest
 			{
 			public:
-				GetRemoteAccessConnectionStatusRequest() {}
+				GetRemoteAccessConnectionStatusRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetRemoteAccessConnectionStatusRequest() {}
 
 			private:
-				
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000046;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

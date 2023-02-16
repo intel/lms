@@ -66,16 +66,11 @@ namespace Intel
 			class GetLocalSystemAccountRequest : public AMTHICommandRequest
 			{
 			public:
-				GetLocalSystemAccountRequest() {}
+				GetLocalSystemAccountRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetLocalSystemAccountRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000067;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

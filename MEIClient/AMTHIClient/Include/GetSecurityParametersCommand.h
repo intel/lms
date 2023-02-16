@@ -73,21 +73,11 @@ namespace Intel
 			class GetSecurityParametersRequest : public AMTHICommandRequest
 			{
 			public:
-				GetSecurityParametersRequest() {}
+				GetSecurityParametersRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetSecurityParametersRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400001B;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

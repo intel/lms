@@ -47,17 +47,12 @@ namespace Intel
 			class UnprovisionRequest : public AMTHICommandRequest
 			{
 			public:
-				UnprovisionRequest(const CFG_PROVISIONING_MODE Mode):m_mode(Mode) {}
+				UnprovisionRequest(const CFG_PROVISIONING_MODE Mode) : AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_mode(Mode) {}
 				virtual ~UnprovisionRequest() {}		
 
 			private:
 				CFG_PROVISIONING_MODE m_mode;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000010;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

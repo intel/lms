@@ -56,17 +56,12 @@ namespace Intel
 			class GetRedirectionSessionsStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetRedirectionSessionsStateRequest() {}
+				GetRedirectionSessionsStateRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetRedirectionSessionsStateRequest() {}
 
 			private:
 				static const uint32_t REDIRECTION_ID = 0;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000049;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

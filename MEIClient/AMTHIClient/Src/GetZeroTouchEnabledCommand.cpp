@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -29,12 +29,6 @@ namespace Intel {
 			{
 				std::shared_ptr<AMTHICommandResponse<ZTC_ENABLED_STATUS>> tmp(new AMTHICommandResponse<ZTC_ENABLED_STATUS>(buffer, RESPONSE_COMMAND_NUMBER));
 				m_response = tmp;
-			}
-
-			std::vector<uint8_t> GetZeroTouchEnabledRequest::SerializeData()
-			{
-				std::vector<uint8_t> output;
-				return output;
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

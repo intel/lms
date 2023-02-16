@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -27,11 +27,5 @@ namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
 	{
 		std::shared_ptr<FWUpdateCommandResponse<GET_INFO_RESPONSE>> tmp(new FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
 		m_response = tmp;
-	}
-
-	std::vector<uint8_t> FWUGetInfoRequest::SerializeData()
-	{
-		std::vector<uint8_t> output;
-		return output;
 	}
 } /* namespace FWUpdate_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

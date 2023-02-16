@@ -52,18 +52,12 @@ namespace Intel
 			class GetEACStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetEACStateRequest() {
-				}
+				GetEACStateRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetEACStateRequest() {}
 
 			private:
 				static const uint32_t EAC_ID  = 3;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000049;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

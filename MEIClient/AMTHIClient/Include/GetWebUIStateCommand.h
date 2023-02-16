@@ -52,17 +52,12 @@ namespace Intel
 			class GetWebUIStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetWebUIStateRequest() {}
+				GetWebUIStateRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetWebUIStateRequest() {}
 
 			private:
 				static const uint32_t WEB_UI_STATE_ID = 2;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000049;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{

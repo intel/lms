@@ -60,21 +60,11 @@ namespace Intel
 			class GetConfigServerDataRequest : public AMTHICommandRequest
 			{
 			public:
-				GetConfigServerDataRequest() {}
+				GetConfigServerDataRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetConfigServerDataRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400004E;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0; 
-				}
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

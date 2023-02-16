@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -19,7 +19,8 @@ namespace Intel {
 			CFG_SetOverrideProsetAdapterSwitchingCommandRequest::~CFG_SetOverrideProsetAdapterSwitchingCommandRequest()
 			{}
 
-			CFG_SetOverrideProsetAdapterSwitchingCommandRequest::CFG_SetOverrideProsetAdapterSwitchingCommandRequest(bool OverrideEnabled) : overrideEnabled_(OverrideEnabled)
+			CFG_SetOverrideProsetAdapterSwitchingCommandRequest::CFG_SetOverrideProsetAdapterSwitchingCommandRequest(bool OverrideEnabled) :
+				AMTHICommandRequest(REQUEST_COMMAND_NUMBER), overrideEnabled_(OverrideEnabled)
 			{}
 
 			std::vector<uint8_t> CFG_SetOverrideProsetAdapterSwitchingCommandRequest::SerializeData()

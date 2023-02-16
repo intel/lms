@@ -70,8 +70,6 @@ namespace Intel
 				{
 					return HOTHAM_COMMAND_CODE;
 				}
-
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace HOTHAM_Client
 	} // namespace MEI_Client

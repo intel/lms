@@ -103,7 +103,7 @@ namespace Intel
 			class GetAMTStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetAMTStateRequest(const AMT_UUID StateVariableIdentifier) 
+				GetAMTStateRequest(const AMT_UUID StateVariableIdentifier) : AMTHICommandRequest(REQUEST_COMMAND_NUMBER)
 				{
 					m_stateVariableIdentifier = StateVariableIdentifier;
 				}
@@ -112,11 +112,6 @@ namespace Intel
 			private:
 				AMT_UUID m_stateVariableIdentifier;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x01000001;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
