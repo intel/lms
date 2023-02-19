@@ -24,9 +24,11 @@
 #include "GMSExternalLogger.h"
 #include <sstream>
 
+#ifdef WIN32
 //Localized strings to load
 static unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
 static const size_t numOfStrings = 2;
+#endif // WIN32
 
 GmsService::GmsService(void) : stopped(false), loading(false), 
 #ifdef WIN32
