@@ -55,33 +55,20 @@ bool HostBootReasonClient::GetHostResetReason(HOST_RESET_REASON& resetReason, SX
 	}
 	try 
 	{
-		using Intel::Manageability::Cim::Typed::IPS_HostBootReason;
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		std::vector<std::shared_ptr<IPS_HostBootReason>> HostBootReason =
-			IPS_HostBootReason::Enumerate(m_client.get()); 	
-		std::vector<std::shared_ptr<IPS_HostBootReason>>::iterator HostBootReasonIterator;
-				
-		for (HostBootReasonIterator = HostBootReason.begin(); 
-			 HostBootReasonIterator != HostBootReason.end() ; 
-			 HostBootReasonIterator++)
+		std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::IPS_HostBootReason>> HostBootReason =
+			Intel::Manageability::Cim::Typed::IPS_HostBootReason::Enumerate(m_client.get());
+		if (HostBootReason.empty())
+			return false;
+		//only one instance of IPS_HostBootReason should be queried from the FW
+		if (HostBootReason[0]->ReasonExists() && HostBootReason[0]->PreviousSxStateExists())
 		{
-			IPS_HostBootReason *curReason = HostBootReasonIterator->get();
-			if (!curReason)
-				return false;
-			//only one instance of IPS_HostBootReason should be queried from the FW
-			if (curReason->ReasonExists() && curReason->PreviousSxStateExists())
-			{
-				resetReason = (HOST_RESET_REASON)(curReason->Reason());
-				
-				previousSxState = (SX_STATES)(curReason->PreviousSxState());
-				WSMAN_DEBUG("HostBootReasonClient::GetHostResetReason ended successfully\n");
-				return true;
-			}
-			else 
-			{
-				return false;		
-			}
+			resetReason = (HOST_RESET_REASON)(HostBootReason[0]->Reason());
+
+			previousSxState = (SX_STATES)(HostBootReason[0]->PreviousSxState());
+			WSMAN_DEBUG("HostBootReasonClient::GetHostResetReason ended successfully\n");
+			return true;
 		}
 	}
 	CATCH_exception("HostBootReasonClient::GetHostResetReason")
