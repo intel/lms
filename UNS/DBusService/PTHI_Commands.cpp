@@ -533,6 +533,12 @@ namespace PTHI {
 				pos++;
 			}
 			g_variant_unref(child);
+			if (pos != 6)
+			{
+				UNS_ERROR(L"on_update_screen_settings2 actual parameters %d != 6 on line %u\n", pos, i);
+				send_error(invocation, Intel::LMS::LMS_ERROR::INVALIDARG);
+				return TRUE;
+			}
 			i++;
 		}
 		if (i != numOfDisplays)
