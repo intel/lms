@@ -651,22 +651,21 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 		}
 		fdCount++;
 
-		select(fdCount, NULL, &fdSet, &fdExpSet, &timeOutVal);
-
+		int ret = select(fdCount, NULL, &fdSet, &fdExpSet, &timeOutVal);
 		s = INVALID_SOCKET;
-		for (unsigned int i = 0; i < sockets.size(); i++) {
+		if (ret > 0) {
+			for (unsigned int i = 0; i < sockets.size(); i++) {
+				SOCKET tempSock = sockets[i];
 
-			SOCKET tempSock = sockets[i];
-
-			if ((s == INVALID_SOCKET) && (FD_ISSET(tempSock, &fdSet))) {
-				s = tempSock;
-				continue;
+				if ((s == INVALID_SOCKET) && (FD_ISSET(tempSock, &fdSet))) {
+					s = tempSock;
+					continue;
+				}
+				if (FD_ISSET(tempSock, &fdExpSet)) {
+					UNS_ERROR(L"connection attempt was failed on socket: %d\n", tempSock);
+				}
+				_closeSocket(tempSock);
 			}
-			if(FD_ISSET(tempSock, &fdExpSet))
-			{
-				UNS_ERROR(L"connection attempt was failed on socket: %d\n", tempSock);
-			}
-			_closeSocket(tempSock);
 		}
 	}
 
