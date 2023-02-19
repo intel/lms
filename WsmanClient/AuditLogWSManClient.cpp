@@ -392,27 +392,10 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			break;
 		}
 
-		time_t* timeStamp;
-		try
-		{
-			timeStamp = new time_t();
-		}
-		catch (std::bad_alloc&)
-		{
-			WSMAN_ERROR("Error allocating memory, Can't display the Audit Log records!\n");
-			goto EXIT;
-		}
-
-		*timeStamp = structedRecord.TimeStamp;
+		time_t timeStamp = structedRecord.TimeStamp;
 
 		parsed << "]]></Initiator>\n<Time><![CDATA[" << 
-			formatTime (timeStamp) << "]]></Time>\n<InitiatorNetAddress><![CDATA[";
-
-		if (timeStamp)
-		{
-			delete timeStamp;
-			timeStamp = NULL;
-		}
+			formatTime (&timeStamp) << "]]></Time>\n<InitiatorNetAddress><![CDATA[";
 
 		if (NULL != netAddress)
 		{
