@@ -557,42 +557,47 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			KVMWSManClient WSClient;
-			bool MEBxState = false;
-			if (!WSClient.GetMEBxState(&MEBxState))
+			try
 			{
-				return LMS_ERROR::FAIL;
-			}
-			if (!MEBxState)
-			{
-				pEnabled = false;
-				pConnected = false;
+				KVMWSManClient WSClient;
+				bool MEBxState = false;
+				if (!WSClient.GetMEBxState(&MEBxState))
+				{
+					return LMS_ERROR::FAIL;
+				}
+				if (!MEBxState)
+				{
+					pEnabled = false;
+					pConnected = false;
+					return LMS_ERROR::OK;
+				}
+				unsigned short state;
+				if (!WSClient.KVMRedirectionState(&state))
+				{
+					return LMS_ERROR::FAIL;
+				}
+				switch (state)
+				{
+				case 2: //Enabled and Connected
+					pEnabled = true;
+					pConnected = true;
+					break;
+				case 3: //Disabled and NotConnected
+					pEnabled = false;
+					pConnected = false;
+					break;
+				case 6: //Enabled and NotConnected
+					pEnabled = true;
+					pConnected = false;
+					break;
+				default:
+					UNS_DEBUG(L"Wrong KVMRedirectionState=%d \n", state);
+					return LMS_ERROR::UNEXPECTED;
+				}
 				return LMS_ERROR::OK;
 			}
-			unsigned short state;
-			if (!WSClient.KVMRedirectionState(&state))
-			{
-				return LMS_ERROR::FAIL;
-			}
-			switch (state)
-			{
-			case 2: //Enabled and Connected
-				pEnabled = true;
-				pConnected = true;
-				break;
-			case 3: //Disabled and NotConnected
-				pEnabled = false;
-				pConnected = false;
-				break;
-			case 6: //Enabled and NotConnected
-				pEnabled = true;
-				pConnected = false;
-				break;
-			default:
-				UNS_DEBUG(L"Wrong KVMRedirectionState=%d \n", state);
-				return LMS_ERROR::UNEXPECTED;
-			}
-			return LMS_ERROR::OK;
+			CATCH_exception(L"GetKVMRedirectionState")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
@@ -613,15 +618,20 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			SIOWSManClient Client;
-			if (Client.GetSpriteParameters(&pLanguage, &pZoom) != true)
-				return LMS_ERROR::FAIL;
+			try
+			{
+				SIOWSManClient Client;
+				if (Client.GetSpriteParameters(&pLanguage, &pZoom) != true)
+					return LMS_ERROR::FAIL;
 
-			unsigned long lang;
-			if (!DSinstance().GetDataValue(LastLanguageUpdate, lang))
-				pLanguage = DEFAULT_LANG_ID;
+				unsigned long lang;
+				if (!DSinstance().GetDataValue(LastLanguageUpdate, lang))
+					pLanguage = DEFAULT_LANG_ID;
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"GetSpriteParameters")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteZoom(unsigned short Zoom)
@@ -629,10 +639,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			SIOWSManClient Client;
-			if (Client.SetSpriteZoom(Zoom) != true)
-				return LMS_ERROR::FAIL;
-			return LMS_ERROR::OK;
+			try
+			{
+				SIOWSManClient Client;
+				if (Client.SetSpriteZoom(Zoom))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"SIOWSManClient")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetConfigurationInfo(short &pControlMode, short &pProvisioningMethod,
@@ -641,16 +655,20 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			HBPWSManClient HBPWSManClient_obj;
-			std::string CreationTimeStampStr;
-			if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
-				return LMS_ERROR::FAIL;
+			try
+			{
+				HBPWSManClient HBPWSManClient_obj;
+				std::string CreationTimeStampStr;
+				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
+					return LMS_ERROR::FAIL;
 
-			UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
-				pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
-			pCreationTimeStamp = CreationTimeStampStr;
-
-			return LMS_ERROR::OK;
+				UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
+					pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
+				pCreationTimeStamp = CreationTimeStampStr;
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"SIOWSManClient")
+			return LMS_ERROR::FAIL;
 		}
 
 		const int TERMINATEREMEDYSESSIONS_RETRIES = 3;
@@ -660,37 +678,42 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			LMS_ERROR ret = LMS_ERROR::FAIL;
-			KVMWSManClient _KVMWSManClient;
-			if (_KVMWSManClient.TerminateKVMSession())
-				ret = LMS_ERROR::OK;
-			// Terminate IDER, SOL sessions
-			AMTRedirectionServiceWSManClient _AMTRedirectionServiceWSManClient;
-			if (_AMTRedirectionServiceWSManClient.TerminateSession(1)) //SOL
-				ret = LMS_ERROR::OK;
-			if (_AMTRedirectionServiceWSManClient.TerminateSession(0)) // IDER
-				ret = LMS_ERROR::OK;
-
-			unsigned int ReturnValue;
-			CancelOptInClient _CancelOptInClient;
-			short policy = 0, state = 0;
-
-			if (!_CancelOptInClient.GetUserConsentState(&state, &policy))
-				return LMS_ERROR::FAIL;
-			if (state != 0) // cancel consent only if consent started
+			try
 			{
-				for (int i = 0; i < TERMINATEREMEDYSESSIONS_RETRIES; i++)
+				LMS_ERROR ret = LMS_ERROR::FAIL;
+				KVMWSManClient _KVMWSManClient;
+				if (_KVMWSManClient.TerminateKVMSession())
+					ret = LMS_ERROR::OK;
+				// Terminate IDER, SOL sessions
+				AMTRedirectionServiceWSManClient _AMTRedirectionServiceWSManClient;
+				if (_AMTRedirectionServiceWSManClient.TerminateSession(1)) //SOL
+					ret = LMS_ERROR::OK;
+				if (_AMTRedirectionServiceWSManClient.TerminateSession(0)) // IDER
+					ret = LMS_ERROR::OK;
+
+				unsigned int ReturnValue;
+				CancelOptInClient _CancelOptInClient;
+				short policy = 0, state = 0;
+
+				if (!_CancelOptInClient.GetUserConsentState(&state, &policy))
+					return LMS_ERROR::FAIL;
+				if (state != 0) // cancel consent only if consent started
 				{
-					if ((_CancelOptInClient.CancelOptIn(&ReturnValue)) && (ReturnValue == 0))
+					for (int i = 0; i < TERMINATEREMEDYSESSIONS_RETRIES; i++)
 					{
-						ret = LMS_ERROR::OK;
-						break;
+						if ((_CancelOptInClient.CancelOptIn(&ReturnValue)) && (ReturnValue == 0))
+						{
+							ret = LMS_ERROR::OK;
+							break;
+						}
+						else
+							std::this_thread::sleep_for(std::chrono::milliseconds(TERMINATEREMEDYSESSIONS_RETRY_TIMEOUT));
 					}
-					else
-						std::this_thread::sleep_for(std::chrono::milliseconds(TERMINATEREMEDYSESSIONS_RETRY_TIMEOUT));
 				}
+				return ret;
 			}
-			return ret;
+			CATCH_exception(L"TerminateRemedySessions")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetUserConsentState(short &pState, USER_CONSENT_POLICY &pPolicy)
@@ -698,16 +721,20 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			short UserConsentPolicy;
-			CancelOptInClient _CancelOptInClient;
-			if (!_CancelOptInClient.GetUserConsentState(&pState, &UserConsentPolicy))
-				return LMS_ERROR::FAIL;
-			pPolicy = static_cast<USER_CONSENT_POLICY>(UserConsentPolicy);
+			try
+			{
+				short UserConsentPolicy;
+				CancelOptInClient _CancelOptInClient;
+				if (!_CancelOptInClient.GetUserConsentState(&pState, &UserConsentPolicy))
+					return LMS_ERROR::FAIL;
+				pPolicy = static_cast<USER_CONSENT_POLICY>(UserConsentPolicy);
 
-			UNS_DEBUG(L"UserConsentState=%d, UserConsentPolicy=%d \n", pState, pPolicy);
+				UNS_DEBUG(L"UserConsentState=%d, UserConsentPolicy=%d \n", pState, pPolicy);
 
-			return LMS_ERROR::OK;
-
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"TerminateRemedySessions")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetWLANLinkInfo(unsigned int &pPreference, unsigned int &pControl, unsigned int &pProtection)
@@ -715,15 +742,19 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTEthernetPortSettingsClient Client;
-			bool isLink = false;
-			if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection, &isLink))
-				return LMS_ERROR::FAIL;
+			try
+			{
+				AMTEthernetPortSettingsClient Client;
+				bool isLink = false;
+				if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection, &isLink))
+					return LMS_ERROR::FAIL;
 
-			UNS_DEBUG(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);
+				UNS_DEBUG(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);
 
-			return LMS_ERROR::OK;
-
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"GetWLANLinkInfo")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetLinkPreferenceToHost(void)
@@ -731,10 +762,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTEthernetPortSettingsClient Client;
-			if (!Client.SetLinkPreference(2))
-				return LMS_ERROR::FAIL;
-			return LMS_ERROR::OK;
+			try
+			{
+				AMTEthernetPortSettingsClient Client;
+				if (Client.SetLinkPreference(2))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"SetLinkPreferenceToHost")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::InitiateUserConnection(short &pStatus)
@@ -774,11 +809,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.userInitiatedPolicyRuleExists(&pStatus) != true)
-				return LMS_ERROR::FAIL;
+			try {
+				AMTFCFHWSmanClient Client;
+				if (Client.userInitiatedPolicyRuleExists(&pStatus))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"userInitiatedPolicyRuleExists")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::userInitiatedPolicyRuleForLocalMpsExists(short &pStatus)
@@ -786,11 +824,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.userInitiatedPolicyRuleForLocalMpsExists(&pStatus) != true)
-				return LMS_ERROR::FAIL;
+			try {
+				AMTFCFHWSmanClient Client;
+				if (Client.userInitiatedPolicyRuleForLocalMpsExists(&pStatus))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"userInitiatedPolicyRuleForLocalMpsExists")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 
@@ -799,11 +840,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.snmpEventSubscriberExists(&pExist) != true)
-				return LMS_ERROR::FAIL;
+			try {
+				AMTFCFHWSmanClient Client;
+				if (Client.snmpEventSubscriberExists(&pExist))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"snmpEventSubscriberExists")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::CILAFilterCollectionSubscriptionExists(short &pExist)
@@ -811,11 +855,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.CILAFilterCollectionSubscriptionExists(&pExist) != true)
-				return LMS_ERROR::FAIL;
+			try {
+				AMTFCFHWSmanClient Client;
+				if (Client.CILAFilterCollectionSubscriptionExists(&pExist))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"CILAFilterCollectionSubscriptionExists")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays)
@@ -823,24 +870,25 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			KVMScreenSettingClient Client;
-			KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+			try {
+				KVMScreenSettingClient Client;
+				KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
 
-			for (size_t i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
-			{
-				extendedDisplayParameters.screenSettings[i].isActive = eExtendedDisplayParameters.DisplayParameters[i].IsActive;
-				extendedDisplayParameters.screenSettings[i].ResolutionX = eExtendedDisplayParameters.DisplayParameters[i].SizeX;
-				extendedDisplayParameters.screenSettings[i].ResolutionY = eExtendedDisplayParameters.DisplayParameters[i].SizeY;
-				extendedDisplayParameters.screenSettings[i].UpperLeftX = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftX;
-				extendedDisplayParameters.screenSettings[i].UpperLeftY = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftY;
-				extendedDisplayParameters.screenSettings[i].Pipe = eExtendedDisplayParameters.DisplayParameters[i].Pipe;
+				for (size_t i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
+				{
+					extendedDisplayParameters.screenSettings[i].isActive = eExtendedDisplayParameters.DisplayParameters[i].IsActive;
+					extendedDisplayParameters.screenSettings[i].ResolutionX = eExtendedDisplayParameters.DisplayParameters[i].SizeX;
+					extendedDisplayParameters.screenSettings[i].ResolutionY = eExtendedDisplayParameters.DisplayParameters[i].SizeY;
+					extendedDisplayParameters.screenSettings[i].UpperLeftX = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftX;
+					extendedDisplayParameters.screenSettings[i].UpperLeftY = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftY;
+					extendedDisplayParameters.screenSettings[i].Pipe = eExtendedDisplayParameters.DisplayParameters[i].Pipe;
+				}
+				if (Client.updateScreenSettings(extendedDisplayParameters, numOfDisplays))
+					return LMS_ERROR::OK;
 			}
-			if (!Client.updateScreenSettings(extendedDisplayParameters, numOfDisplays))
-			{
-				return LMS_ERROR::FAIL;
-			}
+			CATCH_exception(L"updateScreenSettings")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology)
@@ -848,33 +896,37 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
 				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			if (sessionType == SOL_S)
-			{
-				IPSSolSessionUsingPortClient solClient;
-				if (solClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
-					return LMS_ERROR::FAIL;
-			}
-			else if (sessionType == IDER_S)
-			{
-				IPSIderSessionUsingPortClient iderClient;
-				if (iderClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
-					return LMS_ERROR::FAIL;
-			}
-			else if (sessionType == KVM_S)
-			{
-				IPSKVMSessionUsingPortClient kvmClient;
-				if (kvmClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
-					return LMS_ERROR::FAIL;
-			}
-			else
-			{
-				UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: Invalid session type %d\n", sessionType);
-				return LMS_ERROR::INVALIDARG;
-			}
+			try {
+				if (sessionType == SOL_S)
+				{
+					IPSSolSessionUsingPortClient solClient;
+					if (solClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
+						return LMS_ERROR::FAIL;
+				}
+				else if (sessionType == IDER_S)
+				{
+					IPSIderSessionUsingPortClient iderClient;
+					if (iderClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
+						return LMS_ERROR::FAIL;
+				}
+				else if (sessionType == KVM_S)
+				{
+					IPSKVMSessionUsingPortClient kvmClient;
+					if (kvmClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
+						return LMS_ERROR::FAIL;
+				}
+				else
+				{
+					UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: Invalid session type %d\n", sessionType);
+					return LMS_ERROR::INVALIDARG;
+				}
 
-			UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
+				UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"updateScreenSettings")
 
-			return LMS_ERROR::OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		std::string genesisFieldToString(const uint8_t *info)
