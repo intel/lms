@@ -143,19 +143,8 @@ bool AMTFCFHWSmanClient::snmpEventSubscriberExists(short* pExist)
 	{
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		std::vector<std::shared_ptr<CimTyped::AMT_SNMPEventSubscriber>> AMT_SNMPEventSubscribers =
-			CimTyped::AMT_SNMPEventSubscriber::Enumerate(m_client.get());
-		std::vector<std::shared_ptr<CimTyped::AMT_SNMPEventSubscriber>>::iterator AMT_SNMPEventSubscribersIterator;
-		*pExist=false;
-		for (AMT_SNMPEventSubscribersIterator = AMT_SNMPEventSubscribers.begin(); 
-			 AMT_SNMPEventSubscribersIterator != AMT_SNMPEventSubscribers.end() ; 
-			 AMT_SNMPEventSubscribersIterator++)
-		{	
-				*pExist=true;
-				WSMAN_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber Exists\n");
-				return true;
-		}
-		WSMAN_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber doesn't exist\n");
+		*pExist = !CimTyped::AMT_SNMPEventSubscriber::Enumerate(m_client.get()).empty();
+		WSMAN_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber %C exists\n", (*pExist) ? "" : "doesn't");
 		return true;
 	}
 	CATCH_exception("AMTFCFHWSmanClient::snmpEventSubscriberExists")
