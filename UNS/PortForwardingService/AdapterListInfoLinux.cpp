@@ -499,8 +499,8 @@ static int get_domains_map(domains_map_t &domains)
 int AdapterListInfo::UpdateAdapterListInfo()
 {
 	int result;
-	struct nl_cache *addr_cache;
-	struct nl_cache *link_cache;
+	struct nl_cache *addr_cache = NULL;
+	struct nl_cache *link_cache = NULL;
 	struct nl_sock *sock;
 	struct nl_object *obj;
 
