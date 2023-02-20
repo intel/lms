@@ -2187,12 +2187,10 @@ std::string AuditLogWSManClient::DisplayAgentPresenceAgentWatchdogAddedEvent(uin
 std::string AuditLogWSManClient::DisplayAgentPresenceAgentWatchdogRemovedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
 
-	if ((i+AGENT_ID_LEN)<=extendedDataLen)
+	if (AGENT_ID_LEN <= extendedDataLen)
 	{
 		ss << DisplayAgentID(extData);
-		i+=AGENT_ID_LEN;
 	}
 	return ss.str();
 }
@@ -2206,12 +2204,10 @@ std::string AuditLogWSManClient::DisplayAgentPresenceAgentWatchdogRemovedEvent(u
 std::string AuditLogWSManClient::DisplayAgentPresenceAgentWatchdogActionSetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
 
-	if ((i+AGENT_ID_LEN)<=extendedDataLen)
+	if (AGENT_ID_LEN <= extendedDataLen)
 	{
 		ss << DisplayAgentID(extData);
-		i+=AGENT_ID_LEN;
 	}
 	return ss.str();
 }
