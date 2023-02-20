@@ -488,32 +488,12 @@ AuditLogWSManClient::formatTime(time_t* time)
 std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsigned short eventId, std::vector<uint8_t> extendedData,
 						 uint8_t extendedDataLen)
 {
-	unsigned char *extData;
-
 	// Check if we have Extended Data.
 	if (extendedDataLen == 0 || extendedDataLen != extendedData.size())
 	{
 		return std::string("");
 	}
 	
-	// Create a memory Buffer of the Extended Data
-	try
-	{
-		extData = new unsigned char[extendedDataLen];
-	}
-	catch (std::bad_alloc&)
-	{
-		WSMAN_ERROR("could not allocate memory!\n");
-		return std::string("");
-	}
-
-	std::vector<uint8_t>::const_iterator itr;
-	int i = 0;
-	for (itr = extendedData.begin() ; itr != extendedData.end() ; itr++, i++)
-	{
-		extData[i] = *itr;
-	}
-
 	std::stringstream s;
 	
 	switch(appId)
@@ -522,43 +502,43 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case AMT_PROVISIONING_COMPLETED: 
-			s << DisplaySecurityAdminAmtProvisioningCompletedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminAmtProvisioningCompletedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case ACL_ENTRY_ADDED:
-			s << DisplaySecurityAdminAclEntryAddedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminAclEntryAddedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case ACL_ENTRY_MODIFIED:
-			s << DisplaySecurityAdminAclEntryModifiedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminAclEntryModifiedEvent(extendedData.data(), extendedDataLen);
 			break;	
 		case ACL_ENTRY_REMOVED:
-			s << DisplaySecurityAdminAclEntryRemovedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminAclEntryRemovedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case ACL_ACCESS_WITH_INVALID_CREDENTIALS:
-			s << DisplaySecurityAdminAclAccessWithInvalidCredentialsEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminAclAccessWithInvalidCredentialsEvent(extendedData.data(), extendedDataLen);
 			break;	
 		case ACL_ENTRY_ENABLED:
-			s << DisplaySecurityAdminAclEntryEnabledEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminAclEntryEnabledEvent(extendedData.data(), extendedDataLen);
 			break;
 		case TLS_STATE_CHANGED:
-			s << DisplaySecurityAdminTlsStateChangedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminTlsStateChangedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case TLS_SERVER_CERTIFICATE_SET:
-		case TLS_SERVER_CERTIFICATE_REMOVE:				
-		case TLS_TRUSTED_ROOT_CERTIFICATE_ADDED:		
+		case TLS_SERVER_CERTIFICATE_REMOVE:
+		case TLS_TRUSTED_ROOT_CERTIFICATE_ADDED:
 		case TLS_TRUSTED_ROOT_CERTIFICATE_REMOVED:
-			s << DisplaySecurityAdminTlsCertificateRelatedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminTlsCertificateRelatedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case KERBEROS_SETTINGS_MODIFIED:
-			s << DisplaySecurityAdminKerberosSettingsModifiedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminKerberosSettingsModifiedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case POWER_PACKAGE_MODIFIED:
-			s << DisplaySecurityAdminPowerPackageModifiedEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminPowerPackageModifiedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case SET_REALM_AUTHENTICATION_MODE:
-			s << DisplaySecurityAdminSetRealmAuthenticationModeEvent(extData, extendedDataLen);
+			s << DisplaySecurityAdminSetRealmAuthenticationModeEvent(extendedData.data(), extendedDataLen);
 			break;
 		case UNPROVISIONING_COMPLETED:
-			s << DisplaySecurityAdminUnprovisioningCompleted(extData, extendedDataLen);
+			s << DisplaySecurityAdminUnprovisioningCompleted(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -569,7 +549,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		case PERFORMED_POWER_CYCLE:
 		case PERFORMED_RESET:
 		case SET_BOOT_OPTIONS:
-			s << DisplayRemoteControlBootOptionsRelatedEvent(extData, extendedDataLen);
+			s << DisplayRemoteControlBootOptionsRelatedEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -577,10 +557,10 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case FIRMWARE_UPDATED:
-			s << DisplayFirmwareUpdatedEvent(extData, extendedDataLen);
+			s << DisplayFirmwareUpdatedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case FIRMWARE_UPDATED_FAILED:
-			s << DisplayFirmwareUpdatedFailedEvent(extData, extendedDataLen);
+			s << DisplayFirmwareUpdatedFailedEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -588,7 +568,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case AUDIT_LOG_RECOVERY:
-			s << DisplaySecurityAuditLogRecoveryEvent(extData, extendedDataLen);
+			s << DisplaySecurityAuditLogRecoveryEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -596,7 +576,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case AMT_TIME_SET:
-			s << DisplayNetworkTimeTimeSetEvent(extData, extendedDataLen);
+			s << DisplayNetworkTimeTimeSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		}		
 		break;
@@ -604,22 +584,22 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case TCPIP_PARAMETERS_SET:
-			s << DisplayNetworkAdminTcpIpParameterSetEvent(extData, extendedDataLen);
+			s << DisplayNetworkAdminTcpIpParameterSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case HOST_NAME_SET:
-			s << DisplayNetworkAdminHostNameSetEvent(extData, extendedDataLen);
+			s << DisplayNetworkAdminHostNameSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case DOMAIN_NAME_SET:
-			s << DisplayNetworkAdminDomainNameSetEvent(extData, extendedDataLen);
+			s << DisplayNetworkAdminDomainNameSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case VLAN_PARAMETERS_SET:
-			s << DisplayNetworkAdminVlanParameterSetEvent(extData, extendedDataLen);
+			s << DisplayNetworkAdminVlanParameterSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case LINK_POLICY_SET:
-			s << DisplayNetworkAdminLinkPolicySetEvent(extData, extendedDataLen);
+			s << DisplayNetworkAdminLinkPolicySetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case IPV6_PARAMS_SET:
-			s << DisplayNetworkAdminIPv6ParamsEvent(extData, extendedDataLen);
+			s << DisplayNetworkAdminIPv6ParamsEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -627,7 +607,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case GLOBAL_STORAGE_ATTRIBUTES_SET:
-			s << DisplayStorageAdminGlobalStorageAttributesSetEvent(extData, extendedDataLen);
+			s << DisplayStorageAdminGlobalStorageAttributesSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -636,29 +616,29 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		{
 		case ALERT_SUBSCRIBED:
 		case ALERT_UNSUBSCRIBED:
-			s << DisplayEventManagerAlertRelatedEvent(extData, extendedDataLen);
+			s << DisplayEventManagerAlertRelatedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case EVENT_LOG_FROZEN:
-			s << DisplayEventLogFrozenEvent(extData, extendedDataLen);
+			s << DisplayEventLogFrozenEvent(extendedData.data(), extendedDataLen);
 		}
 		break;
 	case CB_MANAGER_APPID:
 		switch(eventId)
 		{
 		case CB_FILTER_REMOVE:
-			s << DisplayCircuitBreakerFilterRemovedEvent(extData, extendedDataLen);
+			s << DisplayCircuitBreakerFilterRemovedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case CB_POLICY_REMOVE:
-			s << DisplayCircuitBreakerPolicyRemovedEvent(extData, extendedDataLen);
+			s << DisplayCircuitBreakerPolicyRemovedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case CB_DEFAULT_POLICY_SET:
-			s << DisplayCircuitBreakerDefaultPolicySetEvent(extData, extendedDataLen);
+			s << DisplayCircuitBreakerDefaultPolicySetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case CB_HEURISTICS_OPTION_SET:
-			s << DisplayCircuitBreakerHeuristicsOptionSetEvent(extData, extendedDataLen);
+			s << DisplayCircuitBreakerHeuristicsOptionSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case CB_HEURISTICS_STATE_CLEARED:
-			s << DisplayCircuitBreakerHeuristicsStateClearedEvent(extData, extendedDataLen);
+			s << DisplayCircuitBreakerHeuristicsStateClearedEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -666,13 +646,13 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case AGENT_WATCHDOG_ADDED:
-			s << DisplayAgentPresenceAgentWatchdogAddedEvent(extData, extendedDataLen);
+			s << DisplayAgentPresenceAgentWatchdogAddedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case AGENT_WATCHDOG_REMOVED:
-			s << DisplayAgentPresenceAgentWatchdogRemovedEvent(extData, extendedDataLen);
+			s << DisplayAgentPresenceAgentWatchdogRemovedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case AGENT_WATCHDOG_ACTION_SET:
-			s << DisplayAgentPresenceAgentWatchdogActionSetEvent(extData, extendedDataLen);
+			s << DisplayAgentPresenceAgentWatchdogActionSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -680,22 +660,22 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case WIRELESS_PROFILE_ADDED:
-			s << DisplayWirelessProfileAddedEvent(extData, extendedDataLen);
+			s << DisplayWirelessProfileAddedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case WIRELESS_PROFILE_REMOVED:
-			s << DisplayWirelessProfileRemovedEvent(extData, extendedDataLen);
+			s << DisplayWirelessProfileRemovedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case WIRELESS_PROFILE_UPDATED:
-			s << DisplayWirelessProfileUpdatedEvent(extData, extendedDataLen);
+			s << DisplayWirelessProfileUpdatedEvent(extendedData.data(), extendedDataLen);
 			break;
 		case WIRELESS_PROFILE_SYNC: 
-			s << DisplayWirelessProfileSyncChangeEvent(extData, extendedDataLen);
+			s << DisplayWirelessProfileSyncChangeEvent(extendedData.data(), extendedDataLen);
 			break; 
 		case WIRELESS_LINK_PREFERENCE_CHANGED: 
-			s << DisplayWirelessProfileLinkPreferenceChanged(extData, extendedDataLen);
+			s << DisplayWirelessProfileLinkPreferenceChanged(extendedData.data(), extendedDataLen);
 			break;
 		case WIRELESS_UEFI_PROFILE_SYNC:
-			s << DisplayWirelessProfileUefiEnabledChangedEvent(extData, extendedDataLen);
+			s << DisplayWirelessProfileUefiEnabledChangedEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -703,7 +683,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case EAC_SET_OPTIONS:
-			s << DisplayEacSetOptionsEvent(extData, extendedDataLen);
+			s << DisplayEacSetOptionsEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -714,10 +694,10 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case OPT_IN_POLICY_CHANGE:
-			s << DisplayOptInPolicyChangeEvent(extData, extendedDataLen);
+			s << DisplayOptInPolicyChangeEvent(extendedData.data(), extendedDataLen);
 			break;
 		case SEND_CONSENT_CODE_EVENT:
-			s << DisplaySendConsentCodeEvent(extData, extendedDataLen);
+			s << DisplaySendConsentCodeEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
@@ -730,22 +710,16 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 		switch(eventId)
 		{
 		case WEI_WATCHDOG_ACTION_PAIRING_CHANGED:
-			s << DisplayWatchdogActionPairingChangedEvent(extData, extendedDataLen);
+			s << DisplayWatchdogActionPairingChangedEvent(extendedData.data(), extendedDataLen);
 			break;
 		}
 		break;
 
 	default: /* Unknown Event */
-		s << DisplayUnknownEvent(extData, extendedDataLen);
+		s << DisplayUnknownEvent(extendedData.data(), extendedDataLen);
 		break;
 	}
 
-	// Free Memory;
-	if (extData)
-	{
-		delete []extData;
-		extData = NULL;
-	}
 	return s.str();
 }
 
