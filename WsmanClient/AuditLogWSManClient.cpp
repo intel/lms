@@ -455,17 +455,14 @@ EXIT:
 	if (NULL != name)
 	{
 		delete[] name;
-		name = NULL;
 	}
 	if (NULL != netAddress)
 	{
 		delete[] netAddress;
-		netAddress = NULL;
 	}
 	if (NULL != rec)
 	{
 		delete rec;
-		rec = NULL;
 	}
 	return res;
 }
