@@ -56,8 +56,10 @@ typedef struct _HashEntry
 	bool Enabled;
 } HashEntry;
 
-typedef struct _EthernetPortEntry
+class EthernetPortEntry
 {
+public:
+	EthernetPortEntry() : LinkIsUp(false), DHCPEnabled(false) {}
 	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
@@ -66,7 +68,7 @@ typedef struct _EthernetPortEntry
 	std::wstring   DefaultGateway;
 	std::wstring   PrimaryDNS;
 	std::wstring   SecondaryDNS;
-} EthernetPortEntry;
+};
 
 typedef struct _LOCAL_SYSTEM_ACCOUNT
 {

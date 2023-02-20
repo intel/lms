@@ -19,8 +19,10 @@
 #define IDER_DISABLED_SOL_ENABLED 32770
 #define IDER_SOL_ENABLED 32771
 
-typedef struct _EthernetPortEntryWSMan
+class EthernetPortEntryWSMan
 {
+public:
+	EthernetPortEntryWSMan() : LinkIsUp(false), DHCPEnabled(false) {}
 	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
@@ -29,7 +31,7 @@ typedef struct _EthernetPortEntryWSMan
 	std::wstring DefaultGateway;
 	std::wstring PrimaryDNS;
 	std::wstring SecondaryDNS;
-} EthernetPortEntryWSMan;
+};
 
 class WSmanCommands
 {

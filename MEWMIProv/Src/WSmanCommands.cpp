@@ -148,8 +148,6 @@ UINT32 WSmanCommands::GetPortSettings(std::vector<EthernetPortEntryWSMan> &ether
 			 settingsIterator++)
 		{
 			EthernetPortEntryWSMan entry;
-			entry.LinkIsUp = false;
-			entry.DHCPEnabled = false;
 
 			if(settingsIterator->get()->DefaultGatewayExists())
 				entry.DefaultGateway = ToWStr(settingsIterator->get()->DefaultGateway());
