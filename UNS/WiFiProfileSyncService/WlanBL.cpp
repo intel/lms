@@ -345,8 +345,8 @@ namespace wlanps {
 
 						wsmanStatus = wsmanClient.DeleteProfile(**meIterator);
 
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  DeleteProfile completed\n",
-							name.c_str());
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  DeleteProfile completed %s\n",
+							name.c_str(), (wsmanStatus) ? L"succesfully" : L"with failure");
 						break;
 					}
 				}
