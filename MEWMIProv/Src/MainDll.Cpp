@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -168,24 +168,23 @@ STDAPI DllCanUnloadNow(void)
 //***************************************************************************
 
 STDAPI DllRegisterServer(void)
-{  
+{
     char       szID[128];
     WCHAR      wcID[128];
     std::string szCLSID("Software\\classes\\CLSID\\");
     TCHAR      szModule[MAX_PATH + 1];
-    char * pName = "IntelMEProv";
-    char * pModel = "Both";
-	size_t * intReturnValue = NULL;
+    const char * pName = "IntelMEProv";
+    const char * pModel = "Both";
+    size_t intReturnValue = 0;
     HKEY hKey1, hKey2;
- 
-   
+
   // Create the path.
 
 	memset(wcID, NULL, sizeof(wcID));
 	memset(szID, NULL, sizeof(szID));	
 
     StringFromGUID2(CLSID_IntelMEProv, wcID, sizeof(wcID)/sizeof(WCHAR) - 1);
-    wcstombs_s(intReturnValue, szID, sizeof(szID), wcID,  sizeof(szID));
+    wcstombs_s(&intReturnValue, szID, sizeof(szID), wcID,  sizeof(szID));
 	szCLSID+= szID;
 
     // Create entries under CLSID
@@ -255,7 +254,7 @@ STDAPI DllUnregisterServer(void)
 	char       szID[128];
     WCHAR      wcID[128];
     std::string szCLSID("Software\\classes\\CLSID\\");
-	size_t * intReturnValue = NULL;
+    size_t intReturnValue = 0;
     HKEY hKey;
 
     // Create the path using the CLSID
@@ -263,7 +262,7 @@ STDAPI DllUnregisterServer(void)
 	memset(szID, NULL, sizeof(szID));	
     StringFromGUID2(CLSID_IntelMEProv, wcID, sizeof(wcID)/sizeof(WCHAR));
 
-    wcstombs_s(intReturnValue, szID, sizeof(szID), wcID, sizeof(szID));
+    wcstombs_s(&intReturnValue, szID, sizeof(szID), wcID, sizeof(szID));
 
 	szCLSID += szID;
 
