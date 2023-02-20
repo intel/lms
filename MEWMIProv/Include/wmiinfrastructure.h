@@ -557,7 +557,7 @@ HRESULT  WMIPutClass(    IWbemServices*      srv,
 
     ASSERT(srv);
 
-    srv->GetObject(type, 0, NULL, &root.p, NULL);               ASSERT(root);
+    srv->GetObject(CComBSTR(type), 0, NULL, &root.p, NULL);               ASSERT(root);
 
     for(size_t i = 0; i < var.size(); i++)
     {
@@ -616,8 +616,8 @@ HRESULT WMIGetMember(
 static
 HRESULT WMIPutMember(
                         IWbemServices*              srv,
-                        IWbemClassObject**           root,
-                        BSTR                        type)
+                        IWbemClassObject**          root,
+                        LPCWSTR                     type)
 {
 	HRESULT hr = WBEM_S_NO_ERROR;
 
@@ -625,7 +625,7 @@ HRESULT WMIPutMember(
 
     ASSERT(srv);
 
-    RETURNIF(srv->GetObject(type, 0, NULL, &spClass.p, NULL));   ASSERT(spClass);
+    RETURNIF(srv->GetObject(CComBSTR(type), 0, NULL, &spClass.p, NULL));   ASSERT(spClass);
     RETURNIF(spClass->SpawnInstance(0, root));            ASSERT(root);
 
     return hr;
@@ -633,17 +633,17 @@ HRESULT WMIPutMember(
 
 static
 HRESULT WMIExecMethod(  IWbemServices*      srv,
-                        BSTR                oname,
-                        BSTR                mname,
+                        LPCWSTR             oname,
+                        LPCWSTR             mname,
                         IWbemClassObject*   iparam,
                         IWbemClassObject*&  oparam)
 {
     HRESULT hr;
-    hr  = srv->ExecMethod(oname, mname, 0, NULL, iparam, &oparam, NULL);
+    hr  = srv->ExecMethod(CComBSTR(oname), CComBSTR(mname), 0, NULL, iparam, &oparam, NULL);
 
     if(hr == 0x800706bf)
     {
-        hr  = srv->ExecMethod(oname, mname, 0, NULL, iparam, &oparam, NULL);
+        hr  = srv->ExecMethod(CComBSTR(oname), CComBSTR(mname), 0, NULL, iparam, &oparam, NULL);
     }
 
     return  hr;
