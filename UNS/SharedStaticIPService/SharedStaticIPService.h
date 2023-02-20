@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __SHAREDSTATICIPSERVICE_H_
 #define __SHAREDSTATICIPSERVICE_H_
@@ -21,7 +21,10 @@ public:
 		m_SyncStaticIPStateOnce(false),
 		m_SyncStaticIP(false),
 		m_SyncRetries(0),
-#ifndef WIN32
+#ifdef WIN32
+		m_hand(NULL),
+		m_overlap({ 0 }),
+#else
 		m_sock(NULL),
 #endif // WIN32
 		m_event(ACE_INVALID_HANDLE),
