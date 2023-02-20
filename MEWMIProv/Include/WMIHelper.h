@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #ifndef __WMIUTILS_H
 #define __WMIUTILS_H
@@ -50,11 +50,6 @@ public:
 	{
 		UNS_DEBUG("--> %C\n", func_);
 	}
-	EntryExitLog(const char *func, const uint32 &hr) :
-		func_(func), ret_(0), hr_(hr)
-	{
-		UNS_DEBUG("--> %C\n", func_);
-	}
 	~EntryExitLog()
 	{
 		UNS_DEBUG("<-- %C 0x%X 0x%X\n", func_, ret_, hr_);
@@ -64,6 +59,23 @@ private:
 	const char *func_;
 	const uint32 &ret_;
 	const uint32 &hr_;
+};
+
+class EntryExitLogShort
+{
+public:
+	EntryExitLogShort(const char* func, const uint32& hr) : func_(func), hr_(hr)
+	{
+		UNS_DEBUG("--> %C\n", func_);
+	}
+	~EntryExitLogShort()
+	{
+		UNS_DEBUG("<-- %C 0x%X\n", func_, hr_);
+	}
+
+private:
+	const char* func_;
+	const uint32& hr_;
 };
 
 #endif

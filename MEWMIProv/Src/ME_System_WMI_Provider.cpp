@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -334,7 +334,7 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -424,7 +424,7 @@ HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& Crypt
 											bool& uniquePlatformIDFeatureState)
 {
 	HRESULT hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	CryptoFuseEnabled = false;
 	fwversion = L"";

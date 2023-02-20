@@ -237,7 +237,7 @@ HRESULT OOB_Service_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 	try
 	{
 			CComPtr<IWbemClassObject> obj;
@@ -570,7 +570,7 @@ HRESULT OOB_Service_WMI_Provider::GetOOB_Service(
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -614,7 +614,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);
@@ -670,7 +670,7 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);

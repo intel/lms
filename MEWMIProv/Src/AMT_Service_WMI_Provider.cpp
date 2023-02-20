@@ -461,7 +461,7 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -491,7 +491,7 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
