@@ -214,7 +214,12 @@ STDAPI DllRegisterServer(void)
 	}
 
 	memset(&szModule, NULL, sizeof(szModule));
-    GetModuleFileName(ghModule, szModule,  sizeof(szModule)/sizeof(TCHAR) - 1);
+    if (GetModuleFileName(ghModule, szModule, sizeof(szModule) / sizeof(TCHAR) - 1) == 0)
+    {
+        RegCloseKey(hKey2);
+        RegCloseKey(hKey1);
+        return E_FAIL;
+    }
 	//printf ("%s %d", szModule, strlen(szModule));
     lRet = RegSetValueEx(hKey2, NULL, 0, REG_SZ, (BYTE *)szModule, 
                                         (_tcslen(szModule)+1)*sizeof(TCHAR));
