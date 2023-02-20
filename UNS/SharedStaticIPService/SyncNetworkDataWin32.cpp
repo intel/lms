@@ -101,21 +101,28 @@ bool SyncNetworkData::SyncDNSData()
 {	
 	IP_PER_ADAPTER_INFO* pPerAdapterInfo = NULL;
 	ULONG ulBufLen = 0;
-	DWORD err = ERROR_SUCCESS;
 	bool res = false;
 
 	FuncEntryExit<decltype(res)> fee(this, L"SyncDNSData", res);
 
-	err = GetPerAdapterInfo(m_NICindex, pPerAdapterInfo, &ulBufLen);
+	DWORD err = GetPerAdapterInfo(m_NICindex, pPerAdapterInfo, &ulBufLen);
 	if (err == ERROR_BUFFER_OVERFLOW) 
 	{
 		pPerAdapterInfo = (IP_PER_ADAPTER_INFO*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, ulBufLen);
+		if (pPerAdapterInfo == NULL)
+		{
+			UNS_ERROR(L"Can't allocate memory on heap for DNS server list (%d bytes): EnumDnsServers\n", ulBufLen);
+			return res;
+		}
 		err = GetPerAdapterInfo(m_NICindex, pPerAdapterInfo, &ulBufLen);
 	}
-
-	if (pPerAdapterInfo == NULL) 
+	if (err != ERROR_SUCCESS)
 	{
-		UNS_ERROR(L"Can't allocate memory on heap for DNS server list (%d bytes): EnumDnsServers\n", ulBufLen);
+		if (pPerAdapterInfo)
+		{
+			HeapFree(GetProcessHeap(), 0, pPerAdapterInfo);
+		}
+		UNS_ERROR(L"GetPerAdapterInfo failed %d\n", err);
 		return res;
 	}
 
