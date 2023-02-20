@@ -8,7 +8,9 @@
 
 --*/
 
-#pragma once
+#ifndef WSMAN_COMMANDS_H
+#define WSMAN_COMMANDS_H
+
 #include "stdafx.h"
 #include <string>
 #include <vector>
@@ -48,3 +50,4 @@ public:
 private:
 	unsigned int m_port;
 };
+#endif // WSMAN_COMMANDS_H
