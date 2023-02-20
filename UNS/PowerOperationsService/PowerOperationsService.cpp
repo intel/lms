@@ -101,7 +101,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 //both false if OS API fails.
 void getPowerCapabilities(bool& sleep,bool& hibernate)
 {
-	SYSTEM_POWER_CAPABILITIES systemCaps;
+	SYSTEM_POWER_CAPABILITIES systemCaps = { 0 };
 	if (!GetPwrCapabilities(&systemCaps))
 	{
 		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu\n", GetLastError());
