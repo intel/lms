@@ -1098,7 +1098,7 @@ HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std:
 	{
 		return hr;
 	}
-	unsigned long ulNumKeys;
+	unsigned long ulNumKeys = 0;
 	hr = pIKeyList->GetCount(&ulNumKeys);
 
 	if(FAILED(hr))
