@@ -317,7 +317,7 @@ void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *a
 
 void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication *alert)
 {
-	OPT_IN_STATE UserConsentState;
+	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	switch (alert->id)
 	{
 	case EVENT_REMOTE_SOL_STARTED:
@@ -338,8 +338,11 @@ void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication
 	case EVENT_REMOTE_IDER_ENDED:
 		SaveCurrentStatus(0,IDER_ACTIVE_S);
 		m_IDER = 0;
-		GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);// get policy (can be change after UNS started by wsman command)
-		if((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && (m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_KVM == 0))
+		// get policy (can be change after UNS started by wsman command)
+		if (GetUserConsentState(&UserConsentState, &m_UserConsentPolicy) &&
+		    (UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && 
+		    (m_UserConsentPolicy == ALL_SESSIONS) &&
+		    (m_SOL == 0) && (m_KVM == 0))
 			raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
 				EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
 		break;
@@ -348,15 +351,15 @@ void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication
 
 void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 {		
-	OPT_IN_STATE UserConsentState;
+	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	switch (alert->id)
 	{
 	case EVENT_KVM_SESSION_REQUESTED:
 		SaveCurrentStatus(KVM_STATE::KVM_REQUESTED);
 		if (m_UserConsentPolicy != NOT_REQUIRED)
 		{
-			GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);
-			SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
+			if (GetUserConsentState(&UserConsentState,&m_UserConsentPolicy))
+				SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
 		}
 		break;
 	case EVENT_KVM_SESSION_STARTED:
@@ -371,13 +374,15 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 	case EVENT_KVM_SESSION_STOPPED:
 		SaveCurrentStatus(KVM_STATE::KVM_STOPPED);
 		m_KVM = 0;
-		GetUserConsentState(&UserConsentState,&m_UserConsentPolicy); // get policy (can't be change after UNS started by wsman command)
-		SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
-		if ((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && 
-			(((m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_IDER == 0)) || (m_UserConsentPolicy == KVM_ONLY)))
+		if (GetUserConsentState(&UserConsentState, &m_UserConsentPolicy))
 		{
-			raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
-				EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
+			SaveCurrentStatus(UserConsentState, USER_CONSENT_S);
+			if ((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) &&
+				(((m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_IDER == 0)) || (m_UserConsentPolicy == KVM_ONLY)))
+			{
+				raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
+					EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
+			}
 		}
 		break;
 	case EVENT_KVM_DISABLED:
