@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2003-2022 Intel Corporation
+ * Copyright (C) 2003-2023 Intel Corporation
  */
 /*++
 
@@ -192,7 +192,7 @@ template<typename T>
 static
 HRESULT  WMIGetClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         T&                  var)
 {
     return  E_FAIL;
@@ -202,9 +202,9 @@ HRESULT  WMIGetClass(   IWbemServices*      srv,
 //  WMIGet  -----------------------------------------------------------------
 template<bool log, typename T>
 static
-HRESULT WMIGet(         IWbemServices*      srv,
+HRESULT WMIGet(IWbemServices*      srv,
 			   IWbemClassObject*   obj,
-			   BSTR                name,
+			   LPCWSTR             name,
 			   T&                  var,			   bool&				specified)
 {
 	_variant_t  val;
@@ -234,9 +234,9 @@ HRESULT WMIGet(         IWbemServices*      srv,
 
 template<bool log>
 static
-HRESULT WMIGet(         IWbemServices*      srv,
+HRESULT WMIGet(IWbemServices*      srv,
 			   IWbemClassObject*   obj,
-			   BSTR                name,
+			   LPCWSTR             name,
 			   std::wstring&       var,
 			   bool&               specified)
 {
@@ -291,7 +291,7 @@ template<bool log, typename T>
 static
 HRESULT  WMIGet(        IWbemServices*      srv,
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         std::vector<T>&     vec)
 {
     _variant_t          val;
@@ -322,7 +322,7 @@ template<typename T>
 static
 HRESULT  WMIGetClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         std::vector<T>&     vec)
 {
     _variant_t  val;
@@ -358,7 +358,7 @@ HRESULT  WMIGetClass(   IWbemServices*      srv,
 
 static HRESULT  WMIGetClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         std::vector<std::wstring>&     vec)
 {
     _variant_t  val;
@@ -409,9 +409,9 @@ void    Validate(       std::vector<T>&     var)
 //  WMIPut  -----------------------------------------------------------------
 template<typename T>
 static
-HRESULT  WMIPutClass(    IWbemServices*      srv,
+HRESULT  WMIPutClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         T&                  var)
 {
     return  E_FAIL;
@@ -421,7 +421,7 @@ HRESULT  WMIPutClass(    IWbemServices*      srv,
 template<bool log, typename T>
 static
 HRESULT  WMIPut(        IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         T&                  var)
 {
     _variant_t  val(mof2var(var));
@@ -439,7 +439,7 @@ template<bool log>
 static
 HRESULT  WMIPut(
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         std::wstring&       var)
 {
 	variant_t  val(var.c_str());
@@ -472,7 +472,7 @@ template<typename T>
 static
 HRESULT  WMIPut(
                         IWbemClassObject*   obj,
-                        BSTR                name,
+                        LPCWSTR             name,
                         std::vector<T>&     var)
 {
     CComSafeArray<ImpliedType<T>::type> array((ULONG)var.size());
@@ -492,10 +492,10 @@ HRESULT  WMIPut(
 }
 
 template<bool log>
-static
-HRESULT  WMIPut(
+static 
+HRESULT  WMIPut(        
                         IWbemClassObject*           obj,
-                        BSTR                        name,
+                        LPCWSTR                     name,
                         std::vector<std::wstring>&  var)
 {
     CComSafeArray<BSTR>     array((ULONG)var.size());
@@ -520,7 +520,7 @@ static
 HRESULT WMIPutClass(
             IWbemServices*      srv,
             IWbemClassObject*   obj,
-            BSTR                name,
+            LPCWSTR             name,
             std::vector<T>&     var)
 {
     std::vector<CComPtr<IWbemClassObject> > objects;
@@ -547,8 +547,8 @@ template<typename T>
 static
 HRESULT  WMIPutClass(    IWbemServices*      srv,
                         IWbemClassObject*   obj,
-                        BSTR                name,
-                        BSTR                type,
+                        LPCWSTR             name,
+                        LPCWSTR             type,
                         std::vector<T>&     var)
 {
     CComSafeArray<IUnknown*, VT_UNKNOWN>    array(var.size());
@@ -589,8 +589,8 @@ HRESULT WMIGetMember(
                         IWbemServices*              srv,
                         IWbemClassObject*           root,
                         CComPtr<IWbemClassObject>&  embedded,
-                        BSTR                        name,
-                        BSTR                        type)
+                        LPCWSTR                     name,
+                        LPCWSTR                     type)
 {
     if(name)
     {
@@ -652,7 +652,7 @@ HRESULT WMIExecMethod(  IWbemServices*      srv,
 static
 HRESULT WMIGetMethodOParams(
                         IWbemClassObject*   pOClass,
-                        BSTR                name,
+                        LPCWSTR             name,
                         IWbemClassObject**  oparam)
 {
     CComPtr<IWbemClassObject>   oParamClass;
@@ -668,7 +668,7 @@ static
 HRESULT WMIGetMethodIParams(
                         IWbemServices*      srv,
                         IWbemClassObject*   pOClass,
-                        BSTR                name,
+                        LPCWSTR             name,
                         IWbemClassObject**  iparam)
 {
     CComPtr<IWbemClassObject>   iParamClass;
