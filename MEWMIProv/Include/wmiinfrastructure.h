@@ -189,7 +189,6 @@ CString ConvertToStr(std::wstring data){return  data.c_str();};
 
 //  WMIGet  -----------------------------------------------------------------
 template<typename T>
-static
 HRESULT  WMIGetClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
@@ -201,7 +200,6 @@ HRESULT  WMIGetClass(   IWbemServices*      srv,
 
 //  WMIGet  -----------------------------------------------------------------
 template<bool log, typename T>
-static
 HRESULT WMIGet(IWbemServices*      srv,
 			   IWbemClassObject*   obj,
 			   LPCWSTR             name,
@@ -233,7 +231,6 @@ HRESULT WMIGet(IWbemServices*      srv,
 }
 
 template<bool log>
-static
 HRESULT WMIGet(IWbemServices*      srv,
 			   IWbemClassObject*   obj,
 			   LPCWSTR             name,
@@ -266,7 +263,6 @@ HRESULT hr;
 
 //  WMIGetArrayElement  -----------------------------------------------------
 template<typename T>
-static
 HRESULT WMIGetArrayElement(SAFEARRAY* array, long index, T& elem)
 {
     SafeArrayGetElement(array, &index, (void*)&elem);
@@ -275,8 +271,7 @@ HRESULT WMIGetArrayElement(SAFEARRAY* array, long index, T& elem)
 }
 
 template<>
-static
-HRESULT WMIGetArrayElement(SAFEARRAY* array, long index, std::wstring& elem)
+inline HRESULT WMIGetArrayElement(SAFEARRAY* array, long index, std::wstring& elem)
 {
     BSTR    str;
     SafeArrayGetElement(array, &index, &str);
@@ -288,7 +283,6 @@ HRESULT WMIGetArrayElement(SAFEARRAY* array, long index, std::wstring& elem)
 
 //  WMIGet  -----------------------------------------------------------------
 template<bool log, typename T>
-static
 HRESULT  WMIGet(        IWbemServices*      srv,
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
@@ -319,7 +313,6 @@ HRESULT  WMIGet(        IWbemServices*      srv,
 
 //  WMIGet  -----------------------------------------------------------------
 template<typename T>
-static
 HRESULT  WMIGetClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
@@ -355,51 +348,20 @@ HRESULT  WMIGetClass(   IWbemServices*      srv,
     return  S_OK;
 }
 
-
-static HRESULT  WMIGetClass(   IWbemServices*      srv,
-                        IWbemClassObject*   obj,
-                        LPCWSTR             name,
-                        std::vector<std::wstring>&     vec)
-{
-    _variant_t  val;
-    CIMTYPE     type;
-
-    ASSERT(obj);
-    vec.clear();
-    RETURNIF(obj->Get(name, 0, &val, &type, NULL));
-
-    if(val.vt != VT_NULL)
-    {
-        SAFEARRAY*  array   = val.parray;
-
-        for(ULONG i = 0; i < array->rgsabound->cElements; i++)
-        {
-            LONG    ix  = i;
-
-            CComPtr<IWbemClassObject>   elem;
-			BSTR data;
-            SafeArrayGetElement(array, &ix, &data);
-           // RETURNIF(WMIGetClass(srv, elem, NULL, var));
-
-            vec.push_back(data);
-
-            ix++;
-        }
-    }
-
-    return  S_OK;
-}
-
+template<>
+HRESULT  WMIGetClass(
+    IWbemServices*             srv,
+    IWbemClassObject*          obj,
+    LPCWSTR                    name,
+    std::vector<std::wstring>& vec);
 
 //  Validate    --------------------------------------------------------------
 template<typename T>
-static
 void    Validate(       T&                  var)
 {
 }
 
 template<typename T>
-static
 void    Validate(       std::vector<T>&     var)
 {
     for(size_t i = 0; i < var.size(); i++)
@@ -408,7 +370,6 @@ void    Validate(       std::vector<T>&     var)
 
 //  WMIPut  -----------------------------------------------------------------
 template<typename T>
-static
 HRESULT  WMIPutClass(   IWbemServices*      srv,
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
@@ -419,7 +380,6 @@ HRESULT  WMIPutClass(   IWbemServices*      srv,
 
 //  WMIPut  -----------------------------------------------------------------
 template<bool log, typename T>
-static
 HRESULT  WMIPut(        IWbemClassObject*   obj,
                         LPCWSTR             name,
                         T&                  var)
@@ -436,8 +396,7 @@ HRESULT  WMIPut(        IWbemClassObject*   obj,
 
 //  WMIPut  -----------------------------------------------------------------
 template<bool log>
-static
-HRESULT  WMIPut(
+HRESULT  WMIPut(        
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
                         std::wstring&       var)
@@ -469,7 +428,6 @@ HRESULT  WMIPut(
 
 //  WMIPut  -----------------------------------------------------------------
 template<typename T>
-static
 HRESULT  WMIPut(
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
@@ -492,7 +450,6 @@ HRESULT  WMIPut(
 }
 
 template<bool log>
-static 
 HRESULT  WMIPut(        
                         IWbemClassObject*           obj,
                         LPCWSTR                     name,
@@ -516,7 +473,6 @@ HRESULT  WMIPut(
 }
 
 template<typename T>
-static
 HRESULT WMIPutClass(
             IWbemServices*      srv,
             IWbemClassObject*   obj,
@@ -544,7 +500,6 @@ HRESULT WMIPutClass(
 
 //  WMIPut  -----------------------------------------------------------------
 template<typename T>
-static
 HRESULT  WMIPutClass(    IWbemServices*      srv,
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
@@ -584,102 +539,35 @@ HRESULT  WMIPutClass(    IWbemServices*      srv,
 }
 
 //  WMIGetMember    ---------------------------------------------------------
-static
 HRESULT WMIGetMember(
-                        IWbemServices*              srv,
-                        IWbemClassObject*           root,
-                        CComPtr<IWbemClassObject>&  embedded,
-                        LPCWSTR                     name,
-                        LPCWSTR                     type)
-{
-    if(name)
-    {
-        _variant_t  var;
-
-        ASSERT(root);
-
-        RETURNIF(root->Get(name, 0, &var, NULL, NULL));
-        if(var.vt != VT_NULL)
-            RETURNIF(var.punkVal->QueryInterface(IID_IWbemClassObject, (void**)&embedded.p));
-        else
-            return  E_INVALIDARG;
-    }
-    else
-    {
-        embedded    = root;
-    }
-
-    return  S_OK;
-}
+    IWbemServices*              srv,
+    IWbemClassObject*           root,
+    CComPtr<IWbemClassObject>&  embedded,
+    LPCWSTR                     name,
+    LPCWSTR                     type);
 
 //  WMIGetMember    ---------------------------------------------------------
-static
 HRESULT WMIPutMember(
-                        IWbemServices*              srv,
-                        IWbemClassObject**          root,
-                        LPCWSTR                     type)
-{
-	HRESULT hr = WBEM_S_NO_ERROR;
+    IWbemServices*     srv,
+    IWbemClassObject** root,
+    LPCWSTR            type);
 
-    CComPtr<IWbemClassObject>   spClass;
+HRESULT WMIExecMethod(IWbemServices* srv,
+    LPCWSTR            oname,
+    LPCWSTR            mname,
+    IWbemClassObject*  iparam,
+    IWbemClassObject*& oparam);
 
-    ASSERT(srv);
-
-    RETURNIF(srv->GetObject(CComBSTR(type), 0, NULL, &spClass.p, NULL));   ASSERT(spClass);
-    RETURNIF(spClass->SpawnInstance(0, root));            ASSERT(root);
-
-    return hr;
-}
-
-static
-HRESULT WMIExecMethod(  IWbemServices*      srv,
-                        LPCWSTR             oname,
-                        LPCWSTR             mname,
-                        IWbemClassObject*   iparam,
-                        IWbemClassObject*&  oparam)
-{
-    HRESULT hr;
-    hr  = srv->ExecMethod(CComBSTR(oname), CComBSTR(mname), 0, NULL, iparam, &oparam, NULL);
-
-    if(hr == 0x800706bf)
-    {
-        hr  = srv->ExecMethod(CComBSTR(oname), CComBSTR(mname), 0, NULL, iparam, &oparam, NULL);
-    }
-
-    return  hr;
-}
-
-static
 HRESULT WMIGetMethodOParams(
-                        IWbemClassObject*   pOClass,
-                        LPCWSTR             name,
-                        IWbemClassObject**  oparam)
-{
-    CComPtr<IWbemClassObject>   oParamClass;
+    IWbemClassObject*  pOClass,
+    LPCWSTR            name,
+    IWbemClassObject** oparam);
 
-    ASSERT(pOClass);
-
-    RETURNIF(pOClass->GetMethod(name, 0, NULL, &oParamClass));  ASSERT(oParamClass);
-    RETURNIF(oParamClass->SpawnInstance(0, oparam));            ASSERT(oparam);
-
-    return  S_OK;
-}
-static
 HRESULT WMIGetMethodIParams(
-                        IWbemServices*      srv,
-                        IWbemClassObject*   pOClass,
-                        LPCWSTR             name,
-                        IWbemClassObject**  iparam)
-{
-    CComPtr<IWbemClassObject>   iParamClass;
-
-    ASSERT(pOClass);
-
-    RETURNIF(pOClass->GetMethod(name, 0, &iParamClass.p, NULL));
-    RETURNIF(iParamClass->SpawnInstance(0, iparam));            ASSERT(iparam);
-
-    return  S_OK;
-}
+    IWbemServices* srv,
+    IWbemClassObject*  pOClass,
+    LPCWSTR            name,
+    IWbemClassObject** iparam);
 
 #define WbemServicesEmptyBODY   {return WBEM_E_NOT_SUPPORTED;}
 class   WbemServicesEmpty
@@ -850,7 +738,7 @@ std::wistream&  operator>>(std::wistream& str, std::vector<T>& data)
     return  str;
 }
 
-static
+inline
 std::wistream& match(std::wistream& stream, wchar_t chr)
 {
     std::ws(stream);
@@ -868,7 +756,7 @@ std::wistream& match(std::wistream& stream, wchar_t chr)
     return  stream;
 }
 
-static
+inline
 std::wistream& operator>>(std::wistream& stream, unsigned char& data)
 {
     std::ws(stream);
@@ -886,7 +774,7 @@ std::wistream& operator>>(std::wistream& stream, unsigned char& data)
     return  stream;
 }
 
-static
+inline
 std::wistream& operator>>(std::wistream& stream, std::wstring& data)
 {
     std::ws(stream);
@@ -938,43 +826,15 @@ std::wostream&   operator<<(std::wostream& stream, uint8 data)
 }
 
 //  cli stuff   -------------------------------------------------------------
-static
-HRESULT         ProcessObjectPath(
-                            const wchar_t*      member,
-                            std::wstring&       root,
-                            std::wstring&       tail,
-                            long&               index)
-{
-    const wchar_t*  dot     = wcschr(member, L'.');
-    const wchar_t*  open    = wcschr(member, L'[');
 
-    root    = member;
-    index   = -1;
-    tail    = L"";
-
-    if(dot == NULL)
-        return  S_OK;;
-
-    root    = member;
-    tail.assign(dot + 1);
-    index   = -1;
-
-    if(open && open < dot && *(dot - 1) == ']')
-    {
-        root.assign(member, open - member);
-        index   = _wtoi(std::wstring(open + 1, dot - open - 1).c_str());
-    }
-    else
-    {
-        root.assign(member, dot - member);
-    }
-
-    return  S_OK;
-}
+HRESULT ProcessObjectPath(
+    const wchar_t* member,
+    std::wstring& root,
+    std::wstring& tail,
+    long& index);
 
 //  SetMember   -------------------------------------------------------------
 template<typename T>
-static
 HRESULT         SetMember(  std::vector<T>& data,
                             unsigned long   index,
                             const wchar_t*  member,
@@ -1011,8 +871,7 @@ HRESULT         SetMember(  std::vector<T>& data,
 
 //  GetMember   -------------------------------------------------------------
 template<typename T>
-static
-HRESULT         GetMember(  std::vector<T>& data,
+HRESULT         GetMember(  std::vector<T>& data, 
                             unsigned long   index,
                             const wchar_t*  member,
                             std::wstring&   value)
@@ -1046,8 +905,8 @@ HRESULT     SetValue(T& member, const wchar_t* value)
     return  S_OK;
 }
 
-static
-HRESULT     SetValue(std::wstring& member, const wchar_t* value)
+template<>
+inline HRESULT SetValue<>(std::wstring& member, const wchar_t* value)
 {
     member  = value;
     return  S_OK;
@@ -1063,104 +922,14 @@ HRESULT     GetValue(T& member, std::wstring& value)
     return  S_OK;
 }
 
-static
-HRESULT     GetValue(std::wstring& member, std::wstring& value)
+template<>
+inline HRESULT GetValue(std::wstring& member, std::wstring& value)
 {
     value   = member;
     return  S_OK;
 }
 
-static
-HRESULT     GetKeysList(std::map <std::wstring, CComVariant>&keyList, const std::wstring& strClass)
-{
-
-	HRESULT hr = WBEM_E_PROVIDER_FAILURE;
-	try {
-		CComPtr<IWbemPath>pParser;
-			hr = CoCreateInstance(CLSID_WbemDefPath,
-			0,
-			CLSCTX_INPROC_SERVER,
-			IID_IWbemPath,
-			(LPVOID *)&pParser);
-		// -- do something
-		if (FAILED(hr))
-		{
-			return hr;
-		}
-		pParser->SetText(WBEMPATH_CREATE_ACCEPT_ALL,strClass.c_str());
-		wchar_t className [256];
-		unsigned long size = 256;
-		pParser->GetClassName(&size,className);
-
-	CComPtr<IWbemPathKeyList> pIKeyList;
-	hr = pParser->GetKeyList(&pIKeyList);
-	if (FAILED(hr))
-	{
-		return hr;
-	}
-	unsigned long ulNumKeys = 0;
-	hr = pIKeyList->GetCount(&ulNumKeys);
-
-	if(FAILED(hr))
-	{
-		return hr;
-	}
-		//Get values of key properties
-	unsigned long uKeyNameBufferSize = 256;//strClass + 1;
-	WCHAR  * wKeyName = new WCHAR[uKeyNameBufferSize];
-	if (NULL == wKeyName)
-	{
-		return WBEM_E_OUT_OF_MEMORY;
-	}
-	CComVariant vValue;
-	unsigned long ulApparentCimType;
-	for (unsigned long i = 0; i < ulNumKeys; i++)
-	{
-		uKeyNameBufferSize = 256;
-		hr = pIKeyList->GetKey2(i, 0L, &uKeyNameBufferSize,
-								wKeyName, &vValue, &ulApparentCimType);
-		keyList[wKeyName] = vValue;
-		//TODO: save vValue for later use
-	}
-
-	delete[] wKeyName;
-	}
-	catch (...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-	}
-	return hr;
-}
-static HRESULT WMIHandleSetStatus(IWbemServices* pNamespace,IWbemObjectSink  __RPC_FAR* pResponseHandler,unsigned long hrInput)
-{
-	try
-	{
-		if (hrInput == STATUS_SUCCESS)
-		{
-			pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, hrInput,NULL, NULL);
-			return S_OK;
-		}
-		// not ok.
-		CComPtr<IWbemClassObject> obj;
-		do
-		{
-			HRESULT  hr;
-			RETURNIF(WMIPutMember(pNamespace, &obj, L"__ExtendedStatus"));
-			std::wstringstream str;
-			str << L"Function failed with return code = " << hrInput << std::endl;
-			BREAKIF(WMIPut<1>(obj, L"Description", str.str()));
-			uint32 xx = hrInput;
-			BREAKIF(WMIPut<1>(obj, L"StatusCode",xx));
-		}
-		while(0);
-		pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, WBEM_E_PROVIDER_FAILURE,L"Error", obj);
-		UNS_ERROR("Function failed with return code = %u\n", hrInput);
-	}
-	catch (...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-	}
-	return S_OK;
-}
+HRESULT GetKeysList(std::map <std::wstring, CComVariant>& keyList, const std::wstring& strClass);
+HRESULT WMIHandleSetStatus(IWbemServices* pNamespace, IWbemObjectSink  __RPC_FAR* pResponseHandler, unsigned long hrInput);
 
 #endif
