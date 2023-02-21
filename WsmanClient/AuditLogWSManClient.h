@@ -38,18 +38,21 @@ typedef enum _AddressType
 
 #pragma pack(1)
 
-typedef struct {
+struct HTTPDigestInitiatorType {
+	HTTPDigestInitiatorType() : UsernameLength(0) {}
 	uint8_t					UsernameLength;
 	std::vector<uint8_t>	Username;
-} HTTPDigestInitiatorType;
-
-typedef struct {
+};
+struct KerberosSIDInitiatorType {
+	KerberosSIDInitiatorType() : UserInDomain(0), DomainLength(0) {}
 	uint32_t				UserInDomain;	
 	uint8_t					DomainLength;
 	std::vector<uint8_t>	Domain;
-} KerberosSIDInitiatorType;
+};
 
-typedef struct {
+struct AuditLogRecord {
+	AuditLogRecord() : AuditAppID (0), EventID(0), InitType(0), TimeStamp(0), MCLocationType(0),
+		NetAddressLength(0), ExtendedDataLength(0) {}
 	uint16_t					AuditAppID;
 	uint16_t					EventID;
 	uint8_t						InitType;
@@ -61,7 +64,7 @@ typedef struct {
 	std::vector<uint8_t>		NetAddress;
 	uint8_t						ExtendedDataLength;
 	std::vector<uint8_t>		ExtendedData;
-}AuditLogRecord;
+};
 #pragma pack()
 
 
