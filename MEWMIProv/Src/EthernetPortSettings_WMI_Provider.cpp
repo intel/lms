@@ -110,7 +110,7 @@ HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::ve
 
 uint32 EthernetPortSettings_WMI_Provider::GetPortList(std::vector<EthernetPortEntry>& ethernetPortList)
 {
-	uint32 ReturnValue= 1; 
+	uint32 ReturnValue;
 	PTHI_Commands pthic;
 	std::vector<EthernetPortEntryWSMan> ethernetPortWSManList;
 	WSmanCommands wsmc;
