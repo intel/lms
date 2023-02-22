@@ -231,7 +231,12 @@ HRESULT CMethodPro::GetObjectAsync(
 				CLSCTX_INPROC_SERVER,
 				IID_IWbemPath,
 				(LPVOID *)&pParser);
-			// -- do something
+			if (hr != S_OK)
+			{
+				WMIHandleSetStatus(m_pWbemSvcs, pResponseHandler, WBEM_E_FAILED);
+				UNS_ERROR("%C WBEM_E_FAILED", __FUNCTION__);
+				break;
+			}
 
 			pParser->SetText(WBEMPATH_CREATE_ACCEPT_ALL,strClass);
 			wchar_t className [256];
