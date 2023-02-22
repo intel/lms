@@ -246,7 +246,7 @@ HRESULT WMIHandleSetStatus(IWbemServices* pNamespace, IWbemObjectSink  __RPC_FAR
 			uint32 xx = hrInput;
 			BREAKIF(WMIPut<1>(obj, L"StatusCode", xx));
 		} while (0);
-		pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, WBEM_E_PROVIDER_FAILURE, L"Error", obj);
+		pResponseHandler->SetStatus(WBEM_STATUS_COMPLETE, WBEM_E_PROVIDER_FAILURE, CComBSTR(L"Error"), obj);
 		UNS_ERROR("Function failed with return code = %u\n", hrInput);
 	}
 	catch (...)
