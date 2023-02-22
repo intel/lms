@@ -1950,7 +1950,7 @@ std::string AuditLogWSManClient::DisplayEventManagerAlertRelatedEvent(uint8_t* e
 		{
 			ss << "Alert Target IP Address: " << (int)extData[i] << "." << (int)extData[i+1] <<
 			 "." << (int)extData[i+2] << "." << (int)extData[i+3];
-			i+=4;
+			// no need i+=4;
 		}
 	}
 	else if (ipv6)
@@ -1976,7 +1976,7 @@ std::string AuditLogWSManClient::DisplayEventManagerAlertRelatedEvent(uint8_t* e
 					ss << ":";
 				}
 			}
-			i+=16;
+			// no need i+=16;
 			ss << std::dec << std::nouppercase;
 		}
 	}
