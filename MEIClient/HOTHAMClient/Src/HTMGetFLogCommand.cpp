@@ -20,12 +20,11 @@ namespace Intel { namespace MEI_Client { namespace HOTHAM_Client {
 
 	GET_FLOG_RESP HTMGetFatalErrorsCommand::getResponse()
 	{
-		return m_response->getResponse();
+		return m_response.getResponse();
 	}
 
 	void  HTMGetFatalErrorsCommand::parseResponse(const std::vector<uint8_t>& buffer)
 	{
-		std::shared_ptr<HOTHAMCommandResponse<GET_FLOG_RESP>> tmp(new HOTHAMCommandResponse<GET_FLOG_RESP>(buffer));
-		m_response = tmp;
+		m_response = HOTHAMCommandResponse<GET_FLOG_RESP>(buffer);
 	}
 } /* namespace HOTHAM_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

@@ -22,14 +22,13 @@ namespace Intel {
 
 			UPID_PLATFORM_ID_FEATURE_STATE_GET_Response GetUPIDFeatureStateCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void  GetUPIDFeatureStateCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_GET_Response>> tmp(new UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_GET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_GET));
-				m_response = tmp;
+				m_response = UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_GET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_GET);
 			}
-		} /* namespace HOTHAM_Client */
+		} /* namespace UPID_Client */
 	} /* namespace MEI_Client */ 
 } /* namespace Intel */

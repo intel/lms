@@ -22,14 +22,12 @@ namespace Intel {
 
 			ENUMERATE_HASH_HANDLES_RESPONSE EnumerateHashHandlesCommand::getResponse() 
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void EnumerateHashHandlesCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>> tmp(
-					new AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

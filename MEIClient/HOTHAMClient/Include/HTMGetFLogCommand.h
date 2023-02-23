@@ -26,8 +26,9 @@ namespace Intel
 				uint32_t   response;
 			} HTM_CMD_FLOG_RESP;
 
-			typedef struct _GET_FLOG_RESP
+			struct GET_FLOG_RESP
 			{
+				GET_FLOG_RESP() : header({ 0 }), response({ 0 }) {}
 				HTM_MSG_HDR_RESPONSE header;
 				HTM_CMD_FLOG_RESP response;
 
@@ -35,7 +36,7 @@ namespace Intel
 				{
 					Intel::MEI_Client::parseData(response, itr, end);
 				}
-			} GET_FLOG_RESP;
+			};
 
 			class HTMGetFatalErrorsCommand : public HOTHAMCommand
 			{
@@ -49,7 +50,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<HOTHAMCommandResponse<GET_FLOG_RESP>> m_response;
+				HOTHAMCommandResponse<GET_FLOG_RESP> m_response;
 			};
 
 			class HTMGetFatalErrorsRequest : public HOTHAMCommandRequest

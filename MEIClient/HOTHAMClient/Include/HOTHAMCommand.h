@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -151,6 +151,9 @@ template <typename T>
 class HOTHAMCommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	HOTHAMCommandResponse () : m_result() {}
+	HOTHAMCommandResponse(HOTHAMCommandResponse&& other) = default;
+	HOTHAMCommandResponse& operator = (HOTHAMCommandResponse&& other) = default;
 	HOTHAMCommandResponse(const std::vector<uint8_t>& buffer)
 	{
 		unsigned int headerAndStatSize = 0;

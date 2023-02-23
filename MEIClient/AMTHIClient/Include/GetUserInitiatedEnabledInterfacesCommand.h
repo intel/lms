@@ -28,6 +28,7 @@ namespace Intel
 			} EnabledInterfacesFields;
 			struct GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE
 			{
+				GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE() : EnabledInterfaces({ 0 }) {}
 				EnabledInterfacesFields EnabledInterfaces;
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator end)
 				{
@@ -47,7 +48,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004D;
 			};

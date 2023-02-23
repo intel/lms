@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,8 +22,7 @@ namespace Intel {
 
 			void UnprovisionCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<Unprovision_RESPONSE>> tmp(new AMTHICommandResponse<Unprovision_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<Unprovision_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 
 			std::vector<uint8_t> UnprovisionRequest::SerializeData()

@@ -22,14 +22,12 @@ namespace Intel {
 
 			GET_DNS_SUFFIX_LIST_RESPONSE GetDNSSuffixListCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetDNSSuffixListCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<GET_DNS_SUFFIX_LIST_RESPONSE> > tmp(
-					new AMTHICommandResponse<GET_DNS_SUFFIX_LIST_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<GET_DNS_SUFFIX_LIST_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

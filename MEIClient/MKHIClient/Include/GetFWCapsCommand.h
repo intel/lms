@@ -30,6 +30,7 @@ namespace Intel
 
 			union MEFWCAPS_SKU_MKHI
 			{
+				MEFWCAPS_SKU_MKHI() : Data(0) {}
 				uint32_t Data;
 				struct
 				{
@@ -85,7 +86,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI>> m_response;
+				MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 

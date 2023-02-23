@@ -42,10 +42,13 @@ namespace Intel
 
 			struct GetMESetupAuditRecord_RESPONSE
 			{
+				GetMESetupAuditRecord_RESPONSE() : ProvisioningTLSMode(0), SecureDNS(false), HostInitiated(0),
+					SelectedHashType(CERT_HASH_ALGORITHM_MD5), SelectedHashData({ 0 }), CaCertificateSerials({ 0 }),
+					AdditionalCaSerialNums(0), IsOemDefault(0), IsTimeValid(0), TlsStartTime({ 0 }) {}
 				uint8_t					ProvisioningTLSMode;
 				bool					SecureDNS;
 				bool					HostInitiated;
-				CERT_HASH_ALGORITHM		SelectedHashType;	
+				CERT_HASH_ALGORITHM		SelectedHashType;
 				struct 
 				{
 					uint8_t				SelectedHashData[64];
@@ -57,7 +60,7 @@ namespace Intel
 				bool					AdditionalCaSerialNums;
 				bool					IsOemDefault;
 				bool					IsTimeValid;
-				std::string				ProvServerIP; 
+				std::string				ProvServerIP;
 				TIME_DATE				TlsStartTime;
 				std::string				ProvServerFQDN;
 
@@ -92,7 +95,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE>> m_response;
+				AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE> m_response;
 				
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800050;
 			};

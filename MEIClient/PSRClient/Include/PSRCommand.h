@@ -101,6 +101,9 @@ namespace Intel
 			class PSRCommandResponse : public Intel::MEI_Client::MEICommandResponse
 			{
 			public:
+				PSRCommandResponse() : m_result(), m_commandNumber(PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET) {}
+				PSRCommandResponse(PSRCommandResponse&& other) = default;
+				PSRCommandResponse& operator = (PSRCommandResponse&& other) = default;
 				PSRCommandResponse(const std::vector<uint8_t>& buffer, PSR_HECI_COMMANDS commandNumber) : m_result()
 				{
 					m_commandNumber = commandNumber;

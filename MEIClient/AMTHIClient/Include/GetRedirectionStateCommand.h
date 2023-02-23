@@ -30,6 +30,7 @@ namespace Intel
 
 			struct REDIRECTION_STATE
 			{
+				REDIRECTION_STATE() : SOLEnabled(false), IDEREnabled(false), KVMEnabled(false) {}
 				bool SOLEnabled;
 				bool IDEREnabled;
 				bool KVMEnabled;
@@ -55,7 +56,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<REDIRECTION_STATE>> m_response;
+				AMTHICommandResponse<REDIRECTION_STATE> m_response;
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800058;
 
 			};

@@ -21,16 +21,16 @@ namespace Intel
 	{
 		namespace MKHI_Client
 		{
-			typedef struct MKHI_MEASURED_BOOT_STATE_t
+			struct MKHI_MEASURED_BOOT_STATE
 			{
-				MKHI_MSG_HEADER		Header;
+				MKHI_MEASURED_BOOT_STATE() : State(0) {}
 				uint8_t				State;
 
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					parseData (State, itr, end);
 				}
-			} MKHI_MEASURED_BOOT_STATE;
+			};
 
 			class GetMeasuredBootStateCommand : public MKHICommand
 			{
@@ -44,7 +44,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHICommandResponse<MKHI_MEASURED_BOOT_STATE>> m_response;
+				MKHICommandResponse<MKHI_MEASURED_BOOT_STATE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x23;
 			};

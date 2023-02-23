@@ -160,6 +160,10 @@ template <typename T>
 class AMTHICommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	AMTHICommandResponse() : m_result(), m_commandNumber(0) {}
+	AMTHICommandResponse(AMTHICommandResponse&& other) = default;
+	AMTHICommandResponse& operator = (AMTHICommandResponse&& other) = default;
+
 	AMTHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber): m_result()
 	{
 		m_commandNumber = commandNumber;

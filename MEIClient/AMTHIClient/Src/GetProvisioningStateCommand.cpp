@@ -22,13 +22,12 @@ namespace Intel {
 
 			CFG_PROVISIONING_STATE GetProvisioningStateCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetProvisioningStateCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<CFG_PROVISIONING_STATE>> tmp(new AMTHICommandResponse<CFG_PROVISIONING_STATE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<CFG_PROVISIONING_STATE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -35,12 +35,10 @@ namespace Intel
 				SetHostFQDNCommand(const std::string &FQDN);
 				virtual ~SetHostFQDNCommand() {}
 
-				SET_HOST_FQDN_RESPONSE getResponse();
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<SET_HOST_FQDN_RESPONSE>> m_response;
+				AMTHICommandResponse<SET_HOST_FQDN_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480005B;
 			};

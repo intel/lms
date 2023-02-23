@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,14 +22,12 @@ namespace Intel {
 
 			GET_KVM_SESSION_STATE_RESPONSE GetKVMSessionStateCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetKVMSessionStateCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE>> tmp(
-					new AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 
 			std::vector<uint8_t> GetKVMSessionStateRequest::SerializeData()

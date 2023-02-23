@@ -20,12 +20,11 @@ namespace Intel { namespace MEI_Client { namespace Manageability_Client {
 
 	IsChangedEnabledResponse MNGIsChangeToAMTEnabledCommand::getResponse()
 	{
-		return m_response->getResponse();
+		return m_response.getResponse();
 	}
 
 	void MNGIsChangeToAMTEnabledCommand::parseResponse(const std::vector<uint8_t>& buffer)
 	{
-		std::shared_ptr<ManageabilityCommandResponse<IsChangedEnabledResponse>> tmp(new ManageabilityCommandResponse<IsChangedEnabledResponse>(buffer));
-		m_response = tmp;
+		m_response = ManageabilityCommandResponse<IsChangedEnabledResponse>(buffer);
 	}
 } /* namespace Manageability_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

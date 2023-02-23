@@ -93,6 +93,9 @@ template <typename T>
 class MCHICommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	MCHICommandResponse() : m_result(), m_commandNumber(0), m_groupID(0) {}
+	MCHICommandResponse(MCHICommandResponse&& other) = default;
+	MCHICommandResponse& operator = (MCHICommandResponse&& other) = default;
 	MCHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID) : m_result()
 	{
 		m_commandNumber = commandNumber;

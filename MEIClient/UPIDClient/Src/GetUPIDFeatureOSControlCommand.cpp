@@ -21,12 +21,12 @@ namespace Intel {
 
 			UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response GetUPIDFeatureOSControlCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetUPIDFeatureOSControlCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				m_response = std::make_shared<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response>>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_OS_CONTROL_GET);
+				m_response = UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_OS_CONTROL_GET);
 			}
 		} /* namespace UPID_Client */
 	} /* namespace MEI_Client */

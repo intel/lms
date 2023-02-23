@@ -33,6 +33,8 @@ namespace Intel
 
 			struct GET_CERTIFICATE_HASH_ENTRY_RESPONSE
 			{
+				GET_CERTIFICATE_HASH_ENTRY_RESPONSE() : IsDefault(0), IsActive(0), CertificateHash { 0 },
+					HashAlgorithm(CERT_HASH_ALGORITHM8_MD5) {}
 				bool					IsDefault;
 				bool					IsActive;
 				uint8_t					CertificateHash[CERT_HASH_MAX_LENGTH];
@@ -61,7 +63,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002D;
 			};

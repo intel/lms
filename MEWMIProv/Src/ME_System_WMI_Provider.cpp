@@ -274,8 +274,8 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 		
 		{
 			using namespace Intel::MEI_Client;
-			MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData = { 0 }, StateData = { 0 };
-			MKHI_Client::MKHI_PLATFORM_TYPE Platform = { 0 };
+			MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
+			MKHI_Client::MKHI_PLATFORM_TYPE Platform;
 			ReturnValue = FWUpdate.GetFWCapabilities(CapabilityData);
 			if (ReturnValue == S_OK)
 			{

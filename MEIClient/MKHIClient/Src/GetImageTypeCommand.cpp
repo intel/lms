@@ -22,14 +22,12 @@ namespace Intel {
 
 			MKHI_IMAGE_TYPE GetImageTypeCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetImageTypeCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<MKHICommandResponse<MKHI_IMAGE_TYPE>> tmp(
-					new MKHICommandResponse<MKHI_IMAGE_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
-				m_response = tmp;
+				m_response = MKHICommandResponse<MKHI_IMAGE_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
 			}
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

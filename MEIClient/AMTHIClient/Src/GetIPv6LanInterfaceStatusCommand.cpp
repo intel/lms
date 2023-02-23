@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,13 +22,12 @@ namespace Intel {
 
 			GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE GetIPv6LanInterfaceStatusCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetIPv6LanInterfaceStatusCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>> tmp(new AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 
 			std::vector<uint8_t> GetIPv6LanInterfaceStatusRequest::SerializeData()

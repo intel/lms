@@ -20,12 +20,11 @@ namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
 
 	GET_INFO_RESPONSE FWUGetInfoCommand::getResponse()
 	{
-		return m_response->getResponse();
+		return m_response.getResponse();
 	}
 
 	void FWUGetInfoCommand::parseResponse(const std::vector<uint8_t>& buffer)
 	{
-		std::shared_ptr<FWUpdateCommandResponse<GET_INFO_RESPONSE>> tmp(new FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-		m_response = tmp;
+		m_response = FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 	}
 } /* namespace FWUpdate_Client */ } /* namespace MEI_Client */ } /* namespace Intel */

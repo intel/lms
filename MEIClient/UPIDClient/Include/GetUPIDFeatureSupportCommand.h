@@ -23,15 +23,16 @@ namespace Intel
 			static const uint8_t UPID_PLATFORM_ID_UPID_IS_SUPPORTED = 0x1;
 			static const uint8_t UPID_PLATFORM_ID_ATTESTATION_IS_SUPPORTED = 0x2;
 
-			typedef struct _UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response
+			struct UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response
 			{
+				UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response() : platformIdSupported(0) {}
 				uint8_t platformIdSupported;
 
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					parseData(platformIdSupported, itr, end);
 				}
-			} UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response;
+			};
 
 			class GetUPIDFeatureSupportCommand : public UPIDCommand
 			{
@@ -45,7 +46,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response>> m_response;
+				UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response> m_response;
 			};
 
 			class GetUPIDFeatureSupportRequest : public UPIDRequest

@@ -63,7 +63,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MCHICommandResponse<READ_FILE_EX_RESPONSE>> m_response;
+				MCHICommandResponse<READ_FILE_EX_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0xA;
 			};

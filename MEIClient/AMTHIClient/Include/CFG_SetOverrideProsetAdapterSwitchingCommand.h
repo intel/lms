@@ -25,14 +25,15 @@ namespace AMTHI_Client
 		uint32_t         OverrideEnabled;
 	}  AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_REQUEST;
 
-	typedef struct AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE_t
+	struct AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE
 	{
+		AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE() : Status(0) {}
 		AMT_STATUS      Status;
 		void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator &end)
 		{
 			Intel::MEI_Client::parseData(Status, itr, end);
 		}
-	} AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE;
+	};
 
 	class CFG_SetOverrideProsetAdapterSwitchingCommand : public AMTHICommand
 	{
@@ -46,7 +47,7 @@ namespace AMTHI_Client
 	private:
 		virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-		std::shared_ptr<AMTHICommandResponse<AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE>> m_response;
+		AMTHICommandResponse<AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE> m_response;
 
 		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x4800086 ;
 	};

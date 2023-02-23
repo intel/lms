@@ -31,7 +31,9 @@ namespace Intel
 			};
 			struct TCPIP_PARAMETERS
 			{
-				uint32_t				DhcpMode; //Represents CFG_DHCP_MODE
+				TCPIP_PARAMETERS() : DhcpMode(CFG_DHCP_MODE_NONE), LocalAddress(0), SubnetMask(0),
+					DefaultGatewayAddress(0), PrimaryDnsAddress(0), SecondaryDnsAddress(0) {}
+				uint32_t			DhcpMode; //Represents CFG_DHCP_MODE
 				CFG_IPv4_ADDRESS	LocalAddress;			//Ignored if DhcpMode is not CFG_DHCP_MODE_DISABLED.
 				CFG_IPv4_ADDRESS	SubnetMask;				//Ignored if DhcpMode is not CFG_DHCP_MODE_DISABLED.
 				CFG_IPv4_ADDRESS	DefaultGatewayAddress;	//Ignored if DhcpMode is not CFG_DHCP_MODE_DISABLED.
@@ -63,7 +65,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<TCPIP_PARAMETERS>> m_response;
+				AMTHICommandResponse<TCPIP_PARAMETERS> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800006;
 			};

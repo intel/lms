@@ -45,6 +45,7 @@ namespace Intel
 
 			struct GET_IMAGE_FW_VERSION_RESPONSE
 			{
+				GET_IMAGE_FW_VERSION_RESPONSE() : NumOfModules(0), ManifestData { 0 } {}
 				uint32_t             NumOfModules;
 				FLASH_PARTITION_DATA ManifestData[MAXIMUM_IPU_SUPPORTED];
 
@@ -67,7 +68,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE>> m_response;
+				MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1C;
 				uint32_t _partitionId;

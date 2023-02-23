@@ -22,6 +22,7 @@ namespace Intel
 		{
 			struct ZTC_ENABLED_STATUS
 			{
+				ZTC_ENABLED_STATUS() : ZTCEnabled(false) {}
 				bool ZTCEnabled;
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator end)
 				{
@@ -41,7 +42,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<ZTC_ENABLED_STATUS>> m_response;
+				AMTHICommandResponse<ZTC_ENABLED_STATUS> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800030;
 			};

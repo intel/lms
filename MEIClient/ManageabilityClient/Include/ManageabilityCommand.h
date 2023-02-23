@@ -83,6 +83,9 @@ template <typename T>
 class ManageabilityCommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	ManageabilityCommandResponse() : m_result() {}
+	ManageabilityCommandResponse(ManageabilityCommandResponse&& other) = default;
+	ManageabilityCommandResponse& operator = (ManageabilityCommandResponse&& other) = default;
 	ManageabilityCommandResponse(const std::vector<uint8_t>& buffer)
 	{
 		verifyAndGenerateResponse(buffer.begin(), buffer.end());

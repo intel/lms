@@ -28,8 +28,10 @@ namespace Intel
 				UPID_OEM_PLATFORM_ID_TYPE_PRINTABLE_STRING = 2,
 			} UPID_OEM_PLATFORM_ID_TYPE;
 
-			typedef struct UPID_PLATFORM_ID_GET_Response_t
+			struct UPID_PLATFORM_ID_GET_Response
 			{
+				UPID_PLATFORM_ID_GET_Response() : PlatformIdType(UPID_OEM_PLATFORM_ID_TYPE_NOT_SET),
+					OEMPlatformId{ 0 }, CSMEPlatformId{ 0 } {}
 				uint32_t                           PlatformIdType; //UPID_OEM_PLATFORM_ID_TYPE
 				uint8_t                            OEMPlatformId[UPID_LEN];
 				uint8_t                            CSMEPlatformId[UPID_LEN];
@@ -40,8 +42,7 @@ namespace Intel
 					parseData(OEMPlatformId, itr, end);
 					parseData(CSMEPlatformId, itr, end);
 				}
-
-			} UPID_PLATFORM_ID_GET_Response;
+			};
 
 			class GetUPIDCommand : public UPIDCommand
 			{
@@ -55,7 +56,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response>> m_response;
+				UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response> m_response;
 			};
 
 

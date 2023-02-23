@@ -29,16 +29,9 @@ namespace Intel {
 				Transact();
 			}
 
-			SetEnterpriseAccess_RESPONSE SetEnterpriseAccessCommand::getResponse()
-			{
-				return m_response->getResponse();
-			}
-
 			void SetEnterpriseAccessCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<SetEnterpriseAccess_RESPONSE>> tmp(
-					new AMTHICommandResponse<SetEnterpriseAccess_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<SetEnterpriseAccess_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 
 			std::vector<uint8_t> SetEnterpriseAccessRequest::SerializeData()

@@ -23,6 +23,8 @@ namespace Intel
 		{
 			struct GET_FW_VER_RESPONSE
 			{
+				GET_FW_VER_RESPONSE() : FTMinor(0), FTMajor(0), FTBuildNo(0), FTHotFix(0),
+					NFTMinor(0), NFTMajor(0), NFTBuildNo(0), NFTHotFix(0) {}
 				uint16_t  FTMinor;		    // Same as firmware fields
 				uint16_t  FTMajor;		    // same as firmware fields
 				uint16_t  FTBuildNo;	    // same as firmware fields
@@ -56,7 +58,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHICommandResponse<GET_FW_VER_RESPONSE>> m_response;
+				MKHICommandResponse<GET_FW_VER_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};

@@ -22,14 +22,12 @@ namespace Intel {
 
 			GET_EOP_STATE_RESPONSE GetEOPStateCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetEOPStateCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<MKHICommandResponse<GET_EOP_STATE_RESPONSE>> tmp(
-					new MKHICommandResponse<GET_EOP_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID));
-				m_response = tmp;
+				m_response = MKHICommandResponse<GET_EOP_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
 			}
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

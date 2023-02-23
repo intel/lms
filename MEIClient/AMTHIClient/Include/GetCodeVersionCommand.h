@@ -42,6 +42,7 @@ namespace AMTHI_Client
 
 	struct CODE_VERSIONS
 	{
+		CODE_VERSIONS() : BiosVersion { 0 } {}
 		uint8_t   BiosVersion[BIOS_VERSION_LEN];
 		std::vector<AMT_VERSION_TYPE> Versions;
 		void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator end)
@@ -63,7 +64,7 @@ namespace AMTHI_Client
 	private:
 		virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-		std::shared_ptr<AMTHICommandResponse<CODE_VERSIONS>> m_response;
+		AMTHICommandResponse<CODE_VERSIONS> m_response;
 
 		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001A;
 	};

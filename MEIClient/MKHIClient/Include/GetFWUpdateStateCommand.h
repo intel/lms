@@ -29,6 +29,7 @@ namespace Intel
 
 			union FW_UPDATE_STATE
 			{
+				FW_UPDATE_STATE() : Data(0) {}
 				uint32_t    Data;
 
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
@@ -49,7 +50,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHIGetRuleCommandResponse<FW_UPDATE_STATE>> m_response;
+				MKHIGetRuleCommandResponse<FW_UPDATE_STATE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 

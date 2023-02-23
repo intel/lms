@@ -37,12 +37,10 @@ namespace Intel
 				SetEnterpriseAccessCommand(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess);
 				virtual ~SetEnterpriseAccessCommand() {}
 
-				SetEnterpriseAccess_RESPONSE getResponse();
-
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<SetEnterpriseAccess_RESPONSE>> m_response;
+				AMTHICommandResponse<SetEnterpriseAccess_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480003F;
 			};

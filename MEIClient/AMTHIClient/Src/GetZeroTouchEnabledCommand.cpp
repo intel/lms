@@ -22,13 +22,12 @@ namespace Intel {
 
 			ZTC_ENABLED_STATUS GetZeroTouchEnabledCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetZeroTouchEnabledCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<ZTC_ENABLED_STATUS>> tmp(new AMTHICommandResponse<ZTC_ENABLED_STATUS>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<ZTC_ENABLED_STATUS>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

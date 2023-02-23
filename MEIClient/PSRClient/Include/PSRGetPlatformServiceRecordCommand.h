@@ -88,6 +88,11 @@ namespace Intel
 
 			struct PSR_GET_RESPONSE
 			{
+				PSR_GET_RESPONSE() : log_state(0), psr_version_major(0), psr_version_minor(0), psrid{ 0 },
+					upid{ 0 }, genesis_info({ 0 }), capabilities{ 0 }, ledger_info({ 0 }), ledger_info2({ 0 }),
+					events_count(0), events_info{ 0 }, psr_hash{ 0 }, user_nonce{ 0 }, csme_nonce{ 0 },
+					fw_version_major(0), fw_version_minor(0), fw_version_hotfix(0), fw_version_build(0),
+					signing_mechanism(0), signature{ 0 }, certificate_lengths{ 0 }, certificates{ 0 } {}
 				uint32_t log_state;
 				uint16_t psr_version_major;
 				uint16_t psr_version_minor;
@@ -152,6 +157,7 @@ namespace Intel
 
 			struct PSR_GET_RESPONSE_RAW
 			{
+				PSR_GET_RESPONSE_RAW() : data{ 0 } {}
 				uint8_t data[sizeof(struct PSR_GET_RESPONSE)];
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator& end)
 				{
@@ -171,7 +177,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<PSRCommandResponse<PSR_GET_RESPONSE>> m_response;
+				PSRCommandResponse<PSR_GET_RESPONSE> m_response;
 			};
 
 			class PSRGetPlatformServiceRecordRequest : public PSRCommandRequest
@@ -202,7 +208,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<PSRCommandResponse<PSR_GET_RESPONSE_RAW>> m_response;
+				PSRCommandResponse<PSR_GET_RESPONSE_RAW> m_response;
 			};
 
 		} // namespace PSR_Client

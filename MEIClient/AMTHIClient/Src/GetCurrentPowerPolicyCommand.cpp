@@ -22,13 +22,12 @@ namespace Intel {
 
 			std::string GetCurrentPowerPolicyCommand::getResponse()
 			{
-				return m_response->getResponse().powerPolicy;
+				return m_response.getResponse().powerPolicy;
 			}
 
 			void GetCurrentPowerPolicyCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>> tmp(new AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER));
-				m_response = tmp;
+				m_response = AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 			}
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

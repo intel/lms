@@ -20,10 +20,10 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef uint32_t CFG_IPv4_ADDRESS;
-
 			struct LAN_SETTINGS
 			{
+				LAN_SETTINGS() : Enabled(AMT_FALSE), Ipv4Address(0), DhcpEnabled(AMT_FALSE), DhcpIpMode(0),
+					LinkStatus(0), MacAddress { 0 } {}
 				AMT_BOOLEAN Enabled;
 				CFG_IPv4_ADDRESS Ipv4Address;
 				AMT_BOOLEAN DhcpEnabled;
@@ -48,7 +48,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<LAN_SETTINGS>> m_response;
+				AMTHICommandResponse<LAN_SETTINGS> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800048;
 			};

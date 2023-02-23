@@ -45,8 +45,11 @@ namespace Intel
 			} REMOTE_ACCESS_CONNECTION_TRIGGER;
 
 			//Response struct:
-			typedef struct REMOTE_ACCESS_STATUS_t
+			struct REMOTE_ACCESS_STATUS
 			{
+				REMOTE_ACCESS_STATUS() : AmtNetworkConnectionStatus(AMT_NETWORK_CONNECTION_DIRECT),
+					RemoteAccessConnectionStatus(REMOTE_ACCESS_CONNECTION_STATUS_NOT_CONNECTED),
+					RemoteAccessConnectionTrigger(REMOTE_ACCESS_CONNECTION_TRIGGER_USER_INITIATED) {}
 				AMT_NETWORK_CONNECTION_STATUS AmtNetworkConnectionStatus;
 				REMOTE_ACCESS_CONNECTION_STATUS RemoteAccessConnectionStatus;
 				REMOTE_ACCESS_CONNECTION_TRIGGER RemoteAccessConnectionTrigger;
@@ -60,7 +63,7 @@ namespace Intel
 					Intel::MEI_Client::parseData(RemoteAccessConnectionTrigger, itr, end);
 					MpsHostname = AmtAnsiString(itr, end).getString();
 				}
-			}  REMOTE_ACCESS_STATUS;
+			};
 
 			class GetRemoteAccessConnectionStatusCommand : public AMTHICommand
 			{
@@ -74,7 +77,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<REMOTE_ACCESS_STATUS>> m_response;
+				AMTHICommandResponse<REMOTE_ACCESS_STATUS> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800046;
 			};

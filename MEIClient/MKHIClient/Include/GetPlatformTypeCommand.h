@@ -47,6 +47,7 @@ namespace Intel
 
 			union MKHI_PLATFORM_TYPE
 			{
+				MKHI_PLATFORM_TYPE() : Data(0) {}
 				uint32_t    Data;
 				struct
 				{
@@ -85,7 +86,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>> m_response;
+				MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};

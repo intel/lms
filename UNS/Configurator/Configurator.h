@@ -95,7 +95,7 @@ private:
 	ACE_TString m_toggeledService;
 	std::queue<MessageBlockPtr> m_nextTasks;
 
-	Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE m_fwVer = { 0 };
+	Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE m_fwVer;
 
 	void CancelDeferredResumeTimer();
 

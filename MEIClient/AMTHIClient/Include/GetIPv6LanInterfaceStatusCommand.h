@@ -46,6 +46,7 @@ namespace Intel
 
 			struct CFG_IPv6_ADDR_INFO
 			{
+				CFG_IPv6_ADDR_INFO() : Type(0), State(0) {}
 				std::string Address;
 				uint32_t Type;	//CFG_IPv6_ADDR_TYPE
 				uint32_t State; //CFG_IPv6_ADDR_STATE
@@ -95,7 +96,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE> m_response;
 				
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800052;
 			};

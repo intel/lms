@@ -20,8 +20,9 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef struct GET_REDIRECTION_SESSIONS_STATE_RESPONSE_t
+			struct GET_REDIRECTION_SESSIONS_STATE_RESPONSE
 			{
+				GET_REDIRECTION_SESSIONS_STATE_RESPONSE() : RequestId(0), IderOpen(AMT_FALSE), SolOpen(AMT_FALSE), Reserved(AMT_FALSE) {}
 				uint32_t RequestId;
 				AMT_BOOLEAN IderOpen;
 				AMT_BOOLEAN SolOpen;
@@ -34,7 +35,7 @@ namespace Intel
 					Intel::MEI_Client::parseData(SolOpen, itr, end); 
 					Intel::MEI_Client::parseData(Reserved, itr, end);
 				}
-			} GET_REDIRECTION_SESSIONS_STATE_RESPONSE;
+			};
 
 			class GetRedirectionSessionsStateCommand : public AMTHICommand
 			{
@@ -48,7 +49,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_REDIRECTION_SESSIONS_STATE_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_REDIRECTION_SESSIONS_STATE_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
 			};

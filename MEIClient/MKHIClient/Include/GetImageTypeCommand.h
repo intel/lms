@@ -21,16 +21,16 @@ namespace Intel
 	{
 		namespace MKHI_Client
 		{
-			typedef struct MKHI_IMAGE_TYPE_t
+			struct MKHI_IMAGE_TYPE
 			{
-				MKHI_MSG_HEADER		Header;
+				MKHI_IMAGE_TYPE() : ImageSignData(0) {}
 				uint32_t			ImageSignData;
 
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					parseData (ImageSignData, itr, end);
 				}
-			} MKHI_IMAGE_TYPE;
+			};
 
 			class GetImageTypeCommand : public MKHICommand
 			{
@@ -44,7 +44,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<MKHICommandResponse<MKHI_IMAGE_TYPE>> m_response;
+				MKHICommandResponse<MKHI_IMAGE_TYPE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x18;
 			};

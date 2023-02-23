@@ -22,6 +22,7 @@ namespace Intel
 		{
 			struct GET_UUID_RESPONSE
 			{
+				GET_UUID_RESPONSE() : UUID { 0 } {}
 				uint8_t UUID[16];
 
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator &end)
@@ -41,7 +42,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_UUID_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_UUID_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480005C;
 			};

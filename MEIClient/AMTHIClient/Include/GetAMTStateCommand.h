@@ -59,8 +59,9 @@ namespace Intel
 				} Fields;
 			};
 
-			typedef struct AMT_STATE_RESPONSE_t
+			struct AMT_STATE_RESPONSE
 			{
+				AMT_STATE_RESPONSE() : StateDataIdentifier({ 0 }), StateData({ 0 }) {}
 				AMT_UUID StateDataIdentifier;
 				STATE_DATA StateData;
 
@@ -75,7 +76,7 @@ namespace Intel
 					}
 					parseArray<uint8_t>(StateData.data, 5, itr, end);
 				}
-			} AMT_STATE_RESPONSE;
+			};
 
 			const AMT_UUID AMT_UUID_LINK_STATE = 
 			{0x00, 0x00, 0x00, 0x00,
@@ -95,7 +96,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<AMT_STATE_RESPONSE>> m_response;
+				AMTHICommandResponse<AMT_STATE_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x01800001;
 			};
@@ -103,10 +104,8 @@ namespace Intel
 			class GetAMTStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetAMTStateRequest(const AMT_UUID StateVariableIdentifier) : AMTHICommandRequest(REQUEST_COMMAND_NUMBER)
-				{
-					m_stateVariableIdentifier = StateVariableIdentifier;
-				}
+				GetAMTStateRequest(const AMT_UUID StateVariableIdentifier) :
+					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_stateVariableIdentifier(StateVariableIdentifier) {}
 				virtual ~GetAMTStateRequest() {}
 
 			private:

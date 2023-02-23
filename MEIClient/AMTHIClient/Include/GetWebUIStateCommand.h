@@ -20,8 +20,9 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef struct GET_WEB_UI_STATE_RESPONSE_t
+			struct GET_WEB_UI_STATE_RESPONSE
 			{
+				GET_WEB_UI_STATE_RESPONSE() : RequestId(0), WebUiEnabled(AMT_FALSE) {}
 				uint32_t RequestId;
 				AMT_BOOLEAN WebUiEnabled;
 			
@@ -30,7 +31,7 @@ namespace Intel
 					parseData(RequestId, itr, end);
 					parseData(WebUiEnabled, itr, end); 
 				}
-			} GET_WEB_UI_STATE_RESPONSE;
+			};
 
 			class GetWebUIStateCommand : public AMTHICommand
 			{
@@ -44,7 +45,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_WEB_UI_STATE_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_WEB_UI_STATE_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
 			};

@@ -21,15 +21,16 @@ namespace Intel
 	{
 		namespace UPID_Client
 		{
-			typedef struct _UPID_PLATFORM_ID_FEATURE_STATE_GET_Response
+			struct UPID_PLATFORM_ID_FEATURE_STATE_GET_Response
 			{
+				UPID_PLATFORM_ID_FEATURE_STATE_GET_Response() : FeatureEnabled(0) {}
 				uint8_t                              FeatureEnabled;
 
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					parseData(FeatureEnabled, itr, end);
 				}
-			}  UPID_PLATFORM_ID_FEATURE_STATE_GET_Response;
+			};
 
 			class GetUPIDFeatureStateCommand : public UPIDCommand
 			{
@@ -43,7 +44,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_GET_Response>> m_response;
+				UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_GET_Response> m_response;
 			};
 
 

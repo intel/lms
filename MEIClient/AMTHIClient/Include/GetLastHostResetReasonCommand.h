@@ -20,8 +20,9 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef struct LAST_HOST_RESET_REASON_RESPONSE_t
+			struct LAST_HOST_RESET_REASON_RESPONSE
 			{
+				LAST_HOST_RESET_REASON_RESPONSE() : Reason(0), RemoteControlTimeStamp(0) {}
 				uint32_t Reason;
 				uint32_t RemoteControlTimeStamp;
 				
@@ -29,7 +30,7 @@ namespace Intel
 				{
 					Intel::MEI_Client::parseData(*this,itr,end);
 				}
-			} LAST_HOST_RESET_REASON_RESPONSE;
+			};
 
 			class GetLastHostResetReasonCommand : public AMTHICommand
 			{
@@ -43,7 +44,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>> m_response;
+				AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004A;
 			};

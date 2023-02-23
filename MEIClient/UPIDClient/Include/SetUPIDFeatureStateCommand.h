@@ -20,14 +20,13 @@ namespace Intel
 	{
 		namespace UPID_Client
 		{
-			typedef struct _UPID_PLATFORM_ID_FEATURE_STATE_SET_Response
+			struct UPID_PLATFORM_ID_FEATURE_STATE_SET_Response
 			{
 				void parse(std::vector<uint8_t>::const_iterator&, const std::vector<uint8_t>::const_iterator&)
 				{
 					return;
 				}
-			}  UPID_PLATFORM_ID_FEATURE_STATE_SET_Response;
-
+			};
 
 			typedef struct
 			{
@@ -46,7 +45,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_SET_Response>> m_response;
+				UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_SET_Response> m_response;
 			};
 
 

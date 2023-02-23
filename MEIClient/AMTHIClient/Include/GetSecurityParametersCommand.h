@@ -23,6 +23,9 @@ namespace Intel
 		{
 			struct SECURITY_PARAMETERS
 			{
+				SECURITY_PARAMETERS() : EnterpriseMode(false), TLSEnabled(false), HWCryptoEnabled(false),
+					ProvisioningState(PROVISIONING_STATE_PRE), NetworkInterfaceEnabled(false), SOLEnabled(false),
+					IDEREnabled(false), FWUpdateEnabled(false), LinkIsUp(false), KvmEnabled(false) {}
 				bool					EnterpriseMode;
 				bool					TLSEnabled;
 				bool					HWCryptoEnabled;
@@ -66,7 +69,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<SECURITY_PARAMETERS>> m_response;
+				AMTHICommandResponse<SECURITY_PARAMETERS> m_response;
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001B;
 			};
 

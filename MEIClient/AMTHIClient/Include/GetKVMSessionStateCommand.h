@@ -27,8 +27,9 @@ namespace Intel
 				uint32_t Reserved:30;
 			} KVM_STATUS;
 
-			typedef struct GET_KVM_SESSION_STATE_RESPONSE_t
+			struct GET_KVM_SESSION_STATE_RESPONSE
 			{
+				GET_KVM_SESSION_STATE_RESPONSE() : RequestId(0), kvmStatus({ 0 }) {}
 				uint32_t RequestId;
 				KVM_STATUS kvmStatus;
 			
@@ -36,9 +37,8 @@ namespace Intel
 				{
 					Intel::MEI_Client::parseData(RequestId, itr, end);
 					Intel::MEI_Client::parseData(kvmStatus, itr, end);
-					
 				}
-			} GET_KVM_SESSION_STATE_RESPONSE;
+			};
 
 			class GetKVMSessionStateCommand : public AMTHICommand
 			{
@@ -52,7 +52,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE>> m_response;
+				AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
 			};

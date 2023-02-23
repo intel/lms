@@ -764,7 +764,7 @@ namespace
 		catch (std::exception& e)
 		{
 			UNS_ERROR(L"Could not get FW version. %C\n", e.what());
-			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer = { 0 };
+			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer;
 			return emptyFwVer;
 		}
 	}

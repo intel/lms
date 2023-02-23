@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -23,14 +23,12 @@ namespace Intel {
 
 			MEFWCAPS_SKU_MKHI GetFWCapsCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetFWCapsCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI>> tmp(
-					new MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, m_rule));
-				m_response = tmp;
+				m_response = MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, m_rule);
 			}
 
 			std::vector<uint8_t> GetFWCapsRequest::SerializeData()

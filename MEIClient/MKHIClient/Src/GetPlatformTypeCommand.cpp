@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,14 +22,12 @@ namespace Intel {
 
 			MKHI_PLATFORM_TYPE GetPlatformTypeCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void GetPlatformTypeCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>> tmp(
-					new MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, MEFWCAPS_PCV_OEM_PLAT_TYPE_CFG_RULE_ID));
-				m_response = tmp;
+				m_response = MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, MEFWCAPS_PCV_OEM_PLAT_TYPE_CFG_RULE_ID);
 			}
 
 			std::vector<uint8_t> GetPlatformTypeRequest::SerializeData()

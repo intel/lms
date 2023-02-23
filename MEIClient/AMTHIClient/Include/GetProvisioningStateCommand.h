@@ -22,6 +22,7 @@ namespace Intel
 		{
 			struct CFG_PROVISIONING_STATE
 			{
+				CFG_PROVISIONING_STATE() : ProvisioningState(PROVISIONING_STATE_PRE) {}
 				AMT_PROVISIONING_STATE ProvisioningState;
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
 				{
@@ -41,7 +42,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<CFG_PROVISIONING_STATE>> m_response;
+				AMTHICommandResponse<CFG_PROVISIONING_STATE> m_response;
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800011;
 			};
 

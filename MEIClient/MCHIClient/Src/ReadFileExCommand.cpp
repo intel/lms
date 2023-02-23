@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2022 Intel Corporation
+ * Copyright (C) 2022-2023 Intel Corporation
  */
 /*++
 
@@ -22,13 +22,12 @@ namespace Intel {
 
 			READ_FILE_EX_RESPONSE ReadFileExCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void  ReadFileExCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<MCHICommandResponse<READ_FILE_EX_RESPONSE>> tmp(new MCHICommandResponse<READ_FILE_EX_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MCHI_GROUP_ID_MCA));
-				m_response = tmp;
+				m_response = MCHICommandResponse<READ_FILE_EX_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MCHI_GROUP_ID_MCA);
 			}
 
 			std::vector<uint8_t> ReadFileExRequest::SerializeData()

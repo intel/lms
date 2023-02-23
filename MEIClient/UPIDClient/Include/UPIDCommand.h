@@ -102,6 +102,9 @@ namespace Intel
 			class UPIDCommandResponse : public Intel::MEI_Client::MEICommandResponse
 			{
 			public:
+				UPIDCommandResponse() : m_result(), m_featureID(0), m_commandID(0) {}
+				UPIDCommandResponse(UPIDCommandResponse&& other) = default;
+				UPIDCommandResponse& operator = (UPIDCommandResponse&& other) = default;
 				UPIDCommandResponse(const std::vector<uint8_t>& buffer, uint8_t featureID, uint8_t commandID)
 				{
 					m_featureID = featureID;

@@ -20,16 +20,17 @@ namespace Intel
 	{
 		namespace Manageability_Client
 		{
+			const uint8_t ENABLED_MASK = BIT(0);
+			const uint8_t CURRENTOPERATIONALSTATE_MASK = BIT(1);
+			const uint8_t TLSONLOCALPORTS_MASK = BIT(6);
+			const uint8_t ISNEWINTERFACEVERSION_MASK = BIT(7);
+
 			struct IsChangedEnabledResponse
 			{
+				IsChangedEnabledResponse() : Enabled(false), CurrentOperationalState(false), TlsOnLocalPorts(false) {}
 				bool Enabled;
 				bool CurrentOperationalState;
 				bool TlsOnLocalPorts;
-
-				const uint8_t ENABLED_MASK = BIT(0);
-				const uint8_t CURRENTOPERATIONALSTATE_MASK = BIT(1);
-				const uint8_t TLSONLOCALPORTS_MASK = BIT(6);
-				const uint8_t ISNEWINTERFACEVERSION_MASK = BIT(7);
 
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
 				{
@@ -53,7 +54,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<ManageabilityCommandResponse<IsChangedEnabledResponse>> m_response;
+				ManageabilityCommandResponse<IsChangedEnabledResponse> m_response;
 			};
 
 			class MNGIsChangeToAMTEnabledRequest : public ManageabilityCommandRequest

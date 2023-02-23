@@ -125,6 +125,9 @@ template <typename T>
 class MKHICommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	MKHICommandResponse() : m_result(), m_commandNumber(0), m_groupID(0) {}
+	MKHICommandResponse(MKHICommandResponse&& other) = default;
+	MKHICommandResponse& operator = (MKHICommandResponse&& other) = default;
 	MKHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID) : m_result()
 	{
 		m_commandNumber = commandNumber;
@@ -176,6 +179,9 @@ template <typename T>
 class MKHIGetRuleCommandResponse : Intel::MEI_Client::MEICommandResponse
 {
 public:
+	MKHIGetRuleCommandResponse() : m_result(), m_commandNumber(0), m_groupID(0), m_ruleID(0) {}
+	MKHIGetRuleCommandResponse(MKHIGetRuleCommandResponse&& other) = default;
+	MKHIGetRuleCommandResponse& operator = (MKHIGetRuleCommandResponse&& other) = default;
 	MKHIGetRuleCommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID,
 		unsigned int ruleID)
 	{

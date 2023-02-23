@@ -22,6 +22,8 @@ namespace Intel
 		{
 			struct GET_INFO_RESPONSE
 			{
+				GET_INFO_RESPONSE() : MEBxVersion({ 0 }), FlashOverridePolicy(0), MangeabilityMode(0),
+					BiosBootState(0), Fields({ 0 }), BiosVersion{ 0 } {}
 				FWU_VERSION       MEBxVersion;
 				unsigned int      FlashOverridePolicy;
 				unsigned int      MangeabilityMode;
@@ -55,7 +57,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<FWUpdateCommandResponse<GET_INFO_RESPONSE>> m_response;
+				FWUpdateCommandResponse<GET_INFO_RESPONSE> m_response;
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x09;
 			};
 

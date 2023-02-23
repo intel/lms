@@ -26,6 +26,7 @@ namespace Intel
 		{
 			struct CFG_GET_CONFIG_SERVER_DATA_RESPONSE
 			{
+				CFG_GET_CONFIG_SERVER_DATA_RESPONSE() : ServerPort(0) {}
 				uint16_t    ServerPort;
 				std::string ServerAddr;
 				std::string FQDN;
@@ -52,7 +53,7 @@ namespace Intel
 			private:
 				virtual void parseResponse(const std::vector<uint8_t>& buffer);
 
-				std::shared_ptr<AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>> m_response;
+				AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004E;
 			};
