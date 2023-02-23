@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetDNSSuffixCommand::GetDNSSuffixCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetDNSSuffixRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetDNSSuffixRequest>();
 				Transact();
 			}
 

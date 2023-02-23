@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetConfigServerDataCommand::GetConfigServerDataCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetConfigServerDataRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetConfigServerDataRequest>();
 				Transact();
 			}
 

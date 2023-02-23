@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetRemoteAccessConnectionStatusCommand::GetRemoteAccessConnectionStatusCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetRemoteAccessConnectionStatusRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetRemoteAccessConnectionStatusRequest>();
 				Transact();
 			}
 

@@ -15,8 +15,7 @@ namespace Intel {
 		namespace MKHI_Client {
 			GetImageTypeCommand::GetImageTypeCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetImageTypeRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetImageTypeRequest>();
 				Transact();
 			}
 

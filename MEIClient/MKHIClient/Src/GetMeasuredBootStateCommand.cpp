@@ -14,8 +14,7 @@ namespace Intel { namespace MEI_Client { namespace MKHI_Client {
 
 	GetMeasuredBootStateCommand::GetMeasuredBootStateCommand()
 	{
-		std::shared_ptr<MEICommandRequest> tmp(new GetMeasuredBootStateRequest());
-		m_request = tmp;
+		m_request = std::make_shared<GetMeasuredBootStateRequest>();
 		Transact();
 	}
 

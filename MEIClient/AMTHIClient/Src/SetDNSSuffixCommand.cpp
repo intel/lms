@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			SetDNSSuffixCommand::SetDNSSuffixCommand(const std::string &suffix)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new SetDNSSuffixRequest(suffix));
-				m_request = tmp;
+				m_request = std::make_shared<SetDNSSuffixRequest>(suffix);
 				Transact();
 			}
 

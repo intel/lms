@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			CloseUserInitiatedConnectionCommand::CloseUserInitiatedConnectionCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new CloseUserInitiatedConnectionRequest());
-				m_request = tmp;
+				m_request = std::make_shared< CloseUserInitiatedConnectionRequest>();
 				Transact();
 			}
 

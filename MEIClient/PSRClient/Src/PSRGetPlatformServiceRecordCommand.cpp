@@ -15,8 +15,7 @@ namespace Intel {
 		namespace PSR_Client {
 			PSRGetPlatformServiceRecordCommand::PSRGetPlatformServiceRecordCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new PSRGetPlatformServiceRecordRequest(_nonce));
-				m_request = tmp;
+				m_request = std::make_shared<PSRGetPlatformServiceRecordRequest>(_nonce);
 				Transact();
 			}
 
@@ -32,8 +31,7 @@ namespace Intel {
 
 			PSRGetPlatformServiceRecordRawCommand::PSRGetPlatformServiceRecordRawCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new PSRGetPlatformServiceRecordRequest(_nonce));
-				m_request = tmp;
+				m_request = std::make_shared<PSRGetPlatformServiceRecordRequest>(_nonce);
 				Transact();
 			}
 

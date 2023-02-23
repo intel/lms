@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			SetHostFQDNCommand::SetHostFQDNCommand(const std::string &FQDN)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new SetHostFQDNRequest(FQDN));
-				m_request = tmp;
+				m_request = std::make_shared<SetHostFQDNRequest>(FQDN);
 				Transact();
 			}
 

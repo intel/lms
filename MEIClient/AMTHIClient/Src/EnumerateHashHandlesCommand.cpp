@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			EnumerateHashHandlesCommand::EnumerateHashHandlesCommand ()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new EnumerateHashHandlesRequest ());
-				m_request = tmp;
+				m_request = std::make_shared<EnumerateHashHandlesRequest>();
 				Transact();
 			}
 

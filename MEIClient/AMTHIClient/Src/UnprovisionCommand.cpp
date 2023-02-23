@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			UnprovisionCommand::UnprovisionCommand(const CFG_PROVISIONING_MODE Mode)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new UnprovisionRequest(Mode));
-				m_request = tmp;
+				m_request = std::make_shared<UnprovisionRequest>(Mode);
 				Transact();
 			}
 

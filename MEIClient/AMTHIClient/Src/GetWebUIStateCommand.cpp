@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetWebUIStateCommand::GetWebUIStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetWebUIStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetWebUIStateRequest>();
 				Transact();
 			}
 

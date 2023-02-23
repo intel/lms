@@ -13,8 +13,7 @@
 namespace Intel { namespace MEI_Client { namespace Manageability_Client {
 	MNGIsChangeToAMTEnabledCommand::MNGIsChangeToAMTEnabledCommand()
 	{
-		std::shared_ptr<MEICommandRequest> tmp(new MNGIsChangeToAMTEnabledRequest());
-		m_request = tmp;
+		m_request = std::make_shared<MNGIsChangeToAMTEnabledRequest>();
 		Transact();
 	}
 

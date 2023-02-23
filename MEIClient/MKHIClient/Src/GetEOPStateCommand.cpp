@@ -15,8 +15,7 @@ namespace Intel {
 		namespace MKHI_Client {
 			GetEOPStateCommand::GetEOPStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetEOPStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetEOPStateRequest>();
 				Transact();
 			}
 

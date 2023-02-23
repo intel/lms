@@ -31,8 +31,7 @@ namespace Intel {
 
 			CFG_SetOverrideProsetAdapterSwitchingCommand::CFG_SetOverrideProsetAdapterSwitchingCommand(bool OverrideEnabled)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new CFG_SetOverrideProsetAdapterSwitchingCommandRequest(OverrideEnabled));
-				m_request = tmp;
+				m_request = std::make_shared<CFG_SetOverrideProsetAdapterSwitchingCommandRequest>(OverrideEnabled);
 				Transact();
 			}
 

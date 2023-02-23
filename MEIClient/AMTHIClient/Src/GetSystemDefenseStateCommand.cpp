@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetSystemDefenseStateCommand::GetSystemDefenseStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetSystemDefenseStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetSystemDefenseStateRequest>();
 				Transact();
 			}
 

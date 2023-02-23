@@ -15,8 +15,7 @@ namespace Intel {
 		namespace MKHI_Client {
 			GetFWUpdateStateCommand::GetFWUpdateStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetFWUpdateStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetFWUpdateStateRequest>();
 				Transact();
 			}
 

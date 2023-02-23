@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetUserInitiatedEnabledInterfacesCommand::GetUserInitiatedEnabledInterfacesCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetUserInitiatedEnabledInterfacesRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetUserInitiatedEnabledInterfacesRequest>();
 				Transact();
 			}
 

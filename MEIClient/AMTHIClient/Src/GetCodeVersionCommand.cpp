@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetCodeVersionCommand::GetCodeVersionCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetCodeVersionRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetCodeVersionRequest>();
 				Transact();
 			}
 

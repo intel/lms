@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetKVMSessionStateCommand::GetKVMSessionStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetKVMSessionStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetKVMSessionStateRequest>();
 				Transact();
 			}
 

@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetIPv6LanInterfaceStatusCommand::GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex)	//INTERFACE_SETTINGS
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetIPv6LanInterfaceStatusRequest(interfaceIndex));
-				m_request = tmp;
+				m_request = std::make_shared<GetIPv6LanInterfaceStatusRequest>(interfaceIndex);
 				Transact();
 			}
 

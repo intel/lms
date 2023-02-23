@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetProvisioningStateCommand::GetProvisioningStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetProvisioningStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetProvisioningStateRequest>();
 				Transact();
 			}
 

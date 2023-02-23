@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetSecurityParametersCommand::GetSecurityParametersCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetSecurityParametersRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetSecurityParametersRequest>();
 				Transact();
 			}
 

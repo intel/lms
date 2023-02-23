@@ -13,8 +13,7 @@
 namespace Intel { namespace MEI_Client { namespace FWUpdate_Client {
 	FWUGetInfoCommand::FWUGetInfoCommand()
 	{
-		std::shared_ptr<MEICommandRequest> tmp(new FWUGetInfoRequest());
-		m_request = tmp;
+		m_request = std::make_shared<FWUGetInfoRequest>();
 		Transact();
 	}
 

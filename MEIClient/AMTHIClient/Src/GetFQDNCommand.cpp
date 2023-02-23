@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetFQDNCommand::GetFQDNCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetFQDNRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetFQDNRequest>();
 				Transact();
 			}
 

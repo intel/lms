@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetTcpipParametersCommand::GetTcpipParametersCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetTcpipParametersRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetTcpipParametersRequest>();
 				Transact();
 			}
 

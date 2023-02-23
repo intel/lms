@@ -15,8 +15,7 @@ namespace Intel {
 		namespace MKHI_Client {
 			GetImageFWVersionCommand::GetImageFWVersionCommand(uint32_t PartitionId) : _partitionId(PartitionId)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetImageFWVersionRequest(_partitionId));
-				m_request = tmp;
+				m_request = std::make_shared<GetImageFWVersionRequest>(_partitionId);
 				Transact();
 			}
 

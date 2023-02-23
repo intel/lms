@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetEACStateCommand::GetEACStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetEACStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetEACStateRequest>();
 				Transact();
 			}
 

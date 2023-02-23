@@ -15,8 +15,7 @@ namespace Intel {
 		namespace MKHI_Client {
 			GetPlatformTypeCommand::GetPlatformTypeCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetPlatformTypeRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetPlatformTypeRequest>();
 				Transact();
 			}
 

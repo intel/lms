@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetRedirectionSessionsStateCommand::GetRedirectionSessionsStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetRedirectionSessionsStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetRedirectionSessionsStateRequest>();
 				Transact();
 			}
 

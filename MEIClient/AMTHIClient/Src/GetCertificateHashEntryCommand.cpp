@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetCertificateHashEntryCommand::GetCertificateHashEntryCommand(uint32_t hashHandle)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetCertificateHashEntryRequest(hashHandle));
-				m_request = tmp;
+				m_request = std::make_shared<GetCertificateHashEntryRequest>(hashHandle);
 				Transact();
 			}
 

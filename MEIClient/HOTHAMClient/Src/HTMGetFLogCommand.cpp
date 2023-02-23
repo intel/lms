@@ -13,8 +13,7 @@
 namespace Intel { namespace MEI_Client { namespace HOTHAM_Client {
 	HTMGetFatalErrorsCommand::HTMGetFatalErrorsCommand()
 	{
-		std::shared_ptr<MEICommandRequest> tmp(new HTMGetFatalErrorsRequest());
-		m_request = tmp;
+		m_request = std::make_shared<HTMGetFatalErrorsRequest>();
 		Transact();
 	}
 

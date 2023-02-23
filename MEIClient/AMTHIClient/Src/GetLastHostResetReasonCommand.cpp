@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetLastHostResetReasonCommand::GetLastHostResetReasonCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetLastHostResetReasonRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetLastHostResetReasonRequest>();
 				Transact();
 			}
 

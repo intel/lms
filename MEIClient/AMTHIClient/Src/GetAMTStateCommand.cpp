@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetAMTStateCommand::GetAMTStateCommand(AMT_UUID StateVariableIdentifier)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetAMTStateRequest(StateVariableIdentifier));
-				m_request = tmp;
+				m_request = std::make_shared<GetAMTStateRequest>(StateVariableIdentifier);
 				Transact();
 			}
 

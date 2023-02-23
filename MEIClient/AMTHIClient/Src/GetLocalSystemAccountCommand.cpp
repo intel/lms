@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetLocalSystemAccountCommand::GetLocalSystemAccountCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetLocalSystemAccountRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetLocalSystemAccountRequest>();
 				Transact();
 			}
 

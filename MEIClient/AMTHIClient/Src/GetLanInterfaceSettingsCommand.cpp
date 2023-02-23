@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetLanInterfaceSettingsCommand::GetLanInterfaceSettingsCommand(uint32_t interfaceSettings)	//INTERFACE_SETTINGS
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetLanInterfaceSettingRequest(interfaceSettings));
-				m_request = tmp;
+				m_request = std::make_shared<GetLanInterfaceSettingRequest>(interfaceSettings);
 				Transact();
 			}
 

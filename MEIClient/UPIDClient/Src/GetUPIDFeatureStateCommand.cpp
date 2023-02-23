@@ -15,8 +15,7 @@ namespace Intel {
 		namespace UPID_Client {
 			GetUPIDFeatureStateCommand::GetUPIDFeatureStateCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetUPIDFeatureStateRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetUPIDFeatureStateRequest>();
 				Transact();
 			}
 

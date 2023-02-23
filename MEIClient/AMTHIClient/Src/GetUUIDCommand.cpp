@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetUUIDCommand::GetUUIDCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetUUIDRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetUUIDRequest>();
 				Transact();
 			}
 

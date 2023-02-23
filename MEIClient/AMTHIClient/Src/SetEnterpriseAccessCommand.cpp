@@ -24,8 +24,7 @@ namespace Intel {
 
 			SetEnterpriseAccessCommand::SetEnterpriseAccessCommand(uint8_t Flags, const std::vector<uint8_t> &HostIPAddress, uint8_t EnterpiseAccess)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new SetEnterpriseAccessRequest(Flags, HostIPAddress, EnterpiseAccess));
-				m_request = tmp;
+				m_request = std::make_shared<SetEnterpriseAccessRequest>(Flags, HostIPAddress, EnterpiseAccess);
 				Transact();
 			}
 

@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetZeroTouchEnabledCommand::GetZeroTouchEnabledCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetZeroTouchEnabledRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetZeroTouchEnabledRequest>();
 				Transact();
 			}
 

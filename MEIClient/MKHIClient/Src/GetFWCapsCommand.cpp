@@ -16,8 +16,7 @@ namespace Intel {
 			GetFWCapsCommand::GetFWCapsCommand(CapsRule rule)
 			{
 				m_rule = rule;
-				std::shared_ptr<MEICommandRequest> tmp(new GetFWCapsRequest(rule));
-				m_request = tmp;
+				m_request = std::make_shared<GetFWCapsRequest>(rule);
 				Transact();
 			}
 

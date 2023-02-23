@@ -15,8 +15,7 @@ namespace Intel {
 		namespace MCHI_Client {
 			ReadFileExCommand::ReadFileExCommand(MCA_FILE_ID fileID, uint32_t offset, uint32_t dataSize, uint8_t flags)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new ReadFileExRequest(static_cast<uint32_t>(fileID), offset, dataSize, flags));
-				m_request = tmp;
+				m_request = std::make_shared<ReadFileExRequest>(static_cast<uint32_t>(fileID), offset, dataSize, flags);
 				Transact();
 			}
 

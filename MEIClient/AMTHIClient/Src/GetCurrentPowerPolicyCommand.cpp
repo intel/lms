@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			GetCurrentPowerPolicyCommand::GetCurrentPowerPolicyCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new GetCurrentPowerPolicyRequest());
-				m_request = tmp;
+				m_request = std::make_shared<GetCurrentPowerPolicyRequest>();
 				Transact();
 			}
 

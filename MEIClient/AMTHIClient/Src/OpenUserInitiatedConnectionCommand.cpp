@@ -15,8 +15,7 @@ namespace Intel {
 		namespace AMTHI_Client {
 			OpenUserInitiatedConnectionCommand::OpenUserInitiatedConnectionCommand()
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new OpenUserInitiatedConnectionRequest());
-				m_request = tmp;
+				m_request = std::make_shared<OpenUserInitiatedConnectionRequest>();
 				Transact();
 			}
 
