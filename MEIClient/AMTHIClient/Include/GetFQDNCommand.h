@@ -49,23 +49,6 @@ namespace Intel
 				}
 			};
 
-			class GetFQDNCommand : public AMTHICommand
-			{
-			public:
-
-				GetFQDNCommand();
-				virtual ~GetFQDNCommand() {}
-
-				GET_FQDN_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<GET_FQDN_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800056;
-			};
-
 			class GetFQDNRequest : public AMTHICommandRequest
 			{
 			public:
@@ -74,6 +57,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000056;
+			};
+
+			class GetFQDNCommand : public AMTHICommand
+			{
+			public:
+
+				GetFQDNCommand()
+				{
+					m_request = std::make_shared<GetFQDNRequest>();
+					Transact();
+				}
+				virtual ~GetFQDNCommand() {}
+
+				GET_FQDN_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_FQDN_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_FQDN_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800056;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -35,28 +35,12 @@ namespace AMTHI_Client
 		}
 	};
 
-	class CFG_SetOverrideProsetAdapterSwitchingCommand : public AMTHICommand
-	{
-	public:
-
-		CFG_SetOverrideProsetAdapterSwitchingCommand(bool OverrideEnabled);
-		virtual ~CFG_SetOverrideProsetAdapterSwitchingCommand();
-
-		AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE getResponse();
-
-	private:
-		virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-		AMTHICommandResponse<AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE> m_response;
-
-		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x4800086 ;
-	};
-
 	class CFG_SetOverrideProsetAdapterSwitchingCommandRequest : public AMTHICommandRequest
 	{
 	public:
-		CFG_SetOverrideProsetAdapterSwitchingCommandRequest(bool OverrideEnabled);
-		virtual ~CFG_SetOverrideProsetAdapterSwitchingCommandRequest();
+		CFG_SetOverrideProsetAdapterSwitchingCommandRequest(bool OverrideEnabled) :
+			AMTHICommandRequest(REQUEST_COMMAND_NUMBER), overrideEnabled_(OverrideEnabled) {}
+		virtual ~CFG_SetOverrideProsetAdapterSwitchingCommandRequest() {}
 
 	private:
 		static const uint32_t REQUEST_COMMAND_NUMBER = 0x4000086;
@@ -66,8 +50,34 @@ namespace AMTHI_Client
 			return sizeof(AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_REQUEST);
 		}
 
-		virtual std::vector<uint8_t> SerializeData();
+		virtual std::vector<uint8_t> SerializeData()
+		{
+			return std::vector<uint8_t>((uint8_t*)&overrideEnabled_, (uint8_t*)&overrideEnabled_ + sizeof(overrideEnabled_));
+		}
 		bool overrideEnabled_;
+	};
+
+	class CFG_SetOverrideProsetAdapterSwitchingCommand : public AMTHICommand
+	{
+	public:
+		CFG_SetOverrideProsetAdapterSwitchingCommand(bool OverrideEnabled)
+		{
+			m_request = std::make_shared<CFG_SetOverrideProsetAdapterSwitchingCommandRequest>(OverrideEnabled);
+			Transact();
+		}
+		virtual ~CFG_SetOverrideProsetAdapterSwitchingCommand() {};
+
+		AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE getResponse() { return m_response.getResponse(); }
+
+	private:
+		virtual void parseResponse(const std::vector<uint8_t>& buffer)
+		{
+			m_response = AMTHICommandResponse<AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+		}
+
+		AMTHICommandResponse<AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE> m_response;
+
+		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x4800086 ;
 	};
 } // namespace AMTHI_Client
 } // namespace MEI_Client

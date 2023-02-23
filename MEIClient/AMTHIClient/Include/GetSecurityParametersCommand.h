@@ -57,22 +57,6 @@ namespace Intel
 				}
 			};
 
-			class GetSecurityParametersCommand : public AMTHICommand
-			{
-			public:
-
-				GetSecurityParametersCommand();
-				virtual ~GetSecurityParametersCommand() {}
-
-				SECURITY_PARAMETERS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<SECURITY_PARAMETERS> m_response;
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001B;
-			};
-
 			class GetSecurityParametersRequest : public AMTHICommandRequest
 			{
 			public:
@@ -81,6 +65,29 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400001B;
+			};
+
+			class GetSecurityParametersCommand : public AMTHICommand
+			{
+			public:
+
+				GetSecurityParametersCommand()
+				{
+					m_request = std::make_shared<GetSecurityParametersRequest>();
+					Transact();
+				}
+				virtual ~GetSecurityParametersCommand() {}
+
+				SECURITY_PARAMETERS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<SECURITY_PARAMETERS>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<SECURITY_PARAMETERS> m_response;
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001B;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

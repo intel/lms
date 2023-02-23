@@ -40,23 +40,6 @@ namespace Intel
 				}
 			};
 
-			class GetKVMSessionStateCommand : public AMTHICommand
-			{
-			public:
-
-				GetKVMSessionStateCommand();
-				virtual ~GetKVMSessionStateCommand() {}
-
-				GET_KVM_SESSION_STATE_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
-			};
-
 			class GetKVMSessionStateRequest : public AMTHICommandRequest
 			{
 			public:
@@ -71,9 +54,37 @@ namespace Intel
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					uint32_t id = KVM_SESSION_ID;
+					std::vector<uint8_t> output((std::uint8_t*)&id, (std::uint8_t*)&id + sizeof(uint32_t));
+					return output;
+				}
 			};
 
+			class GetKVMSessionStateCommand : public AMTHICommand
+			{
+			public:
+
+				GetKVMSessionStateCommand()
+				{
+					m_request = std::make_shared<GetKVMSessionStateRequest>();
+					Transact();
+				}
+				virtual ~GetKVMSessionStateCommand() {}
+
+				GET_KVM_SESSION_STATE_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_KVM_SESSION_STATE_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
+			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client
 } // namespace Intel

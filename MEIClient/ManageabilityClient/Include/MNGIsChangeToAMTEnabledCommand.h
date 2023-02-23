@@ -42,25 +42,10 @@ namespace Intel
 				}
 			};
 
-			class MNGIsChangeToAMTEnabledCommand : public ManageabilityCommand
-			{
-			public:
-
-				MNGIsChangeToAMTEnabledCommand();
-				virtual ~MNGIsChangeToAMTEnabledCommand() {}
-
-				IsChangedEnabledResponse getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				ManageabilityCommandResponse<IsChangedEnabledResponse> m_response;
-			};
-
 			class MNGIsChangeToAMTEnabledRequest : public ManageabilityCommandRequest
 			{
 			public:
-				MNGIsChangeToAMTEnabledRequest(){}
+				MNGIsChangeToAMTEnabledRequest() {}
 				virtual ~MNGIsChangeToAMTEnabledRequest() {}
 
 			private:
@@ -77,6 +62,28 @@ namespace Intel
 					//this is the sub command number (taken from the AMTHI document)
 					return REQUEST_SUB_CMD;
 				}
+			};
+
+			class MNGIsChangeToAMTEnabledCommand : public ManageabilityCommand
+			{
+			public:
+
+				MNGIsChangeToAMTEnabledCommand()
+				{
+					m_request = std::make_shared<MNGIsChangeToAMTEnabledRequest>();
+					Transact();
+				}
+				virtual ~MNGIsChangeToAMTEnabledCommand() {}
+
+				IsChangedEnabledResponse getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = ManageabilityCommandResponse<IsChangedEnabledResponse>(buffer);
+				}
+
+				ManageabilityCommandResponse<IsChangedEnabledResponse> m_response;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

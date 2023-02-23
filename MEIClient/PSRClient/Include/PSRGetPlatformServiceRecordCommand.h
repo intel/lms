@@ -166,24 +166,10 @@ namespace Intel
 			};
 			#pragma pack()
 
-			class PSRGetPlatformServiceRecordCommand : public PSRCommand
-			{
-			public:
-				PSRGetPlatformServiceRecordCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce);
-				virtual ~PSRGetPlatformServiceRecordCommand() {}
-
-				PSR_GET_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				PSRCommandResponse<PSR_GET_RESPONSE> m_response;
-			};
-
 			class PSRGetPlatformServiceRecordRequest : public PSRCommandRequest
 			{
 			public:
-				PSRGetPlatformServiceRecordRequest(const std::array<uint8_t, PSR_NONCE_SIZE> &_nonce) : 
+				PSRGetPlatformServiceRecordRequest(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce) :
 					PSRCommandRequest(PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET), user_nonce(_nonce) {}
 				virtual ~PSRGetPlatformServiceRecordRequest() {}
 
@@ -192,21 +178,52 @@ namespace Intel
 				{
 					return static_cast<uint8_t>(sizeof(PSR_GET_REQUEST));
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					return std::vector<uint8_t>(user_nonce.begin(), user_nonce.end());
+				}
 
 				std::array<uint8_t, PSR_NONCE_SIZE> user_nonce;
+			};
+
+			class PSRGetPlatformServiceRecordCommand : public PSRCommand
+			{
+			public:
+				PSRGetPlatformServiceRecordCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce)
+				{
+					m_request = std::make_shared<PSRGetPlatformServiceRecordRequest>(_nonce);
+					Transact();
+				}
+				virtual ~PSRGetPlatformServiceRecordCommand() {}
+
+				PSR_GET_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = PSRCommandResponse<PSR_GET_RESPONSE>(buffer, PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET);
+				}
+
+				PSRCommandResponse<PSR_GET_RESPONSE> m_response;
 			};
 
 			class PSRGetPlatformServiceRecordRawCommand : public PSRCommand
 			{
 			public:
-				PSRGetPlatformServiceRecordRawCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce);
+				PSRGetPlatformServiceRecordRawCommand(const std::array<uint8_t, PSR_NONCE_SIZE>& _nonce)
+				{
+					m_request = std::make_shared<PSRGetPlatformServiceRecordRequest>(_nonce);
+					Transact();
+				}
 				virtual ~PSRGetPlatformServiceRecordRawCommand() {}
 
-				PSR_GET_RESPONSE_RAW getResponse();
+				PSR_GET_RESPONSE_RAW getResponse() { return m_response.getResponse(); }
 
 			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = PSRCommandResponse<PSR_GET_RESPONSE_RAW>(buffer, PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET);
+				}
 
 				PSRCommandResponse<PSR_GET_RESPONSE_RAW> m_response;
 			};

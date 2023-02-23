@@ -39,23 +39,6 @@ namespace Intel
 				}
 			};
 
-			class GetEOPStateCommand : public MKHICommand
-			{
-			public:
-
-				GetEOPStateCommand();
-				virtual ~GetEOPStateCommand() {}
-
-				GET_EOP_STATE_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHICommandResponse<GET_EOP_STATE_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1D;
-			};
-
 			class GetEOPStateRequest : public MKHICommandRequest
 			{
 			public:
@@ -65,6 +48,31 @@ namespace Intel
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x1D;
 			};
+
+			class GetEOPStateCommand : public MKHICommand
+			{
+			public:
+
+				GetEOPStateCommand()
+				{
+					m_request = std::make_shared<GetEOPStateRequest>();
+					Transact();
+				}
+				virtual ~GetEOPStateCommand() {}
+
+				GET_EOP_STATE_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<GET_EOP_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
+				}
+
+				MKHICommandResponse<GET_EOP_STATE_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1D;
+			};
+
 		} // namespace MKHI_Client
 	} // namespace MEI_Client
 } // namespace Intel

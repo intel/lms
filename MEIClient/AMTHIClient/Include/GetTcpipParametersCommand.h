@@ -53,23 +53,6 @@ namespace Intel
 				}
 			 };
 
-			class GetTcpipParametersCommand : public AMTHICommand
-			{
-			public:
-
-				GetTcpipParametersCommand();
-				virtual ~GetTcpipParametersCommand() {}
-
-				TCPIP_PARAMETERS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<TCPIP_PARAMETERS> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800006;
-			};
-
 			class GetTcpipParametersRequest : public AMTHICommandRequest
 			{
 			public:
@@ -78,6 +61,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000006;
+			};
+
+			class GetTcpipParametersCommand : public AMTHICommand
+			{
+			public:
+
+				GetTcpipParametersCommand()
+				{
+					m_request = std::make_shared<GetTcpipParametersRequest>();
+					Transact();
+				}
+				virtual ~GetTcpipParametersCommand() {}
+
+				TCPIP_PARAMETERS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<TCPIP_PARAMETERS>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<TCPIP_PARAMETERS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800006;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -52,23 +52,6 @@ namespace AMTHI_Client
 		}
 	};
 
-	class GetCodeVersionCommand : public AMTHICommand
-	{
-	public:
-
-		GetCodeVersionCommand();
-		virtual ~GetCodeVersionCommand() {}
-
-		CODE_VERSIONS getResponse();
-
-	private:
-		virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-		AMTHICommandResponse<CODE_VERSIONS> m_response;
-
-		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001A;
-	};
-
 	class GetCodeVersionRequest : public AMTHICommandRequest
 	{
 	public:
@@ -77,6 +60,30 @@ namespace AMTHI_Client
 
 	private:
 		static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400001A;
+	};
+
+	class GetCodeVersionCommand : public AMTHICommand
+	{
+	public:
+
+		GetCodeVersionCommand()
+		{
+			m_request = std::make_shared<GetCodeVersionRequest>();
+			Transact();
+		}
+		virtual ~GetCodeVersionCommand() {}
+
+		CODE_VERSIONS getResponse() { return m_response.getResponse(); }
+
+	private:
+		virtual void parseResponse(const std::vector<uint8_t>& buffer)
+		{
+			m_response = AMTHICommandResponse<CODE_VERSIONS>(buffer, RESPONSE_COMMAND_NUMBER);
+		}
+
+		AMTHICommandResponse<CODE_VERSIONS> m_response;
+
+		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001A;
 	};
 } // namespace AMTHI_Client
 } // namespace MEI_Client

@@ -32,23 +32,6 @@ namespace Intel
 				}
 			};
 
-			class GetMeasuredBootStateCommand : public MKHICommand
-			{
-			public:
-
-				GetMeasuredBootStateCommand();
-				virtual ~GetMeasuredBootStateCommand() {}
-
-				MKHI_MEASURED_BOOT_STATE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHICommandResponse<MKHI_MEASURED_BOOT_STATE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x23;
-			};
-
 			class GetMeasuredBootStateRequest : public MKHICommandRequest
 			{
 			public:
@@ -57,6 +40,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x23;
+			};
+
+			class GetMeasuredBootStateCommand : public MKHICommand
+			{
+			public:
+
+				GetMeasuredBootStateCommand()
+				{
+					m_request = std::make_shared<GetMeasuredBootStateRequest>();
+					Transact();
+				}
+				virtual ~GetMeasuredBootStateCommand() {}
+
+				MKHI_MEASURED_BOOT_STATE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<MKHI_MEASURED_BOOT_STATE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
+				}
+
+				MKHICommandResponse<MKHI_MEASURED_BOOT_STATE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x23;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

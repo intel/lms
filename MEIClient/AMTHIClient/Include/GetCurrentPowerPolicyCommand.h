@@ -29,23 +29,6 @@ namespace Intel
 				}
 			};
 
-			class GetCurrentPowerPolicyCommand : public AMTHICommand
-			{
-			public:
-
-				GetCurrentPowerPolicyCommand();
-				virtual ~GetCurrentPowerPolicyCommand() {}
-
-				std::string getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800047;
-			};
-
 			class GetCurrentPowerPolicyRequest : public AMTHICommandRequest
 			{
 			public:
@@ -54,6 +37,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000047;
+			};
+
+			class GetCurrentPowerPolicyCommand : public AMTHICommand
+			{
+			public:
+
+				GetCurrentPowerPolicyCommand()
+				{
+					m_request = std::make_shared<GetCurrentPowerPolicyRequest>();
+					Transact();
+				}
+				virtual ~GetCurrentPowerPolicyCommand() {}
+
+				std::string getResponse() { return m_response.getResponse().powerPolicy; }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800047;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

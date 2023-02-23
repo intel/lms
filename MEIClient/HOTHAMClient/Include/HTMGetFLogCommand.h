@@ -38,21 +38,6 @@ namespace Intel
 				}
 			};
 
-			class HTMGetFatalErrorsCommand : public HOTHAMCommand
-			{
-			public:
-
-				HTMGetFatalErrorsCommand();
-				virtual ~HTMGetFatalErrorsCommand() {}
-
-				GET_FLOG_RESP getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				HOTHAMCommandResponse<GET_FLOG_RESP> m_response;
-			};
-
 			class HTMGetFatalErrorsRequest : public HOTHAMCommandRequest
 			{
 			public:
@@ -64,13 +49,35 @@ namespace Intel
 				static const uint32_t REQUEST_CODE = 0x80; //#define PCH_DFX_FLOG_GET_SIZE                    0x80
 				virtual uint8_t requestHeaderReqCode()
 				{
-					return REQUEST_CODE; 
+					return REQUEST_CODE;
 				}
 
 				virtual uint8_t requestHeaderMsgClass()
 				{
 					return HOTHAM_COMMAND_CODE;
 				}
+			};
+
+			class HTMGetFatalErrorsCommand : public HOTHAMCommand
+			{
+			public:
+
+				HTMGetFatalErrorsCommand()
+				{
+					m_request = std::make_shared<HTMGetFatalErrorsRequest>();
+					Transact();
+				}
+				virtual ~HTMGetFatalErrorsCommand() {}
+
+				GET_FLOG_RESP getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = HOTHAMCommandResponse<GET_FLOG_RESP>(buffer);
+				}
+
+				HOTHAMCommandResponse<GET_FLOG_RESP> m_response;
 			};
 		} // namespace HOTHAM_Client
 	} // namespace MEI_Client

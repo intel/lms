@@ -36,27 +36,10 @@ namespace Intel
 				}
 			};
 
-			class GetLanInterfaceSettingsCommand : public AMTHICommand
-			{
-			public:
-
-				GetLanInterfaceSettingsCommand(uint32_t interfaceSettings);	//INTERFACE_SETTINGS
-				virtual ~GetLanInterfaceSettingsCommand() {}
-
-				LAN_SETTINGS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<LAN_SETTINGS> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800048;
-			};
-
 			class GetLanInterfaceSettingRequest : public AMTHICommandRequest
 			{
 			public:
-				GetLanInterfaceSettingRequest(const uint32_t interfaceSettings):
+				GetLanInterfaceSettingRequest(const uint32_t interfaceSettings) :
 					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_interfaceSettings(interfaceSettings) {} //INTERFACE_SETTINGS
 				virtual ~GetLanInterfaceSettingRequest() {}
 
@@ -68,7 +51,35 @@ namespace Intel
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&m_interfaceSettings, (std::uint8_t*)&m_interfaceSettings + sizeof(uint32_t));
+					return output;
+				}
+			};
+
+			class GetLanInterfaceSettingsCommand : public AMTHICommand
+			{
+			public:
+
+				GetLanInterfaceSettingsCommand(uint32_t interfaceSettings) //INTERFACE_SETTINGS
+				{
+					m_request = std::make_shared<GetLanInterfaceSettingRequest>(interfaceSettings);
+					Transact();
+				}
+				virtual ~GetLanInterfaceSettingsCommand() {}
+
+				LAN_SETTINGS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<LAN_SETTINGS>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<LAN_SETTINGS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800048;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

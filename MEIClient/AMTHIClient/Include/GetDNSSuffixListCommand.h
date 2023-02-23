@@ -30,32 +30,39 @@ namespace Intel
 				}
 			};
 
+			class GetDNSSuffixListRequest : public AMTHICommandRequest
+			{
+			public:
+				GetDNSSuffixListRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
+				virtual ~GetDNSSuffixListRequest() {}
+
+			private:
+				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400003E;
+			};
+
 			class GetDNSSuffixListCommand : public AMTHICommand
 			{
 			public:
 
-				GetDNSSuffixListCommand ();
+				GetDNSSuffixListCommand ()
+				{
+					m_request = std::make_shared<GetDNSSuffixListRequest>();
+					Transact();
+				}
 				virtual ~GetDNSSuffixListCommand () {}
 
-				GET_DNS_SUFFIX_LIST_RESPONSE getResponse() ;
+				GET_DNS_SUFFIX_LIST_RESPONSE getResponse() { return m_response.getResponse(); }
 
 			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_DNS_SUFFIX_LIST_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
 
 				AMTHICommandResponse<GET_DNS_SUFFIX_LIST_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480003E;
 
-			};
-
-			class GetDNSSuffixListRequest : public AMTHICommandRequest
-			{
-			public:
-				GetDNSSuffixListRequest () : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
-				virtual ~GetDNSSuffixListRequest() {}
-
-			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400003E;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

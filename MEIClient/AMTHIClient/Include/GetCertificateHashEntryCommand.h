@@ -51,27 +51,10 @@ namespace Intel
 				}
 			};
 
-			class GetCertificateHashEntryCommand : public AMTHICommand
-			{
-			public:
-
-				GetCertificateHashEntryCommand(uint32_t hashHandle);
-				virtual ~GetCertificateHashEntryCommand() {}
-
-				GET_CERTIFICATE_HASH_ENTRY_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002D;
-			};
-
 			class GetCertificateHashEntryRequest : public AMTHICommandRequest
 			{
 			public:
-				GetCertificateHashEntryRequest(uint32_t hashHandle) : _hashHandle (hashHandle), AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
+				GetCertificateHashEntryRequest(uint32_t hashHandle) : _hashHandle(hashHandle), AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetCertificateHashEntryRequest() {}
 
 			private:
@@ -82,8 +65,36 @@ namespace Intel
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&_hashHandle, (std::uint8_t*)&_hashHandle + sizeof(uint32_t));
+					return output;
+				}
 				uint32_t _hashHandle;
+			};
+
+			class GetCertificateHashEntryCommand : public AMTHICommand
+			{
+			public:
+
+				GetCertificateHashEntryCommand(uint32_t hashHandle)
+				{
+					m_request = std::make_shared<GetCertificateHashEntryRequest>(hashHandle);
+					Transact();
+				}
+				virtual ~GetCertificateHashEntryCommand() {}
+
+				GET_CERTIFICATE_HASH_ENTRY_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002D;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

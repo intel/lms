@@ -45,26 +45,10 @@ namespace Intel
 				}
 			};
 
-			class FWUGetInfoCommand : public FWUpdateCommand
-			{
-			public:
-
-				FWUGetInfoCommand();
-				virtual ~FWUGetInfoCommand() {}
-
-				GET_INFO_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				FWUpdateCommandResponse<GET_INFO_RESPONSE> m_response;
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x09;
-			};
-
 			class FWUGetInfoRequest : public FWUpdateCommandRequest
 			{
 			public:
-				FWUGetInfoRequest(){}
+				FWUGetInfoRequest() {}
 				virtual ~FWUGetInfoRequest() {}
 
 			private:
@@ -74,6 +58,29 @@ namespace Intel
 					//this is the command number (taken from the AMTHI document)
 					return REQUEST_COMMAND_NUMBER;
 				}
+			};
+
+			class FWUGetInfoCommand : public FWUpdateCommand
+			{
+			public:
+
+				FWUGetInfoCommand()
+				{
+					m_request = std::make_shared<FWUGetInfoRequest>();
+					Transact();
+				}
+				virtual ~FWUGetInfoCommand() {}
+
+				GET_INFO_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				FWUpdateCommandResponse<GET_INFO_RESPONSE> m_response;
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x09;
 			};
 		} // namespace FWUpadate_Client
 	} // namespace MEI_Client

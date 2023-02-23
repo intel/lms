@@ -45,22 +45,6 @@ namespace Intel
 				}
 			};
 
-			class GetRedirectionStateCommand : public AMTHICommand
-			{
-			public:
-				GetRedirectionStateCommand();
-				virtual ~GetRedirectionStateCommand() {}
-
-				REDIRECTION_STATE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<REDIRECTION_STATE> m_response;
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800058;
-
-			};
-
 			class GetRedirectionStateRequest : public AMTHICommandRequest
 			{
 			public:
@@ -69,6 +53,29 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000058;
+			};
+
+			class GetRedirectionStateCommand : public AMTHICommand
+			{
+			public:
+				GetRedirectionStateCommand()
+				{
+					m_request = std::make_shared<GetRedirectionStateRequest>();
+					Transact();
+				}
+				virtual ~GetRedirectionStateCommand() {}
+
+				REDIRECTION_STATE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<REDIRECTION_STATE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<REDIRECTION_STATE> m_response;
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800058;
+
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

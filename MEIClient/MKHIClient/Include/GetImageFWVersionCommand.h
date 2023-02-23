@@ -56,29 +56,11 @@ namespace Intel
 				}
 			};
 
-			class GetImageFWVersionCommand : public MKHICommand
-			{
-			public:
-
-				GetImageFWVersionCommand(uint32_t PartitionId);
-				virtual ~GetImageFWVersionCommand() {}
-
-				GET_IMAGE_FW_VERSION_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1C;
-				uint32_t _partitionId;
-			};
-
 			class GetImageFWVersionRequest : public MKHICommandRequest
 			{
 			public:
 				GetImageFWVersionRequest(uint32_t PartitionId) :
-					MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID), _partitionId(PartitionId){}
+					MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID), _partitionId(PartitionId) {}
 				virtual ~GetImageFWVersionRequest() {}
 
 			private:
@@ -88,8 +70,37 @@ namespace Intel
 				{
 					return sizeof(GET_IMAGE_FW_VERSION_REQUEST);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					GET_IMAGE_FW_VERSION_REQUEST req;
+					req.PartitionId = _partitionId;
+					return std::vector<uint8_t>((uint8_t*)&req, (uint8_t*)&req + sizeof(GET_IMAGE_FW_VERSION_REQUEST));
+				}
 				uint32_t _partitionId;
+			};
+
+			class GetImageFWVersionCommand : public MKHICommand
+			{
+			public:
+
+				GetImageFWVersionCommand(uint32_t PartitionId)
+				{
+					m_request = std::make_shared<GetImageFWVersionRequest>(PartitionId);
+					Transact();
+				}
+				virtual ~GetImageFWVersionCommand() {}
+
+				GET_IMAGE_FW_VERSION_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
+				}
+
+				MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1C;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

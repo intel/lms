@@ -31,32 +31,38 @@ namespace Intel
 				}
 			};
 
-			class EnumerateHashHandlesCommand : public AMTHICommand
-			{
-			public:
-
-				EnumerateHashHandlesCommand ();
-				virtual ~EnumerateHashHandlesCommand () {}
-
-				ENUMERATE_HASH_HANDLES_RESPONSE getResponse() ;
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002C;
-
-			};
-
 			class EnumerateHashHandlesRequest : public AMTHICommandRequest
 			{
 			public:
-				EnumerateHashHandlesRequest () : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
+				EnumerateHashHandlesRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~EnumerateHashHandlesRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400002C;
+			};
+
+			class EnumerateHashHandlesCommand : public AMTHICommand
+			{
+			public:
+
+				EnumerateHashHandlesCommand ()
+				{
+					m_request = std::make_shared<EnumerateHashHandlesRequest>();
+					Transact();
+				}
+				virtual ~EnumerateHashHandlesCommand () {}
+
+				ENUMERATE_HASH_HANDLES_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<ENUMERATE_HASH_HANDLES_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002C;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

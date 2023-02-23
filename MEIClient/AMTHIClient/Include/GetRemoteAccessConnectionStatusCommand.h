@@ -65,23 +65,6 @@ namespace Intel
 				}
 			};
 
-			class GetRemoteAccessConnectionStatusCommand : public AMTHICommand
-			{
-			public:
-
-				GetRemoteAccessConnectionStatusCommand();
-				virtual ~GetRemoteAccessConnectionStatusCommand() {}
-
-				REMOTE_ACCESS_STATUS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<REMOTE_ACCESS_STATUS> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800046;
-			};
-
 			class GetRemoteAccessConnectionStatusRequest : public AMTHICommandRequest
 			{
 			public:
@@ -90,6 +73,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000046;
+			};
+
+			class GetRemoteAccessConnectionStatusCommand : public AMTHICommand
+			{
+			public:
+
+				GetRemoteAccessConnectionStatusCommand()
+				{
+					m_request = std::make_shared<GetRemoteAccessConnectionStatusRequest>();
+					Transact();
+				}
+				virtual ~GetRemoteAccessConnectionStatusCommand() {}
+
+				REMOTE_ACCESS_STATUS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<REMOTE_ACCESS_STATUS>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<REMOTE_ACCESS_STATUS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800046;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

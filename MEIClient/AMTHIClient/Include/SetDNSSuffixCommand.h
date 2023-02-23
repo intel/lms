@@ -28,24 +28,10 @@ namespace Intel
 				}
 			};
 
-			class SetDNSSuffixCommand : public AMTHICommand
-			{
-			public:
-
-				SetDNSSuffixCommand(const std::string &suffix);
-				virtual ~SetDNSSuffixCommand() {}
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-				AMTHICommandResponse<SetDNSSuffix_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002F;
-			};
-
 			class SetDNSSuffixRequest : public AMTHICommandRequest
 			{
 			public:
-				SetDNSSuffixRequest(const std::string &suffix) :
+				SetDNSSuffixRequest(const std::string& suffix) :
 					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_str(suffix, false) {} //should check if the null terminated is needed or not
 				virtual ~SetDNSSuffixRequest() {}
 
@@ -56,9 +42,34 @@ namespace Intel
 				{
 					return m_str.bufSize();
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output = m_str.serialize();
+					return output;
+				}
 
 				AmtAnsiString m_str;
+			};
+
+			class SetDNSSuffixCommand : public AMTHICommand
+			{
+			public:
+
+				SetDNSSuffixCommand(const std::string &suffix)
+				{
+					m_request = std::make_shared<SetDNSSuffixRequest>(suffix);
+					Transact();
+				}
+				virtual ~SetDNSSuffixCommand() {}
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<SetDNSSuffix_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+				AMTHICommandResponse<SetDNSSuffix_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002F;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

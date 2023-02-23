@@ -47,22 +47,6 @@ namespace Intel
 				}
 			};
 
-			class GetFWVersionCommand : public MKHICommand
-			{
-			public:
-				GetFWVersionCommand();
-				virtual ~GetFWVersionCommand() {}
-
-				GET_FW_VER_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHICommandResponse<GET_FW_VER_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
-			};
-
 			class GetFWVersionRequest : public MKHICommandRequest
 			{
 			public:
@@ -71,6 +55,29 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
+			};
+
+			class GetFWVersionCommand : public MKHICommand
+			{
+			public:
+				GetFWVersionCommand()
+				{
+					m_request = std::make_shared<GetFWVersionRequest>();
+					Transact();
+				}
+				virtual ~GetFWVersionCommand() {}
+
+				GET_FW_VER_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<GET_FW_VER_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
+				}
+
+				MKHICommandResponse<GET_FW_VER_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

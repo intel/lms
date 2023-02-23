@@ -84,27 +84,10 @@ namespace Intel
 				}
 			};
 
-			class GetIPv6LanInterfaceStatusCommand : public AMTHICommand
-			{
-			public:
-
-				GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex);	//INTERFACE_SETTINGS
-				virtual ~GetIPv6LanInterfaceStatusCommand() {}
-
-				GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE> m_response;
-				
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800052;
-			};
-
 			class GetIPv6LanInterfaceStatusRequest : public AMTHICommandRequest
 			{
 			public:
-				GetIPv6LanInterfaceStatusRequest(const uint32_t interfaceIndex):
+				GetIPv6LanInterfaceStatusRequest(const uint32_t interfaceIndex) :
 					m_interfaceIndex(interfaceIndex), AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {} //INTERFACE_SETTINGS
 				virtual ~GetIPv6LanInterfaceStatusRequest() {}
 
@@ -116,7 +99,35 @@ namespace Intel
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&m_interfaceIndex, (std::uint8_t*)&m_interfaceIndex + sizeof(uint32_t));
+					return output;
+				}
+			};
+
+			class GetIPv6LanInterfaceStatusCommand : public AMTHICommand
+			{
+			public:
+
+				GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex) //INTERFACE_SETTINGS
+				{
+					m_request = std::make_shared<GetIPv6LanInterfaceStatusRequest>(interfaceIndex);
+					Transact();
+				}
+				virtual ~GetIPv6LanInterfaceStatusCommand() {}
+
+				GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE> m_response;
+				
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800052;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -30,23 +30,6 @@ namespace Intel
 				}
 			};
 
-			class GetZeroTouchEnabledCommand : public AMTHICommand
-			{
-			public:
-
-				GetZeroTouchEnabledCommand();
-				virtual ~GetZeroTouchEnabledCommand() {}
-
-				ZTC_ENABLED_STATUS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<ZTC_ENABLED_STATUS> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800030;
-			};
-
 			class GetZeroTouchEnabledRequest : public AMTHICommandRequest
 			{
 			public:
@@ -55,6 +38,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000030;
+			};
+
+			class GetZeroTouchEnabledCommand : public AMTHICommand
+			{
+			public:
+
+				GetZeroTouchEnabledCommand()
+				{
+					m_request = std::make_shared<GetZeroTouchEnabledRequest>();
+					Transact();
+				}
+				virtual ~GetZeroTouchEnabledCommand() {}
+
+				ZTC_ENABLED_STATUS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<ZTC_ENABLED_STATUS>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<ZTC_ENABLED_STATUS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800030;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

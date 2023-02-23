@@ -31,27 +31,34 @@ namespace Intel
 				}
 			};
 
-			class GetUPIDFeatureOSControlCommand : public UPIDCommand
-			{
-			public:
-
-				GetUPIDFeatureOSControlCommand();
-				virtual ~GetUPIDFeatureOSControlCommand() {}
-
-				UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response> m_response;
-			};
-
 			class GetUPIDFeatureOSControlRequest : public UPIDRequest
 			{
 			public:
 				GetUPIDFeatureOSControlRequest() :
 					UPIDRequest(UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_OS_CONTROL_GET) {}
 				virtual ~GetUPIDFeatureOSControlRequest() {}
+			};
+
+			class GetUPIDFeatureOSControlCommand : public UPIDCommand
+			{
+			public:
+
+				GetUPIDFeatureOSControlCommand()
+				{
+					m_request = std::make_shared<GetUPIDFeatureOSControlRequest>();
+					Transact();
+				}
+				virtual ~GetUPIDFeatureOSControlCommand() {}
+
+				UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_OS_CONTROL_GET);
+				}
+
+				UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response> m_response;
 			};
 		} // namespace UPID_Client
 	} // namespace MEI_Client

@@ -44,27 +44,32 @@ namespace Intel
 				}
 			};
 
-			class GetUPIDCommand : public UPIDCommand
-			{
-			public:
-
-				GetUPIDCommand();
-				virtual ~GetUPIDCommand() {}
-
-				UPID_PLATFORM_ID_GET_Response getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response> m_response;
-			};
-
-
 			class GetUPIDRequest : public UPIDRequest
 			{
 			public:
 				GetUPIDRequest() : UPIDRequest(UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_GET) {}
 				virtual ~GetUPIDRequest() {}
+			};
+
+			class GetUPIDCommand : public UPIDCommand
+			{
+			public:
+				GetUPIDCommand()
+				{
+					m_request = std::make_shared<GetUPIDRequest>();
+					Transact();
+				}
+				virtual ~GetUPIDCommand() {}
+
+				UPID_PLATFORM_ID_GET_Response getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_GET);
+				}
+
+				UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response> m_response;
 			};
 		} // namespace UPID_Client
 	} // namespace MEI_Client

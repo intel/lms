@@ -83,23 +83,6 @@ namespace Intel
 				}
 			};
 
-			class GetMESetupAuditRecordCommand : public AMTHICommand
-			{
-			public:
-
-				GetMESetupAuditRecordCommand();
-				virtual ~GetMESetupAuditRecordCommand() {}
-
-				GetMESetupAuditRecord_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE> m_response;
-				
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800050;
-			};
-
 			class GetMESetupAuditRecordRequest : public AMTHICommandRequest
 			{
 			public:
@@ -108,6 +91,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000050;
+			};
+
+			class GetMESetupAuditRecordCommand : public AMTHICommand
+			{
+			public:
+
+				GetMESetupAuditRecordCommand()
+				{
+					m_request = std::make_shared<GetMESetupAuditRecordRequest>();
+					Transact();
+				}
+				virtual ~GetMESetupAuditRecordCommand() {}
+
+				GetMESetupAuditRecord_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GetMESetupAuditRecord_RESPONSE> m_response;
+				
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800050;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

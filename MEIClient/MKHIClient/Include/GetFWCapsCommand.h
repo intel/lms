@@ -74,29 +74,10 @@ namespace Intel
 				}
 			};
 
-			class GetFWCapsCommand : public MKHICommand
-			{
-			public:
-
-				GetFWCapsCommand(CapsRule rule);
-				virtual ~GetFWCapsCommand() {}
-
-				MEFWCAPS_SKU_MKHI getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
-
-				CapsRule m_rule;
-			};
-
 			class GetFWCapsRequest : public MKHICommandRequest
 			{
 			public:
-				GetFWCapsRequest(CapsRule rule) : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID) { m_rule.Data=rule; }
+				GetFWCapsRequest(CapsRule rule) : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID) { m_rule.Data = rule; }
 				virtual ~GetFWCapsRequest() {}
 
 			private:
@@ -107,7 +88,38 @@ namespace Intel
 				{
 					return sizeof(RULE_ID);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&m_rule, (std::uint8_t*)&m_rule + sizeof(m_rule));
+					return output;
+				}
+			};
+
+			class GetFWCapsCommand : public MKHICommand
+			{
+			public:
+
+				GetFWCapsCommand(CapsRule rule)
+				{
+					m_rule = rule;
+					m_request = std::make_shared<GetFWCapsRequest>(rule);
+					Transact();
+				}
+				virtual ~GetFWCapsCommand() {}
+
+				MEFWCAPS_SKU_MKHI getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, m_rule);
+				}
+
+				MKHIGetRuleCommandResponse<MEFWCAPS_SKU_MKHI> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
+
+				CapsRule m_rule;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

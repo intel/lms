@@ -84,23 +84,6 @@ namespace Intel
 			 0x00, 0x00, 0x00, 0x00,
 			 0x00, 0x00, 0x00, 0x01};
 
-			class GetAMTStateCommand : public AMTHICommand
-			{
-			public:
-
-				GetAMTStateCommand(AMT_UUID StateVariableIdentifier = AMT_UUID_LINK_STATE);
-				virtual ~GetAMTStateCommand() {}
-
-				AMT_STATE_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<AMT_STATE_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x01800001;
-			};
-
 			class GetAMTStateRequest : public AMTHICommandRequest
 			{
 			public:
@@ -116,7 +99,35 @@ namespace Intel
 				{
 					return sizeof(AMT_UUID);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output(m_stateVariableIdentifier.amt_uuid, m_stateVariableIdentifier.amt_uuid + sizeof(AMT_UUID));
+					return output;
+				}
+			};
+
+			class GetAMTStateCommand : public AMTHICommand
+			{
+			public:
+
+				GetAMTStateCommand(AMT_UUID StateVariableIdentifier = AMT_UUID_LINK_STATE)
+				{
+					m_request = std::make_shared<GetAMTStateRequest>(StateVariableIdentifier);
+					Transact();
+				}
+				virtual ~GetAMTStateCommand() {}
+
+				AMT_STATE_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<AMT_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<AMT_STATE_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x01800001;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

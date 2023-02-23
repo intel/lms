@@ -74,23 +74,6 @@ namespace Intel
 				}
 			};
 
-			class GetPlatformTypeCommand : public MKHICommand
-			{
-			public:
-
-				GetPlatformTypeCommand();
-				virtual ~GetPlatformTypeCommand() {}
-
-				MKHI_PLATFORM_TYPE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
-			};
-
 			class GetPlatformTypeRequest : public MKHICommandRequest
 			{
 			public:
@@ -104,7 +87,36 @@ namespace Intel
 				{
 					return sizeof(RULE_ID);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					RULE_ID rule;
+					rule.Data = MEFWCAPS_PCV_OEM_PLAT_TYPE_CFG_RULE_ID;
+					return std::vector<uint8_t>((std::uint8_t*)&rule, (std::uint8_t*)&rule + sizeof(rule));
+				}
+			};
+
+			class GetPlatformTypeCommand : public MKHICommand
+			{
+			public:
+
+				GetPlatformTypeCommand()
+				{
+					m_request = std::make_shared<GetPlatformTypeRequest>();
+					Transact();
+				}
+				virtual ~GetPlatformTypeCommand() {}
+
+				MKHI_PLATFORM_TYPE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, MEFWCAPS_PCV_OEM_PLAT_TYPE_CFG_RULE_ID);
+				}
+
+				MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

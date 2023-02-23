@@ -30,22 +30,6 @@ namespace Intel
 				}
 			};
 
-			class GetProvisioningStateCommand : public AMTHICommand
-			{
-			public:
-
-				GetProvisioningStateCommand();
-				virtual ~GetProvisioningStateCommand() {}
-
-				CFG_PROVISIONING_STATE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<CFG_PROVISIONING_STATE> m_response;
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800011;
-			};
-
 			class GetProvisioningStateRequest : public AMTHICommandRequest
 			{
 			public:
@@ -54,6 +38,29 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000011;
+			};
+
+			class GetProvisioningStateCommand : public AMTHICommand
+			{
+			public:
+
+				GetProvisioningStateCommand()
+				{
+					m_request = std::make_shared<GetProvisioningStateRequest>();
+					Transact();
+				}
+				virtual ~GetProvisioningStateCommand() {}
+
+				CFG_PROVISIONING_STATE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<CFG_PROVISIONING_STATE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<CFG_PROVISIONING_STATE> m_response;
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800011;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

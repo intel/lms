@@ -32,23 +32,6 @@ namespace Intel
 				}
 			};
 
-			class GetLastHostResetReasonCommand : public AMTHICommand
-			{
-			public:
-
-				GetLastHostResetReasonCommand();
-				virtual ~GetLastHostResetReasonCommand() {}
-
-				LAST_HOST_RESET_REASON_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004A;
-			};
-
 			class GetLastHostResetReasonRequest : public AMTHICommandRequest
 			{
 			public:
@@ -57,6 +40,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400004A;
+			};
+
+			class GetLastHostResetReasonCommand : public AMTHICommand
+			{
+			public:
+
+				GetLastHostResetReasonCommand()
+				{
+					m_request = std::make_shared<GetLastHostResetReasonRequest>();
+					Transact();
+				}
+				virtual ~GetLastHostResetReasonCommand() {}
+
+				LAST_HOST_RESET_REASON_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004A;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

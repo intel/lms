@@ -32,23 +32,6 @@ namespace Intel
 				}
 			};
 
-			class GetImageTypeCommand : public MKHICommand
-			{
-			public:
-
-				GetImageTypeCommand();
-				virtual ~GetImageTypeCommand() {}
-
-				MKHI_IMAGE_TYPE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MKHICommandResponse<MKHI_IMAGE_TYPE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x18;
-			};
-
 			class GetImageTypeRequest : public MKHICommandRequest
 			{
 			public:
@@ -57,6 +40,30 @@ namespace Intel
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x18;
+			};
+
+			class GetImageTypeCommand : public MKHICommand
+			{
+			public:
+
+				GetImageTypeCommand()
+				{
+					m_request = std::make_shared<GetImageTypeRequest>();
+					Transact();
+				}
+				virtual ~GetImageTypeCommand() {}
+
+				MKHI_IMAGE_TYPE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<MKHI_IMAGE_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
+				}
+
+				MKHICommandResponse<MKHI_IMAGE_TYPE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x18;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

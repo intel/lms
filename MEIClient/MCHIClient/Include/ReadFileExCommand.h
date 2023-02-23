@@ -51,23 +51,6 @@ namespace Intel
 			};
 			#pragma pack()
 
-			class ReadFileExCommand : public MCHICommand
-			{
-			public:
-
-				ReadFileExCommand(MCA_FILE_ID fileID, uint32_t offset, uint32_t dataSize, uint8_t flags);
-				virtual ~ReadFileExCommand() {}
-
-				READ_FILE_EX_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				MCHICommandResponse<READ_FILE_EX_RESPONSE> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0xA;
-			};
-
 			class ReadFileExRequest : public MCHICommandRequest
 			{
 			public:
@@ -82,8 +65,36 @@ namespace Intel
 				{
 					return sizeof(READ_FILE_EX_REQUEST);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&request, (std::uint8_t*)&request + sizeof(request));
+					return output;
+				}
 				READ_FILE_EX_REQUEST request;
+			};
+
+			class ReadFileExCommand : public MCHICommand
+			{
+			public:
+
+				ReadFileExCommand(MCA_FILE_ID fileID, uint32_t offset, uint32_t dataSize, uint8_t flags)
+				{
+					m_request = std::make_shared<ReadFileExRequest>(static_cast<uint32_t>(fileID), offset, dataSize, flags);
+					Transact();
+				}
+				virtual ~ReadFileExCommand() {}
+
+				READ_FILE_EX_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MCHICommandResponse<READ_FILE_EX_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MCHI_GROUP_ID_MCA);
+				}
+
+				MCHICommandResponse<READ_FILE_EX_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0xA;
 			};
 		} // namespace MCHI_Client
 	} // namespace MEI_Client
