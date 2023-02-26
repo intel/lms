@@ -9,6 +9,7 @@
 --*/
 
 #include "AuditLogWSManClient.h"
+#include "AuditLogWSManClientConsts.h"
 #include <time.h>
 #include <iomanip>
 #include "WsmanClientLog.h"

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include "AuditLogWSManClient.h"
+#include "AuditLogWSManClientConsts.h"
 #include "AuditLogAccessor.h"
 #include <time.h>
 
