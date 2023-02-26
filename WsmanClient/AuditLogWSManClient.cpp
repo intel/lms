@@ -591,7 +591,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 			s << DisplayNetworkAdminDomainNameSetEvent(extendedData.data(), extendedDataLen);
 			break;
 		case VLAN_PARAMETERS_SET:
-			s << DisplayNetworkAdminVlanParameterSetEvent(extendedData.data(), extendedDataLen);
+			// Deprecated
 			break;
 		case LINK_POLICY_SET:
 			s << DisplayNetworkAdminLinkPolicySetEvent(extendedData.data(), extendedDataLen);
@@ -1633,54 +1633,6 @@ std::string AuditLogWSManClient::DisplayNetworkAdminDomainNameSetEvent(uint8_t* 
 			ss << (char)extData[i];
 			i++;
 		}
-	}
-	return ss.str();
-}
-
-/*****************************************************************************
- * Function that displays the network admin VLAN parameter set event. 
- * Arguments:
- *  extData				- Extended data.
- *  extendedDataLen		- Extended data length.
- ****************************************************************************/
-std::string AuditLogWSManClient::DisplayNetworkAdminVlanParameterSetEvent(uint8_t* extData, uint8_t extendedDataLen)
-{
-	//deprecated since AMT 6.0
-	std::stringstream ss;
-	int i = 0;
-
-	if (i<extendedDataLen)
-	{
-//		ss << PrintInterfaceHandleUint32(extData, extendedDataLen, i);
-		i += sizeof(uint32_t); // because the above line was removed
-	}
-	
-	if (i<extendedDataLen)
-	{
-		uint16_t* pVlanTag = NULL;
-		try
-		{
-			pVlanTag = new uint16_t();
-		}
-		catch (std::bad_alloc&)
-		{
-			return ss.str();
-		}
-		if ((i+sizeof(uint16_t))<=extendedDataLen)
-		{
-			ReverseMemCopy(pVlanTag, extData+i, sizeof(uint16_t));
-//			ss << "VLAN Tag: ";;
-			if (!*pVlanTag) 
-			{
-//				ss << "Disabled";
-			}
-			else 
-			{
-//				ss << (int)*pVlanTag;
-			}
-			i+=sizeof(uint16_t);
-		}
-		delete pVlanTag;
 	}
 	return ss.str();
 }
