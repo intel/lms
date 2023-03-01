@@ -146,7 +146,7 @@ int WiFiProfileSyncService::handle_event (MessageBlockPtr mbPtr )
 				}
 				else
 				{
-					wlanps::WlanBL::onConnectionComplete(m_wlanHandle, &message->_profileData);
+					wlanps::WlanBL::onConnectionComplete(m_mainService->GetPortForwardingPort(), m_wlanHandle, &message->_profileData);
 				}
 				return 1;
 			}
@@ -208,5 +208,5 @@ void WiFiProfileSyncService::PerformSync()
 		return;
 	}
 
-	wlanps::WlanBL::SyncProfiles(m_wlanHandle);
+	wlanps::WlanBL::SyncProfiles(m_mainService->GetPortForwardingPort(), m_wlanHandle);
 }

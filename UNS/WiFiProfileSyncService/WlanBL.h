@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2022 Intel Corporation
+ * Copyright (C) 2018-2023 Intel Corporation
  */
 #ifndef __WLAN_BL_H_
 #define __WLAN_BL_H_
@@ -14,8 +14,8 @@ namespace wlanps {
 	class WlanBL
 	{
 	public:
-		static void SyncProfiles(HANDLE hwlan);
-		static void onConnectionComplete(HANDLE hwlan, PINTEL_PROFILE_DATA profileData);
+		static void SyncProfiles(unsigned int portForwardingPort, HANDLE hwlan);
+		static void onConnectionComplete(unsigned int portForwardingPort, HANDLE hwlan, PINTEL_PROFILE_DATA profileData);
 
 	private:
 		static std::mutex _updateMutex;

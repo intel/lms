@@ -77,13 +77,13 @@ namespace wlanps {
 		return true;
 	}
 
-	void WlanBL::SyncProfiles(HANDLE hwlan)
+	void WlanBL::SyncProfiles(unsigned int portForwardingPort, HANDLE hwlan)
 	{
 		std::lock_guard<std::mutex> lock(_updateMutex);
 
 		bool wsmanStatus;
 		MeProfileList MeProfileList;
-		WlanWSManClient wsmanClient(theService::instance()->GetPortForwardingPort());
+		WlanWSManClient wsmanClient(portForwardingPort);
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerating ME (CSME FW) Profiles, Wait for it...\n");
 		if (!EnumerateMeProfiles(wsmanClient, MeProfileList))
@@ -234,14 +234,14 @@ namespace wlanps {
 		return ret;
 	}
 
-	void WlanBL::onConnectionComplete(HANDLE hwlan, PINTEL_PROFILE_DATA profileData)
+	void WlanBL::onConnectionComplete(unsigned int portForwardingPort, HANDLE hwlan, PINTEL_PROFILE_DATA profileData)
 	{
 		std::lock_guard<std::mutex> lock(_updateMutex);
 		bool retVal;
 		bool bFound = false;
 		bool bFoundMatch = false;
 		unsigned long profileFlags = 0;
-		WlanWSManClient wsmanClient(theService::instance()->GetPortForwardingPort());
+		WlanWSManClient wsmanClient(portForwardingPort);
 		MeProfileList MeProfileList;
 
 
