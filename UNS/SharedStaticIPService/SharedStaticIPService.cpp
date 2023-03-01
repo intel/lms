@@ -372,7 +372,7 @@ SharedStaticIPService::PreStop(int type, bool meiEnabled)
 bool SharedStaticIPService::GetSharedStaticIpState(bool * isEnabled)
 {
 	FuncEntryExit<void> fee(this, L"GetSharedStaticIpState");
-	if (m_syncNetData.getSharedStaticIpState(isEnabled))
+	if (m_syncNetData.getSharedStaticIpState(m_mainService->GetPortForwardingPort(), isEnabled))
 	{
 		m_SyncRetries = 0;
 		m_SyncStaticIP = true;	// Need to sync the settings for the first time
@@ -438,7 +438,7 @@ bool SharedStaticIPService::SyncSettings(unsigned long & TimerInterval)
 	UNS_DEBUG(L"Need to sync network settings %d ? %d\n", m_SyncRetries, MAX_SyncRetries);
 	if (m_SyncRetries < MAX_SyncRetries)
 	{
-		if (m_syncNetData.SyncNetworkConfiguration())
+		if (m_syncNetData.SyncNetworkConfiguration(m_mainService->GetPortForwardingPort()))
 		{
 			TimerInterval = CheckDNSInterval;
 			m_SyncRetries = 0;

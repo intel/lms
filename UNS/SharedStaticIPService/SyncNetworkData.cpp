@@ -36,7 +36,7 @@ SyncNetworkData::~SyncNetworkData(void)
 }
 
 // Sync between the Host and ME network configurations
-bool SyncNetworkData::SyncNetworkConfiguration()
+bool SyncNetworkData::SyncNetworkConfiguration(unsigned int portForwardingPort)
 {
 	bool		res = false;
 	FuncEntryExit<decltype(res)> fee(this, L"SyncNetworkConfiguration", res);
@@ -47,7 +47,7 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 	std::string GateWay;
 	std::string PrimaryDNS;
 	std::string SecondaryDNS;
-	SyncIpClient syncIpClient(theService::instance()->GetPortForwardingPort());
+	SyncIpClient syncIpClient(portForwardingPort);
 
 	if (!syncIpClient.GetNetworkData(DHCPEnabled, IPAddress, SubNet, GateWay, PrimaryDNS, SecondaryDNS))
 	{
@@ -144,13 +144,13 @@ bool SyncNetworkData::SyncNetworkConfiguration()
 }
 
 // Check if the SharedStatic property is enabled
-bool SyncNetworkData::getSharedStaticIpState(bool* state)
+bool SyncNetworkData::getSharedStaticIpState(unsigned int portForwardingPort, bool* state)
 {	
 	bool res = false;	
 
 	FuncEntryExit<decltype(res)> fee(this, L"getSharedStaticIpState", res);
 
-	SyncIpClient syncIpClient(theService::instance()->GetPortForwardingPort());
+	SyncIpClient syncIpClient(portForwardingPort);
 	res = syncIpClient.GetSharedStaticIpState(state);
 	return res;
 }
