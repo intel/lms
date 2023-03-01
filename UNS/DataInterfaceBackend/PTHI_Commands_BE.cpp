@@ -602,11 +602,16 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
 		{
+			auto svc = theService::instance();
+			if (svc == nullptr)
+			{
+				return LMS_ERROR::FAIL;
+			}
+
 			MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 			mbPtr->data_block(new StartPFWUP(Language));
 			mbPtr->msg_type(MB_PFWU_EVENT);
-
-			if (!theService::instance()->sendMessage(GMS_PARTIALFWUPDATESERVICE, mbPtr))
+			if (!svc->sendMessage(GMS_PARTIALFWUPDATESERVICE, mbPtr))
 			{
 				return LMS_ERROR::FAIL;
 			}
