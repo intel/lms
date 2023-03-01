@@ -288,7 +288,9 @@ int
 PortForwardingService::init (int argc, ACE_TCHAR *argv[])
 {
 	UNS_DEBUG(L"PFWS: started\n");
-	initSubService(argc, argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 
 	m_lmsMainThread = new LMS_Thread_Impl(this);
 	m_lmsMainThread->activate();

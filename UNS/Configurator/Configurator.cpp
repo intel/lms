@@ -467,7 +467,9 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"init");
 
-	initSubService(argc, argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 
 	UNS_DEBUG(L"Configurator, 0x%x\n", this);
 

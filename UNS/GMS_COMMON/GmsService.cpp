@@ -214,11 +214,6 @@ ACE_Static_Svc_Descriptor& GmsService::svcByName(const ACE_TString &serviceName)
 
 bool GmsService::StartAceService(const ACE_TString &serviceName)
 {
-	
-	ACE_TString directive;
-	std::wstringstream ss;
-	ss<<(unsigned long long)this;
-
 	UNS_DEBUG(L"Starting: %s\n", serviceName.c_str());
 	int i = ACE_Service_Config::process_directive(svcByName(serviceName));
 	if (i == -1)
@@ -231,10 +226,7 @@ bool GmsService::StartAceService(const ACE_TString &serviceName)
 		UNS_ERROR(L"Couldn't prepare service: %s %d\n", serviceName.c_str(), i);
 		return false;
 	}
-	directive = ACE_TEXT ("\"-g ");
-	directive += ACE_TEXT_WCHAR_TO_TCHAR(ss.str().c_str());
-	directive += ACE_TEXT ("\"");
-	i = ACE_Service_Config::initialize(serviceName.c_str(), directive.c_str());
+	i = ACE_Service_Config::initialize(serviceName.c_str(), NULL);
 	if (i > 0)
 	{
 		UNS_ERROR(L"Couldn't initialize service: %s %d\n", serviceName.c_str(), i);

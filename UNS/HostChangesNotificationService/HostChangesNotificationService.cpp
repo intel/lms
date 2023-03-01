@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2020 Intel Corporation
+ * Copyright (C) 2011-2023 Intel Corporation
  */
 #include "global.h"
 
@@ -17,10 +17,10 @@ HostChangesNotificationService::HostChangesNotificationService() : m_hostFQDN(""
 int
 HostChangesNotificationService::init (int argc, ACE_TCHAR *argv[])
 {
-	initSubService(argc,argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 	static unsigned long nGetFQDN_Interval = 3600 * GMS_ACE_SECOND;
-
-
 	ACE_Time_Value interval (nGetFQDN_Interval); 
 
 	/*long timerID = */ACE_Reactor::instance()->schedule_timer (this,
