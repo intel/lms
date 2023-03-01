@@ -269,7 +269,7 @@ bool Configurator::MEIEnabled() const
 static const int CONFIGURATOR_CHECK_RETRIES = 3; // Retry if wsman fails (usually with timeout)
 
 //check if service SharedStaticIP should be loaded
-bool CheckSharedStaticIPLoad()
+bool CheckSharedStaticIPLoad(unsigned int portForwardingPort)
 {
 	bool sharedStaticIP = false;
 	UNS_DEBUG(L"Configurator:CheckSharedStaticIPLoad\n");
@@ -277,7 +277,7 @@ bool CheckSharedStaticIPLoad()
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
 	{
-		SyncIpClient syncIpClient(theService::instance()->GetPortForwardingPort());
+		SyncIpClient syncIpClient(portForwardingPort);
 		ret = syncIpClient.GetSharedStaticIpState(&sharedStaticIP);
 		if (ret)
 			break;
@@ -288,7 +288,7 @@ bool CheckSharedStaticIPLoad()
 }
 
 //check if service Timesync should be loaded
-bool CheckTimeSyncStateLoad()
+bool CheckTimeSyncStateLoad(unsigned int portForwardingPort)
 {
 	bool timeSyncState = false;
 	UNS_DEBUG(L"Configurator::CheckTimeSyncStateLoad\n");
@@ -296,7 +296,7 @@ bool CheckTimeSyncStateLoad()
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
 	{
-		TimeSynchronizationClient timeClient(theService::instance()->GetPortForwardingPort());
+		TimeSynchronizationClient timeClient(portForwardingPort);
 		ret = timeClient.GetLocalTimeSyncEnabledState(timeSyncState);
 		if (ret)
 			break;
@@ -331,12 +331,12 @@ namespace
 }
 
 //check if service WiFiProfileSync should be loaded
-bool CheckWiFiProfileSyncRequired()
+bool CheckWiFiProfileSyncRequired(unsigned int portForwardingPort)
 {
 	bool enabled;
 	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
 
-	WifiPortClient WifiPort(theService::instance()->GetPortForwardingPort());
+	WifiPortClient WifiPort(portForwardingPort);
 	size_t ports = 0;
 	bool ret = WifiPort.PortsNum(ports);
 	if (!ret)
@@ -348,7 +348,7 @@ bool CheckWiFiProfileSyncRequired()
 		return enabled;
 	}
 
-	WlanWSManClient WlanWSMan(theService::instance()->GetPortForwardingPort());
+	WlanWSManClient WlanWSMan(portForwardingPort);
 	enabled = true;
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
 	if (!ret)
@@ -365,7 +365,7 @@ bool CheckWiFiProfileSyncRequired()
 	return enabled;
 }
 #else // WIN32
-bool CheckWiFiProfileSyncRequired()
+bool CheckWiFiProfileSyncRequired(unsigned int)
 {
 	bool enabled;
 	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
@@ -376,7 +376,7 @@ bool CheckWiFiProfileSyncRequired()
 }
 #endif // WIN32
 
-bool CheckWatchdogRequired()
+bool CheckWatchdogRequired(unsigned int)
 {
 	UNS_DEBUG(L"Configurator::CheckWatchdogRequired\n");
 	DataStorageWrapper& ds = DSinstance();
@@ -606,7 +606,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 		}
 
 		CheckLoadFunc *checkLoadFunc = m_checkLoadMap[serviceName];
-		if (checkLoadFunc && !checkLoadFunc()){ //if the service should not be loaded
+		if (checkLoadFunc && !checkLoadFunc(m_mainService->GetPortForwardingPort())){ //if the service should not be loaded
 			if(m_onToggleService == true)
 				return false;
 			else

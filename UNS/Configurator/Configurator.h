@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __CONFIGURATOR_H_
 #define __CONFIGURATOR_H_
@@ -25,7 +25,7 @@
 #include <queue>
 #include <map>
 
-typedef bool CheckLoadFunc();
+typedef bool CheckLoadFunc(unsigned int portForwardingPort);
 
 class CONFIGURATOR_Export Configurator : public GmsSubService, public IServicesManager
 {
