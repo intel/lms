@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "SoapHandler.h"
 #include "global.h"
@@ -172,7 +172,14 @@ bool SOAP_Handler::HandleCimAlert(const std::string &TestMessageId, const std::s
 	}
 	mbPtr->data_block(alert);
 	mbPtr->msg_type(MB_PUBLISH_EVENT);
-	theService::instance()->sendMessage(EVENT_MANAGER, mbPtr);
+	auto svc = theService::instance();
+	if (svc == nullptr)
+	{
+		UNS_DEBUG(L"Soapserver:: Failed to obtain service pointer!\n");
+		delete alert;
+		return false;
+	}
+	svc->sendMessage(EVENT_MANAGER, mbPtr);
 	UNS_DEBUG(L"Soapserver:: publish LMS Event(category %d,Id %d, message %s\n", alert->category, alert->id, alert->Message.c_str());
 	event_sent = true;
 	return true;
