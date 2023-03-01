@@ -68,7 +68,7 @@ public:
 	const wchar_t *short_name() const { return L"DBUS"; };
 
 	//*********************** business logic ****************************
-	bool GetGmsPortForwardingPort();
+	unsigned int GetGmsPortForwardingPort();
 protected:
 	virtual int handle_event (MessageBlockPtr mbPtr);
 

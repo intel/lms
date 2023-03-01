@@ -184,7 +184,7 @@ int DBusService::handle_event(MessageBlockPtr mbPtr)
 	return 0;
 }
 
-bool DBusService::GetGmsPortForwardingPort()
+unsigned int DBusService::GetGmsPortForwardingPort()
 {
 	return m_mainService->GetPortForwardingPort();
 }
