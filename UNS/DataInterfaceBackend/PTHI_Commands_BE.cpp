@@ -102,6 +102,10 @@ namespace Intel {
 	{ \
 		const char* reason = e.what(); \
 		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
+	} \
+	catch(...) \
+	{ \
+		UNS_DEBUG(L"General exception in " func L"\n"); \
 	}
 
 #define CATCH_MCHIErrorExceptionAllReturn(func) \
