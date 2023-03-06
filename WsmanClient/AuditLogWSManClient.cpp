@@ -994,16 +994,7 @@ std::string AuditLogWSManClient::DisplayBasicUsernameSidInformation(uint8_t* ext
 
 	if (i<extendedDataLen)
 	{
-		// ss << "Type: ";
 		initiatorType = extData[i];
-		if (HTTP_DIGEST == initiatorType)
-		{
-			//ss << HTTP_DIGEST_STRING;
-		} 
-		else if (KERBEROS_SID == initiatorType)
-		{
-			//ss << KERBEROS_SID_STRING;
-		}
 		i++;
 	}
 
