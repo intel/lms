@@ -464,7 +464,6 @@ const static char* ACM_STRING = "ACM";
 const static char* DAL_STRING = "DAL";
 const static char* HTTP_DIGEST_STRING = "HTTP Digest";
 const static char* KERBEROS_SID_STRING = "Kerberos SID";
-const static char* LOCAL_INITIATOR_STRING = "Local Initiator";
 const static char* AMT_TYPE_STRING = "Intel(R) AMT";
 const static char* MEBX_TYPE_STRING = "Intel(R) MEBx";
 const static char* NO_AUTHENTICATION_STRING = "No authentication";
