@@ -24,7 +24,6 @@ class WSMAN_DLL_API PowerManagementCapabilitiesClient : public BaseWSManClient
 public:
 	PowerManagementCapabilitiesClient(unsigned int port);
 	PowerManagementCapabilitiesClient(unsigned int port, const std::string &User, const std::string &Password);
-	bool GetPowerOperationsSupport(bool & support);
 	virtual ~PowerManagementCapabilitiesClient();
 
 	/*Actual soap actions!*/

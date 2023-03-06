@@ -138,24 +138,6 @@ bool PowerManagementCapabilitiesClient::addGracefulOperations(bool sleep,bool hi
 	return true;
 }
 
-/*
-* This function check whether Remote Graceful Power Operations are supported 
-* (by reading the value of PowerStatesSupportedExists property).
-* returns false if there was an error retrieving the value,
-* and fills the value in the given bool referance.
-*/
-bool PowerManagementCapabilitiesClient::GetPowerOperationsSupport(bool & support)
-{
-	support = false;
-	try{
-		if (!Init())
-			return false;
-		support = m_service.RequestedPowerStatesSupportedExists(); 
-	}
-	CATCH_exception_return("PowerManagementCapabilitiesClient::GetPowerOperationsSupport")
-	return true;
-}
-
 	//for Unit testing
 #ifdef _DEBUG
 	std::vector<unsigned short>  PowerManagementCapabilitiesClient::getCapsVector()

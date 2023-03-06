@@ -73,33 +73,6 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 	return true;
 }
 
-bool  KVMScreenSettingClient::getScreenSettings (ExtendedDisplayParameters &displaySettings, unsigned char & primary, short numOfDisplays)
-{
-	try 
-	{
-		if (!Init())
-			return false;
-
-		primary = m_service.PrimaryIndex();
-		const std::vector<bool> isActive = m_service.IsActive();
-		const std::vector<int> UpperLeftX = m_service.UpperLeftX();
-		const std::vector<int> UpperLeftY = m_service.UpperLeftY();
-		const std::vector<unsigned int> ResolutionX = m_service.ResolutionX();
-		const std::vector<unsigned int> ResolutionY = m_service.ResolutionY();
-
-		for (short i=0; i<numOfDisplays; i++)
-		{
-			displaySettings.screenSettings[i].isActive = isActive[i];
-			displaySettings.screenSettings[i].ResolutionX = ResolutionX[i];
-			displaySettings.screenSettings[i].ResolutionY = ResolutionY[i];
-			displaySettings.screenSettings[i].UpperLeftX = UpperLeftX[i];
-			displaySettings.screenSettings[i].UpperLeftY= UpperLeftY[i];
-		}
-		return true;
-	}
-	CATCH_exception_return("KVMScreenSettingClient::getScreenSettings")
-}
-
 bool KVMScreenSettingClient::Init(bool forceGet)
 {
 	WSMAN_DEBUG("KVMScreenSettingClient::Init\n");
