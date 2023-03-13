@@ -41,7 +41,6 @@
 #include "SetDNSSuffixCommand.h"
 #include "UnprovisionCommand.h"
 
-#include "GetFWCapsCommand.h"
 #include "GetPlatformTypeCommand.h"
 #include "GetFWUpdateStateCommand.h"
 
