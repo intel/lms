@@ -34,38 +34,38 @@ namespace Intel
 				uint32_t Data;
 				struct
 				{
-					uint32_t MngFull:1;
-					uint32_t MngStd:1;
+					uint32_t Reserved0:1;
+					uint32_t Reserved1:1;
 					uint32_t Amt:1;
-					uint32_t Irwt:1; //Intel Remote Wake Tech //N/A since 8.0
-					uint32_t Qst:1; //Quiet System Technology //N/A since 8.0
+					uint32_t Reserved3:1; //Intel Remote Wake Tech //N/A since 8.0
+					uint32_t Reserved4:1; //Quiet System Technology //N/A since 8.0
 					uint32_t PSR:1; //Platform Service Record (was: Anti-Theft)
 					uint32_t SoftCreek:1; //Intel Capability Licensing Service (aka CLS)
-					uint32_t Ve:1; //Virtualization Engine //N/A since 9.0
-					uint32_t Nand35:1; //N/A since 9.5
-					uint32_t Nand29:1; //N/A since 9.5
-					uint32_t ThermReport:1; //N/A since 9.5
-					uint32_t IccOverClockin:1; //N/A
+					uint32_t Reserved7:1; //Virtualization Engine //N/A since 9.0
+					uint32_t Reserved8:1; //N/A since 9.5
+					uint32_t Reserved9:1; //N/A since 9.5
+					uint32_t Reserved10:1; //N/A since 9.5
+					uint32_t Reserved11:1; //N/A
 					uint32_t Pav:1; //Protected Audio Video Path
-					uint32_t Spk:1; //N/A since 8.0
+					uint32_t Reserved13:1; //N/A since 8.0
 					uint32_t Rca:1;
-					uint32_t Rpat:1; //N/A since 8.0
-					uint32_t Hap:1;
+					uint32_t Reserved15:1; //N/A since 8.0
+					uint32_t Reserved16:1;
 					uint32_t Ipv6:1;
 					uint32_t Kvm:1;
-					uint32_t Och:1;
+					uint32_t Reserved19 :1; //deprecated in 12
 					uint32_t MEDAL:1;
 					uint32_t Tls:1;
 					uint32_t Cila:1;
-					uint32_t Wlan:1;
-					uint32_t WirelessDisp:1;
-					uint32_t LakeHouston:1;
-					uint32_t Nap:1;
-					uint32_t AlarmClk:1;
-					uint32_t CbRaid:1;
-					uint32_t MediaVault:1;
-					uint32_t mDNSProxy:1;
-					uint32_t Reserved3:1;
+					uint32_t Reserved23:1;
+					uint32_t Reserved24:1;
+					uint32_t Reserved25:1;
+					uint32_t Reserved26:1;
+					uint32_t Reserved27:1;
+					uint32_t Reserved28:1;
+					uint32_t Reserved29:1;
+					uint32_t Reserved30:1;
+					uint32_t Reserved31:1;
 				} Fields;
 
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)

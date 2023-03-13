@@ -134,17 +134,9 @@ namespace Intel {
 				case VE:
 					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Ve, StateData.Fields.Ve, AvailData.Fields.Ve);
 					break;
-					//this feature doesn't exist in the MKHI command
-					/*case DT:
-							pState=FeatureStateLogic(CapabilityData.Fields.Dt, StateData.Fields.Dt, AvailData.Fields.Dt);
-							break;*/
 				case NAND:
 					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Nand29, StateData.Fields.Nand29, AvailData.Fields.Nand29);
 					break;
-					//this feature doesn't exist in the MKHI command
-					/*case MPC:
-							pState=FeatureStateLogic(CapabilityData.Fields.Mpc, StateData.Fields.Mpc, AvailData.Fields.Mpc);
-							break;*/
 				case ICC_OVER_CLOCK_IN:
 					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.IccOverClockin, StateData.Fields.IccOverClockin, AvailData.Fields.IccOverClockin);
 					break;
@@ -167,7 +159,7 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Kvm, StateData.Fields.Kvm, AvailData.Fields.Kvm);
 					break;
 				case OCH:
-					pState = FeatureStateLogic(CapabilityData.Fields.Och, StateData.Fields.Och, AvailData.Fields.Och);
+					pState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt, AvailData.Fields.Amt); // as Fields.Och deprecated
 					break;
 				case DAL:
 					pState = FeatureStateLogic(CapabilityData.Fields.MEDAL, StateData.Fields.MEDAL, AvailData.Fields.MEDAL);
@@ -179,7 +171,7 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Cila, StateData.Fields.Cila, AvailData.Fields.Cila);
 					break;
 				case LAKEHOUSTON:
-					pState = FeatureStateLogic(CapabilityData.Fields.LakeHouston, StateData.Fields.LakeHouston, AvailData.Fields.LakeHouston);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.LakeHouston, StateData.Fields.LakeHouston, AvailData.Fields.LakeHouston);
 					break;
 				case PSR:
 					pState = FeatureStateLogic(CapabilityData.Fields.PSR, StateData.Fields.PSR, AvailData.Fields.PSR);

@@ -539,7 +539,7 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	capabilities.Fields.Pav = CapabilityData.Fields.Pav;
 	capabilities.Fields.Ipv6 = CapabilityData.Fields.Ipv6;
 	capabilities.Fields.Kvm = CapabilityData.Fields.Kvm;
-	capabilities.Fields.Och = CapabilityData.Fields.Och;
+	capabilities.Fields.Och = CapabilityData.Fields.Amt; // as CapabilityData.Fields.Och deprecated
 	capabilities.Fields.Tls = CapabilityData.Fields.Tls;
 	capabilities.Fields.Cila = CapabilityData.Fields.Cila;
 	capabilities.Fields.StdMng = stdMng;
@@ -588,7 +588,7 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"KVM");
 	}
-	if (CapabilityData.Fields.Och)
+	if (CapabilityData.Fields.Amt) // as CapabilityData.Fields.Och deprecated
 	{
 		capabilities.push_back(L"OCH");
 	}

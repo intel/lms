@@ -47,8 +47,6 @@ private:
 		UINT32   Data;
 		struct
 		{
-			//UINT32   MngFull  :1;
-			//UINT32   MngStd  :1;
 			UINT32   Amt       :1;
 			UINT32   Irwt       :1; //N/A since 8.0
 			UINT32   Qst        :1; //N/A since 8.0
@@ -61,9 +59,8 @@ private:
 			UINT32   IccOverClockin :1;
 			UINT32   Pav              :1;
 			UINT32   Spk              :1;//N/A since 8.0
-			UINT32   Rca              :1;//N/A since 8.0
+			UINT32   Rca              :1;
 			UINT32   Rpat             :1;   //N/A since 8.0
-			//UINT32   RpatCon          :1;   // To be removed
 			UINT32   Ipv6             :1;
 			UINT32   Kvm              :1;
 			UINT32   Och              :1;
