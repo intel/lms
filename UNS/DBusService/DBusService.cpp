@@ -1,11 +1,15 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2020 Intel Corporation
+ * Copyright (C) 2017-2022 Intel Corporation
  */
 #include <gio/gio.h>
 
 #include "DBusService.h"
 #include "DBusSkeleton.h"
+
+/******************************************************************************
+ * DBusThread
+ ******************************************************************************/
 
 DBusThread::DBusThread(DBusService *father) : m_father(father),
 					  m_loop(g_main_loop_new(NULL, FALSE)),
@@ -13,7 +17,8 @@ DBusThread::DBusThread(DBusService *father) : m_father(father),
 					  m_skeleton_manageability(NULL),
 					  m_skeleton_pthi(NULL),
 					  m_skeleton_device(NULL),
-					  m_skeleton_alert(NULL)
+					  m_skeleton_alert(NULL),
+					  m_have_bus(false)
 {
 }
 
@@ -51,16 +56,28 @@ int DBusThread::svc()
 	return 0;
 }
 
-bool DBusThread::emit_alarm(unsigned int category, unsigned int id,
-			    const char* message, const char *arg,
-			    const char *msg_id, const char* date)
+bool DBusThread::emit_alarm(const GMS_AlertIndication* alert)
 {
+	std::lock_guard<std::mutex> l(m_mutex);
+
+	if (!m_have_bus)
+	{
+		m_store.push_back(*alert);
+		return true;
+	}
 	if (!m_skeleton)
 		return false;
-	lms_emit_alert(m_skeleton, category, id, message, arg, msg_id, date);
+	send_alarm(alert);
 	return true;
 }
 
+void DBusThread::send_alarm(const GMS_AlertIndication* alert)
+{
+	lms_emit_alert(m_skeleton, alert->category, alert->id,
+	     ACE_TEXT_ALWAYS_CHAR(alert->Message.c_str()),
+	     (alert->MessageArguments.size() > 0) ? ACE_TEXT_ALWAYS_CHAR(alert->MessageArguments[0].c_str()) : "",
+	     ACE_TEXT_ALWAYS_CHAR(alert->MessageID.c_str()), alert->Datetime.c_str());
+}
 void DBusThread::stop()
 {
 	if (m_loop)
@@ -71,6 +88,7 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 			    const gchar *name, gpointer user_data)
 {
 	DBusThread *th = (DBusThread *)user_data;
+	std::lock_guard<std::mutex> l(th->m_mutex);
 
 	UNS_DEBUG(L"Main DBus Thread on_bus_acquired\n");
 	th->m_skeleton = lms_skeleton_new();
@@ -82,6 +100,10 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 	Intel::DBus::PTHI::on_bus_acquired(connection, &th->m_skeleton_pthi, th->m_father);
 	Intel::DBus::AT_Device::on_bus_acquired(connection, &th->m_skeleton_device, th->m_father);
 	Intel::DBus::UNSAlert::on_bus_acquired(connection, &th->m_skeleton_alert, th->m_father);
+	th->m_have_bus = true;
+	for (auto alert : th->m_store)
+		th->send_alarm(&alert);
+	th->m_store.clear();
 	UNS_DEBUG(L"Main DBus Thread on_bus_acquired %d\n", ret);
 }
 
@@ -89,8 +111,10 @@ void DBusThread::on_name_lost(GDBusConnection *connection,
 			 const gchar *name, gpointer user_data)
 {
 	DBusThread *th = (DBusThread *)user_data;
+	std::lock_guard<std::mutex> l(th->m_mutex);
 
 	UNS_DEBUG(L"Main DBus Thread on_name_lost\n");
+	th->m_have_bus = false;
 
 	g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(th->m_skeleton));
 	g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(th->m_skeleton_manageability));
@@ -98,6 +122,10 @@ void DBusThread::on_name_lost(GDBusConnection *connection,
 	g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(th->m_skeleton_device));
 	g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(th->m_skeleton_alert));
 }
+
+/******************************************************************************
+ * DBusService
+ ******************************************************************************/
 
 DBusService::DBusService(): m_DBusThread(this), filter_(new DBusFilter)
 {
@@ -132,12 +160,9 @@ const ACE_TString DBusService::name()
 
 LMS_SUBSERVICE_DEFINE (DBUSSERVICE, DBusService)
 
-void DBusService::SendAlarm(GMS_AlertIndication* alert)
+void DBusService::SendAlarm(const GMS_AlertIndication* alert)
 {
-	if (!m_DBusThread.emit_alarm(alert->category, alert->id,
-	     ACE_TEXT_ALWAYS_CHAR(alert->Message.c_str()),
-	     (alert->MessageArguments.size() > 0) ? ACE_TEXT_ALWAYS_CHAR(alert->MessageArguments[0].c_str()) : "",
-	     ACE_TEXT_ALWAYS_CHAR(alert->MessageID.c_str()), alert->Datetime.c_str()))
+	if (!m_DBusThread.emit_alarm(alert))
 		UNS_ERROR(L"DBusService can't send alarm\n");
 }
 

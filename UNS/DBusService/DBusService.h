@@ -1,9 +1,12 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2020 Intel Corporation
+ * Copyright (C) 2017-2022 Intel Corporation
  */
 #ifndef __DBUSSERVICE_H_
 #define __DBUSSERVICE_H_
+
+#include <mutex>
+#include <vector>
 
 #include "EventHandler.h"
 #include "DBusFilter.h"
@@ -26,9 +29,7 @@ public:
 
 	virtual int svc();
 
-	bool emit_alarm(unsigned int category, unsigned int id,
-			const char* message, const char *arg,
-			const char *msg_id, const char* date);
+	bool emit_alarm(const GMS_AlertIndication* alert);
 
 	void stop();
 
@@ -42,11 +43,17 @@ private:
 	LmsAT_Device *m_skeleton_device;
 	LmsUNSAlert *m_skeleton_alert;
 
+	std::mutex m_mutex;
+	bool m_have_bus;
+	std::vector<GMS_AlertIndication> m_store;
+
 	static void on_bus_acquired(GDBusConnection *connection,
 				    const gchar *name, gpointer user_data);
 
 	static void on_name_lost(GDBusConnection *connection,
 				 const gchar *name, gpointer user_data);
+
+	void send_alarm(const GMS_AlertIndication* alert);
 };
 
 class DBUSSERVICE_Export DBusService : public EventHandler
@@ -72,9 +79,8 @@ protected:
 private:
 	DBusThread m_DBusThread;
 
-	void SendAlarm(GMS_AlertIndication* alert);
+	void SendAlarm(const GMS_AlertIndication* alert);
 
-	void initFilter();
 	std::shared_ptr<DBusFilter> filter_;
 };
 

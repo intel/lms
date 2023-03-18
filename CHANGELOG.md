@@ -1,8 +1,22 @@
+## [2245.0.0.0]
+
+### Fixed
+ - DBusService: store events if DBus not ready
+ - AMT_COM_Test: CMake: scope singlethread compile
+
+### Changed
+ - CIM_Framework: openwsman: update to 2.7.1
+ - conan: use ACE 7.0.7
+ - conan: use libxml2 2.10.3
+
+### Removed
+ - WMIProv: remove IMSS uninstallation code
+
 ## [2226.0.0.0]
 
 ### Fixed
-- CMake: fix debian package dependencies
-- PartialFWUpdateService: use ADL PFU Dll for EGS
+ - CMake: fix debian package dependencies
+ - PartialFWUpdateService: use ADL PFU Dll for EGS
 
 ## [2222.0.0.0]
 

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
+# Copyright (C) 2010-2022 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 add_executable (AMT_COM_Test
@@ -7,8 +7,8 @@ add_executable (AMT_COM_Test
   AMT_COM_Test/stdafx.cpp
 )
 
-target_compile_definitions (AMT_COM_Test PUBLIC
-  /MP1
+set_source_files_properties(AMT_COM_Test/AMT_COM_Test.cpp
+  PROPERTIES COMPILE_DEFINITIONS /MP1
 )
 
 target_link_libraries (AMT_COM_Test

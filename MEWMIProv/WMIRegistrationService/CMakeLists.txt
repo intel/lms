@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2021-2022 Intel Corporation
+# Copyright (C) 2021 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
-
-set (CMAKE_CXX_STANDARD 17)
 
 set(WMI_REG_SVC_MESSAGE_FILES
   ${CMAKE_CURRENT_BINARY_DIR}/EventLogMessages.h
@@ -27,9 +25,6 @@ set_source_files_properties(
 
 add_executable(WMIRegistrationService
   EventLog.cpp
-  GetSKU.cpp
-  RegistryAccess.cpp
-  UninstalIMSS.cpp
   WMIRegistrationService.cpp
   WMIRegistrationService.rc
   ${CMAKE_CURRENT_BINARY_DIR}/EventLogMessages.rc
@@ -43,9 +38,8 @@ target_include_directories(WMIRegistrationService PRIVATE
 target_link_libraries(WMIRegistrationService
   Shlwapi.lib
   Pathcch.lib
-  Cfgmgr32.lib
-  WindowsApp.lib
 )
+
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
   set_target_properties(WMIRegistrationService PROPERTIES
