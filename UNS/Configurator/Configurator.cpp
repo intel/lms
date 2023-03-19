@@ -12,6 +12,7 @@
 #include "HECIException.h"
 #include "CFG_SetOverrideProsetAdapterSwitchingCommand.h"
 #include "GetFWVersionCommand.h"
+#include "GetFWCapsCommand.h"
 #include "GMSExternalLogger.h"
 #ifdef WIN32
 #include <cguid.h>
@@ -174,13 +175,13 @@ bool Configurator::IsLMEExists() const
 	return res;
 }
 
-void GetSkuAndBrand(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform,
-	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& stateData)
+void GetSkuAndBrand(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform, bool& stateData_Amt)
 {
 	Intel::MEI_Client::MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(Intel::MEI_Client::MKHI_Client::FEATURES_ENABLED);
 	Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
 
-	stateData = getFeaturesStateCommand.getResponse();
+	auto stateData = getFeaturesStateCommand.getResponse();
+	stateData_Amt = stateData.Fields.Amt;
 	platform = getPlatformTypeCommand.getResponse();
 }
 
@@ -814,9 +815,9 @@ void Configurator::ScanConfiguration()
 
 		if (!m_SkuAndBrandScanned)
 		{
-			GetSkuAndBrand(m_platform, m_stateData);
+			GetSkuAndBrand(m_platform, m_stateData_Amt);
 			m_LME_exists = IsLMEExists();
-			UNS_DEBUG(L"platform=0x%X FWCaps=0x%X LME_exists=%d\n" , m_platform, m_stateData, m_LME_exists);
+			UNS_DEBUG(L"platform=0x%X FWCaps.Amt=%d LME_exists=%d\n" , m_platform, m_stateData_Amt, m_LME_exists);
 		}
 		m_SkuAndBrandScanned = true;
 
@@ -848,7 +849,7 @@ void Configurator::ScanConfiguration()
 				case Intel::MEI_Client::MKHI_Client::BrandStdMng:
 				case Intel::MEI_Client::MKHI_Client::BrandL3:
 					{
-						if (!m_stateData.Fields.Amt)// Manageability disabled in MEBx
+						if (!m_stateData_Amt)// Manageability disabled in MEBx
 							break;
 
 						services.Read(NamesGroup::MANAGABILITY_GROUP);

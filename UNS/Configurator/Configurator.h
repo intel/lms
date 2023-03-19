@@ -11,7 +11,6 @@
 #include "GmsSubService.h"
 
 #include "GetPlatformTypeCommand.h"
-#include "GetFWCapsCommand.h"
 #include "GetFWVersionCommand.h"
 
 #include "ace/Svc_Handler.h"
@@ -32,7 +31,9 @@ class CONFIGURATOR_Export Configurator : public GmsSubService, public IServicesM
 	public:
 
 	Configurator(): m_SkuAndBrandScanned(false), m_scanningNum(0),
-		m_LME_exists(false), m_needToStop(false), m_meiEnabled(true), m_gotMeiEnabled(false), m_inProcessType(MB_SUBSCRIBE_EVENT-1), m_inProcess(false), m_onToggleService(false), deferredResumeTimerId_(-1) {}
+		m_LME_exists(false), m_stateData_Amt(false), m_needToStop(false),
+		m_meiEnabled(true), m_gotMeiEnabled(false), m_inProcessType(MB_SUBSCRIBE_EVENT-1),
+		m_inProcess(false), m_onToggleService(false), deferredResumeTimerId_(-1) {}
 
 	~Configurator(){}
 
@@ -78,7 +79,7 @@ private:
 	bool IsLMEExists() const;
 	bool m_LME_exists;
 	Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE m_platform;
-	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI m_stateData;
+	bool m_stateData_Amt;
 
 	std::map<ACE_TString, CheckLoadFunc*> m_checkLoadMap;
 	bool m_needToStop;
