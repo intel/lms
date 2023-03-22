@@ -1102,15 +1102,13 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		LMS_ERROR PTHI_Commands_BE::GetPlatformServiceRecordRaw(std::vector<uint8_t>& binPSR)
 		{
 			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce = { 0 };
-			std::stringstream parsed;
 
 			try
 			{
 				Intel::MEI_Client::PSR_Client::PSRGetPlatformServiceRecordRawCommand psrGetPlatformServiceRecordCommand(nonce);
 				Intel::MEI_Client::PSR_Client::PSR_GET_RESPONSE_RAW psr = psrGetPlatformServiceRecordCommand.getResponse();
 
-				binPSR.assign(psr.data, psr.data + sizeof(psr.data));
-
+				binPSR = psr.data;
 				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"GetPlatformServiceRecordRaw")

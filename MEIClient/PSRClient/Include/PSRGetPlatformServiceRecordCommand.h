@@ -158,10 +158,10 @@ namespace Intel
 			struct PSR_GET_RESPONSE_RAW
 			{
 				PSR_GET_RESPONSE_RAW() : data{ 0 } {}
-				uint8_t data[sizeof(struct PSR_GET_RESPONSE)];
+				std::vector<uint8_t> data;
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator& end)
 				{
-					parseData(data, itr, end);
+					data = std::vector<uint8_t>(itr, end);
 				}
 			};
 			#pragma pack()
