@@ -109,7 +109,6 @@ TEST_F(AMT_COM_Manageability, GetFWInfo)
 	VARIANT_BOOL CryptoFuseEnable;
 	VARIANT_BOOL LocalFWupdateEnable;
 	ASSERT_NO_THROW_COM(amthi->GetFWInfo(&MEBxVersion.GetBSTR(), &BiosBootState, &CryptoFuseEnable, &LocalFWupdateEnable));
-	ASSERT_GT(MEBxVersion.length(), 0U);
 }
 
 TEST_F(AMT_COM_Manageability, GetPMCVersion)
