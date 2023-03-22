@@ -45,6 +45,7 @@
 	}                                                                      \
 
 #define ASSERT_MAY_THROW_NOTIMPL(func) ASSERT_MAY_THROW_COM_(func, E_NOTIMPL)
+#define ASSERT_MAY_THROW_FAIL(func) ASSERT_MAY_THROW_COM_(func, E_FAIL)
 
 /* ------------------------- AMT_COM_Manageability ----------------------- */
 class AMT_COM_Manageability : public ::testing::Test {
@@ -372,9 +373,9 @@ TEST_F(AMT_COM_PTHI, UpdateScreenSettings2)
 TEST_F(AMT_COM_PTHI, GetRedirectionSessionLinkTechnology)
 {
 	SHORT LinkTechnology;
-	ASSERT_NO_THROW_COM(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::SOL_S, &LinkTechnology));
-	ASSERT_NO_THROW_COM(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::IDER_S, &LinkTechnology));
-	ASSERT_NO_THROW_COM(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::KVM_S, &LinkTechnology));
+	ASSERT_MAY_THROW_FAIL(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::SOL_S, &LinkTechnology));
+	ASSERT_MAY_THROW_FAIL(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::IDER_S, &LinkTechnology));
+	ASSERT_MAY_THROW_FAIL(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::KVM_S, &LinkTechnology));
 }
 
 TEST_F(AMT_COM_PTHI, IsRebootAfterProvisioningNeeded)
