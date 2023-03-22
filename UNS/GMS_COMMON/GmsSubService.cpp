@@ -70,7 +70,7 @@ int GmsSubService::startSubService()
 
 	sendStatusChanged(SERVICE_STATUS_TYPE::LOADCOMPLETE);
 
-	UNS_DEBUG(L"%s, 0x%X\n",name().c_str(), this);
+	UNS_DEBUG(L"SubService: %s\n", name().c_str());
 	return 0;
 }
 
