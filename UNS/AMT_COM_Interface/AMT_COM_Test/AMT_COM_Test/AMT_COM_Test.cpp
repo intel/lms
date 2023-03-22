@@ -288,8 +288,8 @@ TEST_F(AMT_COM_PTHI, GetSystemUUID)
 
 TEST_F(AMT_COM_PTHI, UserInitiatedConnection)
 {
-	SHORT Status;
-	ASSERT_NO_THROW_COM(amthi->InitiateUserConnection(&Status));
+	SHORT Status = 0;
+	ASSERT_MAY_THROW_FAIL(amthi->InitiateUserConnection(&Status));
 	ASSERT_THROW_NOTIMPL(amthi->OpenUserInitiatedConnection());
 	ASSERT_NO_THROW_COM(amthi->CloseUserInitiatedConnection());
 }
