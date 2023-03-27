@@ -1,19 +1,18 @@
 #!/bin/bash
 ##############
-# LMS prerm hook
+# LMS postrm hook
 ##############
 
 case "$1" in
-    remove|upgrade|deconfigure)
-        systemctl stop -q lms
-        systemctl disable -q lms
+    purge)
+        rm -rf /etc/lms
     ;;
 
-    failed-upgrade)
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     ;;
 
     *)
-        echo "prerm called with unknown argument \`$1'" >&2
+        echo "postrm called with unknown argument \`$1'" >&2
         exit 1
     ;;
 esac
