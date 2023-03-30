@@ -27,19 +27,19 @@ KVMScreenSettingClient::~KVMScreenSettingClient()
 
 bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameters &displaySettings, short numOfDisplays)
 {
-	try 
+	try
 	{
 		if (!Init())
 			return false;
 
-		std::lock_guard<std::mutex> lock(WsManSemaphore()); 		//Lock WsMan to prevent reentry
+		std::lock_guard<std::mutex> lock(WsManSemaphore()); //Lock WsMan to prevent reentry
 		short i = 0;
 		
-		std::vector<bool> isActive(numOfDisplays);
-		std::vector<int> positionX(numOfDisplays);
-		std::vector<int> positionY(numOfDisplays);
-		std::vector<unsigned int> resolutionX(numOfDisplays);
-		std::vector<unsigned int> resolutionY(numOfDisplays);
+		std::vector<bool> isActive(MAX_DISPLAY_NUMBER);
+		std::vector<int> positionX(MAX_DISPLAY_NUMBER);
+		std::vector<int> positionY(MAX_DISPLAY_NUMBER);
+		std::vector<unsigned int> resolutionX(MAX_DISPLAY_NUMBER);
+		std::vector<unsigned int> resolutionY(MAX_DISPLAY_NUMBER);
 	
 		for (i = 0 ; i < numOfDisplays ; i++)
 		{
@@ -61,10 +61,10 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 				m_service.TertiaryIndex(displaySettings.screenSettings[i].Pipe);
 			if (i == 3)
 				m_service.QuadraryIndex(displaySettings.screenSettings[i].Pipe);
-		}	
+		}
 		m_service.IsActive(isActive);
 		m_service.UpperLeftX(positionX);
-		m_service.UpperLeftY(positionY);		
+		m_service.UpperLeftY(positionY);
 		m_service.ResolutionX(resolutionX);
 		m_service.ResolutionY(resolutionY);
 		m_service.Put();
@@ -78,9 +78,8 @@ bool KVMScreenSettingClient::Init(bool forceGet)
 	WSMAN_DEBUG("KVMScreenSettingClient::Init\n");
 	if (!forceGet && m_isInit) return true;
 	m_isInit = false;
-	
 
-	try 
+	try
 	{
 		if (!m_endpoint)
 			SetEndpoint();
@@ -92,5 +91,5 @@ bool KVMScreenSettingClient::Init(bool forceGet)
 		WSMAN_DEBUG("KVMScreenSettingClient::Initialized\n");
 	}
 	CATCH_exception("KVMScreenSettingClient::Init")
-	return m_isInit;	
+	return m_isInit;
 }
