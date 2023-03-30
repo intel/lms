@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 // AMT_COM_Test.cpp : Defines the entry point for the console application.
 //
@@ -365,9 +365,19 @@ TEST_F(AMT_COM_PTHI, UpdateScreenSettings)
 
 TEST_F(AMT_COM_PTHI, UpdateScreenSettings2)
 {
-	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters =
-	{ { 0,1,2,3,4,5 } };
-	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters, 1));
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters1 =
+	{ { { 1, 0, 0, 640, 480, 1 } } };
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters2 =
+	{ { { 1, 0, 0, 640, 480, 1 }, {1, 640, 0, 640, 480, 2} } };
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters3 =
+	{ { { 1, 0, 0, 640, 480, 1 }, {1, 640, 0, 640, 480, 2}, {1, 1280, 0, 640, 480, 3} } };
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters4 =
+	{ { { 1, 0, 0, 640, 480, 1 }, {1, 640, 0, 640, 480, 2}, {1, 1280, 0, 640, 480, 3}, {1, 1720, 0, 640, 480, 4} } };
+
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters1, 1));
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters2, 2));
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters3, 3));
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters4, 4));
 }
 
 TEST_F(AMT_COM_PTHI, GetRedirectionSessionLinkTechnology)
