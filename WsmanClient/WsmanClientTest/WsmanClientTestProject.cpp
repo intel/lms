@@ -15,6 +15,7 @@
 #include "TimeSynchronizationClient.h"
 #include "Mock_AMT_EthernetPortSettings.h"
 #include "MNGIsChangeToAMTEnabledCommand.h"
+#include "KVMScreenSettingClient.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -351,6 +352,106 @@ TEST_F(SyncIpTest, GetNetworkData)
 	// DHSP --> Static	true, 100.100.100.100, 255.255.255.0 100.100.100.3 11.11.11.11 0.0.0.0
 	//EXPECT_FALSE(syncIP.SetNetworkData(DHCPEnabled, IPAddress, subnet, gateway, dnsAddress1, dnsAddress2));
 }*/
+
+class KVMScreenSettingTest : public WsmanClientTest
+{
+};
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings1)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 1));
+}
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings2)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+	extendedDisplayParameters.screenSettings[1].isActive = 1;
+	extendedDisplayParameters.screenSettings[1].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[1].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[1].UpperLeftX = 640;
+	extendedDisplayParameters.screenSettings[1].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[1].Pipe = 2;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 2));
+}
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings3)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+	extendedDisplayParameters.screenSettings[1].isActive = 1;
+	extendedDisplayParameters.screenSettings[1].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[1].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[1].UpperLeftX = 640;
+	extendedDisplayParameters.screenSettings[1].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[1].Pipe = 2;
+	extendedDisplayParameters.screenSettings[2].isActive = 1;
+	extendedDisplayParameters.screenSettings[2].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[2].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[2].UpperLeftX = 1280;
+	extendedDisplayParameters.screenSettings[2].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[2].Pipe = 3;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 3));
+}
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings4)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+	extendedDisplayParameters.screenSettings[1].isActive = 1;
+	extendedDisplayParameters.screenSettings[1].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[1].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[1].UpperLeftX = 640;
+	extendedDisplayParameters.screenSettings[1].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[1].Pipe = 2;
+	extendedDisplayParameters.screenSettings[2].isActive = 1;
+	extendedDisplayParameters.screenSettings[2].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[2].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[2].UpperLeftX = 1280;
+	extendedDisplayParameters.screenSettings[2].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[2].Pipe = 3;
+	extendedDisplayParameters.screenSettings[3].isActive = 1;
+	extendedDisplayParameters.screenSettings[3].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[3].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[3].UpperLeftX = 1720;
+	extendedDisplayParameters.screenSettings[3].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[3].Pipe = 3;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 4));
+}
 
 void printTime(unsigned int time)
 {
