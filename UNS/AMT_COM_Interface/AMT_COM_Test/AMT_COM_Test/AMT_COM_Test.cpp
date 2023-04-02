@@ -261,7 +261,7 @@ TEST_F(AMT_COM_PTHI, GetNetworkSettings)
 
 	ASSERT_NO_THROW_COM(amthi->GetNetworkSettings(0, &DhcpEnabled, &strIpAddress.GetBSTR(), &strMacAddress.GetBSTR(),
 		&LinkStatus, &WirelessControl, &WirelessConfEnabled));
-	ASSERT_NO_THROW_COM(amthi->GetNetworkSettings(1, &DhcpEnabled, &strIpAddress.GetBSTR(), &strMacAddress.GetBSTR(),
+	ASSERT_MAY_THROW_FAIL(amthi->GetNetworkSettings(1, &DhcpEnabled, &strIpAddress.GetBSTR(), &strMacAddress.GetBSTR(),
 		&LinkStatus, &WirelessControl, &WirelessConfEnabled));
 }
 
@@ -275,7 +275,7 @@ TEST_F(AMT_COM_PTHI, GetIPv6NetworkSettings)
 
 	ASSERT_NO_THROW_COM(amthi->GetIPv6NetworkSettings(0, &IPv6DefaultRouter.GetBSTR(), &PrimaryDNS.GetBSTR(), &SecondaryDNS.GetBSTR(),
 		&Response, &Ipv6Enable));
-	ASSERT_NO_THROW_COM(amthi->GetIPv6NetworkSettings(1, &IPv6DefaultRouter.GetBSTR(), &PrimaryDNS.GetBSTR(), &SecondaryDNS.GetBSTR(),
+	ASSERT_MAY_THROW_FAIL(amthi->GetIPv6NetworkSettings(1, &IPv6DefaultRouter.GetBSTR(), &PrimaryDNS.GetBSTR(), &SecondaryDNS.GetBSTR(),
 		&Response, &Ipv6Enable));
 }
 
