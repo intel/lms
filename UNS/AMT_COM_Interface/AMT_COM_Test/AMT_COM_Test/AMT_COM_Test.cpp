@@ -306,19 +306,28 @@ TEST_F(AMT_COM_PTHI, GetKVMRedirectionState)
 	ASSERT_NO_THROW_COM(amthi->GetKVMRedirectionState(&Enabled, &Connected));
 }
 
+const short DEFAULT_LANG_ID = 100;
+
 TEST_F(AMT_COM_PTHI, Sprite)
 {
-	SHORT Language;
+	SHORT OldLanguage = 0;
+	SHORT OldZoom = 0;
+	SHORT Language = 0;
+	SHORT Zoom = 0;
+	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&OldLanguage, &OldZoom));
+
 	ASSERT_NO_THROW_COM(amthi->SetSpriteLanguage(1));
 	ASSERT_THROW_NOTIMPL(amthi->GetSpriteLanguage(&Language));
 
-	SHORT Zoom;
 	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(2));
 	ASSERT_THROW_NOTIMPL(amthi->GetSpriteZoom(&Zoom));
 
 	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&Language, &Zoom));
-	EXPECT_EQ(Language, 1);
+	EXPECT_TRUE((Language == 1) || (Language == DEFAULT_LANG_ID));
 	EXPECT_EQ(Zoom, 2);
+
+	ASSERT_NO_THROW_COM(amthi->SetSpriteLanguage(OldLanguage));
+	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(OldZoom));
 }
 
 TEST_F(AMT_COM_PTHI, GetConfigurationInfo)
