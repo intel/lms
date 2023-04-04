@@ -6,6 +6,8 @@
 //
 
 #include "stdafx.h"
+#include <chrono>
+#include <thread>
 #include <comdef.h>
 #include <atlsafe.h>
 #include "gtest/gtest.h"
@@ -322,7 +324,9 @@ TEST_F(AMT_COM_PTHI, Sprite)
 	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(2));
 	ASSERT_THROW_NOTIMPL(amthi->GetSpriteZoom(&Zoom));
 
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&Language, &Zoom));
+	std::cout << "Language = " << Language << " Zoom = "  << Zoom << std::endl;
 	EXPECT_TRUE((Language == 1) || (Language == DEFAULT_LANG_ID));
 	EXPECT_EQ(Zoom, 2);
 
