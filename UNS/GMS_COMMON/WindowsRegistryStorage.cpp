@@ -40,6 +40,7 @@ SetKeySecurity(HKEY hKey)
 	HKEY hkSub = NULL;
 	PSID systemSid = NULL;
 	PSID adminSid = NULL;
+	DWORD sidSize = SECURITY_MAX_SID_SIZE;
 
 	// Create a well-known SID for the Everyone group.
 	if (!AllocateAndInitializeSid(&SIDAuthWorld, 1,
@@ -60,7 +61,6 @@ SetKeySecurity(HKEY hKey)
 	ea[0].Trustee.TrusteeType = TRUSTEE_IS_WELL_KNOWN_GROUP;
 	ea[0].Trustee.ptstrName = (LPTSTR)pEveryoneSID;
 
-	DWORD sidSize = SECURITY_MAX_SID_SIZE;
 	if ((systemSid = LocalAlloc(LMEM_FIXED, sidSize)) == 0)
 	{
 		goto Cleanup;
