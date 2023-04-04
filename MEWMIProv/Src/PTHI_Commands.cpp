@@ -168,7 +168,7 @@ HRESULT IsUserAdmin()
 		return S_FALSE;
 	}
 
-	for (WORD i= 0 ; i < groups->GroupCount; i++)
+	for (DWORD i = 0 ; i < groups->GroupCount; i++)
 	{
 		if (EqualSid(groups->Groups[i].Sid,AdministratorsSid))
 		{
