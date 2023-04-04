@@ -112,7 +112,7 @@ PFWUpdateDllWrapperME11::~PFWUpdateDllWrapperME11()
 
 uint32_t PFWUpdateDllWrapperME11::waitForFwInitDone() //this is W/A for ME10 and ME11
 {
-	uint32_t retCode = 8707;
+	uint32_t retCode;
 	bool fwInitDone = false;
 
 	retCode = isFwInitDone(&fwInitDone);
