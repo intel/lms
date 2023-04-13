@@ -25,7 +25,8 @@
 
 using ::testing::AtLeast;
 using ::testing::Return;
-using namespace std;
+using std::cout;
+using std::endl;
 
 //Not tested - constructor with username and password, for all classes
 //Shouldn't init be private in all classes, since all methods call it anyway?

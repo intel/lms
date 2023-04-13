@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
@@ -8,8 +8,6 @@
 #include "AMT_EthernetPortSettings.h"
 
 using namespace Intel::Manageability::Cim::Typed;
-using namespace std;
-
 
 class Mock_AMT_EthernetPortSettings : public AMT_EthernetPortSettings {
 public:

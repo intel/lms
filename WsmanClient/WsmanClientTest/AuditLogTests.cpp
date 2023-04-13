@@ -11,7 +11,6 @@
 #include "AuditLogAccessor.h"
 #include <time.h>
 
-using namespace std;
 using namespace Intel::Manageability::Cim::Typed;
 
 #ifdef WIN32
