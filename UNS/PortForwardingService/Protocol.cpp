@@ -39,6 +39,7 @@ const int local_socket_domain = AF_LOCAL;
 #include <algorithm>
 #include <sstream>
 #include <fstream>
+#include <ace/SString.h>
 #include "Protocol.h"
 #include "Common.h"
 #include "LMS_if.h"
@@ -76,6 +77,29 @@ int CALLBACK ConditionAcceptFunc(
 	DWORD_PTR dwCallbackData
 	);
 #endif // WIN32
+
+namespace
+{
+	ACE_TString getErrMsg(unsigned long err)
+	{
+#ifdef WIN32
+		wchar_t buffer[1024];
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL,
+			err,
+			0,
+			buffer,
+			sizeof(buffer) / sizeof(buffer[0]) - 1,
+			0);
+		return ACE_TString(ACE_TEXT_WCHAR_TO_TCHAR(buffer));
+#else
+		char cbuf[1024];
+		char* pbuf;
+		pbuf = strerror_r(err, cbuf, sizeof(cbuf) - 1);
+		return ACE_TEXT_CHAR_TO_TCHAR(pbuf);
+#endif  // WIN32
+	}
+}
 
 Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSocketBuffer(0), _rxSocketBufferSize(0),
 					   _eventLogWrn(nullptr), _eventLogDbg(nullptr), _eventLogParam(nullptr), _clientNotFound(false)
@@ -691,7 +715,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	if (s_new == INVALID_SOCKET) {
 		int err = GetLastError();
 
-		UNS_ERROR(L"New connection denied (%d): %W \n", err, getErrMsg(err).c_str());
+		UNS_ERROR(L"New connection denied (%d): %s \n", err, getErrMsg(err).c_str());
 		_closeSocket(s_new);
 		return false;
 	}
@@ -905,7 +929,7 @@ int Protocol::Select()
 	if (res == -1) {
 		int err = GetLastError();
 
-		UNS_ERROR(L"Select error (%d): %W\n", err, getErrMsg(err).c_str());
+		UNS_ERROR(L"Select error (%d): %s\n", err, getErrMsg(err).c_str());
 		return -1;
 	}
 
@@ -996,7 +1020,7 @@ int Protocol::_rxFromSocket(SOCKET s)
 		goto out;
 	} else {
 		int err = GetLastError();
-		UNS_TRACE(L"Socket[%d]: Error (%d): %W\n", (int)s, err, getErrMsg(err).c_str());
+		UNS_TRACE(L"Socket[%d]: Error (%d): %s\n", (int)s, err, getErrMsg(err).c_str());
 		goto out;
 	}
 

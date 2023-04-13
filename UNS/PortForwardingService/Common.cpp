@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -118,26 +118,6 @@ bool CompareSuffix(const std::string &first, const std::string &second)
 	std::string myTail = second.substr(second.size() - first.size());
 
 	return (myTail == first); 
-}
-
-std::wstring getErrMsg(unsigned long err)
-{
-#ifdef WIN32
-	wchar_t buffer[1024];
-	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL,
-		err,
-		0,
-		buffer,
-		sizeof(buffer)/sizeof(buffer[0]) - 1,
-		0);
-	return std::wstring(buffer);
-#else
-	char cbuf[1024];
-	char *pbuf;
-	pbuf = strerror_r(err, cbuf, sizeof(cbuf) - 1);
-	return StringToWString(std::string(pbuf));
-#endif  // WIN32
 }
 
 addrinfo createAddrinfo(int family, int socktype, int protocol, int flags)

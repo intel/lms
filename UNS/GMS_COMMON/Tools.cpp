@@ -5,7 +5,6 @@
 #include "Tools.h"
 #include <time.h>
 #include <string>
-#include <codecvt>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -129,19 +128,6 @@ bool checkFileExist(std::wstring path)
 	return true;
 }
 #endif // WIN32
-
-std::wstring StringToWString(const string& s)
-{
-	std::wstring temp(s.length(), L' ');
-	copy(s.begin(), s.end(), temp.begin());
-	return temp;
-}
-
-std::string WStringToString(const std::wstring& wstr)
-{
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converterX;
-    return converterX.to_bytes(wstr);
-}
 
 #define FQDN_MAX_SIZE 256
 #ifdef WIN32

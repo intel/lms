@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2008-2011, 2013-2019 Intel Corporation
+ * Copyright (C) 2008-2011, 2013-2023 Intel Corporation
  */
 //----------------------------------------------------------------------------
 //
@@ -46,10 +46,7 @@ struct ADDR_Data
 //  Global Functions
 //===================================================
 bool		CompareSuffix(const std::string &first, const std::string &second);
-std::wstring	getErrMsg(unsigned long err);
 std::string		addr2str(const sockaddr_storage &addr);
 addrinfo	createAddrinfo(int family, int socktype, int protocol, int flags);
-
-
 
 #endif	//_LMS_COMMON_H_
