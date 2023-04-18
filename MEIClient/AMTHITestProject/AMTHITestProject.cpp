@@ -68,7 +68,13 @@
 	#include <arpa/inet.h>
 #endif // __linux__
 
-using namespace std;
+using std::string;
+using std::stringstream;
+using std::vector;
+using std::cout;
+using std::endl;
+using std::hex;
+using std::dec;
 using namespace Intel::MEI_Client::AMTHI_Client;
 using namespace Intel::MEI_Client::MKHI_Client;
 using namespace Intel::MEI_Client::UPID_Client;
