@@ -41,7 +41,6 @@ const int local_socket_domain = AF_LOCAL;
 #include <fstream>
 #include <ace/SString.h>
 #include "Protocol.h"
-#include "Common.h"
 #include "LMS_if.h"
 #include "Tools.h"
 #include <SetEnterpriseAccessCommand.h>
@@ -98,6 +97,28 @@ namespace
 		pbuf = strerror_r(err, cbuf, sizeof(cbuf) - 1);
 		return ACE_TEXT_CHAR_TO_TCHAR(pbuf);
 #endif  // WIN32
+	}
+
+	std::string addr2str(const sockaddr_storage& addr)
+	{
+#ifdef WIN32
+		char addressStr[2 * MAX_HOSTNAME_LEN];
+		DWORD addressStrlen = 2 * MAX_HOSTNAME_LEN;
+
+		if (WSAAddressToStringA((LPSOCKADDR)&addr, sizeof(addr), NULL, addressStr, &addressStrlen))
+		{
+			return std::string();
+		}
+		return std::string(addressStr);
+#else // WIN32
+		char addressStr[NI_MAXHOST];
+		if (getnameinfo((struct sockaddr*)&addr, sizeof(addr),
+			addressStr, sizeof(addressStr), NULL, 0, NI_NUMERICHOST))
+		{
+			return std::string();
+		}
+		return std::string(addressStr);
+#endif //WIN32
 	}
 }
 
@@ -607,7 +628,11 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 		addr->ai_socktype = type;
 
 		SOCKET_STATUS status;
-		addrinfo hints = createAddrinfo(addr->ai_family,addr->ai_socktype,addr->ai_protocol,AI_NUMERICHOST);
+		struct addrinfo hints = { 0 };
+		hints.ai_flags = AI_NUMERICHOST;
+		hints.ai_family = addr->ai_family;
+		hints.ai_socktype = addr->ai_socktype;
+		hints.ai_protocol = addr->ai_protocol;
 		addrinfo *result = NULL;
 
 
@@ -1947,6 +1972,26 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 	}
 
 	return _updateEnterpriseAccessStatus(AdapterListInfo::GetLocalDNSSuffixList(), true);
+}
+
+namespace {
+	bool CompareSuffix(const std::string& first, const std::string& second)
+	{
+		if (first.size() > second.size()) {
+
+			return false;
+		}
+
+		if ((first.size() < second.size()) &&
+			(second[second.size() - first.size() - 1] != '.')) {
+
+			return false;
+		}
+
+		std::string myTail = second.substr(second.size() - first.size());
+
+		return (myTail == first);
+	}
 }
 
 bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay)

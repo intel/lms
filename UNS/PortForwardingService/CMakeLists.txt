@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
+# Copyright (C) 2010-2023 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (UNIX)
@@ -9,7 +9,6 @@ else (UNIX)
 endif (UNIX)
 
 add_library (PortForwardingService STATIC
-  Common.cpp
   LMEConnection.cpp
   PortForwardingService.cpp
   Protocol.cpp
