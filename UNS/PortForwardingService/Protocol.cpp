@@ -129,10 +129,8 @@ Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSoc
 	_pfwdService = SERVICE_STATUS::NOT_STARTED;
 	_AmtProtVersion.MajorVersion = 0;
 	_AmtProtVersion.MinorVersion = 0;
-#ifdef _REMOTE_SUPPORT
 	_remoteAccessEnabledInAMT = false;
 	_remoteAccessCurrentlyPossible = false;
-#endif
 	_AMTFQDN = "";
 	_failureReported.clear();
 	_OutHostsFileLog=true;
@@ -172,12 +170,11 @@ bool Protocol::Init(InitParameters & params)
 			_handshakingStatus = VERSION_HANDSHAKING::INITIATED;
 		}
 	}
-#ifdef _REMOTE_SUPPORT
+
 	if (!AdapterListInfo::Init(_AdapterCallback, this)) {
 		_lme.Deinit();
 		return res;
 	}
-#endif
 
 	size_t bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
 	if (bufSize > 0) {
@@ -189,11 +186,8 @@ bool Protocol::Init(InitParameters & params)
 		return res;
 	}
 
-#ifdef _REMOTE_SUPPORT
 	res = _checkRemoteSupport(true);
-#else
-	res = true;
-#endif
+
 	return res;
 }
 
@@ -332,15 +326,12 @@ void Protocol::Deinit()
 	{
 		_lme.Deinit();
 
-#ifdef _REMOTE_SUPPORT
-
 		AdapterListInfo::Deinit();
 		{
 			std::lock_guard<std::mutex> l(_remoteAccessLock);
 			_remoteAccessEnabledInAMT = false;
 			_remoteAccessCurrentlyPossible = false;
 		}
-#endif
 
 		{
 			std::lock_guard<std::mutex> l(_channelsLock);
@@ -1342,14 +1333,13 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 															(LMETcpForwardRequestMessage *)globalMessage;
 
 							IsConnectionPermittedCallback cb = NULL;
-#ifdef _REMOTE_SUPPORT
+
 							//"0.0.0.0" means remote interface also for IPv6
-								if (_isRemoteAPFAddress(tcpForwardRequestMessage->Address)) {
-									UNS_DEBUG(L"--------->FW request to open remote tunnel- %C\n",tcpForwardRequestMessage->Address.c_str());
-									cb = _isRemoteCallback;
-								}
-								else
-#endif
+							if (_isRemoteAPFAddress(tcpForwardRequestMessage->Address)) {
+								UNS_DEBUG(L"--------->FW request to open remote tunnel- %C\n",tcpForwardRequestMessage->Address.c_str());
+								cb = _isRemoteCallback;
+							}
+							else
 							{
 								cb = _isLocalCallback;
 							}
@@ -1927,8 +1917,6 @@ bool Protocol::_isRemoteAPFAddress(const string &addr)
 	return ((addr.compare("0.0.0.0") == 0) ||(addr.compare("::")==0));
 }
 
-#ifdef _REMOTE_SUPPORT
-
 void Protocol::_AdapterCallback(void *param, SuffixMap &localDNSSuffixes)
 {
 	Protocol *prot = (Protocol *)param;
@@ -2121,10 +2109,6 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 	return retVal;
 }
 
-
-#endif
-
-
 int Protocol::_isLocalCallback(void *const param, SOCKET s, sockaddr_storage* caller_addr)
 {
 	Protocol *prot = (Protocol *)param;
@@ -2185,8 +2169,6 @@ out:
 	return result;
 }
 
-#ifdef _REMOTE_SUPPORT
-
 int Protocol::_isRemoteCallback(void *const param, SOCKET s, sockaddr_storage* caller_addr)
 {
 	Protocol *prot = (Protocol *)param;
@@ -2230,7 +2212,6 @@ int Protocol::_isRemote(SOCKET s) const
 
 	return result;
 }
-#endif
 
 int Protocol::_handleFQDNChange(const std::string &fqdn)
 {

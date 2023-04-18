@@ -31,7 +31,6 @@ else (UNIX)
 endif (UNIX)
 
 target_compile_definitions (PortForwardingService PRIVATE
-  _REMOTE_SUPPORT
   $<$<BOOL:${NETWORK_NM}>:USE_NM>
   $<$<BOOL:${NETWORK_CN}>:USE_CONNMAN>
   PORTFORWARDINGSERVICE_HAS_DLL=0
