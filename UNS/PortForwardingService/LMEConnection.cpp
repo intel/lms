@@ -240,7 +240,7 @@ bool LMEConnection::UserAuthSuccess()
 	return (res == sizeof(buf));
 }
 
-bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage versionMessage)
+bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage &versionMessage)
 {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)

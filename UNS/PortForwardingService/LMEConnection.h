@@ -277,7 +277,7 @@ public:
 	bool Disconnect(APF_DISCONNECT_REASON_CODE reasonCode);
 	bool ServiceAccept(const std::string &serviceName);
 	bool UserAuthSuccess();
-	bool ProtocolVersion(const LMEProtocolVersionMessage versionMessage);
+	bool ProtocolVersion(const LMEProtocolVersionMessage &versionMessage);
 	bool TcpForwardReplySuccess(uint32_t port);
 	bool TcpForwardReplyFailure();
 	bool TcpForwardCancelReplySuccess();

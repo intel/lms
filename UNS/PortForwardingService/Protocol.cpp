@@ -1922,7 +1922,7 @@ bool Protocol::_remoteTunnelExist()
 	return ret;
 }
 
-bool Protocol::_isRemoteAPFAddress(string addr)
+bool Protocol::_isRemoteAPFAddress(const string &addr)
 {
 	return ((addr.compare("0.0.0.0") == 0) ||(addr.compare("::")==0));
 }

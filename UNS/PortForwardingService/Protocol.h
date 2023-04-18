@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -114,7 +114,7 @@ private:
 	int _isRemote(SOCKET s) const;
 	bool _checkRemoteSupport(bool requestDnsFromAmt = false);
 	bool _updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay = false);
-	bool _isRemoteAPFAddress(std::string addr);
+	bool _isRemoteAPFAddress(const std::string &addr);
 
 #endif
 	SOCKET _connect(addrinfo *addr, unsigned int port, int type, long timeOut = 0);
