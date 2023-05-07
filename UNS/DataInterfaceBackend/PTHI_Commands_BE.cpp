@@ -1067,7 +1067,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
-				if (psr.fw_version_major >= 2)
+				if (psr.psr_version_major >= 2)
 				{
 					parsed << "<Category name=\"Capabilities\">" << std::endl;
 					for (uint32_t i = 0; i < PSR_CAPABILITIES_NUM; i++)
@@ -1092,7 +1092,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRField("S0 to S4 Transition Count", psr.ledger_info.s0_to_s4_counter);
 				parsed << formatPSRField("S0 to S3 Transition Count", psr.ledger_info.s0_to_s3_counter);
 				parsed << formatPSRField("Warm Reset Count", psr.ledger_info.warm_reset_counter);
-				if (psr.fw_version_major >= 2)
+				if (psr.psr_version_major >= 2)
 				{
 					parsed << formatPSRField("ISH Connection Count", psr.ledger_info.ish_connection_counter);
 					parsed << formatPSRField("CSME Reset Count", psr.ledger_info.csme_reset_counter);
@@ -1120,7 +1120,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					}
 					parsed << "\">" << std::endl;
 					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
-					if (psr.fw_version_major >= 2 && psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE)
+					if (psr.psr_version_major >= 2 && psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE)
 					{ // print erase sub id data
 						parsed << "<Category name=\"Data\">" << std::endl;
 						uint32_t sub_id = psr.events_info[i].event_sub_id[0] + (psr.events_info[i].event_sub_id[1] << 8) +
