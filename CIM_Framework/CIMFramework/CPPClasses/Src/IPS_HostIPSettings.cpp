@@ -9,7 +9,7 @@
 //              This file was automatically generated from IPS_HostIPSettings.mof,  version: 7.0.0
 //
 //----------------------------------------------------------------------------
-#include "IPS_HostIpSettings.h"
+#include "IPS_HostIPSettings.h"
 namespace Intel
 {
 namespace Manageability

@@ -96,7 +96,7 @@
 #include "CIM_RemoteAccessAvailableToElement.h"
 #include "CIM_ProvidesServiceToElement.h"
 #include "CIM_OwningCollectionElement.h"
-#include "IPS_HostIpSettings.h"
+#include "IPS_HostIPSettings.h"
 #include "CIM_ComputerSystemPackage.h"
 #include "CIM_PhysicalElementLocation.h"
 #include "CIM_ListenerDestination.h"

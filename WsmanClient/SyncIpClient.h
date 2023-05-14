@@ -11,7 +11,7 @@
 #ifndef  _SYNC_IP_CLIENT_H
 #define  _SYNC_IP_CLIENT_H
 
-#include "IPS_HostIpSettings.h"
+#include "IPS_HostIPSettings.h"
 #include "BaseWSManClient.h"
 #include <string>
 

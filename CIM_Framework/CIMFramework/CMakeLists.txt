@@ -1,4 +1,4 @@
-# Copyright (c) Intel Corporation, 2019-2020 All Rights Reserved.
+# Copyright (c) Intel Corporation, 2019-2023 All Rights Reserved.
 cmake_minimum_required (VERSION 3.1)
 
 add_library (CPPCIMFramework STATIC
@@ -245,7 +245,7 @@ add_library (CPPCIMFramework STATIC
   CPPClasses/Src/IPS_DALProvisioningRecord.cpp
   CPPClasses/Src/IPS_HostBasedSetupService.cpp
   CPPClasses/Src/IPS_HostBootReason.cpp
-  CPPClasses/Src/IPS_HostIpSettings.cpp
+  CPPClasses/Src/IPS_HostIPSettings.cpp
   CPPClasses/Src/IPS_HTTPProxyAccessPoint.cpp
   CPPClasses/Src/IPS_HTTPProxyService.cpp
   CPPClasses/Src/IPS_IderSessionUsingPort.cpp
