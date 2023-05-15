@@ -342,6 +342,7 @@ bool LMEConnection::TcpForwardCancelReplyFailure() {
 																if (bufferEnd <= (pCurrent + nbytes)) \
 																{ \
 																	UNS_ERROR(L"Buffer overflow %d %d %d\n", pCurrent, bufferEnd, nbytes); \
+																	delete[] buf; \
 																	return false; \
 																}
 
