@@ -66,7 +66,7 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	bool retVal = false;
 	HKEY hKey;
 	WCHAR ServiceKey[1024];
-	DWORD bufCount = MAX_PATH;
+	DWORD bufCount;
 	swprintf_s(ServiceKey, 1024, L"SYSTEM\\CurrentControlSet\\Services\\%s", serviceName.c_str());
 
 	LONG RetValue = RegOpenKeyEx( HKEY_LOCAL_MACHINE, ServiceKey, 0, KEY_QUERY_VALUE, &hKey );

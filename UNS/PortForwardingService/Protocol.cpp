@@ -215,7 +215,6 @@ void Protocol::_TCPCleanup()
 	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0)) ==
 		ERROR_INSUFFICIENT_BUFFER) {
 			delete []pTcpTable;
-			pTcpTable = NULL;
 			pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[dwSize];
 			if (pTcpTable == NULL) {
 				UNS_ERROR(L"Error allocating memory\n");
@@ -842,18 +841,14 @@ int CALLBACK ConditionAcceptFunc(
 //------------------------------------------------------------------
 int Protocol::checkAcceptLogic(sockaddr_storage& caller_addr, unsigned int port, PortForwardRequest* PW_req)
 {
-	int ret = CF_REJECT;
-
 	if (_remoteAccessEnabledInAMT)
 	{
-		ret = CF_ACCEPT;	// (remote VPN) the detection test will be done after accepting the connection.
+		return CF_ACCEPT;	// (remote VPN) the detection test will be done after accepting the connection.
 					// (maybe LMS will close the connection later)
 	}
-	else{
-		PW_req = _findFWReq(NULL,port,&caller_addr);
-		ret = ((PW_req == NULL)? CF_REJECT : CF_ACCEPT);
-	}
-	return ret;
+
+	PW_req = _findFWReq(NULL,port,&caller_addr);
+	return ((PW_req == NULL)? CF_REJECT : CF_ACCEPT);
 }
 #endif // WIN32
 
