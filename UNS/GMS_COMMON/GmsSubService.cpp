@@ -22,7 +22,7 @@ int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"initSubService");
 
-	m_mainService = theService::instance();
+	m_mainService = GmsService::getService();
 	if (m_mainService == NULL)
 	{
 		UNS_ERROR(L"GmsService is not instantiated\n");
@@ -143,7 +143,7 @@ void GmsSubService::HandleAceMessage( int type, MessageBlockPtr &mbPtr )
 bool GmsSubService::sendAlertIndicationMessage(unsigned short category, unsigned long id,
 	const ACE_TString &Message, const ACE_TString &MessageArgument)
 {
-	auto svc = theService::instance();
+	auto svc = GmsService::getService();
 	if (svc == nullptr)
 		return false;
 	

@@ -32,7 +32,7 @@ int RunUNSService(GmsService** gmsSrv)
 #endif //WIN32
 	 try
 	 {
-		 *gmsSrv = theService::instance();
+		 *gmsSrv = GmsService::getService();
 		 if (*gmsSrv == NULL)
 			 return -1;
 		 return (*gmsSrv)->activate();
@@ -51,7 +51,7 @@ void sig_term(int signo)
 		return;
 
 	GMSExternalLogger::instance().ServiceStopped();
-	GmsService* gmsSrv = theService::instance();
+	GmsService* gmsSrv = GmsService::getService();
 	if (gmsSrv)
 		gmsSrv->stop();
 }

@@ -18,6 +18,10 @@
 
 typedef void (*HeciEventCallBack) (void *param);
 
+class GmsService;
+
+typedef ACE_Unmanaged_Singleton<GmsService, ACE_Mutex> theService;
+
 class GMS_COMMON_EXPORT GmsService :
 #ifdef WIN32
 	public ACE_NT_Service,
@@ -85,6 +89,18 @@ public:
 	void SetPortForwardingPort(unsigned int portForwardingPort);
 
 
+	static GmsService* getService()
+	{
+		try
+		{
+			return theService::instance();
+		}
+		catch (const std::runtime_error&)
+		{
+			return nullptr;
+		}
+	}
+
 private:
 	bool stopped;
 	bool loading;
@@ -101,7 +117,5 @@ private:
 	ACE_Static_Svc_Descriptor& svcByName(const ACE_TString &serviceName);
 	void initServiceMap();
 };
-
-typedef ACE_Unmanaged_Singleton<GmsService, ACE_Mutex> theService;
 
 #endif // _GMS_SERVICE

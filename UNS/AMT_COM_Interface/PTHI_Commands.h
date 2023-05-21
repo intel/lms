@@ -32,7 +32,9 @@ class ATL_NO_VTABLE CPTHI_Commands :
 public:
 	CPTHI_Commands()
 	{
-		theService::instance()->inherit_log_msg_attributes();
+		auto svc = GmsService::getService();
+		if (svc)
+			svc->inherit_log_msg_attributes();
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PTHI_COMMANDS)

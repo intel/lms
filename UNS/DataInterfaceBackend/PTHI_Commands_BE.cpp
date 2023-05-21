@@ -606,7 +606,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
 		{
-			auto svc = theService::instance();
+			auto svc = GmsService::getService();
 			if (svc == nullptr)
 			{
 				return LMS_ERROR::FAIL;

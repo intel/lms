@@ -32,7 +32,9 @@ class ATL_NO_VTABLE CManageability_Commands :
 public:
 	CManageability_Commands()
 	{
-		theService::instance()->inherit_log_msg_attributes();
+		auto svc = GmsService::getService();
+		if (svc)
+			svc->inherit_log_msg_attributes();
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_Manageability_Commands)
