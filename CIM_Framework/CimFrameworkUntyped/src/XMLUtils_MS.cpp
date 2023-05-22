@@ -25,7 +25,14 @@ namespace XMLUtils
   
 	string ConvertCComBSTRToString(CComBSTR val)
 	{
-		return (string)CW2A(val);
+		try
+		{
+			return (string)CW2A(val);
+		}
+		catch (const ATL::CAtlException&)
+		{
+			throw XMLException("Failed to convert string");
+		}
 	}
 
 	// Function to remove empty definitions of namespaces.
