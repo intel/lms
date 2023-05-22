@@ -59,7 +59,7 @@ bool SyncNetworkData::ValidateLinkStatus()
 		}
 
 		UNS_DEBUG(L"Num Entries: %d\n", pIPAddrTable->dwNumEntries);
-		for (int i=0; i < (int) pIPAddrTable->dwNumEntries; i++) {
+		for (DWORD i = 0; i < (int) pIPAddrTable->dwNumEntries; i++) {
 
 			UNS_DEBUG(L"Interface Index[%d]:\t%d %d\n", i, pIPAddrTable->table[i].dwIndex, m_NICindex);
 			UNS_DEBUG(L"Type: %u\n", pIPAddrTable->table[i].wType);

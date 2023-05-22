@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -33,7 +33,7 @@ public:
 				sockaddr_in6 * b = (sockaddr_in6 *)&_Right;
 
 				diff = a->sin6_scope_id - b->sin6_scope_id;
-				int i = 0;
+				size_t i = 0;
 				while ((diff == 0) && (i <= 14)) {
 					diff = a->sin6_addr.s6_addr[i] - b->sin6_addr.s6_addr[i];
 					++i;

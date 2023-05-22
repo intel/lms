@@ -200,7 +200,7 @@ void Protocol::_TCPCleanup()
 	DWORD dwSize = 0;
 	DWORD dwRetVal = 0;
 
-	int i;
+	DWORD i;
 
 	pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCPTABLE_OWNER_PID)];
 	if (pTcpTable == NULL) {
