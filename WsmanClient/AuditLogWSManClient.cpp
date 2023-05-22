@@ -36,13 +36,14 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 		CimTyped::AMT_AuditLog::ReadRecords_OUTPUT output;
 		// Read Records
 		unsigned int recordsRead = 0;
-		unsigned int totalRecordsCount;// = output.TotalRecordCount();
+		unsigned int totalRecordsCount;
+		const unsigned int MAX_RECORDS_COUNT = 10000;
 		do
 		{
 			input.StartIndex(recordsRead + 1);
 
 			// Call SOAP Method.
-			unsigned int response = m_service.ReadRecords(input, output);				
+			unsigned int response = m_service.ReadRecords(input, output);
 
 			// Check Return Value.
 			if (response != 0)
@@ -57,16 +58,16 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 			}
 	
 			totalRecordsCount = output.TotalRecordCount();
-			unsigned int outputSize = (unsigned int)output.EventRecords().size();
+			size_t outputSize = output.EventRecords().size();
 			// Insert Records to new vector
-			for(unsigned int i=0; i<outputSize; i++)
+			for(size_t i = 0; i < outputSize; i++)
 			{
 				records.push_back(CimTyped::Base64(output.EventRecords().at(i)));
 			}
 			// update number of records that were read 
 			recordsRead += outputSize;
-				
-		}while(recordsRead < totalRecordsCount);			
+
+		} while (recordsRead < totalRecordsCount && recordsRead < MAX_RECORDS_COUNT);
 	}
 	CATCH_exception_return("AuditLogWSManClient::readLogsFromFW")
 	return true;
