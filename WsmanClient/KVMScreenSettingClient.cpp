@@ -25,7 +25,7 @@ KVMScreenSettingClient::~KVMScreenSettingClient()
 {
 }
 
-bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameters &displaySettings, short numOfDisplays)
+bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameters &displaySettings, unsigned short numOfDisplays)
 {
 	try
 	{
@@ -33,7 +33,7 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 			return false;
 
 		std::lock_guard<std::mutex> lock(WsManSemaphore()); //Lock WsMan to prevent reentry
-		short i = 0;
+		unsigned short i = 0;
 		
 		std::vector<bool> isActive(MAX_DISPLAY_NUMBER);
 		std::vector<int> positionX(MAX_DISPLAY_NUMBER);

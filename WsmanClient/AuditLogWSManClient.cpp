@@ -1287,7 +1287,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminPowerPackageModifiedEvent(u
 		data << std::setw(2) << (int)extData[k];
 	}
 	data << std::dec << std::nouppercase;
-	for (int k=0; k<12; k++)
+	for (size_t k = 0; k < 12; k++)
 	{
 		if (data.str().compare(powerPolicyFW[k]) == 0)
 		{
@@ -1555,7 +1555,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminTcpIpParameterSetEvent(uint8
 	{
 		std::string addresses[] = { "IPv4 Address: ", "Subnet Mask: " , "Default Gateway: " ,"Preferred DNS Server: ", "Alternate DNS Server: " };
 
-		for (int j =0; j < 5; j++) 
+		for (size_t j = 0; j < 5; j++)
 		{
 			if ((i+4)<=extendedDataLen)
 			{
@@ -1723,7 +1723,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 {
 	std::stringstream ss;
 	int i = 0;
-	int interfaceIDGenType = 0;
+	uint8_t interfaceIDGenType = 0;
 
 	if (i < extendedDataLen)
 	{
@@ -1740,7 +1740,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 	{
 		interfaceIDGenType = extData[i];
 		std::string interfaceIDGenTypeString = "Unknown";
-		if ((interfaceIDGenType >= 0) && (interfaceIDGenType <= MAX_INTERFACE_ID_GEN_TYPE_STRINGS))
+		if (interfaceIDGenType <= MAX_INTERFACE_ID_GEN_TYPE_STRINGS)
 		{
 			interfaceIDGenTypeString = interfaceIDGenTypeStrings[interfaceIDGenType];
 		}
@@ -1772,7 +1772,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 	}
 	
 	std::string addresses[] = { "IPv6 Address: " , "Default Gateway: " ,  "Preferred DNS Server: ", "Alternate DNS Server: "};
-	for (int j = 0; j < 4; j++)
+	for (size_t j = 0; j < 4; j++)
 	{
 		if ((i+16) <= extendedDataLen)
 		{

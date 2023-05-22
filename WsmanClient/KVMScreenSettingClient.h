@@ -41,7 +41,7 @@ public:
 
 	/*Actual soap actions!*/
 	
-	bool updateScreenSettings(const ExtendedDisplayParameters &displaySettings, short numOfDisplays);
+	bool updateScreenSettings(const ExtendedDisplayParameters &displaySettings, unsigned short numOfDisplays);
 	
 private:
 	bool Init(bool forceGet = false);

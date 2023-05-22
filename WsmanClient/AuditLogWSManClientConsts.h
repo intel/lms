@@ -240,7 +240,7 @@ const static std::string securityAuditLogRecoveryReason[] = { "Unknown",
 														"Migration failure",
 														"Initialization failure" };
 
-const static unsigned short MAX_INTERFACE_ID_GEN_TYPE_STRINGS = 3;
+const static uint8_t MAX_INTERFACE_ID_GEN_TYPE_STRINGS = 3;
 const static std::string interfaceIDGenTypeStrings[] = { "Random ID", "Intel ID", "Manual ID", "Invalid ID" };
 
 typedef enum _NetworkTimeEventID
