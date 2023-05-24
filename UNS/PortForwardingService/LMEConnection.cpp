@@ -646,21 +646,24 @@ void LMEConnection::_doRX()
 
 			case APF_SERVICE_REQUEST:
 				{
-					APF_SERVICE_REQUEST_MESSAGE *pMessage =
-						(APF_SERVICE_REQUEST_MESSAGE *)rxBuffer;
+					APF_SERVICE_REQUEST_MESSAGE *pMessage = (APF_SERVICE_REQUEST_MESSAGE *)rxBuffer;
 
+					if ((posBytesRead < sizeof(APF_SERVICE_REQUEST_MESSAGE))) {
+						UNS_ERROR(L"Error receiving data from HECI\n");
+						Deinit(true);
+						return;
+					}
 
-					if ((posBytesRead < sizeof(APF_SERVICE_REQUEST)) ||
-						(posBytesRead < sizeof(APF_SERVICE_REQUEST) +
-														ntohl(pMessage->ServiceNameLength))) {
+					uint32_t len = ntohl(pMessage->ServiceNameLength);
+
+					if (len > std::max(strlen(APF_SERVICE_PFWD), strlen(APF_SERVICE_AUTH)) ||
+						posBytesRead < sizeof(APF_SERVICE_REQUEST) + len) {
 						UNS_ERROR(L"Error receiving data from HECI\n");
 						Deinit(true);
 						return;
 					}
 
 					LMEServiceRequestMessage serviceRequestMessage;
-
-					uint32_t len = ntohl(pMessage->ServiceNameLength);
 					serviceRequestMessage.ServiceName.append((char *)pMessage->ServiceName, len);
 
 					_cb(_cbParam, &serviceRequestMessage, sizeof(serviceRequestMessage), &status);
@@ -746,6 +749,12 @@ void LMEConnection::_doRX()
 				{
 					APF_GENERIC_HEADER *pHeader = (APF_GENERIC_HEADER *)rxBuffer;
 
+					if (posBytesRead < sizeof(APF_GENERIC_HEADER)) {
+						UNS_ERROR(L"Error receiving data from HECI\n");
+						Deinit(true);
+						return;
+					}
+
 					if (posBytesRead < sizeof(APF_GENERIC_HEADER) + ntohl(pHeader->StringLength) + sizeof(uint8_t)) {
 						// TBD Do we want to deinit?
 						UNS_ERROR(L"Error receiving data from HECI\n");
@@ -829,6 +838,12 @@ void LMEConnection::_doRX()
 			case APF_CHANNEL_OPEN:
 				{
 					APF_GENERIC_HEADER *pHeader = (APF_GENERIC_HEADER *)rxBuffer;
+
+					if (posBytesRead < sizeof(APF_GENERIC_HEADER)) {
+						UNS_ERROR(L"Error receiving data from HECI\n");
+						Deinit(true);
+						return;
+					}
 
 					if (posBytesRead < sizeof(APF_GENERIC_HEADER) + ntohl(pHeader->StringLength)) {
 						UNS_ERROR(L"Error receiving data from HECI\n");
