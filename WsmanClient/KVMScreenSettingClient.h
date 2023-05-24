@@ -23,7 +23,6 @@ public:
 	static const unsigned int MAX_DISPLAY_NUMBER = 4;
 
 	KVMScreenSettingClient(unsigned int port);
-	KVMScreenSettingClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~KVMScreenSettingClient();
 
 	struct ScreenSettings

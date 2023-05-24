@@ -12,11 +12,6 @@ IPSIderSessionUsingPortClient::IPSIderSessionUsingPortClient(unsigned int port) 
 {
 }
 
-IPSIderSessionUsingPortClient::IPSIderSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_LinkTechnology(0)
-{
-}
-
 IPSIderSessionUsingPortClient::~IPSIderSessionUsingPortClient()
 {
 }

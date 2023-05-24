@@ -19,7 +19,6 @@ class WSMAN_DLL_API AMTEthernetPortSettingsClient : public BaseWSManClient
 {
 public:
 	AMTEthernetPortSettingsClient(unsigned int port);
-	AMTEthernetPortSettingsClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~AMTEthernetPortSettingsClient();
 
 	bool GetAMTEthernetPortSettings(unsigned int* pLinkPreference, unsigned int* pLinkControl, unsigned int* pLinkProtection, bool* pIsLink);

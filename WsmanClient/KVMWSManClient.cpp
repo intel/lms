@@ -16,10 +16,6 @@ KVMWSManClient::KVMWSManClient(unsigned int port) : BaseWSManClient(port), m_isI
 {
 
 }
-KVMWSManClient::KVMWSManClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_isInit(false), m_isSAPInit(false)
-{
-}
 
 KVMWSManClient::~KVMWSManClient()
 {

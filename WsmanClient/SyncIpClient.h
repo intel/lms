@@ -19,7 +19,6 @@ class WSMAN_DLL_API SyncIpClient : public BaseWSManClient
 {
 public:
 	SyncIpClient(unsigned int port);
-	SyncIpClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~SyncIpClient();
 
 	bool GetNetworkData(bool& DHCPEnabled, std::string& IPAddress, std::string& SubNet, std::string& GateWay,

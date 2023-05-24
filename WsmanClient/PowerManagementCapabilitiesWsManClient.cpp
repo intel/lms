@@ -46,11 +46,6 @@ PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(unsigned in
 {
 }
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_isInit(false)
-{
-}
-
 PowerManagementCapabilitiesClient::~PowerManagementCapabilitiesClient()
 {
 }

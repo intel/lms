@@ -16,11 +16,6 @@ KVMScreenSettingClient::KVMScreenSettingClient(unsigned int port) : BaseWSManCli
 {
 }
 
-KVMScreenSettingClient::KVMScreenSettingClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_isInit(false)
-{
-}
-
 KVMScreenSettingClient::~KVMScreenSettingClient()
 {
 }

@@ -11,7 +11,6 @@ class WSMAN_DLL_API IPSKVMSessionUsingPortClient : public BaseWSManClient
 {
 public:
 	IPSKVMSessionUsingPortClient(unsigned int port);
-	IPSKVMSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~IPSKVMSessionUsingPortClient();
 
 	bool GetSessionLinkTechnology(short *pLinkTechnology);

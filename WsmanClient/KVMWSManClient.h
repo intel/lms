@@ -20,7 +20,6 @@ class WSMAN_DLL_API KVMWSManClient : public BaseWSManClient
 {
 public:
 	KVMWSManClient(unsigned int port);
-	KVMWSManClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~KVMWSManClient();
 
 	/*Actual soap actions!*/

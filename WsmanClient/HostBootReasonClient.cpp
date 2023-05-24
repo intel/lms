@@ -17,11 +17,6 @@ HostBootReasonClient::HostBootReasonClient(unsigned int port) : BaseWSManClient(
 {
 }
 
-HostBootReasonClient::HostBootReasonClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_isInit(false)
-{
-}
-
 HostBootReasonClient::~HostBootReasonClient()
 {
 }

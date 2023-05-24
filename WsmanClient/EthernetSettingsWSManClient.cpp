@@ -15,11 +15,6 @@ EthernetSettingsWSManClient::EthernetSettingsWSManClient(unsigned int port) : Ba
 {
 }
 
-EthernetSettingsWSManClient::EthernetSettingsWSManClient(unsigned int port, const std::string &userName, const std::string &password) :
-	BaseWSManClient(port, userName, password), m_isInit(false)
-{
-}
-
 EthernetSettingsWSManClient::~EthernetSettingsWSManClient()
 {
 }
