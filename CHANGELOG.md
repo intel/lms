@@ -1,3 +1,57 @@
+## [2322.0.0.0]
+
+
+### Fixed
+ - GMS_COMMON: check if constants are already defined
+ - clean up trailing whitespaces
+ - openwsman: fix memory cleanup
+ - WsmanClient: fix memory cleanup
+ - gitattributes: vcproj should eol as crlf
+ - openwsman: wsmc_handler: clear previous flags if not verifying host or peer
+ - tests: use non-tls port if tls one is not available
+ - tests: ignore cert in wget test
+ - WsmanClient: KVMScreenSettingClient: fix non 4 displays
+
+### Changed
+ - PartialFWUpdateService: update error list
+ - scope and modernize enums
+ - CIM_Framework: sync with AMT SDK
+ - clean and modernize code
+ - CIM_Framework: openwsman: update to 2.7.2
+ - update MeTee dependency to 3.1.6
+ - conan: use ACE 7.0.11
+ - WsmanClient: split AuditLog constants to own header
+ - Configurator: store only amt bit in class
+ - tests: replace vbs test with powershell one
+ - AMT_COM_Interface: Test: fixes
+ - conan: use libxml2 2.10.4
+
+### Added
+ - PSR 2.0
+ - PartialFWUpdateService: add support for new FWUpdateLib_18.dll
+ - COM: add SkuMgrQualifiedBrandEntitlements method
+ - WMIProv: implement more UPID commands and fields
+ - LMS: openwsman: OpenWsmanClient: add AllowSelfSignedServerCert method
+ - CIM_Framework: CimOpenWsmanClient: allow self-signed server cert
+ - add ability to connect to AMT secure port
+ - tests: use port 16993
+ - Linux: add systemd sandboxing config
+ - Pack: extend debian package scripts
+ - openwsman: wsman-win-client-transport: add SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE
+ - WsmanClient: Test: add KVMScreenSettingClient test
+ - set security policy for the project
+
+### Removed
+ - unpublish discontinued capabilities
+ - CIM_Framework: remove unused VS project files
+ - CIM_Framework: disable openwsman server compile
+ - WMIProv: deprecate Activate, GetAMTProvisioningMode and GetActivationTLSMode call
+ - WMIProv: deprecate CancelActivation
+ - WMIProv: Test: drop GetActivationTLSMode test
+ - WsmanClient: AuditLogWSManClient: remove deprecated function
+ - GMS_COMMON: remove pointer print
+ - cleanup capabilities
+
 ## [2245.0.0.0]
 
 ### Fixed
