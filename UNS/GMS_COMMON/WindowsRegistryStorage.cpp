@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -28,16 +28,13 @@
 bool
 SetKeySecurity(HKEY hKey)
 {
-
-	bool res = false;
+	bool res;
 	DWORD dwRes;
-	PSID pEveryoneSID = NULL, pSystemSID = NULL;
+	PSID pEveryoneSID = NULL;
 	PACL pACL = NULL;
 	PSECURITY_DESCRIPTOR pSD = NULL;
 	EXPLICIT_ACCESS ea[NUM_OF_ENTRIES];
 	SID_IDENTIFIER_AUTHORITY SIDAuthWorld = SECURITY_WORLD_SID_AUTHORITY;
-	/**SID_IDENTIFIER_AUTHORITY SIDAuthNT = SECURITY_NT_AUTHORITY;*/
-	HKEY hkSub = NULL;
 	PSID systemSid = NULL;
 	PSID adminSid = NULL;
 	DWORD sidSize = SECURITY_MAX_SID_SIZE;
@@ -142,16 +139,12 @@ Cleanup:
 
 	if (pEveryoneSID)
 		FreeSid(pEveryoneSID);
-	if (pSystemSID)
-		FreeSid(pSystemSID);
 	if (adminSid)
-		FreeSid(adminSid);
+		LocalFree(adminSid);
 	if (pACL)
 		LocalFree(pACL);
 	if (pSD)
 		LocalFree(pSD);
-	if (hkSub)
-		RegCloseKey(hkSub);
 	if (systemSid)
 		LocalFree(systemSid);
 
