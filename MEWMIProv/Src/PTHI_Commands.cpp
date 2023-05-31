@@ -753,13 +753,13 @@ unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 		MEAudit->SecureDNS = response.SecureDNS;
 		MEAudit->HostInitiated = response.HostInitiated;
 		MEAudit->SelectedHashType = response.SelectedHashType;
-		for (int i=0; i < sizeof(response.SelectedHashData.SelectedHashData)/sizeof(response.SelectedHashData.SelectedHashData[0]); i++)
+		for (size_t i = 0; i < sizeof(response.SelectedHashData.SelectedHashData)/sizeof(response.SelectedHashData.SelectedHashData[0]); i++)
 			MEAudit->SelectedHashData.push_back( response.SelectedHashData.SelectedHashData[i]);
-		for (int i=0; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i++)
+		for (size_t i = 0; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i++)
 			MEAudit->CACertificateSerial1.push_back( response.CaCertificateSerials.CaCertificateSerials[i]);
-		for (int i=NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i++)
+		for (size_t i = NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i++)
 			MEAudit->CACertificateSerial2.push_back( response.CaCertificateSerials.CaCertificateSerials[i]);
-		for (int i=NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*3; i++)
+		for (size_t i = NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*3; i++)
 			MEAudit->CACertificateSerial3.push_back( response.CaCertificateSerials.CaCertificateSerials[i]);
 		MEAudit->AdditionalCaSerialNums = response.AdditionalCaSerialNums;
 		MEAudit->IsOemDefault = response.IsOemDefault;
