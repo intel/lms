@@ -8,6 +8,7 @@
 #include "MEIClientException.h"
 #include <cstring>
 #include <vector>
+#include <cstdint>
 
 namespace Intel
 {
