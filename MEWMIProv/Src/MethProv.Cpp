@@ -61,26 +61,25 @@ CMethodPro::~CMethodPro(void)
 
 STDMETHODIMP CMethodPro::QueryInterface(REFIID riid, PPVOID ppv)
 {
-    *ppv=NULL;
+    *ppv = NULL;
 
-    if (IID_IUnknown==riid || IID_IWbemServices == riid || IID_IWbemProviderInit==riid)
-       if(riid== IID_IWbemServices){
-          *ppv=(IWbemServices*)this;
-       }
+    if(riid == IID_IWbemServices)
+	{
+        *ppv = (IWbemServices*)this;
+    }
 
-       if(IID_IUnknown==riid || riid== IID_IWbemProviderInit){
-          *ppv=(IWbemProviderInit*)this;
-       }
-    
+    if(IID_IUnknown == riid || riid == IID_IWbemProviderInit)
+	{
+        *ppv = (IWbemProviderInit*)this;
+    }
 
-    if (NULL!=*ppv) {
+    if (NULL != *ppv) {
         AddRef();
         return NOERROR;
-        }
-    else
-        return E_NOINTERFACE;
-}
+    }
 
+    return E_NOINTERFACE;
+}
 
 STDMETHODIMP_(ULONG) CMethodPro::AddRef(void)
 {
