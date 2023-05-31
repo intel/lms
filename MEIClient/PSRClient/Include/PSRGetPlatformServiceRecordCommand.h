@@ -217,7 +217,7 @@ namespace Intel
 						ledger_info2.reserved2[4] = 0;
 					}
 					parseData(events_count, itr, end);
-					for (int i = 0; i < PSR_CRITICAL_EVENTS_NUM_MAX; i++)
+					for (size_t i = 0; i < PSR_CRITICAL_EVENTS_NUM_MAX; i++)
 					{
 						parseData(events_info[i].event_id, itr, end);
 						parseArray(events_info[i].event_sub_id, 3, itr, end);
