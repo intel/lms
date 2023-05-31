@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2021 Intel Corporation
+ * Copyright (C) 2011-2023 Intel Corporation
  */
 #include "VerifyFile.h"
 #include "DataStorageGenerator.h"
@@ -90,7 +90,7 @@ bool VerifyFile::VerifyDll(const std::wstring &filepath, HANDLE hFile)
 	return true;
 }
 
-const HMODULE VerifyFile::SafeLoadDll(const std::wstring & wcName)
+HMODULE VerifyFile::SafeLoadDll(const std::wstring & wcName)
 {
 	HANDLE file_handle = nullptr;
 	HMODULE library_handle = nullptr;
