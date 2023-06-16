@@ -139,7 +139,7 @@ if (UNIX)
   install (FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/70-persistent-mei.rules
     ${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/70-mei-wdt.rules
-    DESTINATION /lib/udev/rules.d/
+    DESTINATION /usr/lib/udev/rules.d/
   )
 
   install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/linux_scripts/20-lms.conf
