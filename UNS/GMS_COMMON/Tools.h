@@ -7,21 +7,20 @@
 
 #pragma once
 #include <string>
-#include "GMSCommonDllExport.h"
 
-std::string GMS_COMMON_EXPORT getDateTime();
+std::string getDateTime();
 
 // Parse the MAC address from IP_ADAPTER_INFO Address field to human readable string
-std::string GMS_COMMON_EXPORT MacAddressToString(unsigned char addr[], unsigned int addrLen);
+std::string MacAddressToString(unsigned char addr[], unsigned int addrLen);
 
 #ifdef WIN32
-bool GMS_COMMON_EXPORT GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFilePath);
+bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFilePath);
 
-bool GMS_COMMON_EXPORT checkFileExist(std::wstring path);
+bool checkFileExist(std::wstring path);
 
 std::wstring UTF8ToWStr(const std::string& s);
 #endif // WIN32
 
-bool GMS_COMMON_EXPORT GetLocalFQDN(std::string& fqdn);
+bool GetLocalFQDN(std::string& fqdn);
 
 #endif //_TOOLS_H

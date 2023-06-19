@@ -19,7 +19,6 @@
 
 #include <string>
 #include <memory>
-#include "GMSCommonDllExport.h"
 
 enum DATA_NAME : unsigned int;
 
@@ -37,7 +36,7 @@ public:
 	virtual bool ValueExists(DATA_NAME name) = 0;
 };
 
-class GMS_COMMON_EXPORT DataStorageWrapper
+class DataStorageWrapper
 {
 public:
 	friend DataStorageWrapper& GenerateDS();

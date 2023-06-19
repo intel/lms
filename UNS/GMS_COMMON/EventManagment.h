@@ -11,7 +11,6 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "GMSCommonDllExport.h"
 
 enum { MB_SUBSCRIBE_EVENT = ACE_Message_Block::MB_USER,MB_UNSUBSCRIBE_EVENT,
 		MB_PUBLISH_EVENT, MB_PFWU_EVENT,MB_PFWU_START_EVENT,
@@ -22,7 +21,7 @@ enum { MB_SUBSCRIBE_EVENT = ACE_Message_Block::MB_USER,MB_UNSUBSCRIBE_EVENT,
 		MB_DEVICE_EVENT, MB_TIMER_EXPIRED, MB_SRVICE_UP, MB_PWR_OPR_START_EVENT, MB_ME_CONFIGURED,
 		MB_TASK_COMPLETED, MB_DEFERRED_RESUME, MB_WTS_SESSION_UNLOCK, MB_WPFS_SYNC};
 
-struct GMS_COMMON_EXPORT GmsEventType {
+struct GmsEventType {
 	unsigned short	category;
 	unsigned long	id;
 	ACE_CString message;
@@ -45,7 +44,7 @@ struct GMS_COMMON_EXPORT GmsEventType {
 };
 
 
-class GMS_COMMON_EXPORT GMS_AlertIndication: public ACE_Data_Block
+class GMS_AlertIndication: public ACE_Data_Block
 {
 public:
 	GMS_AlertIndication(): category(0), id(0) {} ;	// Default constructor
@@ -77,7 +76,7 @@ public:
 	std::vector<ACE_TString>  MessageArguments; // addition to message
 };
 
-class GMS_COMMON_EXPORT EventsFilter
+class EventsFilter
 {
 public:
 	EventsFilter() {}
@@ -85,7 +84,7 @@ public:
 	virtual bool toSubscribe(const GMS_AlertIndication *alert) const = 0;
 };
 
-class GMS_COMMON_EXPORT SubscribeEventHandler: public ACE_Data_Block
+class SubscribeEventHandler: public ACE_Data_Block
 {
 public:
 	SubscribeEventHandler() {};	// Default constructor
@@ -99,7 +98,7 @@ public:
 	std::shared_ptr<EventsFilter>	   filter_;
 };
 
-class GMS_COMMON_EXPORT UnSubscribeEventHandler: public ACE_Data_Block
+class UnSubscribeEventHandler: public ACE_Data_Block
 {
 public:
 	UnSubscribeEventHandler() : meiEnabled_(false) {};	// Default constructor
@@ -125,7 +124,7 @@ enum class CONFIGURATION_TYPE
 	WRONG_CONFIGURATION_TYPE
 };
 
-class GMS_COMMON_EXPORT ChangeConfiguration: public ACE_Data_Block
+class ChangeConfiguration: public ACE_Data_Block
 {
 public:
 	ChangeConfiguration() : type(CONFIGURATION_TYPE::WRONG_CONFIGURATION_TYPE), value(0)  {};	// Default constructor
@@ -142,7 +141,7 @@ public:
 	int 	value;      // the new configuration
 };
 
-class GMS_COMMON_EXPORT StartPFWUP: public ACE_Data_Block
+class StartPFWUP: public ACE_Data_Block
 {
 public:
 	StartPFWUP() : value(0) {};											// Default constructor
@@ -156,7 +155,7 @@ public:
 	short 	value;												// Language to update
 };
 
-class GMS_COMMON_EXPORT DeviceEventDataBlock : public ACE_Data_Block
+class DeviceEventDataBlock : public ACE_Data_Block
 {
 public:
 	DeviceEventDataBlock() : eventType(0), wasOnOurGuid(false) {};// Default constructor
@@ -172,7 +171,7 @@ public:
 	bool wasOnOurGuid;
 };
 
-class GMS_COMMON_EXPORT StopServiceDataBlock: public ACE_Data_Block
+class StopServiceDataBlock: public ACE_Data_Block
 {
 public:
 	StopServiceDataBlock():m_meiEnabled(true) {};											// Default constructor
@@ -194,7 +193,7 @@ enum class SERVICE_STATUS_TYPE
 	UNKNOWN,
 };
 
-class GMS_COMMON_EXPORT ServiceStatus: public ACE_Data_Block
+class ServiceStatus: public ACE_Data_Block
 {
 public:
 	ServiceStatus() : serviceName(), status(SERVICE_STATUS_TYPE::UNKNOWN) {}; // Default constructor
@@ -210,7 +209,7 @@ public:
 	SERVICE_STATUS_TYPE 	status;      // the new status
 };
 
-class GMS_COMMON_EXPORT PortForwardingStoppedBlock : public ACE_Data_Block
+class PortForwardingStoppedBlock : public ACE_Data_Block
 {
 public:
 	PortForwardingStoppedBlock() :m_publishFailure(false) {};											// Default constructor
@@ -222,7 +221,7 @@ public:
 	bool m_publishFailure;														// Data members
 };
 
-class GMS_COMMON_EXPORT PortForwardingStartedBlock : public ACE_Data_Block
+class PortForwardingStartedBlock : public ACE_Data_Block
 {
 public:
 	PortForwardingStartedBlock() : m_portForwardingPort(0) {}; // Default constructor

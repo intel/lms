@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2021 Intel Corporation
+ * Copyright (C) 2006-2023 Intel Corporation
  */
 /*++
 
@@ -19,9 +19,8 @@
 #include <stdio.h>
 #include <atlbase.h>
 #include "BaseEventLog.h"
-#include "GMSCommonDllExport.h"
 
-class GMS_COMMON_EXPORT WindowsEventLog : public BaseEventLog
+class WindowsEventLog : public BaseEventLog
 {
 private:
 	// Data member which contain handle to registry.

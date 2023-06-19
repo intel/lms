@@ -1,16 +1,15 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 #ifndef FUNCENTRYEXIT_H
 #define FUNCENTRYEXIT_H
-#include "GMSCommonDllExport.h"
 #include <cstdint>
 
-GMS_COMMON_EXPORT void FlowLog(const wchar_t *name, const wchar_t *pref, const wchar_t *func);
-GMS_COMMON_EXPORT void FuncEntry(const wchar_t *name, const wchar_t *func);
-GMS_COMMON_EXPORT void FuncExit(const wchar_t *name, const wchar_t *func);
-GMS_COMMON_EXPORT void FuncExitWithStatus(const wchar_t * name, const wchar_t *func, uint64_t status);
+void FlowLog(const wchar_t *name, const wchar_t *pref, const wchar_t *func);
+void FuncEntry(const wchar_t *name, const wchar_t *func);
+void FuncExit(const wchar_t *name, const wchar_t *func);
+void FuncExitWithStatus(const wchar_t * name, const wchar_t *func, uint64_t status);
 
 template<typename T, typename O>
 class FuncEntryExit_

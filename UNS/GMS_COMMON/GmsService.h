@@ -22,7 +22,7 @@ class GmsService;
 
 typedef ACE_Unmanaged_Singleton<GmsService, ACE_Mutex> theService;
 
-class GMS_COMMON_EXPORT GmsService :
+class GmsService :
 #ifdef WIN32
 	public ACE_NT_Service,
 #else

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -18,9 +18,7 @@
 
 #include "DataStorageWrapper.h"
 
-#include "GMSCommonDllExport.h"
-
-GMS_COMMON_EXPORT DataStorageWrapper& DSinstance();
+DataStorageWrapper& DSinstance();
 
 //add a registry to the regMap in RegistryGenerator.cpp in the same line added here!
 enum DATA_NAME : unsigned int

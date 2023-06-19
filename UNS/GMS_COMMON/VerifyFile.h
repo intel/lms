@@ -9,9 +9,8 @@
 #include "global.h"
 #include <WinTrust.h>
 #include <Softpub.h>
-#include "GMSCommonDllExport.h"
 
-class GMS_COMMON_EXPORT VerifyFile
+class VerifyFile
 {
 public:
 	VerifyFile(void);
