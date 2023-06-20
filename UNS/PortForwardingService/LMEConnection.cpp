@@ -24,7 +24,7 @@ using namespace Intel::MEI_Client;
 
 const uint32_t LMEConnection::RX_WINDOW_SIZE = 1024; // TBD Choose optimal window size
 
-LMEConnection::LMEConnection(bool verbose): _txBuffer(NULL), _initState(INIT_STATE_DISCONNECTED),
+LMEConnection::LMEConnection(bool verbose): _initState(INIT_STATE_DISCONNECTED),
 				_cb(NULL), _signalSelectCallback(nullptr), _cbParam(NULL), _heci(GenerateLMEClient(verbose)),
 				_threadStartedEvent(1), _portIsOk(1), m_portForwardingPort(0),
 				_selfDisconnect(false), _clientNotFound(false), aceMgr_(nullptr), _rxThread(0)
@@ -107,7 +107,7 @@ bool LMEConnection::Init(InitParameters & params)
 		_portIsOk.reset();
 
 		// launch RX thread
-		_txBuffer = new unsigned char[GetBufferSize()];
+		_txBuffer.reserve(GetBufferSize());
 		auto spawn_res = aceMgr_->spawn((ACE_THR_FUNC)_rxThreadFunc, this, THR_CANCEL_ENABLE, &_rxThread);
 		if (spawn_res == -1)
 		{
@@ -155,9 +155,6 @@ void LMEConnection::DeinitInternal()
 
 	if (aceMgr_)
 		aceMgr_->cancel(_rxThread, 0);
-
-	delete[] _txBuffer;
-	_txBuffer = NULL;
 }
 
 //parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
@@ -492,11 +489,11 @@ ssize_t LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsi
 
 	APF_CHANNEL_DATA_MESSAGE *message;
 
-	if (len > GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE)) {
+	if (len > _txBuffer.size() - sizeof(APF_CHANNEL_DATA_MESSAGE)) {
 		return -1;
 	}
 
-	message = (APF_CHANNEL_DATA_MESSAGE *)_txBuffer;
+	message = (APF_CHANNEL_DATA_MESSAGE *)(_txBuffer.data());
 	message->MessageType = APF_CHANNEL_DATA;
 	message->RecipientChannel = htonl(recipientChannel);
 	message->DataLength = htonl(len);

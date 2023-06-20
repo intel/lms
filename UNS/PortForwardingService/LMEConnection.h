@@ -313,7 +313,7 @@ private:
 	ssize_t _receiveMessage(unsigned char *buffer, size_t len);
 	ssize_t _sendMessage(unsigned char *buffer, size_t len);
 
-	unsigned char *_txBuffer;
+	std::vector<uint8_t> _txBuffer;
 
 	HECICallback _cb;
 	SignalSelectCallback _signalSelectCallback; //callback for waking the service from the Select() to allow re-initilization 
