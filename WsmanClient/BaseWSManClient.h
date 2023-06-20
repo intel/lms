@@ -15,7 +15,6 @@
 #include <memory>
 #include <mutex>
 #include "CimWsman.h"
-#include "WsmanClientDllExport.h"
 
 // Constants for the common use
 static const int AMT_NON_SECURE_PORT = 16992;
@@ -26,7 +25,7 @@ static const unsigned int WSMAN_AMT_ERROR_SUCCESS = 0x0;
 static const unsigned int WSMAN_AMT_INTERNAL_ERROR = 0x1;
 static const unsigned int WSMAN_AMT_UNSUPPORTED = 0x812;
 
-class WSMAN_DLL_API BaseWSManPassword
+class BaseWSManPassword
 {
 public:
 	BaseWSManPassword(): m_pwd(nullptr), m_size(0) {}
@@ -42,7 +41,7 @@ private:
 	size_t m_size;
 };
 
-class WSMAN_DLL_API BaseWSManClient
+class BaseWSManClient
 {
 public:
 

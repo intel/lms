@@ -15,7 +15,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API TimeSynchronizationClient : public BaseWSManClient
+class TimeSynchronizationClient : public BaseWSManClient
 {
 public:
 	unsigned int TIMESYNCSTATE_DEFAULT_TRUE = 0;

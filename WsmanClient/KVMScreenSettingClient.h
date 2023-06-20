@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-class WSMAN_DLL_API KVMScreenSettingClient : public BaseWSManClient
+class KVMScreenSettingClient : public BaseWSManClient
 {
 public:
 	static const unsigned int MAX_DISPLAY_NUMBER = 4;

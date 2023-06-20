@@ -14,7 +14,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API HostBootReasonClient : public BaseWSManClient
+class HostBootReasonClient : public BaseWSManClient
 {
 public:
 	HostBootReasonClient(unsigned int port);

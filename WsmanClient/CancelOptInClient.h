@@ -16,8 +16,7 @@
 #include <string>
 #include "IPS_OptInService.h"
 
-
-class WSMAN_DLL_API CancelOptInClient : public BaseWSManClient
+class CancelOptInClient : public BaseWSManClient
 {
 public:
 	CancelOptInClient(unsigned int port);

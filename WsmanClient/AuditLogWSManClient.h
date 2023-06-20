@@ -51,7 +51,7 @@ struct AuditLogRecord {
 
 typedef std::vector<unsigned char> BinaryData;
 
-class WSMAN_DLL_API AuditLogWSManClient : public BaseWSManClient
+class AuditLogWSManClient : public BaseWSManClient
 {
 public:
 	AuditLogWSManClient(unsigned int port);

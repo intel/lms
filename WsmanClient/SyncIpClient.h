@@ -15,7 +15,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API SyncIpClient : public BaseWSManClient
+class SyncIpClient : public BaseWSManClient
 {
 public:
 	SyncIpClient(unsigned int port);

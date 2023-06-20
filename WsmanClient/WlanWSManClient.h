@@ -14,7 +14,7 @@
 typedef Intel::Manageability::Cim::Typed::CIM_WiFiEndpointSettings SingleMeProfile;
 typedef std::vector<std::shared_ptr<SingleMeProfile>> MeProfileList;
 
-class WSMAN_DLL_API WlanWSManClient : public BaseWSManClient
+class WlanWSManClient : public BaseWSManClient
 {
 public:
 

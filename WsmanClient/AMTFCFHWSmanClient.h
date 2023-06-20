@@ -15,7 +15,7 @@
 #include <string>
 #include "AMT_SNMPEventSubscriber.h"
 
-class WSMAN_DLL_API AMTFCFHWSmanClient : public BaseWSManClient
+class AMTFCFHWSmanClient : public BaseWSManClient
 {
 public:
 	AMTFCFHWSmanClient(unsigned int port);

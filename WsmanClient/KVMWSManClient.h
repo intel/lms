@@ -16,7 +16,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API KVMWSManClient : public BaseWSManClient
+class KVMWSManClient : public BaseWSManClient
 {
 public:
 	KVMWSManClient(unsigned int port);

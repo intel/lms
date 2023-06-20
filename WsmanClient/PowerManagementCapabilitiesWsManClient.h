@@ -15,11 +15,8 @@
 #include "CIM_PowerManagementCapabilities.h"
 #include <vector>
 
-
-
-
 //Note : we assume only UNS will change CIM_PowerManagementCapabilities, and only using this wsman client
-class WSMAN_DLL_API PowerManagementCapabilitiesClient : public BaseWSManClient
+class PowerManagementCapabilitiesClient : public BaseWSManClient
 {
 public:
 	PowerManagementCapabilitiesClient(unsigned int port);

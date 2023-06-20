@@ -15,7 +15,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API EthernetSettingsWSManClient : public BaseWSManClient
+class EthernetSettingsWSManClient : public BaseWSManClient
 {
 public:
 	static const unsigned int ERROR_UNKNOWN_ERROR = 1000;

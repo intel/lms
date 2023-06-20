@@ -15,7 +15,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API AMTEthernetPortSettingsClient : public BaseWSManClient
+class AMTEthernetPortSettingsClient : public BaseWSManClient
 {
 public:
 	AMTEthernetPortSettingsClient(unsigned int port);

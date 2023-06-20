@@ -7,7 +7,7 @@
 
 #include "BaseWSManClient.h"
 
-class WSMAN_DLL_API IPSKVMSessionUsingPortClient : public BaseWSManClient
+class IPSKVMSessionUsingPortClient : public BaseWSManClient
 {
 public:
 	IPSKVMSessionUsingPortClient(unsigned int port);

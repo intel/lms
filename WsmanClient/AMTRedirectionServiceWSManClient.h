@@ -17,8 +17,7 @@
 #include "AMT_RedirectionService.h"
 #include "BaseWSManClient.h"
 
-class WSMAN_DLL_API AMTRedirectionServiceWSManClient :
-	public BaseWSManClient
+class AMTRedirectionServiceWSManClient : public BaseWSManClient
 {
 public:
 	AMTRedirectionServiceWSManClient(unsigned int port);
