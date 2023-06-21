@@ -189,11 +189,11 @@ bool LMEConnection::Disconnect(APF_DISCONNECT_REASON_CODE reasonCode)
 	disconnectMessage->ReasonCode = htonl(reasonCode);
 
 	UNS_DEBUG(L"==>LME: Disconnect.\n");
-	ssize_t res = _sendMessage(buf, sizeof(buf));
+	bool res = _sendMessage(buf, sizeof(buf));
 
 	_selfDisconnect = true;
 
-	return (res == sizeof(buf));
+	return res;
 }
 
 bool LMEConnection::ServiceAccept(const std::string &serviceName)
@@ -216,8 +216,7 @@ bool LMEConnection::ServiceAccept(const std::string &serviceName)
 	std::copy(serviceName.begin(), serviceName.end(), apfSam->ServiceName);
 
 	UNS_DEBUG(L"==>LME: Service accept: %C\n", serviceName.c_str());
-	ssize_t res = _sendMessage(buf.data(), messageLen);
-	return (res == messageLen);
+	return _sendMessage(buf.data(), messageLen);
 }
 
 bool LMEConnection::UserAuthSuccess()
@@ -232,9 +231,8 @@ bool LMEConnection::UserAuthSuccess()
 	unsigned char buf = APF_USERAUTH_SUCCESS;
 
 	UNS_DEBUG(L"==>LME: User authentication success.\n");
-	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
-	return (res == sizeof(buf));
+	return _sendMessage(&buf, sizeof(buf));
 }
 
 bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage &versionMessage)
@@ -255,9 +253,8 @@ bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage &versionMess
 	protVersion.TriggerReason = htonl(versionMessage.TriggerReason);
 
 	UNS_DEBUG(L"==>LME: Protocol version: %d.%d.%d\n", versionMessage.MajorVersion, versionMessage.MinorVersion, versionMessage.TriggerReason);
-	ssize_t res = _sendMessage((unsigned char *)&protVersion, sizeof(protVersion));
 
-	return (res == sizeof(protVersion));
+	return _sendMessage((unsigned char*)&protVersion, sizeof(protVersion));
 }
 
 bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
@@ -275,10 +272,8 @@ bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
 	message.PortBound = htonl(port);
 
 	UNS_DEBUG(L"==>LME: TCP forward replay success, Port %d.\n", port);
-	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
-	return (res == sizeof(message));
-
+	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
 bool LMEConnection::TcpForwardReplyFailure() {
@@ -293,10 +288,8 @@ bool LMEConnection::TcpForwardReplyFailure() {
 	unsigned char buf = APF_REQUEST_FAILURE;
 
 	UNS_DEBUG(L"==>LME: TCP forward replay failure.\n");
-	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
-	return (res == sizeof(buf));
-
+	return _sendMessage(&buf, sizeof(buf));
 }
 
 bool LMEConnection::TcpForwardCancelReplySuccess() {
@@ -311,10 +304,8 @@ bool LMEConnection::TcpForwardCancelReplySuccess() {
 	unsigned char buf = APF_REQUEST_SUCCESS;
 
 	UNS_DEBUG(L"==>LME: TCP forward cancel replay success.\n");
-	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
-	return (res == sizeof(buf));
-
+	return _sendMessage(&buf, sizeof(buf));
 }
 
 bool LMEConnection::TcpForwardCancelReplyFailure() {
@@ -329,10 +320,8 @@ bool LMEConnection::TcpForwardCancelReplyFailure() {
 	unsigned char buf = APF_REQUEST_FAILURE;
 
 	UNS_DEBUG(L"==>LME: TCP forward cancel replay failure\n");
-	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
-	return (res == sizeof(buf));
-
+	return _sendMessage(&buf, sizeof(buf));
 }
 
 #define CHECK_BUFFER_OVERFLOW(nbytes) \
@@ -402,11 +391,10 @@ bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const st
 	UNS_DEBUG(L"==>LME: OPEN_CHANNEL_REQUEST, Address: %C:%d.\n", originatorIP.c_str(), connectedPort);
 
 	int actualLen = (int)(pCurrent - buf);
-	ssize_t res = _sendMessage(buf, actualLen);
+	bool res = _sendMessage(buf, actualLen);
 
 	delete[] buf;
-	return (res == actualLen);
-
+	return res;
 }
 
 bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t senderChannel) {
@@ -427,10 +415,8 @@ bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t
 	message.Reserved = 0xFFFFFFFF;
 
 	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_CONFIRMATION\n", recipientChannel);
-	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
-	return (res == sizeof(message));
-
+	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
 bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t reason) {
@@ -451,10 +437,8 @@ bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t
 	message.Reserved2 = 0x00000000;
 
 	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_FAILURE, Reason: %d\n", recipientChannel, reason);
-	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
-	return (res == sizeof(message));
-
+	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
 bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
@@ -472,13 +456,11 @@ bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
 	message.RecipientChannel = htonl(recipientChannel);
 
 	UNS_DEBUG(L"==>LME[%d]: Channel close\n", recipientChannel);
-	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
-	return (res == sizeof(message));
-
+	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
-ssize_t LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer) {
+bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer) {
 
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
@@ -490,7 +472,7 @@ ssize_t LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsi
 	APF_CHANNEL_DATA_MESSAGE *message;
 
 	if (len > _txBuffer.size() - sizeof(APF_CHANNEL_DATA_MESSAGE)) {
-		return -1;
+		return false;
 	}
 
 	message = (APF_CHANNEL_DATA_MESSAGE *)(_txBuffer.data());
@@ -503,7 +485,6 @@ ssize_t LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsi
 	UNS_TRACE(L"==>LME[%d]: %d bytes\n", recipientChannel, len);
 
 	return _sendMessage((unsigned char *)message, sizeof(APF_CHANNEL_DATA_MESSAGE) + len);
-
 }
 
 bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len) {
@@ -522,10 +503,8 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 	message.BytesToAdd = htonl(len);
 
 	UNS_TRACE(L"==>LME[%d]: Window Adjust with %d bytes\n", recipientChannel, len);
-	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
-	return (res == sizeof(message));
-
+	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
 ssize_t LMEConnection::_receiveMessage(unsigned char *buffer, size_t len)
@@ -548,25 +527,25 @@ ssize_t LMEConnection::_receiveMessage(unsigned char *buffer, size_t len)
 	}
 }
 
-ssize_t LMEConnection::_sendMessage(unsigned char *buffer, size_t len)
+bool LMEConnection::_sendMessage(unsigned char *buffer, size_t len)
 {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
-		return -1;
+		return false;
 	}
 
 	std::lock_guard<std::mutex> lock(_sendMessageLock);
 
 	try
 	{
-		return _heci->SendHeciMessage(buffer, len, HECI_IO_TIMEOUT);
+		return (_heci->SendHeciMessage(buffer, len, HECI_IO_TIMEOUT) == len);
 	}
 	catch (HECIException& e)
 	{
 		UNS_ERROR(L"Error sending data to HECI. Error: %C\n", e.what());
-		return -1;
+		return false;
 	}
 }
 
