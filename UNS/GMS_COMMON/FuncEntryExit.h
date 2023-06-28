@@ -20,6 +20,8 @@ public:
 	{
 		FuncEntry(name_, func_);
 	}
+	FuncEntryExit_(const FuncEntryExit_&) = delete;
+	FuncEntryExit_& operator=(const FuncEntryExit_&) = delete;
 	~FuncEntryExit_()
 	{
 		FuncExitWithStatus(name_, func_, status_);
