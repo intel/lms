@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019-2022 Intel Corporation
+ * Copyright (C) 2019-2023 Intel Corporation
  */
 #include "PFWUpdateDllWrapperME11.h"
 #include "fwupdatelib_ME11.h"
@@ -272,7 +272,7 @@ uint32_t PFWUpdateDllWrapperME11::performPFWU(uint32_t partialID, const std::wst
 
 
 	bool done = false;
-	uint32_t currentStage = 0, totalStage = 0, progress = 0, lastUpdateStatus = 0, lastResetType = 0;
+	uint32_t progress = 0;
 	uint32_t currentStageNew = 0, totalStageNew = 0, progressNew = 0, lastUpdateStatusNew = 0, lastResetTypeNew = 0;
 	int errCounter = 0;
 	while (!done)
@@ -303,10 +303,6 @@ uint32_t PFWUpdateDllWrapperME11::performPFWU(uint32_t partialID, const std::wst
 		if (progress < progressNew)
 		{
 			progress = progressNew;
-			currentStage = currentStageNew;
-			totalStage = totalStageNew;
-			lastUpdateStatus = lastUpdateStatusNew;
-			lastResetType = lastResetTypeNew;
 			errCounter = 0;
 		}
 		if ((progress >= 100) || (progress > progressNew))
