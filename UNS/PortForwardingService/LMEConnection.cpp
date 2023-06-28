@@ -754,6 +754,11 @@ void LMEConnection::_doRX()
 
 						LMETcpForwardRequestMessage tcpForwardRequest;
 						uint32_t len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
+						if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
+							UNS_ERROR(L"Error receiving data from HECI\n");
+							Deinit(true);
+							return;
+						}
 
 						tcpForwardRequest.Address.append((char *)pCurrent, len); pCurrent += len;
 						tcpForwardRequest.Port = ntohl(*((uint32_t *)pCurrent));
@@ -776,6 +781,11 @@ void LMEConnection::_doRX()
 
 						LMETcpForwardCancelRequestMessage tcpForwardCancelRequest;
 						uint32_t len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
+						if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
+							UNS_ERROR(L"Error receiving data from HECI\n");
+							Deinit(true);
+							return;
+						}
 
 						tcpForwardCancelRequest.Address.append((char *)pCurrent, len); pCurrent += len;
 						tcpForwardCancelRequest.Port = ntohl(*((uint32_t *)pCurrent));
@@ -789,6 +799,12 @@ void LMEConnection::_doRX()
 							APF_STR_SIZE_OF(APF_GLOBAL_REQUEST_STR_UDP_SEND_TO) + sizeof(uint8_t);
 
 						uint32_t len = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
+						if ((posBytesRead - (pCurrent - rxBuffer)) < len) {
+							UNS_ERROR(L"Error receiving data from HECI\n");
+							Deinit(true);
+							return;
+						}
+
 						std::string address;
 						address.append((char *)pCurrent, len); pCurrent += len;
 						uint32_t port = ntohl(*((uint32_t *)pCurrent)); pCurrent += sizeof(uint32_t);
