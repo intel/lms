@@ -894,18 +894,15 @@ int Protocol::Select()
 	{
 		//add "acceptors" sockets to select vector
 		std::lock_guard<std::mutex> l(_portsLock);
-		PortMap::iterator it = _openPorts.begin();
 
-		for (; it != _openPorts.end(); it++) {
-			if (it->second.size() > 0) {
-				vector<SOCKET> vs = it->second[0]->GetListeningSockets();
-				for (size_t i = 0; i < vs.size(); i++) {
-					SOCKET serverSocket = vs[i];
-					FD_SET(serverSocket, &rset);
-
-					if ((int)serverSocket > fdCount) {
-						fdCount = (int)serverSocket;
-					}
+		for (auto &it : _openPorts) {
+			if (it.second.empty()) {
+				continue;
+			}
+			for (auto sock : it.second[0]->GetListeningSockets()) {
+				FD_SET(sock, &rset);
+				if ((int)(sock) > fdCount) {
+					fdCount = (int)(sock);
 				}
 			}
 		}
