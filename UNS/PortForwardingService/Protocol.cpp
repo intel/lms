@@ -2217,10 +2217,13 @@ int Protocol::_handleFQDNChange(const std::string &fqdn)
 #ifdef WIN32
 	const unsigned char bom_str[] = { 0xEF, 0xBB, 0xBF };
 	bool first_line = true;
-	size_t requiredSize;
+	size_t requiredSize = MAX_PATH + 1;
 	const std::string dir("\\system32\\drivers\\etc\\");
 
-	getenv_s(&requiredSize, NULL, 0, "SystemRoot");
+	if (getenv_s(&requiredSize, NULL, 0, "SystemRoot") != 0) {
+		UNS_ERROR(L"getenv_s failed\n");
+		return -1;
+	}
 	if (requiredSize > MAX_PATH) {
 		UNS_ERROR(L"getenv_s asks for too much memory %d\n", requiredSize);
 		return -1;
