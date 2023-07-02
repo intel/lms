@@ -63,7 +63,7 @@ HRESULT IsUserAdmin()
 	HRESULT  hr = S_OK;
 	DWORD dwImp = 0;
 	HANDLE hThreadTok = NULL;
-	DWORD dwBytesReturned;
+	DWORD dwBytesReturned = 0;
 	BOOL bRes;
 
 	// You must call this before trying to open a thread token!
@@ -129,9 +129,8 @@ HRESULT IsUserAdmin()
 		return hr;
 	}
 
-	TOKEN_GROUPS * groups;
-
-	groups =(TOKEN_GROUPS*) new unsigned char[dwBytesReturned];
+	std::vector <uint8_t> groups_vec(dwBytesReturned);
+	TOKEN_GROUPS *groups = (TOKEN_GROUPS *)groups_vec.data();
 
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups,
 		groups,
@@ -320,6 +319,8 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 	userNameStr.assign(userName);
 	domainNameStr.assign(domainName);
 
+	GlobalFree(userName);
+	GlobalFree(domainName);
 	CloseHandle(hThreadTok);
 
 	hr = CoRevertToSelf();
