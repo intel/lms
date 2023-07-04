@@ -6,7 +6,6 @@ project (lms)
 set(LICENSE Apache)
 
 option (BUILD_TESTS "Build tests" NO)
-option (BUILD_WIN_UNIVERSAL "Build Windows Universal App" NO)
 option (IGNORE_DLL_SIGNATURES "Skip Windows DLL signatures check" NO)
 option (BUILD_USE_CONAN "Use Conan for dependencies download" NO)
 if (UNIX)
@@ -76,16 +75,14 @@ else (UNIX)
   add_compile_options ($<$<CONFIG:Release>:/Zi>)
 
   # Universal build
-  if (BUILD_WIN_UNIVERSAL)
-    set(CMAKE_CXX_STANDARD_LIBRARIES " ") # space is intentional
-    set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_CXX_STANDARD_LIBRARIES})
-    set(MSVC_IGNORED_LIBRARIES "/NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:advapi32.lib /NODEFAULTLIB:user32.lib /NODEFAULTLIB:setupapi.lib /NODEFAULTLIB:gdi32.lib /NODEFAULTLIB:winspool.lib /NODEFAULTLIB:shell32.lib /NODEFAULTLIB:ole32.lib /NODEFAULTLIB:oleaut32.lib  /NODEFAULTLIB:comdlg32.lib /NODEFAULTLIB:advapi32.lib")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MSVC_IGNORED_LIBRARIES}")
-    link_libraries (
-      OneCoreUap.lib
-      OneCoreUap_downlevel.lib
-    )
-  endif (BUILD_WIN_UNIVERSAL)
+  set(CMAKE_CXX_STANDARD_LIBRARIES " ") # space is intentional
+  set(CMAKE_C_STANDARD_LIBRARIES ${CMAKE_CXX_STANDARD_LIBRARIES})
+  set(MSVC_IGNORED_LIBRARIES "/NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:advapi32.lib /NODEFAULTLIB:user32.lib /NODEFAULTLIB:setupapi.lib /NODEFAULTLIB:gdi32.lib /NODEFAULTLIB:winspool.lib /NODEFAULTLIB:shell32.lib /NODEFAULTLIB:ole32.lib /NODEFAULTLIB:oleaut32.lib  /NODEFAULTLIB:comdlg32.lib /NODEFAULTLIB:advapi32.lib")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MSVC_IGNORED_LIBRARIES}")
+  link_libraries (
+    OneCoreUap.lib
+    OneCoreUap_downlevel.lib
+  )
 endif (UNIX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
