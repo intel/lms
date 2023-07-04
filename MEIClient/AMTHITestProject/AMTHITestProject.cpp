@@ -4,7 +4,6 @@
  */
 // AMTHITestProject.cpp : main project file.
 
-#include "stdafx.h"
 #include "AMTHICommand.h"
 #include "MEIClientException.h"
 #include "HECIException.h"
