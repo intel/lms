@@ -82,30 +82,30 @@ typedef struct _LOCAL_SYSTEM_ACCOUNT
 class PTHI_Commands
 {
 private:
-	UINT8 SetProvisioningTLSModeValues(unsigned char provTLSMode);
+	unsigned char SetProvisioningTLSModeValues(unsigned char provTLSMode);
 public:
-	UINT32 GetProvisioningState(SHORT* pProvisioningState);
-	UINT32 GetTLSEnabled(bool* enabled);
-	UINT32 isWiredLinkUp(bool* enabled);
-	UINT32 isRemoteConfigEnabled(bool* enabled);
-	UINT32 GetRemoteAccessConnectionStatus(SHORT* ConnectionTrigger, SHORT* NetworkConStatus, std::wstring* MPshostName, SHORT* RemoteAccessConStatus);
+	unsigned int GetProvisioningState(SHORT* pProvisioningState);
+	unsigned int GetTLSEnabled(bool* enabled);
+	unsigned int isWiredLinkUp(bool* enabled);
+	unsigned int isRemoteConfigEnabled(bool* enabled);
+	unsigned int GetRemoteAccessConnectionStatus(SHORT* ConnectionTrigger, SHORT* NetworkConStatus, std::wstring* MPshostName, SHORT* RemoteAccessConStatus);
 
-	UINT32 GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN);
-	UINT32 GetAMTFQDN(std::wstring* FQDN);
-	UINT32 GetConfigServerData(std::wstring* Address, unsigned short* port);
-	UINT32 GetAMTState(unsigned int* LastMEResetReason, bool *cryptoFuseEnabled);
-	UINT32 GetPowerPolicy(std::wstring* policy);
-	UINT32 GetAMTVersion(std::wstring* AMTVersion);
-	UINT32 GetMESetupAudit(MEAdminAudit *MEAudit);
-	UINT32 getWebUIState(SHORT* pState);
-	UINT32 GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER);
-	UINT32 GetCertificateHash(std::vector<HashEntry> &hashlist);
-	UINT32 GetRedirectionState(bool *pSolEnable, bool *pIDEREnabled, bool *pKVMEnabled);
-	UINT32 GetPortSettings(std::vector<EthernetPortEntry> &ethernetPortList);
-	UINT32 GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAccount);
-	UINT32 GetKVMSessionActivation(bool* activated);
-	UINT32 Unprovision();
+	unsigned int GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN);
+	unsigned int GetAMTFQDN(std::wstring* FQDN);
+	unsigned int GetConfigServerData(std::wstring* Address, unsigned short* port);
+	unsigned int GetAMTState(unsigned int* LastMEResetReason, bool *cryptoFuseEnabled);
+	unsigned int GetPowerPolicy(std::wstring* policy);
+	unsigned int GetAMTVersion(std::wstring* AMTVersion);
+	unsigned int GetMESetupAudit(MEAdminAudit *MEAudit);
+	unsigned int getWebUIState(SHORT* pState);
+	unsigned int GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER);
+	unsigned int GetCertificateHash(std::vector<HashEntry> &hashlist);
+	unsigned int GetRedirectionState(bool *pSolEnable, bool *pIDEREnabled, bool *pKVMEnabled);
+	unsigned int GetPortSettings(std::vector<EthernetPortEntry> &ethernetPortList);
+	unsigned int GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAccount);
+	unsigned int GetKVMSessionActivation(bool* activated);
+	unsigned int Unprovision();
 
-	UINT32 OpenCIRA(void);
-	UINT32 CloseCIRA(void);
+	unsigned int OpenCIRA(void);
+	unsigned int CloseCIRA(void);
 };

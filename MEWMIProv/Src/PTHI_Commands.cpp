@@ -459,7 +459,7 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 	return rc;
 }
 
-UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
+unsigned int PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 {
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
