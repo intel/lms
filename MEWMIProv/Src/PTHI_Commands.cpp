@@ -340,7 +340,7 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 	try {
 		GetFQDNCommand command;
 		GET_FQDN_RESPONSE response = command.getResponse();
-		(*amtFQDN) = ToWStr(response.FQDN);
+		*amtFQDN = UTF8ToWStr(response.FQDN);
 		rc = 0;
 	}
 	catch (AMTHIErrorException& e)
