@@ -37,7 +37,6 @@
 #include "GetWebUIStateCommand.h"
 #include "GetZeroTouchEnabledCommand.h"
 #include "OpenUserInitiatedConnectionCommand.h"
-#include "SetDNSSuffixCommand.h"
 #include "UnprovisionCommand.h"
 
 #include "GetPlatformTypeCommand.h"
@@ -159,22 +158,13 @@ TEST(instantiate, testGetCurrentPowerPolicyCommand){
 	);
 }
 
-TEST(instantiate, testGetAndSetDnsSuffixCommand) {
+TEST(instantiate, testGetDnsSuffixCommand) {
 	std::string dnsSuffix;
 	EXPECT_NO_THROW(
 		GetDNSSuffixCommand getDnsSuffixCommand;
 		dnsSuffix = getDnsSuffixCommand.getResponse();
 		cout << std::endl << "DNS suffix: " << dnsSuffix << std::endl;
 	);
-	if (dnsSuffix.empty())
-		return;
-	try {
-		SetDNSSuffixCommand setDnsSuffixCommand(dnsSuffix);
-	}
-	catch (const AMTHIErrorException &ex) {
-		if (ex.getErr() != AMT_STATUS_INVALID_PT_MODE)
-			FAIL() << "AMTHIErrorException with error " << ex.getErr();
-	}
 }
 
 TEST(instantiate, testGetEACStateCommand){

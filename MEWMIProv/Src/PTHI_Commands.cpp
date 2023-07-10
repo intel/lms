@@ -44,7 +44,6 @@
 #include "GetTcpipParametersCommand.h"
 #include "GetLocalSystemAccountCommand.h"
 #include "UnprovisionCommand.h"
-#include "SetDNSSuffixCommand.h"
 #include "MNGIsChangeToAMTEnabledCommand.h"
 #include "DebugPrints.h"
 #include "GetKVMSessionStateCommand.h"
