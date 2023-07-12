@@ -7,6 +7,7 @@
  @file: AuditLogWSManClientConsts.h
 
  --*/
+#include <string>
 
  //Audit-Log Record User Method.
 typedef enum _InitiatorType
@@ -201,23 +202,6 @@ typedef enum _RcoEventID
 	SET_BOOT_OPTIONS = 4
 }RcoEventID;
 
-typedef enum _RedirManagerID
-{
-	IDE_R_SESSION_OPEND = 0,
-	IDE_R_SESSION_CLOSED = 1,
-	IDE_R_ENABLED = 2,
-	IDE_R_DISABLED = 3,
-	SOL_SESSION_OPEND = 4,
-	SOL_SESSION_CLOSED = 5,
-	SOL_ENABLED = 6,
-	SOL_DISABLED = 7,
-	KVM_STARTED = 8,
-	KVM_ENDED = 9,
-	KVM_ENABLED = 10,
-	KVM_DISABLED = 11,
-	VNC_PWD_FAILED_3_TIMES = 12
-}RedirManagerID;
-
 typedef enum _FirmwareUpdateEventID
 {
 	FIRMWARE_UPDATED = 0,
@@ -310,15 +294,6 @@ typedef enum _EACEventID
 	EAC_POSTURE_STATE_UPDATE = 3,
 	EAC_SET_OPTIONS = 4
 }EACEventID;
-
-typedef enum _KVMEventID
-{
-	KVM_OPT_IN_ENABLED = 0,
-	KVM_OPT_IN_DISABLED = 1,
-	KVM_PWD_CHANGED = 2,
-	KVM_CONSENT_SUCCEEDED = 3,
-	KVM_CONSENT_FAILED = 4
-}KVMEventID;
 
 typedef enum _UserOptInEventID
 {
@@ -425,37 +400,10 @@ const uint8_t TRUSTED_ROOT_CERT_SHA2_384_HASH_LEN = 48;
 const uint8_t TRUSTED_ROOT_CERT_SHA2_512_HASH_LEN = 64;
 const uint8_t CERT_SERIAL_NUM_LEN = 16;
 const uint8_t CERT_SERIAL_NUM_MAX_LEN = 20;
-const uint8_t POLICY_GUID_LEN = 16;
 const uint8_t BOOT_OPTIONS_LEN = 7;
 const uint8_t AGENT_ID_LEN = 16;
 const uint8_t FW_VERSION_NUM_OF_FIELDS = 4;
 const uint8_t INTERFCAE_ID_LEN = 8;
-
-const unsigned int MAX_FIELD_NAME = 50;
-
-typedef enum
-{
-	APPID_FIELD = 0,
-	EVENTID_FIELD,
-	INITIATOR_FIELD,
-	USERNAME_LEN_FIELD,
-	USERNAME_FIELD,
-	SID_FIELD,
-	DOMAIN_LEN_FIELD,
-	DOMAIN_FIELD,
-	TIMESTAMP_FIELD,
-	ADDRESSTYPE_FIELD,
-	ADDRESS_FIELD,
-	EXPORT_INDEX_FIELD,
-	START_LOG_TIME_FIELD,
-	END_LOG_TIME_FIELD,
-	GENERATIONTIME_FIELD,
-	UUID_FIELD,
-	FQDN_FIELD,
-	NUMBER_OF_RECORDS_FIELD,
-	SIGNATURE_MECHANISM_FIELD,
-	NUM_OF_FIELDS
-}RecordsFields;
 
 const static char* PSK_STRING = "PSK";
 const static char* PKI_STRING = "PKI";
@@ -477,14 +425,8 @@ const static char* UNSUCCESSFUL_PASSWORD_STRING = "Remote operator failed (3 tim
 
 const uint8_t NUMBER_OF_LINK_POLICIES = 4;
 
-const uint32_t LinkPolicyKeys[] = { 1, 14, 16, 224 };
 const std::string LinkPolicyValues[] =
 { "available on S0 AC", "available on Sx AC", "available on S0 DC", "available on Sx DC" };
 
 const uint32_t NUMBER_OF_EAC_VENDOR_STRINGS = 4;
 const std::string EACVendors[] = { "Unknown", "EAC NAC", "EAC NAP", "EAC NAC and NAP" };
-
-const char RecordsFieldsNames[NUM_OF_FIELDS][MAX_FIELD_NAME] =
-{ "Application ID", "Event Id", "Initiator", "Username Len", "Username", "SID", "Domain Len", "Domain",
- "Time Stamp", "Address Type", "Address", "Export Index", "Start Log Time", "End Log Time",
- "Generation Time", "UUID", "FQDN", "No. Of Records", "Signature Mech." };
