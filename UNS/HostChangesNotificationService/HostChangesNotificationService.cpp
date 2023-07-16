@@ -81,7 +81,7 @@ void HostChangesNotificationService::Action()
 	std::string fqdn;
 	if (!GetLocalFQDN(fqdn))
 	{
-		UNS_ERROR(L"Error in setting host FQDN.- not sending HOSTFQDN to FW\n");
+		UNS_ERROR(L"Error in getting host FQDN.- not sending HOSTFQDN to FW\n");
 		return;
 	}
 	if (m_hostFQDN != fqdn)
