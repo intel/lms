@@ -147,13 +147,26 @@ std::string WStringToString(const std::wstring& wstr)
 
 #define FQDN_MAX_SIZE 256
 #ifdef WIN32
+static std::string WStrToUTF8(const wchar_t* str, int len)
+{
+	int utf8_size = WideCharToMultiByte(CP_UTF8, 0, str, len, NULL, 0, NULL, NULL);
+	if (utf8_size <= 0)
+		return "";
+	std::string utf8_str(utf8_size, '\0');
+	if (!WideCharToMultiByte(CP_UTF8, 0, str, len, &utf8_str[0], utf8_size, NULL, NULL))
+		return "";
+	return utf8_str;
+}
+
 bool GetLocalFQDN(std::string& fqdn)
 {
-	char localName[FQDN_MAX_SIZE] = "\0";
+	wchar_t localName[FQDN_MAX_SIZE] = L"\0";
 	DWORD len = FQDN_MAX_SIZE;
-	if (GetComputerNameExA(ComputerNameDnsFullyQualified, localName, &len) == 0)
+	if (GetComputerNameExW(ComputerNameDnsFullyQualified, localName, &len) == 0)
 		return false;
-	fqdn = localName;
+	fqdn = WStrToUTF8(localName, len);
+	if (!fqdn.length())
+		return false;
 	return true;
 }
 #else
