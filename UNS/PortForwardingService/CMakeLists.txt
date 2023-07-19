@@ -25,6 +25,7 @@ if (UNIX)
   pkg_check_modules (GIO REQUIRED gio-2.0)
   set (NET_LIBRARIES ${NL3_LIBRARIES} ${NL3-ROUTE_LIBRARIES} ${GIO_LIBRARIES})
   set (NET_INCLUDE_DIRS ${NL3_INCLUDE_DIRS} ${GIO_INCLUDE_DIRS})
+  pkg_check_modules (IDN2 REQUIRED libidn2)
 else (UNIX)
   set (NET_LIBRARIES Iphlpapi)
   set (NET_INCLUDE_DIRS "")
@@ -43,8 +44,10 @@ target_link_libraries (PortForwardingService
   ACE::ACE
   MEIClient
   ${NET_LIBRARIES}
+  ${IDN2_LIBRARIES}
 )
 
 target_include_directories (PortForwardingService PRIVATE
   ${NET_INCLUDE_DIRS}
+  ${IDN2_INCLUDE_DIRS}
 )

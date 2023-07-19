@@ -64,6 +64,7 @@ parts:
       - xsltproc
       - docbook-xsl
       - libcurl4-openssl-dev
+      - libidn2-0-dev
     stage-packages:
       - libace-6.4.5
       - libnl-3-200
@@ -71,3 +72,4 @@ parts:
       - libcurl4
       - libxerces-c3.2
       - libxml2
+      - libidn2-0

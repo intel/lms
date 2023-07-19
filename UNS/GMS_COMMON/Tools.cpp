@@ -170,12 +170,14 @@ bool GetLocalFQDN(std::string& fqdn)
 	return true;
 }
 #else
+#include <idn2.h>
 bool GetLocalFQDN(std::string& fqdn)
 {
 	char buf[FQDN_MAX_SIZE];
 	if (gethostname(buf, FQDN_MAX_SIZE))
 		return false;
 	struct addrinfo hints, *info = NULL;
+	char* fqdn_utf8 = NULL;
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
@@ -185,13 +187,20 @@ bool GetLocalFQDN(std::string& fqdn)
 	int ret = getaddrinfo(buf, NULL, &hints, &info);
 	if (ret) {//full search can fail, return local hostname
 		fqdn = buf;
-		return true;
+		goto recode;
 	}
 
-	if (info)
-		fqdn = info->ai_canonname;
+	if (!info)
+		return false;
+	fqdn = info->ai_canonname;
 	freeaddrinfo(info);
 
-	return (info != NULL);
+recode:
+	if (idn2_to_unicode_8z8z(fqdn.c_str(), &fqdn_utf8, 0) != IDN2_OK)
+		return false;
+
+	fqdn = fqdn_utf8;
+	free(fqdn_utf8);
+	return true;
 }
 #endif // WIN32
