@@ -72,23 +72,24 @@ namespace Intel {
 #define CATCH_AMTHIErrorException(func) \
 	catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e) \
 	{ \
-		unsigned int errNo = e.getErr(); \
-		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+		const char* reason = e.what(); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_PSRErrorException(func) \
 	catch (Intel::MEI_Client::PSR_Client::PSRErrorException& e) \
 	{ \
-		unsigned int errNo = e.getErr(); \
-		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+		const char* reason = e.what(); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_UPIDErrorException(func) \
 	catch (Intel::MEI_Client::UPID_Client::UPIDErrorException& e) \
 	{ \
-		unsigned int errNo = e.getErr(); \
-		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+		const char* reason = e.what(); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
+
 #define CATCH_NoClientExceptionReturn(func) \
 	catch (const Intel::MEI_Client::HeciNoClientException& e) \
 	{ \
