@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -20,8 +20,8 @@ class SyncNetworkData
 {
 public:	
 	SyncNetworkData();	
-	bool getSharedStaticIpState(bool* state);	
-	bool SyncNetworkConfiguration();
+	bool getSharedStaticIpState(unsigned int portForwardingPort, bool* state);
+	bool SyncNetworkConfiguration(unsigned int portForwardingPort);
 	bool SyncDNSData();
 	bool CheckNetworkData(bool &need_sync, bool &isEmptyAddress, bool &IPv4Enabled);
 	bool ValidateLinkStatus();

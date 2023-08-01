@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2022 Intel Corporation
  */
 /*++
 
@@ -11,7 +11,9 @@
 #include "UPID_Commands.h"
 #include "UPIDErrorException.h"
 #include "DebugPrints.h"
+#include "GetUPIDFeatureOSControlCommand.h"
 #include "GetUPIDFeatureStateCommand.h"
+#include "GetUPIDFeatureSupportCommand.h"
 #include "SetUPIDFeatureStateCommand.h"
 #include "GetUPIDCommand.h"
 #include <sstream>
@@ -114,5 +116,57 @@ uint32_t UPID_Commands::GetUPIDCommand(uint32_t& oemPlatformIdType, std::wstring
 		UNS_ERROR("Exception in GetUPIDCommand %C\n", e.what());
 	}
 	
+	return rc;
+}
+
+uint32_t UPID_Commands::GetUPIDFeatureSupported(bool& supported)
+{
+	uint32_t rc = UPID_STATUS_INTERNAL_ERROR;
+
+	try {
+		Intel::MEI_Client::UPID_Client::GetUPIDFeatureSupportCommand command;
+		Intel::MEI_Client::UPID_Client::UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response response = command.getResponse();
+		supported = (response.platformIdSupported & Intel::MEI_Client::UPID_Client::UPID_PLATFORM_ID_UPID_IS_SUPPORTED);
+		rc = 0;
+	}
+	catch (UPIDErrorException& e)
+	{
+		UNS_ERROR("GetUPIDFeatureSupportCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
+	catch (Intel::MEI_Client::MEIClientException& e)
+	{
+		UNS_ERROR("GetUPIDFeatureSupportCommand failed %C\n", e.what());
+	}
+	catch (std::exception& e)
+	{
+		UNS_ERROR("Exception in GetUPIDFeatureSupportCommand %C\n", e.what());
+	}
+	return rc;
+}
+
+uint32_t UPID_Commands::GetUPIDFeatureOSControl(bool& state)
+{
+	uint32_t rc = UPID_STATUS_INTERNAL_ERROR;
+
+	try {
+		Intel::MEI_Client::UPID_Client::GetUPIDFeatureOSControlCommand command;
+		Intel::MEI_Client::UPID_Client::UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response response = command.getResponse();
+		state = response.OsControlEnabled;
+		rc = 0;
+	}
+	catch (UPIDErrorException& e)
+	{
+		UNS_ERROR("GetUPIDFeatureOSControlCommand failed ret=%d\n", e.getErr());
+		rc = e.getErr();
+	}
+	catch (Intel::MEI_Client::MEIClientException& e)
+	{
+		UNS_ERROR("GetUPIDFeatureOSControlCommand failed %C\n", e.what());
+	}
+	catch (std::exception& e)
+	{
+		UNS_ERROR("Exception in GetUPIDFeatureOSControlCommand %C\n", e.what());
+	}
 	return rc;
 }

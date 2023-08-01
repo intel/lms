@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 #include "UNSAlert_BE.h"
 #include "DataStorageGenerator.h"
@@ -8,7 +8,7 @@
 
 namespace Intel {
 	namespace LMS {
-		UNSAlert_BE::UNSAlert_BE(bool isPfwUp) :Common_BE(isPfwUp)
+		UNSAlert_BE::UNSAlert_BE(unsigned int port) : Common_BE(port)
 		{
 		}
 
@@ -20,7 +20,7 @@ namespace Intel {
 			{
 				bstrEventHistory = L"";
 			}
-			return ERROR_OK;
+			return LMS_ERROR::OK;
 		}
 
 		LMS_ERROR UNSAlert_BE::GetIMSSEventHistory(std::wstring &bstrEventHistory)

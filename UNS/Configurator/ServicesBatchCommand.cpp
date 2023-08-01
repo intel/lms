@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #include "ServicesBatchCommand.h"
 #include "DependancyManager.h"
@@ -17,7 +17,7 @@ IServicesManager *ServicesBatchCommand::s_servicesManager = NULL;
 /************************************************************************/
 ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const ServiceNamesList &services) const
 {
-	ExecuteCommandResult ret = NOTHING_TO_DO;
+	ExecuteCommandResult ret = ExecuteCommandResult::NOTHING_TO_DO;
 
 	NamesList serviceNames;
 	services.GetNames(serviceNames);
@@ -29,9 +29,9 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 		if (OperationAlreadyDone(service))
 			continue;
 
-		if (ret != FAILURE)
-		{
-			ret = SUCCESS;
+		if (ret != ExecuteCommandResult::FAILURE)
+		{ 
+			ret = ExecuteCommandResult::SUCCESS;
 		}
 
 		// if there are dependencies - call the command on them. The configurator will call
@@ -42,8 +42,8 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 			ServiceNamesList dependencies;
 			GetPrerequisites(service, dependencies);
 
-			if (Execute(dependencies) == FAILURE)
-				ret = FAILURE;
+			if (Execute(dependencies) == ExecuteCommandResult::FAILURE)
+				ret = ExecuteCommandResult::FAILURE;
 		}
 		// If all dependencies are no-op no one calls the configurator so re-check to continue execution
 		if (theAsyncActivationManager::instance()->ReadyToOperation(service, GetOperation()))
@@ -53,7 +53,7 @@ ServicesBatchCommand::ExecuteCommandResult ServicesBatchCommand::Execute(const S
 			if(!DoOperation(service))
 			{
 				theLoadedServices::instance()->UnlockService(service);
-				ret = FAILURE;
+				ret = ExecuteCommandResult::FAILURE;
 			}
 		}
 	}

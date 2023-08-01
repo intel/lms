@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -28,6 +28,7 @@ namespace Intel
 			} EnabledInterfacesFields;
 			struct GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE
 			{
+				GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE() : EnabledInterfaces({ 0 }) {}
 				EnabledInterfacesFields EnabledInterfaces;
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator end)
 				{
@@ -35,43 +36,38 @@ namespace Intel
 				}
 			};
 
-			class GetUserInitiatedEnabledInterfacesRequest;
-			class GetUserInitiatedEnabledInterfacesCommand : public AMTHICommand
-			{
-			public:
-
-				GetUserInitiatedEnabledInterfacesCommand();
-				virtual ~GetUserInitiatedEnabledInterfacesCommand() {}
-
-				GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004D;
-			};
-
 			class GetUserInitiatedEnabledInterfacesRequest : public AMTHICommandRequest
 			{
 			public:
-				GetUserInitiatedEnabledInterfacesRequest() {}
+				GetUserInitiatedEnabledInterfacesRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetUserInitiatedEnabledInterfacesRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400004D;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetUserInitiatedEnabledInterfacesCommand : public AMTHICommand
+			{
+			public:
+
+				GetUserInitiatedEnabledInterfacesCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetUserInitiatedEnabledInterfacesRequest>();
+					Transact();
+				}
+				virtual ~GetUserInitiatedEnabledInterfacesCommand() {}
+
+				GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+				AMTHICommandResponse<GET_USER_INITIATED_ENABLED_INTERFACES_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004D;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -96,34 +96,9 @@ HRESULT OOB_Service_WMI_Provider::GetAMTProvisioningMode(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	uint32 ReturnValue = 0;
-	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+	uint32 hr = WBEM_E_NOT_SUPPORTED;
 
-	try
-	{
-		CComPtr<IWbemClassObject> pOutParams;
-		uint8 provisioningMode;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetProvisioningMode(provisioningMode);
-
-		ERROR_HANDLER(ReturnValue);
-
-		WMIGetMethodOParams(pClass, L"GetAMTProvisioningMode", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		uint8 mode = (uint8)provisioningMode;
-		WMIPut<1>( pOutParams, L"mode", mode);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
-	}
-	catch(...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
-	}
-
-	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	pResponseHandler->SetStatus(0, hr, NULL, NULL);
 	return hr;
 }
 
@@ -168,59 +143,9 @@ HRESULT OOB_Service_WMI_Provider::Activate(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	uint32 ReturnValue = 0;
-	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+	uint32 hr = WBEM_E_NOT_SUPPORTED;
 
-	if (IsUserAdmin() == S_FALSE)
-	{
-		hr = WBEM_E_ACCESS_DENIED;
-		pResponseHandler->SetStatus(0, hr, NULL, NULL);
-		return hr;
-	}
-
-	try
-	{
-		if(!pInParams)
-			RETURNIF(WBEM_E_INVALID_METHOD_PARAMETERS);
-
-		do{
-			std::wstring OTP, PKIDNSSuffix;
-
-			bool specified;
-			GetParamBREAKIF(WMIGet<1>(pNamespace, pInParams, L"OTP", OTP, specified ), L"OTP");
-			if (!specified)
-				OTP = L"";
-			GetParamBREAKIF(WMIGet<1>(pNamespace, pInParams, L"PKIDNSSuffix", PKIDNSSuffix, specified ),L"PKIDNSSuffix");
-			if (!specified)
-				PKIDNSSuffix = L"";
-			if (OTP.length() >= 300 || PKIDNSSuffix.length() >= 300)
-			{
-				hr = WBEM_E_PROPERTY_NAME_TOO_WIDE;
-				pResponseHandler->SetStatus(0, hr, NULL, NULL);
-				return hr ;
-			}
-
-			SHORT provTLSMode=0;
-			PTHI_Commands pthic;
-			ReturnValue = pthic.ZTCActivate(ToStr(OTP), ToStr(PKIDNSSuffix), &provTLSMode);
-
-			CComPtr<IWbemClassObject> pOutParams;
-			WMIGetMethodOParams(pClass, L"Activate", &pOutParams.p);
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-			WMIPut<1>( pOutParams, L"provTLSMode", provTLSMode);
-
-			pResponseHandler->Indicate(1, &pOutParams.p);
-		} while(0);
-	}
-	catch(...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
-	}
-
-	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	pResponseHandler->SetStatus(0, hr, NULL, NULL);
 	return hr;
 }
 
@@ -287,11 +212,8 @@ HRESULT OOB_Service_WMI_Provider::GetActivationTLSMode(
 		CComPtr<IWbemClassObject> pOutParams;
 		WMIGetMethodOParams(pClass, L"GetActivationTLSMode", &pOutParams.p);
 		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		SHORT tlsMode = 0;
-		PTHI_Commands pthic;
-		pthic.GetProvisioningTlsMode(&tlsMode);
-
-		ERROR_HANDLER(ReturnValue);
+		const SHORT PKI_TLS_MODE = 0x2;
+		SHORT tlsMode = PKI_TLS_MODE;
 
 		WMIPut<1>( pOutParams, L"mode", tlsMode);
 
@@ -315,7 +237,7 @@ HRESULT OOB_Service_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 	try
 	{
 			CComPtr<IWbemClassObject> obj;
@@ -635,38 +557,9 @@ HRESULT OOB_Service_WMI_Provider::CancelActivation(
 	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 	IWbemServices*                 pNamespace)
 {
-	uint32 ReturnValue = 0;
-	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+	uint32 hr = WBEM_E_NOT_SUPPORTED;
 
-	if (IsUserAdmin() == S_FALSE)
-	{
-		hr = WBEM_E_ACCESS_DENIED;
-		pResponseHandler->SetStatus(0, hr, NULL, NULL);
-		return hr;
-	}
-
-	try
-	{
-		PTHI_Commands pthic;
-		ReturnValue = pthic.StopConfiguration();
-
-		ERROR_HANDLER(ReturnValue);
-
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"CloseUserInitiatedConnection", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
-	}
-	catch(...)
-	{
-		UNS_ERROR("%C Bad catch", __FUNCTION__);
-		hr  = WBEM_E_PROVIDER_FAILURE;
-		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
-	}
-
-	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	pResponseHandler->SetStatus(0, hr, NULL, NULL);
 	return hr;
 }
 
@@ -677,7 +570,7 @@ HRESULT OOB_Service_WMI_Provider::GetOOB_Service(
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -721,7 +614,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);
@@ -777,7 +670,7 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 {
 	uint32 ReturnValue = 0;
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
 	getApplicationDetails(userName, domain, applicationName);

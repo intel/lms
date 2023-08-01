@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -80,7 +80,7 @@ void HECI::Deinit()
 size_t HECI::ReceiveHeciMessage(unsigned char *buffer, size_t len, unsigned long timeout)
 {
 	TEESTATUS ret;
-	size_t numberOfBytesRead;
+	size_t numberOfBytesRead = 0;
 
 	if (!_initialized)
 		throw HECIException("Not initialized", TEE_INTERNAL_ERROR);
@@ -95,7 +95,7 @@ size_t HECI::ReceiveHeciMessage(unsigned char *buffer, size_t len, unsigned long
 size_t HECI::SendHeciMessage(const unsigned char *buffer, size_t len, unsigned long timeout)
 {
 	TEESTATUS ret;
-	size_t numberOfBytesWritten;
+	size_t numberOfBytesWritten = 0;
 
 	if (!_initialized)
 		throw HECIException("Not initialized", TEE_INTERNAL_ERROR);

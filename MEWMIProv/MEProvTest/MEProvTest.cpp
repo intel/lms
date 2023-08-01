@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2021 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 #include <iostream>
 #include <comdef.h>
@@ -682,23 +682,6 @@ TEST_F(MEProvTest, GetProvisioningState)
 	std::wcout << " state: " << state << std::endl;
 }
 
-TEST_F(MEProvTest, GetAMTProvisioningMode)
-{
-	uint8_t mode;
-	UINT32 return_val;
-	bool ret;
-
-	ret = runCommandOneReturn(L"GetAMTProvisioningMode", L"OOB_Service", L"mode", return_val, mode);
-	if (!ret)
-	{
-		FAIL();
-	}
-	EXPECT_PRED1(isReturnValueValid, return_val);
-	ASSERT_GE(mode, 0);
-	ASSERT_LE(mode, 3);
-	std::wcout << " mode: " << mode << std::endl;
-}
-
 TEST_F(MEProvTest, isRemoteConfigEnabled)
 {
 	bool enabled;
@@ -831,6 +814,36 @@ TEST_F(MEProvTest, getCurrentPowerPolicy)
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
 	PowerPolicy = (out_param_values[0]).bstrVal;
 	std::wcout << " PowerPolicy: " << PowerPolicy << std::endl;
+}
+
+TEST_F(MEProvTest, getUniquePlatformIDFeatureSupported)
+{
+	bool supported = false;
+	UINT32 return_val;
+	bool ret;
+
+	ret = runCommandOneReturn(L"getUniquePlatformIDFeatureSupported", L"ME_System", L"supported", return_val, supported);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
+	std::wcout << " supported: " << supported << std::endl;
+}
+
+TEST_F(MEProvTest, getUniquePlatformIDFeatureOSControlState)
+{
+	bool state = false;
+	UINT32 return_val;
+	bool ret;
+
+	ret = runCommandOneReturn(L"getUniquePlatformIDFeatureOSControlState", L"ME_System", L"state", return_val, state);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
+	std::wcout << " state: " << state << std::endl;
 }
 
 //*********multiple out param ME system************

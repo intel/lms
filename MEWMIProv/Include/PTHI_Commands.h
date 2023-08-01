@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -19,7 +19,6 @@
 #define DISABLED_STATE	1
 #define UNKNOWN_STATE 	2
 
-#define CHANGE_TO_AMT_TIMEOUT					5000
 typedef struct _CFG_TIMEDATE
 {
 	UINT16	Year;
@@ -57,8 +56,10 @@ typedef struct _HashEntry
 	bool Enabled;
 } HashEntry;
 
-typedef struct _EthernetPortEntry
+class EthernetPortEntry
 {
+public:
+	EthernetPortEntry() : LinkIsUp(false), DHCPEnabled(false) {}
 	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
@@ -67,7 +68,7 @@ typedef struct _EthernetPortEntry
 	std::wstring   DefaultGateway;
 	std::wstring   PrimaryDNS;
 	std::wstring   SecondaryDNS;
-} EthernetPortEntry;
+};
 
 typedef struct _LOCAL_SYSTEM_ACCOUNT
 {
@@ -81,10 +82,8 @@ typedef struct _LOCAL_SYSTEM_ACCOUNT
 class PTHI_Commands
 {
 private:
-	UINT8 SetProvisioningTLSModeValues(UINT8 provTLSMode);
+	UINT8 SetProvisioningTLSModeValues(unsigned char provTLSMode);
 public:
-	UINT32 GetProvisioningTlsMode(SHORT* pProvisioningTlsMode);
-	UINT32 GetProvisioningMode(UINT8& mode);
 	UINT32 GetProvisioningState(SHORT* pProvisioningState);
 	UINT32 GetTLSEnabled(bool* enabled);
 	UINT32 isWiredLinkUp(bool* enabled);
@@ -93,13 +92,9 @@ public:
 
 	UINT32 GetProvisioningInfo(std::wstring* pPKIDNSSuffix, std::wstring* pConfigServerFQDN);
 	UINT32 GetAMTFQDN(std::wstring* FQDN);
-	UINT32 ZTCActivate(const std::string &OTP, const std::string &PKIDNSSuffix, SHORT* mode);
-	UINT32 DiscoveryTest(bool isActivate, bool & alreadyActivated);
-	UINT32 ChangeToAMT();
-	UINT32 GetConfigServerData(std::wstring* Address, UINT16* port);
-	UINT32 GetAMTState(UINT32* LastMEResetReason, bool *cryptoFuseEnabled);
+	UINT32 GetConfigServerData(std::wstring* Address, unsigned short* port);
+	UINT32 GetAMTState(unsigned int* LastMEResetReason, bool *cryptoFuseEnabled);
 	UINT32 GetPowerPolicy(std::wstring* policy);
-	UINT32 StopConfiguration(void);
 	UINT32 GetAMTVersion(std::wstring* AMTVersion);
 	UINT32 GetMESetupAudit(MEAdminAudit *MEAudit);
 	UINT32 getWebUIState(SHORT* pState);

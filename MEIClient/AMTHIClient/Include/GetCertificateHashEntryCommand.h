@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -33,6 +33,8 @@ namespace Intel
 
 			struct GET_CERTIFICATE_HASH_ENTRY_RESPONSE
 			{
+				GET_CERTIFICATE_HASH_ENTRY_RESPONSE() : IsDefault(0), IsActive(0), CertificateHash { 0 },
+					HashAlgorithm(CERT_HASH_ALGORITHM8_MD5) {}
 				bool					IsDefault;
 				bool					IsActive;
 				uint8_t					CertificateHash[CERT_HASH_MAX_LENGTH];
@@ -49,45 +51,50 @@ namespace Intel
 				}
 			};
 
-			class GetCertificateHashEntryRequest;
-			class GetCertificateHashEntryCommand : public AMTHICommand
-			{
-			public:
-
-				GetCertificateHashEntryCommand(uint32_t hashHandle);
-				virtual ~GetCertificateHashEntryCommand() {}
-
-				GET_CERTIFICATE_HASH_ENTRY_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002D;
-			};
-
 			class GetCertificateHashEntryRequest : public AMTHICommandRequest
 			{
 			public:
-				GetCertificateHashEntryRequest(uint32_t hashHandle) : _hashHandle (hashHandle) {}
+				GetCertificateHashEntryRequest(uint32_t hashHandle) : _hashHandle(hashHandle), AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetCertificateHashEntryRequest() {}
 
 			private:
 
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400002D;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&_hashHandle, (std::uint8_t*)&_hashHandle + sizeof(uint32_t));
+					return output;
+				}
 				uint32_t _hashHandle;
+			};
+
+			class GetCertificateHashEntryCommand : public AMTHICommand
+			{
+			public:
+
+				GetCertificateHashEntryCommand(uint32_t hashHandle)
+				{
+					m_request = std::make_shared<GetCertificateHashEntryRequest>(hashHandle);
+					Transact();
+				}
+				virtual ~GetCertificateHashEntryCommand() {}
+
+				GET_CERTIFICATE_HASH_ENTRY_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_CERTIFICATE_HASH_ENTRY_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480002D;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

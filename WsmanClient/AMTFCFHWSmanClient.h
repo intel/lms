@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -18,8 +18,8 @@
 class WSMAN_DLL_API AMTFCFHWSmanClient : public BaseWSManClient
 {
 public:
-	AMTFCFHWSmanClient();
-	AMTFCFHWSmanClient(const std::string &User, const std::string &Password);
+	AMTFCFHWSmanClient(unsigned int port);
+	AMTFCFHWSmanClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~AMTFCFHWSmanClient();
 
 	/*Actual soap actions!*/

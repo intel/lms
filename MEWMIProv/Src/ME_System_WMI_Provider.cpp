@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -46,6 +46,10 @@ HRESULT ME_System_WMI_Provider::DispatchMethods(
 				hr = setUPIDFeatureState(pClass, pInParams, pResponseHandler, pNamespace);
 			else if (CComBSTR(strMethodName) == L"getUniquePlatformID")
 				hr = getUPID(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getUniquePlatformIDFeatureSupported")
+				hr = getUniquePlatformIDFeatureSupported(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getUniquePlatformIDFeatureOSControlState")
+				hr = getUniquePlatformIDFeatureOSControlState(pClass, pInParams, pResponseHandler, pNamespace);
 			else
 			{
 				hr = WBEM_E_NOT_SUPPORTED;
@@ -87,10 +91,14 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 			uint16 val = 5;
 			std::vector<sint16> OperationalStatus({ 0 });
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
+			bool uniquePlatformIDFeatureSupported;
+			bool uniquePlatformIDFeatureOSControlState;
+			bool uniquePlatformIDFeatureState;
 
 			ReturnValue = GetMESystem(fwversion, CryptoFuseEnabled,
 										 type, segment,
-										 mode, capabilities, enabledCapabilities);
+										 mode, capabilities, enabledCapabilities, uniquePlatformIDFeatureSupported,
+										 uniquePlatformIDFeatureOSControlState, uniquePlatformIDFeatureState);
 			if (ReturnValue != S_OK)
 			{
 				WMIHelper::PTHIHandleSetStatus(pNamespace, pResponseHandler, ReturnValue, hr);
@@ -108,6 +116,9 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 			BREAKIF(WMIPut<1>(obj, L"PlatformType", type));
 			BREAKIF(WMIPut<1>(obj, L"UserSegmentType", segment));
 			BREAKIF(WMIPut<1>(obj, L"ManageabilityMode", mode));
+			BREAKIF(WMIPut<1>(obj, L"UniquePlatformIDFeatureSupported", uniquePlatformIDFeatureSupported));
+			BREAKIF(WMIPut<1>(obj, L"UniquePlatformIDFeatureOSControlState", uniquePlatformIDFeatureOSControlState));
+			BREAKIF(WMIPut<1>(obj, L"UniquePlatformIDFeatureState", uniquePlatformIDFeatureState));
 
 			BREAKIF(WMIPut<1>(obj, L"ElementName", L"Intel(r) AMT Subsystem"));
 			BREAKIF(WMIPut<1>(obj, L"EnabledDefault", val));
@@ -148,7 +159,7 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 		uint32 ReasonCode=0;
 		bool cryptoFuseEnabled;
 		PTHI_Commands pthic;
-		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);		
+		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);
 		ERROR_HANDLER(ReturnValue);
 		
 		WMIGetMethodOParams(pClass, L"getLastMEResetReason", &pOutParams.p);
@@ -263,8 +274,8 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 		
 		{
 			using namespace Intel::MEI_Client;
-			MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData = { 0 }, StateData = { 0 };
-			MKHI_Client::MKHI_PLATFORM_TYPE Platform = { 0 };
+			MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
+			MKHI_Client::MKHI_PLATFORM_TYPE Platform;
 			ReturnValue = FWUpdate.GetFWCapabilities(CapabilityData);
 			if (ReturnValue == S_OK)
 			{
@@ -323,7 +334,7 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -344,10 +355,13 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 			uint16 val = 5;
 			std::vector<sint16> OperationalStatus({ 0 });
 			uint32 type, segment, mode, capabilities, enabledCapabilities;
-
+			bool uniquePlatformIDFeatureSupported;
+			bool uniquePlatformIDFeatureOSControlState;
+			bool uniquePlatformIDFeatureState;
 			hr = GetMESystem(fwversion, CryptoFuseEnabled,
 										 type, segment,
-										 mode, capabilities, enabledCapabilities);
+										 mode, capabilities, enabledCapabilities, uniquePlatformIDFeatureSupported,
+										 uniquePlatformIDFeatureOSControlState, uniquePlatformIDFeatureState);
 			if (hr != 0)
 				break;
 	
@@ -362,6 +376,9 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 			BREAKIF(WMIPut<1>(obj, L"PlatformType", type));
 			BREAKIF(WMIPut<1>(obj, L"UserSegmentType", segment));
 			BREAKIF(WMIPut<1>(obj, L"ManageabilityMode", mode));
+			BREAKIF(WMIPut<1>(obj, L"UniquePlatformIDFeatureSupported", uniquePlatformIDFeatureSupported));
+			BREAKIF(WMIPut<1>(obj, L"UniquePlatformIDFeatureOSControlState", uniquePlatformIDFeatureOSControlState));
+			BREAKIF(WMIPut<1>(obj, L"UniquePlatformIDFeatureState", uniquePlatformIDFeatureState));
 
 			BREAKIF(WMIPut<1>(obj, L"ElementName", L"Intel(r) AMT Subsystem"));
 			BREAKIF(WMIPut<1>(obj, L"EnabledDefault", val));
@@ -401,10 +418,13 @@ ME_System_WMI_Provider::CUSTOMER_TYPE ME_System_WMI_Provider::GetPlatformTypeExt
 
 HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& CryptoFuseEnabled,
 											uint32& type, uint32& segment,
-											uint32& mode, uint32& capabilities, uint32& enabledCapabilities)
+											uint32& mode, uint32& capabilities, uint32& enabledCapabilities,
+											bool& uniquePlatformIDFeatureSupported,
+											bool& uniquePlatformIDFeatureOSControlState,
+											bool& uniquePlatformIDFeatureState)
 {
 	HRESULT hr = 0;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	CryptoFuseEnabled = false;
 	fwversion = L"";
@@ -448,12 +468,46 @@ HRESULT ME_System_WMI_Provider::GetMESystem(std::wstring& fwversion, bool& Crypt
 	if (hr != 0)
 		return hr;
 
+	UPID_Commands UPID;
+	bool UPIDSupported = false;
+	hr = UPID.GetUPIDFeatureSupported(UPIDSupported);
+	if (hr != S_OK)
+	{
+		if (hr == AMT_STATUS_INVALID_PT_MODE)
+			UPIDSupported = false;
+		else
+			return hr;
+	}
+	bool osControlState = false;
+	hr = UPID.GetUPIDFeatureOSControl(osControlState);
+	if (hr != S_OK)
+	{
+		if (hr == AMT_STATUS_INVALID_PT_MODE)
+			osControlState = false;
+		else
+			return hr;
+	}
+	bool UPIDState = false;
+	hr = UPID.GetUPIDStateCommand(UPIDState);
+	if (hr != S_OK)
+	{
+		if (hr == AMT_STATUS_INVALID_PT_MODE)
+			UPIDState = false;
+		else
+			return hr;
+	}
+
+	hr = 0;
+
 	capabilities = GetCapabilities_int(CapabilityData, platform);
 	enabledCapabilities = GetCapabilities_int(StateData, platform);
 	type = (uint32)platformType;
 	segment = (uint32)customer;
 	mode = (uint32)pMode;
 	CryptoFuseEnabled = CapabilityData.Fields.Tls;
+	uniquePlatformIDFeatureOSControlState = osControlState;
+	uniquePlatformIDFeatureSupported = UPIDSupported;
+	uniquePlatformIDFeatureState = UPIDState;
 
 	return hr;
 }
@@ -479,13 +533,13 @@ UINT32 ME_System_WMI_Provider::GetCapabilities_int(Intel::MEI_Client::MKHI_Clien
 	capabilities.Fields.Amt = amt;
 	capabilities.Fields.Tdt = 0; // was CapabilityData.Fields.Tdt;
 	capabilities.Fields.SoftCreek = CapabilityData.Fields.SoftCreek;
-	capabilities.Fields.Ve = CapabilityData.Fields.Ve;
+	capabilities.Fields.Ve = 0; // was CapabilityData.Fields.Ve;
 	capabilities.Fields.Nand = 0; // bit 9 is not used anymore for NAND since 9.0 project
-	capabilities.Fields.IccOverClockin = CapabilityData.Fields.IccOverClockin;
+	capabilities.Fields.IccOverClockin = 0; // was  CapabilityData.Fields.IccOverClockin;
 	capabilities.Fields.Pav = CapabilityData.Fields.Pav;
 	capabilities.Fields.Ipv6 = CapabilityData.Fields.Ipv6;
 	capabilities.Fields.Kvm = CapabilityData.Fields.Kvm;
-	capabilities.Fields.Och = CapabilityData.Fields.Och;
+	capabilities.Fields.Och = CapabilityData.Fields.Amt; // as CapabilityData.Fields.Och deprecated
 	capabilities.Fields.Tls = CapabilityData.Fields.Tls;
 	capabilities.Fields.Cila = CapabilityData.Fields.Cila;
 	capabilities.Fields.StdMng = stdMng;
@@ -514,14 +568,6 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"SBT");
 	}
-	if (CapabilityData.Fields.Irwt)
-	{
-		capabilities.push_back(L"IRWT");
-	}
-	if (CapabilityData.Fields.Qst)
-	{
-		capabilities.push_back(L"QST");
-	}
 	if (CapabilityData.Fields.Tdt)
 	{
 		capabilities.push_back(L"TDT");
@@ -529,18 +575,6 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	if (CapabilityData.Fields.SoftCreek)
 	{
 		capabilities.push_back(L"SoftCreek");
-	}
-	if (CapabilityData.Fields.Ve)
-	{
-		capabilities.push_back(L"VE");
-	}
-	if (CapabilityData.Fields.Nand)
-	{
-		capabilities.push_back(L"NAND");
-	}
-	if (CapabilityData.Fields.IccOverClockin)
-	{
-		capabilities.push_back(L"ICC Over Clocking");
 	}
 	if (CapabilityData.Fields.Pav)
 	{
@@ -554,7 +588,7 @@ void ME_System_WMI_Provider::GetCapabilities(MEFWCAPS_SKU_INT CapabilityData, st
 	{
 		capabilities.push_back(L"KVM");
 	}
-	if (CapabilityData.Fields.Och)
+	if (CapabilityData.Fields.Amt) // as CapabilityData.Fields.Och deprecated
 	{
 		capabilities.push_back(L"OCH");
 	}
@@ -735,6 +769,88 @@ HRESULT ME_System_WMI_Provider::getUPID(
 		WMIPut<1>(pOutParams, L"OEMPlatformIDType", oemPlatformIdType);
 		WMIPut<1>(pOutParams, L"OEMPlatformID", oemPlatformId);
 		WMIPut<1>(pOutParams, L"CSMEPlatformID", csmePlatformId);
+
+		pResponseHandler->Indicate(1, &pOutParams.p);
+	}
+	catch (...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureSupported(
+	IWbemClassObject* pClass,
+	IWbemClassObject __RPC_FAR* pInParams,
+	IWbemObjectSink  __RPC_FAR* pResponseHandler,
+	IWbemServices* pNamespace)
+{
+	uint32 ReturnValue = 0;
+	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		bool supported = false;
+
+		UPID_Commands UPID;
+		{
+			ReturnValue = UPID.GetUPIDFeatureSupported(supported);
+			if (ReturnValue != S_OK)
+				supported = false;
+		}
+
+		ERROR_HANDLER(ReturnValue);
+
+		CComPtr<IWbemClassObject> pOutParams;
+		WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureSupported", &pOutParams.p);
+		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
+		WMIPut<1>(pOutParams, L"supported", supported);
+
+		pResponseHandler->Indicate(1, &pOutParams.p);
+	}
+	catch (...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureOSControlState(
+	IWbemClassObject* pClass,
+	IWbemClassObject __RPC_FAR* pInParams,
+	IWbemObjectSink  __RPC_FAR* pResponseHandler,
+	IWbemServices* pNamespace)
+{
+	uint32 ReturnValue = 0;
+	uint32 hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		bool state = false;
+
+		UPID_Commands UPID;
+		{
+			ReturnValue = UPID.GetUPIDFeatureOSControl(state);
+			if (ReturnValue != S_OK)
+				state = false;
+		}
+
+		ERROR_HANDLER(ReturnValue);
+
+		CComPtr<IWbemClassObject> pOutParams;
+		WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureOSControlState", &pOutParams.p);
+		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
+		WMIPut<1>(pOutParams, L"state", state);
 
 		pResponseHandler->Indicate(1, &pOutParams.p);
 	}

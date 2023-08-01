@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2021 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -14,6 +14,8 @@
 #include "SyncIpClient.h"
 #include "TimeSynchronizationClient.h"
 #include "Mock_AMT_EthernetPortSettings.h"
+#include "MNGIsChangeToAMTEnabledCommand.h"
+#include "KVMScreenSettingClient.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -28,6 +30,17 @@ using namespace std;
 //Not tested - constructor with username and password, for all classes
 //Shouldn't init be private in all classes, since all methods call it anyway?
 
+class WsmanClientTest : public ::testing::Test
+{
+protected:
+	void SetUp() override
+	{
+		Intel::MEI_Client::Manageability_Client::MNGIsChangeToAMTEnabledCommand cmd;
+		Intel::MEI_Client::Manageability_Client::IsChangedEnabledResponse res = cmd.getResponse();
+		m_port = (res.TlsOnLocalPorts) ? AMT_SECURE_PORT : AMT_NON_SECURE_PORT;
+	}
+	unsigned int m_port;
+};
 
 /*
 * AMTEthernetPortSettings: 
@@ -35,10 +48,13 @@ using namespace std;
 *			2 - HOST
 *			3 - Reserved
 */
-
-TEST(AMTEthernetPortSettingsClient, Get)
+class AMTEthernetPortSettingsTest : public WsmanClientTest
 {
-	AMTEthernetPortSettingsClient settings;
+};
+
+TEST_F(AMTEthernetPortSettingsTest, Get)
+{
+	AMTEthernetPortSettingsClient settings(m_port);
 	unsigned int pLinkPreference = 0;
 	unsigned int pLinkControl = 0;
 	unsigned int pLinkProtection = 0;
@@ -52,7 +68,7 @@ TEST(AMTEthernetPortSettingsClient, Get)
 	}
 }
 
-TEST(AMTEthernetPortSettingsClient, Set1)
+TEST_F(AMTEthernetPortSettingsTest, Set1)
 {
 	Mock_AMT_EthernetPortSettings mock_settings;
 	unsigned int preference = 1;
@@ -65,7 +81,7 @@ TEST(AMTEthernetPortSettingsClient, Set1)
 	ON_CALL(mock_settings, LinkPreference()).WillByDefault(Return(1));
 	//ON_CALL(mock_settings, SetLinkPreference(input)).WillByDefault(Return(1));
 
-	AMTEthernetPortSettingsClient client;
+	AMTEthernetPortSettingsClient client(m_port);
 	EXPECT_TRUE(client.SetLinkPreference(1));
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
@@ -79,9 +95,9 @@ TEST(AMTEthernetPortSettingsClient, Set1)
 	}
 }
 
-TEST(AMTEthernetPortSettingsClient, Set2)
+TEST_F(AMTEthernetPortSettingsTest, Set2)
 {
-	AMTEthernetPortSettingsClient settings;
+	AMTEthernetPortSettingsClient settings(m_port);
 	EXPECT_TRUE(settings.SetLinkPreference(2));
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
@@ -95,9 +111,9 @@ TEST(AMTEthernetPortSettingsClient, Set2)
 	}
 }
 
-TEST(AMTEthernetPortSettingsClient, SetInvalid)
+TEST_F(AMTEthernetPortSettingsTest, SetInvalid)
 {
-	AMTEthernetPortSettingsClient settings;
+	AMTEthernetPortSettingsClient settings(m_port);
 	EXPECT_TRUE(settings.SetLinkPreference(3));
 	unsigned int pLinkPreference;
 	unsigned int pLinkControl;
@@ -116,9 +132,13 @@ TEST(AMTEthernetPortSettingsClient, SetInvalid)
 	}
 }
 
-TEST(AMTFCFHWSmanClient, userInitiatedPolicyRule)
+class AMTFCFHWSmanTest : public WsmanClientTest
 {
-	AMTFCFHWSmanClient fcfh;
+};
+
+TEST_F(AMTFCFHWSmanTest, userInitiatedPolicyRule)
+{
+	AMTFCFHWSmanClient fcfh(m_port);
 	short pExist = 0;
 	bool ret = false;
 	EXPECT_TRUE(ret = fcfh.userInitiatedPolicyRuleExists(&pExist));
@@ -127,9 +147,9 @@ TEST(AMTFCFHWSmanClient, userInitiatedPolicyRule)
 	}
 }
 
-TEST(AMTFCFHWSmanClient, snmpEventSubscriber)
+TEST_F(AMTFCFHWSmanTest, snmpEventSubscriber)
 {
-	AMTFCFHWSmanClient fcfh;
+	AMTFCFHWSmanClient fcfh(m_port);
 	short pExist = 0;
 	bool ret = false;
 	EXPECT_TRUE(ret = fcfh.snmpEventSubscriberExists(&pExist));
@@ -138,9 +158,9 @@ TEST(AMTFCFHWSmanClient, snmpEventSubscriber)
 	}
 }
 
-TEST(AMTFCFHWSmanClient, CILAFilterCollectionSubscription)
+TEST_F(AMTFCFHWSmanTest, CILAFilterCollectionSubscription)
 {
-	AMTFCFHWSmanClient fcfh;
+	AMTFCFHWSmanClient fcfh(m_port);
 	short pExist = 0;
 	bool ret = false;
 	EXPECT_TRUE(ret = fcfh.CILAFilterCollectionSubscriptionExists(&pExist));
@@ -149,9 +169,13 @@ TEST(AMTFCFHWSmanClient, CILAFilterCollectionSubscription)
 	}
 }
 
-TEST(AMTRedirectionServiceWSManClient, terminateSession)
+class AMTRedirectionServiceWSManTest : public WsmanClientTest
 {
-	AMTRedirectionServiceWSManClient redir;
+};
+
+TEST_F(AMTRedirectionServiceWSManTest, terminateSession)
+{
+	AMTRedirectionServiceWSManClient redir(m_port);
 	// Session types:
 	// IDER: 0
 	// SOL: 1
@@ -160,9 +184,13 @@ TEST(AMTRedirectionServiceWSManClient, terminateSession)
 	EXPECT_TRUE(redir.TerminateSession(sessionType));
 }
 
-TEST(CancelOptInClient, cancelOption)
+class CancelOptInTest : public WsmanClientTest
 {
-	CancelOptInClient cancelOpt;
+};
+
+TEST_F(CancelOptInTest, cancelOption)
+{
+	CancelOptInClient cancelOpt(m_port);
 	unsigned int retVal = 0;
 	bool ret = false;
 	EXPECT_TRUE(ret = cancelOpt.CancelOptIn(&retVal));
@@ -171,9 +199,9 @@ TEST(CancelOptInClient, cancelOption)
 	}
 }
 
-TEST(CancelOptInClient, getUserConsentState)
+TEST_F(CancelOptInTest, getUserConsentState)
 {
-	CancelOptInClient cancelOpt;
+	CancelOptInClient cancelOpt(m_port);
 	bool ret = false;
 	short state=0, policy=0;
 	EXPECT_TRUE(ret = cancelOpt.GetUserConsentState(&state, &policy));
@@ -183,9 +211,13 @@ TEST(CancelOptInClient, getUserConsentState)
 	}
 }
 
-TEST(HBPWSManClient, getConfigurationInfo)
+class HBPWSManTest : public WsmanClientTest
 {
-	HBPWSManClient hbpw;
+};
+
+TEST_F(HBPWSManTest, getConfigurationInfo)
+{
+	HBPWSManClient hbpw(m_port);
 	short controlMode=0, provisioningMethod=0;
 	string timeStamp;
 	std::vector<unsigned char> pCertHash;
@@ -198,9 +230,13 @@ TEST(HBPWSManClient, getConfigurationInfo)
 	}
 }
 
-TEST(KVMWSManClient, KVMRedirectionState)
+class KVMWSManTest : public WsmanClientTest
 {
-	KVMWSManClient kvm;
+};
+
+TEST_F(KVMWSManTest, KVMRedirectionState)
+{
+	KVMWSManClient kvm(m_port);
 	unsigned short state = 0;
 	bool ret = false;
 	EXPECT_TRUE(ret = kvm.KVMRedirectionState(&state));
@@ -208,9 +244,9 @@ TEST(KVMWSManClient, KVMRedirectionState)
 	}
 }
 
-TEST(KVMWSManClient, GetMEBxState)
+TEST_F(KVMWSManTest, GetMEBxState)
 {
-	KVMWSManClient kvm;
+	KVMWSManClient kvm(m_port);
 	bool ret=false, state=false;
 	EXPECT_TRUE(ret = kvm.GetMEBxState(&state));
 	if (ret){
@@ -218,15 +254,19 @@ TEST(KVMWSManClient, GetMEBxState)
 	}
 }
 
-TEST(KVMWSManClient, TerminateKVMSession)
+TEST_F(KVMWSManTest, TerminateKVMSession)
 {
-	KVMWSManClient kvm;
+	KVMWSManClient kvm(m_port);
 	EXPECT_TRUE(kvm.TerminateKVMSession());
 }
 
-TEST(SIOWSManClient, getSpriteLanguage)
+class SIOWSManTest : public WsmanClientTest
 {
-	SIOWSManClient sio;
+};
+
+TEST_F(SIOWSManTest, getSpriteLanguage)
+{
+	SIOWSManClient sio(m_port);
 	unsigned short language=0;
 	bool ret = false;
 	EXPECT_TRUE(ret = sio.GetSpriteLanguage(&language));
@@ -235,9 +275,9 @@ TEST(SIOWSManClient, getSpriteLanguage)
 	}
 }
 
-TEST(SIOWSManClient, setValidSpriteZoom)
+TEST_F(SIOWSManTest, setValidSpriteZoom)
 {
-	SIOWSManClient sio;
+	SIOWSManClient sio(m_port);
 	unsigned short lang2, zoom2 = 0;
 	bool ret = 0;
 	for (unsigned short zoom=1; zoom<=2; zoom++)
@@ -254,15 +294,15 @@ TEST(SIOWSManClient, setValidSpriteZoom)
 	}
 }
 
-TEST(SIOWSManClient, setInvalidSpriteZoom)
+TEST_F(SIOWSManTest, setInvalidSpriteZoom)
 {
-	SIOWSManClient sio;
+	SIOWSManClient sio(m_port);
 	EXPECT_FALSE(sio.SetSpriteZoom(100));
 }
 
-TEST(SIOWSManClient, getSpriteParameters)
+TEST_F(SIOWSManTest, getSpriteParameters)
 {
-	SIOWSManClient sio;
+	SIOWSManClient sio(m_port);
 	unsigned short language, zoom, lang2;
 	bool ret = false;
 	EXPECT_TRUE(ret = sio.GetSpriteLanguage(&language));
@@ -270,9 +310,13 @@ TEST(SIOWSManClient, getSpriteParameters)
 	EXPECT_EQ(lang2, language);
 }
 
-TEST(SyncIpClient, GetSharedStaticIpState)
+class SyncIpTest : public WsmanClientTest
 {
-	SyncIpClient syncIP;
+};
+
+TEST_F(SyncIpTest, GetSharedStaticIpState)
+{
+	SyncIpClient syncIP(m_port);
 	bool SharedStaticIpState = false;
 	bool ret = false;
 	EXPECT_TRUE(ret = syncIP.GetSharedStaticIpState(&SharedStaticIpState));
@@ -281,9 +325,9 @@ TEST(SyncIpClient, GetSharedStaticIpState)
 	}
 }
 
-TEST(SyncIpClient, GetNetworkData)
+TEST_F(SyncIpTest, GetNetworkData)
 {
-	SyncIpClient syncIP;
+	SyncIpClient syncIP(m_port);
 	bool ret=false, DHCPEnabled=false;
 	string IPAddress, subnet, gateway, dnsAddress1, dnsAddress2;
 	EXPECT_TRUE(ret = syncIP.GetNetworkData(DHCPEnabled, IPAddress, subnet, gateway, dnsAddress1, dnsAddress2));
@@ -297,9 +341,9 @@ TEST(SyncIpClient, GetNetworkData)
 	}
 }
 
-/*TEST(SyncIpClient, SetNetworkData)
+/*TEST_F(SyncIpTest, SetNetworkData)
 {
-	SyncIpClient syncIP;
+	SyncIpClient syncIP(m_port);
 	bool ret, DHCPEnabled;
 	string IPAddress, subnet, gateway, dnsAddress1, dnsAddress2;
 	// TODO: find inputs that will work 
@@ -309,24 +353,128 @@ TEST(SyncIpClient, GetNetworkData)
 	//EXPECT_FALSE(syncIP.SetNetworkData(DHCPEnabled, IPAddress, subnet, gateway, dnsAddress1, dnsAddress2));
 }*/
 
+class KVMScreenSettingTest : public WsmanClientTest
+{
+};
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings1)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 1));
+}
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings2)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+	extendedDisplayParameters.screenSettings[1].isActive = 1;
+	extendedDisplayParameters.screenSettings[1].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[1].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[1].UpperLeftX = 640;
+	extendedDisplayParameters.screenSettings[1].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[1].Pipe = 2;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 2));
+}
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings3)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+	extendedDisplayParameters.screenSettings[1].isActive = 1;
+	extendedDisplayParameters.screenSettings[1].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[1].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[1].UpperLeftX = 640;
+	extendedDisplayParameters.screenSettings[1].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[1].Pipe = 2;
+	extendedDisplayParameters.screenSettings[2].isActive = 1;
+	extendedDisplayParameters.screenSettings[2].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[2].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[2].UpperLeftX = 1280;
+	extendedDisplayParameters.screenSettings[2].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[2].Pipe = 3;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 3));
+}
+
+TEST_F(KVMScreenSettingTest, updateScreenSettings4)
+{
+	KVMScreenSettingClient Client(m_port);
+	KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+
+	extendedDisplayParameters.screenSettings[0].isActive = 1;
+	extendedDisplayParameters.screenSettings[0].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[0].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[0].UpperLeftX = 0;
+	extendedDisplayParameters.screenSettings[0].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[0].Pipe = 1;
+	extendedDisplayParameters.screenSettings[1].isActive = 1;
+	extendedDisplayParameters.screenSettings[1].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[1].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[1].UpperLeftX = 640;
+	extendedDisplayParameters.screenSettings[1].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[1].Pipe = 2;
+	extendedDisplayParameters.screenSettings[2].isActive = 1;
+	extendedDisplayParameters.screenSettings[2].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[2].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[2].UpperLeftX = 1280;
+	extendedDisplayParameters.screenSettings[2].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[2].Pipe = 3;
+	extendedDisplayParameters.screenSettings[3].isActive = 1;
+	extendedDisplayParameters.screenSettings[3].ResolutionX = 640;
+	extendedDisplayParameters.screenSettings[3].ResolutionY = 480;
+	extendedDisplayParameters.screenSettings[3].UpperLeftX = 1720;
+	extendedDisplayParameters.screenSettings[3].UpperLeftY = 0;
+	extendedDisplayParameters.screenSettings[3].Pipe = 3;
+
+	EXPECT_TRUE(Client.updateScreenSettings(extendedDisplayParameters, 4));
+}
+
 void printTime(unsigned int time)
 {
 	time_t rawtime(time);
 	cout << "Time is: " << ctime(&rawtime);
 }
 
-TEST(TimeSynchronizationClient, getTime)
+class TimeSynchronizationTest : public WsmanClientTest
 {
-	TimeSynchronizationClient timeClient;
+};
+
+TEST_F(TimeSynchronizationTest, getTime)
+{
+	TimeSynchronizationClient timeClient(m_port);
 	unsigned int time;
 	timeClient.GetAMTTime(time);
 	printTime(time);
 }
 
 
-TEST(TimeSynchronizationClient, setTime)
+TEST_F(TimeSynchronizationTest, setTime)
 {
-	TimeSynchronizationClient timeClient;
+	TimeSynchronizationClient timeClient(m_port);
 	unsigned int AMTTime, LastAMTTime;
 	ASSERT_TRUE(timeClient.GetAMTTime(AMTTime));
 	cout << "Current time: \t\t" << AMTTime << endl;
@@ -350,9 +498,9 @@ TEST(TimeSynchronizationClient, setTime)
 }
 
 //Syncs FW time to local time
-TEST(TimeSynchronizationClient, syncLocalTime)
+TEST_F(TimeSynchronizationTest, syncLocalTime)
 {
-	TimeSynchronizationClient timeClient;
+	TimeSynchronizationClient timeClient(m_port);
 	unsigned int AMTTime, LastAMTTime;
 	ASSERT_TRUE(timeClient.GetAMTTime(AMTTime));
 	cout << "Current time: \t\t" << AMTTime << endl;
@@ -370,9 +518,9 @@ TEST(TimeSynchronizationClient, syncLocalTime)
 }
 
 //Syncs FW time to UTC time
-TEST(TimeSynchronizationClient, syncUTCTime)
+TEST_F(TimeSynchronizationTest, syncUTCTime)
 {
-	TimeSynchronizationClient timeClient;
+	TimeSynchronizationClient timeClient(m_port);
 	unsigned int AMTTime, UTCTime;
 	ASSERT_TRUE(timeClient.GetAMTTime(AMTTime));
 	cout << "FW time: \t";
@@ -382,7 +530,7 @@ TEST(TimeSynchronizationClient, syncUTCTime)
 	time(&rawtime);
 	ASSERT_NE(rawtime, -1);
 	tmpTime = gmtime(&rawtime);
-	UTCTime = mktime(tmpTime);
+	UTCTime = static_cast<unsigned int>(mktime(tmpTime));
 	cout << "UTC time: \t";
 	printTime(UTCTime);
 	int diff = UTCTime-AMTTime;
@@ -397,9 +545,9 @@ TEST(TimeSynchronizationClient, syncUTCTime)
 }
 
 
-TEST(TimeSynchronizationClient, getEnabledState)
+TEST_F(TimeSynchronizationTest, getEnabledState)
 {
-	TimeSynchronizationClient timeClient;
+	TimeSynchronizationClient timeClient(m_port);
 	bool state;
 	ASSERT_TRUE(timeClient.GetLocalTimeSyncEnabledState(state));
 	cout << "Local time sync enabled state is: " << state << endl;

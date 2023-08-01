@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "AuditLogAccessor.h"
 
@@ -167,11 +167,6 @@ std::string AuditLogAccessor::DisplayNetworkAdminHostNameSetEvent(uint8_t* extDa
 std::string AuditLogAccessor::DisplayNetworkAdminDomainNameSetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	return m_auditLog.DisplayNetworkAdminDomainNameSetEvent(extData, extendedDataLen);
-}
-
-std::string AuditLogAccessor::DisplayNetworkAdminVlanParameterSetEvent(uint8_t* extData, uint8_t extendedDataLen)
-{
-	return m_auditLog.DisplayNetworkAdminVlanParameterSetEvent(extData, extendedDataLen);
 }
 
 std::string AuditLogAccessor::DisplayNetworkAdminLinkPolicySetEvent(uint8_t* extData, uint8_t extendedDataLen)

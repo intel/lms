@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -20,12 +20,12 @@
 
 namespace CimTyped = Intel::Manageability::Cim::Typed;
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient() : m_isInit(false)
+AMTFCFHWSmanClient::AMTFCFHWSmanClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false)
+AMTFCFHWSmanClient::AMTFCFHWSmanClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_isInit(false)
 {
 }
 
@@ -143,19 +143,8 @@ bool AMTFCFHWSmanClient::snmpEventSubscriberExists(short* pExist)
 	{
 		//Lock WsMan to prevent reentry
 		std::lock_guard<std::mutex> lock(WsManSemaphore());
-		std::vector<std::shared_ptr<CimTyped::AMT_SNMPEventSubscriber>> AMT_SNMPEventSubscribers =
-			CimTyped::AMT_SNMPEventSubscriber::Enumerate(m_client.get());
-		std::vector<std::shared_ptr<CimTyped::AMT_SNMPEventSubscriber>>::iterator AMT_SNMPEventSubscribersIterator;
-		*pExist=false;
-		for (AMT_SNMPEventSubscribersIterator = AMT_SNMPEventSubscribers.begin(); 
-			 AMT_SNMPEventSubscribersIterator != AMT_SNMPEventSubscribers.end() ; 
-			 AMT_SNMPEventSubscribersIterator++)
-		{	
-				*pExist=true;
-				WSMAN_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber Exists\n");
-				return true;
-		}
-		WSMAN_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber doesn't exist\n");
+		*pExist = !CimTyped::AMT_SNMPEventSubscriber::Enumerate(m_client.get()).empty();
+		WSMAN_DEBUG("snmpEventSubscriberExists: SNMP Event Subscriber %C exists\n", (*pExist) ? "" : "doesn't");
 		return true;
 	}
 	CATCH_exception("AMTFCFHWSmanClient::snmpEventSubscriberExists")

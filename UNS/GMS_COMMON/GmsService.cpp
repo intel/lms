@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 
 #include "global.h"
@@ -24,26 +24,17 @@
 #include "GMSExternalLogger.h"
 #include <sstream>
 
+#ifdef WIN32
 //Localized strings to load
-unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
-#define numOfStrings 2
-
-
-typedef enum _LOGGINGSEVERITY
-{
-	LMS_TRACE=1,
-	LMS_DEBUG,
-	LMS_WARNING,
-	LMS_ERROR,
-	LMS_CRITICAL
-} LOGGINGSEVERITY;
-
+static unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
+static const size_t numOfStrings = 2;
+#endif // WIN32
 
 GmsService::GmsService(void) : stopped(false), loading(false), 
 #ifdef WIN32
 	m_hServiceHandle(NULL),
 #endif // WIN32
-	m_closeHeciHandle(NULL), m_notifyHeciEnable(NULL), m_portForwardingService(NULL), m_isPortForwardingStarted(false)
+	m_closeHeciHandle(NULL), m_notifyHeciEnable(NULL), m_portForwardingService(NULL), m_portForwardingPort(0)
 {
 #ifdef WIN32
 	svc_status_.dwControlsAccepted=SERVICE_ACCEPT_STOP |SERVICE_ACCEPT_PAUSE_CONTINUE|SERVICE_ACCEPT_POWEREVENT|SERVICE_ACCEPT_SHUTDOWN;
@@ -223,11 +214,6 @@ ACE_Static_Svc_Descriptor& GmsService::svcByName(const ACE_TString &serviceName)
 
 bool GmsService::StartAceService(const ACE_TString &serviceName)
 {
-	
-	ACE_TString directive;
-	std::wstringstream ss;
-	ss<<(unsigned long long)this;
-
 	UNS_DEBUG(L"Starting: %s\n", serviceName.c_str());
 	int i = ACE_Service_Config::process_directive(svcByName(serviceName));
 	if (i == -1)
@@ -240,10 +226,7 @@ bool GmsService::StartAceService(const ACE_TString &serviceName)
 		UNS_ERROR(L"Couldn't prepare service: %s %d\n", serviceName.c_str(), i);
 		return false;
 	}
-	directive = ACE_TEXT ("\"-g ");
-	directive += ACE_TEXT_WCHAR_TO_TCHAR(ss.str().c_str());
-	directive += ACE_TEXT ("\"");
-	i = ACE_Service_Config::initialize(serviceName.c_str(), directive.c_str());
+	i = ACE_Service_Config::initialize(serviceName.c_str(), NULL);
 	if (i > 0)
 	{
 		UNS_ERROR(L"Couldn't initialize service: %s %d\n", serviceName.c_str(), i);
@@ -297,34 +280,35 @@ int GmsService::svc(void)
 #endif // WIN32
 
 	DataStorageWrapper& ds = DSinstance();
-	unsigned long severity = LMS_DEBUG;
+	unsigned long severity = 2; //LMS_DEBUG
 	if (ds.GetDataValue(LMSLoggingSeverity, severity, true))
 	{
 		UNS_DEBUG(L"Logging Severity from Registry: %d\n", severity);
 		switch (severity)
 		{
-		case LMS_TRACE:
+		case 1: //LMS_TRACE
 			requiredLoggingMask = mask;
 			break;
-		case LMS_DEBUG:
+		case 2: //LMS_DEBUG
 			requiredLoggingMask = mask & ~LM_TRACE;
 			break;
-		case LMS_WARNING:
+		case 3: //LMS_WARNING
 			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG;
 			break;
-		case LMS_ERROR:
+		case 4: //LMS_ERROR
 			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING;
 			break;
-		case LMS_CRITICAL:
+		case 5: //LMS_CRITICAL
 			requiredLoggingMask = mask & ~LM_TRACE & ~LM_DEBUG & ~LM_WARNING & ~LM_ERROR;
 			break;
 		default:
 			break;
 		}
-
 	}
 	ACE_LOG_MSG->priority_mask(requiredLoggingMask, ACE_Log_Msg::PROCESS);
-
+#ifdef WIN32
+	capture_log_msg_attributes();
+#endif // WIN32
 	UNS_DEBUG(L"GmsService:Starting service\n");
 	UNS_DEBUG(L"LMS Version: %d.%d.%d.%d\n", MAJOR_VERSION, MINOR_VERSION, QUICK_FIX_NUMBER, VER_BUILD);
 	 
@@ -332,7 +316,6 @@ int GmsService::svc(void)
 
 	GMSExternalLogger::instance().ServiceStart();
 
-	
 #ifdef WIN32
 	if (!VerifyFile::Init())
 	{
@@ -341,12 +324,11 @@ int GmsService::svc(void)
 		return 0;
 	}
 
-
 	UNS_DEBUG(L"loading strings\n");
-	WindowsStringLoader loader;
-	std::vector<unsigned int> ids(strings,strings+numOfStrings);
 	try
 	{
+		WindowsStringLoader loader;
+		std::vector<unsigned int> ids(strings, strings + numOfStrings);
 		StringManager::instance()->loadStrings(loader,ids);
 	}
 	catch(...)
@@ -355,14 +337,12 @@ int GmsService::svc(void)
 	}
 #endif // WIN32
 
-
 	if (!StartAceService(GMS_CONFIGURATOR))
 	{
 		stopped = loading = true;
 		UNS_ERROR(L"StartAceService failed, Shutting down.\n");
 		return 0;
 	}
-	
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ChangeConfiguration());
@@ -388,7 +368,6 @@ int GmsService::svc(void)
 	}
 
 	ACE_Service_Repository::instance()->remove(GMS_CONFIGURATOR.c_str());
-	
 
 	// Cleanly terminate connections, terminate threads.
 	UNS_DEBUG(L"Shutting down\n");
@@ -490,18 +469,23 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 	if (type == 0) return false; 
 
 	ACE_Service_Object *obj = static_cast<ACE_Service_Object *>(type->object ()); 
-	ACE_Task *subServiceTask = dynamic_cast<ACE_Task*>(obj); 
+	ACE_Task *subServiceTask = dynamic_cast<ACE_Task*>(obj);
+	if (subServiceTask == nullptr)
+	{
+		UNS_ERROR(L"GmsService: sending message - Object is not an ACE_Task\n");
+		return false;
+	}
 	subServiceTask->putq(mb->duplicate()); 
 
 	return true;
 }
 
-bool GmsService::GetPortForwardingStarted()
+unsigned int GmsService::GetPortForwardingPort() const
 {
-	return m_isPortForwardingStarted;
+	return m_portForwardingPort;
 }
 
-void GmsService::SetPortForwardingStarted(bool isPfwStarted)
+void GmsService::SetPortForwardingPort(unsigned int portForwardingPort)
 {
-	m_isPortForwardingStarted = isPfwStarted;
+	m_portForwardingPort = portForwardingPort;
 }

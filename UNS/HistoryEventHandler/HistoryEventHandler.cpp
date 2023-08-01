@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2022 Intel Corporation
  */
 #include "HistoryEventHandler.h"
 #include "DataStorageGenerator.h"
@@ -83,7 +83,7 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 			eventList = value;
 		}
 		int elementNum = 0;
-		int index = 0;
+		size_t index = 0;
 		while ((index = eventList.find(L'|', index)) != std::wstring::npos)
 		{
 			++index;

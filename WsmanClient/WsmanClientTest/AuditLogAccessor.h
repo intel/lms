@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2019 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "gmock/gmock.h"
 #include <sstream>
@@ -12,11 +12,11 @@
 
 class AuditLogAccessor : public ::testing::Test 
 {
+public:
+	AuditLogAccessor() : m_auditLog(0) {}
 protected:
 
 	AuditLogWSManClient m_auditLog;
-
-	void formatTime0();
 
 	std::string formatTime(time_t* time);
 	std::string PrintOptInPolicy(uint8_t curData, char* title);
@@ -51,7 +51,6 @@ protected:
 	std::string DisplayNetworkAdminTcpIpParameterSetEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayNetworkAdminHostNameSetEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayNetworkAdminDomainNameSetEvent(uint8_t* extData, uint8_t extendedDataLen);
-	std::string DisplayNetworkAdminVlanParameterSetEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayNetworkAdminLinkPolicySetEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayNetworkAdminIPv6ParamsEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplayStorageAdminGlobalStorageAttributesSetEvent(uint8_t* extData, uint8_t extendedDataLen);

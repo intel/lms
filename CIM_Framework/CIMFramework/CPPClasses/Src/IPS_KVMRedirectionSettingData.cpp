@@ -6,7 +6,7 @@
 //
 //  Contents:   The IPS_KVMRedirectionSettingData class represents configuration-related and operational parameters for the KVM redirection service in the Intel(R) AMT.
 //
-//              This file was automatically generated from IPS_KVMRedirectionSettingData.mof,  version: 6.0.0
+//              This file was automatically generated from IPS_KVMRedirectionSettingData.mof,  version: 16.0.0
 //
 //----------------------------------------------------------------------------
 #include "IPS_KVMRedirectionSettingData.h"
@@ -27,6 +27,11 @@ namespace Typed
 		{"SessionTimeout", false, false, false },
 		{"RFBPassword", false, false, false },
 		{"DefaultScreen", false, false, false },
+		{"DoubleBufferEnabled", false, false, false },
+		{"DoubleBufferActive", false, false, false },
+		{"ZlibControlSupported", false, false, false },
+		{"GrayscalePixelFormatSupported", false, false, false },
+		{"InitialDecimationModeForLowRes", false, false, false },
 	};
 	// class fields
 	const bool IPS_KVMRedirectionSettingData::EnabledByMEBx() const
@@ -177,6 +182,101 @@ namespace Typed
 	void IPS_KVMRedirectionSettingData::RemoveDefaultScreen()
 	{
 		RemoveField("DefaultScreen");
+	}
+
+	const bool IPS_KVMRedirectionSettingData::DoubleBufferEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("DoubleBufferEnabled"), ret);
+		return ret;
+	}
+	void IPS_KVMRedirectionSettingData::DoubleBufferEnabled(const bool value)
+	{
+		SetOrAddField("DoubleBufferEnabled", TypeConverter::TypeToString(value));
+	}
+	bool IPS_KVMRedirectionSettingData::DoubleBufferEnabledExists() const
+	{
+		return ContainsField("DoubleBufferEnabled");
+	}
+	void IPS_KVMRedirectionSettingData::RemoveDoubleBufferEnabled()
+	{
+		RemoveField("DoubleBufferEnabled");
+	}
+
+	const bool IPS_KVMRedirectionSettingData::DoubleBufferActive() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("DoubleBufferActive"), ret);
+		return ret;
+	}
+	void IPS_KVMRedirectionSettingData::DoubleBufferActive(const bool value)
+	{
+		SetOrAddField("DoubleBufferActive", TypeConverter::TypeToString(value));
+	}
+	bool IPS_KVMRedirectionSettingData::DoubleBufferActiveExists() const
+	{
+		return ContainsField("DoubleBufferActive");
+	}
+	void IPS_KVMRedirectionSettingData::RemoveDoubleBufferActive()
+	{
+		RemoveField("DoubleBufferActive");
+	}
+
+	const bool IPS_KVMRedirectionSettingData::ZlibControlSupported() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("ZlibControlSupported"), ret);
+		return ret;
+	}
+	void IPS_KVMRedirectionSettingData::ZlibControlSupported(const bool value)
+	{
+		SetOrAddField("ZlibControlSupported", TypeConverter::TypeToString(value));
+	}
+	bool IPS_KVMRedirectionSettingData::ZlibControlSupportedExists() const
+	{
+		return ContainsField("ZlibControlSupported");
+	}
+	void IPS_KVMRedirectionSettingData::RemoveZlibControlSupported()
+	{
+		RemoveField("ZlibControlSupported");
+	}
+
+	const bool IPS_KVMRedirectionSettingData::GrayscalePixelFormatSupported() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("GrayscalePixelFormatSupported"), ret);
+		return ret;
+	}
+	void IPS_KVMRedirectionSettingData::GrayscalePixelFormatSupported(const bool value)
+	{
+		SetOrAddField("GrayscalePixelFormatSupported", TypeConverter::TypeToString(value));
+	}
+	bool IPS_KVMRedirectionSettingData::GrayscalePixelFormatSupportedExists() const
+	{
+		return ContainsField("GrayscalePixelFormatSupported");
+	}
+	void IPS_KVMRedirectionSettingData::RemoveGrayscalePixelFormatSupported()
+	{
+		RemoveField("GrayscalePixelFormatSupported");
+	}
+
+	const unsigned char IPS_KVMRedirectionSettingData::InitialDecimationModeForLowRes() const
+	{
+		unsigned char ret = 0;
+		TypeConverter::StringToType(GetField("InitialDecimationModeForLowRes"), ret);
+		return ret;
+	}
+	void IPS_KVMRedirectionSettingData::InitialDecimationModeForLowRes(const unsigned char &value)
+	{
+		SetOrAddField("InitialDecimationModeForLowRes", TypeConverter::TypeToString(value));
+	}
+	bool IPS_KVMRedirectionSettingData::InitialDecimationModeForLowResExists() const
+	{
+		return ContainsField("InitialDecimationModeForLowRes");
+	}
+	void IPS_KVMRedirectionSettingData::RemoveInitialDecimationModeForLowRes()
+	{
+		RemoveField("InitialDecimationModeForLowRes");
 	}
 
 	CimBase *IPS_KVMRedirectionSettingData::CreateFromCimObject(const CimObject &object)

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,6 +22,8 @@ namespace Intel
 		{
 			struct GET_INFO_RESPONSE
 			{
+				GET_INFO_RESPONSE() : MEBxVersion({ 0 }), FlashOverridePolicy(0), MangeabilityMode(0),
+					BiosBootState(0), Fields({ 0 }), BiosVersion{ 0 } {}
 				FWU_VERSION       MEBxVersion;
 				unsigned int      FlashOverridePolicy;
 				unsigned int      MangeabilityMode;
@@ -43,27 +45,10 @@ namespace Intel
 				}
 			};
 
-			class FWUGetInfoRequest;
-			class FWUGetInfoCommand : public FWUpdateCommand
-			{
-			public:
-
-				FWUGetInfoCommand();
-				virtual ~FWUGetInfoCommand() {}
-
-				GET_INFO_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<FWUpdateCommandResponse<GET_INFO_RESPONSE>> m_response;
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x09;
-			};
-
 			class FWUGetInfoRequest : public FWUpdateCommandRequest
 			{
 			public:
-				FWUGetInfoRequest(){}
+				FWUGetInfoRequest() {}
 				virtual ~FWUGetInfoRequest() {}
 
 			private:
@@ -73,8 +58,29 @@ namespace Intel
 					//this is the command number (taken from the AMTHI document)
 					return REQUEST_COMMAND_NUMBER;
 				}
+			};
 
-				virtual std::vector<uint8_t> SerializeData();
+			class FWUGetInfoCommand : public FWUpdateCommand
+			{
+			public:
+
+				FWUGetInfoCommand()
+				{
+					m_request = std::make_shared<FWUGetInfoRequest>();
+					Transact();
+				}
+				virtual ~FWUGetInfoCommand() {}
+
+				GET_INFO_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = FWUpdateCommandResponse<GET_INFO_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				FWUpdateCommandResponse<GET_INFO_RESPONSE> m_response;
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x09;
 			};
 		} // namespace FWUpadate_Client
 	} // namespace MEI_Client

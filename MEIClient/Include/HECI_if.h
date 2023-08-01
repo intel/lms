@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2005-2007, 2009-2020 Intel Corporation
+ * Copyright (C) 2005-2007, 2009-2022 Intel Corporation
  */
 /*++
 
@@ -51,5 +51,10 @@ DEFINE_GUID(HECI_UPID_GUID,
 // {ED6703FA-D312-4E8B-9DDD-2155BB2DEE65}
 DEFINE_GUID(HECI_PSR_GUID,
 	0xED6703FA, 0xD312, 0x4E8B, 0x9D, 0xDD, 0x21, 0x55, 0xBB, 0x2D, 0xEE, 0x65);
+
+// Define GUID used to connect to the Manufacturing and Configuration Host Interface client (via the HECI device)
+// {DD17041C-09EA-4B17-A271-5B989867EC65 }
+DEFINE_GUID(HECI_MCHI_GUID,
+	0xDD17041C, 0x09EA, 0x4B17, 0xA2, 0x71, 0x5B, 0x98, 0x98, 0x67, 0xEC, 0x65);
 
 #endif // __INTRFACE_H__

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -20,8 +20,8 @@
 class WSMAN_DLL_API CancelOptInClient : public BaseWSManClient
 {
 public:
-	CancelOptInClient();
-	CancelOptInClient(const std::string &User, const std::string &Password);
+	CancelOptInClient(unsigned int port);
+	CancelOptInClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~CancelOptInClient();
 
 	/*Actual soap actions!*/

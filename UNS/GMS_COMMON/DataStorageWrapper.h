@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -20,13 +20,6 @@
 #include <string>
 #include <memory>
 #include "GMSCommonDllExport.h"
-
-enum ValueTypes {
-	VAL_NONE = 0,
-	VAL_STR = 1, //REG_SZ
-	VAL_BIN = 3,
-	VAL_ULONG = 4 //REG_DWORD
-};
 
 enum DATA_NAME : unsigned int;
 

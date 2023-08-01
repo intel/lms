@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -12,6 +12,7 @@
 #include "HECIException.h"
 #include "CFG_SetOverrideProsetAdapterSwitchingCommand.h"
 #include "GetFWVersionCommand.h"
+#include "GetFWCapsCommand.h"
 #include "GMSExternalLogger.h"
 #ifdef WIN32
 #include <cguid.h>
@@ -174,13 +175,13 @@ bool Configurator::IsLMEExists() const
 	return res;
 }
 
-void GetSkuAndBrand(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform,
-	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI& stateData)
+void GetSkuAndBrand(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform, bool& stateData_Amt)
 {
 	Intel::MEI_Client::MKHI_Client::GetFWCapsCommand getFeaturesStateCommand(Intel::MEI_Client::MKHI_Client::FEATURES_ENABLED);
 	Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
 
-	stateData = getFeaturesStateCommand.getResponse();
+	auto stateData = getFeaturesStateCommand.getResponse();
+	stateData_Amt = stateData.Fields.Amt;
 	platform = getPlatformTypeCommand.getResponse();
 }
 
@@ -202,12 +203,12 @@ bool Configurator::MEIEnabled() const
 		// Connect to the root\cimv2 namespace with
 		// the current user and obtain pointer pSvc
 		// to make IWbemServices calls.
-		hres = loc->ConnectServer(L"ROOT\\CIMV2", NULL, NULL, 0, NULL, 0, 0, &svc );
+		hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
 		if (!FAILED(hres))
 		{
 				IEnumWbemClassObject* enumerator = NULL;
-				hres = svc->ExecQuery(L"WQL",
-					L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'",
+				hres = svc->ExecQuery(CComBSTR(L"WQL"),
+					CComBSTR(L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'"),
 					WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
 				if (!FAILED(hres))
 				{
@@ -269,7 +270,7 @@ bool Configurator::MEIEnabled() const
 static const int CONFIGURATOR_CHECK_RETRIES = 3; // Retry if wsman fails (usually with timeout)
 
 //check if service SharedStaticIP should be loaded
-bool CheckSharedStaticIPLoad()
+bool CheckSharedStaticIPLoad(unsigned int portForwardingPort)
 {
 	bool sharedStaticIP = false;
 	UNS_DEBUG(L"Configurator:CheckSharedStaticIPLoad\n");
@@ -277,7 +278,7 @@ bool CheckSharedStaticIPLoad()
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
 	{
-		SyncIpClient syncIpClient;
+		SyncIpClient syncIpClient(portForwardingPort);
 		ret = syncIpClient.GetSharedStaticIpState(&sharedStaticIP);
 		if (ret)
 			break;
@@ -288,7 +289,7 @@ bool CheckSharedStaticIPLoad()
 }
 
 //check if service Timesync should be loaded
-bool CheckTimeSyncStateLoad()
+bool CheckTimeSyncStateLoad(unsigned int portForwardingPort)
 {
 	bool timeSyncState = false;
 	UNS_DEBUG(L"Configurator::CheckTimeSyncStateLoad\n");
@@ -296,7 +297,7 @@ bool CheckTimeSyncStateLoad()
 	bool ret = false;
 	for (int i = 0; i < CONFIGURATOR_CHECK_RETRIES; i++)
 	{
-		TimeSynchronizationClient timeClient;
+		TimeSynchronizationClient timeClient(portForwardingPort);
 		ret = timeClient.GetLocalTimeSyncEnabledState(timeSyncState);
 		if (ret)
 			break;
@@ -306,9 +307,9 @@ bool CheckTimeSyncStateLoad()
 	return ret && timeSyncState;
 }
 
+#ifdef WIN32
 namespace
 {
-#ifdef WIN32
 	bool CheckIfServiceInstalled(const ACE_TString & ServiceName)
 	{
 		bool result = false;
@@ -328,23 +329,15 @@ namespace
 		CloseServiceHandle(h_scm);
 		return result;
 	}
-#else
-bool CheckIfServiceInstalled(const ACE_TString & ServiceName)
-	{
-		UNS_DEBUG(L"Configurator:: CheckIfServiceInstalled not implemented\n");
-		return true;
-	}
-#endif
 }
 
 //check if service WiFiProfileSync should be loaded
-#ifdef WIN32
-bool CheckWiFiProfileSyncRequired()
+bool CheckWiFiProfileSyncRequired(unsigned int portForwardingPort)
 {
 	bool enabled;
 	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
 
-	WifiPortClient WifiPort;
+	WifiPortClient WifiPort(portForwardingPort);
 	size_t ports = 0;
 	bool ret = WifiPort.PortsNum(ports);
 	if (!ret)
@@ -356,7 +349,7 @@ bool CheckWiFiProfileSyncRequired()
 		return enabled;
 	}
 
-	WlanWSManClient WlanWSMan;
+	WlanWSManClient WlanWSMan(portForwardingPort);
 	enabled = true;
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
 	if (!ret)
@@ -373,7 +366,7 @@ bool CheckWiFiProfileSyncRequired()
 	return enabled;
 }
 #else // WIN32
-bool CheckWiFiProfileSyncRequired()
+bool CheckWiFiProfileSyncRequired(unsigned int)
 {
 	bool enabled;
 	UNS_DEBUG(L"Configurator::CheckWiFiProfileSyncRequired\n");
@@ -384,7 +377,7 @@ bool CheckWiFiProfileSyncRequired()
 }
 #endif // WIN32
 
-bool CheckWatchdogRequired()
+bool CheckWatchdogRequired(unsigned int)
 {
 	UNS_DEBUG(L"Configurator::CheckWatchdogRequired\n");
 	DataStorageWrapper& ds = DSinstance();
@@ -475,7 +468,9 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"init");
 
-	initSubService(argc, argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 
 	UNS_DEBUG(L"Configurator, 0x%x\n", this);
 
@@ -603,7 +598,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 	{
 		UNS_DEBUG(L"%s: needSpecialCheck\n", serviceName.c_str());
 
-		if (!m_mainService->GetPortForwardingStarted()) {
+		if (!m_mainService->GetPortForwardingPort()) {
 			UNS_DEBUG(L"%s: Port Forwarding did not start yet, delay StartAceService operation till Port Forwarding start.\n", serviceName.c_str());
 			theLoadedServices::instance()->RemoveServiceToLoad(serviceName);
 			theLoadedServices::instance()->UnlockService(serviceName);
@@ -612,7 +607,7 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 		}
 
 		CheckLoadFunc *checkLoadFunc = m_checkLoadMap[serviceName];
-		if (checkLoadFunc && !checkLoadFunc()){ //if the service should not be loaded
+		if (checkLoadFunc && !checkLoadFunc(m_mainService->GetPortForwardingPort())){ //if the service should not be loaded
 			if(m_onToggleService == true)
 				return false;
 			else
@@ -772,7 +767,7 @@ namespace
 		catch (std::exception& e)
 		{
 			UNS_ERROR(L"Could not get FW version. %C\n", e.what());
-			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer = { 0 };
+			Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE emptyFwVer;
 			return emptyFwVer;
 		}
 	}
@@ -820,9 +815,9 @@ void Configurator::ScanConfiguration()
 
 		if (!m_SkuAndBrandScanned)
 		{
-			GetSkuAndBrand(m_platform, m_stateData);
+			GetSkuAndBrand(m_platform, m_stateData_Amt);
 			m_LME_exists = IsLMEExists();
-			UNS_DEBUG(L"platform=0x%X FWCaps=0x%X LME_exists=%d\n" , m_platform, m_stateData, m_LME_exists);
+			UNS_DEBUG(L"platform=0x%X FWCaps.Amt=%d LME_exists=%d\n" , m_platform, m_stateData_Amt, m_LME_exists);
 		}
 		m_SkuAndBrandScanned = true;
 
@@ -831,21 +826,21 @@ void Configurator::ScanConfiguration()
 		ServicesBatchStartCommand batch;
 		ServiceNamesList services;
 
-		services.Read(DUMMY_SERVICES);
+		services.Read(NamesGroup::DUMMY_SERVICES);
 
 		if(m_platform.Fields.ImageType != Intel::MEI_Client::MKHI_Client::ME_FULL_8MB)
 		{
-			services.Read(SKU_1_5_GROUP);
+			services.Read(NamesGroup::SKU_1_5_GROUP);
 		}
 		else
 		{
 			if (!m_LME_exists)
 			{
-				services.Read(SKU_5_NO_LME_GROUP);
+				services.Read(NamesGroup::SKU_5_NO_LME_GROUP);
 			}
 			else
 			{
-				services.Read(SKU_5_GROUP);
+				services.Read(NamesGroup::SKU_5_GROUP);
 			}
 
 			switch (m_platform.Fields.Brand)
@@ -854,10 +849,10 @@ void Configurator::ScanConfiguration()
 				case Intel::MEI_Client::MKHI_Client::BrandStdMng:
 				case Intel::MEI_Client::MKHI_Client::BrandL3:
 					{
-						if (!m_stateData.Fields.Amt)// Manageability disabled in MEBx
+						if (!m_stateData_Amt)// Manageability disabled in MEBx
 							break;
 
-						services.Read(MANAGABILITY_GROUP);
+						services.Read(NamesGroup::MANAGABILITY_GROUP);
 
 					}
 					break;
@@ -934,15 +929,16 @@ void Configurator::OnToggleService(const ACE_TString &service, bool val)
 	}
 }
 
-void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
+void Configurator::ChangeServiceState(ACE_TString &serviceName, SERVICE_STATUS_TYPE status)
 {
 	ServiceNamesList services;
-	FuncEntryExit<decltype(status)> fee(this, L"ChangeServiceState", status);
+	FuncEntryExit<void> fee(this, L"ChangeServiceState");
 
+	UNS_DEBUG(L"ChangeServiceState: %d\n", status);
 	switch (status)
 	{
 		// The unloading of service and all the ones that depends on it was finished.
-		case STATUS_UNLOADCOMPLETE:
+		case SERVICE_STATUS_TYPE::UNLOADCOMPLETE:
 			FiniAceService(serviceName);
 			//Refreshing the waiting list of services that might have been waiting to the service
 			if(theAsyncActivationManager::instance()->RefreshOnUnload(services))
@@ -958,7 +954,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		// Loading the service and the ones it depends on was completed.
-		case STATUS_LOADCOMPLETE:
+		case SERVICE_STATUS_TYPE::LOADCOMPLETE:
 			theLoadedServices::instance()->AddService(serviceName);
 			//Raising MEI Enabled event.
 			if(m_gotMeiEnabled && (serviceName.compare(STATUS_EVENT_HANDLER) == 0))
@@ -981,7 +977,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		// Suspending the service and the ones that depended on it was finished
-		case STATUS_SUSPENDCOMPLETE:
+		case SERVICE_STATUS_TYPE::SUSPENDCOMPLETE:
 			theLoadedServices::instance()->SetActive(serviceName, false);
 			CompleteSuspendAceService(serviceName);
 			//Refreshing the waiting list of services that might have been waiting for the service to suspend
@@ -998,7 +994,7 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 			}
 			break;
 		// Resuming the service and the ones that depended on it was finished
-		case STATUS_RESUMECOMPLETE:
+		case SERVICE_STATUS_TYPE::RESUMECOMPLETE:
 			theLoadedServices::instance()->SetActive(serviceName);
 			//Refreshing the waiting list of services that might have been waiting for the service to resume
 			if (theAsyncActivationManager::instance()->RefreshOnResume(services))
@@ -1026,14 +1022,14 @@ void Configurator::ChangeServiceState(ACE_TString &serviceName, int status)
 
 int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 {
-	FuncEntryExit<decltype(conf->type)> fee(this, L"UpdateConfiguration", conf->type);
+	FuncEntryExit<void> fee(this, L"UpdateConfiguration");
 	switch(conf->type)
 	{
-		case IP_SYNC_CONF:
+		case CONFIGURATION_TYPE::IP_SYNC_CONF:
 			UNS_DEBUG(L"Got Static IP Status: %d\n", conf->value);
 			OnToggleService(GMS_SHAREDSTATICIPSERVICE, (bool) conf->value);
 			break;
-		case WIFI_PROFILE_SYNC_CONF:
+		case CONFIGURATION_TYPE::WIFI_PROFILE_SYNC_CONF:
 			UNS_DEBUG(L"Got WiFi Profile Sync Status: %d\n",  conf->value);
 #ifdef WIN32
 			OnToggleService(GMS_WIFIPROFILESYNCSERVICE, conf->value != 0);
@@ -1041,19 +1037,19 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			TaskCompleted();
 #endif // WIN32
 			break;
-		case TIME_SYNC_CONF: //Handles the changes in the LocalTimeSyncEnable field in the FW
+		case CONFIGURATION_TYPE::TIME_SYNC_CONF: //Handles the changes in the LocalTimeSyncEnable field in the FW
 			UNS_DEBUG(L"Got Time Sync Status: %d\n",  conf->value);
 			//Starts or stops the service according to the configuration change
 			OnToggleService(GMS_TIMESYNCSERVICE, (bool) conf->value);
 			break;
-		case AMT_ENABLE_CONF:
+		case CONFIGURATION_TYPE::AMT_ENABLE_CONF:
 			{
 				UNS_DEBUG(L"Got AMT Status: %d\n", conf->value);
 
 				if(conf->value != 0)
 				{
 					ServiceNamesList services;
-					services.Read(MANAGABILITY_GROUP);
+					services.Read(NamesGroup::MANAGABILITY_GROUP);
 					services.AddName(AMT_ENABLE_LAST_SERVICE);
 
 					NamesList svc;
@@ -1072,7 +1068,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				}
 				break;
 			}
-		case AMT_PROVISION_CONF:
+		case CONFIGURATION_TYPE::AMT_PROVISION_CONF:
 			UNS_DEBUG(L"Got AMT Provision Status: %d\n", conf->value);
 #ifndef WIN32
 			OnToggleService(GMS_WATCHDOGSERVICE, conf->value == Intel::MEI_Client::AMTHI_Client::PROVISIONING_STATE_POST);
@@ -1080,7 +1076,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			TaskCompleted();
 #endif // !WIN32
 			break;
-		case PFW_ENABLE_CONF:
+		case CONFIGURATION_TYPE::PFW_ENABLE_CONF:
 		{
 			UNS_DEBUG(L"Got Port Forwarding Status: %d\n", conf->value);
 
@@ -1118,7 +1114,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 			break;
 		}
 		default:
-			UNS_ERROR(L"Configurator::Invalid Message\n");
+			UNS_ERROR(L"Configurator::Invalid Message %d\n", conf->type);
 			return -1;
 	}
 	return 0;
@@ -1358,12 +1354,19 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 				{
 					UNS_DEBUG(L"got PORT_FORWARDING_STARTED event\n");
 
-					m_mainService->SetPortForwardingStarted(true);
+					PortForwardingStartedBlock* pfwStartedMsg = dynamic_cast<PortForwardingStartedBlock*> (mbPtr->data_block());
+					if (pfwStartedMsg == NULL)
+					{
+						UNS_ERROR(L"Invalid Port Forwarding Started Message\n");
+						TaskCompleted();
+						return;
+					}
+					m_mainService->SetPortForwardingPort(pfwStartedMsg->m_portForwardingPort);
 
 					sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_AVAILABLE, ACE_TEXT("Port Forwarding Service started"));
 
 					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-					pfwPtr->data_block(new ChangeConfiguration(PFW_ENABLE_CONF, 1));
+					pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
 					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
 					this->putq(pfwPtr->duplicate());
 
@@ -1383,7 +1386,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					bool publishFailure = pfwStoppedMsg->m_publishFailure;
 					UNS_DEBUG(L"Publish Failure: %d\n", publishFailure);
 
-					m_mainService->SetPortForwardingStarted(false);
+					m_mainService->SetPortForwardingPort(0);
 
 					if (publishFailure) {
 						sendAlertIndicationMessage(CATEGORY_UNS, EVENT_PORT_FORWARDING_SERVICE_UNAVAILABLE, ACE_TEXT("Port Forwarding Service failed"));
@@ -1409,6 +1412,9 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 			case MB_PORT_FORWARDING_STOPPED:
 				taskMbPtr->data_block(new PortForwardingStoppedBlock(*((PortForwardingStoppedBlock*)mbPtr->data_block())));
 				break;
+			case MB_PORT_FORWARDING_STARTED:
+				taskMbPtr->data_block(new PortForwardingStartedBlock(*((PortForwardingStartedBlock*)mbPtr->data_block())));
+			break;
 			default:
 				taskMbPtr->data_block(new ACE_Data_Block());
 		}

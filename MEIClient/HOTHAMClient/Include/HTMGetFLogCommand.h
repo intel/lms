@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -24,11 +24,11 @@ namespace Intel
 			typedef struct _HTM_CMD_FLOG_RESP
 			{
 				uint32_t   response;
-				//uint32_t   data[];
 			} HTM_CMD_FLOG_RESP;
 
-			typedef struct _GET_FLOG_RESP
+			struct GET_FLOG_RESP
 			{
+				GET_FLOG_RESP() : header({ 0 }), response({ 0 }) {}
 				HTM_MSG_HDR_RESPONSE header;
 				HTM_CMD_FLOG_RESP response;
 
@@ -36,23 +36,6 @@ namespace Intel
 				{
 					Intel::MEI_Client::parseData(response, itr, end);
 				}
-			} GET_FLOG_RESP;
-
-
-			class HTMGetFatalErrorsRequest;
-			class HTMGetFatalErrorsCommand : public HOTHAMCommand
-			{
-			public:
-
-				HTMGetFatalErrorsCommand();
-				virtual ~HTMGetFatalErrorsCommand() {}
-
-				GET_FLOG_RESP getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<HOTHAMCommandResponse<GET_FLOG_RESP>> m_response;
 			};
 
 			class HTMGetFatalErrorsRequest : public HOTHAMCommandRequest
@@ -66,15 +49,35 @@ namespace Intel
 				static const uint32_t REQUEST_CODE = 0x80; //#define PCH_DFX_FLOG_GET_SIZE                    0x80
 				virtual uint8_t requestHeaderReqCode()
 				{
-					return REQUEST_CODE; 
+					return REQUEST_CODE;
 				}
 
 				virtual uint8_t requestHeaderMsgClass()
 				{
 					return HOTHAM_COMMAND_CODE;
 				}
+			};
 
-				virtual std::vector<uint8_t> SerializeData();
+			class HTMGetFatalErrorsCommand : public HOTHAMCommand
+			{
+			public:
+
+				HTMGetFatalErrorsCommand()
+				{
+					m_request = std::make_shared<HTMGetFatalErrorsRequest>();
+					Transact();
+				}
+				virtual ~HTMGetFatalErrorsCommand() {}
+
+				GET_FLOG_RESP getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = HOTHAMCommandResponse<GET_FLOG_RESP>(buffer);
+				}
+
+				HOTHAMCommandResponse<GET_FLOG_RESP> m_response;
 			};
 		} // namespace HOTHAM_Client
 	} // namespace MEI_Client

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -329,7 +329,7 @@ static void get_device_ip4(const char *obj_path, domains_map_t &domains)
 	}
 
 	path = g_variant_get_string (path_value, NULL);
-	if (path)
+	if (path && iface)
 		get_domains(path, iface, domains);
 out:
 	g_variant_unref (path_value);
@@ -499,8 +499,8 @@ static int get_domains_map(domains_map_t &domains)
 int AdapterListInfo::UpdateAdapterListInfo()
 {
 	int result;
-	struct nl_cache *addr_cache;
-	struct nl_cache *link_cache;
+	struct nl_cache *addr_cache = NULL;
+	struct nl_cache *link_cache = NULL;
 	struct nl_sock *sock;
 	struct nl_object *obj;
 

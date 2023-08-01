@@ -147,7 +147,7 @@ namespace Utils
 			buffer >> tmp;
 			if (buffer.fail() || tmp < 0)
 				return false;
-			unsigned long real_val;
+			unsigned long real_val = 0;
 			bufferCopy >> real_val;
 			if (bufferCopy.fail())
 				return false;
@@ -160,7 +160,7 @@ namespace Utils
 		static bool StringToInteger(const string& str, T& t)
 		{
 			istringstream buffer(str);
-			long tmp;
+			long tmp = 0;
 			buffer >> tmp;
 			if (buffer.fail())
 				return false;

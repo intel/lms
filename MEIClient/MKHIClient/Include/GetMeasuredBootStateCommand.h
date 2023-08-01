@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2021 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -21,61 +21,49 @@ namespace Intel
 	{
 		namespace MKHI_Client
 		{
-			typedef struct MKHI_MEASURED_BOOT_STATE_t
+			struct MKHI_MEASURED_BOOT_STATE
 			{
-				MKHI_MSG_HEADER		Header;
+				MKHI_MEASURED_BOOT_STATE() : State(0) {}
 				uint8_t				State;
 
 				void parse(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					parseData (State, itr, end);
 				}
-			} MKHI_MEASURED_BOOT_STATE;
-
-			class GetMeasuredBootStateRequest;
-			class GetMeasuredBootStateCommand : public MKHICommand
-			{
-			public:
-
-				GetMeasuredBootStateCommand();
-				virtual ~GetMeasuredBootStateCommand() {}
-
-				MKHI_MEASURED_BOOT_STATE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<MKHICommandResponse<MKHI_MEASURED_BOOT_STATE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x23;
 			};
 
 			class GetMeasuredBootStateRequest : public MKHICommandRequest
 			{
 			public:
-				GetMeasuredBootStateRequest() {}
+				GetMeasuredBootStateRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID) {}
 				virtual ~GetMeasuredBootStateRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x23;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetMeasuredBootStateCommand : public MKHICommand
+			{
+			public:
+
+				GetMeasuredBootStateCommand()
 				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetMeasuredBootStateRequest>();
+					Transact();
+				}
+				virtual ~GetMeasuredBootStateCommand() {}
+
+				MKHI_MEASURED_BOOT_STATE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<MKHI_MEASURED_BOOT_STATE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
+				MKHICommandResponse<MKHI_MEASURED_BOOT_STATE> m_response;
 
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_GEN_GROUP_ID;
-				}
-
-				virtual std::vector<uint8_t> SerializeData();
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x23;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

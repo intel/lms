@@ -4,6 +4,14 @@ BindsTo=dev-mei.device
 After=dev-mei.device
 
 [Service]
+ProtectSystem=full
+ReadWritePaths=/etc/lms/ /etc/hosts
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictRealtime=true
 Type=dbus
 BusName=com.intel.amt.lms
 ExecStart=@LMS_BINPATH@

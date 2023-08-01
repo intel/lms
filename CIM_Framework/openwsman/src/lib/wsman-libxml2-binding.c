@@ -101,10 +101,11 @@ static void
 myXmlErrorReporting (void *ctx, const char* msg, ...)
 {
 	va_list args;
-	char *string;
+	char *string = NULL;
 	va_start(args, msg);
 	string = u_strdup_vprintf (msg, args);
-	_warning (string);
+	if (string)
+		_warning (string);
 	va_end(args);
 
 	u_free(string);
@@ -191,6 +192,7 @@ void xml_parser_destroy_doc(WsXmlDocH wsDoc)
 
 WsXmlDocH xml_parser_get_doc(WsXmlNodeH node)
 {
+    if (node == NULL) return (WsXmlDocH)NULL;
 	xmlDocPtr xmlDoc = ((xmlDocPtr) node)->doc;
 	return (WsXmlDocH) (!xmlDoc ? NULL : xmlDoc->_private);
 }
@@ -198,7 +200,7 @@ WsXmlDocH xml_parser_get_doc(WsXmlNodeH node)
 
 WsXmlNodeH xml_parser_get_root(WsXmlDocH doc)
 {
-	if (doc->parserDoc != NULL)
+	if (doc && doc->parserDoc != NULL)
 		return (WsXmlNodeH) xmlDocGetRootElement((xmlDocPtr) doc->
 				parserDoc);
 	return NULL;

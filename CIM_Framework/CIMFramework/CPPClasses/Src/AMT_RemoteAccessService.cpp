@@ -6,7 +6,7 @@
 //
 //  Contents:   Represents the Remote Access Service in the Intel(R) AMT subsystem.
 //
-//              This file was automatically generated from AMT_RemoteAccessService.mof,  version: 4.0.0
+//              This file was automatically generated from AMT_RemoteAccessService.mof,  version: 5.0.0
 //
 //----------------------------------------------------------------------------
 #include "AMT_RemoteAccessService.h"

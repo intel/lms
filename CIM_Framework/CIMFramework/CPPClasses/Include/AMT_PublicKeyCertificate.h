@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Credential::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 5);
+				CimBase::SetMetaData(_classMetaData, _metadata, 6);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Credential::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 5);
+				CimBase::SetMetaData(_classMetaData, _metadata, 6);
 			}
 		}
 
@@ -102,6 +102,18 @@ namespace Typed
 		// Remove TrustedRootCertficate field.
 		void RemoveTrustedRootCertficate(); 
 
+		// Optional, This identifies that this is a read only certificate.meaning it's AMT auto generated certificate and will be.used as AMT server certficate in case another server certificatewasn't defined
+		const bool ReadOnlyCertificate() const;
+
+		// Optional, This identifies that this is a read only certificate.meaning it's AMT auto generated certificate and will be.used as AMT server certficate in case another server certificatewasn't defined
+		void ReadOnlyCertificate(const bool value); 
+
+		// Is true if the field ReadOnlyCertificate exists in the current object, otherwise is false.
+		bool ReadOnlyCertificateExists() const;
+
+		// Remove ReadOnlyCertificate field.
+		void RemoveReadOnlyCertificate(); 
+
 		// Optional, The Issuer field of this certificate.
 		const string Issuer() const;
 
@@ -144,7 +156,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Credential::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 5);
+				CimBase::SetMetaData(_classMetaData, _metadata, 6);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -154,14 +166,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Credential::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 5);
+				CimBase::SetMetaData(_classMetaData, _metadata, 6);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_Credential::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 5);
+			CimBase::SetMetaData(childMetaData, _metadata, 6);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -46,6 +46,7 @@ namespace Intel
 
 			struct CFG_IPv6_ADDR_INFO
 			{
+				CFG_IPv6_ADDR_INFO() : Type(0), State(0) {}
 				std::string Address;
 				uint32_t Type;	//CFG_IPv6_ADDR_TYPE
 				uint32_t State; //CFG_IPv6_ADDR_STATE
@@ -83,44 +84,50 @@ namespace Intel
 				}
 			};
 
-			class GetIPv6LanInterfaceStatusRequest;
-			class GetIPv6LanInterfaceStatusCommand : public AMTHICommand
-			{
-			public:
-
-				GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex);	//INTERFACE_SETTINGS
-				virtual ~GetIPv6LanInterfaceStatusCommand() {}
-
-				GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>> m_response;
-				
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800052;
-			};
-
 			class GetIPv6LanInterfaceStatusRequest : public AMTHICommandRequest
 			{
 			public:
-				GetIPv6LanInterfaceStatusRequest(const uint32_t interfaceIndex):m_interfaceIndex(interfaceIndex) {}	//INTERFACE_SETTINGS
+				GetIPv6LanInterfaceStatusRequest(const uint32_t interfaceIndex) :
+					m_interfaceIndex(interfaceIndex), AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {} //INTERFACE_SETTINGS
 				virtual ~GetIPv6LanInterfaceStatusRequest() {}
 
 			private:
 				uint32_t m_interfaceIndex;	//INTERFACE_SETTINGS
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000052;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&m_interfaceIndex, (std::uint8_t*)&m_interfaceIndex + sizeof(uint32_t));
+					return output;
+				}
+			};
+
+			class GetIPv6LanInterfaceStatusCommand : public AMTHICommand
+			{
+			public:
+
+				GetIPv6LanInterfaceStatusCommand(uint32_t interfaceIndex) //INTERFACE_SETTINGS
+				{
+					m_request = std::make_shared<GetIPv6LanInterfaceStatusRequest>(interfaceIndex);
+					Transact();
+				}
+				virtual ~GetIPv6LanInterfaceStatusCommand() {}
+
+				GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_IPv6_LAN_INTERFACE_STATUS_RESPONSE> m_response;
+				
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800052;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

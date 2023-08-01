@@ -6,7 +6,7 @@
 //
 //  Contents:   Boot options that the Intel(R) AMT device supports.
 //
-//              This file was automatically generated from AMT_BootCapabilities.mof,  version: 3.0.0
+//              This file was automatically generated from AMT_BootCapabilities.mof,  version: 15.0.0
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_BOOTCAPABILITIES_H
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 28);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 28);
 			}
 		}
 
@@ -330,6 +330,78 @@ namespace Typed
 		// Remove SecureErase field.
 		void RemoveSecureErase(); 
 
+		// Optional, Indicates whether Intel(R) AMT device supports invoking force boot to 'HTTPS server'
+		const bool ForceUEFIHTTPSBoot() const;
+
+		// Optional, Indicates whether Intel(R) AMT device supports invoking force boot to 'HTTPS server'
+		void ForceUEFIHTTPSBoot(const bool value); 
+
+		// Is true if the field ForceUEFIHTTPSBoot exists in the current object, otherwise is false.
+		bool ForceUEFIHTTPSBootExists() const;
+
+		// Remove ForceUEFIHTTPSBoot field.
+		void RemoveForceUEFIHTTPSBoot(); 
+
+		// Optional, Indicates whether Intel(R) AMT device supports invoking force boot to 'local PBA'
+		const bool ForceUEFIPBABoot() const;
+
+		// Optional, Indicates whether Intel(R) AMT device supports invoking force boot to 'local PBA'
+		void ForceUEFIPBABoot(const bool value); 
+
+		// Is true if the field ForceUEFIPBABoot exists in the current object, otherwise is false.
+		bool ForceUEFIPBABootExists() const;
+
+		// Remove ForceUEFIPBABoot field.
+		void RemoveForceUEFIPBABoot(); 
+
+		// Optional, Indicates whether Intel(R) AMT device supports invoking force boot to 'WinRE'
+		const bool ForceWinREBoot() const;
+
+		// Optional, Indicates whether Intel(R) AMT device supports invoking force boot to 'WinRE'
+		void ForceWinREBoot(const bool value); 
+
+		// Is true if the field ForceWinREBoot exists in the current object, otherwise is false.
+		bool ForceWinREBootExists() const;
+
+		// Remove ForceWinREBoot field.
+		void RemoveForceWinREBoot(); 
+
+		// Optional, Indicates whether Intel (R) AMT device is privileged by UEFI to disable 'secure boot' for an AMT triggered boot option
+		const bool AMTSecureBootControl() const;
+
+		// Optional, Indicates whether Intel (R) AMT device is privileged by UEFI to disable 'secure boot' for an AMT triggered boot option
+		void AMTSecureBootControl(const bool value); 
+
+		// Is true if the field AMTSecureBootControl exists in the current object, otherwise is false.
+		bool AMTSecureBootControlExists() const;
+
+		// Remove AMTSecureBootControl field.
+		void RemoveAMTSecureBootControl(); 
+
+		// Optional, Indicates whether Intel (R) AMT device supports WiFi co-existence and profile share with UEFI
+		const bool UEFIWiFiCoExistenceAndProfileShare() const;
+
+		// Optional, Indicates whether Intel (R) AMT device supports WiFi co-existence and profile share with UEFI
+		void UEFIWiFiCoExistenceAndProfileShare(const bool value); 
+
+		// Is true if the field UEFIWiFiCoExistenceAndProfileShare exists in the current object, otherwise is false.
+		bool UEFIWiFiCoExistenceAndProfileShareExists() const;
+
+		// Remove UEFIWiFiCoExistenceAndProfileShare field.
+		void RemoveUEFIWiFiCoExistenceAndProfileShare(); 
+
+		// Optional, Indicates whether Intel (R) AMT device supports 'Remote Platform Erase', and which devices are supported in these process
+		const unsigned int PlatformErase() const;
+
+		// Optional, Indicates whether Intel (R) AMT device supports 'Remote Platform Erase', and which devices are supported in these process
+		void PlatformErase(const unsigned int value); 
+
+		// Is true if the field PlatformErase exists in the current object, otherwise is false.
+		bool PlatformEraseExists() const;
+
+		// Remove PlatformErase field.
+		void RemovePlatformErase(); 
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -348,7 +420,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 28);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -358,14 +430,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Capabilities::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 28);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_Capabilities::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 22);
+			CimBase::SetMetaData(childMetaData, _metadata, 28);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

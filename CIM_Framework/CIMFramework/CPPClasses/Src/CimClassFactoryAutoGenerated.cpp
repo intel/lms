@@ -39,7 +39,6 @@
 #include "CIM_StatisticalData.h"
 #include "CIM_PowerManagementCapabilities.h"
 #include "CIM_PolicyRule.h"
-#include "AMT_ThirdPartyDataStorageService.h"
 #include "IPS_ManualProvisioningRecord.h"
 #include "AMT_RemoteAccessCapabilities.h"
 #include "IPS_ProvisioningRecordLog.h"
@@ -114,7 +113,6 @@
 #include "CIM_Service.h"
 #include "IPS_LANEndpoint.h"
 #include "AMT_SystemDefenseService.h"
-#include "AMT_HeuristicPacketFilterInterfacePolicy.h"
 #include "AMT_GeneralSettings.h"
 #include "CIM_PhysicalElement.h"
 #include "CIM_LogicalElement.h"
@@ -171,13 +169,11 @@
 #include "CIM_ServiceAccessBySAP.h"
 #include "CIM_Card.h"
 #include "CIM_SoftwareIdentity.h"
-#include "AMT_ThirdPartyDataStorageAdministrationService.h"
 #include "CIM_SettingsDefineState.h"
 #include "CIM_PhysicalPackage.h"
 #include "CIM_AccountManagementCapabilities.h"
 #include "IPS_ScreenConfigurationService.h"
 #include "CIM_ElementConformsToProfile.h"
-#include "AMT_HeuristicPacketFilterStatistics.h"
 #include "AMT_FilterEntryBase.h"
 #include "IPS_8021xCredentialContext.h"
 #include "CIM_ConcreteJob.h"
@@ -199,7 +195,6 @@
 #include "CIM_BootConfigSetting.h"
 #include "CIM_ComputerSystem.h"
 #include "AMT_PETFilterForTarget.h"
-#include "AMT_HeuristicPacketFilterSettings.h"
 #include "CIM_WiFiPort.h"
 #include "AMT_KerberosSettingData.h"
 #include "CIM_IndicationService.h"
@@ -240,7 +235,6 @@
 #include "AMT_PublicKeyCertificate.h"
 #include "CIM_LANEndpoint.h"
 #include "CIM_ManagedElement.h"
-#include "CIM_Battery.h"
 #include "AMT_AssetTable.h"
 #include "AMT_EthernetPortSettings.h"
 #include "CIM_ServiceAccessPoint.h"
@@ -308,7 +302,6 @@ CimClassFactory::CimClassFactory()
 	CimClassFactory::_cimMap.insert(map_entry("CIM_StatisticalData", CIM_StatisticalData::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_PowerManagementCapabilities", CIM_PowerManagementCapabilities::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_PolicyRule", CIM_PolicyRule::CreateFromCimObject));
-	CimClassFactory::_cimMap.insert(map_entry("AMT_ThirdPartyDataStorageService", AMT_ThirdPartyDataStorageService::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("IPS_ManualProvisioningRecord", IPS_ManualProvisioningRecord::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_RemoteAccessCapabilities", AMT_RemoteAccessCapabilities::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("IPS_ProvisioningRecordLog", IPS_ProvisioningRecordLog::CreateFromCimObject));
@@ -383,7 +376,6 @@ CimClassFactory::CimClassFactory()
 	CimClassFactory::_cimMap.insert(map_entry("CIM_Service", CIM_Service::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("IPS_LANEndpoint", IPS_LANEndpoint::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_SystemDefenseService", AMT_SystemDefenseService::CreateFromCimObject));
-	CimClassFactory::_cimMap.insert(map_entry("AMT_HeuristicPacketFilterInterfacePolicy", AMT_HeuristicPacketFilterInterfacePolicy::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_GeneralSettings", AMT_GeneralSettings::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_PhysicalElement", CIM_PhysicalElement::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_LogicalElement", CIM_LogicalElement::CreateFromCimObject));
@@ -440,13 +432,11 @@ CimClassFactory::CimClassFactory()
 	CimClassFactory::_cimMap.insert(map_entry("CIM_ServiceAccessBySAP", CIM_ServiceAccessBySAP::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_Card", CIM_Card::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_SoftwareIdentity", CIM_SoftwareIdentity::CreateFromCimObject));
-	CimClassFactory::_cimMap.insert(map_entry("AMT_ThirdPartyDataStorageAdministrationService", AMT_ThirdPartyDataStorageAdministrationService::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_SettingsDefineState", CIM_SettingsDefineState::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_PhysicalPackage", CIM_PhysicalPackage::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_AccountManagementCapabilities", CIM_AccountManagementCapabilities::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("IPS_ScreenConfigurationService", IPS_ScreenConfigurationService::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_ElementConformsToProfile", CIM_ElementConformsToProfile::CreateFromCimObject));
-	CimClassFactory::_cimMap.insert(map_entry("AMT_HeuristicPacketFilterStatistics", AMT_HeuristicPacketFilterStatistics::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_FilterEntryBase", AMT_FilterEntryBase::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("IPS_8021xCredentialContext", IPS_8021xCredentialContext::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_ConcreteJob", CIM_ConcreteJob::CreateFromCimObject));
@@ -468,7 +458,6 @@ CimClassFactory::CimClassFactory()
 	CimClassFactory::_cimMap.insert(map_entry("CIM_BootConfigSetting", CIM_BootConfigSetting::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_ComputerSystem", CIM_ComputerSystem::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_PETFilterForTarget", AMT_PETFilterForTarget::CreateFromCimObject));
-	CimClassFactory::_cimMap.insert(map_entry("AMT_HeuristicPacketFilterSettings", AMT_HeuristicPacketFilterSettings::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_WiFiPort", CIM_WiFiPort::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_KerberosSettingData", AMT_KerberosSettingData::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_IndicationService", CIM_IndicationService::CreateFromCimObject));
@@ -509,7 +498,6 @@ CimClassFactory::CimClassFactory()
 	CimClassFactory::_cimMap.insert(map_entry("AMT_PublicKeyCertificate", AMT_PublicKeyCertificate::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_LANEndpoint", CIM_LANEndpoint::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_ManagedElement", CIM_ManagedElement::CreateFromCimObject));
-	CimClassFactory::_cimMap.insert(map_entry("CIM_Battery", CIM_Battery::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_AssetTable", AMT_AssetTable::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("AMT_EthernetPortSettings", AMT_EthernetPortSettings::CreateFromCimObject));
 	CimClassFactory::_cimMap.insert(map_entry("CIM_ServiceAccessPoint", CIM_ServiceAccessPoint::CreateFromCimObject));

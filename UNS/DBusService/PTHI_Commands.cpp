@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2021 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #include "DBusService.h"
 #include "PTHI_Commands.h"
@@ -18,8 +18,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		std::string version;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetAMTVersion(version);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetAMTVersion(version);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", version.c_str()));
 		else
 			send_error(invocation, error);
@@ -33,8 +33,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		std::string version;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetLMSVersion(version);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetLMSVersion(version);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", version.c_str()));
 		else
 			send_error(invocation, error);
@@ -48,8 +48,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		uint32_t state = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetProvisioningState(state);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetProvisioningState(state);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", state));
 		else
 			send_error(invocation, error);
@@ -63,9 +63,9 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		uint32_t status = 0, connection_type = 0, connection_trigger = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetNetworkConnectionStatus(
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetNetworkConnectionStatus(
 			status, connection_type, connection_trigger);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(uuu)", status, connection_type, connection_trigger));
 		else
 			send_error(invocation, error);
@@ -79,8 +79,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int state = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetUserInitiatedEnabled(state);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetUserInitiatedEnabled(state);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", state));
 		else
 			send_error(invocation, error);
@@ -94,8 +94,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		std::string policy;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetPowerPolicy(policy);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetPowerPolicy(policy);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", policy.c_str()));
 		else
 			send_error(invocation, error);
@@ -109,8 +109,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int reason = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetLastResetReason(reason);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetLastResetReason(reason);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", reason));
 		else
 			send_error(invocation, error);
@@ -124,8 +124,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		uint32_t SOL = 0, IDER = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetRedirectionStatus(SOL, IDER);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetRedirectionStatus(SOL, IDER);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(uu)", SOL, IDER));
 		else
 			send_error(invocation, error);
@@ -139,8 +139,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		uint32_t status = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetSystemDefenseStatus(status);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetSystemDefenseStatus(status);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", status));
 		else
 			send_error(invocation, error);
@@ -159,9 +159,9 @@ namespace PTHI {
 		short WirelessControl = 0;
 		short WirelessConfEnabled = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetNetworkSettings(ConnectionType,
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetNetworkSettings(ConnectionType,
 			DhcpEnabled, IpAddress,MacAddress,LinkStatus, WirelessControl, WirelessConfEnabled);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation,
 				g_variant_new ("(ussuuu)",
 					DhcpEnabled,
@@ -186,9 +186,9 @@ namespace PTHI {
 		std::vector<std::string> Response;
 		bool Ipv6Enable = false;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetIPv6NetworkSettings(ConnectionType,
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetIPv6NetworkSettings(ConnectionType,
 			IPv6DefaultRouter, PrimaryDNS, SecondaryDNS, Response, Ipv6Enable);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 		{
 			GVariantBuilder builder;
 			GVariantBuilder builder1;
@@ -218,8 +218,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 	 	std::string uuid;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetSystemUUID(uuid);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetSystemUUID(uuid);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", uuid.c_str()));
 		else
 			send_error(invocation, error);
@@ -232,8 +232,8 @@ namespace PTHI {
 		UNS_DEBUG(L"on_close_user_initiated_connection\n");
 		DBusService *th = (DBusService *)user_data;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).CloseUserInitiatedConnection();
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).CloseUserInitiatedConnection();
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
@@ -247,8 +247,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		bool Enabled = false, Connected = false;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetKVMRedirectionState(Enabled, Connected);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetKVMRedirectionState(Enabled, Connected);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(bb)", Enabled, Connected));
 		else
 			send_error(invocation, error);
@@ -261,8 +261,8 @@ namespace PTHI {
 		UNS_DEBUG(L"on_set_sprite_language %d\n", Language);
 		DBusService *th = (DBusService *)user_data;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).SetSpriteLanguage(Language);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).SetSpriteLanguage(Language);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
@@ -277,8 +277,8 @@ namespace PTHI {
 		unsigned short int Language = 0;
 		unsigned short int Zoom = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetSpriteParameters(Language, Zoom);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetSpriteParameters(Language, Zoom);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(uu)", Language, Zoom));
 		else
 			send_error(invocation, error);
@@ -291,8 +291,8 @@ namespace PTHI {
 		UNS_DEBUG(L"on_set_sprite_zoom %d\n", Zoom);
 		DBusService *th = (DBusService *)user_data;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).SetSpriteZoom(Zoom);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).SetSpriteZoom(Zoom);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
@@ -309,9 +309,9 @@ namespace PTHI {
 		std::string CreationTimeStamp;
 		std::vector<unsigned char> CertHash;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetConfigurationInfo(
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetConfigurationInfo(
 			ControlMode, ProvisioningMethod, CreationTimeStamp, CertHash);
-		if (!error)
+		if (error == Intel::LMS::LMS_ERROR::OK)
 		{
 			GVariantBuilder builder;
 			GVariantBuilder builder1;
@@ -339,8 +339,8 @@ namespace PTHI {
 		UNS_DEBUG(L"on_terminate_remedy_sessions\n");
 		DBusService *th = (DBusService *)user_data;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).TerminateRemedySessions();
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).TerminateRemedySessions();
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
@@ -355,8 +355,8 @@ namespace PTHI {
 		short int State = 0;
 		USER_CONSENT_POLICY Policy = NOT_REQUIRED;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetUserConsentState(State, Policy);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetUserConsentState(State, Policy);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(uu)", State, Policy));
 		else
 			send_error(invocation, error);
@@ -370,8 +370,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		uint32_t Preference = 0, Control = 0, Protection = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetWLANLinkInfo(Preference, Control, Protection);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetWLANLinkInfo(Preference, Control, Protection);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(uuu)", Preference, Control, Protection));
 		else
 			send_error(invocation, error);
@@ -384,8 +384,8 @@ namespace PTHI {
 		UNS_DEBUG(L"on_set_link_preference_to_host\n");
 		DBusService *th = (DBusService *)user_data;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).SetLinkPreferenceToHost();
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).SetLinkPreferenceToHost();
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
@@ -399,8 +399,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).InitiateUserConnection(Status);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).InitiateUserConnection(Status);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
 		else
 			send_error(invocation, error);
@@ -414,8 +414,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).userInitiatedPolicyRuleExists(Status);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).userInitiatedPolicyRuleExists(Status);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
 		else
 			send_error(invocation, error);
@@ -429,8 +429,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).userInitiatedPolicyRuleForLocalMpsExists(Status);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).userInitiatedPolicyRuleForLocalMpsExists(Status);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
 		else
 			send_error(invocation, error);
@@ -444,8 +444,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).snmpEventSubscriberExists(Status);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).snmpEventSubscriberExists(Status);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
 		else
 			send_error(invocation, error);
@@ -459,8 +459,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short int Status = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).CILAFilterCollectionSubscriptionExists(Status);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).CILAFilterCollectionSubscriptionExists(Status);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", Status));
 		else
 			send_error(invocation, error);
@@ -480,7 +480,7 @@ namespace PTHI {
 		{
 			UNS_ERROR(L"on_update_screen_settings2 numOfDisplays %d>%d\n",
 				  numOfDisplays, MAX_DISPLAY_NUMBER_LATEST);
-			send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
+			send_error(invocation, Intel::LMS::LMS_ERROR::INVALIDARG);
 			return TRUE;
 		}
 
@@ -498,7 +498,7 @@ namespace PTHI {
 				g_variant_unref(child);
 				UNS_ERROR(L"on_update_screen_settings2 actual numOfDisplays > %d\n",
 					  numOfDisplays);
-				send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
+				send_error(invocation, Intel::LMS::LMS_ERROR::INVALIDARG);
 				return TRUE;
 			}
 			int pos = 0;
@@ -533,18 +533,24 @@ namespace PTHI {
 				pos++;
 			}
 			g_variant_unref(child);
+			if (pos != 6)
+			{
+				UNS_ERROR(L"on_update_screen_settings2 actual parameters %d != 6 on line %u\n", pos, i);
+				send_error(invocation, Intel::LMS::LMS_ERROR::INVALIDARG);
+				return TRUE;
+			}
 			i++;
 		}
 		if (i != numOfDisplays)
 		{
 			UNS_ERROR(L"on_update_screen_settings2 wrong actual numOfDisplays %d != %d\n",
 				  numOfDisplays, i);
-			send_error(invocation, Intel::LMS::ERROR_INVALIDARG);
+			send_error(invocation, Intel::LMS::LMS_ERROR::INVALIDARG);
 			return TRUE;
 		}
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).UpdateScreenSettings2(eExtendedDisplayParameters, numOfDisplays);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).UpdateScreenSettings2(eExtendedDisplayParameters, numOfDisplays);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, NULL);
 		else
 			send_error(invocation, error);
@@ -558,8 +564,8 @@ namespace PTHI {
 		DBusService *th = (DBusService *)user_data;
 		short LinkTechnology = 0;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingStarted()).GetRedirectionSessionLinkTechnology((REDIRECTION_SESSION_TYPE)sessionType, LinkTechnology);
-		if (!error)
+		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetRedirectionSessionLinkTechnology((REDIRECTION_SESSION_TYPE)sessionType, LinkTechnology);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(u)", LinkTechnology));
 		else
 			send_error(invocation, error);

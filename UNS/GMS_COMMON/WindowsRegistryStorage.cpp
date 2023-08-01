@@ -329,7 +329,7 @@ RegistryStorage::DeleteRegEntry(RegEntry& entry)
 }
 
 bool
-RegistryStorage::GetRegistryData(void* value, unsigned long* valsz, unsigned long* type,
+RegistryStorage::GetRegistryData(void* value, size_t* valsz, unsigned long* type,
 	const LmsRegStr &key, const LmsRegStr &valueName, bool withCache)
 {
 	LmsRegStr dummy(LMS_REG_TEXT(""));
@@ -354,7 +354,7 @@ RegistryStorage::GetRegistryData(void* value, unsigned long* valsz, unsigned lon
 
 		if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, RegSAM, &hKey) ) {
 			if( ERROR_SUCCESS != RegQueryValueEx(hKey, valueName.c_str(), NULL, 
-									type, (LPBYTE)value, valsz)) {
+									type, (LPBYTE)value, (LPDWORD)valsz)) {
 				retval = false;
 			}
 			RegCloseKey(hKey);	
@@ -372,7 +372,7 @@ RegistryStorage::GetRegistryData(void* value, unsigned long* valsz, unsigned lon
 }
 
 bool 
-RegistryStorage::SetRegistryData(const void* value, unsigned long valsz, unsigned long type,
+RegistryStorage::SetRegistryData(const void* value, size_t valsz, unsigned long type,
 	const LmsRegStr &key, const LmsRegStr &valueName, bool withCache)
 {
 	LmsRegStr dummy(LMS_REG_TEXT(""));
@@ -386,10 +386,13 @@ RegistryStorage::SetRegistryData(const void* value, unsigned long valsz, unsigne
 	if (Is64BitOS())
 		RegSAM |= KEY_WOW64_64KEY;
 
+	if (valsz > ULONG_MAX)
+		return false;
+
 	if( ERROR_SUCCESS == RegCreateKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, NULL, 
 		0, RegSAM, NULL, &hKey, &dwDisposition)) 
 	{
-		if( ERROR_SUCCESS != RegSetValueEx(hKey, valueName.c_str(), 0, type, (LPBYTE)value, valsz)) {
+		if( ERROR_SUCCESS != RegSetValueEx(hKey, valueName.c_str(), 0, type, (LPBYTE)value, (DWORD)valsz)) {
             retval = false;
         } 
 		else {

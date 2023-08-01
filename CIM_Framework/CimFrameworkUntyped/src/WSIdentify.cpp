@@ -19,7 +19,12 @@ namespace Cim
 {
 namespace Untyped 
 {
-	WSIdentify::WSIdentify(const string &data)
+	WSIdentify::WSIdentify(const string &data):
+		_protocolVersion(),
+		_productVendor(),
+		_productVersion(),
+		_DASHVersion(),
+		_securityProfiles()
 	{
 		// Unused parameters
 		string name, prefix, uri;

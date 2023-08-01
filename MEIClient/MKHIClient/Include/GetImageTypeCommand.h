@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -21,61 +21,49 @@ namespace Intel
 	{
 		namespace MKHI_Client
 		{
-			typedef struct MKHI_IMAGE_TYPE_t
+			struct MKHI_IMAGE_TYPE
 			{
-				MKHI_MSG_HEADER		Header;
+				MKHI_IMAGE_TYPE() : ImageSignData(0) {}
 				uint32_t			ImageSignData;
 
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
 				{
 					parseData (ImageSignData, itr, end);
 				}
-			} MKHI_IMAGE_TYPE;
-
-			class GetImageTypeRequest;
-			class GetImageTypeCommand : public MKHICommand
-			{
-			public:
-
-				GetImageTypeCommand();
-				virtual ~GetImageTypeCommand() {}
-
-				MKHI_IMAGE_TYPE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<MKHICommandResponse<MKHI_IMAGE_TYPE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x18;
 			};
 
 			class GetImageTypeRequest : public MKHICommandRequest
 			{
 			public:
-				GetImageTypeRequest() {}
+				GetImageTypeRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID) {}
 				virtual ~GetImageTypeRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x18;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetImageTypeCommand : public MKHICommand
+			{
+			public:
+
+				GetImageTypeCommand()
 				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetImageTypeRequest>();
+					Transact();
+				}
+				virtual ~GetImageTypeCommand() {}
+
+				MKHI_IMAGE_TYPE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<MKHI_IMAGE_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
+				MKHICommandResponse<MKHI_IMAGE_TYPE> m_response;
 
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_GEN_GROUP_ID;
-				}
-
-				virtual std::vector<uint8_t> SerializeData();
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x18;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 // PowerOperationsService.cpp : Defines the exported functions for the DLL application.
 
@@ -24,12 +24,14 @@ const ACE_TString EVENT_REMOTE_HIBERNATE_FAILED_MSG(ACE_TEXT("Remote administrat
 
 //for graceful shutdown
 #ifdef DEBUG
-	const unsigned int SHUTDOWN_TIMEOUT = 72000;//only for localization!!
+const unsigned int SHUTDOWN_TIMEOUT = 72000;//only for localization!!
 #else
 const unsigned int SHUTDOWN_TIMEOUT = 60;
 #endif
-const unsigned int MAX_PWR_OPR_ATTEMPTS =  3; //max attempts on ERROR_NOT_READY
+#ifdef WIN32
+const unsigned int MAX_PWR_OPR_ATTEMPTS = 3; //max attempts on ERROR_NOT_READY
 const unsigned int RETRY_TIMEOUT = 30;
+#endif
 const ACE_TString DEFAULT_SHUTDOWN_MSG(ACE_TEXT("The remote administrator has initiated a shutdown on this computer..."));
 const ACE_TString DEFAULT_REBOOT_MSG(ACE_TEXT("The remote administrator has initiated a reboot on this computer..."));
 
@@ -99,7 +101,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 //both false if OS API fails.
 void getPowerCapabilities(bool& sleep,bool& hibernate)
 {
-	SYSTEM_POWER_CAPABILITIES systemCaps;
+	SYSTEM_POWER_CAPABILITIES systemCaps = { 0 };
 	if (!GetPwrCapabilities(&systemCaps))
 	{
 		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu\n", GetLastError());
@@ -418,14 +420,14 @@ void PowerOperationsService::loadStrings() {}
 
 void PowerOperationsService::addPowerCapabilities()
 {
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		m_addCapabilitiesRequiredButNoPfw = true;
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting addPowerCapabilities operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		return;
 	}
 	//update graceful power capabilities
 	UNS_DEBUG(L"adding graceful power operations\n");
-	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient;
+	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient(m_mainService->GetPortForwardingPort());
 	bool sleep,hibernate;
 	getPowerCapabilities(sleep,hibernate);
 	UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep,hibernate);
@@ -505,7 +507,7 @@ ACE_THR_FUNC_RETURN CallSetSuspendState(void* voidArgs)
 }
 
 //returns 0 on success, -1 otherwise
-int PowerOperationsService::handleRemoteGracefulPowerEvents(GMS_AlertIndication OrgEvent)
+int PowerOperationsService::handleRemoteGracefulPowerEvents(const GMS_AlertIndication &OrgEvent)
 {
 	switch (OrgEvent.id)
 	{

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,6 +22,7 @@ namespace Intel
 		{
 			struct GET_UUID_RESPONSE
 			{
+				GET_UUID_RESPONSE() : UUID { 0 } {}
 				uint8_t UUID[16];
 
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator &end)
@@ -30,42 +31,37 @@ namespace Intel
 				}
 			} ;
 
-			class GetUUIDRequest;
-			class GetUUIDCommand : public AMTHICommand
-			{
-			public:
-				GetUUIDCommand();
-				virtual ~GetUUIDCommand() {}
-
-				GET_UUID_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GET_UUID_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480005C;
-			};
-
 			class GetUUIDRequest : public AMTHICommandRequest
 			{
 			public:
-				GetUUIDRequest () {}
+				GetUUIDRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetUUIDRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400005C;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetUUIDCommand : public AMTHICommand
+			{
+			public:
+				GetUUIDCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetUUIDRequest>();
+					Transact();
+				}
+				virtual ~GetUUIDCommand() {}
+
+				GET_UUID_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_UUID_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+				AMTHICommandResponse<GET_UUID_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480005C;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -42,6 +42,7 @@ namespace AMTHI_Client
 
 	struct CODE_VERSIONS
 	{
+		CODE_VERSIONS() : BiosVersion { 0 } {}
 		uint8_t   BiosVersion[BIOS_VERSION_LEN];
 		std::vector<AMT_VERSION_TYPE> Versions;
 		void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator end)
@@ -51,42 +52,38 @@ namespace AMTHI_Client
 		}
 	};
 
-	class GetCodeVersionRequest;
-	class GetCodeVersionCommand : public AMTHICommand
-	{
-	public:
-
-		GetCodeVersionCommand();
-		virtual ~GetCodeVersionCommand() {}
-
-		CODE_VERSIONS getResponse();
-
-	private:
-		virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-		std::shared_ptr<AMTHICommandResponse<CODE_VERSIONS>> m_response;
-
-		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001A;
-	};
-
 	class GetCodeVersionRequest : public AMTHICommandRequest
 	{
 	public:
-		GetCodeVersionRequest() {}
+		GetCodeVersionRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 		virtual ~GetCodeVersionRequest() {}
 
 	private:
 		static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400001A;
-		virtual unsigned int requestHeaderCommandNumber()
+	};
+
+	class GetCodeVersionCommand : public AMTHICommand
+	{
+	public:
+
+		GetCodeVersionCommand()
 		{
-			//this is the command number (taken from the AMTHI document)
-			return REQUEST_COMMAND_NUMBER;
+			m_request = std::make_shared<GetCodeVersionRequest>();
+			Transact();
+		}
+		virtual ~GetCodeVersionCommand() {}
+
+		CODE_VERSIONS getResponse() { return m_response.getResponse(); }
+
+	private:
+		virtual void parseResponse(const std::vector<uint8_t>& buffer)
+		{
+			m_response = AMTHICommandResponse<CODE_VERSIONS>(buffer, RESPONSE_COMMAND_NUMBER);
 		}
 
-		virtual uint32_t requestDataSize()
-		{
-			return 0;
-		}
+		AMTHICommandResponse<CODE_VERSIONS> m_response;
+
+		static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001A;
 	};
 } // namespace AMTHI_Client
 } // namespace MEI_Client

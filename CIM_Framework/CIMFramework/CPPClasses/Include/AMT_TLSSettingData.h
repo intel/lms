@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 7);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 7);
 			}
 		}
 
@@ -138,6 +138,18 @@ namespace Typed
 		// Remove AcceptNonSecureConnections field.
 		void RemoveAcceptNonSecureConnections(); 
 
+		// Optional, This setting define whether a non secure - aka direct tcpis supported or not - not supported from RPL on.This setting is read only.
+		const bool NonSecureConnectionsSupported() const;
+
+		// Optional, This setting define whether a non secure - aka direct tcpis supported or not - not supported from RPL on.This setting is read only.
+		void NonSecureConnectionsSupported(const bool value); 
+
+		// Is true if the field NonSecureConnectionsSupported exists in the current object, otherwise is false.
+		bool NonSecureConnectionsSupportedExists() const;
+
+		// Remove NonSecureConnectionsSupported field.
+		void RemoveNonSecureConnectionsSupported(); 
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -156,7 +168,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 7);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -166,14 +178,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 6);
+				CimBase::SetMetaData(_classMetaData, _metadata, 7);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_SettingData::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 6);
+			CimBase::SetMetaData(childMetaData, _metadata, 7);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

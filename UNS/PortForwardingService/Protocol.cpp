@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -79,8 +79,8 @@ int CALLBACK ConditionAcceptFunc(
 Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSocketBuffer(0), _rxSocketBufferSize(0),
 					   _eventLogWrn(nullptr), _eventLogDbg(nullptr), _eventLogParam(nullptr), _clientNotFound(false)
 {
-	_handshakingStatus = NOT_INITIATED;
-	_pfwdService = NOT_STARTED;
+	_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
+	_pfwdService = SERVICE_STATUS::NOT_STARTED;
 	_AmtProtVersion.MajorVersion = 0;
 	_AmtProtVersion.MinorVersion = 0;
 #ifdef _REMOTE_SUPPORT
@@ -121,9 +121,9 @@ bool Protocol::Init(InitParameters & params)
 	{
 		std::lock_guard<std::mutex> l(_versionLock);
 
-		if (_handshakingStatus == NOT_INITIATED) {
+		if (_handshakingStatus == VERSION_HANDSHAKING::NOT_INITIATED) {
 			_lme.ProtocolVersion(MAX_PROT_VERSION);
-			_handshakingStatus = INITIATED;
+			_handshakingStatus = VERSION_HANDSHAKING::INITIATED;
 		}
 	}
 #ifdef _REMOTE_SUPPORT
@@ -133,7 +133,7 @@ bool Protocol::Init(InitParameters & params)
 	}
 #endif
 
-	long bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
+	size_t bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
 	if (bufSize > 0) {
 		_rxSocketBuffer = new char[bufSize];
 		_rxSocketBufferSize = bufSize;
@@ -340,8 +340,8 @@ void Protocol::Deinit()
 				_rxSocketBufferSize = 0;
 			}
 
-			_handshakingStatus = NOT_INITIATED;
-			_pfwdService = NOT_STARTED;
+			_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
+			_pfwdService = SERVICE_STATUS::NOT_STARTED;
 			_AmtProtVersion.MajorVersion = 0;
 			_AmtProtVersion.MinorVersion = 0;
 		}
@@ -399,7 +399,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	if (setsockopt(s, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
 		       (char *)&optval, sizeof(optval)) == SOCKET_ERROR) {
 		UNS_ERROR(L"Error: Can't bind socket using exclusive address\n");
-		status = NOT_EXCLUSIVE_ADDRESS;
+		status = SOCKET_STATUS::NOT_EXCLUSIVE_ADDRESS;
 		return false;
 	}
 
@@ -410,7 +410,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	l.l_onoff = 0;
 	l.l_linger = 0;
 	if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *)&l, sizeof(l)) == SOCKET_ERROR) {
-		status = LINGER_ERROR;
+		status = SOCKET_STATUS::LINGER_ERROR;
 		return false;
 	}
 	return true;
@@ -422,7 +422,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
 		UNS_ERROR(L"Error: Can't set SO_REUSEADDR option %d\n", errno);
-		status = CANT_REUSE_ADDRESS;
+		status = SOCKET_STATUS::CANT_REUSE_ADDRESS;
 		return false;
 	}
 
@@ -433,7 +433,7 @@ bool Protocol::_setSockOptions(const addrinfo &addr, SOCKET s, SOCKET_STATUS &st
 	if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY,
 		       &optval, sizeof(optval)) == SOCKET_ERROR) {
 		UNS_ERROR(L"Error: Can't set IPV6_V6ONLY option %d\n", errno);
-		status = NO_IPV6_V6ONLY;
+		status = SOCKET_STATUS::NO_IPV6_V6ONLY;
 		return false;
 	}
 	return true;
@@ -449,7 +449,7 @@ SOCKET Protocol::_createSocket(const addrinfo *caddr, SOCKET_STATUS &status)
 
 	SOCKET s = socket(addr.ai_family, addr.ai_socktype, addr.ai_protocol);
 	if (s == INVALID_SOCKET) {
-		status = NOT_CREATED;
+		status = SOCKET_STATUS::NOT_CREATED;
 		return INVALID_SOCKET;
 	}
 
@@ -462,7 +462,7 @@ SOCKET Protocol::_createSocket(const addrinfo *caddr, SOCKET_STATUS &status)
 
 vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int port, SOCKET_STATUS &status,bool cond_accept)
 {
-	status = NOT_CREATED;
+	status = SOCKET_STATUS::NOT_CREATED;
 	vector<SOCKET> vs;
 	bool error = false;
 	addrinfo *result = NULL, *resultCopy = NULL, hints;
@@ -499,7 +499,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 		{
 			UNS_ERROR(L"Error %d in binding server socket.\n", WSAGetLastError());
 			_closeSocket(s);
-			status = NOT_BINDED;
+			status = SOCKET_STATUS::NOT_BINDED;
 			error = true;
 			break;
 		}
@@ -511,7 +511,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 			{
 				UNS_ERROR(L"Error: Can't bind socket using exclusive address\n");
 				_closeSocket(s);
-				status = CONDITIONAL_ACCEPT_ERROR;
+				status = SOCKET_STATUS::CONDITIONAL_ACCEPT_ERROR;
 				error = true;
 				break;
 			}
@@ -519,12 +519,12 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 #endif // WIN32
 		if (listen(s, 5) == SOCKET_ERROR) {
 			_closeSocket(s);
-			status = NOT_LISTENED;
+			status = SOCKET_STATUS::NOT_LISTENED;
 			error = true;
 			break;
 		}
 
-		status = ACTIVE;
+		status = SOCKET_STATUS::ACTIVE;
 		vs.push_back(s);
 	}
 	if (error)
@@ -540,7 +540,7 @@ vector<SOCKET> Protocol::_createServerSocket(unsigned int family, unsigned int p
 
 	if (vs.size() > 0)
 	{
-		status = ACTIVE;
+		status = SOCKET_STATUS::ACTIVE;
 	}
 	return vs;
 }
@@ -651,22 +651,21 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 		}
 		fdCount++;
 
-		select(fdCount, NULL, &fdSet, &fdExpSet, &timeOutVal);
-
+		int ret = select(fdCount, NULL, &fdSet, &fdExpSet, &timeOutVal);
 		s = INVALID_SOCKET;
-		for (unsigned int i = 0; i < sockets.size(); i++) {
+		if (ret > 0) {
+			for (unsigned int i = 0; i < sockets.size(); i++) {
+				SOCKET tempSock = sockets[i];
 
-			SOCKET tempSock = sockets[i];
-
-			if ((s == INVALID_SOCKET) && (FD_ISSET(tempSock, &fdSet))) {
-				s = tempSock;
-				continue;
+				if ((s == INVALID_SOCKET) && (FD_ISSET(tempSock, &fdSet))) {
+					s = tempSock;
+					continue;
+				}
+				if (FD_ISSET(tempSock, &fdExpSet)) {
+					UNS_ERROR(L"connection attempt was failed on socket: %d\n", tempSock);
+				}
+				_closeSocket(tempSock);
 			}
-			if(FD_ISSET(tempSock, &fdExpSet))
-			{
-				UNS_ERROR(L"connection attempt was failed on socket: %d\n", tempSock);
-			}
-			_closeSocket(tempSock);
 		}
 	}
 
@@ -733,7 +732,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	_setNonBlocking(s_new, true);
 
 	Channel *c = new SocketChannel(portForwardRequest,s_new);
-	c->SetStatus(Channel::NOT_OPENED);
+	c->SetStatus(Channel::CHANNEL_STATUS::NOT_OPENED);
 
 	std::lock_guard<std::mutex> l(_channelsLock);
 
@@ -828,7 +827,7 @@ PortForwardRequest* Protocol::_findFWReq(SOCKET sock, unsigned int port, sockadd
 
 		for (; it2 != it->second.end(); it2++) {
 
-			if (((*it2)->GetStatus() == PortForwardRequest::LISTENING) &&
+			if (((*it2)->GetStatus() == PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::LISTENING) &&
 				((*it2)->IsConnectionPermitted(this, sock, caller_addr) == 1))
 			{
 					ret = *it2;
@@ -883,7 +882,7 @@ int Protocol::Select()
 		ChannelMap::iterator it = _openChannels.begin();
 
 		for (; it != _openChannels.end(); it++) {
-			if ((it->second->GetStatus() == Channel::OPEN) &&
+			if ((it->second->GetStatus() == Channel::CHANNEL_STATUS::OPEN) &&
 				(it->second->GetTxWindow() > 0) &&
 				(dynamic_cast<SocketChannel*>(it->second))) {
 				SOCKET socket = it->second->GetSocket();
@@ -1018,7 +1017,7 @@ out:
 			it->second->RemoveBytesTxWindow(res);
 		}
 		else {
-			it->second->SetStatus(Channel::WAITING_CLOSE);
+			it->second->SetStatus(Channel::CHANNEL_STATUS::WAITING_CLOSE);
 			_lme.ChannelClose(c->GetRecipientChannel());
 		}
 	}
@@ -1071,7 +1070,7 @@ void Protocol::_closePortForwardRequest(PortForwardRequest *p)
 		return;
 	}
 
-	if ((*it2)->GetStatus() == PortForwardRequest::NOT_ACTIVE) {
+	if ((*it2)->GetStatus() == PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE) {
 
 		vector<SOCKET> serverSockets = (*it2)->GetListeningSockets();
 		delete (*it2);
@@ -1094,7 +1093,7 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 		case APF_USERAUTH_REQUEST:
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if (_handshakingStatus != AGREED) {
+				if (_handshakingStatus != VERSION_HANDSHAKING::AGREED) {
 					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
 					Deinit();
 					return false;
@@ -1111,7 +1110,7 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 		case APF_CHANNEL_WINDOW_ADJUST:
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if ((_handshakingStatus != AGREED) || (_pfwdService != STARTED)) {
+				if ((_handshakingStatus != VERSION_HANDSHAKING::AGREED) || (_pfwdService != SERVICE_STATUS::STARTED)) {
 					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
 					Deinit();
 					return false;
@@ -1187,7 +1186,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					UNS_DEBUG(L"Accepting service: %C\n", serviceRequestMessage->ServiceName.c_str());
 					if (serviceRequestMessage->ServiceName.compare(APF_SERVICE_PFWD) == 0){
 						std::lock_guard<std::mutex> l(_versionLock);
-						_pfwdService = STARTED;
+						_pfwdService = SERVICE_STATUS::STARTED;
 					}
 				}
 				else {
@@ -1229,10 +1228,10 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				LMEProtocolVersionMessage *versionMessage = (LMEProtocolVersionMessage *)message;
 				switch (_handshakingStatus) {
-					case AGREED:
-					case NOT_INITIATED:
+					case VERSION_HANDSHAKING::AGREED:
+					case VERSION_HANDSHAKING::NOT_INITIATED:
 						_lme.ProtocolVersion(MAX_PROT_VERSION);
-					case INITIATED:
+					case VERSION_HANDSHAKING::INITIATED:
 						if (VersionCompare(MIN_PROT_VERSION.MajorVersion, MIN_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
 
@@ -1252,7 +1251,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
 							_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
 						}
-						_handshakingStatus = AGREED;
+						_handshakingStatus = VERSION_HANDSHAKING::AGREED;
 						break;
 					default:
 						_lme.Disconnect(APF_DISCONNECT_BY_APPLICATION);
@@ -1317,7 +1316,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 										PortForwardRequestList::iterator it2 = it->second.begin();
 										bool exists = false;
 										for (; it2 != it->second.end(); it2++) {
-											if (((*it2)->GetStatus() != PortForwardRequest::NOT_ACTIVE) &&
+											if (((*it2)->GetStatus() != PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE) &&
 												((*it2)->GetBindedAddress().compare(tcpForwardRequestMessage->Address) == 0)) {
 												exists = true;
 												break;
@@ -1351,7 +1350,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 									serverSockets = _createServerSocket(AF_UNSPEC, tcpForwardRequestMessage->Port,
 										socketStatus,true);
 
-									if ((serverSockets.size() == 0) || (socketStatus != Protocol::ACTIVE)) {
+									if ((serverSockets.size() == 0) || (socketStatus != Protocol::SOCKET_STATUS::ACTIVE)) {
 										// Log in Event Log
 										UNS_ERROR(L"Cannot listen at port %d\n", tcpForwardRequestMessage->Port);
 
@@ -1393,8 +1392,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 									portForwardRequest->SetStatus(
 										(cb == _isLocalCallback)?
-										PortForwardRequest::LISTENING :
-									PortForwardRequest::PENDING_REQUEST);
+										PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::LISTENING :
+										PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::PENDING_REQUEST);
 									_failureReported[tcpForwardRequestMessage->Port] = false;
 
 									_signalSelect();
@@ -1470,7 +1469,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							for (; it2 != it->second.end(); it2++) {
 								if (((*it2)->GetBindedAddress().compare(tcpForwardCancelRequestMessage->Address) == 0) &&
 									//((*it2)->GetPort() == tcpForwardCancelRequestMessage->Port)) {
-									((*it2)->GetStatus() != PortForwardRequest::NOT_ACTIVE)) {
+									((*it2)->GetStatus() != PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE)) {
 										found = true;
 										break;
 								}
@@ -1478,7 +1477,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 							if (found) {
 
-								(*it2)->SetStatus(PortForwardRequest::NOT_ACTIVE);
+								(*it2)->SetStatus(PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::NOT_ACTIVE);
 
 								if ((*it2)->GetChannelCount() == 0) {
 									_closePortForwardRequest(*it2);
@@ -1633,7 +1632,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				c->AddBytesTxWindow(channelOpenMessage->InitialWindow);
 				c->SetRecipientChannel(channelOpenMessage->SenderChannel);
-				c->SetStatus(Channel::OPEN);
+				c->SetStatus(Channel::CHANNEL_STATUS::OPEN);
 
 				std::lock_guard<std::mutex> l(_channelsLock);
 				_openChannels[c->GetSenderChannel()] = c;
@@ -1663,7 +1662,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				ChannelMap::iterator it = _openChannels.find(channelOpenSuccessMessage->RecipientChannel);
 				if (it != _openChannels.end()) {
-					it->second->SetStatus(Channel::OPEN);
+					it->second->SetStatus(Channel::CHANNEL_STATUS::OPEN);
 					it->second->SetRecipientChannel(channelOpenSuccessMessage->SenderChannel);
 					it->second->AddBytesTxWindow(channelOpenSuccessMessage->InitialWindow);
 				}
@@ -1736,12 +1735,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					if (it != _openChannels.end()) {
 						Channel *c = it->second;
 						switch(c->GetStatus()) {
-							case Channel::OPEN:
-								c->SetStatus(Channel::CLOSED);
+							case Channel::CHANNEL_STATUS::OPEN:
+								c->SetStatus(Channel::CHANNEL_STATUS::CLOSED);
 								_lme.ChannelClose(c->GetRecipientChannel());
 								UNS_TRACE(L"Channel %d was closed by AMT.\n", c->GetSenderChannel());
 								break;
-							case Channel::WAITING_CLOSE:
+							case Channel::CHANNEL_STATUS::WAITING_CLOSE:
 								UNS_TRACE(L"Received reply by AMT on closing channel %d.\n", c->GetSenderChannel());
 								break;
 						}
@@ -1782,7 +1781,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 				ChannelMap::iterator it = _openChannels.find(channelDataMessage->RecipientChannel);
 				if (it != _openChannels.end()) {
-					if ((it->second->GetStatus() == Channel::OPEN) || (it->second->GetStatus() == Channel::WAITING_CLOSE)) {
+					if ((it->second->GetStatus() == Channel::CHANNEL_STATUS::OPEN) || (it->second->GetStatus() == Channel::CHANNEL_STATUS::WAITING_CLOSE)) {
 
 						if (it->second->GetRxWindow() < channelDataMessage->Data.size()) {
 							return;
@@ -1802,11 +1801,11 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						_lme.ChannelWindowAdjust(it->second->GetRecipientChannel(), channelDataMessage->Data.size());
 						if (request_close)
 						{
-							if (it->second->GetStatus() == Channel::OPEN)
+							if (it->second->GetStatus() == Channel::CHANNEL_STATUS::OPEN)
 							{
 								UNS_DEBUG(L"[%u:%u] closing socket, as requested\n",	
 									it->second->GetSenderChannel(), it->second->GetRecipientChannel());
-								it->second->SetStatus(Channel::WAITING_CLOSE);
+								it->second->SetStatus(Channel::CHANNEL_STATUS::WAITING_CLOSE);
 								_lme.ChannelClose(it->second->GetRecipientChannel());
 							}
 						}
@@ -1897,12 +1896,12 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 			Intel::MEI_Client::AMTHI_Client::GET_DNS_SUFFIX_LIST_RESPONSE response = getDNSSuffixListCommand.getResponse();
 			std::lock_guard<std::mutex> l(_AMTDNSLock);
 			_AMTDNSSuffixes.clear();
-			unsigned int n = response.HashHandles.size();
+			size_t n = response.HashHandles.size();
 			if (n > 0)
 			{
 				vector<string> dnsSuffixes;
 				string ss;
-				for (unsigned i = 0; i < n; i++)
+				for (size_t i = 0; i < n; i++)
 				{
 					char c = response.HashHandles[i];
 					if (c == '\0')
@@ -1978,8 +1977,8 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 			for (PortForwardRequestList::iterator it2 = it->second.begin();
 					it2 != it->second.end(); it2++) {
 
-				if ((*it2)->GetStatus() == PortForwardRequest::PENDING_REQUEST) {
-					(*it2)->SetStatus(PortForwardRequest::LISTENING);
+				if ((*it2)->GetStatus() == PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::PENDING_REQUEST) {
+					(*it2)->SetStatus(PortForwardRequest::PORT_FORWARD_REQUEST_STATUS::LISTENING);
 				}
 			}
 		}
@@ -2012,7 +2011,7 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 			_remoteAccessEnabledInAMT = true;
 			printf("Remote access is allowed. This state is deprecated.\n");
 		}
-		catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
+		catch (const Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 		{
 			switch (e.getErr())
 			{
@@ -2036,7 +2035,12 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 				break;
 			}
 		}
-		catch (Intel::MEI_Client::MEIClientException e)
+		catch (const Intel::MEI_Client::MEIClientException& e)
+		{
+			UNS_ERROR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
+			return retVal;
+		}
+		catch (const std::exception& e)
 		{
 			UNS_ERROR(L"_checkRemoteSupport: _updateEnterpriseAccessStatus failed: %C\n", e.what());
 			return retVal;

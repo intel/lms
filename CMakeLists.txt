@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2022 Intel Corporation
+# Copyright (C) 2010-2023 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 if (NOT ${CMAKE_VERSION} VERSION_LESS "3.15.0")
   cmake_policy(SET CMP0091 NEW)
@@ -16,6 +16,7 @@ if (UNIX)
   option (NETWORK_NM "Use NetworkManager in network manipulations" YES)
   option (NETWORK_CN "Use Connman in network manipulations" NO)
   if (NETWORK_NM AND NETWORK_CN)
+
     message(FATAL_ERROR "Only one network manager can be supported.")
   endif (NETWORK_NM AND NETWORK_CN)
 endif (UNIX)
@@ -153,7 +154,7 @@ if (UNIX)
     set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
 
     set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
-      "${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/postinst;${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/prerm"
+      "${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/postinst;${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/prerm;${CMAKE_CURRENT_SOURCE_DIR}/UNS/linux_scripts/postrm"
     )
 
     list(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS libglib2.0-0)

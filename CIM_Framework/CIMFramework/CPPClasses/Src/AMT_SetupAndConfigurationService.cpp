@@ -25,6 +25,8 @@ namespace Typed
 		{"ProvisioningServerOTP", false, false, false },
 		{"ConfigurationServerFQDN", false, false, false },
 		{"PasswordModel", false, false, false },
+		{"DhcpDNSSuffix", false, false, false },
+		{"TrustedDNSSuffix", false, false, false },
 	};
 	// class fields
 	const unsigned char AMT_SetupAndConfigurationService::ProvisioningMode() const
@@ -137,6 +139,40 @@ namespace Typed
 	void AMT_SetupAndConfigurationService::RemovePasswordModel()
 	{
 		RemoveField("PasswordModel");
+	}
+
+	const string AMT_SetupAndConfigurationService::DhcpDNSSuffix() const
+	{
+		return GetField("DhcpDNSSuffix")[0];
+	}
+	void AMT_SetupAndConfigurationService::DhcpDNSSuffix(const string &value)
+	{
+		SetOrAddField("DhcpDNSSuffix", value);
+	}
+	bool AMT_SetupAndConfigurationService::DhcpDNSSuffixExists() const
+	{
+		return ContainsField("DhcpDNSSuffix");
+	}
+	void AMT_SetupAndConfigurationService::RemoveDhcpDNSSuffix()
+	{
+		RemoveField("DhcpDNSSuffix");
+	}
+
+	const string AMT_SetupAndConfigurationService::TrustedDNSSuffix() const
+	{
+		return GetField("TrustedDNSSuffix")[0];
+	}
+	void AMT_SetupAndConfigurationService::TrustedDNSSuffix(const string &value)
+	{
+		SetOrAddField("TrustedDNSSuffix", value);
+	}
+	bool AMT_SetupAndConfigurationService::TrustedDNSSuffixExists() const
+	{
+		return ContainsField("TrustedDNSSuffix");
+	}
+	void AMT_SetupAndConfigurationService::RemoveTrustedDNSSuffix()
+	{
+		RemoveField("TrustedDNSSuffix");
 	}
 
 	CimBase *AMT_SetupAndConfigurationService::CreateFromCimObject(const CimObject &object)

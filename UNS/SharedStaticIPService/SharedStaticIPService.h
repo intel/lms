@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __SHAREDSTATICIPSERVICE_H_
 #define __SHAREDSTATICIPSERVICE_H_
@@ -21,7 +21,10 @@ public:
 		m_SyncStaticIPStateOnce(false),
 		m_SyncStaticIP(false),
 		m_SyncRetries(0),
-#ifndef WIN32
+#ifdef WIN32
+		m_hand(NULL),
+		m_overlap({ 0 }),
+#else
 		m_sock(NULL),
 #endif // WIN32
 		m_event(ACE_INVALID_HANDLE),
@@ -66,14 +69,11 @@ private:
 	class SSIP_Message_Block: public ACE_Data_Block
 	{
 	public:
-		typedef enum SSIP_STATE {
-			SSIP_GETSHAREDSTATICIPSTATE = 101,
-			SSIP_SHAREDSTATICIPSTATE_DISABLED,
-			SSIP_SHAREDSTATICIPSTATE_ENABLED,
-			/* SSIP_SHAREDSTATICIPSTATE_SYNC,
-			 * SSIP_DONOTHING,
-			 */
-		} SSIP_STATE;
+		enum class SSIP_STATE {
+			GETSHAREDSTATICIPSTATE = 101,
+			SHAREDSTATICIPSTATE_DISABLED,
+			SHAREDSTATICIPSTATE_ENABLED,
+		};
 
 		SSIP_Message_Block(SSIP_STATE State) : Value(State) {}
 		virtual ~SSIP_Message_Block();

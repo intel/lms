@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -261,7 +261,8 @@ bool Concrete_Component_WMI_Provider::AuditRecordREFExists(ATL::CComBSTR partCom
 	std::vector<Audit_Record_WMI_Provider> recordsList;
 	std::vector<Audit_Record_WMI_Provider>::const_iterator recordsIt;
 	uint32 retVal;
-	Audit_Record_WMI_Provider::EnumerateAuditRecord(recordsList, retVal);
+	if (Audit_Record_WMI_Provider::EnumerateAuditRecord(recordsList, retVal) != 0)
+		return false;
 	for (recordsIt = recordsList.begin(); recordsIt!= recordsList.end(); recordsIt++)
 	{
 		std::wstring instanceID = recordsIt->InstanceID;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 
 #include "GmsSubService.h"
@@ -11,7 +11,9 @@
 
 int GmsSubService::init (int argc, ACE_TCHAR *argv[])
 {
-	initSubService(argc,argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 	startSubService();
 	return 0;
 }
@@ -19,35 +21,14 @@ int GmsSubService::init (int argc, ACE_TCHAR *argv[])
 int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"initSubService");
-	static const ACE_TCHAR options[] = ACE_TEXT (":g:");
-	ACE_Get_Opt cmd_opts(argc, argv, options, 0);
-	int option;
-	while ((option = cmd_opts()) != EOF)
+
+	m_mainService = theService::instance();
+	if (m_mainService == NULL)
 	{
-		switch (option)
-		{
-		case 'g':
-		{
-			unsigned long long pointer = ACE_OS::strtoull(cmd_opts.opt_arg(), NULL, 10);
-			if (pointer == ULLONG_MAX || pointer == 0)
-			{
-				ACE_ERROR_RETURN
-				((LM_ERROR, ACE_TEXT("-%c wrong argument\n"),
-					cmd_opts.opt_opt()),
-					-1);
-			}
-			m_mainService = (GmsService*)pointer;
-		}
-		break;
-		case ':':
-			ACE_ERROR_RETURN
-			((LM_ERROR, ACE_TEXT("-%c requires an argument\n"),
-				cmd_opts.opt_opt()), -1);
-		default:
-			ACE_ERROR_RETURN
-			((LM_ERROR, ACE_TEXT("Parse error.\n")), -1);
-		}
+		UNS_ERROR(L"GmsService is not instantiated\n");
+		return -1;
 	}
+
 	this->reactor(ACE_Reactor::instance());
 	this->notifier_.reactor(this->reactor());
 	this->notifier_.event_handler(this);
@@ -69,7 +50,7 @@ int GmsSubService::closeSubService()
 {
 	FuncEntryExit<void> fee(this, L"closeSubService");
 
-	sendStatusChanged(STATUS_UNLOADCOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::UNLOADCOMPLETE);
 
 	UNS_DEBUG(L"%s\n",name().c_str());
 	return 0;
@@ -77,7 +58,7 @@ int GmsSubService::closeSubService()
 
 int GmsSubService::suspendSubService()
 {
-	sendStatusChanged(STATUS_SUSPENDCOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::SUSPENDCOMPLETE);
 
 	UNS_DEBUG(L"%s suspendSubService()\n",name().c_str());
 	return 0;
@@ -87,9 +68,9 @@ int GmsSubService::startSubService()
 {
 	FuncEntryExit<void> fee(this, L"startSubService");
 
-	sendStatusChanged(STATUS_LOADCOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::LOADCOMPLETE);
 
-	UNS_DEBUG(L"%s, 0x%X\n",name().c_str(), this);
+	UNS_DEBUG(L"SubService: %s\n", name().c_str());
 	return 0;
 }
 
@@ -107,7 +88,7 @@ int GmsSubService::suspend()
 
 int GmsSubService::resume() 
 {
-	sendStatusChanged(STATUS_RESUMECOMPLETE);
+	sendStatusChanged(SERVICE_STATUS_TYPE::RESUMECOMPLETE);
 
 	UNS_DEBUG(L"%s service Resumed\n",name().c_str());
 	return 0;

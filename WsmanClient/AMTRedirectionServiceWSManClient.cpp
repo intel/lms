@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -23,7 +23,7 @@ typedef enum _TEMINATE_SESSION_QUALIFIER
 	TEMINATE_SESSION_QUALIFIER_RESERVED = 0x4
 } TEMINATE_SESSION_QUALIFIER;
 
-AMTRedirectionServiceWSManClient::AMTRedirectionServiceWSManClient(void) : m_isInit(false)
+AMTRedirectionServiceWSManClient::AMTRedirectionServiceWSManClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 

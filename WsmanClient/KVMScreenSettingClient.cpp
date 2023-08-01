@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -12,12 +12,12 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-KVMScreenSettingClient::KVMScreenSettingClient() : m_isInit(false)
+KVMScreenSettingClient::KVMScreenSettingClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 
-KVMScreenSettingClient::KVMScreenSettingClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false)
+KVMScreenSettingClient::KVMScreenSettingClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_isInit(false)
 {
 }
 
@@ -27,19 +27,19 @@ KVMScreenSettingClient::~KVMScreenSettingClient()
 
 bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameters &displaySettings, short numOfDisplays)
 {
-	try 
+	try
 	{
 		if (!Init())
 			return false;
 
-		std::lock_guard<std::mutex> lock(WsManSemaphore()); 		//Lock WsMan to prevent reentry
+		std::lock_guard<std::mutex> lock(WsManSemaphore()); //Lock WsMan to prevent reentry
 		short i = 0;
 		
-		std::vector<bool> isActive(numOfDisplays);
-		std::vector<int> positionX(numOfDisplays);
-		std::vector<int> positionY(numOfDisplays);
-		std::vector<unsigned int> resolutionX(numOfDisplays);
-		std::vector<unsigned int> resolutionY(numOfDisplays);
+		std::vector<bool> isActive(MAX_DISPLAY_NUMBER);
+		std::vector<int> positionX(MAX_DISPLAY_NUMBER);
+		std::vector<int> positionY(MAX_DISPLAY_NUMBER);
+		std::vector<unsigned int> resolutionX(MAX_DISPLAY_NUMBER);
+		std::vector<unsigned int> resolutionY(MAX_DISPLAY_NUMBER);
 	
 		for (i = 0 ; i < numOfDisplays ; i++)
 		{
@@ -61,10 +61,10 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 				m_service.TertiaryIndex(displaySettings.screenSettings[i].Pipe);
 			if (i == 3)
 				m_service.QuadraryIndex(displaySettings.screenSettings[i].Pipe);
-		}	
+		}
 		m_service.IsActive(isActive);
 		m_service.UpperLeftX(positionX);
-		m_service.UpperLeftY(positionY);		
+		m_service.UpperLeftY(positionY);
 		m_service.ResolutionX(resolutionX);
 		m_service.ResolutionY(resolutionY);
 		m_service.Put();
@@ -73,41 +73,13 @@ bool KVMScreenSettingClient::updateScreenSettings(const ExtendedDisplayParameter
 	return true;
 }
 
-bool  KVMScreenSettingClient::getScreenSettings (ExtendedDisplayParameters &displaySettings, unsigned char & primary, short numOfDisplays)
-{
-	try 
-	{
-		if (!Init())
-			return false;
-
-		primary = m_service.PrimaryIndex();
-		const std::vector<bool> isActive = m_service.IsActive();
-		const std::vector<int> UpperLeftX = m_service.UpperLeftX();
-		const std::vector<int> UpperLeftY = m_service.UpperLeftY();
-		const std::vector<unsigned int> ResolutionX = m_service.ResolutionX();
-		const std::vector<unsigned int> ResolutionY = m_service.ResolutionY();
-
-		for (short i=0; i<numOfDisplays; i++)
-		{
-			displaySettings.screenSettings[i].isActive = isActive[i];
-			displaySettings.screenSettings[i].ResolutionX = ResolutionX[i];
-			displaySettings.screenSettings[i].ResolutionY = ResolutionY[i];
-			displaySettings.screenSettings[i].UpperLeftX = UpperLeftX[i];
-			displaySettings.screenSettings[i].UpperLeftY= UpperLeftY[i];
-		}
-		return true;
-	}
-	CATCH_exception_return("KVMScreenSettingClient::getScreenSettings")
-}
-
 bool KVMScreenSettingClient::Init(bool forceGet)
 {
 	WSMAN_DEBUG("KVMScreenSettingClient::Init\n");
 	if (!forceGet && m_isInit) return true;
 	m_isInit = false;
-	
 
-	try 
+	try
 	{
 		if (!m_endpoint)
 			SetEndpoint();
@@ -119,5 +91,5 @@ bool KVMScreenSettingClient::Init(bool forceGet)
 		WSMAN_DEBUG("KVMScreenSettingClient::Initialized\n");
 	}
 	CATCH_exception("KVMScreenSettingClient::Init")
-	return m_isInit;	
+	return m_isInit;
 }

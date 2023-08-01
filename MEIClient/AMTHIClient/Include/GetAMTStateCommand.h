@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -59,8 +59,9 @@ namespace Intel
 				} Fields;
 			};
 
-			typedef struct AMT_STATE_RESPONSE_t
+			struct AMT_STATE_RESPONSE
 			{
+				AMT_STATE_RESPONSE() : StateDataIdentifier({ 0 }), StateData({ 0 }) {}
 				AMT_UUID StateDataIdentifier;
 				STATE_DATA StateData;
 
@@ -75,7 +76,7 @@ namespace Intel
 					}
 					parseArray<uint8_t>(StateData.data, 5, itr, end);
 				}
-			} AMT_STATE_RESPONSE;
+			};
 
 			const AMT_UUID AMT_UUID_LINK_STATE = 
 			{0x00, 0x00, 0x00, 0x00,
@@ -83,47 +84,50 @@ namespace Intel
 			 0x00, 0x00, 0x00, 0x00,
 			 0x00, 0x00, 0x00, 0x01};
 
-			class GetAMTStateRequest;
-			class GetAMTStateCommand : public AMTHICommand
-			{
-			public:
-
-				GetAMTStateCommand(AMT_UUID StateVariableIdentifier = AMT_UUID_LINK_STATE);
-				virtual ~GetAMTStateCommand() {}
-
-				AMT_STATE_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<AMT_STATE_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x01800001;
-			};
-
 			class GetAMTStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetAMTStateRequest(const AMT_UUID StateVariableIdentifier) 
-				{
-					m_stateVariableIdentifier = StateVariableIdentifier;
-				}
+				GetAMTStateRequest(const AMT_UUID StateVariableIdentifier) :
+					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_stateVariableIdentifier(StateVariableIdentifier) {}
 				virtual ~GetAMTStateRequest() {}
 
 			private:
 				AMT_UUID m_stateVariableIdentifier;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x01000001;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(AMT_UUID);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output(m_stateVariableIdentifier.amt_uuid, m_stateVariableIdentifier.amt_uuid + sizeof(AMT_UUID));
+					return output;
+				}
+			};
+
+			class GetAMTStateCommand : public AMTHICommand
+			{
+			public:
+
+				GetAMTStateCommand(AMT_UUID StateVariableIdentifier = AMT_UUID_LINK_STATE)
+				{
+					m_request = std::make_shared<GetAMTStateRequest>(StateVariableIdentifier);
+					Transact();
+				}
+				virtual ~GetAMTStateCommand() {}
+
+				AMT_STATE_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<AMT_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<AMT_STATE_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x01800001;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #ifndef __PARTIALFWUPDATESERVICE_H_
 #define __PARTIALFWUPDATESERVICE_H_
@@ -13,14 +13,13 @@
 #include "PFWUpdateDllWrapper.h"
 #include "PARTIALFWUPDATESERVICE_export.h"
 
-#define DEFAULT_LANG_ID				100
+const int DEFAULT_LANG_ID = 100;
 
-
-typedef	enum	_LANGUAGE_FLOW_MODE 
+enum class LANGUAGE_FLOW_MODE
 {
-	INITIAL_MODE,
-	MANUAL_MODE
-} LANGUAGE_FLOW_MODE;
+	INITIAL,
+	MANUAL
+};
 
 class PartialFWUpdateEventsFilter;
 
@@ -43,17 +42,17 @@ class PARTIALFWUPDATESERVICE_Export PartialFWUpdateService:  public EventHandler
     
 	virtual std::shared_ptr<EventsFilter> getFilter();
 	
-	bool partialFWUpdate(int _langID = DEFAULT_LANG_ID, int _mode = INITIAL_MODE, bool _toPublishFailure = false);
+	bool partialFWUpdate(int _langID = DEFAULT_LANG_ID, LANGUAGE_FLOW_MODE _mode = LANGUAGE_FLOW_MODE::INITIAL, bool _toPublishFailure = false);
 
 private:
 	std::unique_ptr<PFWUpdateDllWrapper> pfwuWrapper;
 
-	typedef enum _PARTIAL_FWU_MODULE
+	enum class PARTIAL_FWU_MODULE
 	{
-		LANGUAGE_MODULE,
-		WLAN_MODULE,
-		UNKNOWN_FWU_MODULE
-	} PARTIAL_FWU_MODULE;
+		LANGUAGE,
+		WLAN,
+		UNKNOWN_FWU
+	};
     bool schedPFUAfterResume_;
 
     int handlePublishEvent(const GMS_AlertIndication & alert);
@@ -66,7 +65,7 @@ private:
 	void startPFWUpMessage();
 	bool LoadFwUpdateLibDll();
 
-	// ******************************************************************	
+	// ******************************************************************
 	bool getPartialFWUpdateImagePath(std::wstring& value);
 	bool getImageFileNameByFwVersion(std::wstring& fileName);
 	// ******************************************************************
@@ -74,9 +73,9 @@ private:
 	void publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE module);
 	void publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE module,int retvalue);
 	void publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE module,const std::wstring& defaultValue, int error);
-	void publishMissingImageFile(PARTIAL_FWU_MODULE module);	
+	void publishMissingImageFile(PARTIAL_FWU_MODULE module);
 	bool checkImageFileExist(std::wstring &imagePath);
-	bool updateLanguageChangeCode(UINT32 languageID, LANGUAGE_FLOW_MODE mode = MANUAL_MODE);
+	bool updateLanguageChangeCode(UINT32 languageID, LANGUAGE_FLOW_MODE mode);
 	bool invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module, UINT32 partialID);
 
 	// Help functions
@@ -87,7 +86,7 @@ private:
 	unsigned int getUCLanguageID() const;
 
 	int langID;
-	int mode;
+	LANGUAGE_FLOW_MODE mode;
 };
 
 #endif /* __PARTIALFWUPDATESERVICE_H_ */

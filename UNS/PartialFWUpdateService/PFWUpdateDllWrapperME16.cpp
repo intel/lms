@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019-2021 Intel Corporation
+ * Copyright (C) 2019-2023 Intel Corporation
  */
 #include "PFWUpdateDllWrapperME16.h"
 #include "fwupdatelib_ME12.h"
@@ -159,9 +159,9 @@ uint32_t PFWUpdateDllWrapperME16::performPFWU(uint32_t partialID, const std::wst
 	uint32_t fwUpdateStatus = 0;
 	uint32_t neededResetType = MFT_PART_INFO_EXT_UPDATE_ACTION_NONE;
 	uint32_t timer = 0;
-	char* imagePathChar = new char[imagePath.length() + 1];
+	std::vector<char> imagePathChar(imagePath.length() + 1);
 	size_t charsConverted;
-	wcstombs_s(&charsConverted, imagePathChar, imagePath.length() + 1, imagePath.c_str(), imagePath.length());
+	wcstombs_s(&charsConverted, imagePathChar.data(), imagePath.length() + 1, imagePath.c_str(), imagePath.length());
 
 	if (imagePath.c_str() == NULL)
 	{
@@ -172,7 +172,7 @@ uint32_t PFWUpdateDllWrapperME16::performPFWU(uint32_t partialID, const std::wst
 	{
 		std::lock_guard<std::mutex> lock(Intel::MEI_Client::FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 
-		status = functionsPtr->FwuPartialUpdateFromFileDLL(imagePathChar, partialID , &displaySendStatus);
+		status = functionsPtr->FwuPartialUpdateFromFileDLL(imagePathChar.data(), partialID , &displaySendStatus);
 		if (status != SUCCESS)
 		{
 			goto End;

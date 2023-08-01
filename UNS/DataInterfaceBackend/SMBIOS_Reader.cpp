@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2007-2019 Intel Corporation
+ * Copyright (C) 2007-2023 Intel Corporation
  */
  /**
  * @file smbios_tables.cpp
@@ -151,6 +151,9 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 	HRESULT hr;
 	BSTR bstrMsg;
 	BOOL uninitCom = FALSE;
+	IEnumWbemClassObject* penum = NULL;
+	IWbemLocator* ploc = NULL;
+	IWbemServices* psvc = NULL;
 
     // WMI Initialize COM.
     hr =  CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -167,8 +170,6 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 
     // WMI interface locator for host
 
-	IWbemLocator* ploc = nullptr;
-
     hr = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER,
 						  __uuidof(IWbemLocator), (LPVOID *)&ploc);
 
@@ -178,8 +179,6 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 		ret = ERROR_COCREATEINSTANCE;
 		goto comfailure;
     }
-
-    IWbemServices* psvc = 0;
 
     // Now connect to the wmi namespace to make call for IWbemServices
 
@@ -208,7 +207,6 @@ uint32_t SMBIOS_Reader::CheckForSmbiosFlags()
 		goto comfailure;
     }
 
-    IEnumWbemClassObject* penum = NULL;
 	bstrMsg = SysAllocString(L"MSSMBios_RawSMBiosTables");
     hr = psvc->CreateInstanceEnum(bstrMsg, 0, NULL, &penum);
 	SysFreeString(bstrMsg);

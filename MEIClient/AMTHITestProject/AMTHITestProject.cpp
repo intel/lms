@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2021 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 // AMTHITestProject.cpp : main project file.
 
 #include "stdafx.h"
 #include "AMTHICommand.h"
 #include "MEIClientException.h"
+#include "HECIException.h"
 
 #include "gtest/gtest.h"
 
@@ -25,9 +26,7 @@
 #include "GetLanInterfaceSettingsCommand.h"
 #include "GetLastHostResetReasonCommand.h"
 #include "GetLocalSystemAccountCommand.h"
-#include "GetProvisioningModeCommand.h"
 #include "GetProvisioningStateCommand.h"
-#include "GetProvisioningTlsModeCommand.h"
 #include "GetRedirectionSessionsStateCommand.h"
 #include "GetRedirectionStateCommand.h"
 #include "GetRemoteAccessConnectionStatusCommand.h"
@@ -40,12 +39,8 @@
 #include "GetZeroTouchEnabledCommand.h"
 #include "OpenUserInitiatedConnectionCommand.h"
 #include "SetDNSSuffixCommand.h"
-#include "SetProvisioningServerOTPCommand.h"
-#include "StartConfigurationExCommand.h"
-#include "StopConfigurationCommand.h"
 #include "UnprovisionCommand.h"
 
-#include "GetFWCapsCommand.h"
 #include "GetPlatformTypeCommand.h"
 #include "GetFWUpdateStateCommand.h"
 
@@ -53,6 +48,13 @@
 #include "GetMESetupAuditRecordCommand.h"
 #include "SetEnterpriseAccessCommand.h"
 #include "SetHostFQDNCommand.h"
+
+#include "ReadFileExCommand.h"
+
+#include "GetUPIDFeatureSupportCommand.h"
+#include "GetUPIDFeatureOSControlCommand.h"
+
+#include "MNGIsChangeToAMTEnabledCommand.h"
 
 #include "MEIparser.h"
 
@@ -69,6 +71,7 @@
 using namespace std;
 using namespace Intel::MEI_Client::AMTHI_Client;
 using namespace Intel::MEI_Client::MKHI_Client;
+using namespace Intel::MEI_Client::UPID_Client;
 
 TEST(instantiate, testOpenAndCloseUserInitiatedConnectionCommand)
 {
@@ -297,19 +300,6 @@ TEST(instantiate, testGetLocalSystemAcountCommand)
 	);
 }
 
-TEST(instantiate, testGetProvisioningModeCommand) 
-{
-	EXPECT_NO_THROW(
-		GetProvisioningModeCommand provisioningModeCommand;
-		PROVISIONING_MODE_SETTINGS provMode = provisioningModeCommand.getResponse();
-		cout << "\nprovisioning mode \nLegacyMode: " << provMode.LegacyMode <<
-			"\nProvisioning Mode: " << (provMode.ProvisioningMode == CFG_PROVISIONING_MODE_NONE) ? "none" : "enterprise";
-		cout << endl;
-	);
-}
-
-
-
 TEST(instantiate, testGetProvisioningStateCommand) 
 {
 	EXPECT_NO_THROW(
@@ -319,20 +309,6 @@ TEST(instantiate, testGetProvisioningStateCommand)
 		cout << endl;
 	);
 }
-
-
-
-TEST(instantiate, testGetProvisioningTlsModeCommand) 
-{
-	EXPECT_NO_THROW(
-		GetProvisioningTLSModeCommand provisioningTlsCommand;
-		PROV_TLS_MODE_RESPONSE re = provisioningTlsCommand.getResponse();
-		cout << "\nProvisioning TLS Mode (0-PROV_UNKNOWN, 1-PSK, 2-PKI): " << re.ProvTLSMode;
-		cout << endl;
-	);
-}
-
-
 
 TEST(instantiate, testGetRedirectionSessionsStateCommand)
 {
@@ -487,37 +463,6 @@ TEST(instantiate, testGetWebUIStateCommand)
 	);
 }
 
-TEST(instantiate, testSetProvisioningServerOTPCommand)
-{
-	cout << "Set Provisioning Server OTP to Admin!123" << std::endl;
-	try {
-		SetProvisioningServerOTPCommand SetprovSOTPCommand("Admin!123");
-	}
-	catch (const AMTHIErrorException &ex) {
-		if (ex.getErr() != AMT_STATUS_INVALID_PT_MODE)
-			FAIL() << "AMTHIErrorException with error " << ex.getErr();
-	}
-}
-
-TEST(instantiate, DISABLED_testStartConfigurationExCommand)
-{
-	cout << "Start Configuration (Extended) with IPv6 enabled" << std::endl;
-	try {
-		StartConfigurationExCommand configExCommand(true);
-	}
-	catch (const AMTHIErrorException &ex) {
-		if (ex.getErr() == AMT_STATUS_INVALID_PT_MODE)
-			return;
-		FAIL() << "AMTHIErrorException with error " << ex.getErr();
-	}
-	EXPECT_NO_THROW(
-		cout << "\nStop Configuration" << endl;
-		StopConfigurationCommand scc;
-	);
-}
-
-
-
 TEST(instantiate, DISABLED_testUnprovisionCommand)
 {
 	try {
@@ -587,6 +532,50 @@ TEST(MKHI, testGetFWUpdateStateCommand)
 	FW_UPDATE_STATE MKHIres = getPT.getResponse();
 	EXPECT_LE((uint32_t)FW_UPDATE_DISABLED, MKHIres.Data);
 	EXPECT_GE((uint32_t)FW_UPDATE_PASSWORD_PROTECTED, MKHIres.Data);
+}
+
+TEST(MCHI, testReadFileExCommand)
+{
+	try
+	{
+		Intel::MEI_Client::MCHI_Client::ReadFileExCommand readFileEx(Intel::MEI_Client::MCHI_Client::MCA_FILE_ID::SKU_MGR_QUALIFIED_BRAND_ENTITLEMENTS, 0, 4, 0);
+		Intel::MEI_Client::MCHI_Client::READ_FILE_EX_RESPONSE theFile = readFileEx.getResponse();
+		EXPECT_EQ(4, theFile.Data.size());
+		std::cout << "SKU_MGR_QUALIFIED_BRAND_ENTITLEMENTS data " << std::hex << "0x" << (uint32_t)theFile.Data[0]
+			<< " 0x" << (uint32_t)theFile.Data[1]
+			<< " 0x" << (uint32_t)theFile.Data[2]
+			<< " 0x" << (uint32_t)theFile.Data[3]
+			<< std::endl;
+	}
+	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+	catch (const Intel::MEI_Client::MCHI_Client::MCHIErrorExceptionNoFile&) {}
+}
+
+TEST(UPID, testGetUPIDFeatureSupportCommand)
+{
+	try
+	{
+		GetUPIDFeatureSupportCommand getSupport;
+		UPID_PLATFORM_ID_FEATURE_SUPPORT_GET_Response support = getSupport.getResponse();
+		EXPECT_EQ(support.platformIdSupported & ~(UPID_PLATFORM_ID_UPID_IS_SUPPORTED | UPID_PLATFORM_ID_ATTESTATION_IS_SUPPORTED), 0);
+	}
+	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+}
+
+TEST(UPID, testGetUPIDFeatureOSControlCommand)
+{
+	try
+	{
+		GetUPIDFeatureOSControlCommand getOSControl;
+		UPID_PLATFORM_ID_FEATURE_OSCONTROL_GET_Response support = getOSControl.getResponse();
+	}
+	catch (const Intel::MEI_Client::HeciNoClientException&) {}
+}
+
+TEST(Manageabiltiy, testMNGIsChangeToAMTEnabledCommand)
+{
+	Intel::MEI_Client::Manageability_Client::MNGIsChangeToAMTEnabledCommand cmd;
+	Intel::MEI_Client::Manageability_Client::IsChangedEnabledResponse res = cmd.getResponse();
 }
 
 TEST(MEIParser,too_small_data)

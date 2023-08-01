@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2019 Intel Corporation
+ * Copyright (C) 2006-2023 Intel Corporation
  */
 /*++
 
@@ -30,6 +30,9 @@ private:
 public:
 
 	~GMSExternalLogger();
+
+	GMSExternalLogger(const GMSExternalLogger&) = delete;
+	GMSExternalLogger& operator = (const GMSExternalLogger&) = delete;
 
 	static GMSExternalLogger& instance() {
 		static GMSExternalLogger t;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include <sstream>
 
@@ -14,7 +14,9 @@ const ACE_TString IPREFRESHEVENT(ACE_TEXT("IP Renew request performed for Intel(
 int IPRefreshService::init (int argc, ACE_TCHAR *argv[])
 {
 	UNS_DEBUG(L"IPRefresh service started\n");
-	initSubService(argc,argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 	wiredMacAddress_exisits	= false;
 	wirelessMacAddress_exisits = false;
 	wiredAdaptorID_updated	= false;

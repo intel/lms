@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -92,6 +92,7 @@ enum DATA_NAME : unsigned int
 	GetPlatformServiceRecordRaw_F,
 	GetUPIDFeatureState_F,
 	SetUPIDFeatureState_F,
+	SkuMgrQualifiedBrandEntitlements_F,
 
 	DATA_NAME_MAX_SENTINEL
 };

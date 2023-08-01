@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2023 Intel Corporation
  */
 /*++
 
@@ -80,15 +80,12 @@ namespace Intel
 			class PSRCommandRequest : public Intel::MEI_Client::MEICommandRequest
 			{
 			public:
-				PSRCommandRequest() {}
+				PSRCommandRequest(PSR_HECI_COMMANDS requestHeaderCommandNumber) : m_requestHeaderCommandNumber(requestHeaderCommandNumber) {}
 				virtual ~PSRCommandRequest() {}
 				virtual std::vector<uint8_t> Serialize();
 
 			private:
-
 				std::vector<uint8_t> serializeHeader(const PSR_MSG_HEADER& header);
-				//returns the PSR command number (in the header) of the request command
-				virtual uint8_t requestHeaderCommandNumber() = 0;
 				virtual uint16_t requestDataSize() = 0;
 				virtual std::vector<uint8_t> SerializeData()
 				{
@@ -96,12 +93,17 @@ namespace Intel
 					std::vector<uint8_t> tmp;
 					return tmp;
 				}
+				// the PSR command number (in the header) of the request command
+				PSR_HECI_COMMANDS m_requestHeaderCommandNumber;
 			};
 
 			template <typename T>
 			class PSRCommandResponse : public Intel::MEI_Client::MEICommandResponse
 			{
 			public:
+				PSRCommandResponse() : m_result(), m_commandNumber(PSR_HECI_COMMANDS::PLATFORM_SERVICE_RECORD_GET) {}
+				PSRCommandResponse(PSRCommandResponse&& other) = default;
+				PSRCommandResponse& operator = (PSRCommandResponse&& other) = default;
 				PSRCommandResponse(const std::vector<uint8_t>& buffer, PSR_HECI_COMMANDS commandNumber) : m_result()
 				{
 					m_commandNumber = commandNumber;

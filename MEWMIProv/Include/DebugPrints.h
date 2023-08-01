@@ -2,6 +2,14 @@
 /*
  * Copyright (C) 2019 Intel Corporation
  */
+ //----------------------------------------------------------------------------
+ //
+ //  File:       DebugPrints.h
+ //
+ //  Contents:   Debug messages printing
+ //
+ //  Notes:
+ //----------------------------------------------------------------------------
 #ifndef _DEBUG_PRINTS__H__
 #define _DEBUG_PRINTS__H__
 

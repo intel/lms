@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -120,6 +120,8 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(SetUPIDFeatureState_F, L"Administrators", true))
 		return 1;
+	if (false == ds.SetDataValue(SkuMgrQualifiedBrandEntitlements_F, L"", true))
+		return 1;
 
 	if (false == ds.DeleteDataVal(NETWORK_TRAFFIC_TX_CEASED_))
 		return 1;
@@ -139,9 +141,9 @@ private:
 	static GmsService* GMSsrv;
 public:
 
-	static bool getGmsPortForwardingStarted()
+	static unsigned int getGmsPortForwardingPort()
 	{
-		return GMSsrv->GetPortForwardingStarted();
+		return GMSsrv->GetPortForwardingPort();
 	}
 
 	DECLARE_LIBID(LIBID_AMT_COM_InterfaceLib)
@@ -218,12 +220,11 @@ public:
 		return NO_ERROR;
 	}
 
-	void ServiceMain(DWORD dwArgc, LPTSTR* lpszArgv) throw()
+	void ServiceMain(DWORD /*dwArgc*/, LPTSTR* /*lpszArgv*/) throw()
 	{
 		ACEInitializer Initializer;
 		// next lines copied from AtlBase::ServiceMain - because we must use RegisterServiceCtrlHandlerEx
-		lpszArgv;
-		dwArgc;
+
 		// Register the control request handler
 		m_status.dwCurrentState = SERVICE_START_PENDING;
 		m_hServiceStatus = RegisterServiceCtrlHandlerEx(m_szServiceName,sServiceCtrlHandler, NULL);
@@ -401,7 +402,7 @@ int RunAMT_COM_Interface(int nShowCmd)
 	return _AtlModule.WinMain(nShowCmd);
 }
 
-bool GetGmsPortForwardingStarted()
+unsigned int GetGmsPortForwardingPort()
 {
-	return CAMT_COM_InterfaceModule::getGmsPortForwardingStarted();
+	return CAMT_COM_InterfaceModule::getGmsPortForwardingPort();
 }

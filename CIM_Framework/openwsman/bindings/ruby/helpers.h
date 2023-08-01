@@ -47,7 +47,7 @@
  * 
  */
 
-#if SWIGVERSION > 0x020004
+#if SWIG_VERSION > 0x020004
 #define KLASS_DECL(k,t) swig_class *k = (swig_class *)(t->clientdata)
 #define KLASS_OF(x) x->klass
 #else
@@ -110,8 +110,9 @@ hash2value( hash_t *hash )
  *  (used as callback for value2hash)
  */
 static int
-_add_str( VALUE key, VALUE value, hash_t *h )
+_add_str( VALUE key, VALUE value, VALUE opaque )
 {
+    hash_t *h = (hash_t *)opaque;
     if (key != Qundef) {
 	const char *k = strdup( as_string( key ) );
 	if (!hash_lookup( h, k ) ) {
@@ -129,8 +130,9 @@ _add_str( VALUE key, VALUE value, hash_t *h )
  *  (used as callback for value2hash)
  */
 static int
-_add_kv( VALUE key, VALUE value, hash_t *h )
+_add_kv( VALUE key, VALUE value, VALUE opaque )
 {
+    hash_t *h = (hash_t *)opaque;
     if (key != Qundef) {
 	const char *k = as_string( key );
 	if (!hash_lookup( h, k ) ) {

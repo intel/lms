@@ -1,4 +1,4 @@
- //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+ //Copyright 2009 - 2023 Intel Corporation All Rights Reserved.
 #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -40,7 +40,7 @@ class OOB_Service : CIM_Service {
 
    [Description ("When the device is configured in TLS-PSK mode, "
 	"this functions returns the PID value of the device, this can be used "
-      	"by Provisioning servers to associate a PSK value"): Amended, static, implemented]
+      	"by Provisioning servers to associate a PSK value (deprecated)"): Amended, static, implemented]
    uint32 GetPID(
 	[OUT, Description ("PID value")] 
 	 string PID);
@@ -67,7 +67,7 @@ class OOB_Service : CIM_Service {
 
   
    [Description (
-	"Activate Intel(R) AMT using Remote Configuration"
+	"Activate Intel(R) AMT using Remote Configuration (Deprecated)"
 	): Amended, static, implemented] 
    uint32 Activate(
 	[IN, Description ("Optional One-Time-Password value the remote configuration service can use to authenticate the device")]
@@ -80,7 +80,7 @@ class OOB_Service : CIM_Service {
 	uint8 provTLSMode);
 
 
-   [Description ("Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation"): Amended, static, implemented]
+   [Description ("Stops Intel(R) AMT Activation if it is currently enabled, this will prevent Intel(R) AMT from being present on the Network for Bare-Metal activation (Deprected)"): Amended, static, implemented]
    uint32 CancelActivation ();
 
    

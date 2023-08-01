@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -47,6 +47,7 @@ namespace Intel
 
 			union MKHI_PLATFORM_TYPE
 			{
+				MKHI_PLATFORM_TYPE() : Data(0) {}
 				uint32_t    Data;
 				struct
 				{
@@ -73,49 +74,49 @@ namespace Intel
 				}
 			};
 
-			class GetPlatformTypeRequest;
-			class GetPlatformTypeCommand : public MKHICommand
-			{
-			public:
-
-				GetPlatformTypeCommand();
-				virtual ~GetPlatformTypeCommand() {}
-
-				MKHI_PLATFORM_TYPE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
-			};
-
 			class GetPlatformTypeRequest : public MKHICommandRequest
 			{
 			public:
-				GetPlatformTypeRequest() {}
+				GetPlatformTypeRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID) {}
 				virtual ~GetPlatformTypeRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(RULE_ID);
 				}
-				virtual unsigned int requestHeaderGroupID()
+				virtual std::vector<uint8_t> SerializeData()
 				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_FWCAPS_GROUP_ID;
+					RULE_ID rule;
+					rule.Data = MEFWCAPS_PCV_OEM_PLAT_TYPE_CFG_RULE_ID;
+					return std::vector<uint8_t>((std::uint8_t*)&rule, (std::uint8_t*)&rule + sizeof(rule));
+				}
+			};
+
+			class GetPlatformTypeCommand : public MKHICommand
+			{
+			public:
+
+				GetPlatformTypeCommand()
+				{
+					m_request = std::make_shared<GetPlatformTypeRequest>();
+					Transact();
+				}
+				virtual ~GetPlatformTypeCommand() {}
+
+				MKHI_PLATFORM_TYPE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, MEFWCAPS_PCV_OEM_PLAT_TYPE_CFG_RULE_ID);
 				}
 
-				virtual std::vector<uint8_t> SerializeData();
+				MKHIGetRuleCommandResponse<MKHI_PLATFORM_TYPE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

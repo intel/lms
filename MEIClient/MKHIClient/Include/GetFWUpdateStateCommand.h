@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -29,6 +29,7 @@ namespace Intel
 
 			union FW_UPDATE_STATE
 			{
+				FW_UPDATE_STATE() : Data(0) {}
 				uint32_t    Data;
 
 				void parse (std::vector<uint8_t>::const_iterator &itr, const std::vector<uint8_t>::const_iterator end)
@@ -37,50 +38,50 @@ namespace Intel
 				}
 			};
 
-			class GetFWUpdateStateRequest;
-			class GetFWUpdateStateCommand : public MKHICommand
-			{
-			public:
-
-				GetFWUpdateStateCommand();
-				virtual ~GetFWUpdateStateCommand() {}
-
-				FW_UPDATE_STATE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<MKHIGetRuleCommandResponse<FW_UPDATE_STATE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
-
-			};
-
 			class GetFWUpdateStateRequest : public MKHICommandRequest
 			{
 			public:
-				GetFWUpdateStateRequest() {}
+				GetFWUpdateStateRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID) {}
 				virtual ~GetFWUpdateStateRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(RULE_ID);
 				}
-				virtual unsigned int requestHeaderGroupID()
+				virtual std::vector<uint8_t> SerializeData()
 				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_FWCAPS_GROUP_ID;
+					RULE_ID rule;
+					rule.Data = MEFWCAPS_ME_FW_UPDATE_RULE_ID;
+					return std::vector<uint8_t>((std::uint8_t*)&rule, (std::uint8_t*)&rule + sizeof(rule));
+				}
+			};
+
+			class GetFWUpdateStateCommand : public MKHICommand
+			{
+			public:
+
+				GetFWUpdateStateCommand()
+				{
+					m_request = std::make_shared<GetFWUpdateStateRequest>();
+					Transact();
+				}
+				virtual ~GetFWUpdateStateCommand() {}
+
+				FW_UPDATE_STATE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHIGetRuleCommandResponse<FW_UPDATE_STATE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_FWCAPS_GROUP_ID, MEFWCAPS_ME_FW_UPDATE_RULE_ID);
 				}
 
-				virtual std::vector<uint8_t> SerializeData();
+				MKHIGetRuleCommandResponse<FW_UPDATE_STATE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
+
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

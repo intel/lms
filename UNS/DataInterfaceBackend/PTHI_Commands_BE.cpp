@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -40,6 +40,7 @@
 #include "PSRGetPlatformServiceRecordCommand.h"
 #include "GetUPIDFeatureStateCommand.h"
 #include "SetUPIDFeatureStateCommand.h"
+#include "ReadFileExCommand.h"
 #include "KVMScreenSettingClient.h"
 #include "Tools.h"
 #include "EventManagment.h"
@@ -88,13 +89,40 @@ namespace Intel {
 		unsigned int errNo = e.getErr(); \
 		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
 	}
+#define CATCH_NoClientExceptionReturn(func) \
+	catch (const Intel::MEI_Client::HeciNoClientException& e) \
+	{ \
+		const char* reason = e.what(); \
+		UNS_DEBUG(L"Exception in " func " %C\n", reason); \
+		return LMS_ERROR::NOT_SUPPORTED_BY_FW; \
+	}
 
 #define CATCH_exception(func) \
 	catch (std::exception& e) \
 	{ \
 		const char* reason = e.what(); \
 		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
+	} \
+	catch(...) \
+	{ \
+		UNS_DEBUG(L"General exception in " func L"\n"); \
 	}
+
+#define CATCH_MCHIErrorExceptionAllReturn(func) \
+	catch (const Intel::MEI_Client::MCHI_Client::MCHIErrorExceptionNoFile&) \
+	{ \
+		UNS_DEBUG(func L" failed NoFile\n"); \
+		return LMS_ERROR::NOT_SUPPORTED_BY_FW; \
+	} \
+	catch (Intel::MEI_Client::MCHI_Client::MCHIErrorException& e) \
+	{ \
+		unsigned int errNo = e.getErr(); \
+		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+	} \
+	CATCH_NoClientExceptionReturn(func) \
+	CATCH_MEIClientException(func) \
+	CATCH_exception(func) \
+	return LMS_ERROR::FAIL;
 
 template<typename T, size_t SIZE>
 constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
@@ -131,7 +159,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			return time_s;
 		}
 
-		PTHI_Commands_BE::PTHI_Commands_BE(bool isPfwUp) : Common_BE(isPfwUp)
+		PTHI_Commands_BE::PTHI_Commands_BE(unsigned int port) : Common_BE(port)
 		{
 		}
 
@@ -159,12 +187,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 						break;
 					}
 				}
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetCodeVersionCommand")
 			CATCH_MEIClientException(L"GetCodeVersionCommand")
 			CATCH_exception(L"GetCodeVersionCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetAMTVersion(std::string &sAMTVersion)
@@ -173,89 +201,39 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		}
 
 #ifdef WIN32
-		LMS_ERROR GetServiceVersion(const std::wstring &ServiceName, std::string &sVersion)
+		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string& sVersion)
 		{
-			HKEY hKey;
-			wchar_t path[MAX_PATH + 1];//BUFSIZE
-			wchar_t expandedPath[MAX_PATH + 1];
-			DWORD pathBufSize = MAX_PATH;//BUFSIZE
-			LONG RetValue;
 			DWORD dwHandle = 0;
-			DWORD bufCount = MAX_PATH;
-
-			BYTE* FileValues = NULL;
 			DWORD FileSize;
-			std::wstring ServiceKey(L"SYSTEM\\CurrentControlSet\\Services\\");
-			ServiceKey += ServiceName;
-			RetValue = RegOpenKeyEx(HKEY_LOCAL_MACHINE, ServiceKey.c_str(), 0, KEY_QUERY_VALUE, &hKey);
+			WCHAR Filename[MAX_PATH + 1] = { 0 };
 
-			if (RetValue != ERROR_SUCCESS)
+			if (GetModuleFileNameW(NULL, Filename, MAX_PATH) == 0)
 			{
-				UNS_DEBUG(L"GetServiceVersion:RegOpenKeyEx failed err=%d\n", RetValue);
-				return ERROR_FAIL;
-			}
-			RetValue = RegQueryValueEx(hKey, L"ImagePath", NULL, NULL, (LPBYTE)path, &pathBufSize);
-			if ((RetValue != ERROR_SUCCESS) || (pathBufSize > MAX_PATH))
-			{
-				UNS_DEBUG(L"GetServiceVersion:RegQueryValueEx failed err=%d\n", RetValue);
-				RegCloseKey(hKey);
-				return ERROR_FAIL;
-			}
-			/* Even if the function returns ERROR_SUCCESS,
-			 * the application should ensure that the string is properly terminated before using it.
-			 */
-			path[pathBufSize] = '\0';
-
-			RegCloseKey(hKey);
-
-			bufCount = ExpandEnvironmentStrings(path, expandedPath, sizeof(expandedPath)/sizeof(expandedPath[0]));
-			if (bufCount > MAX_PATH)
-			{
-				UNS_DEBUG(L"ExpandEnvironmentStrings: Too small buffer for expanding %W\n", path);
-				return ERROR_FAIL;
-			}
-			else if (bufCount == 0)
-			{
-				UNS_DEBUG(L"ExpandEnvironmentStrings failed.\n");
-				return ERROR_FAIL;
+				UNS_DEBUG(L"GetServiceVersion:GetModuleFileName failed with err=%d\n", GetLastError());
+				return LMS_ERROR::FAIL;
 			}
 
-			wchar_t* formattedPath, *EndPath;
-			if (expandedPath[0] == '"')
-			{
-				formattedPath = &expandedPath[1];
-				EndPath = wcschr(formattedPath, '"');
-				if (EndPath != NULL)
-					*EndPath = 0;
-			}
-			else
-			{
-				formattedPath = &expandedPath[0];
-			}
-
-			FileSize = GetFileVersionInfoSize((LPTSTR)formattedPath, &dwHandle);
+			FileSize = GetFileVersionInfoSize(Filename, &dwHandle);
 			if (FileSize == 0)
 			{
 				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
-				return ERROR_FAIL;
+				return LMS_ERROR::FAIL;
 			}
 
-			FileValues = new BYTE[FileSize];
-			if (GetFileVersionInfo((LPTSTR)formattedPath, NULL, FileSize, FileValues) == 0)
+			std::vector<BYTE> FileValues(FileSize);
+			if (GetFileVersionInfo(Filename, NULL, FileSize, FileValues.data()) == 0)
 			{
-				delete[] FileValues;
 				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
-				return ERROR_FAIL;
+				return LMS_ERROR::FAIL;
 			}
 
 			VS_FIXEDFILEINFO *fileQuerInfo;
 			UINT InfoSize = 0;
-			if (!VerQueryValue(FileValues, TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
+			if (!VerQueryValue(FileValues.data(), TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
 				!InfoSize || InfoSize < sizeof(VS_FIXEDFILEINFO)) 
 			{
-				delete[] FileValues;
 				UNS_DEBUG(L"GetServiceVersion:VerQueryValue failed err=%d\n", GetLastError());
-				return ERROR_FAIL;
+				return LMS_ERROR::FAIL;
 			}
 			std::stringstream ss;
 			ss << HIWORD(fileQuerInfo->dwProductVersionMS) << "."
@@ -264,9 +242,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			   << LOWORD(fileQuerInfo->dwProductVersionLS);
 			sVersion = ss.str();
 
-			delete[] FileValues;
-
-			return ERROR_OK;
+			return LMS_ERROR::OK;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetHeciVersion(std::string &sVersion)
@@ -274,20 +250,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			try
 			{
 				Intel::MEI_Client::GetHeciDriverVersion(sVersion);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_HECIException(L"GetHeciVersion")
 			CATCH_AMTHIErrorException(L"GetHeciVersion")
 			CATCH_MEIClientException(L"GetHeciVersion")
 			CATCH_exception(L"GetHeciVersion")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
-
-		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string &sVersion)
-		{
-			return GetServiceVersion(L"LMS", sVersion);
-		}
-
 #else
 		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string &sVersion)
 		{
@@ -295,7 +265,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			str << MAJOR_VERSION << "." << MINOR_VERSION << "." <<
 				QUICK_FIX_NUMBER << "." << VER_BUILD;
 			sVersion = str.str();
-			return ERROR_OK;
+			return LMS_ERROR::OK;
 		}
 #endif // WIN32
 
@@ -310,7 +280,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::AMTHI_Client::GetProvisioningStateCommand getProvisioningStateCommand;
 				pProvisioningState = getProvisioningStateCommand.getResponse().ProvisioningState;
 				UNS_DEBUG(L"ProvisioningState=%d\n", pProvisioningState);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
@@ -319,7 +289,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{
 					pProvisioningState = 4; // CCK enrolled (registration to CCK) - Dan:: need to align IMSS to the new definition - no more CCK
 					UNS_DEBUG(L"GetProvisioningStateCommand failed, but returned status=%d assume CCK enrolled let ProvisioningState=4\n", errNo);
-					return ERROR_OK;
+					return LMS_ERROR::OK;
 				}
 				else
 				{
@@ -328,7 +298,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			}
 			CATCH_MEIClientException(L"GetProvisioningStateCommand")
 			CATCH_exception(L"GetProvisioningStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetNetworkConnectionStatus(uint32_t &pStatus, uint32_t &pConnectionType, uint32_t &pConnectionTrigger)
@@ -340,12 +310,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				pConnectionType = Status.AmtNetworkConnectionStatus;
 				pConnectionTrigger = Status.RemoteAccessConnectionTrigger;
 				UNS_DEBUG(L"RemoteAccessConnectionStatus=%d\t AmtNetworkConnectionStatus=%d\n", pStatus, pConnectionType);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetRemoteAccessConnectionStatus")
 			CATCH_MEIClientException(L"GetRemoteAccessConnectionStatus")
 			CATCH_exception(L"GetRemoteAccessConnectionStatus")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetUserInitiatedEnabled(short &pStatus)
@@ -355,12 +325,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::AMTHI_Client::GetUserInitiatedEnabledInterfacesCommand getUserInitiatedEnabledInterfacesCommand;
 				pStatus = getUserInitiatedEnabledInterfacesCommand.getResponse().EnabledInterfaces.OS_Agent;
 				UNS_DEBUG(L"GetUserInitiatedEnabled enabled=%d\n", pStatus);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetUserInitiatedEnabledInterfacesCommand")
 			CATCH_MEIClientException(L"GetUserInitiatedEnabledInterfacesCommand")
 			CATCH_exception(L"GetUserInitiatedEnabledInterfacesCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetPowerPolicy(std::string &bstrPolicy)
@@ -370,12 +340,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::AMTHI_Client::GetCurrentPowerPolicyCommand getCurrentPowerPolicyCommand;
 				UNS_DEBUG(L"powerPolicyName=%C\n", getCurrentPowerPolicyCommand.getResponse().c_str());
 				bstrPolicy = getCurrentPowerPolicyCommand.getResponse().c_str();
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetCurrentPowerPolicyCommand")
 			CATCH_MEIClientException(L"GetCurrentPowerPolicyCommand")
 			CATCH_exception(L"GetCurrentPowerPolicyCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetLastResetReason(short &pReason)
@@ -386,12 +356,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::AMTHI_Client::GetAMTStateCommand getAMTStateCommand;
 				pReason = getAMTStateCommand.getResponse().StateData.Fields.LastMEResetType;
 				UNS_DEBUG(L"LastResetReason=%d\n", pReason);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetAMTStateCommand")
 			CATCH_MEIClientException(L"GetAMTStateCommand")
 			CATCH_exception(L"GetAMTStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetRedirectionStatus(uint32_t &pSOL, uint32_t &pIDER)
@@ -405,12 +375,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				pSOL = getRedirectionState.getResponse().SolOpen;
 				pIDER = getRedirectionState.getResponse().IderOpen;
 				UNS_DEBUG(L"SOL=%d \t IDER=%d\n", pSOL, pIDER);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetRedirectionSessionsStateCommand")
 			CATCH_MEIClientException(L"GetRedirectionSessionsStateCommand")
 			CATCH_exception(L"GetRedirectionSessionsStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetSystemDefenseStatus(uint32_t &pStatus)
@@ -423,12 +393,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::AMTHI_Client::GetSystemDefenseStateCommand getSystemDefenseState;
 				pStatus = getSystemDefenseState.getResponse().SystemDefenseActivated;
 				UNS_DEBUG(L"systemDefense=%d \n", pStatus);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetSystemDefenseStatus")
 			CATCH_MEIClientException(L"GetSystemDefenseStatus")
 			CATCH_exception(L"GetSystemDefenseStatus")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetNetworkSettings(short ConnectionType /*WIRED, WIRELESS*/,
@@ -446,7 +416,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			case 1: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRELESS; break;
 			default:
 				UNS_DEBUG(L"GetNetworkSettings: wrong ConnectionType\n");
-				return ERROR_INVALIDARG;
+				return LMS_ERROR::INVALIDARG;
 			}
 			try
 			{
@@ -473,12 +443,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"ConnectionType=%d DhcpEnabled=%d IpAddress=%C MacAddress=%C LinkStatus=%d WirelessControl=%d WirelessConfEnabled=%d\n",
 					ConnectionType, pDhcpEnabled, inet_ntoa(addr), bstrMacAddress.c_str(), pLinkStatus, pWirelessControl, pWirelessConfEnabled);
 
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetLanInterfaceSettingsCommand")
 			CATCH_MEIClientException(L"GetLanInterfaceSettingsCommand")
 			CATCH_exception(L"GetLanInterfaceSettingsCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetIPv6NetworkSettings(short ConnectionType /*WIRED, WIRELESS*/,
@@ -500,7 +470,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			case 1: AMTinterface = Intel::MEI_Client::AMTHI_Client::WIRELESS; break;
 			default:
 				UNS_DEBUG(L"GetIPv6NetworkSettings: wrong ConnectionType\n");
-				return ERROR_INVALIDARG;
+				return LMS_ERROR::INVALIDARG;
 			}
 
 			bool Ipv6Enablement = false;
@@ -525,7 +495,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"GetLanInterfaceSettings:  IPv6DefaultRouter=%C PrimaryDNS=%C SecondaryDNS=%C \t   IPv6: %C\n, Ipv6Enablement=%d",
 					IPv6DefaultRouter.c_str(), PrimaryDNS.c_str(), SecondaryDNS.c_str(), ip_str.str().c_str(), Ipv6Enablement);
 				pIpv6Enable = Ipv6Enablement;
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
@@ -537,14 +507,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					SecondaryDNS = "";
 					pResponse.resize(0);
 					pIpv6Enable = Ipv6Enablement;
-					return ERROR_OK;
+					return LMS_ERROR::OK;
 				}
 				else
 					UNS_DEBUG(L"GetIPv6LanInterfaceStatusCommand failed ret=%d\n", errNo);
 			}
 			CATCH_MEIClientException(L"GetIPv6LanInterfaceStatusCommand")
 			CATCH_exception(L"GetIPv6LanInterfaceStatusCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetSystemUUID(std::string &bstrUUID)
@@ -561,12 +531,12 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				bstrUUID = uuidToString(uuid.UUID);
 
 				UNS_DEBUG("AmtUUID=%C\n", bstrUUID.c_str());
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"GetUUIDCommand")
 			CATCH_MEIClientException(L"GetUUIDCommand")
 			CATCH_exception(L"GetUUIDCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::CloseUserInitiatedConnection(void)
@@ -578,196 +548,237 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			{
 				Intel::MEI_Client::AMTHI_Client::CloseUserInitiatedConnectionCommand closeUserInitiatedConnection;
 				UNS_DEBUG(L"CIRA closed\n");
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_AMTHIErrorException(L"CloseUserInitiatedConnection")
 			CATCH_MEIClientException(L"CloseUserInitiatedConnection")
 			CATCH_exception(L"CloseUserInitiatedConnection")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetKVMRedirectionState(bool &pEnabled, bool &pConnected)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			KVMWSManClient WSClient;
-			bool MEBxState = false;
-			if (!WSClient.GetMEBxState(&MEBxState))
+			try
 			{
-				return ERROR_FAIL;
+				KVMWSManClient WSClient(m_port);
+				bool MEBxState = false;
+				if (!WSClient.GetMEBxState(&MEBxState))
+				{
+					return LMS_ERROR::FAIL;
+				}
+				if (!MEBxState)
+				{
+					pEnabled = false;
+					pConnected = false;
+					return LMS_ERROR::OK;
+				}
+				unsigned short state;
+				if (!WSClient.KVMRedirectionState(&state))
+				{
+					return LMS_ERROR::FAIL;
+				}
+				switch (state)
+				{
+				case 2: //Enabled and Connected
+					pEnabled = true;
+					pConnected = true;
+					break;
+				case 3: //Disabled and NotConnected
+					pEnabled = false;
+					pConnected = false;
+					break;
+				case 6: //Enabled and NotConnected
+					pEnabled = true;
+					pConnected = false;
+					break;
+				default:
+					UNS_DEBUG(L"Wrong KVMRedirectionState=%d \n", state);
+					return LMS_ERROR::UNEXPECTED;
+				}
+				return LMS_ERROR::OK;
 			}
-			if (!MEBxState)
-			{
-				pEnabled = false;
-				pConnected = false;
-				return ERROR_OK;
-			}
-			unsigned short state;
-			if (!WSClient.KVMRedirectionState(&state))
-			{
-				return ERROR_FAIL;
-			}
-			switch (state)
-			{
-			case 2: //Enabled and Connected
-				pEnabled = true;
-				pConnected = true;
-				break;
-			case 3: //Disabled and NotConnected
-				pEnabled = false;
-				pConnected = false;
-				break;
-			case 6: //Enabled and NotConnected
-				pEnabled = true;
-				pConnected = false;
-				break;
-			default:
-				UNS_DEBUG(L"Wrong KVMRedirectionState=%d \n", state);
-				return ERROR_UNEXPECTED;
-			}
-			return ERROR_OK;
+			CATCH_exception(L"GetKVMRedirectionState")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
 		{
+			auto svc = theService::instance();
+			if (svc == nullptr)
+			{
+				return LMS_ERROR::FAIL;
+			}
+
 			MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 			mbPtr->data_block(new StartPFWUP(Language));
 			mbPtr->msg_type(MB_PFWU_EVENT);
-
-			if (!theService::instance()->sendMessage(GMS_PARTIALFWUPDATESERVICE, mbPtr))
+			if (!svc->sendMessage(GMS_PARTIALFWUPDATESERVICE, mbPtr))
 			{
-				return ERROR_FAIL;
+				return LMS_ERROR::FAIL;
 			}
-			return ERROR_OK;
+			return LMS_ERROR::OK;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetSpriteParameters(unsigned short &pLanguage, unsigned short &pZoom)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			SIOWSManClient Client;
-			if (Client.GetSpriteParameters(&pLanguage, &pZoom) != true)
-				return ERROR_FAIL;
+			try
+			{
+				SIOWSManClient Client(m_port);
+				if (Client.GetSpriteParameters(&pLanguage, &pZoom) != true)
+					return LMS_ERROR::FAIL;
 
-			unsigned long lang;
-			if (!DSinstance().GetDataValue(LastLanguageUpdate, lang))
-				pLanguage = DEFAULT_LANG_ID;
+				unsigned long lang;
+				if (!DSinstance().GetDataValue(LastLanguageUpdate, lang))
+					pLanguage = DEFAULT_LANG_ID;
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"GetSpriteParameters")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteZoom(unsigned short Zoom)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			SIOWSManClient Client;
-			if (Client.SetSpriteZoom(Zoom) != true)
-				return ERROR_FAIL;
-			return ERROR_OK;
+			try
+			{
+				SIOWSManClient Client(m_port);
+				if (Client.SetSpriteZoom(Zoom))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"SIOWSManClient")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetConfigurationInfo(short &pControlMode, short &pProvisioningMethod,
 			std::string &pCreationTimeStamp, std::vector<unsigned char> &ppCertHash)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			HBPWSManClient HBPWSManClient_obj;
-			std::string CreationTimeStampStr;
-			if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
-				return ERROR_FAIL;
+			try
+			{
+				HBPWSManClient HBPWSManClient_obj(m_port);
+				std::string CreationTimeStampStr;
+				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
+					return LMS_ERROR::FAIL;
 
-			UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
-				pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
-			pCreationTimeStamp = CreationTimeStampStr;
-
-			return ERROR_OK;
+				UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
+					pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
+				pCreationTimeStamp = CreationTimeStampStr;
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"SIOWSManClient")
+			return LMS_ERROR::FAIL;
 		}
 
 		const int TERMINATEREMEDYSESSIONS_RETRIES = 3;
 		const long TERMINATEREMEDYSESSIONS_RETRY_TIMEOUT = 2000;
 		LMS_ERROR PTHI_Commands_BE::TerminateRemedySessions(void)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			LMS_ERROR ret = ERROR_FAIL;
-			KVMWSManClient _KVMWSManClient;
-			if (_KVMWSManClient.TerminateKVMSession())
-				ret = ERROR_OK;
-			// Terminate IDER, SOL sessions
-			AMTRedirectionServiceWSManClient _AMTRedirectionServiceWSManClient;
-			if (_AMTRedirectionServiceWSManClient.TerminateSession(1)) //SOL
-				ret = ERROR_OK;
-			if (_AMTRedirectionServiceWSManClient.TerminateSession(0)) // IDER
-				ret = ERROR_OK;
-
-			unsigned int ReturnValue;
-			CancelOptInClient _CancelOptInClient;
-			short policy, state;
-
-			_CancelOptInClient.GetUserConsentState(&state, &policy);
-			if (state != 0) // cancel consent only if consent started
+			try
 			{
-				for (int i = 0; i < TERMINATEREMEDYSESSIONS_RETRIES; i++)
+				LMS_ERROR ret = LMS_ERROR::FAIL;
+				KVMWSManClient _KVMWSManClient(m_port);
+				if (_KVMWSManClient.TerminateKVMSession())
+					ret = LMS_ERROR::OK;
+				// Terminate IDER, SOL sessions
+				AMTRedirectionServiceWSManClient _AMTRedirectionServiceWSManClient(m_port);
+				if (_AMTRedirectionServiceWSManClient.TerminateSession(1)) //SOL
+					ret = LMS_ERROR::OK;
+				if (_AMTRedirectionServiceWSManClient.TerminateSession(0)) // IDER
+					ret = LMS_ERROR::OK;
+
+				unsigned int ReturnValue;
+				CancelOptInClient _CancelOptInClient(m_port);
+				short policy = 0, state = 0;
+
+				if (!_CancelOptInClient.GetUserConsentState(&state, &policy))
+					return LMS_ERROR::FAIL;
+				if (state != 0) // cancel consent only if consent started
 				{
-					if ((_CancelOptInClient.CancelOptIn(&ReturnValue)) && (ReturnValue == 0))
+					for (int i = 0; i < TERMINATEREMEDYSESSIONS_RETRIES; i++)
 					{
-						ret = ERROR_OK;
-						break;
+						if ((_CancelOptInClient.CancelOptIn(&ReturnValue)) && (ReturnValue == 0))
+						{
+							ret = LMS_ERROR::OK;
+							break;
+						}
+						else
+							std::this_thread::sleep_for(std::chrono::milliseconds(TERMINATEREMEDYSESSIONS_RETRY_TIMEOUT));
 					}
-					else
-						std::this_thread::sleep_for(std::chrono::milliseconds(TERMINATEREMEDYSESSIONS_RETRY_TIMEOUT));
 				}
+				return ret;
 			}
-			return ret;
+			CATCH_exception(L"TerminateRemedySessions")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetUserConsentState(short &pState, USER_CONSENT_POLICY &pPolicy)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			short UserConsentPolicy;
-			CancelOptInClient _CancelOptInClient;
-			if (!_CancelOptInClient.GetUserConsentState(&pState, &UserConsentPolicy))
-				return ERROR_FAIL;
-			pPolicy = static_cast<USER_CONSENT_POLICY>(UserConsentPolicy);
+			try
+			{
+				short UserConsentPolicy;
+				CancelOptInClient _CancelOptInClient(m_port);
+				if (!_CancelOptInClient.GetUserConsentState(&pState, &UserConsentPolicy))
+					return LMS_ERROR::FAIL;
+				pPolicy = static_cast<USER_CONSENT_POLICY>(UserConsentPolicy);
 
-			UNS_DEBUG(L"UserConsentState=%d, UserConsentPolicy=%d \n", pState, pPolicy);
+				UNS_DEBUG(L"UserConsentState=%d, UserConsentPolicy=%d \n", pState, pPolicy);
 
-			return ERROR_OK;
-
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"TerminateRemedySessions")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetWLANLinkInfo(unsigned int &pPreference, unsigned int &pControl, unsigned int &pProtection)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTEthernetPortSettingsClient Client;
-			bool isLink = false;
-			if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection, &isLink))
-				return ERROR_FAIL;
+			try
+			{
+				AMTEthernetPortSettingsClient Client(m_port);
+				bool isLink = false;
+				if (!Client.GetAMTEthernetPortSettings(&pPreference, &pControl, &pProtection, &isLink))
+					return LMS_ERROR::FAIL;
 
-			UNS_DEBUG(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);
+				UNS_DEBUG(L"GetWLANLinkInfo: Preference=%d, Control=%d Protection=%d \n", pPreference, pControl, pProtection);
 
-			return ERROR_OK;
-
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"GetWLANLinkInfo")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetLinkPreferenceToHost(void)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTEthernetPortSettingsClient Client;
-			if (!Client.SetLinkPreference(2))
-				return ERROR_FAIL;
-			return ERROR_OK;
+			try
+			{
+				AMTEthernetPortSettingsClient Client(m_port);
+				if (Client.SetLinkPreference(2))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"SetLinkPreferenceToHost")
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::InitiateUserConnection(short &pStatus)
@@ -781,7 +792,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::AMTHI_Client::OpenUserInitiatedConnectionCommand openUserInitiatedConnection;
 				pStatus = AMT_STATUS_SUCCESS;
 				UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 			{
@@ -789,7 +800,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				if ((pStatus == AMT_STATUS_NOT_READY) || (pStatus == AMT_STATUS_DATA_MISSING))
 				{
 					UNS_DEBUG(L"OpenUserInitiatedConnection failed, but returned status=%d\n", pStatus);
-					return ERROR_OK;
+					return LMS_ERROR::OK;
 				}
 				else
 				{
@@ -798,116 +809,133 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			}
 			CATCH_MEIClientException(L"OpenUserInitiatedConnection")
 			CATCH_exception(L"OpenUserInitiatedConnection")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 
 		LMS_ERROR PTHI_Commands_BE::userInitiatedPolicyRuleExists(short &pStatus)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.userInitiatedPolicyRuleExists(&pStatus) != true)
-				return ERROR_FAIL;
+			try {
+				AMTFCFHWSmanClient Client(m_port);
+				if (Client.userInitiatedPolicyRuleExists(&pStatus))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"userInitiatedPolicyRuleExists")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::userInitiatedPolicyRuleForLocalMpsExists(short &pStatus)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.userInitiatedPolicyRuleForLocalMpsExists(&pStatus) != true)
-				return ERROR_FAIL;
+			try {
+				AMTFCFHWSmanClient Client(m_port);
+				if (Client.userInitiatedPolicyRuleForLocalMpsExists(&pStatus))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"userInitiatedPolicyRuleForLocalMpsExists")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 
 		LMS_ERROR PTHI_Commands_BE::snmpEventSubscriberExists(short &pExist)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.snmpEventSubscriberExists(&pExist) != true)
-				return ERROR_FAIL;
+			try {
+				AMTFCFHWSmanClient Client(m_port);
+				if (Client.snmpEventSubscriberExists(&pExist))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"snmpEventSubscriberExists")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::CILAFilterCollectionSubscriptionExists(short &pExist)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			AMTFCFHWSmanClient Client;
-			if (Client.CILAFilterCollectionSubscriptionExists(&pExist) != true)
-				return ERROR_FAIL;
+			try {
+				AMTFCFHWSmanClient Client(m_port);
+				if (Client.CILAFilterCollectionSubscriptionExists(&pExist))
+					return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"CILAFilterCollectionSubscriptionExists")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, unsigned short numOfDisplays)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			KVMScreenSettingClient Client;
-			KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
+			try {
+				KVMScreenSettingClient Client(m_port);
+				KVMScreenSettingClient::ExtendedDisplayParameters extendedDisplayParameters;
 
-			for (size_t i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
-			{
-				extendedDisplayParameters.screenSettings[i].isActive = eExtendedDisplayParameters.DisplayParameters[i].IsActive;
-				extendedDisplayParameters.screenSettings[i].ResolutionX = eExtendedDisplayParameters.DisplayParameters[i].SizeX;
-				extendedDisplayParameters.screenSettings[i].ResolutionY = eExtendedDisplayParameters.DisplayParameters[i].SizeY;
-				extendedDisplayParameters.screenSettings[i].UpperLeftX = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftX;
-				extendedDisplayParameters.screenSettings[i].UpperLeftY = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftY;
-				extendedDisplayParameters.screenSettings[i].Pipe = eExtendedDisplayParameters.DisplayParameters[i].Pipe;
+				for (size_t i = 0; i < numOfDisplays && i < array_size(extendedDisplayParameters.screenSettings); ++i)
+				{
+					extendedDisplayParameters.screenSettings[i].isActive = eExtendedDisplayParameters.DisplayParameters[i].IsActive;
+					extendedDisplayParameters.screenSettings[i].ResolutionX = eExtendedDisplayParameters.DisplayParameters[i].SizeX;
+					extendedDisplayParameters.screenSettings[i].ResolutionY = eExtendedDisplayParameters.DisplayParameters[i].SizeY;
+					extendedDisplayParameters.screenSettings[i].UpperLeftX = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftX;
+					extendedDisplayParameters.screenSettings[i].UpperLeftY = eExtendedDisplayParameters.DisplayParameters[i].UpperLeftY;
+					extendedDisplayParameters.screenSettings[i].Pipe = eExtendedDisplayParameters.DisplayParameters[i].Pipe;
+				}
+				if (Client.updateScreenSettings(extendedDisplayParameters, numOfDisplays))
+					return LMS_ERROR::OK;
 			}
-			if (!Client.updateScreenSettings(extendedDisplayParameters, numOfDisplays))
-			{
-				return ERROR_FAIL;
-			}
+			CATCH_exception(L"updateScreenSettings")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, short &pLinkTechnology)
 		{
-			if (!m_isPfwUp) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
-				return ERROR_NOT_AVAILABLE_NOW;
+			if (!m_port) //This func is using WSMAN, and needs Port Forwarding to be up = LMS port is available
+				return LMS_ERROR::NOT_AVAILABLE_NOW;
 
-			if (sessionType == SOL_S)
-			{
-				IPSSolSessionUsingPortClient solClient;
-				if (solClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
-					return ERROR_FAIL;
-			}
-			else if (sessionType == IDER_S)
-			{
-				IPSIderSessionUsingPortClient iderClient;
-				if (iderClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
-					return ERROR_FAIL;
-			}
-			else if (sessionType == KVM_S)
-			{
-				IPSKVMSessionUsingPortClient kvmClient;
-				if (kvmClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
-					return ERROR_FAIL;
-			}
-			else
-			{
-				UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: Invalid session type %d\n", sessionType);
-				return ERROR_INVALIDARG;
-			}
+			try {
+				if (sessionType == SOL_S)
+				{
+					IPSSolSessionUsingPortClient solClient(m_port);
+					if (solClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
+						return LMS_ERROR::FAIL;
+				}
+				else if (sessionType == IDER_S)
+				{
+					IPSIderSessionUsingPortClient iderClient(m_port);
+					if (iderClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
+						return LMS_ERROR::FAIL;
+				}
+				else if (sessionType == KVM_S)
+				{
+					IPSKVMSessionUsingPortClient kvmClient(m_port);
+					if (kvmClient.GetSessionLinkTechnology(&pLinkTechnology) != true)
+						return LMS_ERROR::FAIL;
+				}
+				else
+				{
+					UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: Invalid session type %d\n", sessionType);
+					return LMS_ERROR::INVALIDARG;
+				}
 
-			UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
+				UNS_DEBUG(L"GetRedirectionSessionLinkTechnology: LinkTechnology=%d \n", pLinkTechnology);
+				return LMS_ERROR::OK;
+			}
+			CATCH_exception(L"updateScreenSettings")
 
-			return ERROR_OK;
+			return LMS_ERROR::FAIL;
 		}
 
 		std::string genesisFieldToString(const uint8_t *info)
@@ -963,8 +991,36 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_UNLOCK_STTE, "Unlocked State Entered"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SVN_INCREASE, "PSR SVN Incremented"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_CHASSIS_INTRUSION, "Chassis Intrusion Detected"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_SHOCK, "Excessive Shock"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_OPERATIONAL_TEMPERATURE, "Excessive Operational Temperature"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE, "Erase"},
 			};
-			std::string state_str, event_str;
+			std::map<uint32_t, std::string> capaiblity_states = {
+				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_NOT_SUPPORTED, "Not supported"},
+				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_SUPPORTED, "Supported"},
+			};
+			const size_t PSR_CAPABILITIES_NUM = 5;
+			std::array<std::string, PSR_CAPABILITIES_NUM> capaiblity_names = {
+			"Chassis Intrusion",
+			"Excessive Operational Temperature",
+			"Excessive Shock",
+			"Remote Platform Erase",
+			"Local Platform Erase",
+			};
+			std::map<uint32_t, std::string> erase_event_source = {
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_RPE, "Remote Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_LPE, "Local Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_OTHER, "Other"},
+			};
+			std::map<uint32_t, std::string> erase_event_action = {
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_ALL_SSD, "Secure Erase All SSDs"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_VERIFY_STORAGE, "Verify Storage Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_TPM_CLEAR, "TPM Clear"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_OEM_CUSTOM, "OEM Custom Action"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_CLEAR_BIOS, "Clear BIOS NVM Variables"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_RELOAD_BIOS, "BIOS Reload of Golden Config"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_ME_UNCONFIG, "ME Unconfigure"},
+			};
 			enum class TIMER_FAIL
 			{
 				NO,
@@ -981,15 +1037,16 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "<?xml version=\"1.0\"?>\n<MsInfo>\n<Category name=\"Platform Service Record\">\n";
 
 				parsed << "<Category name=\"General\">" << std::endl;
+				parsed << formatPSRPrefix("Log State");
 				try
 				{
-					state_str = log_states.at(psr.log_state);
+					parsed << log_states.at(psr.log_state);
 				}
 				catch (std::out_of_range const&)
 				{
-					state_str = "Unknown";
+					parsed << "Unknown (" << psr.log_state << ")";
 				}
-				parsed << formatPSRField("Log State", state_str);
+				parsed << formatPSRSuffix();
 				parsed << formatPSRPrefix("PSR Version") << psr.psr_version_major << "." << psr.psr_version_minor << formatPSRSuffix();
 				parsed << formatPSRField("Platform Service Record ID", uuidToString(psr.psrid));
 				parsed << formatPSRPrefix("Unique Platform ID");
@@ -1010,27 +1067,93 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << formatPSRSuffix();
 				parsed << "</Category>" << std::endl;
 
+				if (psr.psr_version_major >= 2)
+				{
+					parsed << "<Category name=\"Capabilities\">" << std::endl;
+					for (uint32_t i = 0; i < PSR_CAPABILITIES_NUM; i++)
+					{
+						parsed << formatPSRPrefix(capaiblity_names[i]);
+						try
+						{
+							parsed << capaiblity_states.at(psr.capabilities[i]);
+						}
+						catch (std::out_of_range const&)
+						{
+							parsed << "Unknown (" << psr.capabilities[i] << ")";
+						}
+						parsed << formatPSRSuffix();
+					}
+					parsed << "</Category>" << std::endl;
+				}
+
 				parsed << "<Category name=\"Ledger\">" << std::endl;
 				parsed << formatPSRPrefix("S0 Run Time In Seconds") << psr.ledger_info.s0_seconds_counter << formatPSRSuffix();
 				parsed << formatPSRField("S0 to S5 Transition Count", psr.ledger_info.s0_to_s5_counter);
 				parsed << formatPSRField("S0 to S4 Transition Count", psr.ledger_info.s0_to_s4_counter);
 				parsed << formatPSRField("S0 to S3 Transition Count", psr.ledger_info.s0_to_s3_counter);
 				parsed << formatPSRField("Warm Reset Count", psr.ledger_info.warm_reset_counter);
+				if (psr.psr_version_major >= 2)
+				{
+					parsed << formatPSRField("ISH Connection Count", psr.ledger_info.ish_connection_counter);
+					parsed << formatPSRField("CSME Reset Count", psr.ledger_info.csme_reset_counter);
+					parsed << formatPSRField("PRTC Reset Count", psr.ledger_info2.prtc_reset_counter);
+					parsed << formatPSRField("Log in Recovery State Count", psr.ledger_info2.recovery_state_counter);
+					parsed << formatPSRField("DAM State Entered Count", psr.ledger_info2.dam_state_counter);
+					parsed << formatPSRField("Unlocked State Entered Count", psr.ledger_info2.unlocked_state_counter);
+					parsed << formatPSRField("PSR SVN Incremented Count", psr.ledger_info2.psr_svn_increment_counter);
+					parsed << formatPSRField("Excessive Shock Count", psr.ledger_info2.excessive_shock_counter);
+					parsed << formatPSRField("Excessive Operational Temperature Count", psr.ledger_info2.excessive_temp_counter);
+				}
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Events\">" << std::endl;
 				for (uint32_t i = 0; i < psr.events_count && i < Intel::MEI_Client::PSR_Client::PSR_CRITICAL_EVENTS_NUM_MAX; i++)
 				{
+					parsed << "<Category name=\"";
 					try
 					{
-						event_str = events.at(psr.events_info[i].event_id);
+						parsed << events.at(psr.events_info[i].event_id);
 					}
 					catch (std::out_of_range const&)
 					{
-						event_str = "Unknown";
+						parsed << "Unknown (" << psr.events_info[i].event_id << ")";
 					}
-					parsed << "<Category name=\"" << event_str << "\">" << std::endl;
+					parsed << "\">" << std::endl;
 					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
+					if (psr.psr_version_major >= 2 && psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE)
+					{ // print erase sub id data
+						parsed << "<Category name=\"Data\">" << std::endl;
+						uint32_t sub_id = psr.events_info[i].event_sub_id[0] + (psr.events_info[i].event_sub_id[1] << 8) +
+							(psr.events_info[i].event_sub_id[2] << 16);
+						uint32_t action = (sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_MASK) >>
+							Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_OFFSET;
+						uint32_t source = (sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_MASK) >>
+							Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_OFFSET;
+						parsed << formatPSRField("Status",
+							(sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_STATUS_MASK) ? "Success" : "Fail");
+						parsed << formatPSRPrefix("Action");
+						try
+						{
+							parsed << erase_event_action.at(action);
+						}
+						catch (std::out_of_range const&)
+						{
+							parsed << "Unknown (" << action << ")";
+						}
+						parsed << formatPSRSuffix();
+						parsed << formatPSRPrefix("Source");
+						try
+						{
+							parsed << erase_event_source.at(source);
+						}
+						catch (std::out_of_range const&)
+						{
+							parsed << "Unknown (" << source << ")";
+						}
+						parsed << formatPSRSuffix();
+
+						parsed << "</Category>" << std::endl;
+					}
 					switch (psr.events_info[i].event_id)
 					{
 					case Intel::MEI_Client::PSR_Client::PSR_EVENT_PRTC_FAILURE:
@@ -1062,44 +1185,32 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "</Category>" << std::endl;
 				parsed << "</MsInfo>" << std::endl;
 				strPSR = parsed.str();
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"PSRGetPlatformServiceRecordCommand")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in PSRGetPlatformServiceRecordCommand %C\n", reason);
-				return ERROR_NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"PSRGetPlatformServiceRecordCommand")
 			CATCH_MEIClientException(L"PSRGetPlatformServiceRecordCommand")
 			CATCH_exception(L"PSRGetPlatformServiceRecordCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetPlatformServiceRecordRaw(std::vector<uint8_t>& binPSR)
 		{
 			std::array<uint8_t, Intel::MEI_Client::PSR_Client::PSR_NONCE_SIZE> nonce = { 0 };
-			std::stringstream parsed;
 
 			try
 			{
 				Intel::MEI_Client::PSR_Client::PSRGetPlatformServiceRecordRawCommand psrGetPlatformServiceRecordCommand(nonce);
 				Intel::MEI_Client::PSR_Client::PSR_GET_RESPONSE_RAW psr = psrGetPlatformServiceRecordCommand.getResponse();
 
-				binPSR.assign(psr.data, psr.data + sizeof(psr.data));
-
-				return ERROR_OK;
+				binPSR = psr.data;
+				return LMS_ERROR::OK;
 			}
 			CATCH_PSRErrorException(L"GetPlatformServiceRecordRaw")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in GetPlatformServiceRecordRaw %C\n", reason);
-				return ERROR_NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"GetPlatformServiceRecordRaw")
 			CATCH_MEIClientException(L"GetPlatformServiceRecordRaw")
 			CATCH_exception(L"GetPlatformServiceRecordRaw")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::GetUPIDFeatureState(bool& state)
@@ -1110,18 +1221,13 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::UPID_Client::UPID_PLATFORM_ID_FEATURE_STATE_GET_Response response = command.getResponse();
 				state = response.FeatureEnabled;
 
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_UPIDErrorException(L"GetUPIDStateCommand")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in GetUPIDFeatureStateCommand %C\n", reason);
-				return ERROR_NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"GetUPIDStateCommand")
 			CATCH_MEIClientException(L"GetUPIDStateCommand")
 			CATCH_exception(L"GetUPIDStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR PTHI_Commands_BE::SetUPIDFeatureState(bool state)
@@ -1130,18 +1236,32 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			{
 				Intel::MEI_Client::UPID_Client::SetUPIDFeatureStateCommand command(state);
 
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_UPIDErrorException(L"SetUPIDStateCommand")
-			catch (const Intel::MEI_Client::HeciNoClientException& e)
-			{
-				const char* reason = e.what();
-				UNS_DEBUG(L"Exception in SetUPIDFeatureStateCommand %C\n", reason);
-				return ERROR_NOT_SUPPORTED_BY_FW;
-			}
+			CATCH_NoClientExceptionReturn(L"SetUPIDStateCommand")
 			CATCH_MEIClientException(L"SetUPIDStateCommand")
 			CATCH_exception(L"SetUPIDStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
+		}
+
+		LMS_ERROR PTHI_Commands_BE::SkuMgrQualifiedBrandEntitlements(unsigned int& data)
+		{
+			try
+			{
+				Intel::MEI_Client::MCHI_Client::ReadFileExCommand readFileEx(
+					Intel::MEI_Client::MCHI_Client::MCA_FILE_ID::SKU_MGR_QUALIFIED_BRAND_ENTITLEMENTS, 0, sizeof(unsigned int), 0);
+				Intel::MEI_Client::MCHI_Client::READ_FILE_EX_RESPONSE response = readFileEx.getResponse();
+				if (response.Data.size() != sizeof(unsigned int))
+				{
+					UNS_DEBUG("Data size is wrong %zu != %zu\n", response.Data.size(), sizeof(unsigned int));
+					return LMS_ERROR::FAIL;
+				}
+				uint8_t* p = (uint8_t*)&data;
+				std::copy(response.Data.begin(), response.Data.end(), p);
+				return LMS_ERROR::OK;
+			}
+			CATCH_MCHIErrorExceptionAllReturn(L"SkuMgrQualifiedBrandEntitlements")
 		}
 	}
 }

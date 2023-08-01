@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -12,7 +12,7 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-SIOWSManClient::SIOWSManClient() : m_isInit(false)
+SIOWSManClient::SIOWSManClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 

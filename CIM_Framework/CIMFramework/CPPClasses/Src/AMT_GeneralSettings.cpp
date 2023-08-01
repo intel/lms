@@ -6,7 +6,7 @@
 //
 //  Contents:   This class contains all Intel(R) AMT general settings.
 //
-//              This file was automatically generated from AMT_GeneralSettings.mof,  version: 7.0.0
+//              This file was automatically generated from AMT_GeneralSettings.mof,  version: 12.0.20
 //
 //----------------------------------------------------------------------------
 #include "AMT_GeneralSettings.h"
@@ -40,6 +40,9 @@ namespace Typed
 		{"PresenceNotificationInterval", false, false, false },
 		{"PrivacyLevel", false, false, false },
 		{"PowerSource", false, false, false },
+		{"ThunderboltDockEnabled", false, false, false },
+		{"DHCPSyncRequiresHostname", false, false, false },
+		{"OemID", false, false, false },
 	};
 	// class fields
 	const bool AMT_GeneralSettings::NetworkInterfaceEnabled() const
@@ -414,6 +417,63 @@ namespace Typed
 		RemoveField("PowerSource");
 	}
 
+	const unsigned int AMT_GeneralSettings::ThunderboltDockEnabled() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("ThunderboltDockEnabled"), ret);
+		return ret;
+	}
+	void AMT_GeneralSettings::ThunderboltDockEnabled(const unsigned int value)
+	{
+		SetOrAddField("ThunderboltDockEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_GeneralSettings::ThunderboltDockEnabledExists() const
+	{
+		return ContainsField("ThunderboltDockEnabled");
+	}
+	void AMT_GeneralSettings::RemoveThunderboltDockEnabled()
+	{
+		RemoveField("ThunderboltDockEnabled");
+	}
+
+	const unsigned int AMT_GeneralSettings::DHCPSyncRequiresHostname() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("DHCPSyncRequiresHostname"), ret);
+		return ret;
+	}
+	void AMT_GeneralSettings::DHCPSyncRequiresHostname(const unsigned int value)
+	{
+		SetOrAddField("DHCPSyncRequiresHostname", TypeConverter::TypeToString(value));
+	}
+	bool AMT_GeneralSettings::DHCPSyncRequiresHostnameExists() const
+	{
+		return ContainsField("DHCPSyncRequiresHostname");
+	}
+	void AMT_GeneralSettings::RemoveDHCPSyncRequiresHostname()
+	{
+		RemoveField("DHCPSyncRequiresHostname");
+	}
+
+	const unsigned short AMT_GeneralSettings::OemID() const
+	{
+		unsigned short ret = 0;
+		TypeConverter::StringToType(GetField("OemID"), ret);
+		return ret;
+	}
+	void AMT_GeneralSettings::OemID(const unsigned short value)
+	{
+		SetOrAddField("OemID", TypeConverter::TypeToString(value));
+	}
+	bool AMT_GeneralSettings::OemIDExists() const
+	{
+		return ContainsField("OemID");
+	}
+	void AMT_GeneralSettings::RemoveOemID()
+	{
+		RemoveField("OemID");
+	}
+
 	CimBase *AMT_GeneralSettings::CreateFromCimObject(const CimObject &object)
 	{
 		AMT_GeneralSettings *ret = NULL;
@@ -441,6 +501,110 @@ namespace Typed
 	const vector<CimFieldAttribute> &AMT_GeneralSettings::GetMetaData() const
 	{
 		return _classMetaData;
+	}
+	const CimFieldAttribute AMT_GeneralSettings::AMTAuthenticate_INPUT::_metadata[] = {
+		{"MC_Nonce", false, true },
+	};
+	void AMT_GeneralSettings::AMTAuthenticate_INPUT::MC_Nonce(const Base64 &value)
+	{
+		SetOrAddField("MC_Nonce", TypeConverter::TypeToString(value));
+	}
+	const VectorFieldData AMT_GeneralSettings::AMTAuthenticate_INPUT::GetAllFields() const
+	{
+		VectorFieldData ret;
+		ret = sortData(_metadata, 1);
+		return ret;
+	}
+	const Base64 AMT_GeneralSettings::AMTAuthenticate_OUTPUT::Nonce() const
+	{
+		Base64 ret;
+		TypeConverter::StringToType(GetField("Nonce"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::NonceExists() const
+	{
+		return ContainsField("Nonce");
+	}
+	const HexBinary AMT_GeneralSettings::AMTAuthenticate_OUTPUT::UUID() const
+	{
+		HexBinary ret;
+		TypeConverter::StringToType(GetField("UUID"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::UUIDExists() const
+	{
+		return ContainsField("UUID");
+	}
+	const string AMT_GeneralSettings::AMTAuthenticate_OUTPUT::FQDN() const
+	{
+		return GetField("FQDN")[0];
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::FQDNExists() const
+	{
+		return ContainsField("FQDN");
+	}
+	const string AMT_GeneralSettings::AMTAuthenticate_OUTPUT::FWVersion() const
+	{
+		return GetField("FWVersion")[0];
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::FWVersionExists() const
+	{
+		return ContainsField("FWVersion");
+	}
+	const unsigned int AMT_GeneralSettings::AMTAuthenticate_OUTPUT::AMTSVN() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("AMTSVN"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::AMTSVNExists() const
+	{
+		return ContainsField("AMTSVN");
+	}
+	const unsigned int AMT_GeneralSettings::AMTAuthenticate_OUTPUT::SignatureMechanism() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("SignatureMechanism"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::SignatureMechanismExists() const
+	{
+		return ContainsField("SignatureMechanism");
+	}
+	const Base64 AMT_GeneralSettings::AMTAuthenticate_OUTPUT::Signature() const
+	{
+		Base64 ret;
+		TypeConverter::StringToType(GetField("Signature"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::SignatureExists() const
+	{
+		return ContainsField("Signature");
+	}
+	const vector<unsigned short> AMT_GeneralSettings::AMTAuthenticate_OUTPUT::LengthOfCertificates() const
+	{
+		vector<unsigned short> ret;
+		if(ContainsField("LengthOfCertificates"))
+			TypeConverter::StringToType(GetField("LengthOfCertificates"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::LengthOfCertificatesExists() const
+	{
+		return ContainsField("LengthOfCertificates");
+	}
+	const Base64 AMT_GeneralSettings::AMTAuthenticate_OUTPUT::Certificates() const
+	{
+		Base64 ret;
+		TypeConverter::StringToType(GetField("Certificates"), ret);
+		return ret;
+	}
+	bool AMT_GeneralSettings::AMTAuthenticate_OUTPUT::CertificatesExists() const
+	{
+		return ContainsField("Certificates");
+	}
+	unsigned int AMT_GeneralSettings::AMTAuthenticate(const AMTAuthenticate_INPUT &input, AMTAuthenticate_OUTPUT &output)
+	{
+		return Invoke("AMTAuthenticate", input, output);
 	}
 	const string AMT_GeneralSettings::CLASS_NAME = "AMT_GeneralSettings";
 	const string AMT_GeneralSettings::CLASS_URI = "http://intel.com/wbem/wscim/1/amt-schema/1/AMT_GeneralSettings";

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -45,8 +45,11 @@ namespace Intel
 			} REMOTE_ACCESS_CONNECTION_TRIGGER;
 
 			//Response struct:
-			typedef struct REMOTE_ACCESS_STATUS_t
+			struct REMOTE_ACCESS_STATUS
 			{
+				REMOTE_ACCESS_STATUS() : AmtNetworkConnectionStatus(AMT_NETWORK_CONNECTION_DIRECT),
+					RemoteAccessConnectionStatus(REMOTE_ACCESS_CONNECTION_STATUS_NOT_CONNECTED),
+					RemoteAccessConnectionTrigger(REMOTE_ACCESS_CONNECTION_TRIGGER_USER_INITIATED) {}
 				AMT_NETWORK_CONNECTION_STATUS AmtNetworkConnectionStatus;
 				REMOTE_ACCESS_CONNECTION_STATUS RemoteAccessConnectionStatus;
 				REMOTE_ACCESS_CONNECTION_TRIGGER RemoteAccessConnectionTrigger;
@@ -60,46 +63,40 @@ namespace Intel
 					Intel::MEI_Client::parseData(RemoteAccessConnectionTrigger, itr, end);
 					MpsHostname = AmtAnsiString(itr, end).getString();
 				}
-			}  REMOTE_ACCESS_STATUS;
-
-			class GetRemoteAccessConnectionStatusRequest;
-			class GetRemoteAccessConnectionStatusCommand : public AMTHICommand
-			{
-			public:
-
-				GetRemoteAccessConnectionStatusCommand();
-				virtual ~GetRemoteAccessConnectionStatusCommand() {}
-
-				REMOTE_ACCESS_STATUS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<REMOTE_ACCESS_STATUS>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800046;
 			};
 
 			class GetRemoteAccessConnectionStatusRequest : public AMTHICommandRequest
 			{
 			public:
-				GetRemoteAccessConnectionStatusRequest() {}
+				GetRemoteAccessConnectionStatusRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetRemoteAccessConnectionStatusRequest() {}
 
 			private:
-				
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000046;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetRemoteAccessConnectionStatusCommand : public AMTHICommand
+			{
+			public:
+
+				GetRemoteAccessConnectionStatusCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetRemoteAccessConnectionStatusRequest>();
+					Transact();
+				}
+				virtual ~GetRemoteAccessConnectionStatusCommand() {}
+
+				REMOTE_ACCESS_STATUS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<REMOTE_ACCESS_STATUS>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+				AMTHICommandResponse<REMOTE_ACCESS_STATUS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800046;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

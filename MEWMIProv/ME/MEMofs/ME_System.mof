@@ -1,4 +1,4 @@
- //Copyright 2009 - 2021 Intel Corporation All Rights Reserved.
+ //Copyright 2009 - 2022 Intel Corporation All Rights Reserved.
 #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -7,7 +7,7 @@ instance of __Namespace {
 
 #pragma namespace("\\\\.\\root\\Intel_ME")
 
-[Version ( "0.0.4" ), 
+[Version ( "0.0.5" ),
     Description ( "A class Representing Intel(R) Manageability Engine (Intel(R) ME) information" ):Amended, dynamic: ToInstance, provider("IntelMEProv"):ToInstance]
 class ME_System : CIM_ComputerSystem {
    
@@ -50,11 +50,25 @@ class ME_System : CIM_ComputerSystem {
 		ValueMap { "0", "1", "2", "3", "4", "5"},
 		Values { "None", "Unknown", "Intel(R) vPro (TM)", "Intel(R) Standard Manageability", "Intel(R) Level 3 Manageability Upgrade", "Intel(R) Small Business Technology" }]
    uint32 ManageabilityMode;
-	
 
-      [Description ( "Represents the status of the chipset CryptoFuse, when disabled, Intel(R) ME will not perform any encryption operations" )]
+   [Description ( "Represents the status of the chipset CryptoFuse, when disabled, Intel(R) ME will not perform any encryption operations" )]
    boolean CryptoFuseEnabled;
-   
+
+   [Description ( "Represents the support status of Unique Platform ID Feature" ),
+      ValueMap {false, true},
+      Values {"NotSupported", "Supported"}]
+   boolean UniquePlatformIDFeatureSupported;
+
+   [Description ( "Represents the OS Control status of Unique Platform ID Feature" ),
+      ValueMap {false, true},
+      Values {"Disabled", "Enabled"}]
+   boolean UniquePlatformIDFeatureOSControlState;
+
+   [Description ( "Represents the state of Unique Platform ID Feature" ),
+      ValueMap {false, true},
+      Values {"Disabled", "Enabled"}]
+   boolean UniquePlatformIDFeatureState;
+
    [Description ( "Receives local  FW Update counters (In Intel(R) AMT version 7.0 and later this function is not supported and always returns NOT SUPPORTED error)")  : Amended, static, implemented]
    uint32 getFwUpdateOverrideParams(
    		[OUT, Description ("FW Update override counter. When 255 refer to always"),
@@ -112,4 +126,17 @@ class ME_System : CIM_ComputerSystem {
 		[OUT, OctetStringDescription("CSME Platform ID"), OctetString]
 		string CSMEPlatformID);
 
+	[Description ("Intel Unique Platform ID feature supported on platform"): Amended, static, implemented]
+	uint32 getUniquePlatformIDFeatureSupported(
+		[OUT, Description("Intel Unique Platform ID feature supported on platform"),
+			ValueMap {false, true},
+			Values {"NotSupported", "Supported"}]
+		boolean supported);
+
+	[Description ("Intel Unique Platform ID feature OS Control State"): Amended, static, implemented]
+	uint32 getUniquePlatformIDFeatureOSControlState(
+		[OUT, Description("Unique Platform ID OS Control State"),
+			ValueMap {false, true},
+			Values {"Disabled", "Enabled"}]
+		boolean state);
 };

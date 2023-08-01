@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -29,44 +29,38 @@ namespace Intel
 				}
 			};
 
-			class GetCurrentPowerPolicyRequest;
+			class GetCurrentPowerPolicyRequest : public AMTHICommandRequest
+			{
+			public:
+				GetCurrentPowerPolicyRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
+				virtual ~GetCurrentPowerPolicyRequest() {}
+
+			private:
+				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000047;
+			};
+
 			class GetCurrentPowerPolicyCommand : public AMTHICommand
 			{
 			public:
 
-				GetCurrentPowerPolicyCommand();
+				GetCurrentPowerPolicyCommand()
+				{
+					m_request = std::make_shared<GetCurrentPowerPolicyRequest>();
+					Transact();
+				}
 				virtual ~GetCurrentPowerPolicyCommand() {}
 
-				std::string getResponse();
+				std::string getResponse() { return m_response.getResponse().powerPolicy; }
 
 			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
 
-				std::shared_ptr<AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE>> m_response;
+				AMTHICommandResponse<GetCurrentPowerPolicy_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800047;
-			};
-
-			class GetCurrentPowerPolicyRequest : public AMTHICommandRequest
-			{
-			public:
-				GetCurrentPowerPolicyRequest() {}
-				virtual ~GetCurrentPowerPolicyRequest() {}
-
-			private:
-
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000047;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

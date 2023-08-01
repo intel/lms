@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,6 +22,7 @@ namespace Intel
 		{
 			struct GET_EOP_STATE_RESPONSE
 			{
+				GET_EOP_STATE_RESPONSE() : State(0) {}
 				union
 				{
 					uint32_t State;
@@ -38,51 +39,40 @@ namespace Intel
 				}
 			};
 
-			class GetEOPStateRequest;
+			class GetEOPStateRequest : public MKHICommandRequest
+			{
+			public:
+				GetEOPStateRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID) {}
+				virtual ~GetEOPStateRequest() {}
+
+			private:
+				static const uint32_t REQUEST_COMMAND_NUMBER = 0x1D;
+			};
+
 			class GetEOPStateCommand : public MKHICommand
 			{
 			public:
 
-				GetEOPStateCommand();
+				GetEOPStateCommand()
+				{
+					m_request = std::make_shared<GetEOPStateRequest>();
+					Transact();
+				}
 				virtual ~GetEOPStateCommand() {}
 
-				GET_EOP_STATE_RESPONSE getResponse();
+				GET_EOP_STATE_RESPONSE getResponse() { return m_response.getResponse(); }
 
 			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<GET_EOP_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
+				}
 
-				std::shared_ptr<MKHICommandResponse<GET_EOP_STATE_RESPONSE>> m_response;
+				MKHICommandResponse<GET_EOP_STATE_RESPONSE> m_response;
 
 				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1D;
 			};
 
-			class GetEOPStateRequest : public MKHICommandRequest
-			{
-			public:
-				GetEOPStateRequest() {}
-				virtual ~GetEOPStateRequest() {}
-
-			private:
-
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x1D;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
-
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_GEN_GROUP_ID;
-				}
-				virtual std::vector<uint8_t> SerializeData();
-			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client
 } // namespace Intel

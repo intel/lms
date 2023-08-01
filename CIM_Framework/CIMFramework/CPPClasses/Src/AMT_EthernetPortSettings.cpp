@@ -6,7 +6,7 @@
 //
 //  Contents:   This class contains all Intel(R) AMT specific settings (IP, DHCP, VLAN) for one network interface in the system.
 //
-//              This file was automatically generated from AMT_EthernetPortSettings.mof,  version: 7.0.0
+//              This file was automatically generated from AMT_EthernetPortSettings.mof,  version: 12.0.20
 //
 //----------------------------------------------------------------------------
 #include "AMT_EthernetPortSettings.h"
@@ -37,6 +37,8 @@ namespace Typed
 		{"PrimaryDNS", false, false, false },
 		{"SecondaryDNS", false, false, false },
 		{"ConsoleTcpMaxRetransmissions", false, false, false },
+		{"PhysicalConnectionType", false, false, false },
+		{"PhysicalNicMedium", false, false, false },
 		{"WLANLinkProtectionLevel", false, false, false },
 	};
 	// class fields
@@ -349,6 +351,44 @@ namespace Typed
 	void AMT_EthernetPortSettings::RemoveConsoleTcpMaxRetransmissions()
 	{
 		RemoveField("ConsoleTcpMaxRetransmissions");
+	}
+
+	const unsigned int AMT_EthernetPortSettings::PhysicalConnectionType() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("PhysicalConnectionType"), ret);
+		return ret;
+	}
+	void AMT_EthernetPortSettings::PhysicalConnectionType(const unsigned int value)
+	{
+		SetOrAddField("PhysicalConnectionType", TypeConverter::TypeToString(value));
+	}
+	bool AMT_EthernetPortSettings::PhysicalConnectionTypeExists() const
+	{
+		return ContainsField("PhysicalConnectionType");
+	}
+	void AMT_EthernetPortSettings::RemovePhysicalConnectionType()
+	{
+		RemoveField("PhysicalConnectionType");
+	}
+
+	const unsigned int AMT_EthernetPortSettings::PhysicalNicMedium() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("PhysicalNicMedium"), ret);
+		return ret;
+	}
+	void AMT_EthernetPortSettings::PhysicalNicMedium(const unsigned int value)
+	{
+		SetOrAddField("PhysicalNicMedium", TypeConverter::TypeToString(value));
+	}
+	bool AMT_EthernetPortSettings::PhysicalNicMediumExists() const
+	{
+		return ContainsField("PhysicalNicMedium");
+	}
+	void AMT_EthernetPortSettings::RemovePhysicalNicMedium()
+	{
+		RemoveField("PhysicalNicMedium");
 	}
 
 	const unsigned int AMT_EthernetPortSettings::WLANLinkProtectionLevel() const

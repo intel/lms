@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -23,6 +23,9 @@ namespace Intel
 		{
 			struct SECURITY_PARAMETERS
 			{
+				SECURITY_PARAMETERS() : EnterpriseMode(false), TLSEnabled(false), HWCryptoEnabled(false),
+					ProvisioningState(PROVISIONING_STATE_PRE), NetworkInterfaceEnabled(false), SOLEnabled(false),
+					IDEREnabled(false), FWUpdateEnabled(false), LinkIsUp(false), KvmEnabled(false) {}
 				bool					EnterpriseMode;
 				bool					TLSEnabled;
 				bool					HWCryptoEnabled;
@@ -54,41 +57,37 @@ namespace Intel
 				}
 			};
 
-			class GetSecurityParametersRequest;
-			class GetSecurityParametersCommand : public AMTHICommand
-			{
-			public:
-
-				GetSecurityParametersCommand();
-				virtual ~GetSecurityParametersCommand() {}
-
-				SECURITY_PARAMETERS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<SECURITY_PARAMETERS>> m_response;
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001B;
-			};
-
 			class GetSecurityParametersRequest : public AMTHICommandRequest
 			{
 			public:
-				GetSecurityParametersRequest() {}
+				GetSecurityParametersRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetSecurityParametersRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400001B;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetSecurityParametersCommand : public AMTHICommand
+			{
+			public:
+
+				GetSecurityParametersCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetSecurityParametersRequest>();
+					Transact();
+				}
+				virtual ~GetSecurityParametersCommand() {}
+
+				SECURITY_PARAMETERS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<SECURITY_PARAMETERS>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
+				AMTHICommandResponse<SECURITY_PARAMETERS> m_response;
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480001B;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

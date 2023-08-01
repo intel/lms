@@ -6,7 +6,7 @@
 //
 //  Contents:   Boot options that the Intel(R) AMT device supports.
 //
-//              This file was automatically generated from AMT_BootCapabilities.mof,  version: 3.0.0
+//              This file was automatically generated from AMT_BootCapabilities.mof,  version: 15.0.0
 //
 //----------------------------------------------------------------------------
 #include "AMT_BootCapabilities.h"
@@ -41,6 +41,12 @@ namespace Typed
 		{"ConfigurationDataReset", false, false, false },
 		{"BIOSSecureBoot", false, false, false },
 		{"SecureErase", false, false, false },
+		{"ForceUEFIHTTPSBoot", false, false, false },
+		{"ForceUEFIPBABoot", false, false, false },
+		{"ForceWinREBoot", false, false, false },
+		{"AMTSecureBootControl", false, false, false },
+		{"UEFIWiFiCoExistenceAndProfileShare", false, false, false },
+		{"PlatformErase", false, false, false },
 	};
 	// class fields
 	const bool AMT_BootCapabilities::IDER() const
@@ -459,6 +465,120 @@ namespace Typed
 	void AMT_BootCapabilities::RemoveSecureErase()
 	{
 		RemoveField("SecureErase");
+	}
+
+	const bool AMT_BootCapabilities::ForceUEFIHTTPSBoot() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("ForceUEFIHTTPSBoot"), ret);
+		return ret;
+	}
+	void AMT_BootCapabilities::ForceUEFIHTTPSBoot(const bool value)
+	{
+		SetOrAddField("ForceUEFIHTTPSBoot", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootCapabilities::ForceUEFIHTTPSBootExists() const
+	{
+		return ContainsField("ForceUEFIHTTPSBoot");
+	}
+	void AMT_BootCapabilities::RemoveForceUEFIHTTPSBoot()
+	{
+		RemoveField("ForceUEFIHTTPSBoot");
+	}
+
+	const bool AMT_BootCapabilities::ForceUEFIPBABoot() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("ForceUEFIPBABoot"), ret);
+		return ret;
+	}
+	void AMT_BootCapabilities::ForceUEFIPBABoot(const bool value)
+	{
+		SetOrAddField("ForceUEFIPBABoot", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootCapabilities::ForceUEFIPBABootExists() const
+	{
+		return ContainsField("ForceUEFIPBABoot");
+	}
+	void AMT_BootCapabilities::RemoveForceUEFIPBABoot()
+	{
+		RemoveField("ForceUEFIPBABoot");
+	}
+
+	const bool AMT_BootCapabilities::ForceWinREBoot() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("ForceWinREBoot"), ret);
+		return ret;
+	}
+	void AMT_BootCapabilities::ForceWinREBoot(const bool value)
+	{
+		SetOrAddField("ForceWinREBoot", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootCapabilities::ForceWinREBootExists() const
+	{
+		return ContainsField("ForceWinREBoot");
+	}
+	void AMT_BootCapabilities::RemoveForceWinREBoot()
+	{
+		RemoveField("ForceWinREBoot");
+	}
+
+	const bool AMT_BootCapabilities::AMTSecureBootControl() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("AMTSecureBootControl"), ret);
+		return ret;
+	}
+	void AMT_BootCapabilities::AMTSecureBootControl(const bool value)
+	{
+		SetOrAddField("AMTSecureBootControl", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootCapabilities::AMTSecureBootControlExists() const
+	{
+		return ContainsField("AMTSecureBootControl");
+	}
+	void AMT_BootCapabilities::RemoveAMTSecureBootControl()
+	{
+		RemoveField("AMTSecureBootControl");
+	}
+
+	const bool AMT_BootCapabilities::UEFIWiFiCoExistenceAndProfileShare() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("UEFIWiFiCoExistenceAndProfileShare"), ret);
+		return ret;
+	}
+	void AMT_BootCapabilities::UEFIWiFiCoExistenceAndProfileShare(const bool value)
+	{
+		SetOrAddField("UEFIWiFiCoExistenceAndProfileShare", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootCapabilities::UEFIWiFiCoExistenceAndProfileShareExists() const
+	{
+		return ContainsField("UEFIWiFiCoExistenceAndProfileShare");
+	}
+	void AMT_BootCapabilities::RemoveUEFIWiFiCoExistenceAndProfileShare()
+	{
+		RemoveField("UEFIWiFiCoExistenceAndProfileShare");
+	}
+
+	const unsigned int AMT_BootCapabilities::PlatformErase() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("PlatformErase"), ret);
+		return ret;
+	}
+	void AMT_BootCapabilities::PlatformErase(const unsigned int value)
+	{
+		SetOrAddField("PlatformErase", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootCapabilities::PlatformEraseExists() const
+	{
+		return ContainsField("PlatformErase");
+	}
+	void AMT_BootCapabilities::RemovePlatformErase()
+	{
+		RemoveField("PlatformErase");
 	}
 
 	CimBase *AMT_BootCapabilities::CreateFromCimObject(const CimObject &object)

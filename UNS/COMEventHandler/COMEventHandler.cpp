@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "COMEventHandler.h"
 #include <atlbase.h>
@@ -71,7 +71,7 @@
 		}
 
 		GUID uiid= {0x64417EAE, 0x2E0E, 0x45E8, 0xA8, 0xC1, 0x03, 0x28, 0x4E, 0x3D, 0x35, 0x87};
-		HRESULT rc = S_FALSE;
+		HRESULT rc;
 		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 		if (hr != S_OK && hr != S_FALSE)
 		{
@@ -83,7 +83,7 @@
 			CComPtr<IUnknown> pUnk;
 			rc=pUnk.CoCreateInstance(uiid);	
 			UNS_DEBUG(L"COMEventHandler::COMLogging - after CoCreateInstance\n");
-			static char* emptyStr = "";
+			static const char* emptyStr = "";
 			if ((rc==S_OK) && (pUnk!=NULL))
 			{
 				CComPtr<IUNSAlert> pI;

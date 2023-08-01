@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -23,6 +23,8 @@ namespace Intel
 		{
 			struct GET_FW_VER_RESPONSE
 			{
+				GET_FW_VER_RESPONSE() : FTMinor(0), FTMajor(0), FTBuildNo(0), FTHotFix(0),
+					NFTMinor(0), NFTMajor(0), NFTBuildNo(0), NFTHotFix(0) {}
 				uint16_t  FTMinor;		    // Same as firmware fields
 				uint16_t  FTMajor;		    // same as firmware fields
 				uint16_t  FTBuildNo;	    // same as firmware fields
@@ -45,49 +47,37 @@ namespace Intel
 				}
 			};
 
-			class GetFWVersionRequest;
-			class GetFWVersionCommand : public MKHICommand
-			{
-			public:
-				GetFWVersionCommand();
-				virtual ~GetFWVersionCommand() {}
-
-				GET_FW_VER_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<MKHICommandResponse<GET_FW_VER_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
-			};
-
 			class GetFWVersionRequest : public MKHICommandRequest
 			{
 			public:
-				GetFWVersionRequest() {}
+				GetFWVersionRequest() : MKHICommandRequest(REQUEST_COMMAND_NUMBER, MKHI_GEN_GROUP_ID) {}
 				virtual ~GetFWVersionRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetFWVersionCommand : public MKHICommand
+			{
+			public:
+				GetFWVersionCommand()
 				{
-					//this is the command number (taken from the MKHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetFWVersionRequest>();
+					Transact();
+				}
+				virtual ~GetFWVersionCommand() {}
+
+				GET_FW_VER_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = MKHICommandResponse<GET_FW_VER_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER, MKHI_GEN_GROUP_ID);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
+				MKHICommandResponse<GET_FW_VER_RESPONSE> m_response;
 
-				virtual unsigned int requestHeaderGroupID()
-				{
-					//this is the command group (taken from the MKHI document)
-					return MKHI_GEN_GROUP_ID;
-				}
-
-				virtual std::vector<uint8_t> SerializeData();
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

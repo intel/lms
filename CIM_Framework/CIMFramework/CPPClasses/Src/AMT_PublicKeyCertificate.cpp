@@ -22,6 +22,7 @@ namespace Typed
 		{"InstanceID", true, false, false },
 		{"X509Certificate", false, false, false },
 		{"TrustedRootCertficate", false, false, false },
+		{"ReadOnlyCertificate", false, false, false },
 		{"Issuer", false, false, false },
 		{"Subject", false, false, false },
 	};
@@ -62,6 +63,25 @@ namespace Typed
 	void AMT_PublicKeyCertificate::RemoveTrustedRootCertficate()
 	{
 		RemoveField("TrustedRootCertficate");
+	}
+
+	const bool AMT_PublicKeyCertificate::ReadOnlyCertificate() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("ReadOnlyCertificate"), ret);
+		return ret;
+	}
+	void AMT_PublicKeyCertificate::ReadOnlyCertificate(const bool value)
+	{
+		SetOrAddField("ReadOnlyCertificate", TypeConverter::TypeToString(value));
+	}
+	bool AMT_PublicKeyCertificate::ReadOnlyCertificateExists() const
+	{
+		return ContainsField("ReadOnlyCertificate");
+	}
+	void AMT_PublicKeyCertificate::RemoveReadOnlyCertificate()
+	{
+		RemoveField("ReadOnlyCertificate");
 	}
 
 	const string AMT_PublicKeyCertificate::Issuer() const

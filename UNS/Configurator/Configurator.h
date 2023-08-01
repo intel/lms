@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __CONFIGURATOR_H_
 #define __CONFIGURATOR_H_
@@ -11,7 +11,6 @@
 #include "GmsSubService.h"
 
 #include "GetPlatformTypeCommand.h"
-#include "GetFWCapsCommand.h"
 #include "GetFWVersionCommand.h"
 
 #include "ace/Svc_Handler.h"
@@ -25,14 +24,16 @@
 #include <queue>
 #include <map>
 
-typedef bool CheckLoadFunc();
+typedef bool CheckLoadFunc(unsigned int portForwardingPort);
 
 class CONFIGURATOR_Export Configurator : public GmsSubService, public IServicesManager
 {
 	public:
 
 	Configurator(): m_SkuAndBrandScanned(false), m_scanningNum(0),
-		m_LME_exists(false), m_needToStop(false), m_meiEnabled(true), m_gotMeiEnabled(false), m_inProcessType(MB_SUBSCRIBE_EVENT-1), m_inProcess(false), m_onToggleService(false), deferredResumeTimerId_(-1) {}
+		m_LME_exists(false), m_stateData_Amt(false), m_needToStop(false),
+		m_meiEnabled(true), m_gotMeiEnabled(false), m_inProcessType(MB_SUBSCRIBE_EVENT-1),
+		m_inProcess(false), m_onToggleService(false), deferredResumeTimerId_(-1) {}
 
 	~Configurator(){}
 
@@ -62,7 +63,7 @@ private:
 
 	//ongoing configuration
 	int UpdateConfiguration(const ChangeConfiguration *conf);
-	void ChangeServiceState(ACE_TString &serviceName, int status);
+	void ChangeServiceState(ACE_TString &serviceName, SERVICE_STATUS_TYPE status);
 	void FiniAceService(const ACE_TString &serviceName);
 	void OnToggleService(const ACE_TString &service, bool val);
 	bool CompleteSuspendAceService(const ACE_TString &serviceName);
@@ -78,7 +79,7 @@ private:
 	bool IsLMEExists() const;
 	bool m_LME_exists;
 	Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE m_platform;
-	Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI m_stateData;
+	bool m_stateData_Amt;
 
 	std::map<ACE_TString, CheckLoadFunc*> m_checkLoadMap;
 	bool m_needToStop;
@@ -95,7 +96,7 @@ private:
 	ACE_TString m_toggeledService;
 	std::queue<MessageBlockPtr> m_nextTasks;
 
-	Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE m_fwVer = { 0 };
+	Intel::MEI_Client::MKHI_Client::GET_FW_VER_RESPONSE m_fwVer;
 
 	void CancelDeferredResumeTimer();
 

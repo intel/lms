@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -13,8 +13,8 @@
 #include "WsmanClientCatch.h"
 #include <sstream>
 
-HBPWSManClient::HBPWSManClient() :
-	m_isInit(false), m_HostBasedSetupServiceGot(false), m_HostProvisioningRecordGot(false),
+HBPWSManClient::HBPWSManClient(unsigned int port) :
+	BaseWSManClient(port), m_isInit(false), m_HostBasedSetupServiceGot(false), m_HostProvisioningRecordGot(false),
 	m_RemoteProvisioningRecordGot(false), m_ManualProvisioningRecordGot(false), m_AdminProvisioningRecordGot(false)
 {
 }
@@ -56,7 +56,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 
 				std::stringstream stream;
 				stream << "CertificateHash len = " << temp_data_length << " data: ";
-				for (unsigned short i=0; i<temp_data_length; i++)
+				for (unsigned int i = 0; i < temp_data_length; i++)
 				{
 					ppCertHash[i]=temp_data[i];
 					stream << " " << std::hex << temp_data[i];
@@ -67,7 +67,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 			{
 				CreationTimeStamp = toUNSDateFormat(m_HostProvisioningRecord.CreationTimeStamp().Serialize());
 			}
-			*pProvisioningMethod = Host;
+			*pProvisioningMethod = ProvisioningMethod_Host;
 		}
 		else
 		{
@@ -75,7 +75,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 			{
 				
 				CreationTimeStamp = toUNSDateFormat(m_RemoteProvisioningRecord.CreationTimeStamp().Serialize());
-				*pProvisioningMethod = Remote;
+				*pProvisioningMethod = ProvisioningMethod_Remote;
 				if (m_RemoteProvisioningRecord.SelectedHashDataExists())
 				{
 					// hash data
@@ -84,7 +84,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 					ppCertHash.resize(temp_data_length);
 					std::stringstream stream;
 					stream << "CertificateHash len = " << temp_data_length << " data: ";
-					for (unsigned short i=0; i<temp_data_length; i++)
+					for (unsigned int i=0; i<temp_data_length; i++)
 					{
 						ppCertHash[i]=temp_data[i];
 						stream << " " << std::hex << temp_data[i];
@@ -105,7 +105,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 					{
 						CreationTimeStamp = toUNSDateFormat(m_ManualProvisioningRecord.CreationTimeStamp().Serialize());
 					}
-					*pProvisioningMethod = Manual;
+					*pProvisioningMethod = ProvisioningMethod_Manual;
 				}
 				else
 				{
@@ -115,14 +115,14 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 						{
 							CreationTimeStamp = toUNSDateFormat(m_AdminProvisioningRecord.CreationTimeStamp().Serialize());
 						}
-						*pProvisioningMethod = Reserved1; //Admin;
+						*pProvisioningMethod = ProvisioningMethod_Reserved1; //Admin;
 						WSMAN_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C !!!!!!!!!!\n", CreationTimeStamp.c_str());
 					}
 					else
 					{
 						ppCertHash.resize(0);
 						CreationTimeStamp = "";
-						*pProvisioningMethod = NotSupported;
+						*pProvisioningMethod = ProvisioningMethod_NotSupported;
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -29,43 +29,38 @@ namespace Intel
 				}
 			};
 
-			class GetDNSSuffixRequest;
-			class GetDNSSuffixCommand : public AMTHICommand
-			{
-			public:
-
-				GetDNSSuffixCommand();
-				virtual ~GetDNSSuffixCommand() {}
-
-				std::string getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GetDNSSuffix_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800036;
-			};
-
 			class GetDNSSuffixRequest : public AMTHICommandRequest
 			{
 			public:
-				GetDNSSuffixRequest() {}
+				GetDNSSuffixRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetDNSSuffixRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000036;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetDNSSuffixCommand : public AMTHICommand
+			{
+			public:
+
+				GetDNSSuffixCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetDNSSuffixRequest>();
+					Transact();
+				}
+				virtual ~GetDNSSuffixCommand() {}
+
+				std::string getResponse() { return m_response.getResponse().DNSSuffix; }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GetDNSSuffix_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+				AMTHICommandResponse<GetDNSSuffix_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800036;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

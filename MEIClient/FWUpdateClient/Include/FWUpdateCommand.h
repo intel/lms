@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -88,7 +88,10 @@ private:
 template <typename T>
 class FWUpdateCommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
-public: 	
+public:
+	FWUpdateCommandResponse() : m_result(), m_commandNumber(0) {}
+	FWUpdateCommandResponse(FWUpdateCommandResponse&& other) = default;
+	FWUpdateCommandResponse& operator = (FWUpdateCommandResponse&& other) = default;
 	FWUpdateCommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber)
 	{
 		m_commandNumber = commandNumber;

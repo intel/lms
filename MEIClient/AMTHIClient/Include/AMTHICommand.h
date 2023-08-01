@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -138,28 +138,32 @@ private:
 class AMTHICommandRequest: public Intel::MEI_Client::MEICommandRequest
 {
 public:
-	AMTHICommandRequest() {}
+	AMTHICommandRequest(unsigned int requestHeaderCommandNumber) : m_requestHeaderCommandNumber(requestHeaderCommandNumber) {}
 	virtual ~AMTHICommandRequest() {}
 	virtual std::vector<uint8_t> Serialize();
 
 private:
 
 	std::vector<uint8_t> serializeHeader(const AMTHI_MESSAGE_HEADER& header);
-	//returns the AMTHI command number (in the header) of the request command
-	virtual unsigned int requestHeaderCommandNumber() = 0;
-	virtual uint32_t requestDataSize() = 0;
+	virtual uint32_t requestDataSize() { return 0; };
 	virtual std::vector<uint8_t> SerializeData()
 	{
 		//default no data
 		std::vector<uint8_t> tmp;
 		return tmp;
 	}
+	//the AMTHI command number (in the header) of the request command
+	unsigned int m_requestHeaderCommandNumber;
 };
 
 template <typename T>
 class AMTHICommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	AMTHICommandResponse() : m_result(), m_commandNumber(0) {}
+	AMTHICommandResponse(AMTHICommandResponse&& other) = default;
+	AMTHICommandResponse& operator = (AMTHICommandResponse&& other) = default;
+
 	AMTHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber): m_result()
 	{
 		m_commandNumber = commandNumber;

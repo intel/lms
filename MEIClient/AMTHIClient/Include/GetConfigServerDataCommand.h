@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -26,6 +26,7 @@ namespace Intel
 		{
 			struct CFG_GET_CONFIG_SERVER_DATA_RESPONSE
 			{
+				CFG_GET_CONFIG_SERVER_DATA_RESPONSE() : ServerPort(0) {}
 				uint16_t    ServerPort;
 				std::string ServerAddr;
 				std::string FQDN;
@@ -40,42 +41,38 @@ namespace Intel
 				}
 			};
 
-			class GetConfigServerDataRequest;
-			class GetConfigServerDataCommand : public AMTHICommand
-			{
-			public:
-
-				GetConfigServerDataCommand();
-				virtual ~GetConfigServerDataCommand() {}
-
-				CFG_GET_CONFIG_SERVER_DATA_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004E;
-			};
-
 			class GetConfigServerDataRequest : public AMTHICommandRequest
 			{
 			public:
-				GetConfigServerDataRequest() {}
+				GetConfigServerDataRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetConfigServerDataRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400004E;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetConfigServerDataCommand : public AMTHICommand
+			{
+			public:
+
+				GetConfigServerDataCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetConfigServerDataRequest>();
+					Transact();
+				}
+				virtual ~GetConfigServerDataCommand() {}
+
+				CFG_GET_CONFIG_SERVER_DATA_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0; 
-				}
+				AMTHICommandResponse<CFG_GET_CONFIG_SERVER_DATA_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004E;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

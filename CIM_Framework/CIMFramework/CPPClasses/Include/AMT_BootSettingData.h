@@ -6,7 +6,7 @@
 //
 //  Contents:   The AMT_BootSettingData class represents configuration-related and operational parameters for the boot service in the Intel(R) AMT.
 //
-//              This file was automatically generated from AMT_BootSettingData.mof,  version: 5.1.0
+//              This file was automatically generated from AMT_BootSettingData.mof,  version: 15.0.0
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_BOOTSETTINGDATA_H
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_BootSettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 31);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_BootSettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 31);
 			}
 		}
 
@@ -270,10 +270,10 @@ namespace Typed
 		// Remove BootMediaIndex field.
 		void RemoveBootMediaIndex(); 
 
-		// Optional, When True, the BIOS performs secure erase operation.
+		// Required, When True, the BIOS performs secure erase operation.
 		const bool SecureErase() const;
 
-		// Optional, When True, the BIOS performs secure erase operation.
+		// Required, When True, the BIOS performs secure erase operation.
 		void SecureErase(const bool value); 
 
 		// Is true if the field SecureErase exists in the current object, otherwise is false.
@@ -281,6 +281,18 @@ namespace Typed
 
 		// Remove SecureErase field.
 		void RemoveSecureErase(); 
+
+		// Optional, When True, Remote Platform Erase will be performed by BIOS on the next boot cycle.
+		const bool PlatformErase() const;
+
+		// Optional, When True, Remote Platform Erase will be performed by BIOS on the next boot cycle.
+		void PlatformErase(const bool value); 
+
+		// Is true if the field PlatformErase exists in the current object, otherwise is false.
+		bool PlatformEraseExists() const;
+
+		// Remove PlatformErase field.
+		void RemovePlatformErase(); 
 
 		// Optional, SSD password for Remote Secure Erase operation. This is a write-only field, an empty string is returned when instance is read. When writing, an empty string or lack of field will be ignored. The password length is limited to 32 ASCII charachters. 
 		const string RSEPassword() const;
@@ -318,6 +330,102 @@ namespace Typed
 		// Remove BIOSLastStatus field.
 		void RemoveBIOSLastStatus(); 
 
+		// Optional, Reflects the enabled state of boot to OCR WinRE recovery boot option in the BIOS options
+		const bool WinREBootEnabled() const;
+
+		// Optional, Reflects the enabled state of boot to OCR WinRE recovery boot option in the BIOS options
+		void WinREBootEnabled(const bool value); 
+
+		// Is true if the field WinREBootEnabled exists in the current object, otherwise is false.
+		bool WinREBootEnabledExists() const;
+
+		// Remove WinREBootEnabled field.
+		void RemoveWinREBootEnabled(); 
+
+		// Optional, Reflects the enabled state of boot to OCR local Pre-Boot Application (PBA) recovery boot option in the BIOS options
+		const bool UEFILocalPBABootEnabled() const;
+
+		// Optional, Reflects the enabled state of boot to OCR local Pre-Boot Application (PBA) recovery boot option in the BIOS options
+		void UEFILocalPBABootEnabled(const bool value); 
+
+		// Is true if the field UEFILocalPBABootEnabled exists in the current object, otherwise is false.
+		bool UEFILocalPBABootEnabledExists() const;
+
+		// Remove UEFILocalPBABootEnabled field.
+		void RemoveUEFILocalPBABootEnabled(); 
+
+		// Optional, Reflects the enabled state of boot to OCR HTTPS server recovery boot option in the BIOS options
+		const bool UEFIHTTPSBootEnabled() const;
+
+		// Optional, Reflects the enabled state of boot to OCR HTTPS server recovery boot option in the BIOS options
+		void UEFIHTTPSBootEnabled(const bool value); 
+
+		// Is true if the field UEFIHTTPSBootEnabled exists in the current object, otherwise is false.
+		bool UEFIHTTPSBootEnabledExists() const;
+
+		// Remove UEFIHTTPSBootEnabled field.
+		void RemoveUEFIHTTPSBootEnabled(); 
+
+		// Optional, Reflects the enabled state of allowing Intel(R) AMT firmware to disable UEFI secure boot for OCR boot options
+		const bool SecureBootControlEnabled() const;
+
+		// Optional, Reflects the enabled state of allowing Intel(R) AMT firmware to disable UEFI secure boot for OCR boot options
+		void SecureBootControlEnabled(const bool value); 
+
+		// Is true if the field SecureBootControlEnabled exists in the current object, otherwise is false.
+		bool SecureBootControlEnabledExists() const;
+
+		// Remove SecureBootControlEnabled field.
+		void RemoveSecureBootControlEnabled(); 
+
+		// Optional, Reflects the enabled state of Remote Platform Erase from BIOS control POV, the WSMAN enabled state is in CIM_BootService WSMAN class
+		const bool RPEEnabled() const;
+
+		// Optional, Reflects the enabled state of Remote Platform Erase from BIOS control POV, the WSMAN enabled state is in CIM_BootService WSMAN class
+		void RPEEnabled(const bool value); 
+
+		// Is true if the field RPEEnabled exists in the current object, otherwise is false.
+		bool RPEEnabledExists() const;
+
+		// Remove RPEEnabled field.
+		void RemoveRPEEnabled(); 
+
+		// Optional, Bitmap that describes the status of Intel(R) Boot Guard (if for some reason AMT fails to get the Boot Guard status AMT shall return 0xffffffff)
+		const unsigned int BootguardStatus() const;
+
+		// Optional, Bitmap that describes the status of Intel(R) Boot Guard (if for some reason AMT fails to get the Boot Guard status AMT shall return 0xffffffff)
+		void BootguardStatus(const unsigned int value); 
+
+		// Is true if the field BootguardStatus exists in the current object, otherwise is false.
+		bool BootguardStatusExists() const;
+
+		// Remove BootguardStatus field.
+		void RemoveBootguardStatus(); 
+
+		// Optional, Reflects the number of parameters in the UefiBootParametersArray parameter array
+		const unsigned int UefiBootNumberOfParams() const;
+
+		// Optional, Reflects the number of parameters in the UefiBootParametersArray parameter array
+		void UefiBootNumberOfParams(const unsigned int value); 
+
+		// Is true if the field UefiBootNumberOfParams exists in the current object, otherwise is false.
+		bool UefiBootNumberOfParamsExists() const;
+
+		// Remove UefiBootNumberOfParams field.
+		void RemoveUefiBootNumberOfParams(); 
+
+		// Optional, The UEFI boot option parameters blob in Base64 encoding format, max size of data after Base64 decoding is 1024 bytes(Base64 encoding increases the size of the data by a factor of 1.333, hence the size of UefiBootParametersArray should be at least 1365 bytes)
+		const Base64 UefiBootParametersArray() const;
+
+		// Optional, The UEFI boot option parameters blob in Base64 encoding format, max size of data after Base64 decoding is 1024 bytes(Base64 encoding increases the size of the data by a factor of 1.333, hence the size of UefiBootParametersArray should be at least 1365 bytes)
+		void UefiBootParametersArray(const Base64 &value); 
+
+		// Is true if the field UefiBootParametersArray exists in the current object, otherwise is false.
+		bool UefiBootParametersArrayExists() const;
+
+		// Remove UefiBootParametersArray field.
+		void RemoveUefiBootParametersArray(); 
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -336,7 +444,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_BootSettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 31);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -346,14 +454,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_BootSettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 22);
+				CimBase::SetMetaData(_classMetaData, _metadata, 31);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_BootSettingData::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 22);
+			CimBase::SetMetaData(childMetaData, _metadata, 31);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

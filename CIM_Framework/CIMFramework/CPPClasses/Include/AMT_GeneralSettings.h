@@ -6,7 +6,7 @@
 //
 //  Contents:   This class contains all Intel(R) AMT general settings.
 //
-//              This file was automatically generated from AMT_GeneralSettings.mof,  version: 7.0.0
+//              This file was automatically generated from AMT_GeneralSettings.mof,  version: 12.0.20
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_GENERALSETTINGS_H
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 21);
+				CimBase::SetMetaData(_classMetaData, _metadata, 24);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 21);
+				CimBase::SetMetaData(_classMetaData, _metadata, 24);
 			}
 		}
 
@@ -330,6 +330,107 @@ namespace Typed
 		// Remove PowerSource field.
 		void RemovePowerSource(); 
 
+		// Optional, Indicates whether Thunderbolt dock solution is enabled
+		const unsigned int ThunderboltDockEnabled() const;
+
+		// Optional, Indicates whether Thunderbolt dock solution is enabled
+		void ThunderboltDockEnabled(const unsigned int value); 
+
+		// Is true if the field ThunderboltDockEnabled exists in the current object, otherwise is false.
+		bool ThunderboltDockEnabledExists() const;
+
+		// Remove ThunderboltDockEnabled field.
+		void RemoveThunderboltDockEnabled(); 
+
+		// Optional, Indicates whether synchornizing IP with host's DHCPv4 requires the host to provide a host name (DHCP option 12)
+		const unsigned int DHCPSyncRequiresHostname() const;
+
+		// Optional, Indicates whether synchornizing IP with host's DHCPv4 requires the host to provide a host name (DHCP option 12)
+		void DHCPSyncRequiresHostname(const unsigned int value); 
+
+		// Is true if the field DHCPSyncRequiresHostname exists in the current object, otherwise is false.
+		bool DHCPSyncRequiresHostnameExists() const;
+
+		// Remove DHCPSyncRequiresHostname field.
+		void RemoveDHCPSyncRequiresHostname(); 
+
+		// Optional, PCIe Vendor Unique ID
+		const unsigned short OemID() const;
+
+		// Optional, PCIe Vendor Unique ID
+		void OemID(const unsigned short value); 
+
+		// Is true if the field OemID exists in the current object, otherwise is false.
+		bool OemIDExists() const;
+
+		// Remove OemID field.
+		void RemoveOemID(); 
+
+		//Input parameter for function AMTAuthenticate
+		class CIMFRAMEWORK_API AMTAuthenticate_INPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			AMTAuthenticate_INPUT() : CimParam() {}
+
+			// Class Destructor
+			~AMTAuthenticate_INPUT(){}
+
+			// Required, Nonce created by user
+			void MC_Nonce(const Base64 &value); 
+
+			const VectorFieldData GetAllFields() const;
+		private:
+			static const CimFieldAttribute _metadata[];
+		};
+
+		//Output parameter for function AMTAuthenticate
+		class CIMFRAMEWORK_API AMTAuthenticate_OUTPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			AMTAuthenticate_OUTPUT() : CimParam() {}
+
+			// Class Destructor
+			~AMTAuthenticate_OUTPUT(){}
+
+			// class fields
+			// Nonce created by AMT FW
+			const Base64 Nonce() const;
+			bool NonceExists() const;
+			// 16 bytes containing the system UUID.
+			const HexBinary UUID() const;
+			bool UUIDExists() const;
+			// The system name configured when AMT is provisioned. Null terminated. Null for unprovisioned system
+			const string FQDN() const;
+			bool FQDNExists() const;
+			// FW version of the system
+			const string FWVersion() const;
+			bool FWVersionExists() const;
+			// The SVN of AMT app
+			const unsigned int AMTSVN() const;
+			bool AMTSVNExists() const;
+			// Signature mechanism used for the hash and signing. Only value currently is 0 which is actually TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+			// Legal values:
+			// TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384: 0
+			// Reserved: 1..65535
+			const unsigned int SignatureMechanism() const;
+			bool SignatureMechanismExists() const;
+			// Signature over Hash(Hash(AMT TLS Server Cert/ CIRA MPS Cert) || MCNonce || Nonce || FQDN || UUID || FWVersion || AMTSVN || DigestRealm || SignatureMechanism).
+			const Base64 Signature() const;
+			bool SignatureExists() const;
+			// An array containing the lengths of the certificates which are stored in the certificates field in sequence, one after the other.</
+			const vector<unsigned short> LengthOfCertificates() const;
+			bool LengthOfCertificatesExists() const;
+			// The On Die CA certificate chain used for signing the TLS Cert
+			const Base64 Certificates() const;
+			bool CertificatesExists() const;
+		private:
+		};
+
+		// AMT Authenticate provides authentication of AMT and binds TLS session to a specific device when AMT TLS Client certificate is not used.
+		virtual unsigned int AMTAuthenticate(const AMTAuthenticate_INPUT &input, AMTAuthenticate_OUTPUT &output);
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -348,7 +449,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 21);
+				CimBase::SetMetaData(_classMetaData, _metadata, 24);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -358,14 +459,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 21);
+				CimBase::SetMetaData(_classMetaData, _metadata, 24);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_SettingData::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 21);
+			CimBase::SetMetaData(childMetaData, _metadata, 24);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

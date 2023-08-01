@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "eventManager.h"
 
@@ -41,7 +41,7 @@ EventManager::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 		
 		case MB_PUBLISH_EVENT:
 		{
-			GMS_AlertIndication *pGMS_AlertIndication = pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
+			GMS_AlertIndication *pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
 			if (pGMS_AlertIndication != nullptr)
 			{
 				publishEvent(mbPtr, pGMS_AlertIndication);

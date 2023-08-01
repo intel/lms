@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2004-2006, 2009-2021 Intel Corporation
+ * Copyright (C) 2004-2006, 2009-2023 Intel Corporation
  */
 /*++
 
@@ -30,11 +30,18 @@ int RunUNSService(GmsService** gmsSrv)
 #ifdef WIN32
 	 SetDllDirectory(L"");
 #endif //WIN32
-
-	*gmsSrv = theService::instance();
-	if (*gmsSrv == NULL)
-		return -1;
-	return (*gmsSrv)->activate();
+	 try
+	 {
+		 *gmsSrv = theService::instance();
+		 if (*gmsSrv == NULL)
+			 return -1;
+		 return (*gmsSrv)->activate();
+	 }
+	 catch (const std::exception& exc)
+	 {
+		 UNS_DEBUG(L"theService::instance failed with %C\n", exc.what());
+		 return -1;
+	 }
 }
 
 #ifndef WIN32

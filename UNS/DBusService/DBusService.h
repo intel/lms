@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2022 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #ifndef __DBUSSERVICE_H_
 #define __DBUSSERVICE_H_
@@ -68,7 +68,7 @@ public:
 	const wchar_t *short_name() const { return L"DBUS"; };
 
 	//*********************** business logic ****************************
-	bool GetGmsPortForwardingStarted();
+	unsigned int GetGmsPortForwardingPort();
 protected:
 	virtual int handle_event (MessageBlockPtr mbPtr);
 

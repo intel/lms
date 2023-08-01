@@ -6,7 +6,7 @@
 //
 //  Contents:   The AMT_BootSettingData class represents configuration-related and operational parameters for the boot service in the Intel(R) AMT.
 //
-//              This file was automatically generated from AMT_BootSettingData.mof,  version: 5.1.0
+//              This file was automatically generated from AMT_BootSettingData.mof,  version: 15.0.0
 //
 //----------------------------------------------------------------------------
 #include "AMT_BootSettingData.h"
@@ -38,9 +38,18 @@ namespace Typed
 		{"EnforceSecureBoot", false, false, false },
 		{"BootMediaIndex", false, true, false },
 		{"SecureErase", false, true, false },
+		{"PlatformErase", false, false, false },
 		{"RSEPassword", false, false, false },
 		{"OptionsCleared", false, false, false },
 		{"BIOSLastStatus", false, false, false },
+		{"WinREBootEnabled", false, false, false },
+		{"UEFILocalPBABootEnabled", false, false, false },
+		{"UEFIHTTPSBootEnabled", false, false, false },
+		{"SecureBootControlEnabled", false, false, false },
+		{"RPEEnabled", false, false, false },
+		{"BootguardStatus", false, false, false },
+		{"UefiBootNumberOfParams", false, false, false },
+		{"UefiBootParametersArray", false, false, false },
 	};
 	// class fields
 	const bool AMT_BootSettingData::UseSOL() const
@@ -385,6 +394,25 @@ namespace Typed
 		RemoveField("SecureErase");
 	}
 
+	const bool AMT_BootSettingData::PlatformErase() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("PlatformErase"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::PlatformErase(const bool value)
+	{
+		SetOrAddField("PlatformErase", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::PlatformEraseExists() const
+	{
+		return ContainsField("PlatformErase");
+	}
+	void AMT_BootSettingData::RemovePlatformErase()
+	{
+		RemoveField("PlatformErase");
+	}
+
 	const string AMT_BootSettingData::RSEPassword() const
 	{
 		return GetField("RSEPassword")[0];
@@ -438,6 +466,158 @@ namespace Typed
 	void AMT_BootSettingData::RemoveBIOSLastStatus()
 	{
 		RemoveField("BIOSLastStatus");
+	}
+
+	const bool AMT_BootSettingData::WinREBootEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("WinREBootEnabled"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::WinREBootEnabled(const bool value)
+	{
+		SetOrAddField("WinREBootEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::WinREBootEnabledExists() const
+	{
+		return ContainsField("WinREBootEnabled");
+	}
+	void AMT_BootSettingData::RemoveWinREBootEnabled()
+	{
+		RemoveField("WinREBootEnabled");
+	}
+
+	const bool AMT_BootSettingData::UEFILocalPBABootEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("UEFILocalPBABootEnabled"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::UEFILocalPBABootEnabled(const bool value)
+	{
+		SetOrAddField("UEFILocalPBABootEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::UEFILocalPBABootEnabledExists() const
+	{
+		return ContainsField("UEFILocalPBABootEnabled");
+	}
+	void AMT_BootSettingData::RemoveUEFILocalPBABootEnabled()
+	{
+		RemoveField("UEFILocalPBABootEnabled");
+	}
+
+	const bool AMT_BootSettingData::UEFIHTTPSBootEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("UEFIHTTPSBootEnabled"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::UEFIHTTPSBootEnabled(const bool value)
+	{
+		SetOrAddField("UEFIHTTPSBootEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::UEFIHTTPSBootEnabledExists() const
+	{
+		return ContainsField("UEFIHTTPSBootEnabled");
+	}
+	void AMT_BootSettingData::RemoveUEFIHTTPSBootEnabled()
+	{
+		RemoveField("UEFIHTTPSBootEnabled");
+	}
+
+	const bool AMT_BootSettingData::SecureBootControlEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("SecureBootControlEnabled"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::SecureBootControlEnabled(const bool value)
+	{
+		SetOrAddField("SecureBootControlEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::SecureBootControlEnabledExists() const
+	{
+		return ContainsField("SecureBootControlEnabled");
+	}
+	void AMT_BootSettingData::RemoveSecureBootControlEnabled()
+	{
+		RemoveField("SecureBootControlEnabled");
+	}
+
+	const bool AMT_BootSettingData::RPEEnabled() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("RPEEnabled"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::RPEEnabled(const bool value)
+	{
+		SetOrAddField("RPEEnabled", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::RPEEnabledExists() const
+	{
+		return ContainsField("RPEEnabled");
+	}
+	void AMT_BootSettingData::RemoveRPEEnabled()
+	{
+		RemoveField("RPEEnabled");
+	}
+
+	const unsigned int AMT_BootSettingData::BootguardStatus() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("BootguardStatus"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::BootguardStatus(const unsigned int value)
+	{
+		SetOrAddField("BootguardStatus", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::BootguardStatusExists() const
+	{
+		return ContainsField("BootguardStatus");
+	}
+	void AMT_BootSettingData::RemoveBootguardStatus()
+	{
+		RemoveField("BootguardStatus");
+	}
+
+	const unsigned int AMT_BootSettingData::UefiBootNumberOfParams() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("UefiBootNumberOfParams"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::UefiBootNumberOfParams(const unsigned int value)
+	{
+		SetOrAddField("UefiBootNumberOfParams", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::UefiBootNumberOfParamsExists() const
+	{
+		return ContainsField("UefiBootNumberOfParams");
+	}
+	void AMT_BootSettingData::RemoveUefiBootNumberOfParams()
+	{
+		RemoveField("UefiBootNumberOfParams");
+	}
+
+	const Base64 AMT_BootSettingData::UefiBootParametersArray() const
+	{
+		Base64 ret;
+		TypeConverter::StringToType(GetField("UefiBootParametersArray"), ret);
+		return ret;
+	}
+	void AMT_BootSettingData::UefiBootParametersArray(const Base64 &value)
+	{
+		SetOrAddField("UefiBootParametersArray", TypeConverter::TypeToString(value));
+	}
+	bool AMT_BootSettingData::UefiBootParametersArrayExists() const
+	{
+		return ContainsField("UefiBootParametersArray");
+	}
+	void AMT_BootSettingData::RemoveUefiBootParametersArray()
+	{
+		RemoveField("UefiBootParametersArray");
 	}
 
 	CimBase *AMT_BootSettingData::CreateFromCimObject(const CimObject &object)

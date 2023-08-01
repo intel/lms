@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -20,8 +20,9 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef struct LAST_HOST_RESET_REASON_RESPONSE_t
+			struct LAST_HOST_RESET_REASON_RESPONSE
 			{
+				LAST_HOST_RESET_REASON_RESPONSE() : Reason(0), RemoteControlTimeStamp(0) {}
 				uint32_t Reason;
 				uint32_t RemoteControlTimeStamp;
 				
@@ -29,46 +30,40 @@ namespace Intel
 				{
 					Intel::MEI_Client::parseData(*this,itr,end);
 				}
-			} LAST_HOST_RESET_REASON_RESPONSE;
-
-			class GetLastHostResetReasonRequest;
-			class GetLastHostResetReasonResponse;
-			class GetLastHostResetReasonCommand : public AMTHICommand
-			{
-			public:
-
-				GetLastHostResetReasonCommand();
-				virtual ~GetLastHostResetReasonCommand() {}
-
-				LAST_HOST_RESET_REASON_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004A;
 			};
 
 			class GetLastHostResetReasonRequest : public AMTHICommandRequest
 			{
 			public:
-				GetLastHostResetReasonRequest() {}
+				GetLastHostResetReasonRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetLastHostResetReasonRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x0400004A;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetLastHostResetReasonCommand : public AMTHICommand
+			{
+			public:
+
+				GetLastHostResetReasonCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetLastHostResetReasonRequest>();
+					Transact();
+				}
+				virtual ~GetLastHostResetReasonCommand() {}
+
+				LAST_HOST_RESET_REASON_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+				AMTHICommandResponse<LAST_HOST_RESET_REASON_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x0480004A;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

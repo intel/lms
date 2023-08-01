@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -42,12 +42,12 @@ enum PowerStates
 	GRACEFUL_RESET = 14
 };
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient() : m_isInit(false)
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
 {
 }
 
-PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_isInit(false)
+PowerManagementCapabilitiesClient::PowerManagementCapabilitiesClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_isInit(false)
 {
 }
 
@@ -135,24 +135,6 @@ bool PowerManagementCapabilitiesClient::addGracefulOperations(bool sleep,bool hi
 		}
 	}
 	CATCH_exception_return("PowerManagementCapabilitiesClient::addGracefulOperations")
-	return true;
-}
-
-/*
-* This function check whether Remote Graceful Power Operations are supported 
-* (by reading the value of PowerStatesSupportedExists property).
-* returns false if there was an error retrieving the value,
-* and fills the value in the given bool referance.
-*/
-bool PowerManagementCapabilitiesClient::GetPowerOperationsSupport(bool & support)
-{
-	support = false;
-	try{
-		if (!Init())
-			return false;
-		support = m_service.RequestedPowerStatesSupportedExists(); 
-	}
-	CATCH_exception_return("PowerManagementCapabilitiesClient::GetPowerOperationsSupport")
 	return true;
 }
 

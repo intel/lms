@@ -22,6 +22,7 @@ namespace Typed
 		{"MaxTotalMpServers", false, false, false },
 		{"MaxTotalPolicies", false, false, false },
 		{"MaxMpsPerPolicy", false, false, false },
+		{"MaxTotalProxyEntryPoints", false, false, false },
 	};
 	// class fields
 	const unsigned int AMT_RemoteAccessCapabilities::MaxTotalMpServers() const
@@ -79,6 +80,25 @@ namespace Typed
 	void AMT_RemoteAccessCapabilities::RemoveMaxMpsPerPolicy()
 	{
 		RemoveField("MaxMpsPerPolicy");
+	}
+
+	const unsigned int AMT_RemoteAccessCapabilities::MaxTotalProxyEntryPoints() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("MaxTotalProxyEntryPoints"), ret);
+		return ret;
+	}
+	void AMT_RemoteAccessCapabilities::MaxTotalProxyEntryPoints(const unsigned int value)
+	{
+		SetOrAddField("MaxTotalProxyEntryPoints", TypeConverter::TypeToString(value));
+	}
+	bool AMT_RemoteAccessCapabilities::MaxTotalProxyEntryPointsExists() const
+	{
+		return ContainsField("MaxTotalProxyEntryPoints");
+	}
+	void AMT_RemoteAccessCapabilities::RemoveMaxTotalProxyEntryPoints()
+	{
+		RemoveField("MaxTotalProxyEntryPoints");
 	}
 
 	CimBase *AMT_RemoteAccessCapabilities::CreateFromCimObject(const CimObject &object)

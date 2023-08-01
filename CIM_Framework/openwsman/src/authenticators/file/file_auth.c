@@ -44,6 +44,7 @@
 #endif
 #include "u/libu.h"
 #include <stdio.h>
+#include <unistd.h>
 
 
 int initialize(void *arg);
@@ -53,7 +54,6 @@ static char *filename = NULL;
 
 int initialize(void *arg) {
     FILE *fp;
-
     if (arg == NULL) {
         debug("No password file");
         return 1;
@@ -63,7 +63,8 @@ int initialize(void *arg) {
 
     fp = fopen(filename, "r");
     if (fp == NULL) {
-        debug("Could not fopen password file %s", filename);
+        /* assuming src/server/wsmand.c:202 has chdir() to / */
+        debug("Could not fopen password file /%s", filename);
         return 1;
     }
     fclose(fp);

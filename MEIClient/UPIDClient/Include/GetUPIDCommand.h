@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2021 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -28,8 +28,10 @@ namespace Intel
 				UPID_OEM_PLATFORM_ID_TYPE_PRINTABLE_STRING = 2,
 			} UPID_OEM_PLATFORM_ID_TYPE;
 
-			typedef struct UPID_PLATFORM_ID_GET_Response_t
+			struct UPID_PLATFORM_ID_GET_Response
 			{
+				UPID_PLATFORM_ID_GET_Response() : PlatformIdType(UPID_OEM_PLATFORM_ID_TYPE_NOT_SET),
+					OEMPlatformId{ 0 }, CSMEPlatformId{ 0 } {}
 				uint32_t                           PlatformIdType; //UPID_OEM_PLATFORM_ID_TYPE
 				uint8_t                            OEMPlatformId[UPID_LEN];
 				uint8_t                            CSMEPlatformId[UPID_LEN];
@@ -40,46 +42,34 @@ namespace Intel
 					parseData(OEMPlatformId, itr, end);
 					parseData(CSMEPlatformId, itr, end);
 				}
-
-			} UPID_PLATFORM_ID_GET_Response;
-
-			class GetUPIDRequest;
-			class GetUPIDCommand : public UPIDCommand
-			{
-			public:
-
-				GetUPIDCommand();
-				virtual ~GetUPIDCommand() {}
-
-				UPID_PLATFORM_ID_GET_Response getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response>> m_response;
 			};
-
 
 			class GetUPIDRequest : public UPIDRequest
 			{
 			public:
-				GetUPIDRequest() {}
+				GetUPIDRequest() : UPIDRequest(UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_GET) {}
 				virtual ~GetUPIDRequest() {}
+			};
+
+			class GetUPIDCommand : public UPIDCommand
+			{
+			public:
+				GetUPIDCommand()
+				{
+					m_request = std::make_shared<GetUPIDRequest>();
+					Transact();
+				}
+				virtual ~GetUPIDCommand() {}
+
+				UPID_PLATFORM_ID_GET_Response getResponse() { return m_response.getResponse(); }
 
 			private:
-				virtual uint8_t requestHeaderFeatureID()
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
 				{
-					return UPID_COMMAND_FEATURE_PLATFORM_ID;
+					m_response = UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_GET);
 				}
-				virtual uint8_t requestHeaderCommandID()
-				{
-					return UPID_COMMAND_PLATFORM_ID_GET;
-				}
-				virtual uint16_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+
+				UPIDCommandResponse<UPID_PLATFORM_ID_GET_Response> m_response;
 			};
 		} // namespace UPID_Client
 	} // namespace MEI_Client

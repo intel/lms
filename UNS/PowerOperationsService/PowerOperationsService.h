@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __POWEROPERATIONSSERVICE_H_
 #define __POWEROPERATIONSSERVICE_H_
@@ -33,7 +33,7 @@ private:
 	int initiateShutDown(bool reboot, int attempt);
 	void loadStrings();
 	int handlePublishEvent(const GMS_AlertIndication & alert);
-	int handleRemoteGracefulPowerEvents(GMS_AlertIndication OrgEvent);
+	int handleRemoteGracefulPowerEvents(const GMS_AlertIndication &OrgEvent);
 
 	int handle_timeout (const ACE_Time_Value &current_time,const void *arg);
 

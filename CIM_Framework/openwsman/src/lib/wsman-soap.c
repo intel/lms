@@ -121,8 +121,8 @@ set_context_val(WsContextH cntx,
 			}
 		}
 		if (ptr || val == NULL) {
-			u_lock(cntx->soap);
 			ws_remove_context_val(cntx, name);
+			u_lock(cntx->soap);
 			if (create_context_entry(cntx->entries, name, ptr)) {
 				retVal = 0;
 			}
@@ -294,8 +294,10 @@ create_enum_info(SoapOpH op,
 DONE:
 	if (fault_code != WSMAN_RC_OK) {
 		outdoc = wsman_generate_fault(indoc, fault_code, fault_detail_code, NULL);
+		if (enumInfo && enumInfo->encoding)
+			u_free(enumInfo->encoding);
 		u_free(enumInfo);
-                *eInfo = NULL;
+		*eInfo = NULL;
 	} else {
 		*eInfo = enumInfo;
 	}
@@ -333,14 +335,14 @@ wsman_verify_enum_info(SoapOpH op,
 	if (to == NULL || uri == NULL) {
 		error("No to or uri node");
 		status->fault_code = WSMAN_INTERNAL_ERROR;
-		status->fault_detail_code = 0;
+		status->fault_detail_code = WSMAN_DETAIL_OK;
 		return 0;
 	}
 
 	if (strcmp(enumInfo->epr_to, to) != 0 ||
 			strcmp(enumInfo->epr_uri, uri) != 0 ) {
 		status->fault_code = WSA_MESSAGE_INFORMATION_HEADER_REQUIRED;
-		status->fault_detail_code = 0;
+		status->fault_detail_code = WSMAN_DETAIL_OK;
 		debug("verifying enumeration context: ACTUAL  uri: %s, to: %s", uri, to);
 		debug("verifying enumeration context: SHOULD uri: %s, to: %s",
 				enumInfo->epr_uri, enumInfo->epr_to);
@@ -353,7 +355,7 @@ wsman_verify_enum_info(SoapOpH op,
 				strcmp(msg->auth_data.password,
 				enumInfo->auth_data.password) != 0) {
 			status->fault_code = WSMAN_ACCESS_DENIED;
-			status->fault_detail_code = 0;
+			status->fault_detail_code = WSMAN_DETAIL_OK;
 			return 0;
 		}
 	}
@@ -779,7 +781,7 @@ wsman_identify_stub(SoapOpH op,
 		return -1;
 	}
 
-	status = u_zalloc(sizeof(WsmanStatus *));
+	status = u_zalloc(sizeof(WsmanStatus));
 	cntx = ws_create_ep_context(soap, soap_get_op_doc(op, 1));
 	if (cntx == NULL) {
 		error("ws_create_ep_context failed");
@@ -793,7 +795,7 @@ wsman_identify_stub(SoapOpH op,
 
 	if ((data = endPoint(cntx, status, opaqueData)) == NULL) {
 		error("Identify Fault");
-		doc = wsman_generate_fault(soap_get_op_doc(op, 1), WSMAN_INTERNAL_ERROR, 0, NULL);
+		doc = wsman_generate_fault(soap_get_op_doc(op, 1), WSMAN_INTERNAL_ERROR, WSMAN_DETAIL_OK, NULL);
 	} else {
 		doc = wsman_create_response_envelope(soap_get_op_doc(op, 1), NULL);
 		ws_serialize(cntx->serializercntx, ws_xml_get_soap_body(doc), data, typeInfo,
@@ -893,14 +895,13 @@ ws_transfer_delete_stub(SoapOpH op,
 	WsDispatchEndPointInfo *info = (WsDispatchEndPointInfo *) appData;
 	WsEndPointGet   endPoint = (WsEndPointGet) info->serviceEndPoint;
 
-	void           *data;
 	WsXmlDocH       doc = NULL;
 
 	wsman_status_init(&status);
-	if ((data = endPoint(cntx, &status, opaqueData)) == NULL) {
+	if (endPoint(cntx, &status, opaqueData) == NULL) {
 		_warning("Transfer Delete fault");
 		doc = wsman_generate_fault(soap_get_op_doc(op, 1),
-					 WSMAN_INVALID_SELECTORS, 0, NULL);
+					 WSMAN_INVALID_SELECTORS, WSMAN_DETAIL_OK, NULL);
 	} else {
 		debug("Creating Response doc");
 		doc = wsman_create_response_envelope(soap_get_op_doc(op, 1), NULL);
@@ -949,7 +950,7 @@ ws_transfer_get_stub(SoapOpH op,
 	if ((data = endPoint(cntx, &status, opaqueData)) == NULL) {
 		_warning("Transfer Get fault");
 		doc = wsman_generate_fault( soap_get_op_doc(op, 1),
-					 WSMAN_INVALID_SELECTORS, 0, NULL);
+					 WSMAN_INVALID_SELECTORS, WSMAN_DETAIL_OK, NULL);
 	} else {
 		debug("Creating Response doc");
 		doc = wsman_create_response_envelope(soap_get_op_doc(op, 1), NULL);
@@ -1446,6 +1447,7 @@ wsman_get_expired_enuminfos(WsContextH cntx)
 	list_t *list = NULL;
 	hnode_t        *hn;
 	hscan_t         hs;
+	lnode_t         *lnode;
 	WsEnumerateInfo *enumInfo;
 	struct timeval tv;
 	unsigned long mytime;
@@ -1482,7 +1484,14 @@ wsman_get_expired_enuminfos(WsContextH cntx)
 			return NULL;
 		}
 		hash_scan_delfree(cntx->enuminfos, hn);
-		list_append(list, lnode_create(enumInfo));
+		lnode = lnode_create(enumInfo);
+		if (lnode == NULL) {
+			list_destroy(list);
+			u_unlock(cntx->soap);
+			error("could not create lnode");
+			return NULL;
+		}
+		list_append(list, lnode);
 		debug("Enum expired list appended: %s", enumInfo->enumId);
 	}
 	u_unlock(cntx->soap);
@@ -2806,8 +2815,8 @@ soap_destroy(SoapH soap)
 void
 wsman_status_init(WsmanStatus * status)
 {
-	status->fault_code = 0;
-	status->fault_detail_code = 0;
+	status->fault_code = WSMAN_RC_OK;
+	status->fault_detail_code = WSMAN_DETAIL_OK;
 	status->fault_msg = NULL;
 }
 

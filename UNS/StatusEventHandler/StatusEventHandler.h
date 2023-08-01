@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __STATUSEVENTHANDLER_H_
 #define __STATUSEVENTHANDLER_H_
@@ -19,7 +19,7 @@
 #include "EventHandler.h"
 #include "StatusEventFilter.h"
 #include "AMT_COM_Interface_defs.h"
-#include "GetProvisioningStateCommand.h"
+#include "AMTHICommand.h"
 #include "GetPlatformTypeCommand.h"
 #include "HostBootReasonClient.h"
 #include "STATUSEVENTHANDLER_export.h"
@@ -30,36 +30,33 @@ enum DATA_NAME : unsigned int;
 
 class STATUSEVENTHANDLER_Export StatusEventHandler : public EventHandler
 {
-	public:
+public:
 
-		StatusEventHandler();
-typedef enum _PUBLISHEVENTS
-{
-	SOL,
-	IDER,
-	SYSDEF,
-	KVMSTATE,
-	KVMACTIVITY,
-	MANAGEMODE,
-	MESTATE,
-	HECISTATE,
-	EACENABLE,
-	IPSYNCENABLE,
-	TIMESYNCENABLE,
-	WIFIPROFILESYNCENABLE
-} PUBLISHEVENTS;
+	StatusEventHandler();
+
+	enum class PUBLISHEVENTS
+	{
+		SOL,
+		IDER,
+		SYSDEF,
+		KVMSTATE,
+		KVMACTIVITY,
+		MANAGEMODE,
+		MESTATE,
+		HECISTATE,
+		EACENABLE,
+		IPSYNCENABLE,
+		TIMESYNCENABLE,
+		WIFIPROFILESYNCENABLE
+	};
+
 typedef enum _UC_STATE
 {
 	UC_ENDED,
 	UC_REQUESTED,
 	UC_GRANTED
 } UC_STATE;
-typedef enum _OPT_IN_REQUIRED
-{
-	OPT_IN_REQUIRED_NONE = 0,
-	OPT_IN_REQUIRED_KVM = 1,
-	OPT_IN_REQUIRED_ALL = -1
-} OPT_IN_REQUIRED;
+
 typedef enum _OPT_IN_STATE
 {
 	OPT_IN_STATE_NOT_STARTED = 0,
@@ -68,34 +65,34 @@ typedef enum _OPT_IN_STATE
 	OPT_IN_STATE_RECEIVED = 3,
 	OPT_IN_STATE_IN_SESSION = 4
 } OPT_IN_STATE;
-typedef enum _KVM_REDIRECTION_SAP_STATE
-{
-	KVM_ENABLED_AND_CONNECTED = 2,
-	KVM_DISABLED = 3,
-	KVM_ENABLED_AND_DISCONNECTED = 6
-} KVM_REDIRECTION_SAP_STATE;
-typedef enum _KVM_STATE
-{
-	KVM_STOPPED,
-	KVM_STARTED,
-	KVM_REQUESTED,
-	KVM_DATA_CHANNEL
-} KVM_STATE;
-typedef enum _WLAN_CONTROL_STATE
-{
-	ME_CONTROL = 1,
-	HOST_CONTROL = 2
-}WLAN_CONTROL_STATE;
 
-typedef enum _WLAN_PROTECTION_STATE
-{
-	PROTECTION_OFF = 1,
-	PROTECTION_PASSIVE = 2,
-	PROTECTION_HIGH = 3,
-	NOT_EXIST = 5
-}WLAN_PROTECTION_STATE;
+	static const unsigned short KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_CONNECTED = 2;
+	static const unsigned short KVM_REDIRECTION_SAP_STATE_KVM_DISABLED = 3;
+	static const unsigned short KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_DISCONNECTED = 6;
 
-	void publishEvent(int action, PUBLISHEVENTS ex);
+	enum class KVM_STATE
+	{
+		KVM_STOPPED,
+		KVM_STARTED,
+		KVM_REQUESTED,
+		KVM_DATA_CHANNEL
+	};
+
+	enum class WLAN_CONTROL_STATE
+	{
+		ME_CONTROL = 1,
+		HOST_CONTROL = 2
+	};
+
+	enum class WLAN_PROTECTION_STATE
+	{
+		PROTECTION_OFF = 1,
+		PROTECTION_PASSIVE = 2,
+		PROTECTION_HIGH = 3,
+		NOT_EXIST = 5
+	};
+
+	void publishEvent(bool action, PUBLISHEVENTS ex);
 	//// Publish KVM state event while UNS was stopped
 	void publishUCStateEvent(UC_STATE state);
 
@@ -125,6 +122,9 @@ protected:
 private:
 
 	bool SaveCurrentStatus(uint32_t status,DATA_NAME storageName);
+	bool SaveCurrentStatus(KVM_STATE status);
+	bool SaveCurrentStatus(WLAN_CONTROL_STATE status);
+	bool SaveCurrentStatus(WLAN_PROTECTION_STATE status);
 	void NotifyConfigurator(int status, CONFIGURATION_TYPE RegValueName);
 	void NotifyIPRefresh(int RegValueName);
 	bool StatusChanged(DATA_NAME storageName, uint32_t state);
@@ -133,15 +133,15 @@ private:
 	void CheckForStatusChange(DATA_NAME storageName,FEATURE_STATE state);
 	void CheckForStatusChange(DATA_NAME storageName,UC_STATE state);
 	void CheckForStatusChange(DATA_NAME storageName,KVM_STATE state);
-	void CheckForStatusChange(DATA_NAME storageName, WLAN_PROTECTION_STATE state);
-	void CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state);
+	void CheckForStatusChange(WLAN_PROTECTION_STATE state);
+	void CheckForStatusChange(WLAN_CONTROL_STATE state);
 
 	bool GetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE& ProvState);
 	bool GetSolIderState(bool& SOLState, bool& IDERState);
 	bool GetSystemDefenseState(bool& SysDefState);
 	bool GetMEState(bool& MEState);
 
-	bool GetAlarmClockBootEvent(SX_STATES &previousSXState);
+	bool GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES &previousSXState);
 
 	// Publish Provisioning event while LMS was stopped
 	void publishProvisioningEvent(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE state);
@@ -166,6 +166,8 @@ private:
 
 	// Publish AMT enabled event
 	void publishAMTEnabledEvent(bool enable);
+
+	void publishKVMActivityEvent(KVM_STATE action);
 
 	static FEATURE_STATE FeatureStateLogic(bool CapabilityBit, bool StateBit);
 	static void MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, MENAGEABILTY_MODE* pMode);
@@ -197,8 +199,8 @@ private:
 	// Publish Remote Reboot event
 	void publishRemoteRebootEvent();
 	//publish Host boot by Alarm clock
-	void publishAlarmClockBoot(SX_STATES previousSXState);
-	ACE_TString GetSXState(SX_STATES previousSXState);
+	void publishAlarmClockBoot(HostBootReasonClient::SX_STATES previousSXState);
+	ACE_TString GetSXState(HostBootReasonClient::SX_STATES previousSXState);
 
 	void SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State);
 	// Get the network settings (need for populate the MAC address)

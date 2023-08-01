@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "TimeSyncService.h"
 #include "TimeSynchronizationClient.h"
@@ -191,7 +191,7 @@ TimeSyncService::PerformSync()
 {
 	UNS_DEBUG(L"%s::PerformSync\n", name().c_str());
 
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting sync operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		m_syncRequiredButNoPfw = true;
 		return;
@@ -200,7 +200,7 @@ TimeSyncService::PerformSync()
 
 	bool timeSyncState;
 	//Check if LocalTimeSyncEnable = DEFAULT_TRUE or CONFIGURED_TRUE
-	TimeSynchronizationClient timeClient;
+	TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
 	if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncState))//error getting the Time Sync state.
 	{
 		m_needToSyncOnResume = true;//update the bool to true if sync should be performed

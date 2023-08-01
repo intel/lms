@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -102,29 +102,32 @@ private:
 class MKHICommandRequest: public Intel::MEI_Client::MEICommandRequest
 {
 public:
-	MKHICommandRequest() {}
+	MKHICommandRequest(uint32_t requestHeaderCommandNumber, uint32_t requestHeaderGroupID) :
+		m_requestHeaderCommandNumber(requestHeaderCommandNumber), m_requestHeaderGroupID(requestHeaderGroupID) {}
 	virtual ~MKHICommandRequest() {}
 	virtual std::vector<uint8_t> Serialize();
 
 private:
-
 	std::vector<uint8_t> serializeHeader(const MKHI_MSG_HEADER& header);
-	//returns the AMTHI command number (in the header) of the request command
-	virtual uint32_t requestHeaderCommandNumber() = 0;
-	virtual uint32_t requestHeaderGroupID() = 0;
-	virtual uint32_t requestDataSize() = 0;
+	virtual uint32_t requestDataSize() { return 0; };
 	virtual std::vector<uint8_t> SerializeData()
 	{
 		//default no data
 		std::vector<uint8_t> tmp;
 		return tmp;
 	}
+	//the AMTHI command number (in the header) of the request command
+	uint32_t m_requestHeaderCommandNumber;
+	uint32_t m_requestHeaderGroupID;
 };
 
 template <typename T>
 class MKHICommandResponse : public Intel::MEI_Client::MEICommandResponse
 {
 public:
+	MKHICommandResponse() : m_result(), m_commandNumber(0), m_groupID(0) {}
+	MKHICommandResponse(MKHICommandResponse&& other) = default;
+	MKHICommandResponse& operator = (MKHICommandResponse&& other) = default;
 	MKHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID) : m_result()
 	{
 		m_commandNumber = commandNumber;
@@ -176,6 +179,9 @@ template <typename T>
 class MKHIGetRuleCommandResponse : Intel::MEI_Client::MEICommandResponse
 {
 public:
+	MKHIGetRuleCommandResponse() : m_result(), m_commandNumber(0), m_groupID(0), m_ruleID(0) {}
+	MKHIGetRuleCommandResponse(MKHIGetRuleCommandResponse&& other) = default;
+	MKHIGetRuleCommandResponse& operator = (MKHIGetRuleCommandResponse&& other) = default;
 	MKHIGetRuleCommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID,
 		unsigned int ruleID)
 	{

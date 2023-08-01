@@ -91,7 +91,7 @@ wsman_make_action(const char *uri, const char *op_name)
 		char *ptr = (char *)u_malloc(len);
 		if (ptr) {
 			int ret = snprintf(ptr, len, "%s/%s", uri, op_name);
-			if (ret < 0 || ret >= len) {
+			if (ret < 0 || (size_t)ret >= len) {
 				error("Error: formatting action");
 				u_free(ptr);
 				return NULL;
@@ -504,12 +504,16 @@ wsmc_add_option(client_opt_t * options,
 		}
 	}
 	if (!hash_lookup(options->options, key)) {
-          char *k = u_strdup(key);
-          char *v = u_strdup(value);
-		if (!hash_alloc_insert(options->options, k, v)) {
+		char *k = u_strdup(key);
+		char *v = u_strdup(value);
+		if (k == NULL || v == NULL) {
+			error("u_strdup failed");
+			u_free(v);
+			u_free(k);
+		} else if (!hash_alloc_insert(options->options, k, v)) {
 			error( "hash_alloc_insert failed");
-                  u_free(v);
-                  u_free(k);
+			u_free(v);
+			u_free(k);
 		}
 	} else {
 		error( "duplicate not added to hash");
@@ -605,8 +609,10 @@ wsmc_set_selectors_from_uri(const char *resource_uri, client_opt_t * options)
     list_destroy(options->selectors);
     options->selectors = NULL;
   }
-  u_uri_t *uri = u_malloc(sizeof(u_uri_t));
-  u_uri_parse(resource_uri, &uri);
+  u_uri_t *uri = NULL;
+  if (u_uri_parse(resource_uri, &uri) != 0) {
+	  return;
+  }
   wsmc_add_selectors_from_str(options, uri->query);
   u_uri_free(uri);
 }
@@ -721,9 +727,7 @@ wsmc_add_selector_from_uri(WsXmlDocH doc,
 	hash_free_nodes(query);
 	hash_destroy(query);
 cleanup:
-	if (uri) {
-		u_uri_free(uri);
-	}
+	u_uri_free(uri);
 }
 
 
@@ -903,9 +907,6 @@ wsman_set_subscribe_options(WsManClient * cl,
 		}
 		ws_xml_add_node_attr(node, XML_NS_SOAP_1_2, SOAP_MUST_UNDERSTAND, "true");
 		if(options->delivery_certificatethumbprint) {
-			if (node == NULL) {
-				return;
-			}
 			node2 = ws_xml_add_child(node, XML_NS_TRUST, WST_REQUESTSECURITYTOKENRESPONSE, NULL);
 			if (node2 == NULL) {
 				return;
@@ -1059,7 +1060,7 @@ wsmc_node_to_buf(WsXmlNodeH node, char **buf) {
 
 char*
 wsmc_node_to_formatbuf(WsXmlNodeH node) {
-	char *buf;
+	char *buf = NULL;
 	int   len;
 	WsXmlDocH doc = ws_xml_create_doc_by_import(node);
 	if (doc == NULL) {
@@ -1190,7 +1191,7 @@ wsmc_create_request(WsManClient * cl, const char *resource_uri,
 	case WSMAN_ACTION_ENUMERATION:
 	case WSMAN_ACTION_ASSOCIATORS:
 	case WSMAN_ACTION_REFERENCES:
-		node = ws_xml_add_child(body,
+		ws_xml_add_child(body,
 				XML_NS_ENUMERATION, WSENUM_ENUMERATE, NULL);
 		if (options) {
 			wsman_set_enumeration_options(cl, body, resource_uri, options, filter);
@@ -1224,8 +1225,8 @@ wsmc_create_request(WsManClient * cl, const char *resource_uri,
 		}
 		break;
 	case WSMAN_ACTION_UNSUBSCRIBE:
-		node = ws_xml_add_child(body,
-				XML_NS_EVENTING, WSEVENT_UNSUBSCRIBE,NULL);
+		ws_xml_add_child(body,
+			XML_NS_EVENTING, WSEVENT_UNSUBSCRIBE,NULL);
 		if(data) {
 			if(((char *)data)[0] != 0)
 				add_subscription_context(ws_xml_get_soap_header(request), (char *)data);
@@ -2013,7 +2014,7 @@ wsmc_reinit_conn(WsManClient * cl)
 	u_buf_clear(cl->connection->response);
 	u_buf_clear(cl->connection->request);
 	cl->response_code = 0;
-	cl->last_error = 0;
+	cl->last_error = WS_LASTERR_OK;
 	if (cl->fault_string) {
 		u_free(cl->fault_string);
 		cl->fault_string = NULL;
@@ -2025,8 +2026,10 @@ static void
 init_client_connection(WsManClient * cl)
 {
 	WsManConnection *conn = (WsManConnection *) u_zalloc(sizeof(WsManConnection));
-	u_buf_create(&conn->response);
-	u_buf_create(&conn->request);
+	if (conn != NULL) {
+		u_buf_create(&conn->response);
+		u_buf_create(&conn->request);
+	}
 	cl->response_code = 0;
 	cl->connection = conn;
 }
@@ -2190,17 +2193,38 @@ wsmc_create(const char *hostname,
         }
 #endif
 	wsc->serctx = ws_serializer_init();
+	if (wsc->serctx == NULL) {
+		goto err;
+	}
 	wsc->dumpfile = stdout;
 	wsc->data.scheme = u_strdup(scheme ? scheme : "http");
+	if (wsc->data.scheme == NULL) {
+		goto err;
+	}
 	wsc->data.hostname = hostname ? u_strdup(hostname) : u_strdup("localhost");
+	if (wsc->data.hostname == NULL) {
+		goto err;
+	}
 	wsc->data.port = port;
 	wsc->data.path = u_strdup(path ? path : "/wsman");
+	if (wsc->data.path == NULL) {
+		goto err;
+	}
 	wsc->data.user = username ? u_strdup(username) : NULL;
+	if (username != NULL && wsc->data.user == NULL) {
+		goto err;
+	}
 	wsc->data.pwd = password ? u_strdup(password) : NULL;
+	if (password != NULL && wsc->data.pwd == NULL) {
+		goto err;
+	}
 	wsc->data.auth_set = 0;
 	wsc->initialized = 0;
 	wsc->transport_timeout = 0;
 	wsc->content_encoding = u_strdup("UTF-8");
+	if (wsc->content_encoding == NULL) {
+		goto err;
+	}
 #ifdef _WIN32
 	wsc->session_handle = 0;
 #endif
@@ -2209,6 +2233,9 @@ wsmc_create(const char *hostname,
                                              wsc->data.port,
                                              (*wsc->data.path == '/') ? "" : "/",
                                              wsc->data.path);
+	if (wsc->data.endpoint == NULL) {
+		goto err;
+	}
 	debug("Endpoint: %s", wsc->data.endpoint);
 	wsc->authentication.verify_host = 1; //verify CN in server certificates by default
 	wsc->authentication.verify_peer = 1; //validate server certificates by default
@@ -2220,6 +2247,9 @@ wsmc_create(const char *hostname,
 	init_client_connection(wsc);
 
 	return wsc;
+err:
+	wsmc_release(wsc);
+	return NULL;
 }
 
 
@@ -2306,6 +2336,8 @@ wsmc_release(WsManClient * cl)
         pthread_mutex_destroy(&cl->mutex);
 
 	wsman_transport_close_transport(cl);
+
+	ws_serializer_cleanup(cl->serctx);
 
 	u_free(cl);
 }

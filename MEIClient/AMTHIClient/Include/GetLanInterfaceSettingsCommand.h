@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -20,10 +20,10 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef uint32_t CFG_IPv4_ADDRESS;
-
 			struct LAN_SETTINGS
 			{
+				LAN_SETTINGS() : Enabled(AMT_FALSE), Ipv4Address(0), DhcpEnabled(AMT_FALSE), DhcpIpMode(0),
+					LinkStatus(0), MacAddress { 0 } {}
 				AMT_BOOLEAN Enabled;
 				CFG_IPv4_ADDRESS Ipv4Address;
 				AMT_BOOLEAN DhcpEnabled;
@@ -36,45 +36,50 @@ namespace Intel
 				}
 			};
 
-			class GetLanInterfaceSettingRequest;
-			//class GetLanInterfaceSettingResponse;
-			class GetLanInterfaceSettingsCommand : public AMTHICommand
-			{
-			public:
-
-				GetLanInterfaceSettingsCommand(uint32_t interfaceSettings);	//INTERFACE_SETTINGS
-				virtual ~GetLanInterfaceSettingsCommand() {}
-
-				LAN_SETTINGS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<LAN_SETTINGS>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800048;
-			};
-
 			class GetLanInterfaceSettingRequest : public AMTHICommandRequest
 			{
 			public:
-				GetLanInterfaceSettingRequest(const uint32_t interfaceSettings):m_interfaceSettings(interfaceSettings) {}	//INTERFACE_SETTINGS
+				GetLanInterfaceSettingRequest(const uint32_t interfaceSettings) :
+					AMTHICommandRequest(REQUEST_COMMAND_NUMBER), m_interfaceSettings(interfaceSettings) {} //INTERFACE_SETTINGS
 				virtual ~GetLanInterfaceSettingRequest() {}
 
 			private:
 				uint32_t m_interfaceSettings;	//INTERFACE_SETTINGS
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000048;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					std::vector<uint8_t> output((std::uint8_t*)&m_interfaceSettings, (std::uint8_t*)&m_interfaceSettings + sizeof(uint32_t));
+					return output;
+				}
+			};
+
+			class GetLanInterfaceSettingsCommand : public AMTHICommand
+			{
+			public:
+
+				GetLanInterfaceSettingsCommand(uint32_t interfaceSettings) //INTERFACE_SETTINGS
+				{
+					m_request = std::make_shared<GetLanInterfaceSettingRequest>(interfaceSettings);
+					Transact();
+				}
+				virtual ~GetLanInterfaceSettingsCommand() {}
+
+				LAN_SETTINGS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<LAN_SETTINGS>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<LAN_SETTINGS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800048;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

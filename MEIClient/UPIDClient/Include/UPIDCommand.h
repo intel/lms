@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -77,17 +77,15 @@ namespace Intel
 			class UPIDRequest : public Intel::MEI_Client::MEICommandRequest
 			{
 			public:
-				UPIDRequest() {}
+				UPIDRequest(uint8_t requestHeaderFeatureID, uint8_t requestHeaderCommandID) :
+					m_requestHeaderFeatureID(requestHeaderFeatureID), m_requestHeaderCommandID(requestHeaderCommandID) {}
 				virtual ~UPIDRequest() {}
 				virtual std::vector<uint8_t> Serialize();
 
 			private:
 				std::vector<uint8_t> serializeHeader(const UPID_HECI_HEADER& header);
-				//return the UPID feature\command number (in the header) of the request command
-				virtual uint8_t requestHeaderFeatureID() = 0;
-				virtual uint8_t requestHeaderCommandID() = 0;
 				//return total length not including the message header
-				virtual uint16_t requestDataSize() = 0;
+				virtual uint16_t requestDataSize() { return 0; };
 
 				virtual std::vector<uint8_t> SerializeData()
 				{
@@ -95,12 +93,18 @@ namespace Intel
 					std::vector<uint8_t> tmp;
 					return tmp;
 				}
+				// the UPID feature\command number (in the header) of the request command
+				uint8_t m_requestHeaderFeatureID;
+				uint8_t m_requestHeaderCommandID;
 			};
 
 			template <typename T>
 			class UPIDCommandResponse : public Intel::MEI_Client::MEICommandResponse
 			{
 			public:
+				UPIDCommandResponse() : m_result(), m_featureID(0), m_commandID(0) {}
+				UPIDCommandResponse(UPIDCommandResponse&& other) = default;
+				UPIDCommandResponse& operator = (UPIDCommandResponse&& other) = default;
 				UPIDCommandResponse(const std::vector<uint8_t>& buffer, uint8_t featureID, uint8_t commandID)
 				{
 					m_featureID = featureID;
@@ -127,10 +131,17 @@ namespace Intel
 					}
 
 					UPID_HECI_HEADER *header = (UPID_HECI_HEADER *)&buffer[0];
-					if (header->Feature != getFeatureID() || header->Command != getCommandID() ||
-						header->ByteCount != (buffer.size() - sizeof(UPID_HECI_HEADER)))
+					if (header->Feature != getFeatureID())
+					{
+						throw MEIClientException("Error: UPID Feature number is incorrect.");
+					}
+					if (header->Command != getCommandID())
 					{
 						throw MEIClientException("Error: UPID Command number is incorrect.");
+					}
+					if (header->ByteCount != (buffer.size() - sizeof(UPID_HECI_HEADER)))
+					{
+						throw MEIClientException("Error: UPID ByteCount is incorrect.");
 					}
 
 					UPID_STATUS *status = (UPID_STATUS*)&(buffer[sizeof(UPID_HECI_HEADER)]);

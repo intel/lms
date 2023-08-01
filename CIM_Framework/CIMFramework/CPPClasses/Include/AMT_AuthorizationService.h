@@ -31,7 +31,8 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 1);
 			}
 		}
 
@@ -41,7 +42,8 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 1);
 			}
 		}
 
@@ -61,6 +63,21 @@ namespace Typed
 		{
 		public:
 		};
+
+		// class fields declarations
+
+		// Optional, Indicates whether http digest authentication allows using qop="auth"
+		const unsigned int AllowHttpQopAuthOnly() const;
+
+		// Optional, Indicates whether http digest authentication allows using qop="auth"
+		void AllowHttpQopAuthOnly(const unsigned int value); 
+
+		// Is true if the field AllowHttpQopAuthOnly exists in the current object, otherwise is false.
+		bool AllowHttpQopAuthOnlyExists() const;
+
+		// Remove AllowHttpQopAuthOnly field.
+		void RemoveAllowHttpQopAuthOnly(); 
+
 		//Input parameter for function AddUserAclEntryEx
 		class CIMFRAMEWORK_API AddUserAclEntryEx_INPUT : public CimParam
 		{
@@ -517,7 +534,8 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 1);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -526,16 +544,19 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 1);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_Service::SetMetaData(childMetaData);
+			CimBase::SetMetaData(childMetaData, _metadata, 1);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:
+		static const CimFieldAttribute _metadata[];
 		static const string CLASS_NAME;
 		static const string CLASS_URI;
 		static const string CLASS_NS;

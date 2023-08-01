@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2021 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "gmock/gmock.h"
 #include <sstream>
 #include <iostream>
 #include <string>
 #include "AuditLogWSManClient.h"
+#include "AuditLogWSManClientConsts.h"
 #include "AuditLogAccessor.h"
 #include <time.h>
 
@@ -910,11 +911,6 @@ TEST_F(AuditLogAccessor, DisplayNetworkAdminDomainNameSetEvent)
 	str = DisplayNetworkAdminDomainNameSetEvent(extData, 8);
 	EXPECT_EQ("Domain Name: ggggg", str);
 }
-
-//TEST_F(AuditLogAccessor, DisplayNetworkAdminVlanParameterSetEvent)
-//{
-//		Deprecated
-//}
 
 void LinkPolicySetEventHelper(bool *set, int *nums, int &sum, string &str)
 {

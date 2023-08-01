@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2023 Intel Corporation
  */
 /*++
 
@@ -25,7 +25,7 @@ namespace Intel {
 				header.Data = 0; //initialize to 0
 				//put data in correct bits
 
-				header.Fields.command = requestHeaderCommandNumber();
+				header.Fields.command = static_cast<uint8_t>(m_requestHeaderCommandNumber);
 				header.Fields.length = requestDataSize();
 				//all other fields should and are 0
 				std::vector<uint8_t> output = serializeHeader(header);

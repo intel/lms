@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2019 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #include "DBusService.h"
 #include "UNSAlert.h"
@@ -21,8 +21,8 @@ namespace UNSAlert {
 		std::wstring str;
 
 		Intel::LMS::LMS_ERROR error =
-			Intel::LMS::UNSAlert_BE(th->GetGmsPortForwardingStarted()).GetIMSSEventHistory(str);
-		if (!error)
+			Intel::LMS::UNSAlert_BE(th->GetGmsPortForwardingPort()).GetIMSSEventHistory(str);
+		if (error == Intel::LMS::LMS_ERROR::OK)
 		{
 			try
 			{
@@ -31,7 +31,7 @@ namespace UNSAlert {
 			}
 			catch (const std::range_error&)
 			{
-				send_error(invocation, Intel::LMS::ERROR_FAIL);
+				send_error(invocation, Intel::LMS::LMS_ERROR::FAIL);
 			}
 		}
 		else

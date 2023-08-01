@@ -6,7 +6,7 @@
 //
 //  Contents:   This class contains all Intel(R) AMT specific settings (IP, DHCP, VLAN) for one network interface in the system.
 //
-//              This file was automatically generated from AMT_EthernetPortSettings.mof,  version: 7.0.0
+//              This file was automatically generated from AMT_EthernetPortSettings.mof,  version: 12.0.20
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_ETHERNETPORTSETTINGS_H
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 19);
+				CimBase::SetMetaData(_classMetaData, _metadata, 21);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 19);
+				CimBase::SetMetaData(_classMetaData, _metadata, 21);
 			}
 		}
 
@@ -282,6 +282,30 @@ namespace Typed
 		// Remove ConsoleTcpMaxRetransmissions field.
 		void RemoveConsoleTcpMaxRetransmissions(); 
 
+		// Optional, Indicates the physical connection type of this network interface
+		const unsigned int PhysicalConnectionType() const;
+
+		// Optional, Indicates the physical connection type of this network interface
+		void PhysicalConnectionType(const unsigned int value); 
+
+		// Is true if the field PhysicalConnectionType exists in the current object, otherwise is false.
+		bool PhysicalConnectionTypeExists() const;
+
+		// Remove PhysicalConnectionType field.
+		void RemovePhysicalConnectionType(); 
+
+		// Optional, Indicates which medium is currently used by Intel(R) AMT to communicate with NIC
+		const unsigned int PhysicalNicMedium() const;
+
+		// Optional, Indicates which medium is currently used by Intel(R) AMT to communicate with NIC
+		void PhysicalNicMedium(const unsigned int value); 
+
+		// Is true if the field PhysicalNicMedium exists in the current object, otherwise is false.
+		bool PhysicalNicMediumExists() const;
+
+		// Remove PhysicalNicMedium field.
+		void RemovePhysicalNicMedium(); 
+
 		// Optional, Defines the level of the link protection feature activation. Read only property.
 		const unsigned int WLANLinkProtectionLevel() const;
 
@@ -348,7 +372,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 19);
+				CimBase::SetMetaData(_classMetaData, _metadata, 21);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -358,14 +382,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 19);
+				CimBase::SetMetaData(_classMetaData, _metadata, 21);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_SettingData::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 19);
+			CimBase::SetMetaData(childMetaData, _metadata, 21);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

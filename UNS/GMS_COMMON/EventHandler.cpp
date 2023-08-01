@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "EventHandler.h"
 
@@ -9,7 +9,9 @@ EventHandler::init (int argc, ACE_TCHAR *argv[])
 {
 	UNS_DEBUG(L"EventHandler::init %s \n", name().c_str());
 
-	initSubService(argc,argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 
 	//register to enentManager as subscriber 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);

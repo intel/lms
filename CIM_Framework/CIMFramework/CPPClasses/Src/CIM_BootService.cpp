@@ -18,6 +18,9 @@ namespace Cim
 {
 namespace Typed 
 {
+	const CimFieldAttribute CIM_BootService::_metadata[] = {
+		{"EnabledState", false, false, false },
+	};
 	// class fields
 	CimBase *CIM_BootService::CreateFromCimObject(const CimObject &object)
 	{

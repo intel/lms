@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019 Intel Corporation
+ * Copyright (C) 2019-2022 Intel Corporation
  */
 /*++
 File Name:
@@ -424,6 +424,11 @@ This is due to limitation of Watcom C compiler which isn't able to handle long m
     ERROR_DEFINE_HELPER (FPROG_VAR_NOT_UPDATABLE_ERROR,                         CATEGORY_CSE_FILE_UPDATE_ERROR,              "The \"%s\" var is not updatable.") \
     ERROR_DEFINE_HELPER (NVAR_DEP_SUPPORT_FAILED_VAR,                           CATEGORY_CSE_FILE_READ_ERROR,                "The variable \"%s\" is not supported on this platform.") \
     ERROR_DEFINE_HELPER (ERROR_PCH_UNLOCK_STATE,                                CATEGORY_MEMANUF_EOL_TEST_FAILED,            "PCH is unlocked. Disable Delayed Authentication Mode and retry.") \
+    /* Additional errors that break backward compatibility*/ \
+    ERROR_DEFINE_HELPER (ERROR_BAD_SIGNATURE,                                   CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Info failed to execute specific feature. Invalid signature.") \
+    ERROR_DEFINE_HELPER (ERROR_SIGNATURE_VERIFICATION_FAILED,                   CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Info failed to execute specific feature. Mis-matching Signature.") \
+    ERROR_DEFINE_HELPER (ERROR_READ_FAIL,                                       CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Info failed to execute specific feature. Failed to Read Signature.") \
+    /**/ \
     ERROR_DEFINE_HELPER (MEMANUF_INVALID_REQUIRED_VALUE_FORMAT,                 CATEGORY_CSE_FILE_COMPARE_GENERAL_ERROR,     "Test required value format is not valid.") \
     ERROR_DEFINE_HELPER (ERROR_BTG_CONFIGURATION,                               CATEGORY_CSE_FILE_INVALID_INPUT_VALUE,       "Invalid BootGuard configuration.") \
     ERROR_DEFINE_HELPER (ERROR_CONFIRM_ARB_SVN,                                 CATEGORY_MEMANUF_EOL_TEST_FAILED,            "Minimum ARB SVN value set on current platform does not match corresponding ARB SVN in FW image.") \

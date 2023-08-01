@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "StatusEventHandler.h"
@@ -203,19 +203,19 @@ void StatusEventHandler::handleGeneralEvents(const GMS_AlertIndication *alert)
 		break;
 	case EVENT_ME_ENABLE :
 		SaveCurrentStatus(1,ME_ENABLE_S);
-		NotifyConfigurator(1,ME_ENABLE_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::ME_ENABLE_CONF);
 		break;
 	case EVENT_ME_DISABLE:
 		SaveCurrentStatus(0,ME_ENABLE_S);
-		NotifyConfigurator(0,ME_ENABLE_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::ME_ENABLE_CONF);
 		break;
 	case EVENT_AMT_ENABLE :
 		SaveCurrentStatus(2,AMT_ENABLE_S);
-		NotifyConfigurator(1,AMT_ENABLE_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::AMT_ENABLE_CONF);
 		break;
 	case EVENT_AMT_DISABLE:
 		SaveCurrentStatus(1,AMT_ENABLE_S);
-		NotifyConfigurator(0,AMT_ENABLE_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::AMT_ENABLE_CONF);
 		break;
 	case EVENT_AGENT_1:
 	case EVENT_AGENT_2:
@@ -293,7 +293,7 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 		return;
 	}
 	SaveCurrentStatus(curProvState, AMT_PROVISIONING_STATE_S);
-	NotifyConfigurator(curProvState, AMT_PROVISION_CONF);
+	NotifyConfigurator(curProvState, CONFIGURATION_TYPE::AMT_PROVISION_CONF);
 }
 
 void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *alert)
@@ -317,7 +317,7 @@ void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *a
 
 void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication *alert)
 {
-	OPT_IN_STATE UserConsentState;
+	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	switch (alert->id)
 	{
 	case EVENT_REMOTE_SOL_STARTED:
@@ -338,8 +338,11 @@ void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication
 	case EVENT_REMOTE_IDER_ENDED:
 		SaveCurrentStatus(0,IDER_ACTIVE_S);
 		m_IDER = 0;
-		GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);// get policy (can be change after UNS started by wsman command)
-		if((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && (m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_KVM == 0))
+		// get policy (can be change after UNS started by wsman command)
+		if (GetUserConsentState(&UserConsentState, &m_UserConsentPolicy) &&
+		    (UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && 
+		    (m_UserConsentPolicy == ALL_SESSIONS) &&
+		    (m_SOL == 0) && (m_KVM == 0))
 			raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
 				EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
 		break;
@@ -348,19 +351,19 @@ void  StatusEventHandler::handleRemoteDiagnosticEvents(const GMS_AlertIndication
 
 void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 {		
-	OPT_IN_STATE UserConsentState;
+	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	switch (alert->id)
 	{
 	case EVENT_KVM_SESSION_REQUESTED:
-		SaveCurrentStatus(KVM_REQUESTED,KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_REQUESTED);
 		if (m_UserConsentPolicy != NOT_REQUIRED)
 		{
-			GetUserConsentState(&UserConsentState,&m_UserConsentPolicy);
-			SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
+			if (GetUserConsentState(&UserConsentState,&m_UserConsentPolicy))
+				SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
 		}
 		break;
 	case EVENT_KVM_SESSION_STARTED:
-		SaveCurrentStatus(KVM_STARTED,KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_STARTED);
 		if ((m_UserConsentPolicy != NOT_REQUIRED)&&(m_prevUserConsentState != OPT_IN_STATE_RECEIVED) &&	(m_prevUserConsentState != OPT_IN_STATE_IN_SESSION))
 		{
 			m_prevUserConsentState=OPT_IN_STATE_IN_SESSION; 
@@ -369,15 +372,17 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		m_KVM = 1;
 		break;
 	case EVENT_KVM_SESSION_STOPPED:
-		SaveCurrentStatus(KVM_STOPPED,KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_STOPPED);
 		m_KVM = 0;
-		GetUserConsentState(&UserConsentState,&m_UserConsentPolicy); // get policy (can't be change after UNS started by wsman command)
-		SaveCurrentStatus(UserConsentState,USER_CONSENT_S);
-		if ((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) && 
-			(((m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_IDER == 0)) || (m_UserConsentPolicy == KVM_ONLY)))
+		if (GetUserConsentState(&UserConsentState, &m_UserConsentPolicy))
 		{
-			raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
-				EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
+			SaveCurrentStatus(UserConsentState, USER_CONSENT_S);
+			if ((UserConsentState == OPT_IN_STATE_RECEIVED || UserConsentState == OPT_IN_STATE_IN_SESSION) &&
+				(((m_UserConsentPolicy == ALL_SESSIONS) && (m_SOL == 0) && (m_IDER == 0)) || (m_UserConsentPolicy == KVM_ONLY)))
+			{
+				raiseGMS_AlertIndication(CATEGORY_USER_CONSENT, EVENT_USER_CONSENT_TIMEOUT_STARTED, alert->Datetime, ACE_TEXT(""),
+					EVENT_USER_CONSENT_TIMEOUR_STARTED_MSG, alert->MessageArguments);
+			}
 		}
 		break;
 	case EVENT_KVM_DISABLED:
@@ -387,7 +392,7 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		SaveCurrentStatus(1,KVM_ENABLE_S);
 		break;
 	case EVENT_KVM_DATA_CHANNEL:
-		SaveCurrentStatus(KVM_DATA_CHANNEL, KVM_SESSION_S);
+		SaveCurrentStatus(KVM_STATE::KVM_DATA_CHANNEL);
 		break;
 	}
 }
@@ -407,13 +412,13 @@ void  StatusEventHandler::handleIPSyncEvents(const GMS_AlertIndication *alert)
 	{
 	case EVENT_IP_SYNC_DISABLE:
 		SaveCurrentStatus(0,IP_SYNC_ENABLE_S);
-		NotifyConfigurator(0,IP_SYNC_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::IP_SYNC_CONF);
 		break;
 	case EVENT_IP_SYNC_ENABLE:
 		SaveCurrentStatus(1,IP_SYNC_ENABLE_S);
-		NotifyConfigurator(1,IP_SYNC_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::IP_SYNC_CONF);
 		break;
-	case EVENT_IP_REFRESH_LAN:						
+	case EVENT_IP_REFRESH_LAN:
 		UNS_DEBUG(L"IPRefresh LAN\n");
 		NotifyIPRefresh(MB_IPREFRESH_LAN);
 		break;
@@ -440,9 +445,9 @@ void  StatusEventHandler::handleUserConsentEvents(const GMS_AlertIndication *ale
 		m_prevUserConsentState = OPT_IN_STATE_NOT_STARTED;
 		UNS_DEBUG(L"ExtendEvent EVENT_USER_CONSENT_ENDED\n");
 		break;
-	case EVENT_USER_CONSENT_CONFIGURATION_CHANGED:   
+	case EVENT_USER_CONSENT_CONFIGURATION_CHANGED:
 
-		if (!m_mainService->GetPortForwardingStarted()) {
+		if (!m_mainService->GetPortForwardingPort()) {
 			UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GenerateUCEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 			break;
 		}
@@ -457,58 +462,73 @@ void  StatusEventHandler::handleWlanEvents(const GMS_AlertIndication *alert)
 	switch (alert->id)
 	{
 	case EVENT_WLAN_CONTROL_ME:
-		SaveCurrentStatus(ME_CONTROL, LINK_CONTROL_S);
+		SaveCurrentStatus(WLAN_CONTROL_STATE::ME_CONTROL);
 		break;
 	case EVENT_WLAN_CONTROL_HOST:
-		SaveCurrentStatus(HOST_CONTROL, LINK_CONTROL_S);
+		SaveCurrentStatus(WLAN_CONTROL_STATE::HOST_CONTROL);
 		break;
 	case EVENT_WLAN_PROTECTION_ON_HIGH:
-		SaveCurrentStatus(PROTECTION_HIGH, LINK_PROTECTION_S);
+		SaveCurrentStatus(WLAN_PROTECTION_STATE::PROTECTION_HIGH);
 		break;
 	case EVENT_WLAN_PROTECTION_ON_PASSIVE:
-		SaveCurrentStatus(PROTECTION_PASSIVE, LINK_PROTECTION_S);
+		SaveCurrentStatus(WLAN_PROTECTION_STATE::PROTECTION_PASSIVE);
 		break;
 	case EVENT_WLAN_PROTECTION_OFF:
-		SaveCurrentStatus(PROTECTION_OFF, LINK_PROTECTION_S);
+		SaveCurrentStatus(WLAN_PROTECTION_STATE::PROTECTION_OFF);
 		break;
 	case EVENT_WLAN_PROFILE_SYNC_DISABLE:
 		SaveCurrentStatus(0, WIFI_PROFILE_SYNC_ENABLE_S);
-		NotifyConfigurator(0, WIFI_PROFILE_SYNC_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::WIFI_PROFILE_SYNC_CONF);
 		break;
 	case EVENT_WLAN_PROFILE_SYNC_ENABLE:
 		SaveCurrentStatus(1, WIFI_PROFILE_SYNC_ENABLE_S);
-		NotifyConfigurator(1, WIFI_PROFILE_SYNC_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::WIFI_PROFILE_SYNC_CONF);
 		break;
 	case EVENT_WIRELESS_STATE_CHANGED:
 		{
 			bool enabled = false;
 			if (GetLocalProfileSynchronizationEnabled(enabled))
 			{
-				CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, WIFIPROFILESYNCENABLE);
+				CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, PUBLISHEVENTS::WIFIPROFILESYNCENABLE);
 			}
 			break;
 		}
 	}
 }
+
 void StatusEventHandler::handleTimeSyncEvents(const GMS_AlertIndication *alert)
 {
 	switch (alert->id)
 	{
 	case EVENT_TIME_SYNC_DISABLE:
 		SaveCurrentStatus(0,TIME_SYNC_ENABLE_S);
-		NotifyConfigurator(0,TIME_SYNC_CONF);
+		NotifyConfigurator(0, CONFIGURATION_TYPE::TIME_SYNC_CONF);
 		break;
 	case EVENT_TIME_SYNC_ENABLE:
 		SaveCurrentStatus(1,TIME_SYNC_ENABLE_S);
-		NotifyConfigurator(1,TIME_SYNC_CONF);
+		NotifyConfigurator(1, CONFIGURATION_TYPE::TIME_SYNC_CONF);
 		break;
 	}
 }
 
-
 bool StatusEventHandler::SaveCurrentStatus(uint32_t status,DATA_NAME storageName)
 {
 	return DSinstance().SetDataValue(storageName, status,true); 
+}
+
+bool StatusEventHandler::SaveCurrentStatus(KVM_STATE status)
+{
+	return DSinstance().SetDataValue(KVM_SESSION_S, static_cast<uint32_t>(status), true);
+}
+
+bool StatusEventHandler::SaveCurrentStatus(WLAN_CONTROL_STATE status)
+{
+	return DSinstance().SetDataValue(LINK_CONTROL_S, static_cast<uint32_t>(status), true);
+}
+
+bool StatusEventHandler::SaveCurrentStatus(WLAN_PROTECTION_STATE status)
+{
+	return DSinstance().SetDataValue(LINK_PROTECTION_S, static_cast<uint32_t>(status), true);
 }
 
 void StatusEventHandler::NotifyConfigurator(int status,CONFIGURATION_TYPE RegValueName)
@@ -572,18 +592,18 @@ void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,UC_STATE sta
 void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName,KVM_STATE state)
 {
 	if(StatusChanged(storageName, (uint32_t)state))
-		publishEvent(state,KVMACTIVITY);
+		publishKVMActivityEvent(state);
 }
 
-void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName, WLAN_CONTROL_STATE state)
+void StatusEventHandler::CheckForStatusChange(WLAN_CONTROL_STATE state)
 {
-	if(StatusChanged(storageName, (uint32_t)state))
+	if(StatusChanged(LINK_CONTROL_S, static_cast<uint32_t>(state)))
 		PublishWlanControlEvent(state);
 }
 
-void StatusEventHandler::CheckForStatusChange(DATA_NAME storageName, WLAN_PROTECTION_STATE state)
+void StatusEventHandler::CheckForStatusChange(WLAN_PROTECTION_STATE state)
 {
-	if(StatusChanged(storageName, (uint32_t)state))
+	if(StatusChanged(LINK_PROTECTION_S, static_cast<uint32_t>(state)))
 		PublishWlanProtectionEvent(state);
 }
 
@@ -638,7 +658,7 @@ void StatusEventHandler::GeneratePortFwrdRelatedEvents()
 {
 	FuncEntryExit<void> fee(this, L"GeneratePortFwrdRelatedEvents");
 
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting GeneratePortFwrdRelatedEvents operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		return;
 	}
@@ -678,7 +698,7 @@ void StatusEventHandler::GenerateEACEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(EAC_ENABLE_S,EACEnabled,EACENABLE);//TODO:: to check if it is needed when AMTState!=true
+	CheckForStatusChange(EAC_ENABLE_S,EACEnabled, PUBLISHEVENTS::EACENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
 void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
@@ -688,14 +708,14 @@ void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 	bool IPSyncEnabled = false;//TODO::to check if it is the right default value
 	if (AMTstate)
 	{
-		SyncIpClient syncIpClient;
+		SyncIpClient syncIpClient(m_mainService->GetPortForwardingPort());
 		if (!syncIpClient.GetSharedStaticIpState(&IPSyncEnabled)) 
 		{
 			UNS_ERROR(L"StatusEventHandler: GetIPSyncState failed\n");
 			return;
 		}
 	}
-	CheckForStatusChange(IP_SYNC_ENABLE_S,IPSyncEnabled,IPSYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
+	CheckForStatusChange(IP_SYNC_ENABLE_S,IPSyncEnabled, PUBLISHEVENTS::IPSYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
 void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
@@ -712,7 +732,7 @@ void StatusEventHandler::GenerateWiFiProfileSyncEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, WIFIPROFILESYNCENABLE);
+	CheckForStatusChange(WIFI_PROFILE_SYNC_ENABLE_S, enabled, PUBLISHEVENTS::WIFIPROFILESYNCENABLE);
 }
 
 void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
@@ -722,7 +742,7 @@ void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
 	bool timeSyncEnabled = false;
 	if (AMTstate)
 	{
-		TimeSynchronizationClient timeClient;
+		TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
 
 		if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncEnabled))
 		{
@@ -730,7 +750,7 @@ void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(TIME_SYNC_ENABLE_S,timeSyncEnabled,TIMESYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
+	CheckForStatusChange(TIME_SYNC_ENABLE_S,timeSyncEnabled, PUBLISHEVENTS::TIMESYNCENABLE);//TODO:: to check if it is needed when AMTState!=true
 }
 
 void StatusEventHandler::GenerateSOLIDEREvents(bool AMTstate)
@@ -744,8 +764,8 @@ void StatusEventHandler::GenerateSOLIDEREvents(bool AMTstate)
 			return;
 		}
 	}
-	CheckForStatusChange(SOL_ACTIVE_S,SOLState,SOL);
-	CheckForStatusChange(IDER_ACTIVE_S,IDERState,IDER);
+	CheckForStatusChange(SOL_ACTIVE_S,SOLState, PUBLISHEVENTS::SOL);
+	CheckForStatusChange(IDER_ACTIVE_S,IDERState, PUBLISHEVENTS::IDER);
 }
 
 void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
@@ -753,7 +773,7 @@ void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
 	FuncEntryExit<void> fee(this, L"GenerateKVMRedirectionEvents");
 
 	bool KVMEnable = false;
-	KVM_STATE KVMState=KVM_STOPPED;
+	KVM_STATE KVMState = KVM_STATE::KVM_STOPPED;
 	if (AMTstate)
 	{
 		if (!GetKVMRedirectionState(KVMEnable, KVMState))
@@ -761,12 +781,12 @@ void StatusEventHandler::GenerateKVMRedirectionEvents(bool AMTstate)
 			UNS_ERROR(L"StatusEventHandler: GetKVMRedirectionState failed\n");
 		}
 	}
-	CheckForStatusChange(KVM_ENABLE_S,KVMEnable,KVMSTATE);
+	CheckForStatusChange(KVM_ENABLE_S,KVMEnable, PUBLISHEVENTS::KVMSTATE);
 	CheckForStatusChange(KVM_SESSION_S,KVMState);
 
 	// If generating KVM_REQUESTED event, don't also generate UC_REQUESTED event
 	// since both events have the same string
-	if (KVMState == KVM_REQUESTED && StatusChanged(USER_CONSENT_S, UC_REQUESTED))
+	if (KVMState == KVM_STATE::KVM_REQUESTED && StatusChanged(USER_CONSENT_S, UC_REQUESTED))
 		SaveCurrentStatus(UC_REQUESTED, USER_CONSENT_S);
 }
 
@@ -810,14 +830,14 @@ void StatusEventHandler::GenerateMEEvents()
 		UNS_ERROR(L"StatusEventHandler: GetMEState failed\n");
 		return;
 	}
-	CheckForStatusChange(ME_ENABLE_S,MEState,MESTATE);
+	CheckForStatusChange(ME_ENABLE_S,MEState, PUBLISHEVENTS::MESTATE);
 }
 
 void StatusEventHandler::GenerateWLANEvents()
 {
 	FuncEntryExit<void> fee(this, L"GenerateWLANEvents");
 
-	AMTEthernetPortSettingsClient client;
+	AMTEthernetPortSettingsClient client(m_mainService->GetPortForwardingPort());
 	unsigned int linkPreference, linkControl, linkProtection; 
 	bool isLink = false;
 	if(!client.GetAMTEthernetPortSettings(&linkPreference, &linkControl, &linkProtection, &isLink))
@@ -831,9 +851,9 @@ void StatusEventHandler::GenerateWLANEvents()
 		return;
 	}
 
-	CheckForStatusChange(LINK_CONTROL_S, (WLAN_CONTROL_STATE)linkControl);
-	if(linkProtection != NOT_EXIST)
-		CheckForStatusChange(LINK_PROTECTION_S, (WLAN_PROTECTION_STATE)linkProtection);
+	CheckForStatusChange(static_cast<WLAN_CONTROL_STATE>(linkControl));
+	if(linkProtection != static_cast<int>(WLAN_PROTECTION_STATE::NOT_EXIST))
+		CheckForStatusChange(static_cast<WLAN_PROTECTION_STATE>(linkProtection));
 }
 
 namespace 
@@ -1061,93 +1081,69 @@ FEATURE_STATE StatusEventHandler::FeatureStateLogic(bool CapabilityBit, bool Sta
 //   SOL started/stopped,
 //   IDER started/stopped,
 //   System Defence started/stopped,
-//   KVM started/stopped,
 //   KVM enabled/disabled,
 //   REMOTE ASSIST enabled/disabled,
 //   Manageabilty mode changed,
 //   ME STATE enabled/disabled
 //	 TimeSync state enabled/disabled
-void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
+void StatusEventHandler::publishEvent(bool action,PUBLISHEVENTS ev)
 {
 	unsigned short	category; 
-	unsigned long	id = EVENT_GENERAL_DEFAULT;      
+	unsigned long	id = EVENT_GENERAL_DEFAULT;
 	ACE_TString   Message;  
 	ACE_TString	  actionstr;
 
 	switch (ev)
 	{
-	case SOL:
-		category 	= CATEGORY_REMOTE_DIAGNOSTIC;  
+	case PUBLISHEVENTS::SOL:
+		category 	= CATEGORY_REMOTE_DIAGNOSTIC;
 		id 			= action ? EVENT_REMOTE_SOL_STARTED : EVENT_REMOTE_SOL_ENDED;
 		Message		= SOL_SESSION; 
 		actionstr	= action ? STARTED_STR : ENDED_STR;
 		break;
-	case IDER:
+	case PUBLISHEVENTS::IDER:
 		category 	= CATEGORY_REMOTE_DIAGNOSTIC;
 		id 			= action ? EVENT_REMOTE_IDER_STARTED : EVENT_REMOTE_IDER_ENDED;
 		Message		+=IDER_SESSION; 
 		actionstr	= action ? STARTED_STR : ENDED_STR;
 		break;
-	case KVMSTATE:
+	case PUBLISHEVENTS::KVMSTATE:
 		category 	= CATEGORY_KVM;
 		id 			= action ? EVENT_KVM_ENABLED : EVENT_KVM_DISABLED;
 		Message		= KVM_TEXT;
 		actionstr	= action ? ENABLED_STR : DISABLED_STR;
 		break;
-	case KVMACTIVITY:
-		category 	= CATEGORY_KVM;	
-		Message		= KVM_SESSION;
-		switch (action)
-		{
-		case KVM_REQUESTED:
-			id			= EVENT_KVM_SESSION_REQUESTED;
-			actionstr	= REQUESTED_STR;
-			break;
-		case KVM_STARTED:
-			id 			= EVENT_KVM_SESSION_STARTED;
-			actionstr	= STARTED_STR;
-			break;
-		case KVM_STOPPED:
-			id 			= EVENT_KVM_SESSION_STOPPED;
-			actionstr	= STOPED_STR;
-			break;
-		case KVM_DATA_CHANNEL:
-			id			= EVENT_KVM_DATA_CHANNEL;
-			actionstr	= DATA_CHANNEL_STR;
-			break;
-		}
-		break;
-	case MANAGEMODE:
+	case PUBLISHEVENTS::MANAGEMODE:
 		category 	= CATEGORY_GENERAL;
 		id 			= EVENT_CONTROL_MODE_CHANGE;
 		break;
-	case MESTATE:
+	case PUBLISHEVENTS::MESTATE:
 		category 	= CATEGORY_GENERAL;
-		id 			= action ? EVENT_ME_ENABLE : EVENT_ME_DISABLE;      
+		id 			= action ? EVENT_ME_ENABLE : EVENT_ME_DISABLE;
 		Message		+=ME_STATE;
-		actionstr 	= action ? ENABLED_STR : DISABLED_STR;   
+		actionstr 	= action ? ENABLED_STR : DISABLED_STR;
 		break;
-	case HECISTATE:
+	case PUBLISHEVENTS::HECISTATE:
 		category 	= CATEGORY_UNS;
-		id 			= action ? EVENT_SERVICE_HECI_ENABLE : EVENT_SERVICE_HECI_DISABLE;      
+		id 			= action ? EVENT_SERVICE_HECI_ENABLE : EVENT_SERVICE_HECI_DISABLE;
 		Message		= MEI_DRIVER;
-		actionstr 	= action ? ENABLED_STR : DISABLED_STR;   
+		actionstr 	= action ? ENABLED_STR : DISABLED_STR;
 		break;	
-	case EACENABLE:
+	case PUBLISHEVENTS::EACENABLE:
 		category 	= CATEGORY_EAC;
 		id 			= action ? EVENT_EAC_ENABLED : EVENT_EAC_DISABLED;
 		break;
-	case IPSYNCENABLE:
+	case PUBLISHEVENTS::IPSYNCENABLE:
 		category 	= CATEGORY_IPSYNC;
 		Message		= IP_SYNC_ENABLE;
 		id 			= action ? EVENT_IP_SYNC_ENABLE : EVENT_IP_SYNC_DISABLE;
 		actionstr 	= action ? ENABLED_STR : DISABLED_STR; 
 		break;
-	case WIFIPROFILESYNCENABLE:
+	case PUBLISHEVENTS::WIFIPROFILESYNCENABLE:
 		category	= CATEGORY_WLAN;
 		id			= action ? EVENT_WLAN_PROFILE_SYNC_ENABLE : EVENT_WLAN_PROFILE_SYNC_DISABLE;
 		break;
-	case TIMESYNCENABLE:
+	case PUBLISHEVENTS::TIMESYNCENABLE:
 		category 	= CATEGORY_TIMESYNC;
 		Message		= TIME_SYNC_ENABLE;
 		id 			= action ? EVENT_TIME_SYNC_ENABLE : EVENT_TIME_SYNC_DISABLE;
@@ -1156,7 +1152,7 @@ void StatusEventHandler::publishEvent(int action,PUBLISHEVENTS ev)
 	default:
 		return;
 	}
-	Message += actionstr;   
+	Message += actionstr;
 	raiseGMS_AlertIndication(category,id,getDateTime(),ACTIVE_MESSAGEID,Message);
 }
 
@@ -1201,7 +1197,7 @@ void StatusEventHandler::SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Clien
  
 bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_POLICY* pPolicy)
 {
-	CancelOptInClient _CancelOptInClient;
+	CancelOptInClient _CancelOptInClient(m_mainService->GetPortForwardingPort());
 	short UserConsentPolicy;
 	short UserConsentState;
 
@@ -1216,7 +1212,7 @@ bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_
 #ifdef WIN32
 bool StatusEventHandler::GetLocalProfileSynchronizationEnabled(bool &enabled)
 {
-	WlanWSManClient WlanWSMan;
+	WlanWSManClient WlanWSMan(m_mainService->GetPortForwardingPort());
 	bool ret;
 
 	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
@@ -1392,7 +1388,7 @@ void StatusEventHandler::checkForBootReason()
 			m_prevManageMode== SBT ||
 			m_prevManageMode== VPRO)
 		{
-			SX_STATES previousSXState;
+			HostBootReasonClient::SX_STATES previousSXState;
 			if (GetAlarmClockBootEvent(previousSXState))
 			{
 				publishAlarmClockBoot(previousSXState);
@@ -1421,38 +1417,38 @@ void StatusEventHandler::publishRemoteRebootEvent()
 }
 
 //publish Host boot by Alarm clock
-void StatusEventHandler::publishAlarmClockBoot(SX_STATES previousSXState)
+void StatusEventHandler::publishAlarmClockBoot(HostBootReasonClient::SX_STATES previousSXState)
 {
 	std::vector<ACE_TString>  MessageArguments;
 	MessageArguments.push_back(GetSXState(previousSXState));
 	raiseGMS_AlertIndication(CATEGORY_GENERAL, EVENT_ALARM_CLOCK_BOOT, getDateTime(), ACTIVE_MESSAGEID, ALARM_CLOCK_BOOT_STR, MessageArguments);
 }
 
-ACE_TString StatusEventHandler::GetSXState(SX_STATES previousSXState)
+ACE_TString StatusEventHandler::GetSXState(HostBootReasonClient::SX_STATES previousSXState)
 {
 	ACE_TString ret;
 	switch (previousSXState)
 	{
 
-	case SX_Other:
+	case HostBootReasonClient::SX_STATES::Other:
 		ret = ACE_TEXT("Other");
 		break;
-	case SX_S0:
+	case HostBootReasonClient::SX_STATES::S0:
 		ret = ACE_TEXT("S0");
 		break;
-	case SX_S1:
+	case HostBootReasonClient::SX_STATES::S1:
 		ret = ACE_TEXT("S1");
 		break;
-	case SX_S2:
+	case HostBootReasonClient::SX_STATES::S2:
 		ret = ACE_TEXT("S2");
 		break;
-	case SX_S3:
+	case HostBootReasonClient::SX_STATES::S3:
 		ret = ACE_TEXT("S3");
 		break;
-	case SX_S4:
+	case HostBootReasonClient::SX_STATES::S4:
 		ret = ACE_TEXT("S4");
 		break;
-	case SX_S5:
+	case HostBootReasonClient::SX_STATES::S5:
 		ret = ACE_TEXT("S5");
 		break;
 	default:
@@ -1496,15 +1492,15 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 	return true;
 }
 
-bool StatusEventHandler::GetAlarmClockBootEvent(SX_STATES &previousSXState)
+bool StatusEventHandler::GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES &previousSXState)
 {
-	HostBootReasonClient client;
+	HostBootReasonClient client(m_mainService->GetPortForwardingPort());
 
-	HOST_RESET_REASON int_resetReason;
-	SX_STATES int_previousSXState;
+	HostBootReasonClient::HOST_RESET_REASON int_resetReason;
+	HostBootReasonClient::SX_STATES int_previousSXState;
 	if (client.GetHostResetReason(int_resetReason, int_previousSXState))
 	{
-		if (int_resetReason == Alarm)
+		if (int_resetReason == HostBootReasonClient::HOST_RESET_REASON::Alarm)
 		{
 			previousSXState = int_previousSXState;
 			return true;
@@ -1515,7 +1511,7 @@ bool StatusEventHandler::GetAlarmClockBootEvent(SX_STATES &previousSXState)
 
 bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connected)
 {
-	KVMWSManClient Client;
+	KVMWSManClient Client(m_mainService->GetPortForwardingPort());
 	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
 	USER_CONSENT_POLICY UserConsentPolicy;
 	unsigned short state;
@@ -1525,20 +1521,20 @@ bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connecte
 		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%u\n", state);
 		switch (state)
 		{
-		case KVM_ENABLED_AND_CONNECTED: 
+		case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_CONNECTED:
 			enable=true;
-			connected=KVM_STARTED;
+			connected = KVM_STATE::KVM_STARTED;
 			if (GetUserConsentState(&UserConsentState, &UserConsentPolicy) &&
 			   (UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED))
-				connected=KVM_REQUESTED;
+				connected = KVM_STATE::KVM_REQUESTED;
 			return true;
-		case KVM_DISABLED: 
+		case KVM_REDIRECTION_SAP_STATE_KVM_DISABLED:
 			enable=false;
-			connected=KVM_STOPPED;
+			connected = KVM_STATE::KVM_STOPPED;
 			return true;
-		case KVM_ENABLED_AND_DISCONNECTED: 
+		case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_DISCONNECTED:
 			enable=true;
-			connected=KVM_STOPPED;
+			connected = KVM_STATE::KVM_STOPPED;
 			return true;
 		default:
 			UNS_ERROR(L"Wrong KVMRedirectionState=%u\n", state);
@@ -1578,15 +1574,15 @@ void StatusEventHandler::PublishWlanProtectionEvent(WLAN_PROTECTION_STATE state)
 	unsigned long id = EVENT_GENERAL_DEFAULT;
 	switch(state)
 	{
-	case PROTECTION_HIGH:
+	case WLAN_PROTECTION_STATE::PROTECTION_HIGH:
 		id = EVENT_WLAN_PROTECTION_ON_HIGH;
 		message = LINK_PROTECTION_HIGH_MSG;
 		break;
-	case PROTECTION_PASSIVE:
+	case WLAN_PROTECTION_STATE::PROTECTION_PASSIVE:
 		id =EVENT_WLAN_PROTECTION_ON_PASSIVE;
 		message = LINK_PROTECTION_PASSIVE_MSG;
 		break;
-	case PROTECTION_OFF:
+	case WLAN_PROTECTION_STATE::PROTECTION_OFF:
 		id =EVENT_WLAN_PROTECTION_OFF;
 		message = LINK_PROTECTION_OFF_MSG;
 		break;
@@ -1601,17 +1597,46 @@ void StatusEventHandler::PublishWlanControlEvent(WLAN_CONTROL_STATE state)
 
 	switch(state)
 	{
-	case ME_CONTROL:
+	case WLAN_CONTROL_STATE::ME_CONTROL:
 		id = EVENT_WLAN_CONTROL_ME;
 		message = LINK_CONTROL_ME_MSG;
 		break;
-	case HOST_CONTROL:
+	case WLAN_CONTROL_STATE::HOST_CONTROL:
 		id = EVENT_WLAN_CONTROL_HOST;
 		message = LINK_CONTROL_HOST_MSG;
 		break;
 	}
 
 	raiseGMS_AlertIndication(CATEGORY_WLAN,id,getDateTime(),ACTIVE_MESSAGEID,message);
+}
+
+void StatusEventHandler::publishKVMActivityEvent(KVM_STATE action)
+{
+	unsigned long id = EVENT_GENERAL_DEFAULT;
+	ACE_TString Message(KVM_SESSION);
+	ACE_TString actionstr;
+
+	switch (action)
+	{
+	case KVM_STATE::KVM_REQUESTED:
+		id = EVENT_KVM_SESSION_REQUESTED;
+		actionstr = REQUESTED_STR;
+		break;
+	case KVM_STATE::KVM_STARTED:
+		id = EVENT_KVM_SESSION_STARTED;
+		actionstr = STARTED_STR;
+		break;
+	case KVM_STATE::KVM_STOPPED:
+		id = EVENT_KVM_SESSION_STOPPED;
+		actionstr = STOPED_STR;
+		break;
+	case KVM_STATE::KVM_DATA_CHANNEL:
+		id = EVENT_KVM_DATA_CHANNEL;
+		actionstr = DATA_CHANNEL_STR;
+		break;
+	}
+	Message += actionstr;
+	raiseGMS_AlertIndication(CATEGORY_KVM, id, getDateTime(), ACTIVE_MESSAGEID, Message);
 }
 
 // Request display settings from IMSS - called only after the machine state was updated in the registry 

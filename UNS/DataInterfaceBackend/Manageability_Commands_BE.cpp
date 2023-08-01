@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -53,17 +53,6 @@ namespace Intel {
 		UNS_DEBUG(L"Exception in " func L" %C\n", reason); \
 	}
 
-		//MEBx version
-		struct MEBX_BIOS_VER
-		{
-
-			uint16_t   MEBxMinor;
-			uint16_t   MEBxMajor;
-			uint16_t   MEBxBuildNo;
-			uint16_t   MEBxHotFix;
-		};
-
-
 		void MenageabiltyModeLogic(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE platform, MENAGEABILTY_MODE &pMode)
 		{
 			switch (platform.Fields.Brand)
@@ -103,14 +92,14 @@ namespace Intel {
 		}
 
 
-		Manageability_Commands_BE::Manageability_Commands_BE(bool isPfwUp) : Common_BE(isPfwUp)
+		Manageability_Commands_BE::Manageability_Commands_BE(unsigned int port) : Common_BE(port)
 		{
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetTheFeatureState(FEATURES feat, FEATURE_STATE &pState)
 		{
 			if ((feat < 0) || (feat >= FEATURES_NUM))
-				return ERROR_INVALIDARG;
+				return LMS_ERROR::INVALIDARG;
 
 			try
 			{
@@ -131,10 +120,10 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt, AvailData.Fields.Amt);
 					break;
 				case IRWT:
-					pState = FeatureStateLogic(CapabilityData.Fields.Irwt, StateData.Fields.Irwt, AvailData.Fields.Irwt);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Irwt, StateData.Fields.Irwt, AvailData.Fields.Irwt);
 					break;
 				case QST:
-					pState = FeatureStateLogic(CapabilityData.Fields.Qst, StateData.Fields.Qst, AvailData.Fields.Qst);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Qst, StateData.Fields.Qst, AvailData.Fields.Qst);
 					break;
 				case TDT:
 					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Tdt, StateData.Fields.Tdt, AvailData.Fields.Tdt);
@@ -143,33 +132,25 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.SoftCreek, StateData.Fields.SoftCreek, AvailData.Fields.SoftCreek);
 					break;
 				case VE:
-					pState = FeatureStateLogic(CapabilityData.Fields.Ve, StateData.Fields.Ve, AvailData.Fields.Ve);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Ve, StateData.Fields.Ve, AvailData.Fields.Ve);
 					break;
-					//this feature doesn't exist in the MKHI command
-					/*case DT:
-							pState=FeatureStateLogic(CapabilityData.Fields.Dt, StateData.Fields.Dt, AvailData.Fields.Dt);
-							break;*/
 				case NAND:
-					pState = FeatureStateLogic(CapabilityData.Fields.Nand29, StateData.Fields.Nand29, AvailData.Fields.Nand29);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Nand29, StateData.Fields.Nand29, AvailData.Fields.Nand29);
 					break;
-					//this feature doesn't exist in the MKHI command
-					/*case MPC:
-							pState=FeatureStateLogic(CapabilityData.Fields.Mpc, StateData.Fields.Mpc, AvailData.Fields.Mpc);
-							break;*/
 				case ICC_OVER_CLOCK_IN:
-					pState = FeatureStateLogic(CapabilityData.Fields.IccOverClockin, StateData.Fields.IccOverClockin, AvailData.Fields.IccOverClockin);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.IccOverClockin, StateData.Fields.IccOverClockin, AvailData.Fields.IccOverClockin);
 					break;
 				case PAV:
 					pState = FeatureStateLogic(CapabilityData.Fields.Pav, StateData.Fields.Pav, AvailData.Fields.Pav);
 					break;
 				case SPK:
-					pState = FeatureStateLogic(CapabilityData.Fields.Spk, StateData.Fields.Spk, AvailData.Fields.Spk);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Spk, StateData.Fields.Spk, AvailData.Fields.Spk);
 					break;
 				case RCA:
 					pState = FeatureStateLogic(CapabilityData.Fields.Rca, StateData.Fields.Rca, AvailData.Fields.Rca);
 					break;
 				case RPAT:
-					pState = FeatureStateLogic(CapabilityData.Fields.Rpat, StateData.Fields.Rpat, AvailData.Fields.Rpat);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.Rpat, StateData.Fields.Rpat, AvailData.Fields.Rpat);
 					break;
 				case IPV6:
 					pState = FeatureStateLogic(CapabilityData.Fields.Ipv6, StateData.Fields.Ipv6, AvailData.Fields.Ipv6);
@@ -178,7 +159,7 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Kvm, StateData.Fields.Kvm, AvailData.Fields.Kvm);
 					break;
 				case OCH:
-					pState = FeatureStateLogic(CapabilityData.Fields.Och, StateData.Fields.Och, AvailData.Fields.Och);
+					pState = FeatureStateLogic(CapabilityData.Fields.Amt, StateData.Fields.Amt, AvailData.Fields.Amt); // as Fields.Och deprecated
 					break;
 				case DAL:
 					pState = FeatureStateLogic(CapabilityData.Fields.MEDAL, StateData.Fields.MEDAL, AvailData.Fields.MEDAL);
@@ -190,20 +171,20 @@ namespace Intel {
 					pState = FeatureStateLogic(CapabilityData.Fields.Cila, StateData.Fields.Cila, AvailData.Fields.Cila);
 					break;
 				case LAKEHOUSTON:
-					pState = FeatureStateLogic(CapabilityData.Fields.LakeHouston, StateData.Fields.LakeHouston, AvailData.Fields.LakeHouston);
+					pState = NOT_PRESENT; // FeatureStateLogic(CapabilityData.Fields.LakeHouston, StateData.Fields.LakeHouston, AvailData.Fields.LakeHouston);
 					break;
 				case PSR:
 					pState = FeatureStateLogic(CapabilityData.Fields.PSR, StateData.Fields.PSR, AvailData.Fields.PSR);
 				break;
 				default:
-					return ERROR_INVALIDARG;
+					return LMS_ERROR::INVALIDARG;
 				}
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_MKHIErrorException(L"GetTheFeatureState")
 			CATCH_MEIClientException(L"GetTheFeatureState")
 			CATCH_exception(L"GetTheFeatureState")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		CUSTOMER_TYPE GetPlatformTypeExt(const Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE *Platform)
@@ -229,13 +210,13 @@ namespace Intel {
 
 				pType = GetPlatformTypeExt(&Platform);
 				if (pType == WRONG_CUSTOMER_TYPE)
-					return ERROR_UNEXPECTED;
-				return ERROR_OK;
+					return LMS_ERROR::UNEXPECTED;
+				return LMS_ERROR::OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeExt")
 			CATCH_MEIClientException(L"GetPlatformTypeExt")
 			CATCH_exception(L"GetPlatformTypeExt")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetMenageabiltyMode(MENAGEABILTY_MODE &pMode)
@@ -247,12 +228,12 @@ namespace Intel {
 
 				MenageabiltyModeLogic(Platform, pMode);
 				UNS_DEBUG(L"CManageability_Commands::GetMenageabiltyMode platform=0x%X MenageabilityMode=%d\n", Platform, pMode);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			CATCH_MKHIErrorException(L"GetPlatformTypeCommand")
 			CATCH_MEIClientException(L"GetPlatformTypeCommand")
 			CATCH_exception(L"GetPlatformTypeCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 
 		LMS_ERROR Manageability_Commands_BE::GetFWInfo(std::string &pMEBxVersion, unsigned long &pBiosBootState, bool &pCryptoFuseEnable, bool &pLocalFWupdateEnable)
@@ -283,26 +264,22 @@ namespace Intel {
 			}
 			else
 			{
-				MEBX_BIOS_VER version;
-
 				//use SMBIOS to get MEBx version
-				SMBIOS_Reader sm_reader;
-				if (sm_reader.CheckForSmbiosFlags() == 0)
+				try
 				{
-					version.MEBxMajor = sm_reader.pCapabilities.MEBx_Major;
-					version.MEBxMinor = sm_reader.pCapabilities.MEBx_Minor;
-					version.MEBxHotFix = sm_reader.pCapabilities.MEBx_Hotfix;
-					version.MEBxBuildNo = sm_reader.pCapabilities.MEBx_Build;
+					SMBIOS_Reader sm_reader;
+					if (sm_reader.CheckForSmbiosFlags() != 0)
+					{
+						return LMS_ERROR::FAIL;
+					}
+					std::stringstream ss;
+					ss << sm_reader.pCapabilities.MEBx_Major << "." <<
+						sm_reader.pCapabilities.MEBx_Minor << "." <<
+						sm_reader.pCapabilities.MEBx_Hotfix << ".";
+					ss << std::setfill('0') << std::setw(4) << sm_reader.pCapabilities.MEBx_Build;
+					pMEBxVersion = ss.str();
 				}
-				else
-				{
-					return ERROR_FAIL;
-				}
-
-				std::stringstream ss;
-				ss << version.MEBxMajor << "." << version.MEBxMinor << "." << version.MEBxHotFix << ".";
-				ss << std::setfill('0') << std::setw(4) << version.MEBxBuildNo;
-				pMEBxVersion = ss.str();
+				CATCH_exception(L"SMBIOS_Reader")
 			}
 
 			if (isME12andUp)
@@ -365,10 +342,10 @@ namespace Intel {
 			CATCH_exception(L"GetFWUpdateStateCommand")
 			UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
 				pMEBxVersion.c_str(), pBiosBootState, pCryptoFuseEnable, pLocalFWupdateEnable);
-			return ERROR_OK;
+			return LMS_ERROR::OK;
 		}
 
-#define FPT_PARTITION_NAME_PMCP 0x50434D50 /**< "PMCP" Partition Name*/
+		static const uint32_t FPT_PARTITION_NAME_PMCP = 0x50434D50; /**< "PMCP" Partition Name*/
 
 		LMS_ERROR Manageability_Commands_BE::GetPMCVersion(std::string &pFwVer)
 		{
@@ -396,7 +373,7 @@ namespace Intel {
 					if (res.NumOfModules != 1)
 					{
 						UNS_DEBUG(L"GetFWVersionCommand returned wrong number of modules %d\n", res.NumOfModules);
-						return ERROR_FAIL;
+						return LMS_ERROR::FAIL;
 					}
 
 					std::stringstream ss;
@@ -406,18 +383,18 @@ namespace Intel {
 					ss << std::setfill('0') << std::setw(4) << res.ManifestData[0].Version.Build;
 					pFwVer = ss.str();
 
-					return ERROR_OK;
+					return LMS_ERROR::OK;
 				}
 				CATCH_MKHIErrorException(L"GetImageFWVersionCommand")
 				CATCH_MEIClientException(L"GetImageFWVersionCommand")
 				CATCH_exception(L"GetImageFWVersionCommand")
-				return ERROR_FAIL;
+				return LMS_ERROR::FAIL;
 			}
 			else
 			{
 				// No PMCP partition in FW < 12
 				pFwVer = "";
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 		}
 
@@ -430,18 +407,18 @@ namespace Intel {
 				pState = measuredBootState.State != 0;
 
 				UNS_DEBUG("measuredBootState=%d\n", pState);
-				return ERROR_OK;
+				return LMS_ERROR::OK;
 			}
 			catch (Intel::MEI_Client::MKHI_Client::MKHIErrorException& e)
 			{
 				unsigned int errNo = e.getErr();
 				UNS_DEBUG(L"GetMeasuredBootStateCommand failed ret=%d\n", errNo);
 				if (errNo == Intel::MEI_Client::MKHI_Client::MKHI_STATUS_INVALID_COMMAND) 
-					return ERROR_NOT_SUPPORTED_BY_FW;
+					return LMS_ERROR::NOT_SUPPORTED_BY_FW;
 			}
 			CATCH_MEIClientException(L"GetMeasuredBootStateCommand")
 			CATCH_exception(L"GetMeasuredBootStateCommand")
-			return ERROR_FAIL;
+			return LMS_ERROR::FAIL;
 		}
 	}
 }

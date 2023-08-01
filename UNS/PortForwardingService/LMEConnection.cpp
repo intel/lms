@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -26,7 +26,7 @@ const uint32_t LMEConnection::RX_WINDOW_SIZE = 1024; // TBD Choose optimal windo
 
 LMEConnection::LMEConnection(bool verbose): _txBuffer(NULL), _initState(INIT_STATE_DISCONNECTED),
 				_cb(NULL), _signalSelectCallback(nullptr), _cbParam(NULL), _heci(GenerateLMEClient(verbose)),
-				_threadStartedEvent(1), _portIsOk(1),
+				_threadStartedEvent(1), _portIsOk(1), m_portForwardingPort(0),
 				_selfDisconnect(false), _clientNotFound(false), aceMgr_(nullptr), _rxThread(0)
 {
 	_devNotify = NULL;
@@ -77,6 +77,14 @@ bool LMEConnection::Init(InitParameters & params)
 		try
 		{
 			_heci->Init();
+
+			// Register Device Notification
+			if (_devNotify != nullptr)
+			{
+				HANDLE drvHandle = _heci.get()->GetHandle();
+				if (drvHandle)
+					_devNotify(_devNotifyParam, &_notifyHandle, drvHandle, true);
+			}
 		}
 		catch (HeciNoClientException& e)
 		{
@@ -95,15 +103,7 @@ bool LMEConnection::Init(InitParameters & params)
 			return res;
 		}
 
-		// Register Device Notification
-		if (_devNotify != nullptr)
-		{
-			HANDLE drvHandle = _heci.get()->GetHandle();
-			if (drvHandle)
-				_devNotify(_devNotifyParam, &_notifyHandle, drvHandle, true);
-		}
-
-		// resert events
+		// reset events
 		_portIsOk.reset();
 
 		// launch RX thread
@@ -151,6 +151,7 @@ void LMEConnection::DeinitInternal()
 {
 	_heci->Deinit();
 	_initState = INIT_STATE_DISCONNECTED;
+	m_portForwardingPort = 0;
 
 	if (aceMgr_)
 		aceMgr_->cancel(_rxThread, 0);
@@ -191,7 +192,7 @@ bool LMEConnection::Disconnect(APF_DISCONNECT_REASON_CODE reasonCode)
 	disconnectMessage->ReasonCode = htonl(reasonCode);
 
 	UNS_DEBUG(L"==>LME: Disconnect.\n");
-	int res = _sendMessage(buf, sizeof(buf));
+	ssize_t res = _sendMessage(buf, sizeof(buf));
 
 	_selfDisconnect = true;
 
@@ -218,7 +219,7 @@ bool LMEConnection::ServiceAccept(const std::string &serviceName)
 	std::copy(serviceName.begin(), serviceName.end(), apfSam->ServiceName);
 
 	UNS_DEBUG(L"==>LME: Service accept: %C\n", serviceName.c_str());
-	int res = _sendMessage(buf.data(), messageLen);
+	ssize_t res = _sendMessage(buf.data(), messageLen);
 	return (res == messageLen);
 }
 
@@ -234,7 +235,7 @@ bool LMEConnection::UserAuthSuccess()
 	unsigned char buf = APF_USERAUTH_SUCCESS;
 
 	UNS_DEBUG(L"==>LME: User authentication success.\n");
-	int res = _sendMessage(&buf, sizeof(buf));
+	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
 }
@@ -257,7 +258,7 @@ bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage versionMessa
 	protVersion.TriggerReason = htonl(versionMessage.TriggerReason);
 
 	UNS_DEBUG(L"==>LME: Protocol version: %d.%d.%d\n", versionMessage.MajorVersion, versionMessage.MinorVersion, versionMessage.TriggerReason);
-	int res = _sendMessage((unsigned char *)&protVersion, sizeof(protVersion));
+	ssize_t res = _sendMessage((unsigned char *)&protVersion, sizeof(protVersion));
 
 	return (res == sizeof(protVersion));
 }
@@ -277,7 +278,7 @@ bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
 	message.PortBound = htonl(port);
 
 	UNS_DEBUG(L"==>LME: TCP forward replay success, Port %d.\n", port);
-	int res = _sendMessage((unsigned char *)&message, sizeof(message));
+	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
 
@@ -295,7 +296,7 @@ bool LMEConnection::TcpForwardReplyFailure() {
 	unsigned char buf = APF_REQUEST_FAILURE;
 
 	UNS_DEBUG(L"==>LME: TCP forward replay failure.\n");
-	int res = _sendMessage(&buf, sizeof(buf));
+	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
 
@@ -313,7 +314,7 @@ bool LMEConnection::TcpForwardCancelReplySuccess() {
 	unsigned char buf = APF_REQUEST_SUCCESS;
 
 	UNS_DEBUG(L"==>LME: TCP forward cancel replay success.\n");
-	int res = _sendMessage(&buf, sizeof(buf));
+	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
 
@@ -331,7 +332,7 @@ bool LMEConnection::TcpForwardCancelReplyFailure() {
 	unsigned char buf = APF_REQUEST_FAILURE;
 
 	UNS_DEBUG(L"==>LME: TCP forward cancel replay failure\n");
-	int res = _sendMessage(&buf, sizeof(buf));
+	ssize_t res = _sendMessage(&buf, sizeof(buf));
 
 	return (res == sizeof(buf));
 
@@ -403,7 +404,7 @@ bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const st
 	UNS_DEBUG(L"==>LME: OPEN_CHANNEL_REQUEST, Address: %C:%d.\n", originatorIP.c_str(), connectedPort);
 
 	int actualLen = (int)(pCurrent - buf);
-	int res = _sendMessage(buf, actualLen);
+	ssize_t res = _sendMessage(buf, actualLen);
 
 	delete[] buf;
 	return (res == actualLen);
@@ -428,7 +429,7 @@ bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t
 	message.Reserved = 0xFFFFFFFF;
 
 	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_CONFIRMATION\n", recipientChannel);
-	int res = _sendMessage((unsigned char *)&message, sizeof(message));
+	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
 
@@ -452,7 +453,7 @@ bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t
 	message.Reserved2 = 0x00000000;
 
 	UNS_DEBUG(L"==>LME[%d]: CHANNEL_OPEN_FAILURE, Reason: %d\n", recipientChannel, reason);
-	int res = _sendMessage((unsigned char *)&message, sizeof(message));
+	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
 
@@ -473,13 +474,13 @@ bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
 	message.RecipientChannel = htonl(recipientChannel);
 
 	UNS_DEBUG(L"==>LME[%d]: Channel close\n", recipientChannel);
-	int res = _sendMessage((unsigned char *)&message, sizeof(message));
+	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
 
 }
 
-int LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer) {
+ssize_t LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer) {
 
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
@@ -523,13 +524,13 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 	message.BytesToAdd = htonl(len);
 
 	UNS_TRACE(L"==>LME[%d]: Window Adjust with %d bytes\n", recipientChannel, len);
-	int res = _sendMessage((unsigned char *)&message, sizeof(message));
+	ssize_t res = _sendMessage((unsigned char *)&message, sizeof(message));
 
 	return (res == sizeof(message));
 
 }
 
-int LMEConnection::_receiveMessage(unsigned char *buffer, int len)
+ssize_t LMEConnection::_receiveMessage(unsigned char *buffer, size_t len)
 {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
@@ -549,7 +550,7 @@ int LMEConnection::_receiveMessage(unsigned char *buffer, int len)
 	}
 }
 
-int LMEConnection::_sendMessage(unsigned char *buffer, int len)
+ssize_t LMEConnection::_sendMessage(unsigned char *buffer, size_t len)
 {
 	INIT_STATES initState = getInitState();
 	if (initState != INIT_STATE_CONNECTED)
@@ -558,20 +559,17 @@ int LMEConnection::_sendMessage(unsigned char *buffer, int len)
 		return -1;
 	}
 
-	int result = -1;
-
 	std::lock_guard<std::mutex> lock(_sendMessageLock);
 
 	try
 	{
-		result = _heci->SendHeciMessage(buffer, len, HECI_IO_TIMEOUT);
+		return _heci->SendHeciMessage(buffer, len, HECI_IO_TIMEOUT);
 	}
 	catch (HECIException& e)
 	{
 		UNS_ERROR(L"Error sending data to HECI. Error: %C\n", e.what());
+		return -1;
 	}
-
-	return result;
 }
 
 void LMEConnection::_rxThreadFunc(void *param)
@@ -591,7 +589,7 @@ void LMEConnection::_doRX()
 {
 	_threadStartedEvent.signal();
 	unsigned char *pCurrent;
-	int bytesRead;
+	ssize_t bytesRead;
 
 	std::vector<unsigned char> rxBufferVector(GetBufferSize());
 	unsigned char *rxBuffer = rxBufferVector.data();
@@ -776,8 +774,10 @@ void LMEConnection::_doRX()
 
 						_cb(_cbParam, &tcpForwardRequest, sizeof(tcpForwardRequest), &status);
 
-						if (tcpForwardRequest.Port == AMT_NON_SECURE_PORT && status == 0)
+						if (status == 0 && m_portForwardingPort == 0 &&
+							(tcpForwardRequest.Port == AMT_NON_SECURE_PORT || tcpForwardRequest.Port == AMT_SECURE_PORT))
 						{
+							m_portForwardingPort = tcpForwardRequest.Port;
 							UNS_DEBUG(L"_portIsOk\n");
 							_portIsOk.signal();
 						}

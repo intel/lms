@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -70,7 +70,7 @@ HRESULT CManageability_Commands::GetTheFeatureState(FEATURES feat, FEATURE_STATE
 		return E_ACCESSDENIED;
 
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.GetTheFeatureState(feat, *pState);
 	return LMSError2HRESULT(err);
 }
@@ -101,7 +101,7 @@ HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
 	if (CheckCredentials(GetCustomerType_F) != S_OK)
 		return E_ACCESSDENIED;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.GetCustomerType(*pType);
 	return LMSError2HRESULT(err);
 }
@@ -132,7 +132,7 @@ HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
 	if (CheckCredentials(GetMenageabiltyMode_F) != S_OK)
 		return E_ACCESSDENIED;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.GetMenageabiltyMode(*pMode);
 	return LMSError2HRESULT(err);
 }
@@ -165,9 +165,9 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 	bool CryptoFuseEnable;
 	bool LocalFWupdateEnable;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.GetFWInfo(MEBxVersion, BiosBootState, CryptoFuseEnable, LocalFWupdateEnable);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(MEBxVersion.c_str());
@@ -197,9 +197,9 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 
 	std::string FwVer;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.GetPMCVersion(FwVer);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	ATL::CComBSTR bstr(FwVer.c_str());
@@ -225,9 +225,9 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 
 	bool state;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingStarted());
+	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
 	Intel::LMS::LMS_ERROR err = be.IsMeasuredBootState(state);
-	if (err != Intel::LMS::ERROR_OK)
+	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
 	*pState = state ? VARIANT_TRUE : VARIANT_FALSE;

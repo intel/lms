@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "PortForwardingService.h"
 
@@ -233,7 +233,7 @@ public:
 				}
 			}
 
-			m_father->BroadcastActive();
+			m_father->BroadcastActive(m_prot.GetLMEConnection().GetPortForwardingPort());
 
 			// Select on active sockets (IANA ports and open connections).
 			if (m_prot.Select() < 0) {
@@ -288,7 +288,9 @@ int
 PortForwardingService::init (int argc, ACE_TCHAR *argv[])
 {
 	UNS_DEBUG(L"PFWS: started\n");
-	initSubService(argc, argv);
+	int ret = initSubService(argc, argv);
+	if (ret)
+		return ret;
 
 	m_lmsMainThread = new LMS_Thread_Impl(this);
 	m_lmsMainThread->activate();
@@ -326,7 +328,7 @@ int PortForwardingService::resume()
 }
 
 
-void PortForwardingService::BroadcastActive()
+void PortForwardingService::BroadcastActive(unsigned int portForwardingPort)
 {
 	if (!m_needBroadcastStarted && !m_needBroadcastResumed && !m_needBroadcastPfwActivated)
 	{
@@ -352,7 +354,7 @@ void PortForwardingService::BroadcastActive()
 	}
 
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-	mbPtr->data_block(new ACE_Data_Block());
+	mbPtr->data_block(new PortForwardingStartedBlock(portForwardingPort));
 	mbPtr->msg_type(MB_PORT_FORWARDING_STARTED);
 	m_mainService->sendMessage(GMS_CONFIGURATOR, mbPtr);
 }

@@ -13,6 +13,7 @@
  * $Id: shttpd.c,v 1.57 2008/08/23 21:00:38 drozd Exp $
  */
 
+#include <grp.h>
 #include "defs.h"
 #include "wsmand-daemon.h"
 
@@ -1426,12 +1427,15 @@ set_uid(struct shttpd_ctx *ctx, const char *uid)
 #if !defined(_WIN32)
 	if ((pw = getpwnam(uid)) == NULL)
 		_shttpd_elog(E_FATAL, 0, "%s: unknown user [%s]", __func__, uid);
-	else if (setgid(pw->pw_gid) == -1)
+	else {
+            setgroups(0, NULL);
+            if (setgid(pw->pw_gid) == -1)
 		_shttpd_elog(E_FATAL, NULL, "%s: setgid(%s): %s",
 		    __func__, uid, strerror(errno));
-	else if (setuid(pw->pw_uid) == -1)
+	    else if (setuid(pw->pw_uid) == -1)
 		_shttpd_elog(E_FATAL, NULL, "%s: setuid(%s): %s",
 		    __func__, uid, strerror(errno));
+        }
 #endif /* !_WIN32 */
 	return (TRUE);
 }

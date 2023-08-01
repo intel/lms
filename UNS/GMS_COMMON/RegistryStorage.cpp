@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -12,6 +12,13 @@
 #include "RegistryCache.h"
 #include <climits>
 #include <memory>
+
+#ifndef REG_SZ
+const unsigned long REG_SZ = 1ul;
+#endif // REG_SZ
+#ifndef REG_DWORD
+const unsigned long REG_DWORD = 4ul;
+#endif // REG_DWORD
 
 DECLARE_CACHE()
 
@@ -59,14 +66,14 @@ bool
 RegistryStorage::GetDataValue(DATA_NAME name, std::string& value, bool withCache)
 {
 	CHECK_NAME_VALID(name)
-	ValueTypes requestedType = VAL_STR;
+	unsigned long requestedType = REG_SZ;
 
 
 	RegEntry entry = _regMap->at(name);
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = 0;
+	size_t valsz = 0;
 	unsigned long type;
 			
 	if (GetRegistryData(NULL, &valsz, &type, key, value_name, withCache) == true)
@@ -100,7 +107,7 @@ RegistryStorage::ValueExists(DATA_NAME name)
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = 0;
+	size_t valsz = 0;
 	unsigned long type;
 	if (GetRegistryData(NULL, &valsz, &type, key, value_name, false) == true)
 	{
@@ -113,11 +120,11 @@ bool
 RegistryStorage::GetDataValue(DATA_NAME name, std::wstring& value, bool withCache)
 {
 	CHECK_NAME_VALID(name)
-	ValueTypes requestedType = VAL_STR;
+	unsigned long requestedType = REG_SZ;
 	RegEntry entry = _regMap->at(name);
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = 0;
+	size_t valsz = 0;
 	unsigned long type;
 	if (GetRegistryData(NULL, &valsz, &type, key, value_name, withCache) == true)
 	{
@@ -125,7 +132,7 @@ RegistryStorage::GetDataValue(DATA_NAME name, std::wstring& value, bool withCach
 		{
 			return false;
 		}
-		unsigned long wsize = valsz / sizeof(wchar_t);
+		size_t wsize = valsz / sizeof(wchar_t);
 		std::unique_ptr<wchar_t[]> newVal(new wchar_t[wsize + 1]);
 		if(GetRegistryData(newVal.get(), &valsz, &type, key, value_name, withCache)!=true)
 		{
@@ -142,12 +149,12 @@ bool
 RegistryStorage::GetDataValue(DATA_NAME name, unsigned long& value, bool withCache)
 {
 	CHECK_NAME_VALID(name)
-	ValueTypes requestedType = VAL_ULONG;
+	unsigned long requestedType = REG_DWORD;
 	RegEntry entry = _regMap->at(name);
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
-    unsigned long valsz = sizeof(value);
+	size_t valsz = sizeof(value);
 	unsigned long type;
 	
 	if (GetRegistryData(&value, &valsz, &type, key, value_name, withCache) == true)
@@ -168,7 +175,7 @@ RegistryStorage::SetDataValue(DATA_NAME name, const std::string& value, bool wit
 {
 	CHECK_NAME_VALID(name)
 	RegEntry entry = _regMap->at(name);
-	unsigned long type = VAL_STR;
+	unsigned long type = REG_SZ;
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
@@ -181,7 +188,7 @@ RegistryStorage::SetDataValue(DATA_NAME name, const std::wstring& value, bool wi
 {
 	CHECK_NAME_VALID(name)
 	RegEntry entry = _regMap->at(name);
-	unsigned long type = VAL_STR;
+	unsigned long type = REG_SZ;
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;
 	
@@ -193,7 +200,7 @@ RegistryStorage::SetDataValue(DATA_NAME name, unsigned long value, bool withCach
 {
 	CHECK_NAME_VALID(name)
 	RegEntry entry = _regMap->at(name);
-	unsigned long type = VAL_ULONG;
+	unsigned long type = REG_DWORD;
 	
 	const LmsRegStr &key = entry.first;
 	const LmsRegStr &value_name = entry.second;

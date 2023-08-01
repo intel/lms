@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -140,7 +140,7 @@ STDMETHODIMP CMethodPro::ExecMethodAsync(const BSTR ObjectPath, const BSTR Metho
             IWbemObjectSink* pResponseHandler)
 {
 	HRESULT hr = S_OK;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try {
 		CComPtr<IWbemClassObject> pClass;
@@ -168,7 +168,7 @@ SCODE CMethodPro::CreateInstanceEnumAsync( const BSTR RefStr, long lFlags,
 										  IWbemContext *pCtx, IWbemObjectSink FAR* pHandler)
 {
 	HRESULT hr = S_OK;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -219,7 +219,7 @@ HRESULT CMethodPro::GetObjectAsync(
 								  /*[in] */ IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	HRESULT hr = S_OK;
-	EntryExitLog log(__FUNCTION__, hr);
+	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
@@ -231,7 +231,12 @@ HRESULT CMethodPro::GetObjectAsync(
 				CLSCTX_INPROC_SERVER,
 				IID_IWbemPath,
 				(LPVOID *)&pParser);
-			// -- do something
+			if (hr != S_OK)
+			{
+				WMIHandleSetStatus(m_pWbemSvcs, pResponseHandler, WBEM_E_FAILED);
+				UNS_ERROR("%C WBEM_E_FAILED", __FUNCTION__);
+				break;
+			}
 
 			pParser->SetText(WBEMPATH_CREATE_ACCEPT_ALL,strClass);
 			wchar_t className [256];

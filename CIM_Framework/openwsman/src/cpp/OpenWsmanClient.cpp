@@ -26,8 +26,6 @@ using namespace WsmanClientNamespace;
 
 static bool CheckWsmanResponse(WsManClient* cl, WsXmlDocH& doc);
 static bool ResourceNotFound(WsManClient* cl, WsXmlDocH& enumerationRes);
-static string XmlDocToString(WsXmlDocH& doc);
-static client_opt_t *SetOptions(WsManClient* cl);
 static string GetSubscribeContext(WsXmlDocH& doc);
 static string ExtractPayload(WsXmlDocH& doc);
 static string ExtractItems(WsXmlDocH& doc);
@@ -42,7 +40,7 @@ OpenWsmanClient::OpenWsmanClient(
 	const string &auth_method,
 	const string &username,
 	const string &password,
-	// proxy address include proxy port
+	 // proxy address include proxy port
 	const string &proxy,
 	//proxy user name
 	const string &proxy_username,
@@ -435,20 +433,6 @@ string ExtractItems(WsXmlDocH& doc)
 	return payload;
 }
 
-string XmlDocToString(WsXmlDocH& doc) {
-	char *buf;
-	int  len;
-	ws_xml_dump_memory_enc(doc, &buf, &len, WSMAN_ENCODING);
-	string str = (buf) ? string(buf) : "";	// This constructor copies the data.
-	if (buf)
-#ifdef _WIN32
-		ws_xml_free_memory(buf);
-#else
-	u_free(buf);
-#endif
-	return str;
-}
-
 bool CheckWsmanResponse(WsManClient* cl, WsXmlDocH& doc)
 {
 	long lastError = wsmc_get_last_error(cl);
@@ -583,6 +567,15 @@ void OpenWsmanClient::SetProxy(
 
         if (!proxy_password.empty())
                 wsman_transport_set_proxy_password(cl, proxy_password.c_str());
+}
+
+// Allow self-signed server certificate
+void OpenWsmanClient::AllowSelfSignedServerCert()
+{
+	// Ignore SECURITY_FLAG_IGNORE_CERT_DATE_INVALID and SECURITY_FLAG_IGNORE_UNKNOWN_CA errors.
+	wsman_transport_set_verify_peer(cl, 0);
+	// Ignore SECURITY_FLAG_IGNORE_CERT_CN_INVALID error.
+	wsman_transport_set_verify_host(cl, 0);
 }
 
 #ifdef _WIN32

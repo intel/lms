@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2020 Intel Corporation
+ * Copyright (C) 2011-2023 Intel Corporation
  */
 /*++
 
@@ -12,12 +12,13 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-TimeSynchronizationClient::TimeSynchronizationClient() : m_TimeSyncState(DEFAULT_TRUE), m_isInit(false)
+TimeSynchronizationClient::TimeSynchronizationClient(unsigned int port) :
+	BaseWSManClient(port), m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
 {
 }
 
-TimeSynchronizationClient::TimeSynchronizationClient(const std::string &User, const std::string &Password) :
-	BaseWSManClient(User, Password), m_TimeSyncState(DEFAULT_TRUE), m_isInit(false)
+TimeSynchronizationClient::TimeSynchronizationClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
 {
 }
 
@@ -45,14 +46,15 @@ bool TimeSynchronizationClient::Init()
 bool TimeSynchronizationClient::UpdateTimeSyncState()
 {
 	bool ret = false;
-	m_TimeSyncState = TIMESYNC_DISABLED; //These is FALSE value if the LocalTimeSyncEnabled FW property.
-	try{
+	m_TimeSyncState = TIMESYNCSTATE_TIMESYNC_DISABLED; //These is FALSE value if the LocalTimeSyncEnabled FW property.
+	try
+	{
 		if (m_service.LocalTimeSyncEnabledExists())
 		{
 			unsigned int state = m_service.LocalTimeSyncEnabled();
-			if (state == TIMESYNC_DISABLED || state == CONFIGURED_TRUE || state == DEFAULT_TRUE)
+			if (state == TIMESYNCSTATE_TIMESYNC_DISABLED || state == TIMESYNCSTATE_CONFIGURED_TRUE || state == TIMESYNCSTATE_DEFAULT_TRUE)
 			{
-				m_TimeSyncState = (ENABLED_STATE)state;
+				m_TimeSyncState = state;
 				ret = true;
 			}
 		}
@@ -75,7 +77,7 @@ bool TimeSynchronizationClient::GetLocalTimeSyncEnabledState(bool & state)
 		return false;
 	}
 
-	state = ((m_TimeSyncState == CONFIGURED_TRUE || m_TimeSyncState == DEFAULT_TRUE) ? true : false);
+	state = ((m_TimeSyncState == TIMESYNCSTATE_CONFIGURED_TRUE || m_TimeSyncState == TIMESYNCSTATE_DEFAULT_TRUE) ? true : false);
 
 	return true;
 }
@@ -88,19 +90,20 @@ bool TimeSynchronizationClient::GetAMTTime(unsigned int & time)
 		return false;
 	}
 
-	try{
-	int ret = m_service.GetLowAccuracyTimeSynch(m_time);
-	if (ret != 0)
+	try
 	{
-		WSMAN_ERROR("Error: Failed while calling GetLowAccuracyTimeSynch\n");
-		return false;
-	}
-	if (!m_time.Ta0Exists())
-	{
-		WSMAN_ERROR("Error: Time object doesn't exist\n");
-		return false;
-	}
-	time = m_time.Ta0();
+		int ret = m_service.GetLowAccuracyTimeSynch(m_time);
+		if (ret != 0)
+		{
+			WSMAN_ERROR("Error: Failed while calling GetLowAccuracyTimeSynch\n");
+			return false;
+		}
+		if (!m_time.Ta0Exists())
+		{
+			WSMAN_ERROR("Error: Time object doesn't exist\n");
+			return false;
+		}
+		time = m_time.Ta0();
 	}
 	CATCH_exception_return("TimeSynchronizationClient::GetAMTTime")
 	return true;
@@ -111,16 +114,19 @@ bool TimeSynchronizationClient::SetAMTTime(unsigned int time)
 	if (!Init())
 		return false;
 	
-	Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService::SetHighAccuracyTimeSynch_INPUT input;
 	unsigned int currTime = 0;
 	if (!GetAMTTime(currTime))
 	{
 		return false;
 	}
-	input.Ta0(currTime);
-	input.Tm1(time);
-	input.Tm2(time);
-	try{
+
+	try {
+		Intel::Manageability::Cim::Typed::AMT_TimeSynchronizationService::SetHighAccuracyTimeSynch_INPUT input;
+
+		input.Ta0(currTime);
+		input.Tm1(time);
+		input.Tm2(time);
+
 		int ret = m_service.SetHighAccuracyTimeSynch(input);
 		if (ret != 0)
 		{

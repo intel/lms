@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "IPS_SolSessionUsingPort.h"
 #include "AMT_EthernetPortSettings.h"
@@ -8,11 +8,12 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient() : m_LinkTechnology(0)
+IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient(unsigned int port) : BaseWSManClient(port), m_LinkTechnology(0)
 {
 }
 
-IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient(const std::string &User, const std::string &Password) : BaseWSManClient(User, Password), m_LinkTechnology(0)
+IPSSolSessionUsingPortClient::IPSSolSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password) :
+	BaseWSManClient(port, User, Password), m_LinkTechnology(0)
 {
 }
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -15,20 +15,18 @@ namespace Intel {
 		namespace UPID_Client {
 			SetUPIDFeatureStateCommand::SetUPIDFeatureStateCommand(bool featureState)
 			{
-				std::shared_ptr<MEICommandRequest> tmp(new SetUPIDFeatureStateRequest(featureState));
-				m_request = tmp;
+				m_request = std::make_shared<SetUPIDFeatureStateRequest>(featureState);
 				Transact();
 			}
 
 			UPID_PLATFORM_ID_FEATURE_STATE_SET_Response SetUPIDFeatureStateCommand::getResponse()
 			{
-				return m_response->getResponse();
+				return m_response.getResponse();
 			}
 
 			void  SetUPIDFeatureStateCommand::parseResponse(const std::vector<uint8_t>& buffer)
 			{
-				std::shared_ptr<UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_SET_Response>> tmp(new UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_SET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_SET));
-				m_response = tmp;
+				m_response = UPIDCommandResponse<UPID_PLATFORM_ID_FEATURE_STATE_SET_Response>(buffer, UPID_COMMAND_FEATURE_PLATFORM_ID, UPID_COMMAND_PLATFORM_ID_FEATURE_STATE_SET);
 			}
 
 			std::vector<uint8_t> SetUPIDFeatureStateRequest::SerializeData()

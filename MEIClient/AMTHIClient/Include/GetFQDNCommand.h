@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -25,6 +25,8 @@ namespace Intel
 		{
 			struct GET_FQDN_RESPONSE
 			{
+				GET_FQDN_RESPONSE() : SharedFQDN(false), DDNSUpdateEnabled(false), DDNSPeriodicUpdateInterval(0),
+					DDNSTTL(0), HostNameLength(0) {}
 				bool        SharedFQDN;
 				bool        DDNSUpdateEnabled;
 				uint32_t    DDNSPeriodicUpdateInterval;
@@ -47,42 +49,38 @@ namespace Intel
 				}
 			};
 
-			class GetFQDNRequest;
-			class GetFQDNCommand : public AMTHICommand
-			{
-			public:
-
-				GetFQDNCommand();
-				virtual ~GetFQDNCommand() {}
-
-				GET_FQDN_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GET_FQDN_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800056;
-			};
-
 			class GetFQDNRequest : public AMTHICommandRequest
 			{
 			public:
-				GetFQDNRequest() {}
+				GetFQDNRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetFQDNRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000056;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetFQDNCommand : public AMTHICommand
+			{
+			public:
+
+				GetFQDNCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetFQDNRequest>();
+					Transact();
+				}
+				virtual ~GetFQDNCommand() {}
+
+				GET_FQDN_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_FQDN_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0; 
-				}
+				AMTHICommandResponse<GET_FQDN_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800056;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

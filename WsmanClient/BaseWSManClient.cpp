@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -20,15 +20,15 @@ const std::string BaseWSManClient::DEFAULT_USER = "$$uns";
 //************************************************************************
 // Default Constructor.
 //************************************************************************
-BaseWSManClient::BaseWSManClient() : m_defaultUser(DEFAULT_USER)
+BaseWSManClient::BaseWSManClient(unsigned int port) : m_port(port), m_defaultUser(DEFAULT_USER)
 {
 	Init();
 }
 
-BaseWSManClient::BaseWSManClient(const std::string &defaultUser, 
-								 const std::string &defaultPass):
-	m_defaultUser(defaultUser),
-	m_defaultPass(defaultPass.c_str())
+BaseWSManClient::BaseWSManClient(unsigned int port,
+								 const std::string &defaultUser,
+								 const std::string &defaultPass) :
+	m_port(port), m_defaultUser(defaultUser), m_defaultPass(defaultPass.c_str())
 {
 	Init();
 }
@@ -75,8 +75,8 @@ void BaseWSManClient::SetEndpoint()
 	std::lock_guard<std::mutex> lock(WsManSemaphore());
 		
 	m_client.reset(new Intel::WSManagement::CimOpenWsmanClient(m_ip,
-									  AMT_NON_SECURE_PORT,
-									  false,
+									  m_port,
+									  (m_port == AMT_SECURE_PORT),
 									  Intel::WSManagement::DIGEST,
 									  m_defaultUser,
 									  m_defaultPass.Get()));
@@ -104,7 +104,7 @@ bool BaseWSManClient::GetLocalSystemAccount()
 	catch (MEIClient::MEIClientException& e)
 	{
 		const char* reason = e.what();
-		WSMAN_ERROR("GetLocalSystemAccountCommand failed %C\n", e.what());
+		WSMAN_ERROR("GetLocalSystemAccountCommand failed %C\n", reason);
 	}
 	catch (std::exception& e)
 	{
@@ -178,7 +178,7 @@ void BaseWSManPassword::Clean()
 	if (!m_pwd)
 		return;
 
-	memset_func(m_pwd, m_size, 0);
+	memset_func(m_pwd, 0, m_size);
 	delete[] m_pwd;
 	m_pwd = nullptr;
 }

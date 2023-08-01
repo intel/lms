@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -83,7 +83,7 @@ bool PartialFWUpdateEventsFilter::defaultInitialization(std::shared_ptr<PartialF
 
 PartialFWUpdateService::PartialFWUpdateService() :
 	filter_(std::make_shared<PartialFWUpdateEventsFilter>()), m_PfuRequiredButNoPfw(false),
-	langID(PRIMARYLANGID(GetSystemDefaultLCID())), mode(INITIAL_MODE), schedPFUAfterResume_(false)
+	langID(PRIMARYLANGID(GetSystemDefaultLCID())), mode(LANGUAGE_FLOW_MODE::INITIAL), schedPFUAfterResume_(false)
 {
 	PartialFWUpdateEventsFilter::defaultInitialization(filter_);
 
@@ -151,14 +151,14 @@ int PartialFWUpdateService::handle_event (MessageBlockPtr mbPtr )
 		if (!getAllowFlashUpdate())
 		{
 			UNS_DEBUG(L"Feature disabled in registry\n");
-			publishPartialFWUpgrade_failed(LANGUAGE_MODULE, L"- feature disabled in registry", 8719);
+			publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- feature disabled in registry", 8719);
 			return 1;
 		}
 
 		pStartPFWUP = dynamic_cast<StartPFWUP*>(mbPtr->data_block());
 		if (pStartPFWUP != nullptr)
 		{
-			return partialFWUpdate(pStartPFWUP->value, MANUAL_MODE, true);
+			return partialFWUpdate(pStartPFWUP->value, LANGUAGE_FLOW_MODE::MANUAL, true);
 		}
 		else
 		{
@@ -277,20 +277,20 @@ bool PartialFWUpdateService::getPartialFWUpdateImagePath(std::wstring& value)
 // Publish events
 void PartialFWUpdateService::publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE module)
 {
-
-	FuncEntryExit<decltype(module)> fee(this, L"publishPartialFWUpgrade_begin", module);
 	ACE_TString moduleStr;
+
 	switch (module)
 	{
-	case LANGUAGE_MODULE:
+	case PARTIAL_FWU_MODULE::LANGUAGE:
 		moduleStr = ACE_TEXT("Language update");
 		break;
-	case WLAN_MODULE:
+	case PARTIAL_FWU_MODULE::WLAN:
 		moduleStr = ACE_TEXT("WLAN uCode update");
 		break;
 	default:
 		return;
 	}
+	UNS_DEBUG(L"publishPartialFWUpgrade_begin %s", moduleStr);
 	sendAlertIndicationMessage(CATEGORY_PARTIAL_FW_UPDATE, EVENT_PARTIAL_FWU_BEGIN, PARTIAL_FW_UPDATE_BEGIN_MESSAGE_INIT);
 }
 
@@ -298,7 +298,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE m
 {
 	FuncEntryExit<decltype(error)> fee(this, L"publishPartialFWUpgrade_failed", error);
 	unsigned long eventID = EVENT_PARTIAL_FWU_END_FAILURE_LANG;
-	if(module == WLAN_MODULE)
+	if(module == PARTIAL_FWU_MODULE::WLAN)
 		eventID = EVENT_PARTIAL_FWU_END_FAILURE_WLAN;
 	std::wstringstream strStream, errorStream;
 	strStream << returnValue <<L".";
@@ -321,7 +321,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 	if(returnValue == 0)
 	{
 		state = L"success";
-		if(module == WLAN_MODULE)
+		if(module == PARTIAL_FWU_MODULE::WLAN)
 			eventID = EVENT_PARTIAL_FWU_END_SUCCESS_WLAN;
 		else
 			eventID = EVENT_PARTIAL_FWU_END_SUCCESS_LANG;
@@ -329,7 +329,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 	else
 	{
 		state = L"failed with error ";
-		if(module == WLAN_MODULE)
+		if(module == PARTIAL_FWU_MODULE::WLAN)
 			eventID = EVENT_PARTIAL_FWU_END_FAILURE_WLAN;
 		else
 			eventID = EVENT_PARTIAL_FWU_END_FAILURE_LANG;
@@ -347,14 +347,13 @@ void PartialFWUpdateService::publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE modu
 
 void PartialFWUpdateService::publishMissingImageFile(PARTIAL_FWU_MODULE module)
 {
-	FuncEntryExit<decltype(module)> fee(this, L"publishMissingImageFile", module);
-
 	unsigned long eventID;
-	if(module == WLAN_MODULE)
+
+	if(module == PARTIAL_FWU_MODULE::WLAN)
 		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_WLAN;
 	else
 		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_LANG;
-
+	UNS_DEBUG(L"publishMissingImageFile %d", module);
 	sendAlertIndicationMessage(CATEGORY_PARTIAL_FW_UPDATE, eventID, MISSING_IMAGE_FILE_MSG);
 }
 
@@ -451,11 +450,13 @@ public:
 		major(_major), minor(_minor), hotfix(_hotfix), build(_build) {}
 	PFUBase& operator = (const PFUBase &other)
 	{
-		major = other.major;
-		minor = other.minor;
-		hotfix = other.hotfix;
-		build = other.build;
-
+		if (this != &other)
+		{
+			major = other.major;
+			minor = other.minor;
+			hotfix = other.hotfix;
+			build = other.build;
+		}
 		return *this;
 	}
 	PFUBase(const PFUBase &other)
@@ -545,9 +546,11 @@ public:
 	}
 	PFUFile& operator = (const PFUFile &other)
 	{
-		PFUBase::operator=(other);
-		filename = other.filename;
-
+		if (this != &other)
+		{
+			PFUBase::operator=(other);
+			filename = other.filename;
+		}
 		return *this;
 	}
 	PFUFile(const PFUFile &other) : PFUBase(other)
@@ -747,23 +750,23 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		languageID = getUCLanguageID();
 	}
 
-	SIOWSManClient client;
-	UINT32 currentLang = 0;
+	SIOWSManClient client(m_mainService->GetPortForwardingPort());
+	unsigned short currentLang = 0;
 
-	if (!client.GetSpriteLanguage((unsigned short*)&currentLang))
+	if (!client.GetSpriteLanguage(&currentLang))
 	{
-		publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to get FW status", 8725);
+		publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
 		return res;
 	}
 
-	UNS_DEBUG(L"Current language %d\n", currentLang);
+	UNS_DEBUG(L"Current language %u\n", (unsigned int)currentLang);
 	UNS_DEBUG(L"Requested language %s%d\n", defaultLangSet ? "(System Default) " : "", languageID);
 
-	UINT32 expectedLang = 0;
-	if(!client.GetExpectedLanguage((unsigned short*)&expectedLang))
+	unsigned short expectedLang = 0;
+	if(!client.GetExpectedLanguage(&expectedLang))
 	{
 		UNS_ERROR(L"Failed to get expected language\n");
-		publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to get FW status", 8725);
+		publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
 		return res;
 	}
 
@@ -772,14 +775,14 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		if (!client.SetExpectedLanguage((unsigned short)languageID))
 		{
 			UNS_ERROR(L"failed to set expected language %d\n", languageID);
-			publishPartialFWUpgrade_failed(LANGUAGE_MODULE,L"- Failed to set FW status", 8725);
+			publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to set FW status", 8725);
 			return res;
 		}
 	}
 
 	// If on INIT_MODE, perform PFU even if new language equals current one,
 	// Use case: PFU from corrupted PFU Partition (0 in FW) to English (0)
-	if (mode == MANUAL_MODE && currentLang == languageID)
+	if (mode == LANGUAGE_FLOW_MODE::MANUAL && currentLang == languageID)
 	{
 		UNS_DEBUG(L"Current language is the requested one\n");
 		if (defaultLangSet)
@@ -790,15 +793,15 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		{
 			DSinstance().SetDataValue(LastLanguageUpdate, languageID, true);
 		}
-		publishPartialFWUpgrade_end(LANGUAGE_MODULE, 0);
+		publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE::LANGUAGE, 0);
 
 		res = true;
 		return res;
 	}
 
-	res = invokePartialFWUpdateFlow(LANGUAGE_MODULE, LOCL_ID);
+	res = invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE::LANGUAGE, LOCL_ID);
 
-	if (res && (mode == MANUAL_MODE))
+	if (res && (mode == LANGUAGE_FLOW_MODE::MANUAL))
 	{
 		if (defaultLangSet)
 		{
@@ -835,7 +838,7 @@ bool PartialFWUpdateService::invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module
 	return retcode == 0;
 }
 
-bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPublishFailure)
+bool PartialFWUpdateService::partialFWUpdate(int _langID, LANGUAGE_FLOW_MODE _mode, bool _toPublishFailure)
 {
 	bool res = false;
 	langID = _langID;
@@ -843,13 +846,13 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	FuncEntryExit<decltype(res)>(this, L"partialFWUpdate", res);
 
 
-	if (!m_mainService->GetPortForwardingStarted()) {
+	if (!m_mainService->GetPortForwardingPort()) {
 		UNS_DEBUG(L"%s: Error - Port Forwarding did not start yet, aborting partialFWUpdate operation. (Will perform it when gets event of EVENT_PORT_FORWARDING_SERVICE_AVAILABLE\n", name().c_str());
 		m_PfuRequiredButNoPfw = true;
 		return res;
 	}
 
-	PARTIAL_FWU_MODULE module = (PARTIAL_FWU_MODULE)(!_mode);
+	PARTIAL_FWU_MODULE module = (mode == LANGUAGE_FLOW_MODE::INITIAL) ? PARTIAL_FWU_MODULE::WLAN : PARTIAL_FWU_MODULE::LANGUAGE;
 
 	if (!isMESKU())
 	{
@@ -879,10 +882,10 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 
 	UNS_DEBUG(L"After Init phase\n");
 
-	if (mode == MANUAL_MODE)
+	if (mode == LANGUAGE_FLOW_MODE::MANUAL)
 	{
 		UNS_DEBUG(L"Manual Mode\n");
-		res = updateLanguageChangeCode(langID, MANUAL_MODE);
+		res = updateLanguageChangeCode(langID, LANGUAGE_FLOW_MODE::MANUAL);
 		return res;
 	}
 
@@ -899,19 +902,19 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, int _mode, bool _toPub
 	ret = pfwuWrapper->isPfwuRequired(isLoclPfuNeeded, isWcodPfuNeeded, requiredLanguage);
 	if (ret != 0)
 	{
-		publishPartialFWUpgrade_end(WLAN_MODULE, ret);
+		publishPartialFWUpgrade_end(PARTIAL_FWU_MODULE::WLAN, ret);
 		return res;
 	}
 
 	if (isWcodPfuNeeded)
 	{
 		UNS_DEBUG(L"WCOD PFU is required\n");
-		res &= invokePartialFWUpdateFlow(WLAN_MODULE, WOCD_ID);
+		res &= invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE::WLAN, WOCD_ID);
 	}
 	if (isLoclPfuNeeded)
 	{
 		UNS_DEBUG(L"LOCL PFU is required\n");
-		res &= updateLanguageChangeCode(requiredLanguage, INITIAL_MODE);
+		res &= updateLanguageChangeCode(requiredLanguage, LANGUAGE_FLOW_MODE::INITIAL);
 	}
 	return res;
 }
@@ -928,25 +931,25 @@ bool PartialFWUpdateService::SetExpectedWithLocalOSLanguage() const
 	if (!retVal)
 	{
 		unsigned short lang = (unsigned short)getUCLanguageID();
-		SIOWSManClient wsman;
-		UINT32 expectedLang = 0;
+		SIOWSManClient wsman(m_mainService->GetPortForwardingPort());
+		unsigned short expectedLang = 0;
 
-		if (!wsman.GetExpectedLanguage((unsigned short*)&expectedLang))
+		if (!wsman.GetExpectedLanguage(&expectedLang))
 		{
-			UNS_ERROR(L"GetExpectedLanguage failure - lang %d\n",expectedLang);
+			UNS_ERROR(L"GetExpectedLanguage failure - lang %u\n", (unsigned int)expectedLang);
 			return res;
 		}
-		UNS_DEBUG(L"expectedLang: %d\n", expectedLang);
+		UNS_DEBUG(L"expectedLang: %d\n", (unsigned int)expectedLang);
 
 		if (lang != expectedLang)
 		{
 			if (wsman.SetExpectedLanguage(lang))
 			{
-				UNS_DEBUG(L"SetExpectedLanguage success - set lang %d\n",lang);
+				UNS_DEBUG(L"SetExpectedLanguage success - set lang %u\n", (unsigned int)lang);
 			}
 			else
 			{
-				UNS_ERROR(L"SetExpectedLanguage failure - set lang %d\n",lang);
+				UNS_ERROR(L"SetExpectedLanguage failure - set lang %u\n", (unsigned int)lang);
 				return res;
 			}
 		}

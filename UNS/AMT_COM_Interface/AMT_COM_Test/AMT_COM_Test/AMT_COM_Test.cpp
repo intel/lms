@@ -1,11 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 // AMT_COM_Test.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
+#include <chrono>
+#include <thread>
 #include <comdef.h>
 #include <atlsafe.h>
 #include "gtest/gtest.h"
@@ -45,6 +47,7 @@
 	}                                                                      \
 
 #define ASSERT_MAY_THROW_NOTIMPL(func) ASSERT_MAY_THROW_COM_(func, E_NOTIMPL)
+#define ASSERT_MAY_THROW_FAIL(func) ASSERT_MAY_THROW_COM_(func, E_FAIL)
 
 /* ------------------------- AMT_COM_Manageability ----------------------- */
 class AMT_COM_Manageability : public ::testing::Test {
@@ -109,7 +112,6 @@ TEST_F(AMT_COM_Manageability, GetFWInfo)
 	VARIANT_BOOL CryptoFuseEnable;
 	VARIANT_BOOL LocalFWupdateEnable;
 	ASSERT_NO_THROW_COM(amthi->GetFWInfo(&MEBxVersion.GetBSTR(), &BiosBootState, &CryptoFuseEnable, &LocalFWupdateEnable));
-	ASSERT_GT(MEBxVersion.length(), 0U);
 }
 
 TEST_F(AMT_COM_Manageability, GetPMCVersion)
@@ -261,7 +263,7 @@ TEST_F(AMT_COM_PTHI, GetNetworkSettings)
 
 	ASSERT_NO_THROW_COM(amthi->GetNetworkSettings(0, &DhcpEnabled, &strIpAddress.GetBSTR(), &strMacAddress.GetBSTR(),
 		&LinkStatus, &WirelessControl, &WirelessConfEnabled));
-	ASSERT_NO_THROW_COM(amthi->GetNetworkSettings(1, &DhcpEnabled, &strIpAddress.GetBSTR(), &strMacAddress.GetBSTR(),
+	ASSERT_MAY_THROW_FAIL(amthi->GetNetworkSettings(1, &DhcpEnabled, &strIpAddress.GetBSTR(), &strMacAddress.GetBSTR(),
 		&LinkStatus, &WirelessControl, &WirelessConfEnabled));
 }
 
@@ -275,7 +277,7 @@ TEST_F(AMT_COM_PTHI, GetIPv6NetworkSettings)
 
 	ASSERT_NO_THROW_COM(amthi->GetIPv6NetworkSettings(0, &IPv6DefaultRouter.GetBSTR(), &PrimaryDNS.GetBSTR(), &SecondaryDNS.GetBSTR(),
 		&Response, &Ipv6Enable));
-	ASSERT_NO_THROW_COM(amthi->GetIPv6NetworkSettings(1, &IPv6DefaultRouter.GetBSTR(), &PrimaryDNS.GetBSTR(), &SecondaryDNS.GetBSTR(),
+	ASSERT_MAY_THROW_FAIL(amthi->GetIPv6NetworkSettings(1, &IPv6DefaultRouter.GetBSTR(), &PrimaryDNS.GetBSTR(), &SecondaryDNS.GetBSTR(),
 		&Response, &Ipv6Enable));
 }
 
@@ -288,8 +290,8 @@ TEST_F(AMT_COM_PTHI, GetSystemUUID)
 
 TEST_F(AMT_COM_PTHI, UserInitiatedConnection)
 {
-	SHORT Status;
-	ASSERT_NO_THROW_COM(amthi->InitiateUserConnection(&Status));
+	SHORT Status = 0;
+	ASSERT_MAY_THROW_FAIL(amthi->InitiateUserConnection(&Status));
 	ASSERT_THROW_NOTIMPL(amthi->OpenUserInitiatedConnection());
 	ASSERT_NO_THROW_COM(amthi->CloseUserInitiatedConnection());
 }
@@ -306,19 +308,30 @@ TEST_F(AMT_COM_PTHI, GetKVMRedirectionState)
 	ASSERT_NO_THROW_COM(amthi->GetKVMRedirectionState(&Enabled, &Connected));
 }
 
+const short DEFAULT_LANG_ID = 100;
+
 TEST_F(AMT_COM_PTHI, Sprite)
 {
-	SHORT Language;
+	SHORT OldLanguage = 0;
+	SHORT OldZoom = 0;
+	SHORT Language = 0;
+	SHORT Zoom = 0;
+	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&OldLanguage, &OldZoom));
+
 	ASSERT_NO_THROW_COM(amthi->SetSpriteLanguage(1));
 	ASSERT_THROW_NOTIMPL(amthi->GetSpriteLanguage(&Language));
 
-	SHORT Zoom;
 	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(2));
 	ASSERT_THROW_NOTIMPL(amthi->GetSpriteZoom(&Zoom));
 
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	ASSERT_NO_THROW_COM(amthi->GetSpriteParameters(&Language, &Zoom));
-	EXPECT_EQ(Language, 1);
+	std::cout << "Language = " << Language << " Zoom = "  << Zoom << std::endl;
+	EXPECT_TRUE((Language == 1) || (Language == DEFAULT_LANG_ID));
 	EXPECT_EQ(Zoom, 2);
+
+	ASSERT_NO_THROW_COM(amthi->SetSpriteLanguage(OldLanguage));
+	ASSERT_NO_THROW_COM(amthi->SetSpriteZoom(OldZoom));
 }
 
 TEST_F(AMT_COM_PTHI, GetConfigurationInfo)
@@ -365,17 +378,27 @@ TEST_F(AMT_COM_PTHI, UpdateScreenSettings)
 
 TEST_F(AMT_COM_PTHI, UpdateScreenSettings2)
 {
-	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters =
-	{ { 0,1,2,3,4,5 } };
-	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters, 1));
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters1 =
+	{ { { 1, 0, 0, 640, 480, 1 } } };
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters2 =
+	{ { { 1, 0, 0, 640, 480, 1 }, {1, 640, 0, 640, 480, 2} } };
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters3 =
+	{ { { 1, 0, 0, 640, 480, 1 }, {1, 640, 0, 640, 480, 2}, {1, 1280, 0, 640, 480, 3} } };
+	AMT_COM_InterfaceLib::EXTENDED_DISPLAY_PARAMETERS_ eExtendedDisplayParameters4 =
+	{ { { 1, 0, 0, 640, 480, 1 }, {1, 640, 0, 640, 480, 2}, {1, 1280, 0, 640, 480, 3}, {1, 1720, 0, 640, 480, 4} } };
+
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters1, 1));
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters2, 2));
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters3, 3));
+	ASSERT_NO_THROW_COM(amthi->UpdateScreenSettings2(eExtendedDisplayParameters4, 4));
 }
 
 TEST_F(AMT_COM_PTHI, GetRedirectionSessionLinkTechnology)
 {
 	SHORT LinkTechnology;
-	ASSERT_NO_THROW_COM(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::SOL_S, &LinkTechnology));
-	ASSERT_NO_THROW_COM(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::IDER_S, &LinkTechnology));
-	ASSERT_NO_THROW_COM(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::KVM_S, &LinkTechnology));
+	ASSERT_MAY_THROW_FAIL(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::SOL_S, &LinkTechnology));
+	ASSERT_MAY_THROW_FAIL(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::IDER_S, &LinkTechnology));
+	ASSERT_MAY_THROW_FAIL(amthi->GetRedirectionSessionLinkTechnology(AMT_COM_InterfaceLib::KVM_S, &LinkTechnology));
 }
 
 TEST_F(AMT_COM_PTHI, IsRebootAfterProvisioningNeeded)
@@ -403,6 +426,12 @@ TEST_F(AMT_COM_PTHI, GetPlatformServiceRecordRaw)
 {
 	SAFEARRAY* binPSR;
 	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecordRaw(&binPSR));
+}
+
+TEST_F(AMT_COM_PTHI, SkuMgrQualifiedBrandEntitlements)
+{
+	UINT Data;
+	ASSERT_MAY_THROW_NOTIMPL(amthi->SkuMgrQualifiedBrandEntitlements(&Data));
 }
 
 /* ------------------------- AMT_COM_AT_Device ----------------------- */

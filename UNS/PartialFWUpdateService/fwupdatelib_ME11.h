@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2007-2019 Intel Corporation
+ * Copyright (C) 2007-2022 Intel Corporation
  */
 /*++
 
@@ -25,6 +25,19 @@ typedef struct __UUID
 	unsigned short Data3;
 	unsigned char  Data4[8];
 } _UUID;
+
+/** @brief Defines a generic version structure used in the software build process. This structure will be used to
+*   represent versions of ROM, FW and Recovery modules.
+*/
+typedef struct _VERSION
+{
+	uint16_t      Major;
+	uint16_t      Minor;
+	uint16_t      Hotfix;
+	uint16_t      Build;
+}VERSION;
+
+const size_t MAXIMUM_IPU_SUPPORTED = 4;
 
 typedef struct _FWU_INFO_FLAGS
 {

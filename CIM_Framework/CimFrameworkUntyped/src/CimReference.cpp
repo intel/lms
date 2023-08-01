@@ -49,7 +49,9 @@ namespace Cim
 		: _name(name),
 		  _namespace(ns),
 		  _prefix(prefix),
-		  _address("default")
+		  _address("default"),
+		  _resourceURI(),
+	      _selectors()
 	{
 	}
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -8,7 +8,9 @@
 
 --*/
 
-#pragma once
+#ifndef WSMAN_COMMANDS_H
+#define WSMAN_COMMANDS_H
+
 #include "stdafx.h"
 #include <string>
 #include <vector>
@@ -19,8 +21,10 @@
 #define IDER_DISABLED_SOL_ENABLED 32770
 #define IDER_SOL_ENABLED 32771
 
-typedef struct _EthernetPortEntryWSMan
+class EthernetPortEntryWSMan
 {
+public:
+	EthernetPortEntryWSMan() : LinkIsUp(false), DHCPEnabled(false) {}
 	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
@@ -29,15 +33,21 @@ typedef struct _EthernetPortEntryWSMan
 	std::wstring DefaultGateway;
 	std::wstring PrimaryDNS;
 	std::wstring SecondaryDNS;
-} EthernetPortEntryWSMan;
+};
 
 class WSmanCommands
 {
-	public:
-		UINT32 setSpriteZoom(short zoom);
-		UINT32 TerminateKVMSession(void);
-		UINT32 isKVMActive(bool* enabled, bool* active);
-		UINT32 GetPortSettings(std::vector<EthernetPortEntryWSMan> &ethernetPortList);
-		UINT32 isSOLEnabled(bool* enabled);
-		UINT32 isIDEREnabled(bool* enabled);
+public:
+	WSmanCommands();
+
+	UINT32 setSpriteZoom(short zoom);
+	UINT32 TerminateKVMSession(void);
+	UINT32 isKVMActive(bool* enabled, bool* active);
+	UINT32 GetPortSettings(std::vector<EthernetPortEntryWSMan> &ethernetPortList);
+	UINT32 isSOLEnabled(bool* enabled);
+	UINT32 isIDEREnabled(bool* enabled);
+
+private:
+	unsigned int m_port;
 };
+#endif // WSMAN_COMMANDS_H

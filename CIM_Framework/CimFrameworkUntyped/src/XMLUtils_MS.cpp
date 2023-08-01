@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (c) Intel Corporation, 2003 - 2023 All Rights Reserved.
 //
 //  File: XMLUtils_MS.cpp    
 //
@@ -487,10 +487,16 @@ namespace XMLUtils
 
 			if (res != S_OK)
 				throw XMLException("Failed to create XML document");
-			const auto ret = doc->loadXML(CComBSTR(xml.c_str()), &status);
-			if (ret != S_OK)
-				throw XMLException("Failed to create XML document");
-				
+			try
+			{
+				const auto ret = doc->loadXML(CComBSTR(xml.c_str()), &status);
+				if (ret != S_OK)
+					throw XMLException("Failed to create XML document");
+			}
+			catch (CAtlException)
+			{
+				throw XMLException("Failed to create XML document, AtlException");
+			}
 			if (status == VARIANT_TRUE)
 				if (doc->get_documentElement(&rootNode) != S_OK)
 					throw XMLException("Failed to create XML document");

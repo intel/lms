@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2021 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -20,8 +20,9 @@ namespace Intel
 	{
 		namespace AMTHI_Client
 		{
-			typedef struct GET_REDIRECTION_SESSIONS_STATE_RESPONSE_t
+			struct GET_REDIRECTION_SESSIONS_STATE_RESPONSE
 			{
+				GET_REDIRECTION_SESSIONS_STATE_RESPONSE() : RequestId(0), IderOpen(AMT_FALSE), SolOpen(AMT_FALSE), Reserved(AMT_FALSE) {}
 				uint32_t RequestId;
 				AMT_BOOLEAN IderOpen;
 				AMT_BOOLEAN SolOpen;
@@ -34,46 +35,52 @@ namespace Intel
 					Intel::MEI_Client::parseData(SolOpen, itr, end); 
 					Intel::MEI_Client::parseData(Reserved, itr, end);
 				}
-			} GET_REDIRECTION_SESSIONS_STATE_RESPONSE;
-
-			class GetRedirectionSessionsStateRequest;
-			class GetRedirectionSessionsStateCommand : public AMTHICommand
-			{
-			public:
-
-				GetRedirectionSessionsStateCommand();
-				virtual ~GetRedirectionSessionsStateCommand() {}
-
-				GET_REDIRECTION_SESSIONS_STATE_RESPONSE getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<GET_REDIRECTION_SESSIONS_STATE_RESPONSE>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
 			};
 
 			class GetRedirectionSessionsStateRequest : public AMTHICommandRequest
 			{
 			public:
-				GetRedirectionSessionsStateRequest() {}
+				GetRedirectionSessionsStateRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetRedirectionSessionsStateRequest() {}
 
 			private:
 				static const uint32_t REDIRECTION_ID = 0;
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000049;
-				virtual unsigned int requestHeaderCommandNumber()
-				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
-				}
 
 				virtual uint32_t requestDataSize()
 				{
 					return sizeof(uint32_t);
 				}
-				virtual std::vector<uint8_t> SerializeData();
+				virtual std::vector<uint8_t> SerializeData()
+				{
+					uint32_t id = REDIRECTION_ID;
+					std::vector<uint8_t> output((std::uint8_t*)&id, (std::uint8_t*)&id + sizeof(uint32_t));
+					return output;
+				}
+			};
+
+			class GetRedirectionSessionsStateCommand : public AMTHICommand
+			{
+			public:
+
+				GetRedirectionSessionsStateCommand()
+				{
+					m_request = std::make_shared<GetRedirectionSessionsStateRequest>();
+					Transact();
+				}
+				virtual ~GetRedirectionSessionsStateCommand() {}
+
+				GET_REDIRECTION_SESSIONS_STATE_RESPONSE getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<GET_REDIRECTION_SESSIONS_STATE_RESPONSE>(buffer, RESPONSE_COMMAND_NUMBER);
+				}
+
+				AMTHICommandResponse<GET_REDIRECTION_SESSIONS_STATE_RESPONSE> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800049;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

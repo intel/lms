@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2018 Intel Corporation
+ * Copyright (C) 2010-2022 Intel Corporation
  */
 #include "ServiceNamesList.h"
 #include "servicesNames.h"
@@ -22,7 +22,7 @@ void ServiceNamesList::Read(NamesGroup namesGroup)
 {
 	switch(namesGroup)
 	{
-	case EVENT_HANDLERS_GROUP:
+	case NamesGroup::EVENT_HANDLERS_GROUP:
 		AddName(WINLOG_EVENT_HANDLER);
 		AddNameWin(COM_EVENT_HANDLER);
 		AddNameWin(WMI_EVENT_HANDLER);
@@ -33,16 +33,16 @@ void ServiceNamesList::Read(NamesGroup namesGroup)
 			AddName(POWER_OPERATIONS_SERVICE);
 		#endif
 		break;
-	case SKU_1_5_GROUP:
+	case NamesGroup::SKU_1_5_GROUP:
 		AddNameLinux(GMS_DBUSSERVICE);
 		break;
-	case SKU_5_GROUP:
-		Read(EVENT_HANDLERS_GROUP);
+	case NamesGroup::SKU_5_GROUP:
+		Read(NamesGroup::EVENT_HANDLERS_GROUP);
 		AddName(GMS_PORTFORWARDINGSERVICE);
 		AddName(GMS_HOSTCHANGESNOTIFICATIONSERVICE);
 		AddNameWin(GMS_PARTIALFWUPDATESERVICE);
 		break;
-	case MANAGABILITY_GROUP:   
+	case NamesGroup::MANAGABILITY_GROUP:
 		AddNameWin(GMS_IPREFRESHSERVICE);
 		AddName(GMS_SHAREDSTATICIPSERVICE);
 		AddName(POWER_OPERATIONS_SERVICE);
@@ -51,10 +51,10 @@ void ServiceNamesList::Read(NamesGroup namesGroup)
 		AddNameLinux(GMS_WATCHDOGSERVICE);
 		break;
 
-	case SKU_5_NO_LME_GROUP:
-		Read(EVENT_HANDLERS_GROUP);
+	case NamesGroup::SKU_5_NO_LME_GROUP:
+		Read(NamesGroup::EVENT_HANDLERS_GROUP);
 		break;
-	case DUMMY_SERVICES:
+	case NamesGroup::DUMMY_SERVICES:
 		AddName(FIRST_SERVICE);
 		AddName(LAST_SERVICE);
 		break;

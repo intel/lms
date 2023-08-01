@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -31,7 +31,9 @@ namespace Intel
 			};
 			struct TCPIP_PARAMETERS
 			{
-				uint32_t				DhcpMode; //Represents CFG_DHCP_MODE
+				TCPIP_PARAMETERS() : DhcpMode(CFG_DHCP_MODE_NONE), LocalAddress(0), SubnetMask(0),
+					DefaultGatewayAddress(0), PrimaryDnsAddress(0), SecondaryDnsAddress(0) {}
+				uint32_t			DhcpMode; //Represents CFG_DHCP_MODE
 				CFG_IPv4_ADDRESS	LocalAddress;			//Ignored if DhcpMode is not CFG_DHCP_MODE_DISABLED.
 				CFG_IPv4_ADDRESS	SubnetMask;				//Ignored if DhcpMode is not CFG_DHCP_MODE_DISABLED.
 				CFG_IPv4_ADDRESS	DefaultGatewayAddress;	//Ignored if DhcpMode is not CFG_DHCP_MODE_DISABLED.
@@ -51,42 +53,38 @@ namespace Intel
 				}
 			 };
 
-			class GetTcpipParametersRequest;
-			class GetTcpipParametersCommand : public AMTHICommand
-			{
-			public:
-
-				GetTcpipParametersCommand();
-				virtual ~GetTcpipParametersCommand() {}
-
-				TCPIP_PARAMETERS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<TCPIP_PARAMETERS>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800006;
-			};
-
 			class GetTcpipParametersRequest : public AMTHICommandRequest
 			{
 			public:
-				GetTcpipParametersRequest() {}
+				GetTcpipParametersRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetTcpipParametersRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000006;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetTcpipParametersCommand : public AMTHICommand
+			{
+			public:
+
+				GetTcpipParametersCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetTcpipParametersRequest>();
+					Transact();
+				}
+				virtual ~GetTcpipParametersCommand() {}
+
+				TCPIP_PARAMETERS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<TCPIP_PARAMETERS>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
+				AMTHICommandResponse<TCPIP_PARAMETERS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800006;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

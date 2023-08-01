@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2022 Intel Corporation
  */
 /*++
 
@@ -37,15 +37,16 @@ public:
 	static HRESULT GetMESystem(
 		std::wstring& fwversion, bool& CryptoFuseEnabled,
 		uint32& type, uint32& segment,
-		uint32& mode, uint32& capabilities, uint32& enabledCapabilities);
+		uint32& mode, uint32& capabilities, uint32& enabledCapabilities,
+		bool& uniquePlatformIDFeatureSupported,
+		bool& uniquePlatformIDFeatureOSControlState,
+		bool& uniquePlatformIDFeatureState);
 private:
 	typedef union _MEFWCAPS_SKU_INT
 	{
 		UINT32   Data;
 		struct
 		{
-			//UINT32   MngFull  :1;
-			//UINT32   MngStd  :1;
 			UINT32   Amt       :1;
 			UINT32   Irwt       :1; //N/A since 8.0
 			UINT32   Qst        :1; //N/A since 8.0
@@ -58,9 +59,8 @@ private:
 			UINT32   IccOverClockin :1;
 			UINT32   Pav              :1;
 			UINT32   Spk              :1;//N/A since 8.0
-			UINT32   Rca              :1;//N/A since 8.0
+			UINT32   Rca              :1;
 			UINT32   Rpat             :1;   //N/A since 8.0
-			//UINT32   RpatCon          :1;   // To be removed
 			UINT32   Ipv6             :1;
 			UINT32   Kvm              :1;
 			UINT32   Och              :1;
@@ -181,4 +181,16 @@ private:
 		IWbemClassObject __RPC_FAR*    pInParams,
 		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 		IWbemServices*                 pNamespace);
+
+	static HRESULT getUniquePlatformIDFeatureSupported(
+		IWbemClassObject* pClass,
+		IWbemClassObject __RPC_FAR* pInParams,
+		IWbemObjectSink  __RPC_FAR* pResponseHandler,
+		IWbemServices* pNamespace);
+
+	static HRESULT getUniquePlatformIDFeatureOSControlState(
+		IWbemClassObject* pClass,
+		IWbemClassObject __RPC_FAR* pInParams,
+		IWbemObjectSink  __RPC_FAR* pResponseHandler,
+		IWbemServices* pNamespace);
 };

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2020 Intel Corporation
+ * Copyright (C) 2018-2022 Intel Corporation
  */
 #ifndef __WLAN_DEFS_H_
 #define __WLAN_DEFS_H_
@@ -32,32 +32,24 @@ namespace wlanps {
 	
 	typedef std::vector<std::shared_ptr<INTEL_PROFILE_DATA>> WlanOsProfileList;
 
+	const unsigned short AuthenticationMethodOther = 1;
+	const unsigned short AuthenticationMethodOpenSystem = 2;
+	const unsigned short AuthenticationMethodSharedKey = 3;
+	const unsigned short AuthenticationMethodWPAPSK = 4;
+	const unsigned short AuthenticationMethodWPAIEEE802_1x = 5;
+	const unsigned short AuthenticationMethodWPA2PSK = 6;
+	const unsigned short AuthenticationMethodWPA2IEEE802_1x = 7;
+	const unsigned short AuthenticationMethodDMTFReserved = 8;
+	const unsigned short AuthenticationMethodWPA3SAE = 32768; // WPA3
+	const unsigned short AuthenticationMethodWPA3OWE = 32769; // OWE
+	const unsigned short AuthenticationMethodVendorReserved = 32770;
 
-   enum AuthenticationMethods
-   {
-	   AuthenticationMethodOther = 1,
-	   AuthenticationMethodOpenSystem = 2,
-	   AuthenticationMethodSharedKey = 3,
-	   AuthenticationMethodWPAPSK = 4,
-	   AuthenticationMethodWPAIEEE802_1x = 5,
-	   AuthenticationMethodWPA2PSK = 6,
-	   AuthenticationMethodWPA2IEEE802_1x = 7,
-	   AuthenticationMethodDMTFReserved = 8,
-	   AuthenticationMethodWPA3SAE = 32768, // WPA3
-   	   AuthenticationMethodWPA3OWE = 32769, //OWE
-	   AuthenticationMethodVendorReserved = 32770
-   };
-
-   enum EncryptionMethods
-   {
-	   EncryptionMethodOther = 1,
-	   EncryptionMethodWEP = 2,
-	   EncryptionMethodTKIP = 3,
-	   EncryptionMethodCCMP = 4,
-	   EncryptionMethodNone = 5,
-	   EncryptionMethodReserved = 6,
-   };
-
+	const unsigned short EncryptionMethodOther = 1;
+	const unsigned short EncryptionMethodWEP = 2;
+	const unsigned short EncryptionMethodTKIP = 3;
+	const unsigned short EncryptionMethodCCMP = 4;
+	const unsigned short EncryptionMethodNone = 5;
+	const unsigned short EncryptionMethodReserved = 6;
 }
 
 #endif // __WLAN_DEFS_H_

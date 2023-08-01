@@ -374,7 +374,7 @@ int epr_cmp(const epr_t *epr1, const epr_t *epr2)
 
 char *epr_to_string(const epr_t *epr)
 {
-  int len;
+  size_t len;
   char *buf, *ptr;
   unsigned int i;
   key_value_t *p = NULL;
@@ -511,17 +511,17 @@ int epr_serialize(WsXmlNodeH node, const char *ns,
 epr_t *epr_deserialize(WsXmlNodeH node, const char *ns,
 		const char *epr_node_name, int embedded)
 {
-	epr_t *epr = u_zalloc(sizeof(epr_t));
-	if (epr == NULL) {
-		goto CLEANUP;
-	}
-
 	WsXmlNodeH eprnode = NULL;
 	WsXmlNodeH refparamnode = NULL;
 	WsXmlNodeH temp = NULL;
 	WsXmlNodeH selectorsetnode = NULL;
 	WsXmlAttrH attr = NULL;
 	key_value_t *p = NULL;
+
+	epr_t* epr = u_zalloc(sizeof(epr_t));
+	if (epr == NULL) {
+		goto CLEANUP;
+	}
 
 	if(epr_node_name) {
 		eprnode = ws_xml_get_child(node, 0, ns, epr_node_name);

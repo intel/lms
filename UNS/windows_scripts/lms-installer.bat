@@ -72,7 +72,7 @@ IF %ERRORLEVEL%==1 EXIT /B 1
 echo SUCCESS
 
 set LMS_FILES=LMS.exe
-set EXTERNAL_FILES=*.BIN FWUpdateLib_11.dll FWUpdateLib_12.dll
+set EXTERNAL_FILES=*.BIN FWUpdateLib_11.dll FWUpdateLib_12.dll FWUpdateLib_18.dll
 
 echo Verify installation files consistency
 call :VerifyLmsFilesExists %LMS_FILES%

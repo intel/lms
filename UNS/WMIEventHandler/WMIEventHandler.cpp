@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 #include "WMIEventHandler.h"
 #include <atlbase.h>
@@ -78,8 +78,8 @@
 	WMIEventHandler::WMILogging(GMS_AlertIndication* alert)
 	{
 		UNS_DEBUG(L"WMIEventHandler::handleEvent\n");
-		HRESULT hr = WBEM_S_NO_ERROR;
-		hr  = CoInitializeEx(NULL, COINIT_MULTITHREADED );
+		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED );
+		if (hr == S_OK || hr == S_FALSE)
 		{
 			// Access WMI
 			CComPtr<IWbemLocator> spLoc;
@@ -183,8 +183,12 @@
 			}
 			else
 				UNS_ERROR(L"WMIEventHandler::handleEvent CoCreateInstance failed, hr=%x\n", hr);
+
+			CoUninitialize();
 		}
-		CoUninitialize();
+		else
+			UNS_ERROR(L"WMIEventHandler::handleEvent CoInitializeEx failed, hr=%x\n", hr);
+
 		return (hr == WBEM_S_NO_ERROR);
 	}
 

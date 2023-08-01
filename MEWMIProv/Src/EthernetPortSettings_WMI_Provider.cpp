@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -92,10 +92,17 @@ HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::ve
 			}
 		}
 	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
 	catch (...)
 	{
 		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
 	return hr;
@@ -103,7 +110,7 @@ HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::ve
 
 uint32 EthernetPortSettings_WMI_Provider::GetPortList(std::vector<EthernetPortEntry>& ethernetPortList)
 {
-	uint32 ReturnValue= 1; 
+	uint32 ReturnValue;
 	PTHI_Commands pthic;
 	std::vector<EthernetPortEntryWSMan> ethernetPortWSManList;
 	WSmanCommands wsmc;
@@ -221,10 +228,17 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 
 		WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
 	catch (...)
 	{
 		UNS_ERROR("%C Bad catch", __FUNCTION__);
 		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
 	}
 
 	return hr;

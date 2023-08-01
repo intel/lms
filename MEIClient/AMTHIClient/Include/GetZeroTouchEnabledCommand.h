@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -22,6 +22,7 @@ namespace Intel
 		{
 			struct ZTC_ENABLED_STATUS
 			{
+				ZTC_ENABLED_STATUS() : ZTCEnabled(false) {}
 				bool ZTCEnabled;
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator end)
 				{
@@ -29,43 +30,38 @@ namespace Intel
 				}
 			};
 
-			class GetZeroTouchEnabledRequest;
-			class GetZeroTouchEnabledCommand : public AMTHICommand
-			{
-			public:
-
-				GetZeroTouchEnabledCommand();
-				virtual ~GetZeroTouchEnabledCommand() {}
-
-				ZTC_ENABLED_STATUS getResponse();
-
-			private:
-				virtual void parseResponse(const std::vector<uint8_t>& buffer);
-
-				std::shared_ptr<AMTHICommandResponse<ZTC_ENABLED_STATUS>> m_response;
-
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800030;
-			};
-
 			class GetZeroTouchEnabledRequest : public AMTHICommandRequest
 			{
 			public:
-				GetZeroTouchEnabledRequest(){}
+				GetZeroTouchEnabledRequest() : AMTHICommandRequest(REQUEST_COMMAND_NUMBER) {}
 				virtual ~GetZeroTouchEnabledRequest() {}
 
 			private:
 				static const uint32_t REQUEST_COMMAND_NUMBER = 0x04000030;
-				virtual unsigned int requestHeaderCommandNumber()
+			};
+
+			class GetZeroTouchEnabledCommand : public AMTHICommand
+			{
+			public:
+
+				GetZeroTouchEnabledCommand()
 				{
-					//this is the command number (taken from the AMTHI document)
-					return REQUEST_COMMAND_NUMBER;
+					m_request = std::make_shared<GetZeroTouchEnabledRequest>();
+					Transact();
+				}
+				virtual ~GetZeroTouchEnabledCommand() {}
+
+				ZTC_ENABLED_STATUS getResponse() { return m_response.getResponse(); }
+
+			private:
+				virtual void parseResponse(const std::vector<uint8_t>& buffer)
+				{
+					m_response = AMTHICommandResponse<ZTC_ENABLED_STATUS>(buffer, RESPONSE_COMMAND_NUMBER);
 				}
 
-				virtual uint32_t requestDataSize()
-				{
-					return 0;
-				}
-				virtual std::vector<uint8_t> SerializeData();
+				AMTHICommandResponse<ZTC_ENABLED_STATUS> m_response;
+
+				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x04800030;
 			};
 		} // namespace AMTHI_Client
 	} // namespace MEI_Client

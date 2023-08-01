@@ -379,6 +379,8 @@ filter_t * filter_deserialize(WsXmlNodeH node, const char *ns)
 		else
 			filter->dialect = u_strdup(WSM_XPATH_FILTER_DIALECT);
 	}
+	if (filter->dialect == NULL)
+		goto CLEANUP;
 	if(strcmp(filter->dialect , WSM_ASSOCIATION_FILTER_DIALECT) == 0) {
 		int i = 0;
 		instance_node = ws_xml_get_child(filter_node, 0, XML_NS_CIM_BINDING, WSMB_ASSOCIATED_INSTANCES);
@@ -408,6 +410,8 @@ filter_t * filter_deserialize(WsXmlNodeH node, const char *ns)
 			filter->resultRole = u_strdup(ws_xml_get_node_text_safe(entry_node));
 		properNum = ws_xml_get_child_count(instance_node) - 4;
 		filter->resultProp = u_zalloc(properNum * sizeof(char*));
+		if (!filter->resultProp)
+			goto CLEANUP;
 		while(i < properNum) {
 			filter_node = ws_xml_get_child(instance_node, i, XML_NS_CIM_BINDING, WSMB_INCLUDE_RESULT_PROPERTY);
 			if(filter_node == NULL)

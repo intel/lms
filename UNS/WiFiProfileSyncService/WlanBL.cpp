@@ -1,17 +1,17 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2020 Intel Corporation
+ * Copyright (C) 2018-2023 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
 #include "WlanBL.h"
 #include "Tools.h"
+#include "GmsService.h"
 #include <string>
 #include <map>
 
 namespace wlanps {
 	const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Settings ";
-	typedef std::map<std::wstring, int> str_int_map_t;
 
 	authenticationSet_t supportedAuthentication = { L"open", L"WPAPSK", L"WPA2PSK", L"WPA3SAE", L"OWE" };
 	encriptionSet_t supportedEncription = { L"WEP", L"TKIP", L"AES", L"none" };
@@ -77,13 +77,13 @@ namespace wlanps {
 		return true;
 	}
 
-	void WlanBL::SyncProfiles(HANDLE hwlan)
+	void WlanBL::SyncProfiles(unsigned int portForwardingPort, HANDLE hwlan)
 	{
 		std::lock_guard<std::mutex> lock(_updateMutex);
 
 		bool wsmanStatus;
 		MeProfileList MeProfileList;
-		WlanWSManClient wsmanClient;
+		WlanWSManClient wsmanClient(portForwardingPort);
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerating ME (CSME FW) Profiles, Wait for it...\n");
 		if (!EnumerateMeProfiles(wsmanClient, MeProfileList))
@@ -234,14 +234,14 @@ namespace wlanps {
 		return ret;
 	}
 
-	void WlanBL::onConnectionComplete(HANDLE hwlan, PINTEL_PROFILE_DATA profileData)
+	void WlanBL::onConnectionComplete(unsigned int portForwardingPort, HANDLE hwlan, PINTEL_PROFILE_DATA profileData)
 	{
 		std::lock_guard<std::mutex> lock(_updateMutex);
 		bool retVal;
 		bool bFound = false;
 		bool bFoundMatch = false;
 		unsigned long profileFlags = 0;
-		WlanWSManClient wsmanClient;
+		WlanWSManClient wsmanClient(portForwardingPort);
 		MeProfileList MeProfileList;
 
 
@@ -345,8 +345,8 @@ namespace wlanps {
 
 						wsmanStatus = wsmanClient.DeleteProfile(**meIterator);
 
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  DeleteProfile completed\n",
-							name.c_str());
+						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  DeleteProfile completed %s\n",
+							name.c_str(), (wsmanStatus) ? L"succesfully" : L"with failure");
 						break;
 					}
 				}
@@ -409,26 +409,26 @@ namespace wlanps {
 		static const unsigned short WEPPriority = 7;
 		static const unsigned short NoneEncPriority = 8;
 
-		int auth = 1;
-		int encr = 1;
+		unsigned short auth = AuthenticationMethodOther;
+		unsigned short encr = EncryptionMethodOther;
 		int priority = 8;
 
 		// translate to CIM_WiFiEndpointSettings
-		static const str_int_map_t authMap = {
+		static const std::map<std::wstring, unsigned short> authMap = {
 			{ L"open",    AuthenticationMethodOpenSystem },
 			{ L"WPAPSK",  AuthenticationMethodWPAPSK },
 			{ L"WPA2PSK", AuthenticationMethodWPA2PSK },
 			{ L"WPA3SAE", AuthenticationMethodWPA3SAE },
-			{ L"OWE", AuthenticationMethodWPA3OWE }
+			{ L"OWE",     AuthenticationMethodWPA3OWE }
 		};
-		static const str_int_map_t encrMap = {
+		static const std::map<std::wstring, unsigned short> encrMap = {
 			{ L"WEP",  EncryptionMethodWEP },
 			{ L"TKIP", EncryptionMethodTKIP },
 			{ L"AES",  EncryptionMethodCCMP }, // CCMP
 			{ L"none", EncryptionMethodNone }
 		};
 
-		static const str_int_map_t priorityMap = {
+		static const std::map<std::wstring, int> priorityMap = {
 			{ L"WEP",  WEPPriority },
 			{ L"TKIP", TKIPPriority },
 			{ L"AES",  Priority802_11x_AES }, // CCMP
@@ -467,7 +467,7 @@ namespace wlanps {
 		return true;
 	}
 
-	void WlanBL::PrintWifiSetting(int auth, int enc, int prio, wchar_t* elementName, wchar_t* ssid)
+	void WlanBL::PrintWifiSetting(unsigned short auth, unsigned short enc, int prio, wchar_t* elementName, wchar_t* ssid)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: wifiSettings Profile=%-25W, ssid=%-25W prio=%d auth=%d enc=%d\n",
 			elementName, ssid, prio, auth, enc);
