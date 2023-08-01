@@ -17,7 +17,7 @@
 #include "AT_Device_BE.h"
 #include "UNSRegistry.h"
 #include "DataStorageGenerator.h"
-
+#include "Tools.h"
 
 STDMETHODIMP CAT_Device::GetATDeviceInfo(SHORT*, BSTR*)
 {
@@ -39,7 +39,7 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(AuditLogs.c_str());
+	ATL::CComBSTR bstr(UTF8ToWStr(AuditLogs).c_str());
 	*bstrAuditLogs = bstr.Detach();
 	return S_OK;
 }

@@ -22,6 +22,8 @@ std::string  GMS_COMMON_EXPORT WStringToString(const std::wstring& wstr);
 bool GMS_COMMON_EXPORT GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFilePath);
 
 bool GMS_COMMON_EXPORT checkFileExist(std::wstring path);
+
+std::wstring UTF8ToWStr(const std::string& s);
 #endif // WIN32
 
 bool GMS_COMMON_EXPORT GetLocalFQDN(std::string& fqdn);
