@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -48,9 +48,13 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 			BREAKIF(WMIPutMember(pNamespace, &obj, L"CIM_HostedService"));
 			BREAKIF(WMIPut<1>(obj, L"Antecedent", me_ref));
 			if (i == 0)
+			{
 				BREAKIF(WMIPut<1>(obj, L"Dependent", oob_ref));
-			if (i == 1)	
+			}
+			if (i == 1)
+			{
 				BREAKIF(WMIPut<1>(obj, L"Dependent", amt_ref));
+			}
 				
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 		
