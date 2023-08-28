@@ -87,7 +87,7 @@ uint32_t UPID_Commands::GetUPIDCommand(uint32_t& oemPlatformIdType, std::wstring
 			oemPlatformIdStr << temp.c_str();
 		}
 		else { //When oemPlatformIdType is Binary - Show oemPlatformId as hex string
-			for (int i = 0; i < UPID_LEN; i++)
+			for (size_t i = 0; i < UPID_LEN; i++)
 			{
 				oemPlatformIdStr << "0x" << std::hex << std::setfill(L'0') << std::setw(2) << unsigned(response.OEMPlatformId[i]) << " ";
 			}
