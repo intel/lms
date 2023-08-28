@@ -207,15 +207,16 @@ void GmsService::initServiceMap()
 #undef ACE_STATIC_SVC_DECLARE_LINUX
 }
 
-ACE_Static_Svc_Descriptor& GmsService::svcByName(const ACE_TString &serviceName)
-{
-	return m_svcMap.find(serviceName.c_str())->second;
-}
-
 bool GmsService::StartAceService(const ACE_TString &serviceName)
 {
 	UNS_DEBUG(L"Starting: %s\n", serviceName.c_str());
-	int i = ACE_Service_Config::process_directive(svcByName(serviceName));
+	auto svc = m_svcMap.find(serviceName);
+	if (svc == m_svcMap.end())
+	{
+		UNS_ERROR(L"The service: %s is not found\n", serviceName.c_str());
+		return false;
+	}
+	int i = ACE_Service_Config::process_directive(svc->second);
 	if (i == -1)
 	{
 		UNS_ERROR(L"The configuration file for service: %s is not found or cannot be opened\n", serviceName.c_str());

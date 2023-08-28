@@ -114,7 +114,6 @@ private:
 
 	typedef std::map<ACE_TString, ACE_Static_Svc_Descriptor&> svc_map;
 	svc_map m_svcMap;
-	ACE_Static_Svc_Descriptor& svcByName(const ACE_TString &serviceName);
 	void initServiceMap();
 };
 
