@@ -30,7 +30,10 @@ public:
 	class WPFS_Message_Block : public ACE_Data_Block
 	{
 	public:
-		WPFS_Message_Block() {}
+		WPFS_Message_Block()
+		{
+			SecureZeroMemory(&_profileData, sizeof(_profileData));
+		}
 		virtual ~WPFS_Message_Block() {}
 		// Data members
 		wlanps::INTEL_PROFILE_DATA _profileData;
