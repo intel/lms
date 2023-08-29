@@ -19,7 +19,7 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
-	uint32 hr = 1;
+	HRESULT hr = 1;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -76,7 +76,7 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 

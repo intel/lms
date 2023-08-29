@@ -25,7 +25,7 @@ public:
 	static void PTHIHandleSetStatus(IWbemServices* pNamespace,
 									IWbemObjectSink  __RPC_FAR* pResponseHandler,
 									unsigned long ReturnValue,
-									uint32& hr);
+									HRESULT& hr);
 	static bool isMethodCallStatic(const BSTR strObjectPath);
 };
 
@@ -45,7 +45,7 @@ inline std::string ToStr(const std::wstring& t)
 class EntryExitLog
 {
 public:
-	EntryExitLog(const char *func, const uint32 &ret, const uint32 &hr) :
+	EntryExitLog(const char *func, const uint32 &ret, const HRESULT &hr) :
 		func_(func), ret_(ret), hr_(hr)
 	{
 		UNS_DEBUG("--> %C\n", func_);
@@ -58,13 +58,13 @@ public:
 private:
 	const char *func_;
 	const uint32 &ret_;
-	const uint32 &hr_;
+	const HRESULT &hr_;
 };
 
 class EntryExitLogShort
 {
 public:
-	EntryExitLogShort(const char* func, const uint32& hr) : func_(func), hr_(hr)
+	EntryExitLogShort(const char* func, const HRESULT& hr) : func_(func), hr_(hr)
 	{
 		UNS_DEBUG("--> %C\n", func_);
 	}
@@ -75,7 +75,7 @@ public:
 
 private:
 	const char* func_;
-	const uint32& hr_;
+	const HRESULT& hr_;
 };
 
 #endif

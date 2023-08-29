@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2020 Intel Corporation
+ * Copyright (C) 2013-2023 Intel Corporation
  */
 #include "ME_System_WMI_Provider.h"
 #include "pthi_commands.h"
@@ -11,7 +11,7 @@
 void WMIHelper::PTHIHandleSetStatus(IWbemServices* pNamespace,
 									IWbemObjectSink  __RPC_FAR* pResponseHandler,
 									unsigned long ReturnValue,
-									uint32& hr)
+									HRESULT& hr)
 {
 	hr = WBEM_E_FAILED;
 	ReturnValue = WMI_E_MESTATUS_BASE + ReturnValue;

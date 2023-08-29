@@ -20,7 +20,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -65,7 +65,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(std::vector<ProvisioningCertificateHash_WMI_Provider>& enumVec, uint32& ReturnValue)
 {
 	ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -119,7 +119,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try

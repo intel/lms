@@ -79,7 +79,7 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	//Get all keys in a colllection, from an internal function
-	uint32 hr = WBEM_S_NO_ERROR;
+	HRESULT hr = WBEM_S_NO_ERROR;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
@@ -186,7 +186,7 @@ HRESULT ME_System_WMI_Provider::getCurrentPowerPolicy(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -219,7 +219,7 @@ HRESULT ME_System_WMI_Provider::IsFirmwareUpdateEnabled(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -263,7 +263,7 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -333,7 +333,7 @@ HRESULT ME_System_WMI_Provider::GetME_System(
 	IWbemContext __RPC_FAR *pCtx,
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
@@ -644,7 +644,7 @@ HRESULT ME_System_WMI_Provider::getUPIDFeatureState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -687,7 +687,7 @@ HRESULT ME_System_WMI_Provider::setUPIDFeatureState(
 {
 	bool state;
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	if (IsUserAdmin() == S_FALSE)
@@ -741,7 +741,7 @@ HRESULT ME_System_WMI_Provider::getUPID(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	if (IsUserAdmin() == S_FALSE)
@@ -790,7 +790,7 @@ HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureSupported(
 	IWbemServices* pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -831,7 +831,7 @@ HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureOSControlState(
 	IWbemServices* pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try

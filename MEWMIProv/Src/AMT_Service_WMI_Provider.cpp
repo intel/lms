@@ -72,7 +72,7 @@ HRESULT AMT_Service_WMI_Provider::isWebUIEnabled(
 	IWbemServices*                 pNamespace)
 { 
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -108,7 +108,7 @@ HRESULT AMT_Service_WMI_Provider::getSOLState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -188,7 +188,7 @@ HRESULT AMT_Service_WMI_Provider::getIDERState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -266,7 +266,7 @@ HRESULT AMT_Service_WMI_Provider::getKVMState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -357,7 +357,7 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	std::wstring OTP, PKIDNSSuffix;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
@@ -398,7 +398,7 @@ HRESULT AMT_Service_WMI_Provider::setSpriteZoom(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	std::wstring OTP, PKIDNSSuffix;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
@@ -460,7 +460,7 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
@@ -490,7 +490,7 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try

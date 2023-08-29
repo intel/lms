@@ -20,7 +20,7 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -69,7 +69,7 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 HRESULT EthernetPortSettings_WMI_Provider::EnumerateEthernetPortSettings(std::vector<EthernetPortSettings_WMI_Provider>& settingsVec, uint32& ReturnValue)
 {
 	ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -163,7 +163,7 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 

@@ -109,7 +109,7 @@ HRESULT OOB_Service_WMI_Provider::GetProvisioningState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -156,7 +156,7 @@ HRESULT OOB_Service_WMI_Provider::isTLSEnabled(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -204,7 +204,7 @@ HRESULT OOB_Service_WMI_Provider::GetActivationTLSMode(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -236,7 +236,7 @@ HRESULT OOB_Service_WMI_Provider::Enumerate(
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	//Get all keys in a colllection, from an internal function
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 	try
 	{
@@ -266,7 +266,7 @@ HRESULT OOB_Service_WMI_Provider::isRemoteConfigEnabled(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -302,7 +302,7 @@ HRESULT OOB_Service_WMI_Provider::GetConfigServerAddressInfo(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -340,7 +340,7 @@ HRESULT OOB_Service_WMI_Provider::isWiredLinkUp(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -376,7 +376,7 @@ HRESULT OOB_Service_WMI_Provider::GetProvisioningInfo(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -413,7 +413,7 @@ HRESULT OOB_Service_WMI_Provider::GetRemoteAccessConnectionStatus(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -454,7 +454,7 @@ HRESULT OOB_Service_WMI_Provider::GetAMTFQDN(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -490,7 +490,7 @@ HRESULT OOB_Service_WMI_Provider::OpenUserInitiatedConnection(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -524,7 +524,7 @@ HRESULT OOB_Service_WMI_Provider::CloseUserInitiatedConnection(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -569,7 +569,7 @@ HRESULT OOB_Service_WMI_Provider::GetOOB_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
@@ -613,7 +613,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
@@ -669,7 +669,7 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
