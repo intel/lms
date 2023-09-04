@@ -267,9 +267,9 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 		return hr;
 	}
 
-	TOKEN_USER * user;
-
-	user =(TOKEN_USER*) new unsigned char[dwBytesReturned];
+	std::vector<TOKEN_USER> user_vec;
+	user_vec.reserve(dwBytesReturned);
+	TOKEN_USER *user = user_vec.data();
 
 	bRes = ::GetTokenInformation(hThreadTok, TokenUser,
 		user, dwBytesReturned, &dwBytesReturned);
