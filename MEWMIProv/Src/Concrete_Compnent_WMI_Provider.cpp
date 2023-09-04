@@ -109,7 +109,7 @@ HRESULT Concrete_Component_WMI_Provider::Enumerate(
 	return hr;
 }
 
-bool Concrete_Component_WMI_Provider::IsGroupOobService(CComBSTR groupREF_BSTR)
+bool Concrete_Component_WMI_Provider::IsGroupOobService(const CComBSTR &groupREF_BSTR)
 {
 	CComBSTR groupREF_int(groupREF_BSTR);
 	groupREF_int.ToLower();
@@ -149,7 +149,7 @@ bool Concrete_Component_WMI_Provider::IsGroupOobService(CComBSTR groupREF_BSTR)
 	return true;
 }
 
-bool Concrete_Component_WMI_Provider::compareCaseInsensitive(CComBSTR str1, CComBSTR str2)
+bool Concrete_Component_WMI_Provider::compareCaseInsensitive(const CComBSTR &str1, const CComBSTR &str2)
 {
 	CComBSTR internalStr1(str1);
 	CComBSTR internalStr2(str2);
@@ -162,7 +162,7 @@ bool Concrete_Component_WMI_Provider::compareCaseInsensitive(CComBSTR str1, CCom
 	return false;
 }
 
-std::wstring Concrete_Component_WMI_Provider::analyzePartCompnent(CComBSTR partComponenetVal)
+std::wstring Concrete_Component_WMI_Provider::analyzePartCompnent(const CComBSTR &partComponenetVal)
 {
 	std::wstring retValue(partComponenetVal);
 	CComBSTR partComponenet(partComponenetVal);
@@ -193,7 +193,7 @@ std::wstring Concrete_Component_WMI_Provider::analyzePartCompnent(CComBSTR partC
 	return retValue;
 }
 
-bool Concrete_Component_WMI_Provider::ProvisioningHashREFExists(ATL::CComBSTR partComponenet)
+bool Concrete_Component_WMI_Provider::ProvisioningHashREFExists(const CComBSTR &partComponenet)
 {
 	std::map <std::wstring, CComVariant> keyList;
 	std::map <std::wstring, CComVariant>::const_iterator it ;
@@ -220,7 +220,7 @@ bool Concrete_Component_WMI_Provider::ProvisioningHashREFExists(ATL::CComBSTR pa
 	return false;
 }
 
-bool Concrete_Component_WMI_Provider::EthernetPortREFExists(ATL::CComBSTR partComponenet)
+bool Concrete_Component_WMI_Provider::EthernetPortREFExists(const CComBSTR &partComponenet)
 {
 	std::map <std::wstring, CComVariant> keyList;
 	std::map <std::wstring, CComVariant>::const_iterator it ;
@@ -247,7 +247,7 @@ bool Concrete_Component_WMI_Provider::EthernetPortREFExists(ATL::CComBSTR partCo
 	return false;
 }
 
-bool Concrete_Component_WMI_Provider::AuditRecordREFExists(ATL::CComBSTR partComponent)
+bool Concrete_Component_WMI_Provider::AuditRecordREFExists(const CComBSTR &partComponent)
 {	
 	std::map <std::wstring, CComVariant> keyList;
 	std::map <std::wstring, CComVariant>::const_iterator it ;
