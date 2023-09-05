@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -417,6 +417,8 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 		UNS_ERROR(L"getNetParam rtnl_link_alloc_cache failed %d\n", res);
 		goto out;
 	}
+
+	param->udi = -1;
 
 	for (obj = nl_cache_get_first(link_cache);
 	     obj != NULL; obj = nl_cache_get_next(obj))
