@@ -668,16 +668,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			try
 			{
 				HBPWSManClient HBPWSManClient_obj(m_port);
-				std::string CreationTimeStampStr;
-				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
+				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, pCreationTimeStamp, ppCertHash) != true)
 					return LMS_ERROR::FAIL;
 
-				UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
-					pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
-				pCreationTimeStamp = CreationTimeStampStr;
+				UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, pCreationTimeStamp=%C\n",
+					pControlMode, pProvisioningMethod, pCreationTimeStamp.c_str());
 				return LMS_ERROR::OK;
 			}
-			CATCH_exception(L"SIOWSManClient")
+			CATCH_exception(L"HBPWSManClient")
 			return LMS_ERROR::FAIL;
 		}
 
@@ -743,7 +741,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 				return LMS_ERROR::OK;
 			}
-			CATCH_exception(L"TerminateRemedySessions")
+			CATCH_exception(L"CancelOptInClient")
 			return LMS_ERROR::FAIL;
 		}
 
