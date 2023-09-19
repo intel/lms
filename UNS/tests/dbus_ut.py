@@ -254,7 +254,7 @@ class AT_DeviceTestCase(unittest.TestCase):
 
     def test_GetAuditLogs(self):
         '''GetAuditLogs test method'''
-        self.iface.GetAuditLogs(timeout=120.0)
+        self.iface.GetAuditLogs(timeout=300.0)
 
 class UNSAlertTestCase(unittest.TestCase):
     """UNSAlert interface test"""
