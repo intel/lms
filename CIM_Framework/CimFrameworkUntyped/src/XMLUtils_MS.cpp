@@ -29,7 +29,7 @@ namespace XMLUtils
 		{
 			return (string)CW2A(val);
 		}
-		catch (const ATL::CAtlException&)
+		catch (const ::CAtlException&)
 		{
 			throw XMLException("Failed to convert string");
 		}
