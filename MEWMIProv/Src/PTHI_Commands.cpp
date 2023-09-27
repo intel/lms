@@ -44,7 +44,6 @@
 #include "GetTcpipParametersCommand.h"
 #include "GetLocalSystemAccountCommand.h"
 #include "UnprovisionCommand.h"
-#include "MNGIsChangeToAMTEnabledCommand.h"
 #include "DebugPrints.h"
 #include "GetKVMSessionStateCommand.h"
 
@@ -54,9 +53,7 @@
 // CPTHI_Commands
 
 using namespace Intel::MEI_Client::AMTHI_Client;
-using namespace Intel::MEI_Client::Manageability_Client;
 using namespace Intel::MEI_Client;
-
 
 HRESULT IsUserAdmin()
 {
