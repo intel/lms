@@ -1057,7 +1057,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Genesis\">" << std::endl;
-				parsed << formatPSRField("Log Start Date", timeToString(psr.genesis_info.genesis_date));
+				parsed << formatPSRField("Log Start Date",
+					(psr.log_state == Intel::MEI_Client::PSR_Client::PSR_LOG_NOT_STARTED) ? "Not Available" : timeToString(psr.genesis_info.genesis_date));
 				parsed << formatPSRField("OEM Name", genesisFieldToString(psr.genesis_info.oem_info));
 				parsed << formatPSRField("OEM Make", genesisFieldToString(psr.genesis_info.oem_make_info));
 				parsed << formatPSRField("OEM Model", genesisFieldToString(psr.genesis_info.oem_model_info));
