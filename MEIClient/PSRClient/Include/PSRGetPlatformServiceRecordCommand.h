@@ -59,6 +59,10 @@ namespace Intel
 			const uint8_t PSR_EVENT_EXCESSIVE_SHOCK = 33;
 			const uint8_t PSR_EVENT_EXCESSIVE_OPERATIONAL_TEMPERATURE = 34;
 			const uint8_t PSR_EVENT_ERASE = 35;
+			const uint8_t PSR_EVENT_FIRMWARE_RECOVERY = 36;
+			const uint8_t PSR_EVENT_FIRMWARE_UPDATE = 37;
+			const uint8_t PSR_EVENT_SYSTEM_HUNG_UP = 38;
+			const uint8_t PSR_EVENT_POWER_DROP = 39;
 
 			#pragma pack(1)
 			struct PSR_GET_REQUEST
@@ -98,7 +102,11 @@ namespace Intel
 				uint32_t reserved[3];
 				uint32_t excessive_shock_counter;
 				uint32_t excessive_temp_counter;
-				uint32_t reserved2[6];
+				uint32_t firmware_recovery_counter;
+				uint32_t firmware_update_counter;
+				uint32_t system_hung_up_counter;
+				uint32_t power_drop_counter;
+				uint32_t reserved2[2];
 			};
 
 			struct PSR_CRITICAL_EVENT
@@ -193,7 +201,11 @@ namespace Intel
 						parseArray(ledger_info2.reserved, 3, itr, end);
 						parseData(ledger_info2.excessive_shock_counter, itr, end);
 						parseData(ledger_info2.excessive_temp_counter, itr, end);
-						parseArray(ledger_info2.reserved2, 6, itr, end);
+						parseData(ledger_info2.firmware_recovery_counter, itr, end);
+						parseData(ledger_info2.firmware_update_counter, itr, end);
+						parseData(ledger_info2.system_hung_up_counter, itr, end);
+						parseData(ledger_info2.power_drop_counter, itr, end);
+						parseArray(ledger_info2.reserved2, 2, itr, end);
 					}
 					else
 					{
@@ -210,11 +222,12 @@ namespace Intel
 						ledger_info2.reserved[2] = 0;
 						ledger_info2.excessive_shock_counter = 0;
 						ledger_info2.excessive_temp_counter = 0;
+						ledger_info2.firmware_recovery_counter = 0;
+						ledger_info2.firmware_update_counter = 0;
+						ledger_info2.system_hung_up_counter = 0;
+						ledger_info2.power_drop_counter = 0;
 						ledger_info2.reserved2[0] = 0;
 						ledger_info2.reserved2[1] = 0;
-						ledger_info2.reserved2[2] = 0;
-						ledger_info2.reserved2[3] = 0;
-						ledger_info2.reserved2[4] = 0;
 					}
 					parseData(events_count, itr, end);
 					for (size_t i = 0; i < PSR_CRITICAL_EVENTS_NUM_MAX; i++)

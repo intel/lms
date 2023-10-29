@@ -995,18 +995,26 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_SHOCK, "Excessive Shock"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_OPERATIONAL_TEMPERATURE, "Excessive Operational Temperature"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE, "Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_FIRMWARE_RECOVERY, "Firmware Recovery"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_FIRMWARE_UPDATE, "Firmware Update"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SYSTEM_HUNG_UP, "System Hang-up"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_POWER_DROP, "Power Drop"},
 			};
 			std::map<uint32_t, std::string> capaiblity_states = {
 				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_NOT_SUPPORTED, "Not supported"},
 				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_SUPPORTED, "Supported"},
 			};
-			const size_t PSR_CAPABILITIES_NUM = 5;
+			const size_t PSR_CAPABILITIES_NUM = 9;
 			std::array<std::string, PSR_CAPABILITIES_NUM> capaiblity_names = {
-			"Chassis Intrusion",
-			"Excessive Operational Temperature",
-			"Excessive Shock",
-			"Remote Platform Erase",
-			"Local Platform Erase",
+				"Chassis Intrusion",
+				"Excessive Operational Temperature",
+				"Excessive Shock",
+				"Remote Platform Erase",
+				"Local Platform Erase",
+				"Firmware Recovery",
+				"Firmware Update",
+				"System Hang-up",
+				"Power Drop",
 			};
 			std::map<uint32_t, std::string> erase_event_source = {
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_RPE, "Remote Erase"},
@@ -1105,6 +1113,10 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					parsed << formatPSRField("PSR SVN Incremented Count", psr.ledger_info2.psr_svn_increment_counter);
 					parsed << formatPSRField("Excessive Shock Count", psr.ledger_info2.excessive_shock_counter);
 					parsed << formatPSRField("Excessive Operational Temperature Count", psr.ledger_info2.excessive_temp_counter);
+					parsed << formatPSRField("Firmware Recovery Count", psr.ledger_info2.firmware_recovery_counter);
+					parsed << formatPSRField("Firmware Update Count", psr.ledger_info2.firmware_update_counter);
+					parsed << formatPSRField("System Hang-up Count ", psr.ledger_info2.system_hung_up_counter);
+					parsed << formatPSRField("Power Drop Count", psr.ledger_info2.power_drop_counter);
 				}
 				parsed << "</Category>" << std::endl;
 
