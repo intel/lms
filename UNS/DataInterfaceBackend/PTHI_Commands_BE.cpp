@@ -997,7 +997,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE, "Erase"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_FIRMWARE_RECOVERY, "Firmware Recovery"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_FIRMWARE_UPDATE, "Firmware Update"},
-				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SYSTEM_HUNG_UP, "System Hang-up"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SYSTEM_HANG, "System Hang"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_POWER_DROP, "Power Drop"},
 			};
 			std::map<uint32_t, std::string> capaiblity_states = {
@@ -1013,7 +1013,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				"Local Platform Erase",
 				"Firmware Recovery",
 				"Firmware Update",
-				"System Hang-up",
+				"System Hang",
 				"Power Drop",
 			};
 			std::map<uint32_t, std::string> erase_event_source = {
@@ -1115,7 +1115,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					parsed << formatPSRField("Excessive Operational Temperature Count", psr.ledger_info2.excessive_temp_counter);
 					parsed << formatPSRField("Firmware Recovery Count", psr.ledger_info2.firmware_recovery_counter);
 					parsed << formatPSRField("Firmware Update Count", psr.ledger_info2.firmware_update_counter);
-					parsed << formatPSRField("System Hang-up Count ", psr.ledger_info2.system_hung_up_counter);
+					parsed << formatPSRField("System Hang Count ", psr.ledger_info2.system_hang_counter);
 					parsed << formatPSRField("Power Drop Count", psr.ledger_info2.power_drop_counter);
 				}
 				parsed << "</Category>" << std::endl;
