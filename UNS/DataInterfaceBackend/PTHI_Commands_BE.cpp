@@ -1136,7 +1136,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
 					if (psr.psr_version_major >= 2 && psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE)
 					{ // print erase sub id data
-						parsed << "<Category name=\"Data\">" << std::endl;
+						parsed << "<Category name=\"EraseInfo\">" << std::endl;
 						uint32_t sub_id = psr.events_info[i].event_sub_id[0] + (psr.events_info[i].event_sub_id[1] << 8) +
 							(psr.events_info[i].event_sub_id[2] << 16);
 						uint32_t action = (sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_MASK) >>
@@ -1192,6 +1192,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 							break;
 						}
 					}
+					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::setw(8) << std::hex <<
+						psr.events_info[i].data << std::dec << formatPSRSuffix();
 					parsed << "</Category>" << std::endl;
 				}
 				parsed << "</Category>" << std::endl;
