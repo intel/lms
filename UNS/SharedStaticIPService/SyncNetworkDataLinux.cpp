@@ -432,7 +432,7 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 			buf[0] = '\0';
 
 		UNS_DEBUG(L"getNetParam MAC %C\n", buf);
-		if (m_MacAddress == buf) {
+		if (!strcasecmp(m_MacAddress.c_str(), buf)) {
 			param->udi = rtnl_link_get_ifindex(link);
 			UNS_DEBUG(L"getNetParam ifindex %d\n", param->udi);
 #if defined(USE_NM) || defined(USE_CONNMAN)
