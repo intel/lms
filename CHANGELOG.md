@@ -1,3 +1,24 @@
+## [2348.0.0.0]
+
+### Fixed
+ - SharedStaticIPService: compare case-insensitive on Linux
+ - tests: dbus: increase AuditLog test timeout
+ - HostChangesNotificationService: fix debug message
+ - WMIProv: fix return values
+ - AMT_COM_Interface: Test: Enable UPID before PSR tests
+ - WMIProv: Test: Set again UPID (to enabled)
+ - CMake: Linux: migrate udev rules to /usr
+ - Fix build issues with gcc13
+
+### Changed
+ - update 3rd party dependencies
+ - snap: move to core22
+
+### Added
+ - support for unicode hostname
+
+### Removed
+
 ## [2322.0.0.0]
 
 
