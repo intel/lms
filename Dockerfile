@@ -17,7 +17,8 @@ RUN apt-get update && \
         libxerces-c-dev \
         libnl-3-dev \
         libnl-route-3-dev \
-        libxml2-dev
+        libxml2-dev \
+        libidn2-0-dev
 COPY . /lms/
 RUN set -x && \
     cd /lms && \
