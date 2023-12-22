@@ -16,9 +16,9 @@ jobs:
             image_tag: 20.04
           - image_name: ubuntu
             image_tag: 22.04
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: |
           set -euxo pipefail
@@ -33,8 +33,8 @@ jobs:
             mv "$p" "${p/-Linux\.deb/-${{ matrix.image_name }}-${{ matrix.image_tag }}.deb}"
           done
       - name: Archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
+          name: artifacts-${{ matrix.image_name }}-${{ matrix.image_tag }}
           path: |
             build/*.deb
