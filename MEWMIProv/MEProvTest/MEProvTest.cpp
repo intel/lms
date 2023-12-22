@@ -1108,15 +1108,26 @@ TEST_F(MEProvTest, getSOLState)
 //*********no out param ME_System************
 TEST_F(MEProvTest, setUniquePlatformIDFeatureState)
 {
+	//Save the original state
+	bool org_state = false;
 	UINT32 return_val;
 	bool ret;
+
+	ret = runCommandOneReturn(L"getUniquePlatformIDFeatureState", L"ME_System", L"state", return_val, org_state);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
+	std::wcout << " org_state: " << org_state << std::endl;
+
 	std::vector<std::string> out_param_names = {};
 	std::vector<_variant_t> out_param_values = {};
 	std::vector<InputParam> input_params;
 	VARIANT state;
 	VariantInit(&state);
 	state.vt = VT_BOOL;
-	state.boolVal = false;
+	state.boolVal = !org_state;
 	input_params.push_back(InputParam(L"state", CIM_EMPTY, state));
 	ret = runCommandMultipleArguments(L"setUniquePlatformIDFeatureState", L"ME_System", return_val, out_param_names, out_param_values, input_params);
 	if (!ret)
@@ -1125,6 +1136,19 @@ TEST_F(MEProvTest, setUniquePlatformIDFeatureState)
 	}
 	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
 	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+
+	//Restoring original state
+	state.boolVal = org_state;
+	input_params.clear();
+	input_params.push_back(InputParam(L"state", CIM_EMPTY, state));
+	ret = runCommandMultipleArguments(L"setUniquePlatformIDFeatureState", L"ME_System", return_val, out_param_names, out_param_values, input_params);
+	if (!ret)
+	{
+		FAIL();
+	}
+	EXPECT_PRED2(isReturnValueValidEx, return_val, std::vector<UINT32>({ AMT_STATUS_INVALID_AMT_MODE }));
+	ASSERT_EQ(out_param_values.size(), out_param_names.size());
+
 }
 
 //*********no out param OOB************

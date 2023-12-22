@@ -418,14 +418,40 @@ TEST_F(AMT_COM_PTHI, ProxyAddProxyEntry)
 
 TEST_F(AMT_COM_PTHI, GetPlatformServiceRecord)
 {
+	VARIANT_BOOL org_state;
+	ASSERT_MAY_THROW_NOTIMPL(amthi->GetUPIDFeatureState(&org_state));
+	
+	if (org_state == VARIANT_FALSE)
+	{
+		ASSERT_MAY_THROW_NOTIMPL(amthi->SetUPIDFeatureState(VARIANT_TRUE));
+	}
+
 	bstr_t bstrPSR;
 	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecord(&bstrPSR.GetBSTR()));
+
+	if (org_state == VARIANT_FALSE)
+	{
+		ASSERT_MAY_THROW_NOTIMPL(amthi->SetUPIDFeatureState(VARIANT_FALSE));
+	}
 }
 
 TEST_F(AMT_COM_PTHI, GetPlatformServiceRecordRaw)
 {
+	VARIANT_BOOL org_state;
+	ASSERT_MAY_THROW_NOTIMPL(amthi->GetUPIDFeatureState(&org_state));
+
+	if (org_state == VARIANT_FALSE)
+	{
+		ASSERT_MAY_THROW_NOTIMPL(amthi->SetUPIDFeatureState(VARIANT_TRUE));
+	}
+	
 	SAFEARRAY* binPSR;
 	ASSERT_MAY_THROW_NOTIMPL(amthi->GetPlatformServiceRecordRaw(&binPSR));
+
+	if (org_state == VARIANT_FALSE)
+	{
+		ASSERT_MAY_THROW_NOTIMPL(amthi->SetUPIDFeatureState(VARIANT_FALSE));
+	}
 }
 
 TEST_F(AMT_COM_PTHI, SkuMgrQualifiedBrandEntitlements)

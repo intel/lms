@@ -74,6 +74,7 @@ To skip automatic download one can download it manually to Common/googletest dir
 * libnl-3 (libnl-3-dev package in Debian, libnl3-devel in RHEL)
 * libnl-route-3 (libnl-route-3-dev package in Debian, not needed on RHEL)
 * libxml2 (libxml2-dev package in Debian, libxml2-devel in RHEL)
+* libidn2 (libidn2-0-dev package in Debian, libidn2-devel in RHEL)
 
 ##### Optional dependencies for building DBus interface documentation:
 * xsltproc

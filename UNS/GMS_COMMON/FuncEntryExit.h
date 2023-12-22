@@ -5,6 +5,7 @@
 #ifndef FUNCENTRYEXIT_H
 #define FUNCENTRYEXIT_H
 #include "GMSCommonDllExport.h"
+#include <cstdint>
 
 GMS_COMMON_EXPORT void FlowLog(const wchar_t *name, const wchar_t *pref, const wchar_t *func);
 GMS_COMMON_EXPORT void FuncEntry(const wchar_t *name, const wchar_t *func);

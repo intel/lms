@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
+# Copyright (C) 2010-2023 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 if (UNIX)
+  find_package (PkgConfig)
   set (EVENTLOG_SRC LinuxEventLog.cpp)
   set (REGISTRY_SRC LinuxRegistryStorage.cpp)
+  pkg_check_modules (IDN2 REQUIRED libidn2)
 else (UNIX)
   set (EVENTLOG_SRC WindowsEventLog.cpp)
   set (VERIFYFILE_SRC VerifyFile.cpp)
@@ -42,6 +44,7 @@ target_link_libraries (GMS_COMMON
   ACE::ACE
   ${SECLIBS}
   UNSMessageFileLib
+  ${IDN2_LIBRARIES}
 )
 
 target_compile_definitions (GMS_COMMON PRIVATE
@@ -51,6 +54,10 @@ target_compile_definitions (GMS_COMMON PRIVATE
 
 target_compile_definitions (GMS_COMMON PUBLIC
   GMS_COMMON_NO_DLL
+)
+
+target_include_directories (GMS_COMMON PRIVATE
+  ${IDN2_INCLUDE_DIRS}
 )
 
 target_include_directories (GMS_COMMON PUBLIC .)

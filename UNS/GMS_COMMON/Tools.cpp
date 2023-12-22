@@ -147,22 +147,48 @@ std::string WStringToString(const std::wstring& wstr)
 
 #define FQDN_MAX_SIZE 256
 #ifdef WIN32
+std::wstring UTF8ToWStr(const std::string& s)
+{
+	int wc_size = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.length(), NULL, 0);
+	if (wc_size <= 0)
+		return L"";
+	std::wstring wc_str(wc_size, '\0');
+	if (!MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.length(), &wc_str[0], wc_size))
+		return L"";
+	return wc_str;
+}
+
+static std::string WStrToUTF8(const wchar_t* str, int len)
+{
+	int utf8_size = WideCharToMultiByte(CP_UTF8, 0, str, len, NULL, 0, NULL, NULL);
+	if (utf8_size <= 0)
+		return "";
+	std::string utf8_str(utf8_size, '\0');
+	if (!WideCharToMultiByte(CP_UTF8, 0, str, len, &utf8_str[0], utf8_size, NULL, NULL))
+		return "";
+	return utf8_str;
+}
+
 bool GetLocalFQDN(std::string& fqdn)
 {
-	char localName[FQDN_MAX_SIZE] = "\0";
+	wchar_t localName[FQDN_MAX_SIZE] = L"\0";
 	DWORD len = FQDN_MAX_SIZE;
-	if (GetComputerNameExA(ComputerNameDnsFullyQualified, localName, &len) == 0)
+	if (GetComputerNameExW(ComputerNameDnsFullyQualified, localName, &len) == 0)
 		return false;
-	fqdn = localName;
+	fqdn = WStrToUTF8(localName, len);
+	if (!fqdn.length())
+		return false;
 	return true;
 }
 #else
+#include <idn2.h>
 bool GetLocalFQDN(std::string& fqdn)
 {
 	char buf[FQDN_MAX_SIZE];
 	if (gethostname(buf, FQDN_MAX_SIZE))
 		return false;
 	struct addrinfo hints, *info = NULL;
+	char* fqdn_utf8 = NULL;
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
@@ -172,13 +198,20 @@ bool GetLocalFQDN(std::string& fqdn)
 	int ret = getaddrinfo(buf, NULL, &hints, &info);
 	if (ret) {//full search can fail, return local hostname
 		fqdn = buf;
-		return true;
+		goto recode;
 	}
 
-	if (info)
-		fqdn = info->ai_canonname;
+	if (!info)
+		return false;
+	fqdn = info->ai_canonname;
 	freeaddrinfo(info);
 
-	return (info != NULL);
+recode:
+	if (idn2_to_unicode_8z8z(fqdn.c_str(), &fqdn_utf8, 0) != IDN2_OK)
+		return false;
+
+	fqdn = fqdn_utf8;
+	free(fqdn_utf8);
+	return true;
 }
 #endif // WIN32

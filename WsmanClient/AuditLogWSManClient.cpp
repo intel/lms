@@ -261,7 +261,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 	bool res = false;
 	char* netAddress = NULL;
 	char* name = NULL;
-	parsed << "<?xml version=\"1.0\"?>\n<MsInfo>\n<Category name=\"Access Monitor Reporting\">\n";
+	parsed << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<MsInfo>\n<Category name=\"Access Monitor Reporting\">\n";
 	for(itr = records.begin(); itr != records.end(); itr++)
 	{
 		delete rec;

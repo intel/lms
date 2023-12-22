@@ -103,7 +103,7 @@ private:
 	bool _setNonBlocking(SOCKET s, bool enable);
 	int _rxFromSocket(SOCKET s);
 	int _isLocal(SOCKET s, sockaddr_storage* connction_sockaddr = NULL) const;
-	int _handleFQDNChange(const char *fqdn);
+	int _handleFQDNChange(const std::string &fqdn);
 	int _updateIPFQDN(const std::string &fqdn);
 	PortForwardRequest* _findFWReq(SOCKET sock, unsigned int port, sockaddr_storage* caller_addr);
 	void _checkRemoteAccessStatus();
@@ -177,6 +177,7 @@ private:
 	template <typename T>
 	using FuncEntryExit = FuncEntryExit_<T, Protocol>;
 public:
-	const wchar_t *short_name() const { return L"PROT"; }};
+	const wchar_t *short_name() const { return L"PROT"; }
+};
 
 #endif // _PROTOCOL_H_

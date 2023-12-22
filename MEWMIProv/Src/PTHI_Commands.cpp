@@ -340,7 +340,7 @@ unsigned int PTHI_Commands::GetAMTFQDN(std::wstring* amtFQDN)
 	try {
 		GetFQDNCommand command;
 		GET_FQDN_RESPONSE response = command.getResponse();
-		(*amtFQDN) = ToWStr(response.FQDN);
+		*amtFQDN = UTF8ToWStr(response.FQDN);
 		rc = 0;
 	}
 	catch (AMTHIErrorException& e)
@@ -459,7 +459,7 @@ unsigned int PTHI_Commands::isWiredLinkUp(bool* enabled)
 	return rc;
 }
 
-UINT PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
+unsigned int PTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 {
 	unsigned int rc = AMT_STATUS_INTERNAL_ERROR;
 	try {
