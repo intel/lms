@@ -1087,7 +1087,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 						}
 						catch (std::out_of_range const&)
 						{
-							parsed << "Unknown (" << psr.capabilities[i] << ")";
+							parsed << "Unknown (" << (unsigned int)psr.capabilities[i] << ")";
 						}
 						parsed << formatPSRSuffix();
 					}
@@ -1128,7 +1128,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					}
 					catch (std::out_of_range const&)
 					{
-						parsed << "Unknown (" << psr.events_info[i].event_id << ")";
+						parsed << "Unknown (" << (unsigned int)psr.events_info[i].event_id << ")";
 					}
 					parsed << "\">" << std::endl;
 					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
