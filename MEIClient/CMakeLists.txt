@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2023 Intel Corporation
+# Copyright (C) 2010-2024 Intel Corporation
 cmake_minimum_required (VERSION 3.1)
 
 include (metee.cmake)
@@ -22,6 +22,7 @@ add_library (MEIClient STATIC
 set_target_properties (MEIClient PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries (MEIClient
+  ACE::ACE
   metee::metee
   $<$<BOOL:${WIN32}>:CfgMgr32.lib>
 )

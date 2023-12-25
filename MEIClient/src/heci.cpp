@@ -8,8 +8,10 @@
 
 --*/
 
+#include <ace/Log_Msg.h>
 #include <vector>
 #include <string>
+#include <stdarg.h>
 #include <sstream>
 #include <chrono>
 #include <thread>
@@ -19,6 +21,18 @@
 
 namespace Intel {
 namespace MEI_Client {
+
+	void HECI_Log(bool is_error, const char* fmt, ...)
+	{
+		const size_t DEBUG_MSG_LEN = 1024;
+		char msg[DEBUG_MSG_LEN];
+		va_list varl;
+		va_start(varl, fmt);
+		vsnprintf(msg, DEBUG_MSG_LEN, fmt, varl);
+		va_end(varl);
+		ACE_DEBUG(((is_error) ? LM_ERROR : LM_TRACE, ACE_TEXT("(%t)[%D][%-11M] %I %C"), msg));
+	}
+
 HECI::HECI(const GUID &guid, bool verbose) : _guid(guid), _initialized(false), _verbose(verbose), _bufSize(0), _handle(new _TEEHANDLE) {}
 
 HECI::~HECI()
@@ -35,17 +49,23 @@ void HECI::Init()
 		return;
 
 #ifdef WIN32
-	std::vector<const char*> devices = { NULL };
+	std::vector<struct tee_device_address> devices =
+		{ { tee_device_address::TEE_DEVICE_TYPE_NONE, NULL } };
 #else
-	std::vector<const char*> devices =
-		{"/dev/mei0", "/dev/mei1", "/dev/mei2", "/dev/mei3"};
+	std::vector<struct tee_device_address> devices =
+	{
+		{ tee_device_address::TEE_DEVICE_TYPE_PATH, "/dev/mei0" },
+		{ tee_device_address::TEE_DEVICE_TYPE_PATH, "/dev/mei1" },
+		{ tee_device_address::TEE_DEVICE_TYPE_PATH, "/dev/mei2" },
+		{ tee_device_address::TEE_DEVICE_TYPE_PATH, "/dev/mei3" },
+	};
 #endif // WIN32
 	std::stringstream err;
-	for (std::vector<const char*>::const_iterator it = devices.begin();
+	for (std::vector<struct tee_device_address>::const_iterator it = devices.begin();
 	    it != devices.end(); it++) {
-		ret = TeeInit(_handle.get(), &_guid, *it);
+		ret = TeeInitFull(_handle.get(), &_guid, *it, TEE_LOG_LEVEL_VERBOSE, HECI_Log);
 		if (!TEE_IS_SUCCESS(ret)) {
-			err << ((*it) ? *it : "NULL") << " init " << ret << " ";
+			err << ((it->data.path) ? it->data.path : "NULL") << " init " << ret << " ";
 			continue;
 		}
 
@@ -60,7 +80,7 @@ void HECI::Init()
 				return;
 			case TEE_UNABLE_TO_COMPLETE_OPERATION: /* windows return this error on busy */
 			case TEE_BUSY:
-				err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
+				err << ((it->data.path) ? it->data.path : "NULL") << " connect " << ret << " ";
 				std::this_thread::sleep_for(std::chrono::milliseconds(500));
 				retry++;
 				break;
@@ -68,7 +88,7 @@ void HECI::Init()
 				client_not_found = true;
 				/*fallthrough*/
 			default:
-				err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
+				err << ((it->data.path) ? it->data.path : "NULL") << " connect " << ret << " ";
 				retry = HECI_MAX_CONNECT_RETRY; /* no need to retry */
 				break;
 			}
