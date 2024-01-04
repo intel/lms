@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -290,7 +290,7 @@ void PartialFWUpdateService::publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE mo
 	default:
 		return;
 	}
-	UNS_DEBUG(L"publishPartialFWUpgrade_begin %s", moduleStr);
+	UNS_DEBUG(L"publishPartialFWUpgrade_begin %s\n", moduleStr.c_str());
 	sendAlertIndicationMessage(CATEGORY_PARTIAL_FW_UPDATE, EVENT_PARTIAL_FWU_BEGIN, PARTIAL_FW_UPDATE_BEGIN_MESSAGE_INIT);
 }
 
@@ -353,7 +353,7 @@ void PartialFWUpdateService::publishMissingImageFile(PARTIAL_FWU_MODULE module)
 		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_WLAN;
 	else
 		eventID = EVENT_PARTIAL_FWU_MISSING_IMAGE_LANG;
-	UNS_DEBUG(L"publishMissingImageFile %d", module);
+	UNS_DEBUG(L"publishMissingImageFile %d\n", module);
 	sendAlertIndicationMessage(CATEGORY_PARTIAL_FW_UPDATE, eventID, MISSING_IMAGE_FILE_MSG);
 }
 
@@ -376,6 +376,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 
 	if (getPartialFWUpdateImagePath(value)) //check if we have an explicit image path in registry
 	{
+		UNS_DEBUG(L"PFU image from registry: '%W'\n", value);
 		if (value.find(L":\\") == 1) //Absolute path
 		{
 			path = value;
@@ -392,23 +393,24 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 	}
 	else //no path in registry, use the executable path
 	{
-		std::wstring fileName;
-		if (!getImageFileNameByFwVersion(fileName))
+		if (!getImageFileNameByFwVersion(value, lmsPath))
 			return false; //TODO - another event log message?
 
-		path = lmsPath + fileName;
+		path = lmsPath + value;
 	}
 
-	UNS_DEBUG(L"checkImageFileExist path: %W\n", path);
-
+	UNS_DEBUG(L"checkImageFileExist path: '%W'\n", path);
 	if(checkFileExist(path))
 	{
 		imagePath = path;
 		retVal = true;
 	}
+	else
+	{
+		UNS_ERROR(L"File is missing: '%W'\n", path.c_str());
+	}
 	return retVal;
 }
-
 
 const wchar_t* templateOfPfu = L"PFU.BIN";
 
@@ -619,7 +621,7 @@ private:
 };
 
 //get the image file name according to FW version, return false at failure
-bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring &fileName)
+bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring &fileName, const std::wstring &lmsPath)
 {
 	try
 	{
@@ -646,22 +648,13 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring &fileName)
 			isProduction = imageType.ImageSignData;
 		}
 
-		//Get the path of the LMS folder
-		std::wstring lmsPath;
-		if (GetServiceDirectory(L"LMS", lmsPath) != true)
-		{
-			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed getting LMS path\n");
-			return false;
-		}
-		lmsPath = lmsPath.substr(0, lmsPath.length() - 7); // 7 is length of "LMS.exe", we need the directory, not the file.
-
 		//Get existing *PFU.BIN files in LMS folder
 		ACE_Dirent_Selector lmsDir;
 		// Pass in function that'll specify the selection criteria.
 		int status = lmsDir.open(ACE_TEXT_WCHAR_TO_TCHAR(lmsPath.c_str()), selector, ACE_SCANDIR_COMPARATOR(ACE_OS::alphasort));
 		if (status == -1)
 		{
-			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed opening: %s\n", lmsPath.c_str());
+			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed opening: %W\n", lmsPath.c_str());
 			return false;
 		}
 
@@ -674,7 +667,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring &fileName)
 		status = lmsDir.close();
 		if (status == -1)
 		{
-			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed closing: %s\n", lmsPath.c_str());
+			UNS_ERROR("PartialFWUpdateService::getImageFileNameByFwVersion Failed closing: %W\n", lmsPath.c_str());
 			return false;
 		}
 
@@ -826,12 +819,11 @@ bool PartialFWUpdateService::invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module
 	std::wstring imagePath;
 	if (!checkImageFileExist(imagePath))
 	{
-		UNS_ERROR(L"File is missing: %s\n", imagePath.c_str());
 		publishMissingImageFile(module);
 		return res;
 	}
 
-	UNS_DEBUG(L"Start\n");
+	UNS_DEBUG(L"Start PFU update\n");
 
 	uint32_t retcode = pfwuWrapper->performPFWU(partialID, imagePath);
 	publishPartialFWUpgrade_end(module, retcode);

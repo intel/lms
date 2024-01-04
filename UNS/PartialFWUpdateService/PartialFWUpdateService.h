@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef __PARTIALFWUPDATESERVICE_H_
 #define __PARTIALFWUPDATESERVICE_H_
@@ -67,7 +67,7 @@ private:
 
 	// ******************************************************************
 	bool getPartialFWUpdateImagePath(std::wstring& value);
-	bool getImageFileNameByFwVersion(std::wstring& fileName);
+	bool getImageFileNameByFwVersion(std::wstring& fileName, const std::wstring& lmsPath);
 	// ******************************************************************
 	//Events handling
 	void publishPartialFWUpgrade_begin(PARTIAL_FWU_MODULE module);
