@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -155,18 +155,20 @@ HRESULT ME_System_WMI_Provider::getLastMEResetReason(
 
 	try
 	{
-		CComPtr<IWbemClassObject> pOutParams;
-		uint32 ReasonCode=0;
-		bool cryptoFuseEnabled;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);
-		ERROR_HANDLER(ReturnValue);
-		
-		WMIGetMethodOParams(pClass, L"getLastMEResetReason", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"ReasonCode", ReasonCode);
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			uint32 ReasonCode = 0;
+			bool cryptoFuseEnabled;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetAMTState(&ReasonCode, &cryptoFuseEnabled);
+			ERROR_HANDLER(ReturnValue);
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			WMIGetMethodOParams(pClass, L"getLastMEResetReason", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"ReasonCode", ReasonCode));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -191,15 +193,17 @@ HRESULT ME_System_WMI_Provider::getCurrentPowerPolicy(
 
 	try
 	{
-		CComPtr<IWbemClassObject> pOutParams;
-		std::wstring powerPolicy=L"";
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetPowerPolicy(&powerPolicy);
-		WMIGetMethodOParams(pClass, L"getCurrentPowerPolicy", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"PowerPolicy", powerPolicy);
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			std::wstring powerPolicy = L"";
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetPowerPolicy(&powerPolicy);
+			WMIGetMethodOParams(pClass, L"getCurrentPowerPolicy", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"PowerPolicy", powerPolicy));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -224,26 +228,23 @@ HRESULT ME_System_WMI_Provider::IsFirmwareUpdateEnabled(
 
 	try
 	{
-		bool enabled = false;
-
-		FWUpdate_Commands FWUpdate;
-		{
-			using namespace Intel::MEI_Client;
-		
+		do {
+			bool enabled = false;
+			FWUpdate_Commands FWUpdate;
 			ReturnValue = FWUpdate.GetFWUpdateStateCommand(&enabled);
 			if (ReturnValue != S_OK)
 				enabled = false;
-		}
-		UNS_DEBUG("FWUpdate.GetFWUpdateStateCommand=%d rc=%d\n", enabled, ReturnValue);
-		
-		ERROR_HANDLER(ReturnValue);
+			UNS_DEBUG("FWUpdate.GetFWUpdateStateCommand=%d rc=%d\n", enabled, ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"IsFirmwareUpdateEnabled", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"enabled", enabled);
+			ERROR_HANDLER(ReturnValue);
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"IsFirmwareUpdateEnabled", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"enabled", enabled));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -272,36 +273,33 @@ HRESULT ME_System_WMI_Provider::getCapabilitiesStrings(
 		std::vector<std::wstring> capabilities, enabledCapabilities;
 		FWUpdate_Commands FWUpdate;
 		
-		{
-			using namespace Intel::MEI_Client;
-			MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
-			MKHI_Client::MKHI_PLATFORM_TYPE Platform;
+		do {
+			Intel::MEI_Client::MKHI_Client::MEFWCAPS_SKU_MKHI CapabilityData, StateData;
+			Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform;
 			ReturnValue = FWUpdate.GetFWCapabilities(CapabilityData);
 			if (ReturnValue == S_OK)
 			{
 				ReturnValue = FWUpdate.GetFWFeaturesState(StateData);
-				
 				if (ReturnValue == S_OK)
 				{
 					ReturnValue = FWUpdate.GetFWPlatformType(Platform);
 				}
 				MEFWCAPS_SKU_INT capabilities_int;
 				capabilities_int.Data = GetCapabilities_int(StateData, Platform);
-				GetCapabilities(capabilities_int, enabledCapabilities);	
+				GetCapabilities(capabilities_int, enabledCapabilities);
 			}
 			ERROR_HANDLER(ReturnValue);
 			MEFWCAPS_SKU_INT capabilities_int;
 			capabilities_int.Data = GetCapabilities_int(CapabilityData, Platform);
 			GetCapabilities(capabilities_int, capabilities);
-		}
 
-		WMIGetMethodOParams(pClass, L"getCapabilities", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"Capabilities", capabilities);
-		WMIPut<1>( pOutParams, L"EnabledCapabilities", enabledCapabilities);
+			WMIGetMethodOParams(pClass, L"getCapabilities", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"Capabilities", capabilities));
+			BREAKIF(WMIPut<1>(pOutParams, L"EnabledCapabilities", enabledCapabilities));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
-		
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -649,23 +647,21 @@ HRESULT ME_System_WMI_Provider::getUPIDFeatureState(
 
 	try
 	{
-		bool state = false;
-
-		UPID_Commands UPID;
-		{
+		do {
+			bool state = false;
+			UPID_Commands UPID;
 			ReturnValue = UPID.GetUPIDStateCommand(state);
 			if (ReturnValue != S_OK)
 				state = false;
-		}
+			ERROR_HANDLER(ReturnValue);
 
-		ERROR_HANDLER(ReturnValue);
-		
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureState", &pOutParams.p);
-		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>(pOutParams, L"state", state);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureState", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"state", state));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch (...)
 	{
@@ -716,7 +712,7 @@ HRESULT ME_System_WMI_Provider::setUPIDFeatureState(
 
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"setUniquePlatformIDFeatureState", &pOutParams.p);
-			WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
 
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while (0);
@@ -753,24 +749,23 @@ HRESULT ME_System_WMI_Provider::getUPID(
 
 	try
 	{
-		uint32_t oemPlatformIdType = 0;
-		std::wstring oemPlatformId, csmePlatformId;
-
-		UPID_Commands UPID;
-		{
+		do {
+			uint32_t oemPlatformIdType = 0;
+			std::wstring oemPlatformId, csmePlatformId;
+			UPID_Commands UPID;
 			ReturnValue = UPID.GetUPIDCommand(oemPlatformIdType, oemPlatformId, csmePlatformId);
-		}
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"getUniquePlatformID", &pOutParams.p);
-		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>(pOutParams, L"OEMPlatformIDType", oemPlatformIdType);
-		WMIPut<1>(pOutParams, L"OEMPlatformID", oemPlatformId);
-		WMIPut<1>(pOutParams, L"CSMEPlatformID", csmePlatformId);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getUniquePlatformID", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"OEMPlatformIDType", oemPlatformIdType));
+			BREAKIF(WMIPut<1>(pOutParams, L"OEMPlatformID", oemPlatformId));
+			BREAKIF(WMIPut<1>(pOutParams, L"CSMEPlatformID", csmePlatformId));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch (...)
 	{
@@ -795,23 +790,21 @@ HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureSupported(
 
 	try
 	{
-		bool supported = false;
-
-		UPID_Commands UPID;
-		{
+		do {
+			bool supported = false;
+			UPID_Commands UPID;
 			ReturnValue = UPID.GetUPIDFeatureSupported(supported);
 			if (ReturnValue != S_OK)
 				supported = false;
-		}
+			ERROR_HANDLER(ReturnValue);
 
-		ERROR_HANDLER(ReturnValue);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureSupported", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"supported", supported));
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureSupported", &pOutParams.p);
-		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>(pOutParams, L"supported", supported);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch (...)
 	{
@@ -836,23 +829,21 @@ HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureOSControlState(
 
 	try
 	{
-		bool state = false;
-
-		UPID_Commands UPID;
-		{
+		do {
+			bool state = false;
+			UPID_Commands UPID;
 			ReturnValue = UPID.GetUPIDFeatureOSControl(state);
 			if (ReturnValue != S_OK)
 				state = false;
-		}
+			ERROR_HANDLER(ReturnValue);
 
-		ERROR_HANDLER(ReturnValue);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureOSControlState", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"state", state));
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"getUniquePlatformIDFeatureOSControlState", &pOutParams.p);
-		WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>(pOutParams, L"state", state);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch (...)
 	{
