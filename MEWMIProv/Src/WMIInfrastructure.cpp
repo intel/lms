@@ -83,23 +83,6 @@ HRESULT WMIPutMember(
 	return hr;
 }
 
-HRESULT WMIExecMethod(IWbemServices* srv,
-	LPCWSTR             oname,
-	LPCWSTR             mname,
-	IWbemClassObject* iparam,
-	IWbemClassObject*& oparam)
-{
-	HRESULT hr;
-	hr = srv->ExecMethod(CComBSTR(oname), CComBSTR(mname), 0, NULL, iparam, &oparam, NULL);
-
-	if (hr == 0x800706bf)
-	{
-		hr = srv->ExecMethod(CComBSTR(oname), CComBSTR(mname), 0, NULL, iparam, &oparam, NULL);
-	}
-
-	return  hr;
-}
-
 HRESULT WMIGetMethodOParams(
 	IWbemClassObject* pOClass,
 	LPCWSTR             name,

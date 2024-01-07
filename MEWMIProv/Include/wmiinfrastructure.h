@@ -524,12 +524,6 @@ HRESULT WMIPutMember(
     IWbemClassObject** root,
     LPCWSTR            type);
 
-HRESULT WMIExecMethod(IWbemServices* srv,
-    LPCWSTR            oname,
-    LPCWSTR            mname,
-    IWbemClassObject*  iparam,
-    IWbemClassObject*& oparam);
-
 HRESULT WMIGetMethodOParams(
     IWbemClassObject*  pOClass,
     LPCWSTR            name,
