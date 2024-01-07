@@ -256,12 +256,20 @@ int GmsService::svc(void)
 {
 	int ret=0;
 #ifdef WIN32
-	ofstream *output_file = new ofstream("Gms.log", ios::out);
-	if (output_file && output_file->rdstate() == ios::goodbit)
-		ACE_LOG_MSG->msg_ostream(output_file, 1);
-	ACE_LOG_MSG->open(L"lms.exe",
-		ACE_Log_Msg::STDERR | ACE_Log_Msg::OSTREAM,
-		0);
+	try
+	{
+		ofstream *output_file = new ofstream("Gms.log", ios::out);
+		if (output_file && output_file->rdstate() == ios::goodbit)
+			ACE_LOG_MSG->msg_ostream(output_file, 1);
+		ACE_LOG_MSG->open(L"lms.exe",
+			ACE_Log_Msg::STDERR | ACE_Log_Msg::OSTREAM,
+			0);
+	}
+	catch (const std::exception&)
+	{
+		ACE_LOG_MSG->open(L"lms.exe", ACE_Log_Msg::STDERR, 0);
+		UNS_ERROR("Failed to configure logger file\n");
+	}
 #else // WIN32
 #ifdef _DEBUG
 	unsigned long flags = ACE_Log_Msg::SYSLOG | ACE_Log_Msg::STDERR;
