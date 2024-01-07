@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2003-2023 Intel Corporation
+ * Copyright (C) 2003-2024 Intel Corporation
  */
 /*++
 
@@ -396,35 +396,7 @@ HRESULT  WMIPut(        IWbemClassObject*   obj,
 
 //  WMIPut  -----------------------------------------------------------------
 template<bool log>
-HRESULT  WMIPut(        
-                        IWbemClassObject*   obj,
-                        LPCWSTR             name,
-                        std::wstring&       var)
-{
-	variant_t  val(var.c_str());
-
-	if (0 == wcscmp(name, L"Password")) //Zero the memory of the decrypted password
-	{
-		HRESULT hr = obj->Put(name, 0, &val, 0);
-		memset(val.bstrVal, 0, (var.size() * sizeof(wchar_t)));
-		if (hr != S_OK)
-		{
-			UNS_ERROR("Bad WMI Param %W\n", name);
-			return hr;
-		}
-	}
-	else
-	{
-		RETURNIF(obj->Put(name, 0, &val, 0));
-	}
-
- /*   if(log)
-        Debug.Param() << "    wmiput - " << name << " : " << var;
-    else
-        Debug.Param() << "    wmiput - " << name << " : ********";*/
-
-    return  S_OK;
-}
+HRESULT WMIPut(IWbemClassObject* obj, LPCWSTR name, std::wstring& var);
 
 //  WMIPut  -----------------------------------------------------------------
 template<typename T>

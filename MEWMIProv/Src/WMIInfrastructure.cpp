@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2023 Intel Corporation
+ * Copyright (C) 2023-2024 Intel Corporation
  */
 #include "wmiinfrastructure.h"
 
@@ -254,4 +254,32 @@ HRESULT WMIHandleSetStatus(IWbemServices* pNamespace, IWbemObjectSink  __RPC_FAR
 		UNS_ERROR("%C Bad catch", __FUNCTION__);
 	}
 	return S_OK;
+}
+
+template<bool log>
+HRESULT WMIPut(IWbemClassObject* obj, LPCWSTR name, std::wstring& var)
+{
+	variant_t  val(var.c_str());
+
+	if (0 == wcscmp(name, L"Password")) //Zero the memory of the decrypted password
+	{
+		HRESULT hr = obj->Put(name, 0, &val, 0);
+		memset(val.bstrVal, 0, (var.size() * sizeof(wchar_t)));
+		if (hr != S_OK)
+		{
+			UNS_ERROR("Bad WMI Param %W\n", name);
+			return hr;
+		}
+	}
+	else
+	{
+		RETURNIF(obj->Put(name, 0, &val, 0));
+	}
+
+	/*   if(log)
+		   Debug.Param() << "    wmiput - " << name << " : " << var;
+	   else
+		   Debug.Param() << "    wmiput - " << name << " : ********";*/
+
+	return  S_OK;
 }
