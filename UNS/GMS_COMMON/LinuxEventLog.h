@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -24,8 +24,9 @@ class LinuxEventLog : public BaseEventLog
 {
 public:
 	LinuxEventLog(const char *eventLogSourceName);
-
 	~LinuxEventLog();
+	LinuxEventLog(const LinuxEventLog&) = delete;
+	LinuxEventLog& operator = (const LinuxEventLog&) = delete;
 
 	virtual void LogEvent(unsigned short CategoryID, unsigned long EventID, unsigned short EventType);
 

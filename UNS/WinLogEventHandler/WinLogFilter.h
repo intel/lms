@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef __WIN_LOG_FILTER_H_
 #define __WIN_LOG_FILTER_H_
@@ -16,6 +16,8 @@ public:
 	virtual ~WinLogFilter() {
 		eventsMap_.unbind_all ();
 	}
+	WinLogFilter(const WinLogFilter&) = delete;
+	WinLogFilter& operator = (const WinLogFilter&) = delete;
 	virtual bool toSubscribe(const GMS_AlertIndication *alert) const ;
 	bool toSubscribe(const GMS_AlertIndication* alert, GmsEventType& et) const ;
 private:

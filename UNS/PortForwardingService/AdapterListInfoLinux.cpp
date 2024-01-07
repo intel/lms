@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -42,6 +42,8 @@ public:
 		if (_pipefd[1] != -1)
 			close(_pipefd[1]);
 	}
+	SelectAlarm(const SelectAlarm&) = delete;
+	SelectAlarm& operator = (const SelectAlarm&) = delete;
 	int getFD() {return _pipefd[0];}
 	int alarm()
 	{

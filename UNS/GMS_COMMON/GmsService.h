@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef _GMS_SERVICE
 #define _GMS_SERVICE
@@ -33,7 +33,8 @@ class GmsService :
 public:
 	GmsService(void);
 	virtual ~GmsService(void);
-
+	GmsService(const GmsService&) = delete;
+	GmsService& operator = (const GmsService&) = delete;
 #ifdef WIN32
 	void handle_control(DWORD control_code, DWORD dwEventType=0, bool wasOnOurGUID = true);
 	 /// Called by <handle_control> when a stop/shutdown was requested.
