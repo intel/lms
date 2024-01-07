@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2024 Intel Corporation
  */
 #ifndef __WMIUTILS_H
 #define __WMIUTILS_H
@@ -54,7 +54,8 @@ public:
 	{
 		UNS_DEBUG("<-- %C 0x%X 0x%X\n", func_, ret_, hr_);
 	}
-
+	EntryExitLog(const EntryExitLog&) = delete;
+	EntryExitLog& operator = (const EntryExitLog&) = delete;
 private:
 	const char *func_;
 	const uint32 &ret_;
@@ -72,7 +73,8 @@ public:
 	{
 		UNS_DEBUG("<-- %C 0x%X\n", func_, hr_);
 	}
-
+	EntryExitLogShort(const EntryExitLogShort&) = delete;
+	EntryExitLogShort& operator = (const EntryExitLogShort&) = delete;
 private:
 	const char* func_;
 	const HRESULT& hr_;

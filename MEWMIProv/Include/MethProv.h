@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -33,6 +33,8 @@ class CMethodPro : public IWbemServices, public IWbemProviderInit
      public:
         CMethodPro();
         ~CMethodPro(void);
+        CMethodPro(const CMethodPro&) = delete;
+        CMethodPro& operator = (const CMethodPro&) = delete;
 
         //Non-delegating object IUnknown
 
