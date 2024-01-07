@@ -343,9 +343,8 @@ STDMETHODIMP CPTHI_Commands::GetAMTVersion(BSTR* AMTVersion)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(sAMTVersion.c_str());
-	*AMTVersion = bstr.Detach();
-
+	if (!CreateBSTR(sAMTVersion, AMTVersion))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -372,9 +371,8 @@ STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(sLMSVersion.c_str());
-	*sVersion = bstr.Detach();
-
+	if (!CreateBSTR(sLMSVersion, sVersion))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -401,9 +399,8 @@ STDMETHODIMP CPTHI_Commands::GetHeciVersion(BSTR* sVersion)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(sHeciVersion.c_str());
-	*sVersion = bstr.Detach();
-
+	if (!CreateBSTR(sHeciVersion, sVersion))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -550,8 +547,8 @@ STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(sPolicy.c_str());
-	*bstrPolicy = bstr.Detach();
+	if (!CreateBSTR(sPolicy, bstrPolicy))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -684,11 +681,11 @@ STDMETHODIMP CPTHI_Commands::GetNetworkSettings(SHORT ConnectionType,    // WIRE
 		return LMSError2HRESULT(err);
 
 	*pDhcpEnabled = (SHORT)DhcpEnabled;
-	ATL::CComBSTR bstr(sIpAddress.c_str());
-	*bstrIpAddress = bstr.Detach();
-	ATL::CComBSTR bstr1(sMacAddress.c_str());
-	*bstrMacAddress = bstr1.Detach();
 
+	if (!CreateBSTR(sIpAddress, bstrIpAddress))
+		return E_FAIL;
+	if (!CreateBSTR(sMacAddress, bstrMacAddress))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -771,12 +768,12 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(sIPv6DefaultRouter.c_str());
-	*IPv6DefaultRouter = bstr.Detach();
-	ATL::CComBSTR bstr1(sPrimaryDNS.c_str());
-	*PrimaryDNS = bstr1.Detach();
-	ATL::CComBSTR bstr2(sSecondaryDNS.c_str());
-	*SecondaryDNS = bstr2.Detach();
+	if (!CreateBSTR(sIPv6DefaultRouter, IPv6DefaultRouter))
+		return E_FAIL;
+	if (!CreateBSTR(sPrimaryDNS, PrimaryDNS))
+		return E_FAIL;
+	if (!CreateBSTR(sSecondaryDNS, SecondaryDNS))
+		return E_FAIL;
 	*pIpv6Enable = Ipv6Enable ? TRUE : FALSE;
 
 	SAFEARRAY *pSar;
@@ -787,8 +784,8 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 		pSar = SafeArrayCreateVector(VT_BSTR, 0, Response.size());
 		for (LONG i = 0 ; i < (LONG)Response.size(); i++)
 		{
-			ATL::CComBSTR bstrAddress(Response[i].c_str());
-			bstrTmp = bstrAddress.Detach();
+			if (!CreateBSTR(Response[i], &bstrTmp))
+				return E_FAIL;
 			SafeArrayPutElement(pSar, &i, bstrTmp);
 		}
 		pResponse->vt = VT_ARRAY | VT_BSTR;
@@ -827,8 +824,8 @@ STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(sUUID.c_str());
-	*bstrUUID = bstr.Detach();
+	if (!CreateBSTR(sUUID, bstrUUID))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -1005,8 +1002,8 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(CreationTimeStampStr.c_str());
-	*pCreationTimeStamp = bstr.Detach();
+	if (!CreateBSTR(CreationTimeStampStr, pCreationTimeStamp))
+		return E_FAIL;
 	ATL::CComSafeArray<BYTE> hashdata(CertHash.size());
 	for (size_t i = 0; i < CertHash.size(); i++)
 	{
@@ -1284,8 +1281,8 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(PSR.c_str());
-	*bstrPSR = bstr.Detach();
+	if (!CreateBSTR(PSR, bstrPSR))
+		return E_FAIL;
 	return S_OK;
 }
 

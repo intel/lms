@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -56,8 +56,8 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(EventHistory.c_str());
-	*bstrEventHistory = bstr.Detach();
+	if (!CreateBSTR(EventHistory, bstrEventHistory))
+		return E_FAIL;
 	return S_OK;
 }
 

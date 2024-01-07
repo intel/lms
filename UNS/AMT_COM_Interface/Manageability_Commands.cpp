@@ -170,8 +170,8 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(MEBxVersion.c_str());
-	*pMEBxVersion = bstr.Detach();
+	if (!CreateBSTR(MEBxVersion, pMEBxVersion))
+		return E_FAIL;
 	*pBiosBootState = BiosBootState;
 	*pCryptoFuseEnable = CryptoFuseEnable;
 	*pLocalFWupdateEnable = LocalFWupdateEnable;
@@ -202,9 +202,8 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 	if (err != Intel::LMS::LMS_ERROR::OK)
 		return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(FwVer.c_str());
-	*pFwVer = bstr.Detach();
-
+	if (!CreateBSTR(FwVer, pFwVer))
+		return E_FAIL;
 	return S_OK;
 }
 

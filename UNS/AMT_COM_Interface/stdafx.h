@@ -54,3 +54,18 @@ enum DATA_NAME : unsigned int;
 HRESULT CheckCredentials(DATA_NAME funcName);
 unsigned int GetGmsPortForwardingPort();
 HRESULT LMSError2HRESULT(Intel::LMS::LMS_ERROR err);
+
+template<class T>
+bool CreateBSTR(const T& s, BSTR* bstr)
+{
+	try
+	{
+		ATL::CComBSTR cbstr(s.c_str());
+		*bstr = cbstr.Detach();
+		return true;
+	}
+	catch (const ATL::CAtlException&)
+	{
+		return false;
+	}
+}
