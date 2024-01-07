@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -52,6 +52,5 @@
 enum DATA_NAME : unsigned int;
 
 HRESULT CheckCredentials(DATA_NAME funcName);
-inline std::string ConvertBStrToString(BSTR bstr);
 unsigned int GetGmsPortForwardingPort();
 HRESULT LMSError2HRESULT(Intel::LMS::LMS_ERROR err);

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -1268,11 +1268,6 @@ STDMETHODIMP CPTHI_Commands::ProxyAddProxyEntry(BSTR,
 {
 	UNS_DEBUG(L"CPTHI_Commands::ProxyAddProxyEntry - deprecated\n");
 	return E_NOTIMPL;
-}
-
-inline std::string ConvertBStrToString(BSTR bstr)
-{
-	return (SysStringLen(bstr) == 0) ? std::string() : std::string(ATL::CW2A(bstr));
 }
 
 STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
