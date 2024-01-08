@@ -376,7 +376,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 
 	if (getPartialFWUpdateImagePath(value)) //check if we have an explicit image path in registry
 	{
-		UNS_DEBUG(L"PFU image from registry: '%W'\n", value);
+		UNS_DEBUG(L"PFU image from registry: '%W'\n", value.c_str());
 		if (value.find(L":\\") == 1) //Absolute path
 		{
 			path = value;
@@ -399,7 +399,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 		path = lmsPath + value;
 	}
 
-	UNS_DEBUG(L"checkImageFileExist path: '%W'\n", path);
+	UNS_DEBUG(L"checkImageFileExist path: '%W'\n", path.c_str());
 	if(checkFileExist(path))
 	{
 		imagePath = path;
