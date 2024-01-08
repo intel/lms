@@ -374,7 +374,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 	lmsPath = lmsPath.substr(0, lmsPath.length() - 7); // 7 is length of "LMS.exe", we need the directory, not the file.
 
 
-	if (getPartialFWUpdateImagePath(value)) //check if we have an explicit image path in registry
+	if (getPartialFWUpdateImagePath(value) && !value.empty()) //check if we have an explicit image path in registry
 	{
 		UNS_DEBUG(L"PFU image from registry: '%W'\n", value.c_str());
 		if (value.find(L":\\") == 1) //Absolute path
