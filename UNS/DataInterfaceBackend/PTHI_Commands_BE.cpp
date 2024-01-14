@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -272,10 +272,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetProvisioningState(uint32_t &pProvisioningState)
 		{
-			/*
-			AMT_STATUS_NOT_READY	Management controller has not progressed far enough in its initialization to process the command.
-			*/
-
 			try
 			{
 				Intel::MEI_Client::AMTHI_Client::GetProvisioningStateCommand getProvisioningStateCommand;
@@ -283,20 +279,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"ProvisioningState=%d\n", pProvisioningState);
 				return LMS_ERROR::OK;
 			}
-			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
-			{
-				unsigned int errNo = e.getErr();
-				if (errNo == AMT_STATUS_NOT_READY)
-				{
-					pProvisioningState = 4; // CCK enrolled (registration to CCK) - Dan:: need to align IMSS to the new definition - no more CCK
-					UNS_DEBUG(L"GetProvisioningStateCommand failed, but returned status=%d assume CCK enrolled let ProvisioningState=4\n", errNo);
-					return LMS_ERROR::OK;
-				}
-				else
-				{
-					UNS_DEBUG(L"GetProvisioningStateCommand failed ret=%d\n", errNo);
-				}
-			}
+			CATCH_AMTHIErrorException(L"GetProvisioningStateCommand")
 			CATCH_MEIClientException(L"GetProvisioningStateCommand")
 			CATCH_exception(L"GetProvisioningStateCommand")
 			return LMS_ERROR::FAIL;
