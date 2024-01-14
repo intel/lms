@@ -206,6 +206,8 @@ bool Configurator::MEIEnabled() const
 		hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
 		if (!FAILED(hres))
 		{
+			try
+			{
 				IEnumWbemClassObject* enumerator = NULL;
 				hres = svc->ExecQuery(CComBSTR(L"WQL"),
 					CComBSTR(L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'"),
@@ -235,6 +237,11 @@ bool Configurator::MEIEnabled() const
 				{
 					UNS_ERROR(L"isMEIEnabled() failed to connect to exec WMI query\n");
 				}
+			}
+			catch (const ATL::CAtlException& e)
+			{
+				UNS_ERROR("isMEIEnabled() AtlException hr = 0x%X\n", e.m_hr);
+			}
 		}
 		else
 		{
