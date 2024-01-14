@@ -216,20 +216,26 @@ bool Configurator::MEIEnabled() const
 				{
 					if (enumerator)//we have only one instance
 					{
-						HRESULT hr = enumerator->Next(WBEM_INFINITE, 1, &obj, &uReturn);
-
+						hres = enumerator->Next(WBEM_INFINITE, 1, &obj, &uReturn);
 						if(uReturn != 0)
 						{
 							VARIANT vtProp;
-							hr = obj->Get(L"Status", 0, &vtProp, 0, 0);
-							if (wcscmp(vtProp.bstrVal,L"OK")==0)
+							hres = obj->Get(L"Status", 0, &vtProp, 0, 0);
+							if (SUCCEEDED(hres))
 							{
-								meiEnabled = true;
+								if (wcscmp(vtProp.bstrVal, L"OK") == 0)
+								{
+									meiEnabled = true;
+								}
+							}
+							else
+							{
+								UNS_ERROR(L"isMEIEnabled() failed to get status %d\n", hres);
 							}
 						}
 						else
 						{
-							UNS_ERROR(L"isMEIEnabled() failed to enumerate device %d\n", hr);
+							UNS_ERROR(L"isMEIEnabled() failed to enumerate device %d\n", hres);
 						}
 					}
 				}
