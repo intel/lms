@@ -195,18 +195,17 @@ bool Configurator::MEIEnabled() const
 	ULONG uReturn = 0;
 
 	FuncEntryExit<decltype(meiEnabled)> fee(this, L"MEIEnabled", meiEnabled);
-
-	HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
-
-	if (!FAILED(hres))
+	try
 	{
-		// Connect to the root\cimv2 namespace with
-		// the current user and obtain pointer pSvc
-		// to make IWbemServices calls.
-		hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
+		HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
+
 		if (!FAILED(hres))
 		{
-			try
+			// Connect to the root\cimv2 namespace with
+			// the current user and obtain pointer pSvc
+			// to make IWbemServices calls.
+			hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
+			if (!FAILED(hres))
 			{
 				IEnumWbemClassObject* enumerator = NULL;
 				hres = svc->ExecQuery(CComBSTR(L"WQL"),
@@ -244,19 +243,19 @@ bool Configurator::MEIEnabled() const
 					UNS_ERROR(L"isMEIEnabled() failed to connect to exec WMI query\n");
 				}
 			}
-			catch (const ATL::CAtlException& e)
+			else
 			{
-				UNS_ERROR("isMEIEnabled() AtlException hr = 0x%X\n", e.m_hr);
+				UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
 			}
 		}
 		else
 		{
-			UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
+			UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
 		}
 	}
-	else
+	catch (const ATL::CAtlException& e)
 	{
-		UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
+		UNS_ERROR("isMEIEnabled() AtlException hr = 0x%X\n", e.m_hr);
 	}
 	if (svc!= NULL) svc->Release();
 	if (loc!= NULL) loc->Release();
