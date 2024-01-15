@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 
 #include "global.h"
@@ -150,11 +150,6 @@ void DependencyManager::GetPrerequisites(const ACE_TString &service, NamesList &
 void DependencyManager::FillAbsoluteDependencies(NamesList &services)
 {
 	FillAbsoluteRelations(services, m_absoluteDependencies);
-}
-
-void DependencyManager::FillAbsoluteDependents(NamesList &services)
-{
-	FillAbsoluteRelations(services, m_absoluteDependents);
 }
 
 void DependencyManager::FillAbsoluteRelations(NamesList &services, const DepMap& relationsMap)

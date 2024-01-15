@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 
 #include "global.h"
@@ -79,27 +79,6 @@ bool AsyncActivationManager::RefreshOnOperation( ServiceNamesList &services, OpT
 
 	RemoveWaiting(toErase, waiting);
 	return ret;
-}
-
-
-bool AsyncActivationManager::ReadyToUnload(const ACE_TString &service) 
-{
-	return ReadyToOperation(service, OpType::OP_UNLOAD);
-}
-
-bool AsyncActivationManager::ReadyToLoad(const ACE_TString &service) 
-{
-	return ReadyToOperation(service, OpType::OP_LOAD);
-}
-
-bool AsyncActivationManager::ReadyToSuspend( const ACE_TString &service )
-{
-	return ReadyToOperation(service, OpType::OP_SUSPEND);
-}
-
-bool AsyncActivationManager::ReadyToResume( const ACE_TString &service )
-{
-	return ReadyToOperation(service, OpType::OP_RESUME);
 }
 
 bool AsyncActivationManager::ReadyToOperation(const ACE_TString &service, OpType operation, bool addTolist)
