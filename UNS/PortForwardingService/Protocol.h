@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -67,6 +67,8 @@ public:
 
 	Protocol();
 	~Protocol();
+	Protocol(const Protocol&) = delete;
+	Protocol& operator = (const Protocol&) = delete;
 
 	bool CreateSockets();
 	void DestroySockets();
