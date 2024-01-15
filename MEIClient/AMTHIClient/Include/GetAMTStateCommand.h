@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 /*++
 
@@ -44,6 +44,11 @@ namespace Intel
 				RESET_ME = 1,
 				RESET_GLOBAL = 2,
 				RESET_EXCEPTION = 3
+			};
+
+			struct AMT_UUID
+			{
+				uint8_t amt_uuid[16];
 			};
 
 			union STATE_DATA
