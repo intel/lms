@@ -195,7 +195,8 @@ HRESULT GetKeysList(std::map <std::wstring, CComVariant>& keyList, const std::ws
 			uKeyNameBufferSize = 256;
 			hr = pIKeyList->GetKey2(i, 0L, &uKeyNameBufferSize,
 				wKeyName, &vValue, &ulApparentCimType);
-			keyList[wKeyName] = vValue;
+			if (SUCCEEDED(hr))
+				keyList[wKeyName] = vValue;
 			//TODO: save vValue for later use
 		}
 
