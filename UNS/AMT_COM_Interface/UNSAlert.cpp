@@ -27,7 +27,15 @@ STDMETHODIMP CUNSAlert::RiseAlert(USHORT category,
 								  BSTR dateTime)
 {
 	UNS_DEBUG(L"CUNSAlert::RiseAlert\n");
-	Fire_Alert(category, id, message, messageArg, messageID, dateTime);
+	try
+	{
+		Fire_Alert(category, id, message, messageArg, messageID, dateTime);
+	}
+	catch (const ATL::CAtlException& e)
+	{
+		UNS_ERROR(L"CUNSAlert::RiseAlert failed 0x%X\n", e.m_hr);
+		return e.m_hr;
+	}
 	return S_OK;
 }
 
