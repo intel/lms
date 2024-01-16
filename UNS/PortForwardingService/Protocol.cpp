@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -235,7 +235,7 @@ void Protocol::_TCPCleanup()
 					row.dwRemoteAddr = pTcpTable->table[i].dwRemoteAddr;
 					row.dwRemotePort = pTcpTable->table[i].dwRemotePort;
 					row.dwState = MIB_TCP_STATE_DELETE_TCB;
-					DWORD err = SetTcpEntry(&row);
+					SetTcpEntry(&row);
 			}
 		}
 	} else {
