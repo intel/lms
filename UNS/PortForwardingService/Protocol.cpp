@@ -371,11 +371,14 @@ void Protocol::Deinit()
 			std::lock_guard<std::mutex> l(_deleteLock);
 			if (_rxSocketBuffer != NULL)
 			{
-				delete []_rxSocketBuffer;
+				delete[] _rxSocketBuffer;
 				_rxSocketBuffer = NULL;
 				_rxSocketBufferSize = 0;
 			}
 
+		}
+		{
+			std::lock_guard<std::mutex> l(_versionLock);
 			_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
 			_pfwdService = SERVICE_STATUS::NOT_STARTED;
 			_AmtProtVersion.MajorVersion = 0;
@@ -841,10 +844,13 @@ int CALLBACK ConditionAcceptFunc(
 //------------------------------------------------------------------
 int Protocol::checkAcceptLogic(sockaddr_storage& caller_addr, unsigned int port, PortForwardRequest* PW_req)
 {
-	if (_remoteAccessEnabledInAMT)
 	{
-		return CF_ACCEPT;	// (remote VPN) the detection test will be done after accepting the connection.
-					// (maybe LMS will close the connection later)
+		std::lock_guard<std::mutex> l(_remoteAccessLock);
+		if (_remoteAccessEnabledInAMT)
+		{
+			return CF_ACCEPT; // (remote VPN) the detection test will be done after accepting the connection.
+			// (maybe LMS will close the connection later)
+		}
 	}
 
 	PW_req = _findFWReq(NULL,port,&caller_addr);
@@ -1124,16 +1130,16 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 
 		case APF_SERVICE_REQUEST :
 		case APF_USERAUTH_REQUEST:
+		{
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if (_handshakingStatus != VERSION_HANDSHAKING::AGREED) {
-					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
-					Deinit();
-					return false;
-				}
-				return true;
+				if (_handshakingStatus == VERSION_HANDSHAKING::AGREED)
+					return true;
 			}
-
+			_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
+			Deinit();
+			return false;
+		}
 		case APF_GLOBAL_REQUEST:
 		case APF_CHANNEL_OPEN:
 		case APF_CHANNEL_OPEN_CONFIRMATION:
@@ -1141,15 +1147,16 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 		case APF_CHANNEL_CLOSE:
 		case APF_CHANNEL_DATA:
 		case APF_CHANNEL_WINDOW_ADJUST:
+		{
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if ((_handshakingStatus != VERSION_HANDSHAKING::AGREED) || (_pfwdService != SERVICE_STATUS::STARTED)) {
-					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
-					Deinit();
-					return false;
-				}
-				return true;
+				if ((_handshakingStatus == VERSION_HANDSHAKING::AGREED) && (_pfwdService == SERVICE_STATUS::STARTED))
+					return true;
 			}
+			_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
+			Deinit();
+			return false;
+		}
 	}
 
 	return false;
@@ -1257,13 +1264,14 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					return;
 				}
 
-				std::lock_guard<std::mutex> l(_versionLock);
-
 				LMEProtocolVersionMessage *versionMessage = (LMEProtocolVersionMessage *)message;
 				switch (_handshakingStatus) {
 					case VERSION_HANDSHAKING::AGREED:
 					case VERSION_HANDSHAKING::NOT_INITIATED:
+					{
+						std::lock_guard<std::mutex> l(_versionLock);
 						_lme.ProtocolVersion(MAX_PROT_VERSION);
+					}
 					case VERSION_HANDSHAKING::INITIATED:
 						if (VersionCompare(MIN_PROT_VERSION.MajorVersion, MIN_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
@@ -1274,17 +1282,19 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							Deinit();
 							return;
 						}
-						if (VersionCompare(MAX_PROT_VERSION.MajorVersion, MAX_PROT_VERSION.MinorVersion,
-							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
-
-							_AmtProtVersion.MajorVersion = versionMessage->MajorVersion;
-							_AmtProtVersion.MinorVersion = versionMessage->MinorVersion;
+						{
+							std::lock_guard<std::mutex> l(_versionLock);
+							if (VersionCompare(MAX_PROT_VERSION.MajorVersion, MAX_PROT_VERSION.MinorVersion,
+								versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
+								_AmtProtVersion.MajorVersion = versionMessage->MajorVersion;
+								_AmtProtVersion.MinorVersion = versionMessage->MinorVersion;
+							}
+							else {
+								_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
+								_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
+							}
+							_handshakingStatus = VERSION_HANDSHAKING::AGREED;
 						}
-						else {
-							_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
-							_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
-						}
-						_handshakingStatus = VERSION_HANDSHAKING::AGREED;
 						break;
 					default:
 						_lme.Disconnect(APF_DISCONNECT_BY_APPLICATION);
