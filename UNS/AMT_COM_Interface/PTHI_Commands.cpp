@@ -288,6 +288,7 @@ STDMETHODIMP CPTHI_Commands::GetAMTVersion(BSTR* AMTVersion)
 	if (AMTVersion == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetAMTVersion\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"AMTVersion", AMTVersion))
 	{
@@ -297,19 +298,27 @@ STDMETHODIMP CPTHI_Commands::GetAMTVersion(BSTR* AMTVersion)
 	}
 #endif
 
-	if (CheckCredentials(GetAMTVersion_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetAMTVersion_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string sAMTVersion;
+		std::string sAMTVersion;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetAMTVersion(sAMTVersion);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetAMTVersion(sAMTVersion);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	if (!CreateBSTR(sAMTVersion, AMTVersion))
+		if (!CreateBSTR(sAMTVersion, AMTVersion))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetAMTVersion failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
@@ -317,6 +326,7 @@ STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
 	if (sVersion == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetLMSVersion\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"LMSVersion", sVersion))
 	{
@@ -326,18 +336,26 @@ STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
 	}
 #endif
 
-	if (CheckCredentials(GetLMSVersion_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetLMSVersion_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string sLMSVersion;
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetLMSVersion(sLMSVersion);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		std::string sLMSVersion;
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetLMSVersion(sLMSVersion);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	if (!CreateBSTR(sLMSVersion, sVersion))
+		if (!CreateBSTR(sLMSVersion, sVersion))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetLMSVersion failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetHeciVersion(BSTR* sVersion)
@@ -345,6 +363,7 @@ STDMETHODIMP CPTHI_Commands::GetHeciVersion(BSTR* sVersion)
 	if (sVersion == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetHeciVersion\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"HeciVersion", sVersion))
 	{
@@ -354,18 +373,26 @@ STDMETHODIMP CPTHI_Commands::GetHeciVersion(BSTR* sVersion)
 	}
 #endif
 
-	if (CheckCredentials(GetHeciVersion_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetHeciVersion_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string sHeciVersion;
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetHeciVersion(sHeciVersion);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		std::string sHeciVersion;
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetHeciVersion(sHeciVersion);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	if (!CreateBSTR(sHeciVersion, sVersion))
+		if (!CreateBSTR(sHeciVersion, sVersion))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetHeciVersion failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetProvisioningMode(SHORT* pProvisioningMode)
@@ -390,9 +417,8 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 {
 	if (pProvisioningState == nullptr)
 		return E_POINTER;
-	/*
-	AMT_STATUS_NOT_READY	Management controller has not progressed far enough in its initialization to process the command.
-	*/
+
+	UNS_DEBUG(L"GetProvisioningState\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"ProvisioningState", pProvisioningState))
 	{
@@ -402,30 +428,36 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 	}
 #endif
 
-	if (CheckCredentials(GetProvisioningState_F) != S_OK)
+	try
 	{
-		return E_ACCESSDENIED;
+		if (CheckCredentials(GetProvisioningState_F) != S_OK)
+		{
+			return E_ACCESSDENIED;
+		}
+
+		uint32_t ProvisioningState;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetProvisioningState(ProvisioningState);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		*pProvisioningState = (SHORT)ProvisioningState;
+		return S_OK;
 	}
-
-	uint32_t ProvisioningState;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetProvisioningState(ProvisioningState);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
-
-	*pProvisioningState = (SHORT)ProvisioningState;
-
-	return S_OK;
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetProvisioningState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetNetworkConnectionStatus(SHORT* pStatus, SHORT* pConnectionType, SHORT* pConnectionTrigger)
 {
 	if (pStatus == nullptr || pConnectionType == nullptr || pConnectionTrigger == nullptr)
 		return E_POINTER;
-	/*
-	AMT_STATUS_NOT_PERMITTED	Entity has no permission to get connection status.
-	*/
+
+	UNS_DEBUG(L"GetNetworkConnectionStatus\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"NetworkConnectionStatus", pStatus) &&
 	    GetFromRegistry(L"DebugData", L"NetworkConnectionType", pConnectionType) &&
@@ -436,25 +468,33 @@ STDMETHODIMP CPTHI_Commands::GetNetworkConnectionStatus(SHORT* pStatus, SHORT* p
 		return S_OK;
 	}
 #endif
-	if (CheckCredentials(GetNetworkConnectionStatus_F) != S_OK)
+
+	try
 	{
-		return E_ACCESSDENIED;
+		if (CheckCredentials(GetNetworkConnectionStatus_F) != S_OK)
+		{
+			return E_ACCESSDENIED;
+		}
+
+		uint32_t Status;
+		uint32_t ConnectionType;
+		uint32_t ConnectionTrigger;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetNetworkConnectionStatus(Status, ConnectionType, ConnectionTrigger);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		*pStatus = (SHORT)Status;
+		*pConnectionType = (SHORT)ConnectionType;
+		*pConnectionTrigger = (SHORT)ConnectionTrigger;
+		return S_OK;
 	}
-
-	uint32_t Status;
-	uint32_t ConnectionType;
-	uint32_t ConnectionTrigger;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetNetworkConnectionStatus(Status, ConnectionType, ConnectionTrigger);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
-
-	*pStatus = (SHORT)Status;
-	*pConnectionType = (SHORT)ConnectionType;
-	*pConnectionTrigger = (SHORT)ConnectionTrigger;
-
-	return S_OK;
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetNetworkConnectionStatus failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetUserInitiatedEnabled(SHORT* pStatus)
@@ -462,6 +502,7 @@ STDMETHODIMP CPTHI_Commands::GetUserInitiatedEnabled(SHORT* pStatus)
 	if (pStatus == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetUserInitiatedEnabled\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"CIRAenabled", pStatus))
 	{
@@ -471,14 +512,22 @@ STDMETHODIMP CPTHI_Commands::GetUserInitiatedEnabled(SHORT* pStatus)
 	}
 #endif
 
-	if (CheckCredentials(GetUserInitiatedEnabled_F) != S_OK)
+	try
 	{
-		return E_ACCESSDENIED;
-	}
+		if (CheckCredentials(GetUserInitiatedEnabled_F) != S_OK)
+		{
+			return E_ACCESSDENIED;
+		}
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetUserInitiatedEnabled(*pStatus);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetUserInitiatedEnabled(*pStatus);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetUserInitiatedEnabled failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::getWebUIState(SHORT* pState)
@@ -492,6 +541,10 @@ STDMETHODIMP CPTHI_Commands::getWebUIState(SHORT* pState)
 
 STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
 {
+	if (bstrPolicy == nullptr)
+		return E_POINTER;
+
+	UNS_DEBUG(L"GetPowerPolicy\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"PowerPolicy", bstrPolicy))
 	{
@@ -501,19 +554,27 @@ STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
 	}
 #endif
 
-	if (CheckCredentials(GetPowerPolicy_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetPowerPolicy_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string sPolicy;
+		std::string sPolicy;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetPowerPolicy(sPolicy);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetPowerPolicy(sPolicy);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	if (!CreateBSTR(sPolicy, bstrPolicy))
+		if (!CreateBSTR(sPolicy, bstrPolicy))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetPowerPolicy failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetLastResetReason(SHORT* pReason)
@@ -521,6 +582,7 @@ STDMETHODIMP CPTHI_Commands::GetLastResetReason(SHORT* pReason)
 	if (pReason == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetLastResetReason\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"LastResetReason", pReason))
 	{
@@ -530,21 +592,28 @@ STDMETHODIMP CPTHI_Commands::GetLastResetReason(SHORT* pReason)
 	}
 #endif
 
-	if (CheckCredentials(GetLastResetReason_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetLastResetReason_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetLastResetReason(*pReason);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetLastResetReason(*pReason);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetLastResetReason failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 {
 	if (pSOL == nullptr || pIDER == nullptr)
 		return E_POINTER;
-	/*
-	AMT_STATUS_INVALID_PARAMETER	Request Id is unknown
-	*/
+
+	UNS_DEBUG(L"GetRedirectionStatus\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"RedirectionStatusSOL", pSOL) &&
 	        GetFromRegistry(L"DebugData", L"RedirectionStatusIDER", pIDER))
@@ -555,28 +624,34 @@ STDMETHODIMP CPTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 	}
 #endif
 
-	if (CheckCredentials(GetRedirectionStatus_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetRedirectionStatus_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	uint32_t SOL, IDER;
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetRedirectionStatus(SOL, IDER);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		uint32_t SOL, IDER;
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetRedirectionStatus(SOL, IDER);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	*pSOL = (SHORT)SOL;
-	*pIDER = (SHORT)IDER;
-
-	return S_OK;
+		*pSOL = (SHORT)SOL;
+		*pIDER = (SHORT)IDER;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetRedirectionStatus failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetSystemDefenseStatus(SHORT* pStatus)
 {
 	if (pStatus == nullptr)
 		return E_POINTER;
-	/*
-	AMT_STATUS_INVALID_PARAMETER Request Id is unknown
-	*/
+
+	UNS_DEBUG(L"GetSystemDefenseStatus\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"SystemDefenseStatus", pStatus))
 	{
@@ -586,19 +661,26 @@ STDMETHODIMP CPTHI_Commands::GetSystemDefenseStatus(SHORT* pStatus)
 	}
 #endif
 
-	if (CheckCredentials(GetSystemDefenseStatus_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetSystemDefenseStatus_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	uint32_t Status;
+		uint32_t Status;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetSystemDefenseStatus(Status);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetSystemDefenseStatus(Status);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	*pStatus = (SHORT)Status;
-
-	return S_OK;
+		*pStatus = (SHORT)Status;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetSystemDefenseStatus failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetNetworkSettings(SHORT ConnectionType,    // WIRED, WIRELESS
@@ -617,6 +699,8 @@ STDMETHODIMP CPTHI_Commands::GetNetworkSettings(SHORT ConnectionType,    // WIRE
 	    pWirelessControl == nullptr ||
 	    pWirelessConfEnabled == nullptr)
 		return E_POINTER;
+
+	UNS_DEBUG(L"GetNetworkSettings\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"DhcpEnabled", pDhcpEnabled) &&
 	    GetFromRegistry(L"DebugData", L"IpAddress", bstrIpAddress) &&
@@ -631,26 +715,33 @@ STDMETHODIMP CPTHI_Commands::GetNetworkSettings(SHORT ConnectionType,    // WIRE
 	}
 #endif
 
-	if (CheckCredentials(GetNetworkSettings_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetNetworkSettings_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string sIpAddress;
-	std::string sMacAddress;
-	uint32_t DhcpEnabled;
+		std::string sIpAddress;
+		std::string sMacAddress;
+		uint32_t DhcpEnabled;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetNetworkSettings(ConnectionType, DhcpEnabled,
-	                            sIpAddress, sMacAddress, *pLinkStatus, *pWirelessControl, *pWirelessConfEnabled);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetNetworkSettings(ConnectionType, DhcpEnabled,
+									sIpAddress, sMacAddress, *pLinkStatus, *pWirelessControl, *pWirelessConfEnabled);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	*pDhcpEnabled = (SHORT)DhcpEnabled;
-
-	if (!CreateBSTR(sIpAddress, bstrIpAddress))
+		*pDhcpEnabled = (SHORT)DhcpEnabled;
+		if (!CreateBSTR(sIpAddress, bstrIpAddress))
+			return E_FAIL;
+		if (!CreateBSTR(sMacAddress, bstrMacAddress))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetNetworkSettings failed %S\n", e.what());
 		return E_FAIL;
-	if (!CreateBSTR(sMacAddress, bstrMacAddress))
-		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED, WIRELESS*/,
@@ -672,6 +763,7 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 	 * AMT_STATUS_IPV6_INTERFACE_DISABLED	The IPv6 interface is currently disabled so there is no current IPv6 status available for this interface.
 	 * AMT_STATUS_INTERFACE_DOES_NOT_EXIST	The network interface that is being referred to in this command does not exist (e.g. wireless interface on desktop)
 	 */
+	UNS_DEBUG(L"GetIPv6NetworkSettings\n");
 #ifdef _DEBUG
 	TCHAR addresses[2048];
 	DWORD Ipv6Enable_ = 0;
@@ -717,59 +809,67 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 	}
 #endif
 
-	if (CheckCredentials(GetIPv6NetworkSettings_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	std::string sIPv6DefaultRouter;
-	std::string sPrimaryDNS;
-	std::string sSecondaryDNS;
-	std::vector<std::string> Response;
-	bool Ipv6Enable;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetIPv6NetworkSettings(ConnectionType, sIPv6DefaultRouter,
-	                            sPrimaryDNS, sSecondaryDNS, Response, Ipv6Enable);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
-
-	if (!CreateBSTR(sIPv6DefaultRouter, IPv6DefaultRouter))
-		return E_FAIL;
-	if (!CreateBSTR(sPrimaryDNS, PrimaryDNS))
-		return E_FAIL;
-	if (!CreateBSTR(sSecondaryDNS, SecondaryDNS))
-		return E_FAIL;
-	*pIpv6Enable = Ipv6Enable ? TRUE : FALSE;
-
-	SAFEARRAY *pSar;
-	VariantInit(pResponse);
-	BSTR bstrTmp;
 	try
 	{
-		pSar = SafeArrayCreateVector(VT_BSTR, 0, Response.size());
-		for (LONG i = 0 ; i < (LONG)Response.size(); i++)
+		if (CheckCredentials(GetIPv6NetworkSettings_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		std::string sIPv6DefaultRouter;
+		std::string sPrimaryDNS;
+		std::string sSecondaryDNS;
+		std::vector<std::string> Response;
+		bool Ipv6Enable;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetIPv6NetworkSettings(ConnectionType, sIPv6DefaultRouter,
+									sPrimaryDNS, sSecondaryDNS, Response, Ipv6Enable);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		if (!CreateBSTR(sIPv6DefaultRouter, IPv6DefaultRouter))
+			return E_FAIL;
+		if (!CreateBSTR(sPrimaryDNS, PrimaryDNS))
+			return E_FAIL;
+		if (!CreateBSTR(sSecondaryDNS, SecondaryDNS))
+			return E_FAIL;
+		*pIpv6Enable = Ipv6Enable ? TRUE : FALSE;
+
+		SAFEARRAY *pSar;
+		VariantInit(pResponse);
+		BSTR bstrTmp;
+		try
 		{
-			if (!CreateBSTR(Response[i], &bstrTmp))
-				return E_FAIL;
-			SafeArrayPutElement(pSar, &i, bstrTmp);
+			pSar = SafeArrayCreateVector(VT_BSTR, 0, Response.size());
+			for (LONG i = 0 ; i < (LONG)Response.size(); i++)
+			{
+				if (!CreateBSTR(Response[i], &bstrTmp))
+					return E_FAIL;
+				SafeArrayPutElement(pSar, &i, bstrTmp);
+			}
+			pResponse->vt = VT_ARRAY | VT_BSTR;
+			pResponse->parray = pSar;
 		}
-		pResponse->vt = VT_ARRAY | VT_BSTR;
-		pResponse->parray = pSar;
+		catch(const _com_error &err)
+		{
+			const TCHAR* reason =  err.ErrorMessage();
+			UNS_DEBUG(L"com error %W\n", reason);
+			return E_FAIL;
+		}
+		return S_OK;
 	}
-	catch(_com_error &err)
+	catch (const std::exception &e)
 	{
-		const TCHAR* reason =  err.ErrorMessage();
-		UNS_DEBUG(L"com error %W\n", reason);
+		UNS_ERROR(L"GetIPv6NetworkSettings failed %S\n", e.what());
+		return E_FAIL;
 	}
-	return S_OK;
 }
 
 STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 {
 	if (bstrUUID == nullptr)
 		return E_POINTER;
-	/*
-	AMT_STATUS_NOT_READY	Management controller has not progressed far enough in its initialization to process the command.
-	*/
+
+	UNS_DEBUG(L"GetSystemUUID\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"SystemUUID", bstrUUID))
 	{
@@ -779,18 +879,26 @@ STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 	}
 #endif
 
-	if (CheckCredentials(GetSystemUUID_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetSystemUUID_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string sUUID;
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetSystemUUID(sUUID);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		std::string sUUID;
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetSystemUUID(sUUID);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	if (!CreateBSTR(sUUID, bstrUUID))
+		if (!CreateBSTR(sUUID, bstrUUID))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetSystemUUID failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::OpenUserInitiatedConnection()
@@ -801,15 +909,22 @@ STDMETHODIMP CPTHI_Commands::OpenUserInitiatedConnection()
 
 STDMETHODIMP CPTHI_Commands::CloseUserInitiatedConnection()
 {
-	/*
-	AMT_STATUS_NOT_PERMITTED	Entity has no permission to close a connection.
-	*/
-	if (CheckCredentials(CloseUserInitiatedConnection_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"CloseUserInitiatedConnection\n");
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.CloseUserInitiatedConnection();
-	return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(CloseUserInitiatedConnection_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.CloseUserInitiatedConnection();
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"CloseUserInitiatedConnection failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::TerminateKVMSession()
@@ -820,6 +935,10 @@ STDMETHODIMP CPTHI_Commands::TerminateKVMSession()
 
 STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARIANT_BOOL* pConnected)
 {
+	if (pEnabled == nullptr || pConnected == nullptr)
+		return E_POINTER;
+
+	UNS_DEBUG(L"GetKVMRedirectionState\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"KVMRedirectionStateEnabled", (SHORT*)pEnabled))
 	{
@@ -832,20 +951,28 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 	}
 #endif
 
-	if (CheckCredentials(GetKVMRedirectionState_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetKVMRedirectionState_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	bool enabled;
-	bool connected;
+		bool enabled;
+		bool connected;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetKVMRedirectionState(enabled, connected);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetKVMRedirectionState(enabled, connected);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	*pEnabled = enabled ? TRUE : FALSE;
-	*pConnected = connected ? TRUE : FALSE;
-	return S_OK;
+		*pEnabled = enabled ? TRUE : FALSE;
+		*pConnected = connected ? TRUE : FALSE;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetKVMRedirectionState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT*)
@@ -856,17 +983,27 @@ STDMETHODIMP CPTHI_Commands::GetSpriteLanguage(SHORT*)
 
 STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 {
-	if (CheckCredentials(SetSpriteLanguage_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"SetSpriteLanguage\n");
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.SetSpriteLanguage(Language);
-	if (err == Intel::LMS::LMS_ERROR::NOT_AVAILABLE_NOW)
-		return E_NOT_VALID_STATE;
-	if (err != Intel::LMS::LMS_ERROR::OK)
+	try
+	{
+		if (CheckCredentials(SetSpriteLanguage_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.SetSpriteLanguage(Language);
+		if (err == Intel::LMS::LMS_ERROR::NOT_AVAILABLE_NOW)
+			return E_NOT_VALID_STATE;
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return E_FAIL;
+
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"SetSpriteLanguage failed %S\n", e.what());
 		return E_FAIL;
-
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetSpriteZoom(SHORT*)
@@ -880,6 +1017,7 @@ STDMETHODIMP CPTHI_Commands::GetSpriteParameters(SHORT* pLanguage, SHORT* pZoom)
 	if (pLanguage == nullptr || pZoom == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetSpriteParameters\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"SpriteLanguage", pLanguage) &&
 		GetFromRegistry(L"DebugData", L"SpriteZoom", pZoom))
@@ -890,34 +1028,50 @@ STDMETHODIMP CPTHI_Commands::GetSpriteParameters(SHORT* pLanguage, SHORT* pZoom)
 	}
 #endif
 
-	if (CheckCredentials(GetSpriteParameters_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetSpriteParameters_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	unsigned short lang = 0;
-	unsigned short zoom = 0;
+		unsigned short lang = 0;
+		unsigned short zoom = 0;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetSpriteParameters(lang, zoom);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetSpriteParameters(lang, zoom);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	*pLanguage = lang;
-	*pZoom = zoom;
-
-	return S_OK;
+		*pLanguage = lang;
+		*pZoom = zoom;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetSpriteParameters failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::SetSpriteZoom(SHORT Zoom)
 {
-	if (CheckCredentials(SetSpriteZoom_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"SetSpriteZoom\n");
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.SetSpriteZoom(Zoom);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(SetSpriteZoom_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	return S_OK;
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.SetSpriteZoom(Zoom);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"SetSpriteZoom failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
@@ -931,6 +1085,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 		ppCertHash == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetConfigurationInfo\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"ControlMode", pControlMode) &&
 	    GetFromRegistry(L"DebugData", L"ProvisioningMethod", pProvisioningMethod) &&
@@ -955,26 +1110,34 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 	}
 #endif
 
-	if (CheckCredentials(GetConfigurationInfo_F) != S_OK)
-		return E_ACCESSDENIED;
-
-	std::string CreationTimeStampStr;
-	std::vector<unsigned char> CertHash;
-
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetConfigurationInfo(*pControlMode, *pProvisioningMethod, CreationTimeStampStr, CertHash);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
-
-	if (!CreateBSTR(CreationTimeStampStr, pCreationTimeStamp))
-		return E_FAIL;
-	ATL::CComSafeArray<BYTE> hashdata(CertHash.size());
-	for (size_t i = 0; i < CertHash.size(); i++)
+	try
 	{
-		hashdata[(LONG)i] = CertHash[i];
+		if (CheckCredentials(GetConfigurationInfo_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		std::string CreationTimeStampStr;
+		std::vector<unsigned char> CertHash;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetConfigurationInfo(*pControlMode, *pProvisioningMethod, CreationTimeStampStr, CertHash);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		if (!CreateBSTR(CreationTimeStampStr, pCreationTimeStamp))
+			return E_FAIL;
+		ATL::CComSafeArray<BYTE> hashdata(CertHash.size());
+		for (size_t i = 0; i < CertHash.size(); i++)
+		{
+			hashdata[(LONG)i] = CertHash[i];
+		}
+		*ppCertHash = hashdata.Detach();
+		return S_OK;
 	}
-	*ppCertHash = hashdata.Detach();
-	return S_OK;
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetConfigurationInfo failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::TerminateRemedySessions()
@@ -990,12 +1153,20 @@ STDMETHODIMP CPTHI_Commands::TerminateRemedySessions()
 	}
 #endif
 
-	if (CheckCredentials(TerminateRemedySessions_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(TerminateRemedySessions_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.TerminateRemedySessions();
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.TerminateRemedySessions();
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"TerminateRemedySessions failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetUserConsentState(SHORT* pState, USER_CONSENT_POLICY* pPolicy)
@@ -1003,6 +1174,7 @@ STDMETHODIMP CPTHI_Commands::GetUserConsentState(SHORT* pState, USER_CONSENT_POL
 	if (pState == nullptr || pPolicy == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetUserConsentState\n");
 #ifdef _DEBUG
 	SHORT UserConsentPolicy = 0;
 	if (GetFromRegistry(L"DebugData", L"UserConsentState", pState) &&
@@ -1015,12 +1187,20 @@ STDMETHODIMP CPTHI_Commands::GetUserConsentState(SHORT* pState, USER_CONSENT_POL
 	}
 #endif
 
-	if (CheckCredentials(GetUserConsentState_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetUserConsentState_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetUserConsentState(*pState, *pPolicy);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetUserConsentState(*pState, *pPolicy);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetUserConsentState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetWLANLinkInfo(UINT* pPreference, UINT* pControl, UINT* pProtection)
@@ -1028,6 +1208,7 @@ STDMETHODIMP CPTHI_Commands::GetWLANLinkInfo(UINT* pPreference, UINT* pControl, 
 	if (pControl == nullptr || pProtection == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetWLANLinkInfo\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"WLANLinkPreference", (SHORT*)pPreference) &&
 		GetFromRegistry(L"DebugData", L"WLANLinkControl", (SHORT*)pControl) &&
@@ -1039,12 +1220,20 @@ STDMETHODIMP CPTHI_Commands::GetWLANLinkInfo(UINT* pPreference, UINT* pControl, 
 	}
 #endif
 
-	if (CheckCredentials(GetWLANLinkInfo_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetWLANLinkInfo_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetWLANLinkInfo(*pPreference, *pControl, *pProtection);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetWLANLinkInfo(*pPreference, *pControl, *pProtection);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetWLANLinkInfo failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::SetLinkPreferenceToHost()
@@ -1060,29 +1249,49 @@ STDMETHODIMP CPTHI_Commands::SetLinkPreferenceToHost()
 	}
 #endif
 
-	if (CheckCredentials(SetLinkPreferenceToHost_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(SetLinkPreferenceToHost_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.SetLinkPreferenceToHost();
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.SetLinkPreferenceToHost();
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"SetLinkPreferenceToHost failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
+
 STDMETHODIMP CPTHI_Commands::InitiateUserConnection(SHORT* pStatus)
 {
 
 	if (pStatus == nullptr)
 		return E_POINTER;
+
+	UNS_DEBUG(L"InitiateUserConnection\n");
 	/*
 	AMT_STATUS_NOT_PERMITTED	Entity has no permission to open a connection..
 	AMT_STATUS_INTERNAL_ERROR	The operation could not be completed by AMT.
 	AMT_STATUS_DATA_MISSING		No connectivity policy configured when AMT is outside the enterprise network.
 	*/
-	if (CheckCredentials(InitiateUserConnection_F) != S_OK)
-		return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.InitiateUserConnection(*pStatus);
-	return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(InitiateUserConnection_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.InitiateUserConnection(*pStatus);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"InitiateUserConnection failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleExists(SHORT* pStatus)
@@ -1090,6 +1299,7 @@ STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleExists(SHORT* pStatus)
 	if (pStatus == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"userInitiatedPolicyRuleExists\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"userInitiatedPolicyRuleExists", pStatus))
 	{
@@ -1099,12 +1309,20 @@ STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleExists(SHORT* pStatus)
 	}
 #endif
 
-	if (CheckCredentials(userInitiatedPolicyRuleExists_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(userInitiatedPolicyRuleExists_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.userInitiatedPolicyRuleExists(*pStatus);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.userInitiatedPolicyRuleExists(*pStatus);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"userInitiatedPolicyRuleExists failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleForLocalMpsExists(SHORT* pStatus)
@@ -1112,6 +1330,7 @@ STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleForLocalMpsExists(SHORT* pSt
 	if (pStatus == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"userInitiatedPolicyRuleForLocalMpsExists\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"userInitiatedPolicyRuleForLocalMpsExists", pStatus))
 	{
@@ -1121,12 +1340,20 @@ STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleForLocalMpsExists(SHORT* pSt
 	}
 #endif
 
-	if (CheckCredentials(UserInitiatedPolicyRuleForLocalMpsExists_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(UserInitiatedPolicyRuleForLocalMpsExists_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.userInitiatedPolicyRuleForLocalMpsExists(*pStatus);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.userInitiatedPolicyRuleForLocalMpsExists(*pStatus);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"userInitiatedPolicyRuleForLocalMpsExists failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::snmpEventSubscriberExists(SHORT* pExist)
@@ -1135,6 +1362,7 @@ STDMETHODIMP CPTHI_Commands::snmpEventSubscriberExists(SHORT* pExist)
 	if (pExist == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"snmpEventSubscriberExists\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"snmpEventSubscriberExists", pExist))
 	{
@@ -1144,12 +1372,20 @@ STDMETHODIMP CPTHI_Commands::snmpEventSubscriberExists(SHORT* pExist)
 	}
 #endif
 
-	if (CheckCredentials(snmpEventSubscriberExists_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(snmpEventSubscriberExists_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.snmpEventSubscriberExists(*pExist);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.snmpEventSubscriberExists(*pExist);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"snmpEventSubscriberExists failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExist)
@@ -1157,6 +1393,7 @@ STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExis
 	if (pExist == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"CILAFilterCollectionSubscriptionExists\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"CILAFilterCollectionSubscriptionExists", pExist))
 	{
@@ -1166,12 +1403,20 @@ STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExis
 	}
 #endif
 
-	if (CheckCredentials(CILAFilterCollectionSubscriptionExists_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(CILAFilterCollectionSubscriptionExists_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.CILAFilterCollectionSubscriptionExists(*pExist);
-	return LMSError2HRESULT(err);
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.CILAFilterCollectionSubscriptionExists(*pExist);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"CILAFilterCollectionSubscriptionExists failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS)
@@ -1182,12 +1427,22 @@ STDMETHODIMP CPTHI_Commands::UpdateScreenSettings(EXTENDED_DISPLAY_PARAMETERS)
 
 STDMETHODIMP CPTHI_Commands::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS eExtendedDisplayParameters, SHORT numOfDisplays)
 {
-	if (CheckCredentials(UpdateScreenSettings_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"UpdateScreenSettings2\n");
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.UpdateScreenSettings2(eExtendedDisplayParameters, numOfDisplays);
-	return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(UpdateScreenSettings_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.UpdateScreenSettings2(eExtendedDisplayParameters, numOfDisplays);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"UpdateScreenSettings2 failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetRedirectionSessionLinkTechnology(REDIRECTION_SESSION_TYPE sessionType, SHORT* pLinkTechnology)
@@ -1195,6 +1450,7 @@ STDMETHODIMP CPTHI_Commands::GetRedirectionSessionLinkTechnology(REDIRECTION_SES
 	if (pLinkTechnology == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetRedirectionSessionLinkTechnology\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"RedirectionSessionLinkTechnology", (SHORT*)pLinkTechnology))
 	{
@@ -1203,12 +1459,21 @@ STDMETHODIMP CPTHI_Commands::GetRedirectionSessionLinkTechnology(REDIRECTION_SES
 		return S_OK;
 	}
 #endif
-	if (CheckCredentials(GetRedirectionSessionLinkTechnology_F) != S_OK)
-		return E_ACCESSDENIED;
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetRedirectionSessionLinkTechnology(sessionType, *pLinkTechnology);
-	return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(GetRedirectionSessionLinkTechnology_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetRedirectionSessionLinkTechnology(sessionType, *pLinkTechnology);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetRedirectionSessionLinkTechnology failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::IsRebootAfterProvisioningNeeded(VARIANT_BOOL *pNeeded)
@@ -1236,18 +1501,28 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
 	if (bstrPSR == nullptr)
 		return E_POINTER;
 
-	if (CheckCredentials(GetPlatformServiceRecord_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"GetPlatformServiceRecord\n");
 
-	std::string PSR;
+	try
+	{
+		if (CheckCredentials(GetPlatformServiceRecord_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).GetPlatformServiceRecord(PSR);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		std::string PSR;
 
-	if (!CreateBSTR(PSR, bstrPSR))
+		Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).GetPlatformServiceRecord(PSR);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		if (!CreateBSTR(PSR, bstrPSR))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetPlatformServiceRecord failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
@@ -1255,23 +1530,33 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
 	if (binPSR == nullptr)
 		return E_POINTER;
 
-	if (CheckCredentials(GetPlatformServiceRecordRaw_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"GetPlatformServiceRecordRaw\n");
 
-	std::vector<uint8_t> PSR;
-
-	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).GetPlatformServiceRecordRaw(PSR);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
-
-	ATL::CComSafeArray<BYTE> arr(PSR.size());
-	for (size_t i = 0; i < PSR.size(); i++)
+	try
 	{
-		arr.SetAt(i, PSR[i]);
-	}
-	*binPSR = arr.Detach();
+		if (CheckCredentials(GetPlatformServiceRecordRaw_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	return S_OK;
+		std::vector<uint8_t> PSR;
+
+		Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).GetPlatformServiceRecordRaw(PSR);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		ATL::CComSafeArray<BYTE> arr(PSR.size());
+		for (size_t i = 0; i < PSR.size(); i++)
+		{
+			arr.SetAt(i, PSR[i]);
+		}
+		*binPSR = arr.Detach();
+
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetPlatformServiceRecordRaw failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetUPIDFeatureState(VARIANT_BOOL* pState)
@@ -1279,38 +1564,64 @@ STDMETHODIMP CPTHI_Commands::GetUPIDFeatureState(VARIANT_BOOL* pState)
 	if (pState == nullptr)
 		return E_POINTER;
 
-	if (CheckCredentials(GetUPIDFeatureState_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"GetUPIDFeatureState\n");
 
-	bool state = false;
-	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).GetUPIDFeatureState(state);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(GetUPIDFeatureState_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	*pState = (VARIANT_BOOL)state;
+		bool state = false;
+		Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).GetUPIDFeatureState(state);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	return S_OK;
+		*pState = (VARIANT_BOOL)state;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetUPIDFeatureState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::SetUPIDFeatureState(VARIANT_BOOL State)
 {
+	UNS_DEBUG(L"SetUPIDFeatureState\n");
+
 	if (CheckCredentials(SetUPIDFeatureState_F) != S_OK)
 		return E_ACCESSDENIED;
 
-	bool state = State;
-	Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).SetUPIDFeatureState(state);
-	if (err != Intel::LMS::LMS_ERROR::OK)
+	try
+	{
+		bool state = State;
+		Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).SetUPIDFeatureState(state);
 		return LMSError2HRESULT(err);
-
-	return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"SetUPIDFeatureState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::SkuMgrQualifiedBrandEntitlements(UINT* Data)
 {
-	if (CheckCredentials(SkuMgrQualifiedBrandEntitlements_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"SkuMgrQualifiedBrandEntitlements\n");
 
-	Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.SkuMgrQualifiedBrandEntitlements(*Data);
-	return LMSError2HRESULT(err);
+	try
+	{
+		if (CheckCredentials(SkuMgrQualifiedBrandEntitlements_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.SkuMgrQualifiedBrandEntitlements(*Data);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"SkuMgrQualifiedBrandEntitlements failed %S\n", e.what());
+		return E_FAIL;
+	}
 }

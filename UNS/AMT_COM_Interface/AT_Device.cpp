@@ -30,16 +30,25 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 	if (bstrAuditLogs == nullptr)
 		return E_POINTER;
 
-	if (CheckCredentials(GetAuditLogs_F) != S_OK)
-		return E_ACCESSDENIED;
+	UNS_DEBUG(L"GetATDeviceInfo\n");
+	try
+	{
+		if (CheckCredentials(GetAuditLogs_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string AuditLogs;
-	
-	Intel::LMS::LMS_ERROR err = Intel::LMS::AT_Device_BE(GetGmsPortForwardingPort()).GetAuditLogs(AuditLogs);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		std::string AuditLogs;
 
-	if (!CreateBSTR(UTF8ToWStr(AuditLogs), bstrAuditLogs))
+		Intel::LMS::LMS_ERROR err = Intel::LMS::AT_Device_BE(GetGmsPortForwardingPort()).GetAuditLogs(AuditLogs);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
+
+		if (!CreateBSTR(UTF8ToWStr(AuditLogs), bstrAuditLogs))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetAuditLogs failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }

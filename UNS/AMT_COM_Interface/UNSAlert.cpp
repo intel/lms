@@ -53,20 +53,28 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	}
 #endif
 
-	if (CheckCredentials(GetIMSSEventHistory_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetIMSSEventHistory_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
-	std::wstring EventHistory;
+		UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
+		std::wstring EventHistory;
 
-	Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetIMSSEventHistory(EventHistory);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetIMSSEventHistory(EventHistory);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	if (!CreateBSTR(EventHistory, bstrEventHistory))
+		if (!CreateBSTR(EventHistory, bstrEventHistory))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetIMSSEventHistory failed %S\n", e.what());
 		return E_FAIL;
-	return S_OK;
+	}
 }
 
 STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()
