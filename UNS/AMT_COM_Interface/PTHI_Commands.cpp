@@ -163,7 +163,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	hr = CoImpersonateClient();
 	if (hr != S_OK)
 	{
-		//DBGWARNING(LOCATION, _T("Unable to CoImpersonateClient (0x%x)"), hr);
+		UNS_ERROR(L"Unable to CoImpersonateClient (0x%x)\n", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		return hr;
 	}
@@ -171,7 +171,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	bRes = OpenThreadToken(GetCurrentThread(), TOKEN_QUERY, TRUE, &hThreadTok);
 	if (bRes == FALSE)
 	{
-		//DBGERROR(LOCATION, _T("Unable to OpenThreadToken (0x%x)"), GetLastError());
+		UNS_ERROR(L"Unable to OpenThreadToken (0x%x)", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		return hr;
@@ -182,7 +182,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 
 	if (bRes == FALSE || (dwBytesReturned < sizeof(PTOKEN_USER)))
 	{
-		//DBGERROR(LOCATION, _T("Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)"), GetLastError());
+		UNS_ERROR(L"Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		return hr;
@@ -190,52 +190,16 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 
 	if ((dwImp != SecurityImpersonation) && (dwImp != SecurityIdentification))
 	{
-		//DBGERROR(LOCATION, _T("Wrong security TokenImpersonationLevel (%d)"), dwImp);
+		UNS_ERROR(L"Wrong security TokenImpersonationLevel (%d)", dwImp);
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		CloseHandle(hThreadTok);
 		return hr;
 	}
 
-	bRes =::GetTokenInformation(hThreadTok, TokenUser, NULL, 0, &dwBytesReturned);
-	if ((bRes == FALSE) && (GetLastError() != ERROR_INSUFFICIENT_BUFFER))
-	{
-		CloseHandle(hThreadTok);
-		return S_FALSE;
-	}
-
-	auto m_pUserTokenInfo = new unsigned char[dwBytesReturned];
-	if (m_pUserTokenInfo == NULL)
-	{
-		CloseHandle(hThreadTok);
-		return S_FALSE;
-	}
-
-	bRes = ::GetTokenInformation(hThreadTok, TokenUser, m_pUserTokenInfo,
-	                             dwBytesReturned, &dwBytesReturned);
-	if (bRes == FALSE || dwBytesReturned <  sizeof(PTOKEN_USER))
-	{
-		UNS_DEBUG(L"Unable to GetTokenInformation - TokenUser (0x%x)\n", GetLastError());
-		CloseHandle(hThreadTok);
-		delete [] m_pUserTokenInfo;
-		return S_FALSE;
-	}
-
-	DWORD dwUserNameSize = MAX_BUFFER_LENGTH;
-	DWORD dwDomainNameSize = 15;
-	WCHAR szUserName[MAX_BUFFER_LENGTH + 1];
-	WCHAR szDomainName[15 + 1];
-	SID_NAME_USE snu;
-
-	bRes = ::LookupAccountSidW(0, ((PTOKEN_USER)m_pUserTokenInfo)->User.Sid, szUserName,
-	                           &dwUserNameSize, szDomainName, &dwDomainNameSize, &snu);
-
-	delete [] m_pUserTokenInfo;
-
-	//DBGTRACE(_T("Connect User is %s, szDomainName %s"),szUserName,szDomainName);
-
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups, NULL, 0, &dwBytesReturned);
 	if (bRes == FALSE && (GetLastError() != ERROR_INSUFFICIENT_BUFFER))
 	{
+		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups NULL (0x%x)", GetLastError());
 		CloseHandle(hThreadTok);
 		return S_FALSE;//STATUS_SECURITY_PROBLEM;
 	}
@@ -245,7 +209,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups, groups, dwBytesReturned, &dwBytesReturned);
 	if (bRes == FALSE || dwBytesReturned < sizeof(TOKEN_GROUPS))
 	{
-		//DBGERROR(LOCATION, _T("Unable to GetTokenInformation - TokenUser (0x%x)"), GetLastError());
+		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups (0x%x)", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		delete [] groups;
@@ -257,7 +221,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	hr = CoRevertToSelf();
 	if (hr != S_OK)
 	{
-		//DBGERROR(LOCATION, _T("CoRevertToSelf (0x%x)"), hr);
+		UNS_ERROR(L"CoRevertToSelf (0x%x)", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		delete [] groups;
 		return hr;
