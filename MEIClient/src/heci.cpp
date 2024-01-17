@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <chrono>
+#include <thread>
 #include <metee.h>
 #include "heci.h"
 #include "HECIException.h"
@@ -47,18 +49,31 @@ void HECI::Init()
 			continue;
 		}
 
-		ret = TeeConnect(_handle.get());
-		if (!TEE_IS_SUCCESS(ret)) {
-			err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
-			if (ret == TEE_CLIENT_NOT_FOUND)
+		const int HECI_MAX_CONNECT_RETRY = 3;
+		int retry = 0;
+		do {
+			ret = TeeConnect(_handle.get());
+			switch (ret) {
+			case TEE_SUCCESS:
+				_bufSize = _handle->maxMsgLen;
+				_initialized = true;
+				return;
+			case TEE_UNABLE_TO_COMPLETE_OPERATION: /* windows return this error on busy */
+			case TEE_BUSY:
+				err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
+				std::this_thread::sleep_for(std::chrono::milliseconds(500));
+				retry++;
+				break;
+			case TEE_CLIENT_NOT_FOUND:
 				client_not_found = true;
-			TeeDisconnect(_handle.get());
-			continue;
-		}
-
-		_bufSize = _handle->maxMsgLen;
-		_initialized = true;
-		return;
+				/*fallthrough*/
+			default:
+				err << ((*it) ? *it : "NULL") << " connect " << ret << " ";
+				retry = HECI_MAX_CONNECT_RETRY; /* no need to retry */
+				break;
+			}
+		} while (retry < HECI_MAX_CONNECT_RETRY);
+		TeeDisconnect(_handle.get());
 	}
 
 	_initialized = false;
