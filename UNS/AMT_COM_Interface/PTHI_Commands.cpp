@@ -1138,6 +1138,11 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 		UNS_ERROR(L"GetConfigurationInfo failed %S\n", e.what());
 		return E_FAIL;
 	}
+	catch (const ATL::CAtlException& e)
+	{
+		UNS_ERROR(L"GetConfigurationInfo failed 0x%X\n", e.m_hr);
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::TerminateRemedySessions()
@@ -1557,6 +1562,11 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
 		UNS_ERROR(L"GetPlatformServiceRecordRaw failed %S\n", e.what());
 		return E_FAIL;
 	}
+	catch (const ATL::CAtlException& e)
+	{
+		UNS_ERROR(L"GetPlatformServiceRecordRaw failed 0x%X\n", e.m_hr);
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CPTHI_Commands::GetUPIDFeatureState(VARIANT_BOOL* pState)
@@ -1590,11 +1600,11 @@ STDMETHODIMP CPTHI_Commands::SetUPIDFeatureState(VARIANT_BOOL State)
 {
 	UNS_DEBUG(L"SetUPIDFeatureState\n");
 
-	if (CheckCredentials(SetUPIDFeatureState_F) != S_OK)
-		return E_ACCESSDENIED;
-
 	try
 	{
+		if (CheckCredentials(SetUPIDFeatureState_F) != S_OK)
+			return E_ACCESSDENIED;
+
 		bool state = State;
 		Intel::LMS::LMS_ERROR err = Intel::LMS::PTHI_Commands_BE(GetGmsPortForwardingPort()).SetUPIDFeatureState(state);
 		return LMSError2HRESULT(err);
