@@ -1263,45 +1263,41 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-
+				_versionLock.lock();
 				LMEProtocolVersionMessage *versionMessage = (LMEProtocolVersionMessage *)message;
 				switch (_handshakingStatus) {
 					case VERSION_HANDSHAKING::AGREED:
 					case VERSION_HANDSHAKING::NOT_INITIATED:
-					{
-						std::lock_guard<std::mutex> l(_versionLock);
 						_lme.ProtocolVersion(MAX_PROT_VERSION);
-					}
 					case VERSION_HANDSHAKING::INITIATED:
 						if (VersionCompare(MIN_PROT_VERSION.MajorVersion, MIN_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
 
 							UNS_DEBUG(L"Version %d.%d is not supported.\n", versionMessage->MajorVersion,
 							versionMessage->MinorVersion);
+							_versionLock.unlock();
 							_lme.Disconnect(APF_DISCONNECT_PROTOCOL_VERSION_NOT_SUPPORTED);
 							Deinit();
 							return;
 						}
-						{
-							std::lock_guard<std::mutex> l(_versionLock);
-							if (VersionCompare(MAX_PROT_VERSION.MajorVersion, MAX_PROT_VERSION.MinorVersion,
-								versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
-								_AmtProtVersion.MajorVersion = versionMessage->MajorVersion;
-								_AmtProtVersion.MinorVersion = versionMessage->MinorVersion;
-							}
-							else {
-								_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
-								_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
-							}
-							_handshakingStatus = VERSION_HANDSHAKING::AGREED;
+						if (VersionCompare(MAX_PROT_VERSION.MajorVersion, MAX_PROT_VERSION.MinorVersion,
+							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
+							_AmtProtVersion.MajorVersion = versionMessage->MajorVersion;
+							_AmtProtVersion.MinorVersion = versionMessage->MinorVersion;
 						}
+						else {
+							_AmtProtVersion.MajorVersion = MAX_PROT_VERSION.MajorVersion;
+							_AmtProtVersion.MinorVersion = MAX_PROT_VERSION.MinorVersion;
+						}
+						_handshakingStatus = VERSION_HANDSHAKING::AGREED;
 						break;
 					default:
+						_versionLock.unlock();
 						_lme.Disconnect(APF_DISCONNECT_BY_APPLICATION);
 						Deinit();
-						break;
+						return;
 				}
-
+				_versionLock.unlock();
 			}
 			break;
 
