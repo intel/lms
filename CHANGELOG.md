@@ -1,3 +1,26 @@
+## [2406.0.0.0]
+
+### Fixed
+ - plug memory leaks in error path
+ - DataInterfaceBackend: fix date of not-started psr log
+ - DataInterfaceBackend: fix unknown events and capability states
+ - PartialFWUpdateService: use internal PFU if registry is empty
+ - MEIClient: add retry on busy client
+
+### Changed
+ - CMake: tweak MeTee external project
+ - WsmanClient: Test: make timeset grace 2 sec
+
+### Removed
+ - conan: remove MeTee from dependencies
+
+### Added
+ - DataInterfaceBackend: AMTHI/PSR/UPID Exceptions: Print what()
+ - DataInterfaceBackend: add OEM events to PSR
+ - DataInterfaceBackend: display PSR data
+ - PartialFWUpdateService: add PFU file path print
+ - add support for GetBootState MKHI command
+
 ## [2348.0.0.0]
 
 ### Fixed
