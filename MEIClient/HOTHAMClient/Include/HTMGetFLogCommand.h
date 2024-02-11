@@ -14,7 +14,6 @@
 #include "HOTHAMCommand.h"
 #include "MEIparser.h"
 
-
 namespace Intel
 {
 	namespace MEI_Client
@@ -23,13 +22,12 @@ namespace Intel
 		{
 			typedef struct _HTM_CMD_FLOG_RESP
 			{
-				uint32_t   response;
+				uint32_t response;
 			} HTM_CMD_FLOG_RESP;
 
 			struct GET_FLOG_RESP
 			{
-				GET_FLOG_RESP() : header({ 0 }), response({ 0 }) {}
-				HTM_MSG_HDR_RESPONSE header;
+				GET_FLOG_RESP() : response({ 0 }) {}
 				HTM_CMD_FLOG_RESP response;
 
 				void parse (std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator &end)
@@ -45,8 +43,7 @@ namespace Intel
 				virtual ~HTMGetFatalErrorsRequest() {}
 
 			private:
-
-				static const uint32_t REQUEST_CODE = 0x80; //#define PCH_DFX_FLOG_GET_SIZE                    0x80
+				static const uint32_t REQUEST_CODE = 0x80; //#define PCH_DFX_FLOG_GET_SIZE 0x80
 				virtual uint8_t requestHeaderReqCode()
 				{
 					return REQUEST_CODE;
@@ -61,7 +58,6 @@ namespace Intel
 			class HTMGetFatalErrorsCommand : public HOTHAMCommand
 			{
 			public:
-
 				HTMGetFatalErrorsCommand()
 				{
 					m_request = std::make_shared<HTMGetFatalErrorsRequest>();
