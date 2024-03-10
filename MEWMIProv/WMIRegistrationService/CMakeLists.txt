@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2021 Intel Corporation
-cmake_minimum_required (VERSION 3.1)
+# Copyright (C) 2021-2024 Intel Corporation
+cmake_minimum_required (VERSION 3.15)
 
 set(WMI_REG_SVC_MESSAGE_FILES
   ${CMAKE_CURRENT_BINARY_DIR}/EventLogMessages.h

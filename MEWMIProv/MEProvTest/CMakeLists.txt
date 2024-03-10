@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2020-2021 Intel Corporation
-cmake_minimum_required (VERSION 3.10)
+# Copyright (C) 2020-2024 Intel Corporation
+cmake_minimum_required (VERSION 3.15)
 
 add_executable (MEProvTest
   MEProvTest.cpp

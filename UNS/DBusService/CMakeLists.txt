@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2017-2021 Intel Corporation
-cmake_minimum_required(VERSION 3.1)
+# Copyright (C) 2017-2024 Intel Corporation
+cmake_minimum_required(VERSION 3.15)
 
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/com.intel.amt.lms.service.in"

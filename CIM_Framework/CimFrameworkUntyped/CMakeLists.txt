@@ -1,5 +1,5 @@
-# Copyright (c) Intel Corporation, 2019-2021 All Rights Reserved.
-cmake_minimum_required (VERSION 3.1)
+# Copyright (c) Intel Corporation, 2019-2024 All Rights Reserved.
+cmake_minimum_required (VERSION 3.15)
 
 if (WIN32)
   set (XMLUtils_File "src/XMLUtils_MS.cpp")
