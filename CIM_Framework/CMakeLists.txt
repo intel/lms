@@ -1,6 +1,6 @@
-# Copyright (c) Intel Corporation, 2019-2021 All Rights Reserved.
+# Copyright (c) Intel Corporation, 2019-2024 All Rights Reserved.
 project(CimFrameworkAll)
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.15)
 
 include(GNUInstallDirs)
 

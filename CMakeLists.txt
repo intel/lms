@@ -1,9 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2023 Intel Corporation
-cmake_minimum_required (VERSION 3.1)
-if (NOT ${CMAKE_VERSION} VERSION_LESS "3.15.0")
-  cmake_policy(SET CMP0091 NEW)
-endif()
+# Copyright (C) 2010-2024 Intel Corporation
+cmake_minimum_required (VERSION 3.15)
 project (lms)
 
 set(LICENSE Apache)
