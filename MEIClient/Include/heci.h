@@ -10,17 +10,9 @@
 
 #ifndef __HECI_H__
 #define __HECI_H__
-
-#ifdef WIN32
-#include <Windows.h>
-#else
-#include <linux/uuid.h>
-#define GUID uuid_le
-#endif
 #include <string>
 #include <memory>
-
-struct _TEEHANDLE;
+#include <metee.h>
 
 namespace Intel {
 	namespace MEI_Client {

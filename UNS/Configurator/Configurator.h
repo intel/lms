@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef __CONFIGURATOR_H_
 #define __CONFIGURATOR_H_
@@ -84,7 +84,6 @@ private:
 	std::map<ACE_TString, CheckLoadFunc*> m_checkLoadMap;
 	bool m_needToStop;
 
-	bool MEIEnabled() const;
 	bool m_meiEnabled;
 	bool m_gotMeiEnabled;
 
