@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2019 Intel Corporation
+ * Copyright (C) 2011-2024 Intel Corporation
  */
 #ifndef __DEPENDANCY_MANAGER_H_
 #define __DEPENDANCY_MANAGER_H_
@@ -19,7 +19,6 @@ public:
 	void GetDependeciesOf(const ACE_TString &service, NamesList &names) const;
 	void GetPrerequisites(const ACE_TString &service, NamesList &names, bool serviceDependsOn = true) const;
 	void FillAbsoluteDependencies(NamesList &services);
-	void FillAbsoluteDependents(NamesList &services);
 	//Add/remove the dependency of dummy subservices (to prevent removing of "last" services)
 	void RemoveDummyDependencies(const ACE_TString &service);
 	void AddDummyDependencies(const ACE_TString &service);

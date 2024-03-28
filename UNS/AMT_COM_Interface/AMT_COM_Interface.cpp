@@ -236,7 +236,7 @@ public:
 
 		try
 		{
-			GmsService *svc = theService::instance();
+			GmsService *svc = GmsService::getService();
 			if (svc == NULL)
 			{
 				LogEvent(L"GmsService is not instantiated");

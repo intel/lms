@@ -4,7 +4,6 @@
  */
 // AMTHITestProject.cpp : main project file.
 
-#include "stdafx.h"
 #include "AMTHICommand.h"
 #include "MEIClientException.h"
 #include "HECIException.h"
@@ -38,7 +37,6 @@
 #include "GetWebUIStateCommand.h"
 #include "GetZeroTouchEnabledCommand.h"
 #include "OpenUserInitiatedConnectionCommand.h"
-#include "SetDNSSuffixCommand.h"
 #include "UnprovisionCommand.h"
 
 #include "GetPlatformTypeCommand.h"
@@ -68,7 +66,13 @@
 	#include <arpa/inet.h>
 #endif // __linux__
 
-using namespace std;
+using std::string;
+using std::stringstream;
+using std::vector;
+using std::cout;
+using std::endl;
+using std::hex;
+using std::dec;
 using namespace Intel::MEI_Client::AMTHI_Client;
 using namespace Intel::MEI_Client::MKHI_Client;
 using namespace Intel::MEI_Client::UPID_Client;
@@ -154,22 +158,13 @@ TEST(instantiate, testGetCurrentPowerPolicyCommand){
 	);
 }
 
-TEST(instantiate, testGetAndSetDnsSuffixCommand) {
+TEST(instantiate, testGetDnsSuffixCommand) {
 	std::string dnsSuffix;
 	EXPECT_NO_THROW(
 		GetDNSSuffixCommand getDnsSuffixCommand;
 		dnsSuffix = getDnsSuffixCommand.getResponse();
 		cout << std::endl << "DNS suffix: " << dnsSuffix << std::endl;
 	);
-	if (dnsSuffix.empty())
-		return;
-	try {
-		SetDNSSuffixCommand setDnsSuffixCommand(dnsSuffix);
-	}
-	catch (const AMTHIErrorException &ex) {
-		if (ex.getErr() != AMT_STATUS_INVALID_PT_MODE)
-			FAIL() << "AMTHIErrorException with error " << ex.getErr();
-	}
 }
 
 TEST(instantiate, testGetEACStateCommand){

@@ -31,7 +31,9 @@ class ATL_NO_VTABLE CAT_Device :
 public:
 	CAT_Device()
 	{
-		theService::instance()->inherit_log_msg_attributes();
+		auto svc = GmsService::getService();
+		if (svc)
+			svc->inherit_log_msg_attributes();
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_AT_DEVICE)

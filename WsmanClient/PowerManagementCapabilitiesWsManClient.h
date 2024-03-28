@@ -15,15 +15,11 @@
 #include "CIM_PowerManagementCapabilities.h"
 #include <vector>
 
-
-
-
 //Note : we assume only UNS will change CIM_PowerManagementCapabilities, and only using this wsman client
-class WSMAN_DLL_API PowerManagementCapabilitiesClient : public BaseWSManClient
+class PowerManagementCapabilitiesClient : public BaseWSManClient
 {
 public:
 	PowerManagementCapabilitiesClient(unsigned int port);
-	PowerManagementCapabilitiesClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~PowerManagementCapabilitiesClient();
 
 	/*Actual soap actions!*/

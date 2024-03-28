@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -18,10 +18,9 @@
 #define _WIN_STRING_LOADER_H_
 
 #include "StringManager.h"
-#include "GMSCommonDllExport.h"
 
 //StringLoader for windows
-class GMS_COMMON_EXPORT WindowsStringLoader : public StringLoader
+class WindowsStringLoader : public StringLoader
 {
 public:
 	//load the strings with IDs from given vector into the map,throws exception on failure

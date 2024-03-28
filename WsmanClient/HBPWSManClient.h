@@ -19,7 +19,7 @@
 #include "BaseWSManClient.h"
 #include <vector>
 
-class WSMAN_DLL_API HBPWSManClient : public BaseWSManClient
+class HBPWSManClient : public BaseWSManClient
 {
 public:
 	// ProvisioningMethodEnum defined in previous FW mof of IPS_ProvisioningAuditRecord

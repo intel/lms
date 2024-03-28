@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -27,9 +27,7 @@
 #include <netdb.h>
 #endif // WIN32
 
-#ifdef _REMOTE_SUPPORT
 #include "AdapterListInfo.h"
-#endif
 
 typedef void (*EventLogCallback) (void *param, const char* message);
 
@@ -69,6 +67,8 @@ public:
 
 	Protocol();
 	~Protocol();
+	Protocol(const Protocol&) = delete;
+	Protocol& operator = (const Protocol&) = delete;
 
 	bool CreateSockets();
 	void DestroySockets();
@@ -87,10 +87,8 @@ private:
 	static int _isLocalCallback(void *const param, SOCKET s, sockaddr_storage* caller_addr);
 	//callback for waking the service from the Select() to allow re-initilization 
 	static void _SignalSelectCallback(void *protocol);
-#ifdef _REMOTE_SUPPORT
 	static void _AdapterCallback(void *param, SuffixMap &localDNSSuffixes);
 	static int _isRemoteCallback(void *const param, SOCKET sock, sockaddr_storage* caller_addr);
-#endif	
 	bool _checkProtocolFlow(LMEMessage *message);
 	void _closePortForwardRequest(PortForwardRequest *p); 
 	void _LmeReceive(void *buffer, unsigned int len, int *status);
@@ -109,14 +107,11 @@ private:
 	void _checkRemoteAccessStatus();
 	bool _remoteTunnelExist();
 
-#ifdef _REMOTE_SUPPORT
-	
 	int _isRemote(SOCKET s) const;
 	bool _checkRemoteSupport(bool requestDnsFromAmt = false);
 	bool _updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay = false);
-	bool _isRemoteAPFAddress(std::string addr);
+	bool _isRemoteAPFAddress(const std::string &addr);
 
-#endif
 	SOCKET _connect(addrinfo *addr, unsigned int port, int type, long timeOut = 0);
 	void _TCPCleanup();
 	//void _TCPCleanupIPv6()
@@ -141,13 +136,11 @@ private:
 	char *_rxSocketBuffer;
 	size_t _rxSocketBufferSize;
 
-#ifdef _REMOTE_SUPPORT
 	std::vector<std::string> _AMTDNSSuffixes;
 	mutable std::mutex _AMTDNSLock;
 	bool _remoteAccessEnabledInAMT;
 	bool _remoteAccessCurrentlyPossible;
 	mutable std::mutex _remoteAccessLock;
-#endif
 
 	enum class VERSION_HANDSHAKING {
 		NOT_INITIATED,

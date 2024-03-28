@@ -1,17 +1,15 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __EVENTHANDLER_H_
 #define __EVENTHANDLER_H_
 #include "GmsSubService.h"
 #include "EventManagment.h"
 #include <memory>
-#include "GMSCommonDllExport.h"
 
-class GMS_COMMON_EXPORT EventHandler : public GmsSubService
+class EventHandler : public GmsSubService
 {
-
 public:
 
 	EventHandler(){};

@@ -52,10 +52,6 @@ target_compile_definitions (GMS_COMMON PRIVATE
   $<$<BOOL:${IGNORE_DLL_SIGNATURES}>:IGNORE_DLL_SIGNATURES>
 )
 
-target_compile_definitions (GMS_COMMON PUBLIC
-  GMS_COMMON_NO_DLL
-)
-
 target_include_directories (GMS_COMMON PRIVATE
   ${IDN2_INCLUDE_DIRS}
 )

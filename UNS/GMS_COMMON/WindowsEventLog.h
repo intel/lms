@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2006-2021 Intel Corporation
+ * Copyright (C) 2006-2024 Intel Corporation
  */
 /*++
 
@@ -19,9 +19,8 @@
 #include <stdio.h>
 #include <atlbase.h>
 #include "BaseEventLog.h"
-#include "GMSCommonDllExport.h"
 
-class GMS_COMMON_EXPORT WindowsEventLog : public BaseEventLog
+class WindowsEventLog : public BaseEventLog
 {
 private:
 	// Data member which contain handle to registry.
@@ -34,6 +33,8 @@ public:
 						unsigned long	dwNum,
 						const wchar_t * pszModuleName = NULL);			// Ctor.
 	virtual ~WindowsEventLog();				// Dtor.
+	WindowsEventLog(const WindowsEventLog&) = delete;
+	WindowsEventLog& operator = (const WindowsEventLog&) = delete;
 
 	// Wrapper for ReportEvent that take care of Handle and EventType
 	void LogEvent(	unsigned short CategoryID, 

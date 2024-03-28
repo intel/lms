@@ -14,7 +14,7 @@
 #include "IPS_SecIOService.h"
 #include "BaseWSManClient.h"
 
-class WSMAN_DLL_API SIOWSManClient : public BaseWSManClient
+class SIOWSManClient : public BaseWSManClient
 {
 public:
 	SIOWSManClient(unsigned int port);

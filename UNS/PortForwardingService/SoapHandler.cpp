@@ -172,7 +172,7 @@ bool SOAP_Handler::HandleCimAlert(const std::string &TestMessageId, const std::s
 	}
 	mbPtr->data_block(alert);
 	mbPtr->msg_type(MB_PUBLISH_EVENT);
-	auto svc = theService::instance();
+	auto svc = GmsService::getService();
 	if (svc == nullptr)
 	{
 		UNS_DEBUG(L"Soapserver:: Failed to obtain service pointer!\n");

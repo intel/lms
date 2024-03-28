@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2020 Intel Corporation
+ * Copyright (C) 2011-2023 Intel Corporation
  */
 #ifndef _VERIFY_FILE
 #define _VERIFY_FILE
@@ -9,15 +9,14 @@
 #include "global.h"
 #include <WinTrust.h>
 #include <Softpub.h>
-#include "GMSCommonDllExport.h"
 
-class GMS_COMMON_EXPORT VerifyFile
+class VerifyFile
 {
 public:
 	VerifyFile(void);
 	~VerifyFile(void);
 	static bool Init();
-	static const HMODULE SafeLoadDll(const std::wstring & wcName);
+	static HMODULE SafeLoadDll(const std::wstring & wcName);
 
 private:
 	static bool VerifyFileSignature(const std::wstring &filePath, HANDLE hFile);

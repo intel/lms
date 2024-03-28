@@ -195,17 +195,18 @@ bool Configurator::MEIEnabled() const
 	ULONG uReturn = 0;
 
 	FuncEntryExit<decltype(meiEnabled)> fee(this, L"MEIEnabled", meiEnabled);
-
-	HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
-
-	if (!FAILED(hres))
+	try
 	{
-		// Connect to the root\cimv2 namespace with
-		// the current user and obtain pointer pSvc
-		// to make IWbemServices calls.
-		hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
+		HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
+
 		if (!FAILED(hres))
 		{
+			// Connect to the root\cimv2 namespace with
+			// the current user and obtain pointer pSvc
+			// to make IWbemServices calls.
+			hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
+			if (!FAILED(hres))
+			{
 				IEnumWbemClassObject* enumerator = NULL;
 				hres = svc->ExecQuery(CComBSTR(L"WQL"),
 					CComBSTR(L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'"),
@@ -214,20 +215,26 @@ bool Configurator::MEIEnabled() const
 				{
 					if (enumerator)//we have only one instance
 					{
-						HRESULT hr = enumerator->Next(WBEM_INFINITE, 1, &obj, &uReturn);
-
+						hres = enumerator->Next(WBEM_INFINITE, 1, &obj, &uReturn);
 						if(uReturn != 0)
 						{
 							VARIANT vtProp;
-							hr = obj->Get(L"Status", 0, &vtProp, 0, 0);
-							if (wcscmp(vtProp.bstrVal,L"OK")==0)
+							hres = obj->Get(L"Status", 0, &vtProp, 0, 0);
+							if (SUCCEEDED(hres))
 							{
-								meiEnabled = true;
+								if (wcscmp(vtProp.bstrVal, L"OK") == 0)
+								{
+									meiEnabled = true;
+								}
+							}
+							else
+							{
+								UNS_ERROR(L"isMEIEnabled() failed to get status %d\n", hres);
 							}
 						}
 						else
 						{
-							UNS_ERROR(L"isMEIEnabled() failed to enumerate device %d\n", hr);
+							UNS_ERROR(L"isMEIEnabled() failed to enumerate device %d\n", hres);
 						}
 					}
 				}
@@ -235,15 +242,20 @@ bool Configurator::MEIEnabled() const
 				{
 					UNS_ERROR(L"isMEIEnabled() failed to connect to exec WMI query\n");
 				}
+			}
+			else
+			{
+				UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
+			}
 		}
 		else
 		{
-			UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
+			UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
 		}
 	}
-	else
+	catch (const ATL::CAtlException& e)
 	{
-		UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
+		UNS_ERROR("isMEIEnabled() AtlException hr = 0x%X\n", e.m_hr);
 	}
 	if (svc!= NULL) svc->Release();
 	if (loc!= NULL) loc->Release();

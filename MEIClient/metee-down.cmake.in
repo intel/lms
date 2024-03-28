@@ -9,7 +9,7 @@ project (metee-download NONE)
 include (ExternalProject)
 ExternalProject_Add (metee
   GIT_REPOSITORY    https://github.com/intel/metee.git
-  GIT_TAG           3.2.3
+  GIT_TAG           3.2.4
   SOURCE_DIR        "${CMAKE_CURRENT_BINARY_DIR}/metee"
   BINARY_DIR        "${CMAKE_CURRENT_BINARY_DIR}/metee-build"
   CONFIGURE_COMMAND ""

@@ -12,11 +12,6 @@ IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient(unsigned int port) : 
 {
 }
 
-IPSKVMSessionUsingPortClient::IPSKVMSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_LinkTechnology(0)
-{
-}
-
 IPSKVMSessionUsingPortClient::~IPSKVMSessionUsingPortClient()
 {
 }

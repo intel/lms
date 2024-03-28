@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2022 Intel Corporation
+ * Copyright (C) 2011-2024 Intel Corporation
  */
 #ifndef __ASYNC_MANAGER_H_
 #define __ASYNC_MANAGER_H_
@@ -18,12 +18,6 @@ public:
 	enum class OpType {OP_LOAD, OP_UNLOAD, OP_RESUME, OP_SUSPEND};
 
 	AsyncActivationManager(int loadTimeout = 10000, int unloadTimeout = 10000);
-	// The below ReadyX() functions returns true if the service is ready for X
-	// and if not add the service to X-waiting list
-	bool ReadyToLoad(const ACE_TString &service);
-	bool ReadyToUnload(const ACE_TString &service);
-	bool ReadyToSuspend(const ACE_TString &service);
-	bool ReadyToResume(const ACE_TString &service);
 
 	bool ReadyToOperation(const ACE_TString &service, OpType operation, bool addTolist = true);
 	

@@ -15,11 +15,10 @@
 #include <string>
 #include "AMT_SNMPEventSubscriber.h"
 
-class WSMAN_DLL_API AMTFCFHWSmanClient : public BaseWSManClient
+class AMTFCFHWSmanClient : public BaseWSManClient
 {
 public:
 	AMTFCFHWSmanClient(unsigned int port);
-	AMTFCFHWSmanClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~AMTFCFHWSmanClient();
 
 	/*Actual soap actions!*/

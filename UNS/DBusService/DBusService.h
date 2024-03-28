@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2023 Intel Corporation
+ * Copyright (C) 2017-2024 Intel Corporation
  */
 #ifndef __DBUSSERVICE_H_
 #define __DBUSSERVICE_H_
@@ -26,6 +26,8 @@ class DBusThread : public ACE_Task<ACE_MT_SYNCH>
 public:
 	DBusThread(DBusService *father);
 	virtual ~DBusThread();
+	DBusThread(const DBusThread&) = delete;
+	DBusThread& operator = (const DBusThread&) = delete;
 
 	virtual int svc();
 

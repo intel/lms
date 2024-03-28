@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -72,23 +72,24 @@ namespace Intel {
 #define CATCH_AMTHIErrorException(func) \
 	catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e) \
 	{ \
-		unsigned int errNo = e.getErr(); \
-		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+		const char* reason = e.what(); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_PSRErrorException(func) \
 	catch (Intel::MEI_Client::PSR_Client::PSRErrorException& e) \
 	{ \
-		unsigned int errNo = e.getErr(); \
-		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+		const char* reason = e.what(); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
 
 #define CATCH_UPIDErrorException(func) \
 	catch (Intel::MEI_Client::UPID_Client::UPIDErrorException& e) \
 	{ \
-		unsigned int errNo = e.getErr(); \
-		UNS_DEBUG(func L" failed ret=%d\n", errNo); \
+		const char* reason = e.what(); \
+		UNS_DEBUG(func L" failed %C\n", reason); \
 	}
+
 #define CATCH_NoClientExceptionReturn(func) \
 	catch (const Intel::MEI_Client::HeciNoClientException& e) \
 	{ \
@@ -271,10 +272,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::GetProvisioningState(uint32_t &pProvisioningState)
 		{
-			/*
-			AMT_STATUS_NOT_READY	Management controller has not progressed far enough in its initialization to process the command.
-			*/
-
 			try
 			{
 				Intel::MEI_Client::AMTHI_Client::GetProvisioningStateCommand getProvisioningStateCommand;
@@ -282,20 +279,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				UNS_DEBUG(L"ProvisioningState=%d\n", pProvisioningState);
 				return LMS_ERROR::OK;
 			}
-			catch (Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
-			{
-				unsigned int errNo = e.getErr();
-				if (errNo == AMT_STATUS_NOT_READY)
-				{
-					pProvisioningState = 4; // CCK enrolled (registration to CCK) - Dan:: need to align IMSS to the new definition - no more CCK
-					UNS_DEBUG(L"GetProvisioningStateCommand failed, but returned status=%d assume CCK enrolled let ProvisioningState=4\n", errNo);
-					return LMS_ERROR::OK;
-				}
-				else
-				{
-					UNS_DEBUG(L"GetProvisioningStateCommand failed ret=%d\n", errNo);
-				}
-			}
+			CATCH_AMTHIErrorException(L"GetProvisioningStateCommand")
 			CATCH_MEIClientException(L"GetProvisioningStateCommand")
 			CATCH_exception(L"GetProvisioningStateCommand")
 			return LMS_ERROR::FAIL;
@@ -606,7 +590,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 		LMS_ERROR PTHI_Commands_BE::SetSpriteLanguage(unsigned short Language)
 		{
-			auto svc = theService::instance();
+			auto svc = GmsService::getService();
 			if (svc == nullptr)
 			{
 				return LMS_ERROR::FAIL;
@@ -667,16 +651,14 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			try
 			{
 				HBPWSManClient HBPWSManClient_obj(m_port);
-				std::string CreationTimeStampStr;
-				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, CreationTimeStampStr, ppCertHash) != true)
+				if (HBPWSManClient_obj.GetConfigurationInfo(&pControlMode, &pProvisioningMethod, pCreationTimeStamp, ppCertHash) != true)
 					return LMS_ERROR::FAIL;
 
-				UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, CreationTimeStampStr=%C\n",
-					pControlMode, pProvisioningMethod, CreationTimeStampStr.c_str());
-				pCreationTimeStamp = CreationTimeStampStr;
+				UNS_DEBUG(L"ControlMode=%d, ProvisioningMethod=%d, pCreationTimeStamp=%C\n",
+					pControlMode, pProvisioningMethod, pCreationTimeStamp.c_str());
 				return LMS_ERROR::OK;
 			}
-			CATCH_exception(L"SIOWSManClient")
+			CATCH_exception(L"HBPWSManClient")
 			return LMS_ERROR::FAIL;
 		}
 
@@ -742,7 +724,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 
 				return LMS_ERROR::OK;
 			}
-			CATCH_exception(L"TerminateRemedySessions")
+			CATCH_exception(L"CancelOptInClient")
 			return LMS_ERROR::FAIL;
 		}
 
@@ -994,18 +976,26 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_SHOCK, "Excessive Shock"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_EXCESSIVE_OPERATIONAL_TEMPERATURE, "Excessive Operational Temperature"},
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE, "Erase"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_FIRMWARE_RECOVERY, "Firmware Recovery"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_FIRMWARE_UPDATE, "Firmware Update"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_SYSTEM_HANG, "System Hang"},
+				{Intel::MEI_Client::PSR_Client::PSR_EVENT_POWER_DROP, "Power Drop"},
 			};
 			std::map<uint32_t, std::string> capaiblity_states = {
 				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_NOT_SUPPORTED, "Not supported"},
 				{Intel::MEI_Client::PSR_Client::PSR_CAPABILITY_SUPPORTED, "Supported"},
 			};
-			const size_t PSR_CAPABILITIES_NUM = 5;
+			const size_t PSR_CAPABILITIES_NUM = 9;
 			std::array<std::string, PSR_CAPABILITIES_NUM> capaiblity_names = {
-			"Chassis Intrusion",
-			"Excessive Operational Temperature",
-			"Excessive Shock",
-			"Remote Platform Erase",
-			"Local Platform Erase",
+				"Chassis Intrusion",
+				"Excessive Operational Temperature",
+				"Excessive Shock",
+				"Remote Platform Erase",
+				"Local Platform Erase",
+				"Firmware Recovery",
+				"Firmware Update",
+				"System Hang",
+				"Power Drop",
 			};
 			std::map<uint32_t, std::string> erase_event_source = {
 				{Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_SOURCE_RPE, "Remote Erase"},
@@ -1056,7 +1046,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				parsed << "</Category>" << std::endl;
 
 				parsed << "<Category name=\"Genesis\">" << std::endl;
-				parsed << formatPSRField("Log Start Date", timeToString(psr.genesis_info.genesis_date));
+				parsed << formatPSRField("Log Start Date",
+					(psr.log_state == Intel::MEI_Client::PSR_Client::PSR_LOG_NOT_STARTED) ? "Not Available" : timeToString(psr.genesis_info.genesis_date));
 				parsed << formatPSRField("OEM Name", genesisFieldToString(psr.genesis_info.oem_info));
 				parsed << formatPSRField("OEM Make", genesisFieldToString(psr.genesis_info.oem_make_info));
 				parsed << formatPSRField("OEM Model", genesisFieldToString(psr.genesis_info.oem_model_info));
@@ -1079,7 +1070,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 						}
 						catch (std::out_of_range const&)
 						{
-							parsed << "Unknown (" << psr.capabilities[i] << ")";
+							parsed << "Unknown (" << (unsigned int)psr.capabilities[i] << ")";
 						}
 						parsed << formatPSRSuffix();
 					}
@@ -1103,6 +1094,10 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					parsed << formatPSRField("PSR SVN Incremented Count", psr.ledger_info2.psr_svn_increment_counter);
 					parsed << formatPSRField("Excessive Shock Count", psr.ledger_info2.excessive_shock_counter);
 					parsed << formatPSRField("Excessive Operational Temperature Count", psr.ledger_info2.excessive_temp_counter);
+					parsed << formatPSRField("Firmware Recovery Count", psr.ledger_info2.firmware_recovery_counter);
+					parsed << formatPSRField("Firmware Update Count", psr.ledger_info2.firmware_update_counter);
+					parsed << formatPSRField("System Hang Count ", psr.ledger_info2.system_hang_counter);
+					parsed << formatPSRField("Power Drop Count", psr.ledger_info2.power_drop_counter);
 				}
 				parsed << "</Category>" << std::endl;
 
@@ -1116,13 +1111,13 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 					}
 					catch (std::out_of_range const&)
 					{
-						parsed << "Unknown (" << psr.events_info[i].event_id << ")";
+						parsed << "Unknown (" << (unsigned int)psr.events_info[i].event_id << ")";
 					}
 					parsed << "\">" << std::endl;
 					parsed << formatPSRField("Event ID", (unsigned int)psr.events_info[i].event_id);
 					if (psr.psr_version_major >= 2 && psr.events_info[i].event_id == Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE)
 					{ // print erase sub id data
-						parsed << "<Category name=\"Data\">" << std::endl;
+						parsed << "<Category name=\"EraseInfo\">" << std::endl;
 						uint32_t sub_id = psr.events_info[i].event_sub_id[0] + (psr.events_info[i].event_sub_id[1] << 8) +
 							(psr.events_info[i].event_sub_id[2] << 16);
 						uint32_t action = (sub_id & Intel::MEI_Client::PSR_Client::PSR_EVENT_ERASE_ACTION_MASK) >>
@@ -1178,6 +1173,8 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 							break;
 						}
 					}
+					parsed << formatPSRPrefix("Data") << "0x" << std::setfill('0') << std::setw(8) << std::hex <<
+						psr.events_info[i].data << std::dec << formatPSRSuffix();
 					parsed << "</Category>" << std::endl;
 				}
 				parsed << "</Category>" << std::endl;

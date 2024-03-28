@@ -7,11 +7,10 @@
 
 #include "BaseWSManClient.h"
 
-class WSMAN_DLL_API IPSIderSessionUsingPortClient : public BaseWSManClient
+class IPSIderSessionUsingPortClient : public BaseWSManClient
 {
 public:
 	IPSIderSessionUsingPortClient(unsigned int port);
-	IPSIderSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~IPSIderSessionUsingPortClient();
 
 	bool GetSessionLinkTechnology(short *pLinkTechnology);

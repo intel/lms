@@ -36,13 +36,14 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 		CimTyped::AMT_AuditLog::ReadRecords_OUTPUT output;
 		// Read Records
 		unsigned int recordsRead = 0;
-		unsigned int totalRecordsCount;// = output.TotalRecordCount();
+		unsigned int totalRecordsCount;
+		const unsigned int MAX_RECORDS_COUNT = 10000;
 		do
 		{
 			input.StartIndex(recordsRead + 1);
 
 			// Call SOAP Method.
-			unsigned int response = m_service.ReadRecords(input, output);				
+			unsigned int response = m_service.ReadRecords(input, output);
 
 			// Check Return Value.
 			if (response != 0)
@@ -57,16 +58,16 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 			}
 	
 			totalRecordsCount = output.TotalRecordCount();
-			unsigned int outputSize = (unsigned int)output.EventRecords().size();
+			size_t outputSize = output.EventRecords().size();
 			// Insert Records to new vector
-			for(unsigned int i=0; i<outputSize; i++)
+			for(size_t i = 0; i < outputSize; i++)
 			{
 				records.push_back(CimTyped::Base64(output.EventRecords().at(i)));
 			}
 			// update number of records that were read 
 			recordsRead += outputSize;
-				
-		}while(recordsRead < totalRecordsCount);			
+
+		} while (recordsRead < totalRecordsCount && recordsRead < MAX_RECORDS_COUNT);
 	}
 	CATCH_exception_return("AuditLogWSManClient::readLogsFromFW")
 	return true;
@@ -1287,7 +1288,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminPowerPackageModifiedEvent(u
 		data << std::setw(2) << (int)extData[k];
 	}
 	data << std::dec << std::nouppercase;
-	for (int k=0; k<12; k++)
+	for (size_t k = 0; k < 12; k++)
 	{
 		if (data.str().compare(powerPolicyFW[k]) == 0)
 		{
@@ -1555,7 +1556,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminTcpIpParameterSetEvent(uint8
 	{
 		std::string addresses[] = { "IPv4 Address: ", "Subnet Mask: " , "Default Gateway: " ,"Preferred DNS Server: ", "Alternate DNS Server: " };
 
-		for (int j =0; j < 5; j++) 
+		for (size_t j = 0; j < 5; j++)
 		{
 			if ((i+4)<=extendedDataLen)
 			{
@@ -1723,7 +1724,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 {
 	std::stringstream ss;
 	int i = 0;
-	int interfaceIDGenType = 0;
+	uint8_t interfaceIDGenType = 0;
 
 	if (i < extendedDataLen)
 	{
@@ -1740,7 +1741,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 	{
 		interfaceIDGenType = extData[i];
 		std::string interfaceIDGenTypeString = "Unknown";
-		if ((interfaceIDGenType >= 0) && (interfaceIDGenType <= MAX_INTERFACE_ID_GEN_TYPE_STRINGS))
+		if (interfaceIDGenType <= MAX_INTERFACE_ID_GEN_TYPE_STRINGS)
 		{
 			interfaceIDGenTypeString = interfaceIDGenTypeStrings[interfaceIDGenType];
 		}
@@ -1772,7 +1773,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 	}
 	
 	std::string addresses[] = { "IPv6 Address: " , "Default Gateway: " ,  "Preferred DNS Server: ", "Alternate DNS Server: "};
-	for (int j = 0; j < 4; j++)
+	for (size_t j = 0; j < 4; j++)
 	{
 		if ((i+16) <= extendedDataLen)
 		{

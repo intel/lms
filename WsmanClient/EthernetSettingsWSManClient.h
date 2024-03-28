@@ -15,13 +15,12 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API EthernetSettingsWSManClient : public BaseWSManClient
+class EthernetSettingsWSManClient : public BaseWSManClient
 {
 public:
 	static const unsigned int ERROR_UNKNOWN_ERROR = 1000;
 
 	EthernetSettingsWSManClient(unsigned int port);
-	EthernetSettingsWSManClient(unsigned int port, const std::string &userName, const std::string &password);
 	virtual ~EthernetSettingsWSManClient();
 	unsigned int Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings);
 private:

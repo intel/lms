@@ -24,11 +24,6 @@ AMTFCFHWSmanClient::AMTFCFHWSmanClient(unsigned int port) : BaseWSManClient(port
 {
 }
 
-AMTFCFHWSmanClient::AMTFCFHWSmanClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_isInit(false)
-{
-}
-
 AMTFCFHWSmanClient::~AMTFCFHWSmanClient()
 {
 }

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2024 Intel Corporation
  */
 #ifndef __WMIUTILS_H
 #define __WMIUTILS_H
@@ -25,7 +25,7 @@ public:
 	static void PTHIHandleSetStatus(IWbemServices* pNamespace,
 									IWbemObjectSink  __RPC_FAR* pResponseHandler,
 									unsigned long ReturnValue,
-									uint32& hr);
+									HRESULT& hr);
 	static bool isMethodCallStatic(const BSTR strObjectPath);
 };
 
@@ -45,7 +45,7 @@ inline std::string ToStr(const std::wstring& t)
 class EntryExitLog
 {
 public:
-	EntryExitLog(const char *func, const uint32 &ret, const uint32 &hr) :
+	EntryExitLog(const char *func, const uint32 &ret, const HRESULT &hr) :
 		func_(func), ret_(ret), hr_(hr)
 	{
 		UNS_DEBUG("--> %C\n", func_);
@@ -54,17 +54,18 @@ public:
 	{
 		UNS_DEBUG("<-- %C 0x%X 0x%X\n", func_, ret_, hr_);
 	}
-
+	EntryExitLog(const EntryExitLog&) = delete;
+	EntryExitLog& operator = (const EntryExitLog&) = delete;
 private:
 	const char *func_;
 	const uint32 &ret_;
-	const uint32 &hr_;
+	const HRESULT &hr_;
 };
 
 class EntryExitLogShort
 {
 public:
-	EntryExitLogShort(const char* func, const uint32& hr) : func_(func), hr_(hr)
+	EntryExitLogShort(const char* func, const HRESULT& hr) : func_(func), hr_(hr)
 	{
 		UNS_DEBUG("--> %C\n", func_);
 	}
@@ -72,10 +73,11 @@ public:
 	{
 		UNS_DEBUG("<-- %C 0x%X\n", func_, hr_);
 	}
-
+	EntryExitLogShort(const EntryExitLogShort&) = delete;
+	EntryExitLogShort& operator = (const EntryExitLogShort&) = delete;
 private:
 	const char* func_;
-	const uint32& hr_;
+	const HRESULT& hr_;
 };
 
 #endif

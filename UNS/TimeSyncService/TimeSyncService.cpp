@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "TimeSyncService.h"
 #include "TimeSynchronizationClient.h"
@@ -197,70 +197,76 @@ TimeSyncService::PerformSync()
 		return;
 	}
 
-
-	bool timeSyncState;
-	//Check if LocalTimeSyncEnable = DEFAULT_TRUE or CONFIGURED_TRUE
-	TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
-	if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncState))//error getting the Time Sync state.
+	try
 	{
-		m_needToSyncOnResume = true;//update the bool to true if sync should be performed
-		UNS_ERROR(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation\n", name().c_str());
-		return;
-	}
-	else if(!timeSyncState) // The FW LocalTimeSyncEnable field is FALSE
-	{
-		UNS_DEBUG(L"%s:: FW LocalTimeSyncEnable is FALSE, aborting sync operation\n", name().c_str());
-		return;
-	}
-	unsigned int AMTTime, UTCTime;
-	//Get the AMT time
-	bool ret = timeClient.GetAMTTime(AMTTime);
-	if (!ret)
-	{
-		UNS_ERROR(L"%s:: GetAMTTime failed, aborting sync operation\n", name().c_str());
-		return;
-	}
-#ifdef _DEBUG
-	printTime(L"Time in FW is: ", AMTTime);
-#endif
-
-	//Get the UTC time
-	if (!GetUTCTime(UTCTime))
-	{
-		UNS_ERROR(L"%s:: Cannot get UTC time. aborting sync operation\n", name().c_str());
-		return;
-	}
-#ifdef _DEBUG
-	printTime(L"UTC time is: ", UTCTime);
-#endif
-
-	//Updates the AMT time if it differs more than should from the UTC time
-	double diff = difftime(UTCTime, AMTTime);
-	if (std::abs(diff) > ms_MaxDiff)
-	{
-		UNS_DEBUG(L"%s:: Difference is more than %d seconds, time sync will be performed\n", name().c_str(), ms_MaxDiff);
-		ret = timeClient.SetAMTTime(UTCTime);
+		bool timeSyncState;
+		//Check if LocalTimeSyncEnable = DEFAULT_TRUE or CONFIGURED_TRUE
+		TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
+		if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncState))//error getting the Time Sync state.
+		{
+			m_needToSyncOnResume = true;//update the bool to true if sync should be performed
+			UNS_ERROR(L"%s:: Error - retrieving LocalTimeSyncEnable state, aborting sync operation\n", name().c_str());
+			return;
+		}
+		else if (!timeSyncState) // The FW LocalTimeSyncEnable field is FALSE
+		{
+			UNS_DEBUG(L"%s:: FW LocalTimeSyncEnable is FALSE, aborting sync operation\n", name().c_str());
+			return;
+		}
+		unsigned int AMTTime, UTCTime;
+		//Get the AMT time
+		bool ret = timeClient.GetAMTTime(AMTTime);
 		if (!ret)
 		{
-			UNS_ERROR(L"%s:: SetAMTTime failed, aborting sync operation\n", name().c_str());
+			UNS_ERROR(L"%s:: GetAMTTime failed, aborting sync operation\n", name().c_str());
 			return;
 		}
 #ifdef _DEBUG
-		//Print the new AMT time for debug
-		ret = timeClient.GetAMTTime(AMTTime);
-		if (!ret)
+		printTime(L"Time in FW is: ", AMTTime);
+#endif
+
+		//Get the UTC time
+		if (!GetUTCTime(UTCTime))
 		{
-			UNS_ERROR(L"%s:: GetAMTTime failed.\n", name().c_str());
+			UNS_ERROR(L"%s:: Cannot get UTC time. aborting sync operation\n", name().c_str());
 			return;
 		}
-		printTime(L"Time in FW is now: ", AMTTime);
+#ifdef _DEBUG
+		printTime(L"UTC time is: ", UTCTime);
 #endif
+
+		//Updates the AMT time if it differs more than should from the UTC time
+		double diff = difftime(UTCTime, AMTTime);
+		if (std::abs(diff) > ms_MaxDiff)
+		{
+			UNS_DEBUG(L"%s:: Difference is more than %d seconds, time sync will be performed\n", name().c_str(), ms_MaxDiff);
+			ret = timeClient.SetAMTTime(UTCTime);
+			if (!ret)
+			{
+				UNS_ERROR(L"%s:: SetAMTTime failed, aborting sync operation\n", name().c_str());
+				return;
+			}
+#ifdef _DEBUG
+			//Print the new AMT time for debug
+			ret = timeClient.GetAMTTime(AMTTime);
+			if (!ret)
+			{
+				UNS_ERROR(L"%s:: GetAMTTime failed.\n", name().c_str());
+				return;
+			}
+			printTime(L"Time in FW is now: ", AMTTime);
+#endif
+		}
+		else
+		{
+			UNS_DEBUG(L"%s:: Difference is less than %d seconds, time sync will not be performed\n", name().c_str(), ms_MaxDiff);
+		}
+		ms_LastTimeSync = UTCTime;//update the ms_LastTimeSync value to hold the synchronization time.
+		UNS_DEBUG(L"%s:: ms_LastTimeSync set to %d\n", name().c_str(), ms_LastTimeSync);
 	}
-	else
+	catch (const std::exception& e)
 	{
-		UNS_DEBUG(L"%s:: Difference is less than %d seconds, time sync will not be performed\n", name().c_str(), ms_MaxDiff);
+		UNS_DEBUG(L"%s::PerformSync exception %S\n", name().c_str(), e.what());
 	}
-	ms_LastTimeSync = UTCTime;//update the ms_LastTimeSync value to hold the synchronization time.
-	UNS_DEBUG(L"%s:: ms_LastTimeSync set to %d\n", name().c_str(), ms_LastTimeSync);
 }
 

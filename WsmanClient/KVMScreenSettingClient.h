@@ -17,13 +17,12 @@
 #include <string>
 #include <vector>
 
-class WSMAN_DLL_API KVMScreenSettingClient : public BaseWSManClient
+class KVMScreenSettingClient : public BaseWSManClient
 {
 public:
 	static const unsigned int MAX_DISPLAY_NUMBER = 4;
 
 	KVMScreenSettingClient(unsigned int port);
-	KVMScreenSettingClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~KVMScreenSettingClient();
 
 	struct ScreenSettings
@@ -41,7 +40,7 @@ public:
 
 	/*Actual soap actions!*/
 	
-	bool updateScreenSettings(const ExtendedDisplayParameters &displaySettings, short numOfDisplays);
+	bool updateScreenSettings(const ExtendedDisplayParameters &displaySettings, unsigned short numOfDisplays);
 	
 private:
 	bool Init(bool forceGet = false);

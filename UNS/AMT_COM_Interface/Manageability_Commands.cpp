@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -24,6 +24,7 @@ HRESULT CManageability_Commands::GetTheFeatureState(FEATURES feat, FEATURE_STATE
 	if (pState == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetTheFeatureState\n");
 #ifdef _DEBUG
 	SHORT dbg_feat,state;
 	switch (feat)
@@ -66,13 +67,20 @@ HRESULT CManageability_Commands::GetTheFeatureState(FEATURES feat, FEATURE_STATE
 	}
 #endif
 
-	if (CheckCredentials(GetTheFeatureState_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetTheFeatureState_F) != S_OK)
+			return E_ACCESSDENIED;
 
-
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetTheFeatureState(feat, *pState);
-	return LMSError2HRESULT(err);
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetTheFeatureState(feat, *pState);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetTheFeatureState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 HRESULT CManageability_Commands::GetFeaturesState(SAFEARRAY** ppStates)
@@ -89,6 +97,7 @@ HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
 	if (pType == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetCustomerType\n");
 #ifdef _DEBUG
 	SHORT val;
 	if (GetFromRegistry(L"DebugData", L"GetCustomerType", &val))
@@ -98,12 +107,20 @@ HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
 	}
 #endif
 
-	if (CheckCredentials(GetCustomerType_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetCustomerType_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetCustomerType(*pType);
-	return LMSError2HRESULT(err);
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetCustomerType(*pType);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetCustomerType failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
@@ -120,6 +137,7 @@ HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
 	if (pMode == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetMenageabiltyMode\n");
 #ifdef _DEBUG
 	SHORT val;
 	if (GetFromRegistry(L"DebugData", L"GetMenageabiltyMode", &val))
@@ -129,16 +147,24 @@ HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
 	}
 #endif
 
-	if (CheckCredentials(GetMenageabiltyMode_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetMenageabiltyMode_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetMenageabiltyMode(*pMode);
-	return LMSError2HRESULT(err);
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetMenageabiltyMode(*pMode);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetMenageabiltyMode failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
+
 HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootState, VARIANT_BOOL* pCryptoFuseEnable, VARIANT_BOOL* pLocalFWupdateEnable)
 {
-
 	if (pMEBxVersion == nullptr ||
 	    pBiosBootState == nullptr ||
 	    pCryptoFuseEnable == nullptr ||
@@ -147,6 +173,7 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 		return E_POINTER;
 	}
 
+	UNS_DEBUG(L"GetFWInfo\n");
 #ifdef _DEBUG
 	if ((GetFromRegistry(L"DebugData", L"MEBxVersion", pMEBxVersion)) &&
 	    (GetFromRegistry(L"DebugData", L"BiosBootState", pBiosBootState)) &&
@@ -157,26 +184,34 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 	}
 #endif
 
-	if (CheckCredentials(GetFWInfo_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetFWInfo_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string MEBxVersion;
-	unsigned long BiosBootState;
-	bool CryptoFuseEnable;
-	bool LocalFWupdateEnable;
+		std::string MEBxVersion;
+		unsigned long BiosBootState;
+		bool CryptoFuseEnable;
+		bool LocalFWupdateEnable;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetFWInfo(MEBxVersion, BiosBootState, CryptoFuseEnable, LocalFWupdateEnable);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetFWInfo(MEBxVersion, BiosBootState, CryptoFuseEnable, LocalFWupdateEnable);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(MEBxVersion.c_str());
-	*pMEBxVersion = bstr.Detach();
-	*pBiosBootState = BiosBootState;
-	*pCryptoFuseEnable = CryptoFuseEnable;
-	*pLocalFWupdateEnable = LocalFWupdateEnable;
+		if (!CreateBSTR(MEBxVersion, pMEBxVersion))
+			return E_FAIL;
+		*pBiosBootState = BiosBootState;
+		*pCryptoFuseEnable = CryptoFuseEnable;
+		*pLocalFWupdateEnable = LocalFWupdateEnable;
 
-	return S_OK;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetFWInfo failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
@@ -184,6 +219,7 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 	if (pFwVer == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"GetPMCVersion\n");
 #ifdef _DEBUG
 	SHORT val;
 	if (GetFromRegistry(L"DebugData", L"GetPMCVersion", &val))
@@ -192,20 +228,27 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 	}
 #endif
 
-	if (CheckCredentials(GetPMCVersion_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetPMCVersion_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	std::string FwVer;
+		std::string FwVer;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetPMCVersion(FwVer);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetPMCVersion(FwVer);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(FwVer.c_str());
-	*pFwVer = bstr.Detach();
-
-	return S_OK;
+		if (!CreateBSTR(FwVer, pFwVer))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetPMCVersion failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
@@ -213,6 +256,7 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 	if (pState == nullptr)
 		return E_POINTER;
 
+	UNS_DEBUG(L"IsMeasuredBootState\n");
 #ifdef _DEBUG
 	if (GetFromRegistry(L"DebugData", L"IsMeasuredBootState", (SHORT*)pState))
 	{
@@ -220,17 +264,25 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 	}
 #endif
 
-	if (CheckCredentials(IsMeasuredBootState_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(IsMeasuredBootState_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	bool state;
+		bool state;
 
-	Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.IsMeasuredBootState(state);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.IsMeasuredBootState(state);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	*pState = state ? VARIANT_TRUE : VARIANT_FALSE;
+		*pState = state ? VARIANT_TRUE : VARIANT_FALSE;
 
-	return S_OK;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"IsMeasuredBootState failed %S\n", e.what());
+		return E_FAIL;
+	}
 }

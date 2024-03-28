@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -19,7 +19,7 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
-	uint32 hr = 1;
+	HRESULT hr = 1;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -48,9 +48,13 @@ HRESULT Hosted_Service_WMI_Provider::Enumerate(
 			BREAKIF(WMIPutMember(pNamespace, &obj, L"CIM_HostedService"));
 			BREAKIF(WMIPut<1>(obj, L"Antecedent", me_ref));
 			if (i == 0)
+			{
 				BREAKIF(WMIPut<1>(obj, L"Dependent", oob_ref));
-			if (i == 1)	
+			}
+			if (i == 1)
+			{
 				BREAKIF(WMIPut<1>(obj, L"Dependent", amt_ref));
+			}
 				
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 		
@@ -72,7 +76,7 @@ HRESULT Hosted_Service_WMI_Provider::GetHosted_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 

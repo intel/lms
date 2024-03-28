@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -174,9 +174,11 @@ void WindowsEventLog::RemoveEventSource(const TCHAR * pszLogName,
 	std::basic_string<TCHAR> szBuf = _TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\") + std::basic_string<TCHAR>(pszLogName)
 		+ _TEXT("\\") + std::basic_string<TCHAR>(pszSrcName);
 
-	_RegistryKey.Open(HKEY_LOCAL_MACHINE, szBuf.c_str());
-	_RegistryKey.DeleteSubKey(pszSrcName);
-	_RegistryKey.Close();
+	if (_RegistryKey.Open(HKEY_LOCAL_MACHINE, szBuf.c_str()) == ERROR_SUCCESS)
+	{
+		_RegistryKey.DeleteSubKey(pszSrcName);
+		_RegistryKey.Close();
+	}
 }
 
 

@@ -13,7 +13,7 @@
 
 #include "BaseWSManClient.h"
 
-class WSMAN_DLL_API WifiPortClient : public BaseWSManClient
+class WifiPortClient : public BaseWSManClient
 {
 public:
 	WifiPortClient(unsigned int port);

@@ -9,6 +9,7 @@
 #include "GmsService.h"
 #include <string>
 #include <map>
+#include <ace/ace_wchar.h>
 
 namespace wlanps {
 	const std::string IntelInstanceIDUser = "Intel(r) AMT:WiFi Endpoint User Settings ";
@@ -125,7 +126,7 @@ namespace wlanps {
 				bFoundMatch = false;
 				for (auto osIterator = wlanOsProfiles.begin(); osIterator != wlanOsProfiles.end(); osIterator++)
 				{
-					std::string currentOsProfile = WStringToString((*osIterator)->profile);
+					std::string currentOsProfile(ACE_Wide_To_Ascii((*osIterator)->profile).char_rep());
 
 					if ((*meIterator)->ElementName().compare(currentOsProfile) == 0)
 					{
@@ -177,7 +178,7 @@ namespace wlanps {
 					continue;
 				}
 
-				std::string currentOsProfile = WStringToString((*osIterator)->profile);
+				std::string currentOsProfile(ACE_Wide_To_Ascii((*osIterator)->profile).char_rep());
 				MeProfileList::iterator me_it = find_if(MeProfileList.begin(), MeProfileList.end(),
 					[currentOsProfile](const std::shared_ptr<SingleMeProfile> &p) {return currentOsProfile == p->ElementName(); });
 				if (me_it == MeProfileList.end())
@@ -326,7 +327,7 @@ namespace wlanps {
 						(*meIterator)->ElementName().c_str());
 					for (auto osIterator = wlanOsProfiles.begin(); osIterator != wlanOsProfiles.end(); osIterator++)
 					{
-						std::string currentOsProfile = WStringToString((*osIterator)->profile);
+						std::string currentOsProfile(ACE_Wide_To_Ascii((*osIterator)->profile).char_rep());
 
 						if ((*meIterator)->ElementName().compare(currentOsProfile) == 0)
 						{
@@ -435,8 +436,8 @@ namespace wlanps {
 			{ L"none", NoneEncPriority }
 		};
 
-		wifiSettings.ElementName(WStringToString(profileData->profile));
-		wifiSettings.SSID(WStringToString(profileData->SSID));
+		wifiSettings.ElementName(ACE_Wide_To_Ascii(profileData->profile).char_rep());
+		wifiSettings.SSID(ACE_Wide_To_Ascii(profileData->SSID).char_rep());
 
 		try
 		{
@@ -459,7 +460,7 @@ namespace wlanps {
 		if ((auth == AuthenticationMethodWPAPSK || auth == AuthenticationMethodWPA2PSK || auth == AuthenticationMethodWPA3SAE) &&
 			encr != EncryptionMethodNone)
 		{
-			wifiSettings.PSKPassPhrase(WStringToString(profileData->keyMaterial));
+			wifiSettings.PSKPassPhrase(ACE_Wide_To_Ascii(profileData->keyMaterial).char_rep());
 		}
 
 		PrintWifiSetting(auth, encr, priority, profileData->profile, profileData->SSID);

@@ -11,15 +11,14 @@
 #ifndef  _SYNC_IP_CLIENT_H
 #define  _SYNC_IP_CLIENT_H
 
-#include "IPS_HostIpSettings.h"
+#include "IPS_HostIPSettings.h"
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API SyncIpClient : public BaseWSManClient
+class SyncIpClient : public BaseWSManClient
 {
 public:
 	SyncIpClient(unsigned int port);
-	SyncIpClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~SyncIpClient();
 
 	bool GetNetworkData(bool& DHCPEnabled, std::string& IPAddress, std::string& SubNet, std::string& GateWay,

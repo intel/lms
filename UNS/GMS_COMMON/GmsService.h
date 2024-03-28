@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef _GMS_SERVICE
 #define _GMS_SERVICE
@@ -18,7 +18,11 @@
 
 typedef void (*HeciEventCallBack) (void *param);
 
-class GMS_COMMON_EXPORT GmsService :
+class GmsService;
+
+typedef ACE_Unmanaged_Singleton<GmsService, ACE_Mutex> theService;
+
+class GmsService :
 #ifdef WIN32
 	public ACE_NT_Service,
 #else
@@ -29,7 +33,8 @@ class GMS_COMMON_EXPORT GmsService :
 public:
 	GmsService(void);
 	virtual ~GmsService(void);
-
+	GmsService(const GmsService&) = delete;
+	GmsService& operator = (const GmsService&) = delete;
 #ifdef WIN32
 	void handle_control(DWORD control_code, DWORD dwEventType=0, bool wasOnOurGUID = true);
 	 /// Called by <handle_control> when a stop/shutdown was requested.
@@ -85,6 +90,18 @@ public:
 	void SetPortForwardingPort(unsigned int portForwardingPort);
 
 
+	static GmsService* getService()
+	{
+		try
+		{
+			return theService::instance();
+		}
+		catch (const std::runtime_error&)
+		{
+			return nullptr;
+		}
+	}
+
 private:
 	bool stopped;
 	bool loading;
@@ -98,10 +115,7 @@ private:
 
 	typedef std::map<ACE_TString, ACE_Static_Svc_Descriptor&> svc_map;
 	svc_map m_svcMap;
-	ACE_Static_Svc_Descriptor& svcByName(const ACE_TString &serviceName);
 	void initServiceMap();
 };
-
-typedef ACE_Unmanaged_Singleton<GmsService, ACE_Mutex> theService;
 
 #endif // _GMS_SERVICE

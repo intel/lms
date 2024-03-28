@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -40,6 +40,8 @@ public:
 						unsigned long	dwNum,
 						const TCHAR * pszModuleName = NULL);			// Ctor.
 	virtual ~WindowsEventLog();				// Dtor.
+	WindowsEventLog(const WindowsEventLog&) = delete;
+	WindowsEventLog& operator = (const WindowsEventLog&) = delete;
 
 	// Wrapper for ReportEvent that take care of Handle and EventType
 	void LogEvent(	unsigned short CategoryID, 

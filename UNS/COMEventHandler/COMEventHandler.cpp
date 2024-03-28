@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "COMEventHandler.h"
 #include <atlbase.h>
@@ -70,54 +70,62 @@
 			return -1;
 		}
 
-		GUID uiid= {0x64417EAE, 0x2E0E, 0x45E8, 0xA8, 0xC1, 0x03, 0x28, 0x4E, 0x3D, 0x35, 0x87};
+		GUID uiid = { 0x64417EAE, 0x2E0E, 0x45E8, 0xA8, 0xC1, 0x03, 0x28, 0x4E, 0x3D, 0x35, 0x87 };
 		HRESULT rc;
-		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-		if (hr != S_OK && hr != S_FALSE)
+		try
 		{
-			UNS_ERROR(L"COMEventHandler::COMLogging - CoInitializeEx failed %d\n", hr);
-			return -1;
-		}
-		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoInitializeEx\n");
-		{
-			CComPtr<IUnknown> pUnk;
-			rc=pUnk.CoCreateInstance(uiid);	
-			UNS_DEBUG(L"COMEventHandler::COMLogging - after CoCreateInstance\n");
-			static const char* emptyStr = "";
-			if ((rc==S_OK) && (pUnk!=NULL))
+			HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+			if (hr != S_OK && hr != S_FALSE)
 			{
-				CComPtr<IUNSAlert> pI;
-				rc=pUnk.QueryInterface(&pI);
-				UNS_DEBUG(L"COMEventHandler::COMLogging - after QueryInterface\n");
-				if ((rc==S_OK) && (pI!=NULL))
+				UNS_ERROR(L"COMEventHandler::COMLogging - CoInitializeEx failed %d\n", hr);
+				return -1;
+			}
+			UNS_DEBUG(L"COMEventHandler::COMLogging - after CoInitializeEx\n");
+			{
+				CComPtr<IUnknown> pUnk;
+				rc = pUnk.CoCreateInstance(uiid);
+				UNS_DEBUG(L"COMEventHandler::COMLogging - after CoCreateInstance\n");
+				static const char* emptyStr = "";
+				if ((rc == S_OK) && (pUnk != NULL))
 				{
-					BSTR bstrMessage, bstrMessageArgument, bstrMessageID, bstrDatetime;
-					bstrMessage = W2BSTR(alert->Message.c_str());
-					if (alert->MessageArguments.size() > 0)
-						bstrMessageArgument = W2BSTR(alert->MessageArguments[0].c_str());
+					CComPtr<IUNSAlert> pI;
+					rc = pUnk.QueryInterface(&pI);
+					UNS_DEBUG(L"COMEventHandler::COMLogging - after QueryInterface\n");
+					if ((rc == S_OK) && (pI != NULL))
+					{
+						BSTR bstrMessage, bstrMessageArgument, bstrMessageID, bstrDatetime;
+						bstrMessage = W2BSTR(alert->Message.c_str());
+						if (alert->MessageArguments.size() > 0)
+							bstrMessageArgument = W2BSTR(alert->MessageArguments[0].c_str());
+						else
+							bstrMessageArgument = A2BSTR(emptyStr);
+						bstrMessageID = W2BSTR(alert->MessageID.c_str());
+						bstrDatetime = A2BSTR(alert->Datetime.c_str());
+						UNS_DEBUG(L"Sending RiseAlert, alert id: %d, message: %s\n", alert->id, alert->Message.c_str());
+						pI->RiseAlert(alert->category, alert->id, bstrMessage, bstrMessageArgument, bstrMessageID, bstrDatetime);
+						UNS_DEBUG(L"RiseAlert sent\n");
+						SysFreeString(bstrMessage);
+						SysFreeString(bstrMessageArgument);
+						SysFreeString(bstrMessageID);
+						SysFreeString(bstrDatetime);
+					}
 					else
-						bstrMessageArgument=A2BSTR(emptyStr);
-					bstrMessageID = W2BSTR(alert->MessageID.c_str());
-					bstrDatetime = A2BSTR(alert->Datetime.c_str());
-					UNS_DEBUG(L"Sending RiseAlert, alert id: %d, message: %s\n", alert->id, alert->Message.c_str());
-					pI->RiseAlert(alert->category,alert->id, bstrMessage,	bstrMessageArgument,bstrMessageID,bstrDatetime);
-					UNS_DEBUG(L"RiseAlert sent\n");
-					SysFreeString(bstrMessage);
-					SysFreeString(bstrMessageArgument);
-					SysFreeString(bstrMessageID);
-					SysFreeString(bstrDatetime);
+					{
+						UNS_ERROR(L"QueryInterface failed rc=%x\n", rc);
+					}
 				}
 				else
 				{
-					UNS_ERROR(L"QueryInterface failed rc=%x\n", rc);
+					UNS_ERROR(L"CoCreateInstance failed rc=%x\n", rc);
 				}
 			}
-			else
-			{
-				UNS_ERROR(L"CoCreateInstance failed rc=%x\n", rc);
-			}
+			CoUninitialize();
 		}
-		CoUninitialize();
+		catch (const ATL::CAtlException &e)
+		{
+			UNS_ERROR("COMLogging: AtlException hr = 0x%X\n", e.m_hr);
+			rc = e.m_hr;
+		}
 		UNS_DEBUG(L"COMEventHandler::COMLogging - after CoUninitialize\n");
 		return (rc==S_OK);
 	}

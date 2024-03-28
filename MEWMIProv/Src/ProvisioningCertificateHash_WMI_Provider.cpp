@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -20,7 +20,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 {
 	//Get all keys in a colllection, from an internal function
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -65,7 +65,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Enumerate(
 HRESULT ProvisioningCertificateHash_WMI_Provider::EnumerateProvisioningCertificateHash(std::vector<ProvisioningCertificateHash_WMI_Provider>& enumVec, uint32& ReturnValue)
 {
 	ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -105,7 +105,7 @@ ProvisioningCertificateHash_WMI_Provider::ProvisioningCertificateHash_WMI_Provid
 	ElementName = elementName;
 	Description = entry.Description;
 	Enabled = entry.Enabled;
-	for (int i=0; i < sizeof(entry.HashData) / sizeof(entry.HashData[0]); i++)
+	for (size_t i = 0; i < sizeof(entry.HashData) / sizeof(entry.HashData[0]); i++)
 		HashDataVec.push_back(entry.HashData[i]);
 	HashType = entry.HashType;
 	IsDefault = entry.IsDefault;
@@ -119,7 +119,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -160,7 +160,7 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 				BREAKIF(WMIPut<1>(obj, L"IsDefault", entry.IsDefault));
 				BREAKIF(WMIPut<1>(obj, L"HashType", entry.HashType));
 				std::vector<uint8> HashData;
-				for (int i=0; i < sizeof(entry.HashData) / sizeof(entry.HashData[0]); i++)
+				for (size_t i = 0; i < sizeof(entry.HashData) / sizeof(entry.HashData[0]); i++)
 					HashData.push_back(entry.HashData[i]);
 
 				BREAKIF(WMIPut<uint8>(obj, L"HashData", HashData));

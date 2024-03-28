@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "IPRefreshService.h"
 #include "Tools.h"
@@ -34,7 +34,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 			return false;
 		}
 
-		for (int i = 0; i < pInfo->NumAdapters; i++)
+		for (size_t i = 0; i < (size_t)pInfo->NumAdapters; i++)
 		{
 			UNS_DEBUG(L"\tAdapter Name: %W,\n", pInfo->Adapter[i].Name);
 			UNS_DEBUG(L"\tAdapter Index: %d\n", pInfo->Adapter[i].Index);
@@ -55,7 +55,7 @@ bool IPRefreshService::IPRefresh(unsigned int nicType)
 	GetAdaptorIDs();
 	if (nicType == 0) adaptorID = wiredAdaptorID;
 	else adaptorID = wirelessAdaptorID;
-	for (int i = 0; i<pInfo->NumAdapters; i++)
+	for (size_t i = 0; i < (size_t)pInfo->NumAdapters; i++)
 	{
 		if (pInfo->Adapter[i].Index != adaptorID) continue;
 		if ((dwRetVal = IpRenewAddress(&pInfo->Adapter[i])) == NO_ERROR)

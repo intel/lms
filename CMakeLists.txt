@@ -21,7 +21,7 @@ if (UNIX)
   endif (NETWORK_NM AND NETWORK_CN)
 endif (UNIX)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 include (version.cmake)
 include (GNUInstallDirs)

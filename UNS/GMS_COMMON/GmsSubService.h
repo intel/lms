@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #ifndef __SUBSERVICE_H_
 #define __SUBSERVICE_H_
@@ -12,10 +12,9 @@
 #include <ace/Service_Config.h>
 #include "EventManagment.h"
 #include "servicesNames.h"
-#include "GMSCommonDllExport.h"
 #include "FuncEntryExit.h"
 
-class GMS_COMMON_EXPORT GmsSubService : public ACE_Task<ACE_MT_SYNCH>
+class GmsSubService : public ACE_Task<ACE_MT_SYNCH>
 {
 public:
 

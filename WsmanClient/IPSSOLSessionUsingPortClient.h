@@ -7,11 +7,10 @@
 
 #include "BaseWSManClient.h"
 
-class WSMAN_DLL_API IPSSolSessionUsingPortClient : public BaseWSManClient
+class IPSSolSessionUsingPortClient : public BaseWSManClient
 {
 public:
 	IPSSolSessionUsingPortClient(unsigned int port);
-	IPSSolSessionUsingPortClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~IPSSolSessionUsingPortClient();
 
 	bool GetSessionLinkTechnology(short *pLinkTechnology);

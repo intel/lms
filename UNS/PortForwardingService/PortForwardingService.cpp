@@ -18,7 +18,6 @@
 #include "UNSEventsDefinition.h"
 #include "Protocol.h"
 #include "GMSExternalLogger.h"
-#include "LMEConnection.h"
 
 namespace 
 {

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -109,22 +109,24 @@ HRESULT OOB_Service_WMI_Provider::GetProvisioningState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		SHORT state = 0;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetProvisioningState(&state);
-		ERROR_HANDLER(ReturnValue);
-		
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetProvisioningState", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"state", state);
+		do {
+			SHORT state = 0;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetProvisioningState(&state);
+			ERROR_HANDLER(ReturnValue);
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"GetProvisioningState", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"state", state));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -156,23 +158,25 @@ HRESULT OOB_Service_WMI_Provider::isTLSEnabled(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		bool enabled = false;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetTLSEnabled(&enabled);
+		do {
+			bool enabled = false;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetTLSEnabled(&enabled);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"isTLSEnabled", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"enabled", enabled);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"isTLSEnabled", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"enabled", enabled));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -204,20 +208,21 @@ HRESULT OOB_Service_WMI_Provider::GetActivationTLSMode(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetActivationTLSMode", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		const SHORT PKI_TLS_MODE = 0x2;
-		SHORT tlsMode = PKI_TLS_MODE;
+		do {
+			const SHORT PKI_TLS_MODE = 0x2;
+			SHORT tlsMode = PKI_TLS_MODE;
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"GetActivationTLSMode", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"mode", tlsMode));
 
-		WMIPut<1>( pOutParams, L"mode", tlsMode);
-
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -236,18 +241,20 @@ HRESULT OOB_Service_WMI_Provider::Enumerate(
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
 	//Get all keys in a colllection, from an internal function
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 	try
 	{
+		do {
 			CComPtr<IWbemClassObject> obj;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"OOB_Service"));
-			WMIPut<1>(obj, L"CreationClassName", L"OOB_Service");
-			WMIPut<1>(obj, L"Name", L"Intel ME Out Of Band Service");
-			WMIPut<1>(obj, L"SystemName", L"Intel(r) AMT");
-			WMIPut<1>(obj, L"SystemCreationClassName", L"ME_system");
+			BREAKIF(WMIPut<1>(obj, L"CreationClassName", L"OOB_Service"));
+			BREAKIF(WMIPut<1>(obj, L"Name", L"Intel ME Out Of Band Service"));
+			BREAKIF(WMIPut<1>(obj, L"SystemName", L"Intel(r) AMT"));
+			BREAKIF(WMIPut<1>(obj, L"SystemCreationClassName", L"ME_system"));
 
 			pResponseHandler->Indicate(1, &obj.p);
+		} while (0);
 	}
 	catch (...)
 	{
@@ -266,23 +273,25 @@ HRESULT OOB_Service_WMI_Provider::isRemoteConfigEnabled(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		bool enabled=false;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.isRemoteConfigEnabled(&enabled);
+		do {
+			bool enabled = false;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.isRemoteConfigEnabled(&enabled);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"isRemoteConfigEnabled", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"enabled", enabled);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"isRemoteConfigEnabled", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"enabled", enabled));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -302,25 +311,27 @@ HRESULT OOB_Service_WMI_Provider::GetConfigServerAddressInfo(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		std::wstring address;
-		UINT16 port = 9971;//CHANGE!!
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetConfigServerData(&address, &port);
+		do {
+			std::wstring address;
+			UINT16 port = 9971;//CHANGE!!
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetConfigServerData(&address, &port);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetHelloPacketDestInfo", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"address", address);
-		WMIPut<1>( pOutParams, L"ConfigServerListeningPort", port);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"GetHelloPacketDestInfo", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"address", address));
+			BREAKIF(WMIPut<1>(pOutParams, L"ConfigServerListeningPort", port));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -340,23 +351,25 @@ HRESULT OOB_Service_WMI_Provider::isWiredLinkUp(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		bool enabled=false;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.isWiredLinkUp(&enabled);
+		do {
+			bool enabled = false;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.isWiredLinkUp(&enabled);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"isWiredLinkUp", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"linkUp", enabled);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"isWiredLinkUp", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"linkUp", enabled));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -376,24 +389,26 @@ HRESULT OOB_Service_WMI_Provider::GetProvisioningInfo(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		std::wstring address=L"", dnssuffix=L"";
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetProvisioningInfo(&dnssuffix, &address);
+		do {
+			std::wstring address = L"", dnssuffix = L"";
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetProvisioningInfo(&dnssuffix, &address);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetProvisioningInfo", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"PKIDNSSuffix", dnssuffix);
-		WMIPut<1>( pOutParams, L"ConfigServerFQDN", address);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"GetProvisioningInfo", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"PKIDNSSuffix", dnssuffix));
+			BREAKIF(WMIPut<1>(pOutParams, L"ConfigServerFQDN", address));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -413,28 +428,30 @@ HRESULT OOB_Service_WMI_Provider::GetRemoteAccessConnectionStatus(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		std::wstring MPshostName=L"";
-		SHORT NetworkConStatus=0, ConnectionTrigger=0, RemoteAccessConStatus=0;
+		do {
+			std::wstring MPshostName = L"";
+			SHORT NetworkConStatus = 0, ConnectionTrigger = 0, RemoteAccessConStatus = 0;
 
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetRemoteAccessConnectionStatus(&ConnectionTrigger, &NetworkConStatus, &MPshostName, &RemoteAccessConStatus);
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetRemoteAccessConnectionStatus(&ConnectionTrigger, &NetworkConStatus, &MPshostName, &RemoteAccessConStatus);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetRemoteAccessConnectionStatus", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"NetworkConStatus", NetworkConStatus);
-		WMIPut<1>( pOutParams, L"ConnectionTrigger", ConnectionTrigger);
-		WMIPut<1>( pOutParams, L"MPshostName", MPshostName);
-		WMIPut<1>( pOutParams, L"RemoteAccessConStatus", RemoteAccessConStatus);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"GetRemoteAccessConnectionStatus", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"NetworkConStatus", NetworkConStatus));
+			BREAKIF(WMIPut<1>(pOutParams, L"ConnectionTrigger", ConnectionTrigger));
+			BREAKIF(WMIPut<1>(pOutParams, L"MPshostName", MPshostName));
+			BREAKIF(WMIPut<1>(pOutParams, L"RemoteAccessConStatus", RemoteAccessConStatus));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -454,23 +471,25 @@ HRESULT OOB_Service_WMI_Provider::GetAMTFQDN(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		std::wstring FQDN=L"";
-		PTHI_Commands pthic;
-		ReturnValue = pthic.GetAMTFQDN(&FQDN);
+		do {
+			std::wstring FQDN = L"";
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetAMTFQDN(&FQDN);
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"GetAMTFQDN", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"FQDN", FQDN);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"GetAMTFQDN", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"FQDN", FQDN));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -490,21 +509,23 @@ HRESULT OOB_Service_WMI_Provider::OpenUserInitiatedConnection(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		PTHI_Commands pthic;
-		ReturnValue = pthic.OpenCIRA();
+		do {
+			PTHI_Commands pthic;
+			ReturnValue = pthic.OpenCIRA();
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"OpenUserInitiatedConnection", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"OpenUserInitiatedConnection", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -524,21 +545,23 @@ HRESULT OOB_Service_WMI_Provider::CloseUserInitiatedConnection(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		PTHI_Commands pthic;
-		ReturnValue = pthic.CloseCIRA();
+		do {
+			PTHI_Commands pthic;
+			ReturnValue = pthic.CloseCIRA();
 
-		ERROR_HANDLER(ReturnValue);
+			ERROR_HANDLER(ReturnValue);
 
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"CloseUserInitiatedConnection", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"CloseUserInitiatedConnection", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -569,7 +592,7 @@ HRESULT OOB_Service_WMI_Provider::GetOOB_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
@@ -613,7 +636,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
@@ -623,7 +646,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 
 	try
 	{
-		do{
+		do {
 			if (IsUserAdmin() == S_FALSE)
 			{
 				hr = WBEM_E_ACCESS_DENIED;
@@ -639,7 +662,7 @@ HRESULT OOB_Service_WMI_Provider::Unconfigure(
 			}
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"Unconfigure", &pOutParams.p);
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
+			BREAKIF(WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue));
 
 			pResponseHandler->Indicate(1, &pOutParams.p);
 			WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
@@ -669,7 +692,7 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
 	std::string userName, domain, applicationName;
@@ -682,7 +705,7 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	try
 	{
 		
-		do{
+		do {
 			if (IsUserAdmin() == S_FALSE)
 			{
 				hr = WBEM_E_ACCESS_DENIED;
@@ -703,9 +726,9 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 			}
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"GetLocalAdminCredentials", &pOutParams.p);
-			WMIPut<1>( pOutParams, L"Username", userNameWStr);
-			WMIPut<1>( pOutParams, L"Password", passwordWStr);
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
+			BREAKIF(WMIPut<1>( pOutParams, L"Username", userNameWStr));
+			BREAKIF(WMIPut<1>( pOutParams, L"Password", passwordWStr));
+			BREAKIF(WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue));
 	
 			pResponseHandler->Indicate(1, &pOutParams.p);
 			WMIHandleSetStatus(pNamespace, pResponseHandler, hr);

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -17,7 +17,6 @@
 #ifndef _STRING_MANAGER_H_
 #define _STRING_MANAGER_H_
 
-#include "GMSCommonDllExport.h"
 #include <string>
 #include <map>
 #include <vector>
@@ -36,7 +35,7 @@
 
 #define MAX_STRING_LEN 500
 
-class GMS_COMMON_EXPORT StringLoader
+class StringLoader
 {
 public:
 	//load the strings with IDs from given vector into the map,throws exception on failure
@@ -44,7 +43,7 @@ public:
 	virtual ~StringLoader() {}
 };
 
-class GMS_COMMON_EXPORT CStringManager
+class CStringManager
 {
 public:
 	//get string by it's ID
@@ -58,7 +57,7 @@ private:
 };
 
 //Singleton for CStringManager
-class GMS_COMMON_EXPORT StringManager
+class StringManager
 {
 public:
 	static CStringManager* instance();

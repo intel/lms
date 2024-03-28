@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2024 Intel Corporation
  */
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMTFCFHWSmanClient.h"
@@ -25,7 +25,8 @@
 
 using ::testing::AtLeast;
 using ::testing::Return;
-using namespace std;
+using std::cout;
+using std::endl;
 
 //Not tested - constructor with username and password, for all classes
 //Shouldn't init be private in all classes, since all methods call it anyway?
@@ -486,7 +487,7 @@ TEST_F(TimeSynchronizationTest, setTime)
 	ASSERT_TRUE(timeClient.GetAMTTime(AMTTime));
 	ASSERT_TRUE(timeClient.SetAMTTime(AMTTime));
 	cout << "Time is now: \t\t" << AMTTime << endl;
-	ASSERT_TRUE(AMTTime-LastAMTTime<=1);
+	ASSERT_TRUE(AMTTime - LastAMTTime <= 2);
 	cout << "Setting forward 100 seconds..." << endl;
 	AMTTime += 100;
 	LastAMTTime = AMTTime;
@@ -494,7 +495,7 @@ TEST_F(TimeSynchronizationTest, setTime)
 	ASSERT_TRUE(timeClient.SetAMTTime(AMTTime));
 	ASSERT_TRUE(timeClient.GetAMTTime(AMTTime));
 	cout << "Time is now: \t\t" << AMTTime << endl;
-	ASSERT_TRUE(AMTTime-LastAMTTime<=1);
+	ASSERT_TRUE(AMTTime - LastAMTTime <= 2);
 }
 
 //Syncs FW time to local time

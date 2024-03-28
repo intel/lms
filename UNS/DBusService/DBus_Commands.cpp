@@ -1,10 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2022 Intel Corporation
+ * Copyright (C) 2017-2023 Intel Corporation
  */
 #include "DBus_Commands.h"
 namespace Intel {
 namespace DBus {
+	const char* OBJ_PATH = "/com/intel/amt/lms";
 
 	void send_error(GDBusMethodInvocation *invocation, Intel::LMS::LMS_ERROR error)
 	{

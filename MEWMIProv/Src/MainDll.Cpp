@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -84,14 +84,22 @@ BOOL WINAPI DllMain(HINSTANCE hInstance,  ULONG ulReason, LPVOID lpvReserved)
 
     ghModule = hInstance;
 
-	std::ofstream *log_output_file = new std::ofstream(logFileName, std::ios::out);
-	if (log_output_file)
-	{
-		ACE_LOG_MSG->msg_ostream(log_output_file, 1);
-	}
-	ACE_LOG_MSG->open(L"WMIProv.dll",
-		ACE_Log_Msg::STDERR | ACE_Log_Msg::OSTREAM,
-		0);
+    try
+    {
+        std::ofstream* log_output_file = new std::ofstream(logFileName, std::ios::out);
+        if (log_output_file)
+        {
+            ACE_LOG_MSG->msg_ostream(log_output_file, 1);
+        }
+        ACE_LOG_MSG->open(L"WMIProv.dll",
+            ACE_Log_Msg::STDERR | ACE_Log_Msg::OSTREAM,
+            0);
+    }
+    catch (const std::exception&)
+    {
+        ACE_LOG_MSG->open(L"WMIProv.dll", ACE_Log_Msg::STDERR, 0);
+        UNS_ERROR("WMIProvider failed to configure logger file\n");
+    }
 	u_long mask = ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS);
 #ifdef _DEBUG
 	u_long requiredLoggingMask = mask; // Debug Logging value is Trace

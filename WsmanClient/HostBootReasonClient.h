@@ -14,11 +14,10 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API HostBootReasonClient : public BaseWSManClient
+class HostBootReasonClient : public BaseWSManClient
 {
 public:
 	HostBootReasonClient(unsigned int port);
-	HostBootReasonClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~HostBootReasonClient();
 
 	enum class HOST_RESET_REASON {

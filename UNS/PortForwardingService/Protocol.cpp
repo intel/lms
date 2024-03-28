@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -39,8 +39,8 @@ const int local_socket_domain = AF_LOCAL;
 #include <algorithm>
 #include <sstream>
 #include <fstream>
+#include <ace/SString.h>
 #include "Protocol.h"
-#include "Common.h"
 #include "LMS_if.h"
 #include "Tools.h"
 #include <SetEnterpriseAccessCommand.h>
@@ -77,6 +77,51 @@ int CALLBACK ConditionAcceptFunc(
 	);
 #endif // WIN32
 
+namespace
+{
+	ACE_TString getErrMsg(unsigned long err)
+	{
+#ifdef WIN32
+		wchar_t buffer[1024];
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL,
+			err,
+			0,
+			buffer,
+			sizeof(buffer) / sizeof(buffer[0]) - 1,
+			0);
+		return ACE_TString(ACE_TEXT_WCHAR_TO_TCHAR(buffer));
+#else
+		char cbuf[1024];
+		char* pbuf;
+		pbuf = strerror_r(err, cbuf, sizeof(cbuf) - 1);
+		return ACE_TEXT_CHAR_TO_TCHAR(pbuf);
+#endif  // WIN32
+	}
+
+	std::string addr2str(const sockaddr_storage& addr)
+	{
+#ifdef WIN32
+		char addressStr[2 * MAX_HOSTNAME_LEN];
+		DWORD addressStrlen = 2 * MAX_HOSTNAME_LEN;
+
+		if (WSAAddressToStringA((LPSOCKADDR)&addr, sizeof(addr), NULL, addressStr, &addressStrlen))
+		{
+			return std::string();
+		}
+		return std::string(addressStr);
+#else // WIN32
+		char addressStr[NI_MAXHOST];
+		if (getnameinfo((struct sockaddr*)&addr, sizeof(addr),
+			addressStr, sizeof(addressStr), NULL, 0, NI_NUMERICHOST))
+		{
+			return std::string();
+		}
+		return std::string(addressStr);
+#endif //WIN32
+	}
+}
+
 Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSocketBuffer(0), _rxSocketBufferSize(0),
 					   _eventLogWrn(nullptr), _eventLogDbg(nullptr), _eventLogParam(nullptr), _clientNotFound(false)
 {
@@ -84,10 +129,8 @@ Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSoc
 	_pfwdService = SERVICE_STATUS::NOT_STARTED;
 	_AmtProtVersion.MajorVersion = 0;
 	_AmtProtVersion.MinorVersion = 0;
-#ifdef _REMOTE_SUPPORT
 	_remoteAccessEnabledInAMT = false;
 	_remoteAccessCurrentlyPossible = false;
-#endif
 	_AMTFQDN = "";
 	_failureReported.clear();
 	_OutHostsFileLog=true;
@@ -127,12 +170,11 @@ bool Protocol::Init(InitParameters & params)
 			_handshakingStatus = VERSION_HANDSHAKING::INITIATED;
 		}
 	}
-#ifdef _REMOTE_SUPPORT
+
 	if (!AdapterListInfo::Init(_AdapterCallback, this)) {
 		_lme.Deinit();
 		return res;
 	}
-#endif
 
 	size_t bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
 	if (bufSize > 0) {
@@ -144,11 +186,8 @@ bool Protocol::Init(InitParameters & params)
 		return res;
 	}
 
-#ifdef _REMOTE_SUPPORT
 	res = _checkRemoteSupport(true);
-#else
-	res = true;
-#endif
+
 	return res;
 }
 
@@ -161,7 +200,7 @@ void Protocol::_TCPCleanup()
 	DWORD dwSize = 0;
 	DWORD dwRetVal = 0;
 
-	int i;
+	DWORD i;
 
 	pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[sizeof (MIB_TCPTABLE_OWNER_PID)];
 	if (pTcpTable == NULL) {
@@ -176,7 +215,6 @@ void Protocol::_TCPCleanup()
 	if ((dwRetVal = GetExtendedTcpTable(pTcpTable, &dwSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0)) ==
 		ERROR_INSUFFICIENT_BUFFER) {
 			delete []pTcpTable;
-			pTcpTable = NULL;
 			pTcpTable = (MIB_TCPTABLE_OWNER_PID *) new unsigned char[dwSize];
 			if (pTcpTable == NULL) {
 				UNS_ERROR(L"Error allocating memory\n");
@@ -197,7 +235,7 @@ void Protocol::_TCPCleanup()
 					row.dwRemoteAddr = pTcpTable->table[i].dwRemoteAddr;
 					row.dwRemotePort = pTcpTable->table[i].dwRemotePort;
 					row.dwState = MIB_TCP_STATE_DELETE_TCB;
-					DWORD err = SetTcpEntry(&row);
+					SetTcpEntry(&row);
 			}
 		}
 	} else {
@@ -287,15 +325,12 @@ void Protocol::Deinit()
 	{
 		_lme.Deinit();
 
-#ifdef _REMOTE_SUPPORT
-
 		AdapterListInfo::Deinit();
 		{
 			std::lock_guard<std::mutex> l(_remoteAccessLock);
 			_remoteAccessEnabledInAMT = false;
 			_remoteAccessCurrentlyPossible = false;
 		}
-#endif
 
 		{
 			std::lock_guard<std::mutex> l(_channelsLock);
@@ -336,11 +371,14 @@ void Protocol::Deinit()
 			std::lock_guard<std::mutex> l(_deleteLock);
 			if (_rxSocketBuffer != NULL)
 			{
-				delete []_rxSocketBuffer;
+				delete[] _rxSocketBuffer;
 				_rxSocketBuffer = NULL;
 				_rxSocketBufferSize = 0;
 			}
 
+		}
+		{
+			std::lock_guard<std::mutex> l(_versionLock);
 			_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
 			_pfwdService = SERVICE_STATUS::NOT_STARTED;
 			_AmtProtVersion.MajorVersion = 0;
@@ -583,7 +621,11 @@ SOCKET Protocol::_connect(addrinfo *addr, unsigned int port, int type, long time
 		addr->ai_socktype = type;
 
 		SOCKET_STATUS status;
-		addrinfo hints = createAddrinfo(addr->ai_family,addr->ai_socktype,addr->ai_protocol,AI_NUMERICHOST);
+		struct addrinfo hints = { 0 };
+		hints.ai_flags = AI_NUMERICHOST;
+		hints.ai_family = addr->ai_family;
+		hints.ai_socktype = addr->ai_socktype;
+		hints.ai_protocol = addr->ai_protocol;
 		addrinfo *result = NULL;
 
 
@@ -691,7 +733,7 @@ bool Protocol::_acceptConnection(SOCKET s, unsigned int port)
 	if (s_new == INVALID_SOCKET) {
 		int err = GetLastError();
 
-		UNS_ERROR(L"New connection denied (%d): %W \n", err, getErrMsg(err).c_str());
+		UNS_ERROR(L"New connection denied (%d): %s \n", err, getErrMsg(err).c_str());
 		_closeSocket(s_new);
 		return false;
 	}
@@ -802,18 +844,17 @@ int CALLBACK ConditionAcceptFunc(
 //------------------------------------------------------------------
 int Protocol::checkAcceptLogic(sockaddr_storage& caller_addr, unsigned int port, PortForwardRequest* PW_req)
 {
-	int ret = CF_REJECT;
-
-	if (_remoteAccessEnabledInAMT)
 	{
-		ret = CF_ACCEPT;	// (remote VPN) the detection test will be done after accepting the connection.
-					// (maybe LMS will close the connection later)
+		std::lock_guard<std::mutex> l(_remoteAccessLock);
+		if (_remoteAccessEnabledInAMT)
+		{
+			return CF_ACCEPT; // (remote VPN) the detection test will be done after accepting the connection.
+			// (maybe LMS will close the connection later)
+		}
 	}
-	else{
-		PW_req = _findFWReq(NULL,port,&caller_addr);
-		ret = ((PW_req == NULL)? CF_REJECT : CF_ACCEPT);
-	}
-	return ret;
+
+	PW_req = _findFWReq(NULL,port,&caller_addr);
+	return ((PW_req == NULL)? CF_REJECT : CF_ACCEPT);
 }
 #endif // WIN32
 
@@ -859,18 +900,15 @@ int Protocol::Select()
 	{
 		//add "acceptors" sockets to select vector
 		std::lock_guard<std::mutex> l(_portsLock);
-		PortMap::iterator it = _openPorts.begin();
 
-		for (; it != _openPorts.end(); it++) {
-			if (it->second.size() > 0) {
-				vector<SOCKET> vs = it->second[0]->GetListeningSockets();
-				for (size_t i = 0; i < vs.size(); i++) {
-					SOCKET serverSocket = vs[i];
-					FD_SET(serverSocket, &rset);
-
-					if ((int)serverSocket > fdCount) {
-						fdCount = (int)serverSocket;
-					}
+		for (auto &it : _openPorts) {
+			if (it.second.empty()) {
+				continue;
+			}
+			for (auto sock : it.second[0]->GetListeningSockets()) {
+				FD_SET(sock, &rset);
+				if ((int)(sock) > fdCount) {
+					fdCount = (int)(sock);
 				}
 			}
 		}
@@ -905,7 +943,7 @@ int Protocol::Select()
 	if (res == -1) {
 		int err = GetLastError();
 
-		UNS_ERROR(L"Select error (%d): %W\n", err, getErrMsg(err).c_str());
+		UNS_ERROR(L"Select error (%d): %s\n", err, getErrMsg(err).c_str());
 		return -1;
 	}
 
@@ -996,7 +1034,7 @@ int Protocol::_rxFromSocket(SOCKET s)
 		goto out;
 	} else {
 		int err = GetLastError();
-		UNS_TRACE(L"Socket[%d]: Error (%d): %W\n", (int)s, err, getErrMsg(err).c_str());
+		UNS_TRACE(L"Socket[%d]: Error (%d): %s\n", (int)s, err, getErrMsg(err).c_str());
 		goto out;
 	}
 
@@ -1092,16 +1130,16 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 
 		case APF_SERVICE_REQUEST :
 		case APF_USERAUTH_REQUEST:
+		{
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if (_handshakingStatus != VERSION_HANDSHAKING::AGREED) {
-					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
-					Deinit();
-					return false;
-				}
-				return true;
+				if (_handshakingStatus == VERSION_HANDSHAKING::AGREED)
+					return true;
 			}
-
+			_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
+			Deinit();
+			return false;
+		}
 		case APF_GLOBAL_REQUEST:
 		case APF_CHANNEL_OPEN:
 		case APF_CHANNEL_OPEN_CONFIRMATION:
@@ -1109,15 +1147,16 @@ bool Protocol::_checkProtocolFlow(LMEMessage *message)
 		case APF_CHANNEL_CLOSE:
 		case APF_CHANNEL_DATA:
 		case APF_CHANNEL_WINDOW_ADJUST:
+		{
 			{
 				std::lock_guard<std::mutex> l(_versionLock);
-				if ((_handshakingStatus != VERSION_HANDSHAKING::AGREED) || (_pfwdService != SERVICE_STATUS::STARTED)) {
-					_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
-					Deinit();
-					return false;
-				}
-				return true;
+				if ((_handshakingStatus == VERSION_HANDSHAKING::AGREED) && (_pfwdService == SERVICE_STATUS::STARTED))
+					return true;
 			}
+			_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
+			Deinit();
+			return false;
+		}
 	}
 
 	return false;
@@ -1224,9 +1263,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 					Deinit();
 					return;
 				}
-
-				std::lock_guard<std::mutex> l(_versionLock);
-
+				_versionLock.lock();
 				LMEProtocolVersionMessage *versionMessage = (LMEProtocolVersionMessage *)message;
 				switch (_handshakingStatus) {
 					case VERSION_HANDSHAKING::AGREED:
@@ -1238,13 +1275,13 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 							UNS_DEBUG(L"Version %d.%d is not supported.\n", versionMessage->MajorVersion,
 							versionMessage->MinorVersion);
+							_versionLock.unlock();
 							_lme.Disconnect(APF_DISCONNECT_PROTOCOL_VERSION_NOT_SUPPORTED);
 							Deinit();
 							return;
 						}
 						if (VersionCompare(MAX_PROT_VERSION.MajorVersion, MAX_PROT_VERSION.MinorVersion,
 							versionMessage->MajorVersion, versionMessage->MinorVersion) > 0) {
-
 							_AmtProtVersion.MajorVersion = versionMessage->MajorVersion;
 							_AmtProtVersion.MinorVersion = versionMessage->MinorVersion;
 						}
@@ -1255,11 +1292,12 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						_handshakingStatus = VERSION_HANDSHAKING::AGREED;
 						break;
 					default:
+						_versionLock.unlock();
 						_lme.Disconnect(APF_DISCONNECT_BY_APPLICATION);
 						Deinit();
-						break;
+						return;
 				}
-
+				_versionLock.unlock();
 			}
 			break;
 
@@ -1293,14 +1331,13 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 															(LMETcpForwardRequestMessage *)globalMessage;
 
 							IsConnectionPermittedCallback cb = NULL;
-#ifdef _REMOTE_SUPPORT
+
 							//"0.0.0.0" means remote interface also for IPv6
-								if (_isRemoteAPFAddress(tcpForwardRequestMessage->Address)) {
-									UNS_DEBUG(L"--------->FW request to open remote tunnel- %C\n",tcpForwardRequestMessage->Address.c_str());
-									cb = _isRemoteCallback;
-								}
-								else
-#endif
+							if (_isRemoteAPFAddress(tcpForwardRequestMessage->Address)) {
+								UNS_DEBUG(L"--------->FW request to open remote tunnel- %C\n",tcpForwardRequestMessage->Address.c_str());
+								cb = _isRemoteCallback;
+							}
+							else
 							{
 								cb = _isLocalCallback;
 							}
@@ -1873,12 +1910,10 @@ bool Protocol::_remoteTunnelExist()
 	return ret;
 }
 
-bool Protocol::_isRemoteAPFAddress(string addr)
+bool Protocol::_isRemoteAPFAddress(const string &addr)
 {
 	return ((addr.compare("0.0.0.0") == 0) ||(addr.compare("::")==0));
 }
-
-#ifdef _REMOTE_SUPPORT
 
 void Protocol::_AdapterCallback(void *param, SuffixMap &localDNSSuffixes)
 {
@@ -1923,6 +1958,26 @@ bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
 	}
 
 	return _updateEnterpriseAccessStatus(AdapterListInfo::GetLocalDNSSuffixList(), true);
+}
+
+namespace {
+	bool CompareSuffix(const std::string& first, const std::string& second)
+	{
+		if (first.size() > second.size()) {
+
+			return false;
+		}
+
+		if ((first.size() < second.size()) &&
+			(second[second.size() - first.size() - 1] != '.')) {
+
+			return false;
+		}
+
+		std::string myTail = second.substr(second.size() - first.size());
+
+		return (myTail == first);
+	}
 }
 
 bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay)
@@ -2052,10 +2107,6 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 	return retVal;
 }
 
-
-#endif
-
-
 int Protocol::_isLocalCallback(void *const param, SOCKET s, sockaddr_storage* caller_addr)
 {
 	Protocol *prot = (Protocol *)param;
@@ -2116,8 +2167,6 @@ out:
 	return result;
 }
 
-#ifdef _REMOTE_SUPPORT
-
 int Protocol::_isRemoteCallback(void *const param, SOCKET s, sockaddr_storage* caller_addr)
 {
 	Protocol *prot = (Protocol *)param;
@@ -2161,7 +2210,6 @@ int Protocol::_isRemote(SOCKET s) const
 
 	return result;
 }
-#endif
 
 int Protocol::_handleFQDNChange(const std::string &fqdn)
 {
@@ -2175,10 +2223,13 @@ int Protocol::_handleFQDNChange(const std::string &fqdn)
 #ifdef WIN32
 	const unsigned char bom_str[] = { 0xEF, 0xBB, 0xBF };
 	bool first_line = true;
-	size_t requiredSize;
+	size_t requiredSize = MAX_PATH + 1;
 	const std::string dir("\\system32\\drivers\\etc\\");
 
-	getenv_s(&requiredSize, NULL, 0, "SystemRoot");
+	if (getenv_s(&requiredSize, NULL, 0, "SystemRoot") != 0) {
+		UNS_ERROR(L"getenv_s failed\n");
+		return -1;
+	}
 	if (requiredSize > MAX_PATH) {
 		UNS_ERROR(L"getenv_s asks for too much memory %d\n", requiredSize);
 		return -1;

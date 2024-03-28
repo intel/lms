@@ -17,12 +17,6 @@ SyncIpClient::SyncIpClient(unsigned int port) : BaseWSManClient(port), m_SharedS
 {
 }
 
-SyncIpClient::SyncIpClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_SharedStaticIpState(false), m_isInit(false)
-{
-}
-
-
 SyncIpClient::~SyncIpClient()
 {
 }

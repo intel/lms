@@ -103,7 +103,7 @@ Note: The DLL signature check tests Intel(R) signatures, so external build shoul
 
 1. Create `build` directory.
 2. Run `cmake <srcdir>` from the `build` directory.
-   One may need to add -DCMAKE_INSTALL_PREFIX=/usr for installation to match the distribution default (e.g. Debian-based distribution, CentOS, etc.).
+   One may need to add -DCMAKE_INSTALL_PREFIX=/usr for installation to match the distribution default (e.g. Debian-based distributions, CentOS, etc.).
    This is important for DBus and syslog configuration files.
 3. Run `make -j$(nproc)` from the `build` directory to build project or
    Run `make -j$(nproc) package` from the `build` directory to build a Debian package (e.g. lms-1.0.0-Linux.deb) and RHEL package (e.g. lms-1.0.0-Linux.rpm)

@@ -18,11 +18,6 @@ AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient(unsigned int port) 
 {
 }
 
-AMTEthernetPortSettingsClient::AMTEthernetPortSettingsClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_isInit(false), m_isLink(false), m_LinkControl(0), m_LinkPreference(0), m_LinkProtection(5)
-{
-}
-
 AMTEthernetPortSettingsClient::~AMTEthernetPortSettingsClient()
 {
 }

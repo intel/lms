@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -16,6 +16,7 @@
 #include "GetPlatformTypeCommand.h"
 #include "GetFWUpdateStateCommand.h"
 #include "GetEOPStateCommand.h"
+#include "GetBootStateCommand.h"
 #include "GetImageFWVersionCommand.h"
 #include "GetMeasuredBootStateCommand.h"
 #include "SMBIOS_Reader.h"
@@ -282,7 +283,28 @@ namespace Intel {
 				CATCH_exception(L"SMBIOS_Reader")
 			}
 
-			if (isME12andUp)
+			if (isME16andUp)
+			{
+				try
+				{
+					Intel::MEI_Client::MKHI_Client::GetBootStateCommand getBootStateCommand;
+					Intel::MEI_Client::MKHI_Client::GET_BOOT_STATE_RESPONSE res = getBootStateCommand.getResponse();
+
+					//For compatibility with pre 12 API output
+					if (res.Fields.EOPState == 0)
+					{
+						pBiosBootState = 2;
+					}
+					else
+					{
+						pBiosBootState = 0;
+					}
+				}
+				CATCH_MKHIErrorException(L"GetBootStateCommand")
+				CATCH_MEIClientException(L"GetBootStateCommand")
+				CATCH_exception(L"GetBootStateCommand")
+			}
+			else if (isME12andUp)
 			{
 				try
 				{

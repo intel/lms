@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -27,7 +27,15 @@ STDMETHODIMP CUNSAlert::RiseAlert(USHORT category,
 								  BSTR dateTime)
 {
 	UNS_DEBUG(L"CUNSAlert::RiseAlert\n");
-	Fire_Alert(category, id, message, messageArg, messageID, dateTime);
+	try
+	{
+		Fire_Alert(category, id, message, messageArg, messageID, dateTime);
+	}
+	catch (const ATL::CAtlException& e)
+	{
+		UNS_ERROR(L"CUNSAlert::RiseAlert failed 0x%X\n", e.m_hr);
+		return e.m_hr;
+	}
 	return S_OK;
 }
 
@@ -45,20 +53,28 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	}
 #endif
 
-	if (CheckCredentials(GetIMSSEventHistory_F) != S_OK)
-		return E_ACCESSDENIED;
+	try
+	{
+		if (CheckCredentials(GetIMSSEventHistory_F) != S_OK)
+			return E_ACCESSDENIED;
 
-	UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
-	std::wstring EventHistory;
+		UNS_DEBUG(L"CUNSAlert::GetIMSSEventHistory\n");
+		std::wstring EventHistory;
 
-	Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingPort());
-	Intel::LMS::LMS_ERROR err = be.GetIMSSEventHistory(EventHistory);
-	if (err != Intel::LMS::LMS_ERROR::OK)
-		return LMSError2HRESULT(err);
+		Intel::LMS::UNSAlert_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetIMSSEventHistory(EventHistory);
+		if (err != Intel::LMS::LMS_ERROR::OK)
+			return LMSError2HRESULT(err);
 
-	ATL::CComBSTR bstr(EventHistory.c_str());
-	*bstrEventHistory = bstr.Detach();
-	return S_OK;
+		if (!CreateBSTR(EventHistory, bstrEventHistory))
+			return E_FAIL;
+		return S_OK;
+	}
+	catch (const std::exception &e)
+	{
+		UNS_ERROR(L"GetIMSSEventHistory failed %S\n", e.what());
+		return E_FAIL;
+	}
 }
 
 STDMETHODIMP CUNSAlert::ResetUNSstartedEvent()

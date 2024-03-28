@@ -15,7 +15,7 @@
 #include "BaseWSManClient.h"
 #include <string>
 
-class WSMAN_DLL_API TimeSynchronizationClient : public BaseWSManClient
+class TimeSynchronizationClient : public BaseWSManClient
 {
 public:
 	unsigned int TIMESYNCSTATE_DEFAULT_TRUE = 0;
@@ -23,7 +23,6 @@ public:
 	unsigned int TIMESYNCSTATE_TIMESYNC_DISABLED = 2; //These is FALSE value if the LocalTimeSyncEnabled FW property.
 
 	TimeSynchronizationClient(unsigned int port);
-	TimeSynchronizationClient(unsigned int port, const std::string &User, const std::string &Password);
 	virtual ~TimeSynchronizationClient();
 
 	bool GetAMTTime(unsigned int & time);

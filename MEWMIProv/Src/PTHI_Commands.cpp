@@ -44,8 +44,6 @@
 #include "GetTcpipParametersCommand.h"
 #include "GetLocalSystemAccountCommand.h"
 #include "UnprovisionCommand.h"
-#include "SetDNSSuffixCommand.h"
-#include "MNGIsChangeToAMTEnabledCommand.h"
 #include "DebugPrints.h"
 #include "GetKVMSessionStateCommand.h"
 
@@ -55,16 +53,14 @@
 // CPTHI_Commands
 
 using namespace Intel::MEI_Client::AMTHI_Client;
-using namespace Intel::MEI_Client::Manageability_Client;
 using namespace Intel::MEI_Client;
-
 
 HRESULT IsUserAdmin()
 {
 	HRESULT  hr = S_OK;
 	DWORD dwImp = 0;
 	HANDLE hThreadTok = NULL;
-	DWORD dwBytesReturned;
+	DWORD dwBytesReturned = 0;
 	BOOL bRes;
 
 	// You must call this before trying to open a thread token!
@@ -130,9 +126,8 @@ HRESULT IsUserAdmin()
 		return hr;
 	}
 
-	TOKEN_GROUPS * groups;
-
-	groups =(TOKEN_GROUPS*) new unsigned char[dwBytesReturned];
+	std::vector <uint8_t> groups_vec(dwBytesReturned);
+	TOKEN_GROUPS *groups = (TOKEN_GROUPS *)groups_vec.data();
 
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups,
 		groups,
@@ -168,7 +163,7 @@ HRESULT IsUserAdmin()
 		return S_FALSE;
 	}
 
-	for (WORD i= 0 ; i < groups->GroupCount; i++)
+	for (DWORD i = 0 ; i < groups->GroupCount; i++)
 	{
 		if (EqualSid(groups->Groups[i].Sid,AdministratorsSid))
 		{
@@ -269,9 +264,9 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 		return hr;
 	}
 
-	TOKEN_USER * user;
-
-	user =(TOKEN_USER*) new unsigned char[dwBytesReturned];
+	std::vector<TOKEN_USER> user_vec;
+	user_vec.reserve(dwBytesReturned);
+	TOKEN_USER *user = user_vec.data();
 
 	bRes = ::GetTokenInformation(hThreadTok, TokenUser,
 		user, dwBytesReturned, &dwBytesReturned);
@@ -321,6 +316,8 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 	userNameStr.assign(userName);
 	domainNameStr.assign(domainName);
 
+	GlobalFree(userName);
+	GlobalFree(domainName);
 	CloseHandle(hThreadTok);
 
 	hr = CoRevertToSelf();
@@ -754,13 +751,13 @@ unsigned int PTHI_Commands::GetMESetupAudit(MEAdminAudit *MEAudit)
 		MEAudit->SecureDNS = response.SecureDNS;
 		MEAudit->HostInitiated = response.HostInitiated;
 		MEAudit->SelectedHashType = response.SelectedHashType;
-		for (int i=0; i < sizeof(response.SelectedHashData.SelectedHashData)/sizeof(response.SelectedHashData.SelectedHashData[0]); i++)
+		for (size_t i = 0; i < sizeof(response.SelectedHashData.SelectedHashData)/sizeof(response.SelectedHashData.SelectedHashData[0]); i++)
 			MEAudit->SelectedHashData.push_back( response.SelectedHashData.SelectedHashData[i]);
-		for (int i=0; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i++)
+		for (size_t i = 0; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i++)
 			MEAudit->CACertificateSerial1.push_back( response.CaCertificateSerials.CaCertificateSerials[i]);
-		for (int i=NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i++)
+		for (size_t i = NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i++)
 			MEAudit->CACertificateSerial2.push_back( response.CaCertificateSerials.CaCertificateSerials[i]);
-		for (int i=NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*3; i++)
+		for (size_t i = NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*2; i < NET_TLS_CERT_PKI_MAX_SERIAL_NUM_LENGTH*3; i++)
 			MEAudit->CACertificateSerial3.push_back( response.CaCertificateSerials.CaCertificateSerials[i]);
 		MEAudit->AdditionalCaSerialNums = response.AdditionalCaSerialNums;
 		MEAudit->IsOemDefault = response.IsOemDefault;

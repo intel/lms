@@ -183,11 +183,8 @@ public:
 	MKHIGetRuleCommandResponse(MKHIGetRuleCommandResponse&& other) = default;
 	MKHIGetRuleCommandResponse& operator = (MKHIGetRuleCommandResponse&& other) = default;
 	MKHIGetRuleCommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID,
-		unsigned int ruleID)
+		unsigned int ruleID) : m_result(), m_commandNumber(commandNumber), m_groupID(groupID), m_ruleID(ruleID)
 	{
-		m_commandNumber = commandNumber;
-		m_groupID = groupID;
-		m_ruleID = ruleID;
 		unsigned int headerAndStatSize = 0;
 		verifyHeaderAndStatus(buffer,  headerAndStatSize);
 		verifyAndGenerateResponse(buffer.begin() + headerAndStatSize, buffer.end());

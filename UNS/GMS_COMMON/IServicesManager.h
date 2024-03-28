@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2015 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 /*++
 
@@ -16,9 +16,8 @@
 */
 
 #include "ace/Stream.h"
-#include "GMSCommonDllExport.h"
 
-class GMS_COMMON_EXPORT IServicesManager
+class IServicesManager
 {
 public:
 	virtual ~IServicesManager(){} 

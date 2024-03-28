@@ -12,12 +12,11 @@
 #define _UNS_EVENT_LOGGER_H
 
 #include <mutex>
-#include "GMSCommonDllExport.h"
 #include <ace/SString.h>
 
 class BaseEventLog;
 
-class GMS_COMMON_EXPORT GMSExternalLogger
+class GMSExternalLogger
 {
 	// This is a singleton use instance() instead of new
 private:

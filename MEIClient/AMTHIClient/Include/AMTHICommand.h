@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 /*++
 
@@ -29,7 +29,6 @@ static const uint32_t AMT_TRUE = 1;
 
 typedef uint32_t AMT_STATUS;
 
-
 //IPv4_ADDRESS is defined to represent IP version 4 addresses IP Addresses are
 //represented per [IP] i.e. value: 0x01020304 ip addr: 1.2.3.4
 typedef uint32_t CFG_IPv4_ADDRESS;
@@ -47,21 +46,6 @@ struct CFG_IP_ADDR
 		return std::string(tmp);
 	}
 };
-
-struct AMT_UUID
-{
-	uint8_t amt_uuid[16];
-};
-
-static const uint32_t UNICODE_STRING_LEN = 20;
-
-//Notice: This is an AMT_UNICODE_STRING as defined in the GetCodeVersion command in AMTHI. 
-//		  On other function it may be required to define a dynamic size structure.
-typedef struct _AMT_UNICODE_STRING 
-{
-	uint16_t  Length;
-	uint8_t   String[UNICODE_STRING_LEN];
-} AMT_UNICODE_STRING;
 
 typedef struct _AMTHI_VERSION
 {

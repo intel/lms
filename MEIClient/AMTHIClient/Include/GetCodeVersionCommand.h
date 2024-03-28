@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 /*++
 
@@ -20,6 +20,21 @@ namespace MEI_Client
 {
 namespace AMTHI_Client
 {
+	static const uint32_t UNICODE_STRING_LEN = 20;
+
+	//Notice: This is an AMT_UNICODE_STRING as defined in the GetCodeVersion command in AMTHI.
+	//		  On other function it may be required to define a dynamic size structure.
+	typedef struct _AMT_UNICODE_STRING
+	{
+		uint16_t  Length;
+		uint8_t   String[UNICODE_STRING_LEN];
+
+		std::string toString()
+		{
+			return std::string(String, String + Length);
+		}
+	} AMT_UNICODE_STRING;
+
 	struct AMT_VERSION_TYPE
 	{
 		std::string Description;
@@ -31,10 +46,8 @@ namespace AMTHI_Client
 
 			Intel::MEI_Client::parseData(description,itr,end);
 			Intel::MEI_Client::parseData(version,itr,end);
-			std::string tmpDsc((char*)(description.String));
-			Description = tmpDsc;
-			std::string tmpVer((char*)(version.String));
-			Version = tmpVer;
+			Description = description.toString();
+			Version = version.toString();
 		}
 	};
 

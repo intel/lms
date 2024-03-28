@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 #ifndef _ACE_INITIALIZER__H_
 #define _ACE_INITIALIZER__H_
@@ -21,6 +21,8 @@ public:
 	{
 		ACE::fini (); 
 	}
+	ACEInitializer(const ACEInitializer&) = delete;
+	ACEInitializer& operator = (const ACEInitializer&) = delete;
 };
 
 

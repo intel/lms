@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -29,6 +29,8 @@ namespace Intel {
 		public:
 			HECI(const GUID &guid, bool verbose = false);
 			~HECI();
+			HECI(const HECI&) = delete;
+			HECI& operator = (const HECI&) = delete;
 
 			void Init();
 			void Deinit();

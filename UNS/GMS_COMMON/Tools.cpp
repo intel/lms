@@ -1,11 +1,10 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2023 Intel Corporation
  */
 #include "Tools.h"
 #include <time.h>
 #include <string>
-#include <codecvt>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -18,8 +17,6 @@
 #include <unistd.h>
 #include <string.h>
 #endif // WIN32
-
-using namespace std;
 
 std::string getDateTime()
 {
@@ -46,11 +43,11 @@ std::string MacAddressToString(unsigned char addr[], unsigned int addrLen)
 		std::stringstream wiredMacAddress;
 
 		wiredMacAddress.setf(std::ios::hex, std::ios::basefield);  //shift to hex
-		wiredMacAddress << uppercase << setfill('0') << setw(2) <<
-			(short)addr[0] << ":" << setw(2) << (short)addr[1] <<
-			":" << setw(2) << (short)addr[2] << ":" << setw(2) <<
-			(short)addr[3] <<":" << setw(2) << (short)addr[4] <<
-			":" << setw(2) << (short)addr[5];
+		wiredMacAddress << std::uppercase << std::setfill('0') << std::setw(2) <<
+			(short)addr[0] << ":" << std::setw(2) << (short)addr[1] <<
+			":" << std::setw(2) << (short)addr[2] << ":" << std::setw(2) <<
+			(short)addr[3] <<":" << std::setw(2) << (short)addr[4] <<
+			":" << std::setw(2) << (short)addr[5];
 		wiredMacAddress.setf(std::ios::dec, std::ios::basefield);  //return to default
 
 		mac.assign(wiredMacAddress.str());
@@ -69,7 +66,7 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	bool retVal = false;
 	HKEY hKey;
 	WCHAR ServiceKey[1024];
-	DWORD bufCount = MAX_PATH;
+	DWORD bufCount;
 	swprintf_s(ServiceKey, 1024, L"SYSTEM\\CurrentControlSet\\Services\\%s", serviceName.c_str());
 
 	LONG RetValue = RegOpenKeyEx( HKEY_LOCAL_MACHINE, ServiceKey, 0, KEY_QUERY_VALUE, &hKey );
@@ -121,9 +118,9 @@ bool GetServiceDirectory(const std::wstring serviceName, std::wstring& serviceFi
 	return true;
 }
 
-bool checkFileExist(wstring path)
+bool checkFileExist(std::wstring path)
 {
-	ifstream ifs;
+	std::ifstream ifs;
 	ifs.open(path.c_str());
 	ifs.close();
 	if(ifs.fail())
@@ -131,19 +128,6 @@ bool checkFileExist(wstring path)
 	return true;
 }
 #endif // WIN32
-
-std::wstring StringToWString(const string& s)
-{
-	std::wstring temp(s.length(), L' ');
-	copy(s.begin(), s.end(), temp.begin());
-	return temp;
-}
-
-std::string WStringToString(const std::wstring& wstr)
-{
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converterX;
-    return converterX.to_bytes(wstr);
-}
 
 #define FQDN_MAX_SIZE 256
 #ifdef WIN32

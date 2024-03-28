@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -72,23 +72,25 @@ HRESULT AMT_Service_WMI_Provider::isWebUIEnabled(
 	IWbemServices*                 pNamespace)
 { 
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
 	{
-		CComPtr<IWbemClassObject> pOutParams;
-		SHORT enabled=0;
-		PTHI_Commands pthic;
-		ReturnValue = pthic.getWebUIState(&enabled);
-		
-		ERROR_HANDLER(ReturnValue);
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			SHORT enabled = 0;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.getWebUIState(&enabled);
 
-		WMIGetMethodOParams(pClass, L"isWebUIEnabled", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"enabled", enabled);
+			ERROR_HANDLER(ReturnValue);
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			WMIGetMethodOParams(pClass, L"isWebUIEnabled", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"enabled", enabled));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch(...)
 	{
@@ -108,7 +110,7 @@ HRESULT AMT_Service_WMI_Provider::getSOLState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -153,16 +155,18 @@ HRESULT AMT_Service_WMI_Provider::getSOLState(
 			SOLsoftEnabledState = DISABLED_STATE;
 		}
 		
-		ERROR_HANDLER(ReturnValue);	
-		
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"getSOLState", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"active", SOLactive);
-		WMIPut<1>( pOutParams, L"hardEnabled", SOLhardEnabledState);
-		WMIPut<1>( pOutParams, L"softEnabled", SOLsoftEnabledState);
+		ERROR_HANDLER(ReturnValue);
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getSOLState", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"active", SOLactive));
+			BREAKIF(WMIPut<1>(pOutParams, L"hardEnabled", SOLhardEnabledState));
+			BREAKIF(WMIPut<1>(pOutParams, L"softEnabled", SOLsoftEnabledState));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch (const std::exception& e)
 	{
@@ -188,7 +192,7 @@ HRESULT AMT_Service_WMI_Provider::getIDERState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -233,14 +237,16 @@ HRESULT AMT_Service_WMI_Provider::getIDERState(
 			IDERsoftEnabledState = DISABLED_STATE;
 		}
 		
-		CComPtr<IWbemClassObject> pOutParams;
-		WMIGetMethodOParams(pClass, L"getIDERState", &pOutParams.p);
-		WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-		WMIPut<1>( pOutParams, L"hardEnabled", IDERhardEnabledState);
-		WMIPut<1>( pOutParams, L"softEnabled", IDERsoftEnabledState);
-		WMIPut<1>( pOutParams, L"active", IDERactive);
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getIDERState", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"hardEnabled", IDERhardEnabledState));
+			BREAKIF(WMIPut<1>(pOutParams, L"softEnabled", IDERsoftEnabledState));
+			BREAKIF(WMIPut<1>(pOutParams, L"active", IDERactive));
 
-		pResponseHandler->Indicate(1, &pOutParams.p);
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
 	}
 	catch (const std::exception& e)
 	{
@@ -266,7 +272,7 @@ HRESULT AMT_Service_WMI_Provider::getKVMState(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
 	try
@@ -324,13 +330,15 @@ HRESULT AMT_Service_WMI_Provider::getKVMState(
 
 				ERROR_HANDLER(ReturnValue);
 			}
-			CComPtr<IWbemClassObject> pOutParams;
-			WMIGetMethodOParams(pClass, L"getKVMState", &pOutParams.p);
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
-			WMIPut<1>( pOutParams, L"hardEnabled", KVMhardEnabledState);
-			WMIPut<1>( pOutParams, L"softEnabled", KVMsoftEnabledState);
-			WMIPut<1>( pOutParams, L"active", active);
-			pResponseHandler->Indicate(1, &pOutParams.p);
+			do {
+				CComPtr<IWbemClassObject> pOutParams;
+				WMIGetMethodOParams(pClass, L"getKVMState", &pOutParams.p);
+				BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+				BREAKIF(WMIPut<1>(pOutParams, L"hardEnabled", KVMhardEnabledState));
+				BREAKIF(WMIPut<1>(pOutParams, L"softEnabled", KVMsoftEnabledState));
+				BREAKIF(WMIPut<1>(pOutParams, L"active", active));
+				pResponseHandler->Indicate(1, &pOutParams.p);
+			} while (0);
 		} while(0);
 	}
 	catch (const std::exception& e)
@@ -357,7 +365,7 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	std::wstring OTP, PKIDNSSuffix;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
@@ -370,7 +378,7 @@ HRESULT AMT_Service_WMI_Provider::TerminateKVMSession(
 
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"TerminateKVMSession", &pOutParams.p);
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
+			BREAKIF(WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue));
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while(0);
 	}
@@ -398,7 +406,7 @@ HRESULT AMT_Service_WMI_Provider::setSpriteZoom(
 	IWbemServices*                 pNamespace)
 {
 	uint32 ReturnValue = 0;
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	std::wstring OTP, PKIDNSSuffix;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
 
@@ -420,7 +428,7 @@ HRESULT AMT_Service_WMI_Provider::setSpriteZoom(
 
 			CComPtr<IWbemClassObject> pOutParams;
 			WMIGetMethodOParams(pClass, L"setSpriteZoom", &pOutParams.p);
-			WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue);
+			BREAKIF(WMIPut<1>( pOutParams, L"ReturnValue", ReturnValue));
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while(0);
 	}
@@ -460,19 +468,21 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try
 	{
+		do {
 			CComPtr<IWbemClassObject> obj;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"AMT_Service"));
-			WMIPut<1>(obj, L"CreationClassName", L"AMT_Service");
-			WMIPut<1>(obj, L"Name", L"Intel AMT Service");
-			WMIPut<1>(obj, L"SystemName", L"Intel(r) AMT");
-			WMIPut<1>(obj, L"SystemCreationClassName", L"ME_system");
-			
+			BREAKIF(WMIPut<1>(obj, L"CreationClassName", L"AMT_Service"));
+			BREAKIF(WMIPut<1>(obj, L"Name", L"Intel AMT Service"));
+			BREAKIF(WMIPut<1>(obj, L"SystemName", L"Intel(r) AMT"));
+			BREAKIF(WMIPut<1>(obj, L"SystemCreationClassName", L"ME_system"));
+
 			pResponseHandler->Indicate(1, &obj.p);
+		} while (0);
 	}
 	catch (...)
 	{
@@ -490,7 +500,7 @@ HRESULT AMT_Service_WMI_Provider::GetAMT_Service(
 									 IWbemContext __RPC_FAR *pCtx,
 									 IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	uint32 hr = 0;
+	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 
 	try

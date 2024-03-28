@@ -11,7 +11,6 @@
 #include "AuditLogAccessor.h"
 #include <time.h>
 
-using namespace std;
 using namespace Intel::Manageability::Cim::Typed;
 
 #ifdef WIN32
@@ -918,7 +917,7 @@ void LinkPolicySetEventHelper(bool *set, int *nums, int &sum, string &str)
 	sum = 0;
 	ss << "Network Interface: WLAN. Link Policy: ";
 	bool comma = false;
-	for (int k=0; k<4; k++)
+	for (int k = 0; k < NUMBER_OF_LINK_POLICIES; k++)
 	{
 		if (set[k])
 		{

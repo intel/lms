@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2023 Intel Corporation
  */
 /*++
 
@@ -418,6 +418,8 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 		goto out;
 	}
 
+	param->udi = -1;
+
 	for (obj = nl_cache_get_first(link_cache);
 	     obj != NULL; obj = nl_cache_get_next(obj))
 	{
@@ -430,7 +432,7 @@ int getNetParam(std::string m_MacAddress, struct __netParam* param)
 			buf[0] = '\0';
 
 		UNS_DEBUG(L"getNetParam MAC %C\n", buf);
-		if (m_MacAddress == buf) {
+		if (!strcasecmp(m_MacAddress.c_str(), buf)) {
 			param->udi = rtnl_link_get_ifindex(link);
 			UNS_DEBUG(L"getNetParam ifindex %d\n", param->udi);
 #if defined(USE_NM) || defined(USE_CONNMAN)

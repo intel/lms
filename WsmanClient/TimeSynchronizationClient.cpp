@@ -17,11 +17,6 @@ TimeSynchronizationClient::TimeSynchronizationClient(unsigned int port) :
 {
 }
 
-TimeSynchronizationClient::TimeSynchronizationClient(unsigned int port, const std::string &User, const std::string &Password) :
-	BaseWSManClient(port, User, Password), m_TimeSyncState(TIMESYNCSTATE_DEFAULT_TRUE), m_isInit(false)
-{
-}
-
 TimeSynchronizationClient::~TimeSynchronizationClient()
 {
 }

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2020-2022 Intel Corporation
+ * Copyright (C) 2020-2023 Intel Corporation
  */
 /*++
 
@@ -87,14 +87,14 @@ uint32_t UPID_Commands::GetUPIDCommand(uint32_t& oemPlatformIdType, std::wstring
 			oemPlatformIdStr << temp.c_str();
 		}
 		else { //When oemPlatformIdType is Binary - Show oemPlatformId as hex string
-			for (int i = 0; i < UPID_LEN; i++)
+			for (size_t i = 0; i < UPID_LEN; i++)
 			{
 				oemPlatformIdStr << "0x" << std::hex << std::setfill(L'0') << std::setw(2) << unsigned(response.OEMPlatformId[i]) << " ";
 			}
 		}
 		oemPlatformId.assign(oemPlatformIdStr.str());
 
-		for (int i = 0; i < UPID_LEN; i++) //csmePlatformId is always Binary - Show it as hex string
+		for (size_t i = 0; i < UPID_LEN; i++) //csmePlatformId is always Binary - Show it as hex string
 		{
 			csmePlatformIdStr << "0x" << std::hex << std::setfill(L'0') << std::setw(2) << unsigned(response.CSMEPlatformId[i]) << " ";
 		}
