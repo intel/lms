@@ -1982,7 +1982,7 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 {
 	bool retVal = false;
 
-	FuncEntryExit<decltype(retVal)>(this, L"_updateEnterpriseAccessStatus", retVal);
+	FuncEntryExit<decltype(retVal)> fee(this, L"_updateEnterpriseAccessStatus", retVal);
 
 	bool raccess = false;
 	sockaddr_storage localIp;
