@@ -20,16 +20,16 @@ protected:
 
 	std::string formatTime(time_t* time);
 	std::string PrintOptInPolicy(uint8_t curData, char* title);
-	std::string PrintUint32(uint8_t* extData, uint8_t extendedDataLen, char* message, int & i);
-	std::string PrintUint16(uint8_t* extData, uint8_t extendedDataLen, char* message, int & i);
-	std::string PrintInterfaceHandleUint32(uint8_t* extData, uint8_t extendedDataLen, int & i);
-	std::string DisplayWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, int & i);
+	std::string PrintUint32(uint8_t* extData, uint8_t extendedDataLen, char* message, size_t &i);
+	std::string PrintUint16(uint8_t* extData, uint8_t extendedDataLen, char* message, size_t &i);
+	std::string PrintInterfaceHandleUint32(uint8_t* extData, uint8_t extendedDataLen, size_t &i);
+	std::string DisplayWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, size_t &i);
 	std::string DisplayBasicUsernameSidInformation(uint8_t* extData, uint8_t extendedDataLen, unsigned short numOfTabsToIdent, const char *action);
 	std::string DisplayAuthenticationMode (int status);
 	std::string DisplayAuthenticationStatus (int status);	
 	std::string DisplayFirmwareVerion(uint8_t* extData, int i);
 	std::string DisplayTimeStamp(uint8_t* extData);
-	std::string DisplayFullWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, int & i);
+	std::string DisplayFullWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, size_t &i);
 	std::string DisplayAgentID(uint8_t* extData);
 	std::string DisplaySecurityAdminAmtProvisioningCompletedEvent(uint8_t* extData, uint8_t extendedDataLen);
 	std::string DisplaySecurityAdminAclEntryAddedEvent(uint8_t* extData, uint8_t extendedDataLen);

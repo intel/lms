@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2024 Intel Corporation
  */
 #include "gmock/gmock.h"
 #include <sstream>
@@ -102,7 +102,7 @@ TEST_F(AuditLogAccessor, PrintUint32_1)
 	}
 	uint8_t extendedDataLen = sizeof(uint32_t);
 	char message[10] = "Message";
-	int i = 0;
+	size_t i = 0;
 	string str = PrintUint32(extData, extendedDataLen, message, i);
 	stringstream ss;
 	ss << "Message: " << m << " ";
@@ -114,7 +114,7 @@ TEST_F(AuditLogAccessor, PrintUint32_2)
 	uint8_t extData[sizeof(uint32_t)];
 	uint8_t extendedDataLen = sizeof(uint32_t)-1;
 	char message[10] = "Message";
-	int i = 0;
+	size_t i = 0;
 	string str = PrintUint32(extData, extendedDataLen, message, i);
 	EXPECT_EQ("", str);
 }
@@ -131,7 +131,7 @@ TEST_F(AuditLogAccessor, PrintUint16_1)
 	}
 	uint8_t extendedDataLen = sizeof(uint16_t);
 	char message[10] = "Message";
-	int i = 0;
+	size_t i = 0;
 	string str = PrintUint16(extData, extendedDataLen, message, i);
 	stringstream ss;
 	ss << "Message: " << m << " ";
@@ -143,7 +143,7 @@ TEST_F(AuditLogAccessor, PrintUint16_2)
 	uint8_t extData[sizeof(uint16_t)];
 	uint8_t extendedDataLen = sizeof(uint16_t)-1;
 	char message[10] = "Message";
-	int i = 0;
+	size_t i = 0;
 	string str = PrintUint16(extData, extendedDataLen, message, i);
 	EXPECT_EQ("", str);
 }
@@ -153,7 +153,7 @@ TEST_F(AuditLogAccessor, PrintInterfaceHandleUint32_1)
 	uint8_t extData[sizeof(uint32_t)];
 	memset(extData, 0, sizeof(uint32_t));
 	uint8_t extendedDataLen = sizeof(uint32_t);
-	int i = 0;
+	size_t i = 0;
 	string str = PrintInterfaceHandleUint32(extData, extendedDataLen, i);
 	EXPECT_EQ("LAN", str);
 }
@@ -164,7 +164,7 @@ TEST_F(AuditLogAccessor, PrintInterfaceHandleUint32_2)
 	memset(extData, 0, sizeof(uint32_t));
 	extData[sizeof(uint32_t)-1] = 1;
 	uint8_t extendedDataLen = sizeof(uint32_t);
-	int i = 0;
+	size_t i = 0;
 	string str = PrintInterfaceHandleUint32(extData, extendedDataLen, i);
 	EXPECT_EQ("WLAN", str);
 }
@@ -174,7 +174,7 @@ TEST_F(AuditLogAccessor, PrintInterfaceHandleUint32_3)
 	uint8_t extData[sizeof(uint32_t)];
 	memset(extData, 1, sizeof(uint32_t));
 	uint8_t extendedDataLen = sizeof(uint32_t);
-	int i = 0;
+	size_t i = 0;
 	string str = PrintInterfaceHandleUint32(extData, extendedDataLen, i);
 	EXPECT_EQ("Unknown", str);
 }
@@ -183,7 +183,7 @@ TEST_F(AuditLogAccessor, PrintInterfaceHandleUint32_4)
 {
 	uint8_t extData[sizeof(uint32_t)];
 	uint8_t extendedDataLen = sizeof(uint32_t)-1;
-	int i = 0;
+	size_t i = 0;
 	string str = PrintInterfaceHandleUint32(extData, extendedDataLen, i);
 	EXPECT_EQ("", str);
 }
@@ -194,7 +194,7 @@ TEST_F(AuditLogAccessor, DisplayWirelessProfileName0)
 	extData[0] = 4;
 	memset(extData+sizeof(uint8_t), 0, 4); //Name with '\0'
 	uint8_t extendedDataLen = 5;
-	int i = 0;
+	size_t i = 0;
 	string str = DisplayWirelessProfileName(extData, extendedDataLen, i);
 	EXPECT_EQ("Profile Name: .", str);
 }
@@ -205,7 +205,7 @@ TEST_F(AuditLogAccessor, DisplayWirelessProfileName1)
 	extData[0] = 4;
 	memset(extData+sizeof(uint8_t), 'A', 4);
 	uint8_t extendedDataLen = 5;
-	int i = 0;
+	size_t i = 0;
 	string str = DisplayWirelessProfileName(extData, extendedDataLen, i);
 	EXPECT_EQ("Profile Name: AAAA.", str);
 }
@@ -216,7 +216,7 @@ TEST_F(AuditLogAccessor, DisplayWirelessProfileName2)
 	extData[0] = 4;
 	memset(extData+sizeof(uint8_t), 'A', 4);
 	uint8_t extendedDataLen = 10;	//Larger size
-	int i = 0;
+	size_t i = 0;
 	string str = DisplayWirelessProfileName(extData, extendedDataLen, i);
 	EXPECT_EQ("Profile Name: AAAA.", str);
 	extendedDataLen = 3;	//Smaller size
@@ -235,7 +235,7 @@ TEST_F(AuditLogAccessor, DisplayWirelessProfileName3)
 	extData[0] = 10; //Larger size
 	memset(extData+sizeof(uint8_t), 'A', 4);
 	uint8_t extendedDataLen = 5;	
-	int i = 0;
+	size_t i = 0;
 	string str = DisplayWirelessProfileName(extData, extendedDataLen, i);
 	EXPECT_EQ("Profile Name: AAAA.", str);
 	extData[0] = 2; //Smaller size
@@ -403,7 +403,7 @@ TEST_F(AuditLogAccessor, DisplayFullWirelessProfileName0)
 	extData[SSID_LEN+1] = 4; //Length of profile name
 	memset(extData+sizeof(uint8_t)*(SSID_LEN+2), 'A', 4);
 	uint8_t extendedDataLen = SSID_LEN+6;
-	int i = 0;
+	size_t i = 0;
 	string str = DisplayFullWirelessProfileName(extData, extendedDataLen, i);
 	EXPECT_EQ("Profile Name: AAAA. SSID: . Profile Priority: 0. ", str);
 }
@@ -417,7 +417,7 @@ TEST_F(AuditLogAccessor, DisplayFullWirelessProfileName1)
 	extData[SSID_LEN+1] = 4; //Length of profile name
 	memset(extData+sizeof(uint8_t)*(SSID_LEN+2), 'A', 4);
 	uint8_t extendedDataLen = SSID_LEN+6;
-	int i = 0;
+	size_t i = 0;
 	string str = DisplayFullWirelessProfileName(extData, extendedDataLen, i);
 	stringstream ss;
 	ss << "Profile Name: AAAA. SSID: ";

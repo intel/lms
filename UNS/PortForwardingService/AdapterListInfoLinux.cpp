@@ -345,7 +345,7 @@ static void get_devices(GDBusProxy *proxy, domains_map_t &domains)
 	GError *error = NULL;
 	GVariant *ret = NULL, *value = NULL;
 	char **paths;
-	int i;
+	size_t i;
 
 	ret = g_dbus_proxy_call_sync(proxy,
 				     "Get",
