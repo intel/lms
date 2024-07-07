@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -244,11 +244,11 @@ void AuditLogWSManClient::GetCharPtrFromUint8Vector(uint8_t length, std::vector<
 	}
 	else
 	{
-		for (int i=0 ; i<(length-1) ; i++)
+		for (size_t i = 0; i < length; i++)
 		{
 			parsedData[i] = data[i];
 		}
-		parsedData[length-1] = '\0';
+		parsedData[length] = '\0';
 	}
 }
 
@@ -343,7 +343,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 				goto EXIT;
 			}
 
-			GetCharPtrFromUint8Vector(structedRecord.DigestInitiatorData.UsernameLength+1, structedRecord.DigestInitiatorData.Username, name);
+			GetCharPtrFromUint8Vector(structedRecord.DigestInitiatorData.UsernameLength, structedRecord.DigestInitiatorData.Username, name);
 
 			parsed << name;
 
@@ -351,7 +351,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 		case KERBEROS_SID:
 			parsed << std::hex << std::uppercase;
 
-			for (unsigned int i=1 ; i<=sizeof(uint32_t) ; i++)
+			for (size_t i = 1; i <= sizeof(uint32_t); i++)
 			{
 				parsed << (int)((uint8_t*)(&structedRecord.KerberosInitiatorData.UserInDomain))[sizeof(uint32_t)-i] << " ";
 			}
@@ -415,7 +415,7 @@ bool AuditLogWSManClient::parseLogs(std::string &out, const std::vector<BinaryDa
 			goto EXIT;
 		}
 
-		GetCharPtrFromUint8Vector(structedRecord.NetAddressLength+1, structedRecord.NetAddress, netAddress);
+		GetCharPtrFromUint8Vector(structedRecord.NetAddressLength, structedRecord.NetAddress, netAddress);
 
 		switch(structedRecord.MCLocationType)
 		{
@@ -722,7 +722,7 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 	return s.str();
 }
 
-std::string AuditLogWSManClient::PrintUint32(uint8_t* extData, uint8_t extendedDataLen, const char* message, int & i)
+std::string AuditLogWSManClient::PrintUint32(uint8_t* extData, uint8_t extendedDataLen, const char* message, size_t &i)
 {
 	std::stringstream ss;
 	ss << "";
@@ -754,7 +754,7 @@ std::string AuditLogWSManClient::PrintUint32(uint8_t* extData, uint8_t extendedD
  *  message				- Data title.
  *  i					- Spaces number.
  ****************************************************************************/
-std::string AuditLogWSManClient::PrintUint16(uint8_t* extData, uint8_t extendedDataLen, const char* message, int & i)
+std::string AuditLogWSManClient::PrintUint16(uint8_t* extData, uint8_t extendedDataLen, const char* message, size_t &i)
 {
 	std::stringstream ss ("");
 	uint16_t* pvalue = NULL;
@@ -783,7 +783,7 @@ std::string AuditLogWSManClient::PrintUint16(uint8_t* extData, uint8_t extendedD
  *  extendedDataLen		- Extended data length.
  *  i					- Spaces number.
  ****************************************************************************/
-std::string AuditLogWSManClient::PrintInterfaceHandleUint32(uint8_t* extData, uint8_t extendedDataLen, int & i)
+std::string AuditLogWSManClient::PrintInterfaceHandleUint32(uint8_t* extData, uint8_t extendedDataLen, size_t &i)
 {
 	std::stringstream ss;
 	uint32_t* pvalue = NULL;
@@ -826,7 +826,7 @@ std::string AuditLogWSManClient::PrintInterfaceHandleUint32(uint8_t* extData, ui
 std::string AuditLogWSManClient::DisplaySecurityAdminAmtProvisioningCompletedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 	int provisioningMethod = 0;
 	int hashType = 0;
 	int numberOfCerts = 0;
@@ -968,7 +968,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminAmtProvisioningCompletedEve
 		if (PKI == provisioningMethod)
 		{
 			ss << "Provisioning Server FQDN: ";
-			for (int j=0 ; (extData[i]!=0) && (j<provServFqdnLength) && (i<extendedDataLen) ; j++)
+			for (size_t j = 0; (extData[i]!=0) && (j<provServFqdnLength) && (i<extendedDataLen); j++)
 			{
 				ss << (char)extData[i];
 				i++;
@@ -989,7 +989,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminAmtProvisioningCompletedEve
 std::string AuditLogWSManClient::DisplayBasicUsernameSidInformation(uint8_t* extData, uint8_t extendedDataLen, unsigned short numOfTabsToIdent, const char *action)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 	int initiatorType = 0;
 	int length = 0;
 
@@ -1216,7 +1216,7 @@ std::string AuditLogWSManClient::DisplayAuthenticationStatus (int status)
 std::string AuditLogWSManClient::DisplaySecurityAdminTlsStateChangedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i =0;
+	size_t i =0;
 
 	if (i < extendedDataLen)
 	{
@@ -1241,11 +1241,12 @@ std::string AuditLogWSManClient::DisplaySecurityAdminTlsStateChangedEvent(uint8_
 std::string AuditLogWSManClient::DisplaySecurityAdminTlsCertificateRelatedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
+
 	if (i<extendedDataLen)
 	{
 		ss << "Certificate Serial Number: " << std::hex << std::uppercase;
-		for (int x=0 ; (x<CERT_SERIAL_NUM_MAX_LEN) && (i<extendedDataLen); x++)
+		for (size_t x = 0; (x<CERT_SERIAL_NUM_MAX_LEN) && (i<extendedDataLen); x++)
 		{
 			ss << (int)extData[i] << " ";
 			i++;
@@ -1309,7 +1310,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminPowerPackageModifiedEvent(u
 std::string AuditLogWSManClient::DisplaySecurityAdminSetRealmAuthenticationModeEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i=0;
+	size_t i = 0;
 	
 	if (i < extendedDataLen)
 	{
@@ -1382,11 +1383,12 @@ std::string AuditLogWSManClient::DisplaySecurityAdminUnprovisioningCompleted(uin
 std::string AuditLogWSManClient::DisplayRemoteControlBootOptionsRelatedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i=0;
+	size_t i = 0;
+
 	if (i<extendedDataLen)
 	{
 		ss << "Boot Options: " << std::hex << std::uppercase;
-		for (int x=0 ; (x<BOOT_OPTIONS_LEN) && (i<extendedDataLen); x++)
+		for (size_t x = 0; (x<BOOT_OPTIONS_LEN) && (i<extendedDataLen); x++)
 		{
 			ss << (int)extData[i] << " ";
 			i++;
@@ -1463,7 +1465,7 @@ std::string AuditLogWSManClient::DisplayFirmwareUpdatedEvent(uint8_t* extData, u
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayFirmwareUpdatedFailedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i =0;
+	size_t i = 0;
 	if (i < extendedDataLen)
 	{
 		return PrintUint32(extData, extendedDataLen, "Failure Reason", i);
@@ -1537,7 +1539,7 @@ std::string AuditLogWSManClient::DisplayNetworkTimeTimeSetEvent(uint8_t* extData
 std::string AuditLogWSManClient::DisplayNetworkAdminTcpIpParameterSetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 	bool DHCPenabled = false;
 
 	if (i < extendedDataLen)
@@ -1578,7 +1580,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminTcpIpParameterSetEvent(uint8
 std::string AuditLogWSManClient::DisplayNetworkAdminHostNameSetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 	int length = 0;
 
 	if (i<extendedDataLen)
@@ -1590,7 +1592,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminHostNameSetEvent(uint8_t* ex
 	if (i<extendedDataLen)
 	{
 		ss << "Host Name: ";
-		for (int j=0 ; (extData[i]!=0) && (j<length) && (i<extendedDataLen) ; j++)
+		for (size_t j = 0; (extData[i]!=0) && (j<length) && (i<extendedDataLen); j++)
 		{
 			ss << (char)extData[i];
 			i++;
@@ -1608,8 +1610,8 @@ std::string AuditLogWSManClient::DisplayNetworkAdminHostNameSetEvent(uint8_t* ex
 std::string AuditLogWSManClient::DisplayNetworkAdminDomainNameSetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
-	int length = 0;
+	size_t i = 0;
+	size_t length = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -1620,7 +1622,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminDomainNameSetEvent(uint8_t* 
 	if (i<extendedDataLen)
 	{
 		ss << "Domain Name: ";
-		for (int j=0 ; (extData[i]!=0) && (j<length) && (i<extendedDataLen) ; j++)
+		for (size_t j = 0; (extData[i]!=0) && (j<length) && (i<extendedDataLen); j++)
 		{
 			ss << (char)extData[i];
 			i++;
@@ -1638,7 +1640,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminDomainNameSetEvent(uint8_t* 
 std::string AuditLogWSManClient::DisplayNetworkAdminLinkPolicySetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 
 	if (i < extendedDataLen)
 	{
@@ -1723,7 +1725,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminLinkPolicySetEvent(uint8_t* 
 std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 	uint8_t interfaceIDGenType = 0;
 
 	if (i < extendedDataLen)
@@ -1755,7 +1757,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 		if (MANUAL_ID == interfaceIDGenType)
 		{
 			ss << "Interface ID: " << std::hex << std::uppercase;
-			for (int j=0 ; (j<INTERFCAE_ID_LEN) && (i<extendedDataLen); j++)
+			for (size_t j=0 ; (j<INTERFCAE_ID_LEN) && (i<extendedDataLen); j++)
 			{
 				if ((int)extData[i] < 10)
 				{
@@ -1778,7 +1780,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 		if ((i+16) <= extendedDataLen)
 		{
 			ss << addresses[j] << std::hex << std::uppercase;
-			for ( int k = 0; k < 16; k++ )
+			for (size_t k = 0; k < 16; k++ )
 			{
 				if (!(k%2) && (int)extData[i+k] == 0 && (int)extData[i+k+1] == 0)  // put 0 instead of 0000
 				{
@@ -1812,7 +1814,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminIPv6ParamsEvent(uint8_t* ext
 std::string AuditLogWSManClient::DisplayStorageAdminGlobalStorageAttributesSetEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -1838,7 +1840,7 @@ std::string AuditLogWSManClient::DisplayStorageAdminGlobalStorageAttributesSetEv
 std::string AuditLogWSManClient::DisplayEventManagerAlertRelatedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 	bool ipv4 = false;
 	bool ipv6 = false;
 
@@ -1903,7 +1905,7 @@ std::string AuditLogWSManClient::DisplayEventManagerAlertRelatedEvent(uint8_t* e
 		if ((i+16)<=extendedDataLen)
 		{
 			ss << "Alert Target IP Address: " << std::hex << std::uppercase;
-			for ( int k = 0; k < 16; k++ )
+			for (size_t k = 0; k < 16; k++ )
 			{
 				if (k%2 == 0 && (int)extData[i+k] == 0 && (int)extData[i+k+1] == 0)
 				{
@@ -1964,7 +1966,7 @@ std::string AuditLogWSManClient::DisplayEventLogFrozenEvent(uint8_t* extData, ui
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayCircuitBreakerFilterRemovedEvent (uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i = 0;
+	size_t i = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -1981,8 +1983,7 @@ std::string AuditLogWSManClient::DisplayCircuitBreakerFilterRemovedEvent (uint8_
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayCircuitBreakerPolicyRemovedEvent (uint8_t* extData, uint8_t extendedDataLen)
 {
-
-	int i = 0;
+	size_t i = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -2000,7 +2001,7 @@ std::string AuditLogWSManClient::DisplayCircuitBreakerPolicyRemovedEvent (uint8_
 std::string AuditLogWSManClient::DisplayCircuitBreakerDefaultPolicySetEvent (uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -2022,7 +2023,7 @@ std::string AuditLogWSManClient::DisplayCircuitBreakerDefaultPolicySetEvent (uin
 std::string AuditLogWSManClient::DisplayCircuitBreakerHeuristicsOptionSetEvent (uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -2058,7 +2059,7 @@ std::string AuditLogWSManClient::DisplayCircuitBreakerHeuristicsOptionSetEvent (
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayCircuitBreakerHeuristicsStateClearedEvent (uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i = 0;
+	size_t i = 0;
 	std::stringstream ss;
 
 	if ((i+sizeof(uint32_t))<=extendedDataLen)
@@ -2078,7 +2079,7 @@ std::string AuditLogWSManClient::DisplayAgentID(uint8_t* extData)
 {
 	std::stringstream ss;
 	ss << "Agent ID: ";
-	for (int i=0 ; i<AGENT_ID_LEN ; i++)
+	for (size_t i = 0; i < AGENT_ID_LEN; i++)
 	{
 		if ((i!=0) && (0==i%4))
 		{
@@ -2099,7 +2100,7 @@ std::string AuditLogWSManClient::DisplayAgentID(uint8_t* extData)
 std::string AuditLogWSManClient::DisplayAgentPresenceAgentWatchdogAddedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 
 	if ((i+AGENT_ID_LEN)<=extendedDataLen)
 	{
@@ -2161,7 +2162,7 @@ std::string AuditLogWSManClient::DisplayAgentPresenceAgentWatchdogActionSetEvent
  *  extendedDataLen		- Extended data length.
  *  i					- Char index.
  ****************************************************************************/
-std::string AuditLogWSManClient::DisplayWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, int & i)
+std::string AuditLogWSManClient::DisplayWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, size_t &i)
 {
 	std::stringstream ss;
 	int length = 0;
@@ -2191,7 +2192,7 @@ std::string AuditLogWSManClient::DisplayWirelessProfileName(uint8_t* extData, ui
  *  extendedDataLen		- Extended data length.
  *  i					- Char index.
  ****************************************************************************/
-std::string AuditLogWSManClient::DisplayFullWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, int & i)
+std::string AuditLogWSManClient::DisplayFullWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, size_t &i)
 {
 	std::stringstream ss, temp;
 	if (i<extendedDataLen)
@@ -2227,7 +2228,7 @@ std::string AuditLogWSManClient::DisplayFullWirelessProfileName(uint8_t* extData
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayWirelessProfileAddedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i = 0;
+	size_t i = 0;
 	return DisplayFullWirelessProfileName(extData, extendedDataLen, i);
 }
 
@@ -2239,7 +2240,7 @@ std::string AuditLogWSManClient::DisplayWirelessProfileAddedEvent(uint8_t* extDa
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayWirelessProfileRemovedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i = 0;
+	size_t i = 0;
 	return DisplayWirelessProfileName(extData, extendedDataLen, i);
 }
 
@@ -2251,7 +2252,7 @@ std::string AuditLogWSManClient::DisplayWirelessProfileRemovedEvent(uint8_t* ext
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayWirelessProfileUpdatedEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i = 0;
+	size_t i = 0;
 	return DisplayFullWirelessProfileName(extData, extendedDataLen, i);
 }
 
@@ -2294,7 +2295,7 @@ std::string AuditLogWSManClient::DisplayWirelessProfileSyncChangeEvent(uint8_t* 
  ****************************************************************************/
 std::string AuditLogWSManClient::DisplayWirelessProfileLinkPreferenceChanged(uint8_t* extData, uint8_t extendedDataLen)
 {
-	int i = 0;
+	size_t i = 0;
 	std::stringstream ss;
 	ss << "";
 	if (extendedDataLen >= sizeof (uint32_t)) 
@@ -2358,7 +2359,7 @@ std::string AuditLogWSManClient::DisplayWirelessProfileUefiEnabledChangedEvent(u
 std::string AuditLogWSManClient::DisplayEacSetOptionsEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i = 0;
+	size_t i = 0;
 
 	if ((i+sizeof(uint32_t))<=extendedDataLen)
 	{
@@ -2391,7 +2392,7 @@ std::string AuditLogWSManClient::DisplayEacSetOptionsEvent(uint8_t* extData, uin
 std::string AuditLogWSManClient::DisplayOptInPolicyChangeEvent(uint8_t* extData, uint8_t extendedDataLen)
 {
 	std::stringstream ss;
-	int i=0;
+	size_t i = 0;
 	
 	if (i < extendedDataLen)
 	{
@@ -2497,7 +2498,7 @@ std::string AuditLogWSManClient::DisplayUnknownEvent(uint8_t* extData, uint8_t e
 	std::stringstream ss;
 	ss << "Unknown Event: Length = " << (unsigned int)extendedDataLen << ". Data =" << std::hex << std::uppercase;
 
-	for(int i=0 ; i<extendedDataLen; i++)
+	for(size_t i = 0; i < extendedDataLen; i++)
 	{
 		ss << " " << (int)extData[i];
 	}

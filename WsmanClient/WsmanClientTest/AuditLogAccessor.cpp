@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2024 Intel Corporation
  */
 #include "AuditLogAccessor.h"
 
@@ -14,22 +14,22 @@ std::string AuditLogAccessor::PrintOptInPolicy(uint8_t curData, char* title)
 	return m_auditLog.PrintOptInPolicy(curData, title);
 }
 
-std::string AuditLogAccessor::PrintUint32(uint8_t* extData, uint8_t extendedDataLen, char* message, int & i)
+std::string AuditLogAccessor::PrintUint32(uint8_t* extData, uint8_t extendedDataLen, char* message, size_t &i)
 {
 	return m_auditLog.PrintUint32(extData, extendedDataLen, message, i);
 }
 
-std::string AuditLogAccessor::PrintUint16(uint8_t* extData, uint8_t extendedDataLen, char* message, int & i)
+std::string AuditLogAccessor::PrintUint16(uint8_t* extData, uint8_t extendedDataLen, char* message, size_t &i)
 {
 	return m_auditLog.PrintUint16(extData, extendedDataLen, message, i);
 }
 
-std::string AuditLogAccessor::PrintInterfaceHandleUint32(uint8_t* extData, uint8_t extendedDataLen, int & i)
+std::string AuditLogAccessor::PrintInterfaceHandleUint32(uint8_t* extData, uint8_t extendedDataLen, size_t &i)
 {
 	return m_auditLog.PrintInterfaceHandleUint32(extData, extendedDataLen, i);
 }
 
-std::string AuditLogAccessor::DisplayWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, int & i)
+std::string AuditLogAccessor::DisplayWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, size_t &i)
 {
 	return m_auditLog.DisplayWirelessProfileName(extData, extendedDataLen, i);
 }
@@ -59,7 +59,7 @@ std::string AuditLogAccessor::DisplayTimeStamp(uint8_t* extData)
 	return m_auditLog.DisplayTimeStamp(extData);
 }
 	
-std::string AuditLogAccessor::DisplayFullWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, int & i)
+std::string AuditLogAccessor::DisplayFullWirelessProfileName(uint8_t* extData, uint8_t extendedDataLen, size_t &i)
 {
 	return m_auditLog.DisplayFullWirelessProfileName(extData, extendedDataLen, i);
 }
