@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 /*++
 
@@ -40,7 +40,7 @@ namespace Intel {
 			heciClient->Init();
 			size_t inBuffSize = heciClient->GetBufferSize();
 			size_t bytesWritten = 0;
-			bytesWritten = heciClient->SendHeciMessage(&buffer[0], buffer.size(), 0);
+			bytesWritten = heciClient->SendHeciMessage(&buffer[0], buffer.size(), 5000);
 			if (bytesWritten != buffer.size())
 			{
 				throw MEIClientException("Error: send message failed");
