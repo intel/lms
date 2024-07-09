@@ -266,7 +266,7 @@ TimeSyncService::PerformSync()
 	}
 	catch (const std::exception& e)
 	{
-		UNS_DEBUG(L"%s::PerformSync exception %S\n", name().c_str(), e.what());
+		UNS_DEBUG(L"%s::PerformSync exception %C\n", name().c_str(), e.what());
 	}
 }
 

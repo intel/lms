@@ -78,7 +78,7 @@ HRESULT CManageability_Commands::GetTheFeatureState(FEATURES feat, FEATURE_STATE
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetTheFeatureState failed %S\n", e.what());
+		UNS_ERROR(L"GetTheFeatureState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -118,7 +118,7 @@ HRESULT CManageability_Commands::GetCustomerType(CUSTOMER_TYPE* pType)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetCustomerType failed %S\n", e.what());
+		UNS_ERROR(L"GetCustomerType failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -158,7 +158,7 @@ HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetMenageabiltyMode failed %S\n", e.what());
+		UNS_ERROR(L"GetMenageabiltyMode failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -209,7 +209,7 @@ HRESULT CManageability_Commands::GetFWInfo(BSTR* pMEBxVersion, ULONG* pBiosBootS
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetFWInfo failed %S\n", e.what());
+		UNS_ERROR(L"GetFWInfo failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -246,7 +246,7 @@ HRESULT CManageability_Commands::GetPMCVersion(BSTR* pFwVer)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetPMCVersion failed %S\n", e.what());
+		UNS_ERROR(L"GetPMCVersion failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -282,7 +282,7 @@ STDMETHODIMP CManageability_Commands::IsMeasuredBootState(VARIANT_BOOL *pState)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"IsMeasuredBootState failed %S\n", e.what());
+		UNS_ERROR(L"IsMeasuredBootState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }

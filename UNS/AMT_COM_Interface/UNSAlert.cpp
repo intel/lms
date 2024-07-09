@@ -72,7 +72,7 @@ STDMETHODIMP CUNSAlert::GetIMSSEventHistory(BSTR* bstrEventHistory)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetIMSSEventHistory failed %S\n", e.what());
+		UNS_ERROR(L"GetIMSSEventHistory failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
