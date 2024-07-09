@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -24,7 +24,6 @@ namespace Intel {
 #ifdef WIN32
 			LMS_ERROR GetHeciVersion(std::string &sVersion);
 #endif // WIN32
-			LMS_ERROR GetLMSVersion(std::string &sVersion);
 
 			LMS_ERROR GetProvisioningState(uint32_t &pProvisioningState);
 			LMS_ERROR GetNetworkConnectionStatus(uint32_t &pStatus, uint32_t &pConnectionType, uint32_t &pConnectionTrigger);

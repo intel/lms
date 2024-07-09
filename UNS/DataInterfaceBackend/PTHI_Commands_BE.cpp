@@ -49,7 +49,6 @@
 #include "IPSSOLSessionUsingPortClient.h"
 #include "IPSIderSessionUsingPortClient.h"
 #include "PTHI_Commands_BE.h"
-#include "version.h"
 #include "servicesNames.h"
 
 namespace Intel {
@@ -202,50 +201,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 		}
 
 #ifdef WIN32
-		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string& sVersion)
-		{
-			DWORD dwHandle = 0;
-			DWORD FileSize;
-			WCHAR Filename[MAX_PATH + 1] = { 0 };
-
-			if (GetModuleFileNameW(NULL, Filename, MAX_PATH) == 0)
-			{
-				UNS_DEBUG(L"GetServiceVersion:GetModuleFileName failed with err=%d\n", GetLastError());
-				return LMS_ERROR::FAIL;
-			}
-
-			FileSize = GetFileVersionInfoSize(Filename, &dwHandle);
-			if (FileSize == 0)
-			{
-				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
-				return LMS_ERROR::FAIL;
-			}
-
-			std::vector<BYTE> FileValues(FileSize);
-			if (GetFileVersionInfo(Filename, NULL, FileSize, FileValues.data()) == 0)
-			{
-				UNS_DEBUG(L"GetServiceVersion:GetFileVersionInfoSize failed err=%d\n", GetLastError());
-				return LMS_ERROR::FAIL;
-			}
-
-			VS_FIXEDFILEINFO *fileQuerInfo;
-			UINT InfoSize = 0;
-			if (!VerQueryValue(FileValues.data(), TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
-				!InfoSize || InfoSize < sizeof(VS_FIXEDFILEINFO)) 
-			{
-				UNS_DEBUG(L"GetServiceVersion:VerQueryValue failed err=%d\n", GetLastError());
-				return LMS_ERROR::FAIL;
-			}
-			std::stringstream ss;
-			ss << HIWORD(fileQuerInfo->dwProductVersionMS) << "."
-			   << LOWORD(fileQuerInfo->dwProductVersionMS) << "."
-			   << HIWORD(fileQuerInfo->dwProductVersionLS) << "."
-			   << LOWORD(fileQuerInfo->dwProductVersionLS);
-			sVersion = ss.str();
-
-			return LMS_ERROR::OK;
-		}
-
 		LMS_ERROR PTHI_Commands_BE::GetHeciVersion(std::string &sVersion)
 		{
 			try
@@ -258,15 +213,6 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 			CATCH_MEIClientException(L"GetHeciVersion")
 			CATCH_exception(L"GetHeciVersion")
 			return LMS_ERROR::FAIL;
-		}
-#else
-		LMS_ERROR PTHI_Commands_BE::GetLMSVersion(std::string &sVersion)
-		{
-			std::stringstream str;
-			str << MAJOR_VERSION << "." << MINOR_VERSION << "." <<
-				QUICK_FIX_NUMBER << "." << VER_BUILD;
-			sVersion = str.str();
-			return LMS_ERROR::OK;
 		}
 #endif // WIN32
 

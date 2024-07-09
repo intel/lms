@@ -5,7 +5,6 @@
 #ifndef _TOOLS_H
 #define _TOOLS_H
 
-#pragma once
 #include <string>
 
 std::string getDateTime();
@@ -24,5 +23,7 @@ std::wstring UTF8ToWStr(const std::string& s);
 bool GetLocalFQDN(std::string& fqdn);
 
 bool MEIEnabled(std::wstring& err);
+
+void GetLMSProductVersion(std::string& sVersion);
 
 #endif //_TOOLS_H

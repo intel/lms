@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 
 #include "global.h"
@@ -22,6 +22,7 @@
 #include "servicesNames.h"
 #include "EventManagment.h"
 #include "GMSExternalLogger.h"
+#include "Tools.h"
 #include <sstream>
 
 #ifdef WIN32
@@ -320,7 +321,17 @@ int GmsService::svc(void)
 #endif // WIN32
 	UNS_DEBUG(L"GmsService:Starting service\n");
 	UNS_DEBUG(L"LMS Version: %d.%d.%d.%d\n", MAJOR_VERSION, MINOR_VERSION, QUICK_FIX_NUMBER, VER_BUILD);
-	 
+	try
+	{
+		std::string prod_ver;
+		GetLMSProductVersion(prod_ver);
+		UNS_DEBUG(L"LMS Product Version: %C\n", prod_ver.c_str());
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR(L"GetLMSVersion failed %C\n", e.what());
+	}
+
 	reactor()->owner(ACE_Thread::self());
 
 	GMSExternalLogger::instance().ServiceStart();

@@ -6,7 +6,9 @@
 #include "PTHI_Commands.h"
 #include "DBus_Commands.h"
 #include "PTHI_Commands_BE.h"
+#include "Tools.h"
 #include "global.h"
+
 namespace Intel {
 namespace DBus {
 namespace PTHI {
@@ -31,13 +33,18 @@ namespace PTHI {
 	{
 		UNS_DEBUG(L"on_get_lmsversion\n");
 		DBusService *th = (DBusService *)user_data;
-		std::string version;
 
-		Intel::LMS::LMS_ERROR error = Intel::LMS::PTHI_Commands_BE(th->GetGmsPortForwardingPort()).GetLMSVersion(version);
-		if (error == Intel::LMS::LMS_ERROR::OK)
+		try
+		{
+			std::string version;
+			GetLMSProductVersion(version);
 			g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", version.c_str()));
-		else
-			send_error(invocation, error);
+		}
+		catch (const std::exception &e)
+		{
+			UNS_ERROR(L"GetLMSProductVersion failed %C\n", e.what());
+			send_error(invocation, Intel::LMS::LMS_ERROR::FAIL);
+		}
 		return TRUE;
 	}
 

@@ -19,6 +19,7 @@
 #include "UNSRegistry.h"
 #include "DataStorageGenerator.h"
 #include "PTHI_Commands_BE.h"
+#include "Tools.h"
 
 #pragma comment (lib,"version")
 #pragma comment (lib,"Ws2_32")
@@ -342,11 +343,7 @@ STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
 			return E_ACCESSDENIED;
 
 		std::string sLMSVersion;
-		Intel::LMS::PTHI_Commands_BE be(GetGmsPortForwardingPort());
-		Intel::LMS::LMS_ERROR err = be.GetLMSVersion(sLMSVersion);
-		if (err != Intel::LMS::LMS_ERROR::OK)
-			return LMSError2HRESULT(err);
-
+		GetLMSProductVersion(sLMSVersion);
 		if (!CreateBSTR(sLMSVersion, sVersion))
 			return E_FAIL;
 		return S_OK;
