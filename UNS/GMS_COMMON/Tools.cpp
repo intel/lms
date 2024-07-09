@@ -21,6 +21,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #endif // WIN32
+#include "version.h"
 
 std::string getDateTime()
 {
@@ -299,3 +300,60 @@ bool MEIEnabled(std::wstring& err)
 	return false;
 }
 #endif //WIN32
+
+#ifdef WIN32
+void GetLMSProductVersion(std::string& sVersion)
+{
+	DWORD dwHandle = 0;
+	DWORD FileSize;
+	WCHAR Filename[MAX_PATH + 1] = { 0 };
+
+	if (GetModuleFileNameW(NULL, Filename, MAX_PATH) == 0)
+	{
+		std::stringstream err;
+		err << "GetModuleFileName failed with err=" << GetLastError();
+		throw std::exception(err.str().c_str());
+	}
+
+	FileSize = GetFileVersionInfoSize(Filename, &dwHandle);
+	if (FileSize == 0)
+	{
+		std::stringstream err;
+		err << "GetFileVersionInfoSize failed err=" << GetLastError();
+		throw std::exception(err.str().c_str());
+	}
+
+	std::vector<BYTE> FileValues(FileSize);
+	if (GetFileVersionInfo(Filename, NULL, FileSize, FileValues.data()) == 0)
+	{
+		std::stringstream err;
+		err << "GetFileVersionInfoSize failed err=" << GetLastError();
+		throw std::exception(err.str().c_str());
+	}
+
+	VS_FIXEDFILEINFO* fileQuerInfo;
+	UINT InfoSize = 0;
+	if (!VerQueryValue(FileValues.data(), TEXT("\\"), (LPVOID*)&fileQuerInfo, &InfoSize) ||
+		!InfoSize || InfoSize < sizeof(VS_FIXEDFILEINFO))
+	{
+		std::stringstream err;
+		err << "VerQueryValue failed err=" << GetLastError();
+		throw std::exception(err.str().c_str());
+	}
+	std::stringstream ss;
+	ss << HIWORD(fileQuerInfo->dwProductVersionMS) << "."
+		<< LOWORD(fileQuerInfo->dwProductVersionMS) << "."
+		<< HIWORD(fileQuerInfo->dwProductVersionLS) << "."
+		<< LOWORD(fileQuerInfo->dwProductVersionLS);
+	sVersion = ss.str();
+}
+
+#else
+void GetLMSProductVersion(std::string& sVersion)
+{
+	std::stringstream str;
+	str << MAJOR_VERSION << "." << MINOR_VERSION << "." <<
+		QUICK_FIX_NUMBER << "." << VER_BUILD;
+	sVersion = str.str();
+}
+#endif // WIN32
