@@ -316,7 +316,7 @@ STDMETHODIMP CPTHI_Commands::GetAMTVersion(BSTR* AMTVersion)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetAMTVersion failed %S\n", e.what());
+		UNS_ERROR(L"GetAMTVersion failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -353,7 +353,7 @@ STDMETHODIMP CPTHI_Commands::GetLMSVersion(BSTR* sVersion)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetLMSVersion failed %S\n", e.what());
+		UNS_ERROR(L"GetLMSVersion failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -390,7 +390,7 @@ STDMETHODIMP CPTHI_Commands::GetHeciVersion(BSTR* sVersion)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetHeciVersion failed %S\n", e.what());
+		UNS_ERROR(L"GetHeciVersion failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -447,7 +447,7 @@ STDMETHODIMP CPTHI_Commands::GetProvisioningState(SHORT* pProvisioningState)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetProvisioningState failed %S\n", e.what());
+		UNS_ERROR(L"GetProvisioningState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -492,7 +492,7 @@ STDMETHODIMP CPTHI_Commands::GetNetworkConnectionStatus(SHORT* pStatus, SHORT* p
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetNetworkConnectionStatus failed %S\n", e.what());
+		UNS_ERROR(L"GetNetworkConnectionStatus failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -525,7 +525,7 @@ STDMETHODIMP CPTHI_Commands::GetUserInitiatedEnabled(SHORT* pStatus)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetUserInitiatedEnabled failed %S\n", e.what());
+		UNS_ERROR(L"GetUserInitiatedEnabled failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -572,7 +572,7 @@ STDMETHODIMP CPTHI_Commands::GetPowerPolicy(BSTR* bstrPolicy)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetPowerPolicy failed %S\n", e.what());
+		UNS_ERROR(L"GetPowerPolicy failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -603,7 +603,7 @@ STDMETHODIMP CPTHI_Commands::GetLastResetReason(SHORT* pReason)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetLastResetReason failed %S\n", e.what());
+		UNS_ERROR(L"GetLastResetReason failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -641,7 +641,7 @@ STDMETHODIMP CPTHI_Commands::GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetRedirectionStatus failed %S\n", e.what());
+		UNS_ERROR(L"GetRedirectionStatus failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -678,7 +678,7 @@ STDMETHODIMP CPTHI_Commands::GetSystemDefenseStatus(SHORT* pStatus)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetSystemDefenseStatus failed %S\n", e.what());
+		UNS_ERROR(L"GetSystemDefenseStatus failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -739,7 +739,7 @@ STDMETHODIMP CPTHI_Commands::GetNetworkSettings(SHORT ConnectionType,    // WIRE
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetNetworkSettings failed %S\n", e.what());
+		UNS_ERROR(L"GetNetworkSettings failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -859,7 +859,7 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetIPv6NetworkSettings failed %S\n", e.what());
+		UNS_ERROR(L"GetIPv6NetworkSettings failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -896,7 +896,7 @@ STDMETHODIMP CPTHI_Commands::GetSystemUUID(BSTR* bstrUUID)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetSystemUUID failed %S\n", e.what());
+		UNS_ERROR(L"GetSystemUUID failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -922,7 +922,7 @@ STDMETHODIMP CPTHI_Commands::CloseUserInitiatedConnection()
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"CloseUserInitiatedConnection failed %S\n", e.what());
+		UNS_ERROR(L"CloseUserInitiatedConnection failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -970,7 +970,7 @@ STDMETHODIMP CPTHI_Commands::GetKVMRedirectionState(VARIANT_BOOL* pEnabled, VARI
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetKVMRedirectionState failed %S\n", e.what());
+		UNS_ERROR(L"GetKVMRedirectionState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1001,7 +1001,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteLanguage(SHORT Language)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"SetSpriteLanguage failed %S\n", e.what());
+		UNS_ERROR(L"SetSpriteLanguage failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1047,7 +1047,7 @@ STDMETHODIMP CPTHI_Commands::GetSpriteParameters(SHORT* pLanguage, SHORT* pZoom)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetSpriteParameters failed %S\n", e.what());
+		UNS_ERROR(L"GetSpriteParameters failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1069,7 +1069,7 @@ STDMETHODIMP CPTHI_Commands::SetSpriteZoom(SHORT Zoom)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"SetSpriteZoom failed %S\n", e.what());
+		UNS_ERROR(L"SetSpriteZoom failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1135,7 +1135,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetConfigurationInfo failed %S\n", e.what());
+		UNS_ERROR(L"GetConfigurationInfo failed %C\n", e.what());
 		return E_FAIL;
 	}
 	catch (const ATL::CAtlException& e)
@@ -1169,7 +1169,7 @@ STDMETHODIMP CPTHI_Commands::TerminateRemedySessions()
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"TerminateRemedySessions failed %S\n", e.what());
+		UNS_ERROR(L"TerminateRemedySessions failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1203,7 +1203,7 @@ STDMETHODIMP CPTHI_Commands::GetUserConsentState(SHORT* pState, USER_CONSENT_POL
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetUserConsentState failed %S\n", e.what());
+		UNS_ERROR(L"GetUserConsentState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1236,7 +1236,7 @@ STDMETHODIMP CPTHI_Commands::GetWLANLinkInfo(UINT* pPreference, UINT* pControl, 
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetWLANLinkInfo failed %S\n", e.what());
+		UNS_ERROR(L"GetWLANLinkInfo failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1265,7 +1265,7 @@ STDMETHODIMP CPTHI_Commands::SetLinkPreferenceToHost()
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"SetLinkPreferenceToHost failed %S\n", e.what());
+		UNS_ERROR(L"SetLinkPreferenceToHost failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1294,7 +1294,7 @@ STDMETHODIMP CPTHI_Commands::InitiateUserConnection(SHORT* pStatus)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"InitiateUserConnection failed %S\n", e.what());
+		UNS_ERROR(L"InitiateUserConnection failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1325,7 +1325,7 @@ STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleExists(SHORT* pStatus)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"userInitiatedPolicyRuleExists failed %S\n", e.what());
+		UNS_ERROR(L"userInitiatedPolicyRuleExists failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1356,7 +1356,7 @@ STDMETHODIMP CPTHI_Commands::userInitiatedPolicyRuleForLocalMpsExists(SHORT* pSt
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"userInitiatedPolicyRuleForLocalMpsExists failed %S\n", e.what());
+		UNS_ERROR(L"userInitiatedPolicyRuleForLocalMpsExists failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1388,7 +1388,7 @@ STDMETHODIMP CPTHI_Commands::snmpEventSubscriberExists(SHORT* pExist)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"snmpEventSubscriberExists failed %S\n", e.what());
+		UNS_ERROR(L"snmpEventSubscriberExists failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1419,7 +1419,7 @@ STDMETHODIMP CPTHI_Commands::CILAFilterCollectionSubscriptionExists(SHORT* pExis
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"CILAFilterCollectionSubscriptionExists failed %S\n", e.what());
+		UNS_ERROR(L"CILAFilterCollectionSubscriptionExists failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1445,7 +1445,7 @@ STDMETHODIMP CPTHI_Commands::UpdateScreenSettings2(EXTENDED_DISPLAY_PARAMETERS e
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"UpdateScreenSettings2 failed %S\n", e.what());
+		UNS_ERROR(L"UpdateScreenSettings2 failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1476,7 +1476,7 @@ STDMETHODIMP CPTHI_Commands::GetRedirectionSessionLinkTechnology(REDIRECTION_SES
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetRedirectionSessionLinkTechnology failed %S\n", e.what());
+		UNS_ERROR(L"GetRedirectionSessionLinkTechnology failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1525,7 +1525,7 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecord(BSTR* bstrPSR)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetPlatformServiceRecord failed %S\n", e.what());
+		UNS_ERROR(L"GetPlatformServiceRecord failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1559,7 +1559,7 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetPlatformServiceRecordRaw failed %S\n", e.what());
+		UNS_ERROR(L"GetPlatformServiceRecordRaw failed %C\n", e.what());
 		return E_FAIL;
 	}
 	catch (const ATL::CAtlException& e)
@@ -1591,7 +1591,7 @@ STDMETHODIMP CPTHI_Commands::GetUPIDFeatureState(VARIANT_BOOL* pState)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetUPIDFeatureState failed %S\n", e.what());
+		UNS_ERROR(L"GetUPIDFeatureState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1611,7 +1611,7 @@ STDMETHODIMP CPTHI_Commands::SetUPIDFeatureState(VARIANT_BOOL State)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"SetUPIDFeatureState failed %S\n", e.what());
+		UNS_ERROR(L"SetUPIDFeatureState failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
@@ -1631,7 +1631,7 @@ STDMETHODIMP CPTHI_Commands::SkuMgrQualifiedBrandEntitlements(UINT* Data)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"SkuMgrQualifiedBrandEntitlements failed %S\n", e.what());
+		UNS_ERROR(L"SkuMgrQualifiedBrandEntitlements failed %C\n", e.what());
 		return E_FAIL;
 	}
 }

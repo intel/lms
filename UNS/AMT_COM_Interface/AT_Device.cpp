@@ -48,7 +48,7 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 	}
 	catch (const std::exception &e)
 	{
-		UNS_ERROR(L"GetAuditLogs failed %S\n", e.what());
+		UNS_ERROR(L"GetAuditLogs failed %C\n", e.what());
 		return E_FAIL;
 	}
 }
