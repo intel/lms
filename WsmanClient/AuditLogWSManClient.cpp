@@ -830,7 +830,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminAmtProvisioningCompletedEve
 	int provisioningMethod = 0;
 	int hashType = 0;
 	int numberOfCerts = 0;
-	int provServFqdnLength = 0;
+	uint8_t provServFqdnLength = 0;
 
 	if (i<extendedDataLen)
 	{
@@ -1581,7 +1581,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminHostNameSetEvent(uint8_t* ex
 {
 	std::stringstream ss;
 	size_t i = 0;
-	int length = 0;
+	uint8_t length = 0;
 
 	if (i<extendedDataLen)
 	{
