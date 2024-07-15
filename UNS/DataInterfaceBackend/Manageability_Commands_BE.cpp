@@ -362,7 +362,7 @@ namespace Intel {
 			CATCH_MKHIErrorException(L"GetFWUpdateStateCommand")
 			CATCH_MEIClientException(L"GetFWUpdateStateCommand")
 			CATCH_exception(L"GetFWUpdateStateCommand")
-			UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%s BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
+			UNS_DEBUG(L"CManageability_Commands::GetFWInfo: MEBxVersion=%C BiosBootState=%d CryptoFuseEnable=%d LocalFWupdateEnable=%d\n",
 				pMEBxVersion.c_str(), pBiosBootState, pCryptoFuseEnable, pLocalFWupdateEnable);
 			return LMS_ERROR::OK;
 		}
