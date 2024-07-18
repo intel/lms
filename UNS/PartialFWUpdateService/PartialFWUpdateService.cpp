@@ -753,7 +753,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 	}
 
 	UNS_DEBUG(L"Current language %u\n", (unsigned int)currentLang);
-	UNS_DEBUG(L"Requested language %s%d\n", defaultLangSet ? "(System Default) " : "", languageID);
+	UNS_DEBUG(L"Requested language %C%d\n", defaultLangSet ? "(System Default) " : "", languageID);
 
 	unsigned short expectedLang = 0;
 	if(!client.GetExpectedLanguage(&expectedLang))
