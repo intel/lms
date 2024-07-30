@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -67,7 +67,7 @@ HRESULT IsUserAdmin()
 	hr = CoImpersonateClient();
 	if (hr != S_OK)
 	{
-		//DBGWARNING(LOCATION, _T("Unable to CoImpersonateClient (0x%x)"), hr);
+		UNS_ERROR("Unable to CoImpersonateClient (0x%x)\n", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		return hr;
 	}
@@ -80,7 +80,7 @@ HRESULT IsUserAdmin()
 
 	if (bRes == FALSE)
 	{
-		//DBGERROR(LOCATION, _T("Unable to OpenThreadToken (0x%x)"), GetLastError());
+		UNS_ERROR("Unable to OpenThreadToken (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -97,7 +97,7 @@ HRESULT IsUserAdmin()
 
 	if (!bRes)
 	{
-		//DBGERROR(LOCATION, _T("Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)"), GetLastError());
+		UNS_ERROR("Unable to GetTokenInformation - TokenImpersonationLevel (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -106,7 +106,7 @@ HRESULT IsUserAdmin()
 
 	if (dwImp!= SecurityImpersonation)
 	{
-		//DBGERROR(LOCATION, _T("Wrong security TokenImpersonationLevel (%d)"), dwImp);
+		UNS_ERROR("Wrong security TokenImpersonationLevel (%d)\n", dwImp);
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -120,6 +120,7 @@ HRESULT IsUserAdmin()
 
 	if (!bRes && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 	{
+		UNS_ERROR("Unable to GetTokenInformation - TokenGroups (0x%x)\n", GetLastError());
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -134,6 +135,7 @@ HRESULT IsUserAdmin()
 		dwBytesReturned, &dwBytesReturned);
 	if (!bRes || dwBytesReturned < sizeof(TOKEN_GROUPS))
 	{
+		UNS_ERROR("Unable to GetTokenInformation - TokenGroups (0x%x)\n", GetLastError());
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -157,6 +159,7 @@ HRESULT IsUserAdmin()
 	// Create a SID on the local computer.
 	if(!CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, AdministratorsSid, &SidSize))
 	{
+		UNS_ERROR("Unable to CreateWellKnownSid (0x%x)\n", GetLastError());
 		LocalFree(AdministratorsSid);
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -178,14 +181,13 @@ HRESULT IsUserAdmin()
 	hr = CoRevertToSelf();
 	if (hr != S_OK)
 	{
-		//DBGERROR(LOCATION, _T("CoRevertToSelf (0x%x)"), hr);
+		UNS_ERROR("CoRevertToSelf (0x%x)\n", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		return hr;
 	}
 
 	if (!isAdmin)
 		hr = S_FALSE;
-
 
 	return hr;
 }
@@ -202,12 +204,11 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 	DWORD userNameSize = 1, domainNameSize = 1;
 	SID_NAME_USE eUse = SidTypeUnknown;
 
-
 	// You must call this before trying to open a thread token!
 	hr = CoImpersonateClient();
 	if (hr != S_OK)
 	{
-		//DBGWARNING(LOCATION, _T("Unable to CoImpersonateClient (0x%x)"), hr);
+		UNS_ERROR("Unable to CoImpersonateClient (0x%x)\n", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		return hr;
 	}
@@ -220,7 +221,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (bRes == FALSE)
 	{
-		//DBGERROR(LOCATION, _T("Unable to OpenThreadToken (0x%x)"), GetLastError());
+		UNS_ERROR("Unable to OpenThreadToken (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -237,7 +238,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (!bRes)
 	{
-		//DBGERROR(LOCATION, _T("Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)"), GetLastError());
+		UNS_ERROR("Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -246,7 +247,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (dwImp!= SecurityImpersonation)
 	{
-		//DBGERROR(LOCATION, _T("Wrong security TokenImpersonationLevel (%d)"), dwImp);
+		UNS_ERROR("Wrong security TokenImpersonationLevel (%d)\n", dwImp);
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -258,6 +259,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (!bRes && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 	{
+		UNS_ERROR("GetTokenInformation first failed (%d, (0x%x)\n", bRes, GetLastError());
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -272,6 +274,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 		user, dwBytesReturned, &dwBytesReturned);
 	if (!bRes || dwBytesReturned < sizeof(TOKEN_USER))
 	{
+		UNS_ERROR("GetTokenInformation failed (%d, %u)\n", bRes, dwBytesReturned);
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -282,6 +285,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 	bRes = ::LookupAccountSid(NULL, user->User.Sid, NULL, (LPDWORD)&userNameSize, NULL, (LPDWORD)&domainNameSize, &eUse);
 	if (!bRes)
 	{
+		UNS_ERROR("LookupAccountSid failed (%d, (0x%x)\n", bRes, GetLastError());
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -292,7 +296,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
            GMEM_FIXED,
 		   userNameSize);
 	if (userName == NULL) {
-          //DBGERROR(LOCATION, _T("Wrong security TokenImpersonationLevel (%d)"), dwImp);
+		UNS_ERROR("GlobalAlloc failed\n");
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -303,7 +307,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
     // Check GetLastError for GlobalAlloc error condition.
     if (domainName == NULL) {
-          //DBGERROR(LOCATION, _T("Wrong security TokenImpersonationLevel (%d)"), dwImp);
+		UNS_ERROR("GlobalAlloc failed\n");
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		GlobalFree( userName );
 		CloseHandle(hThreadTok);
@@ -311,7 +315,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 		return hr;
 
     }
-	//second call to get the userNAme and domain
+	//second call to get the userName and domain
 	bRes = ::LookupAccountSidA(NULL, user->User.Sid, userName, (LPDWORD)&userNameSize, domainName, (LPDWORD)&domainNameSize, &eUse);
 	userNameStr.assign(userName);
 	domainNameStr.assign(domainName);
@@ -323,7 +327,7 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 	hr = CoRevertToSelf();
 	if (hr != S_OK)
 	{
-		//DBGERROR(LOCATION, _T("CoRevertToSelf (0x%x)"), hr);
+		UNS_ERROR("CoRevertToSelf (0x%x)\n", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		return hr;
 	}
