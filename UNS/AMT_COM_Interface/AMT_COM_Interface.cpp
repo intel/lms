@@ -90,6 +90,8 @@ HRESULT AddRegKeys()
 		return 1;
 	if (false == ds.SetDataValue(GetPlatformType_F, L"", true))
 		return 1;
+	if (false == ds.SetDataValue(GetCPUBrand_F, L"", true))
+		return 1;
 	if (false == ds.SetDataValue(GetMenageabiltyMode_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetConfigurationInfo_F, L"", true))

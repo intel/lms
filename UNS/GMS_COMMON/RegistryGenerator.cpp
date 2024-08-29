@@ -44,6 +44,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetTheFeatureState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetTheFeatureState"));
 	regMap->at(GetCustomerType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetCustomerType"));
 	regMap->at(GetPlatformType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetPlatformType"));
+	regMap->at(GetCPUBrand_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetCPUBrand"));
 	regMap->at(GetMenageabiltyMode_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetMenageabiltyMode"));
 	regMap->at(GetConfigurationInfo_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetConfigurationInfo"));
 	regMap->at(GetUserConsentState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetUserConsentState"));

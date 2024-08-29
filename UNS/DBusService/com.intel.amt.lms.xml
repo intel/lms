@@ -69,6 +69,15 @@
 <arg name="PlatformType" type="u" direction="out" />
 </method>
 <!--
+    GetCPUBrand:
+    @Brand: brand value
+
+    Retrieves cpu brand.
+-->
+<method name="GetCPUBrand">
+<arg name="Brand" type="u" direction="out" />
+</method>
+<!--
     GetMenageabiltyMode:
     @MenageabiltyMode: 0 = NONE, 1 = NOT_KNOWN, 2 = VPRO, 3 = STANDARD, 4 = L3, 5 = SBT
 
