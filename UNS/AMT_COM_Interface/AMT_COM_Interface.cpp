@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -87,6 +87,8 @@ HRESULT AddRegKeys()
 	if (false == ds.SetDataValue(GetTheFeatureState_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetCustomerType_F, L"", true))
+		return 1;
+	if (false == ds.SetDataValue(GetPlatformType_F, L"", true))
 		return 1;
 	if (false == ds.SetDataValue(GetMenageabiltyMode_F, L"", true))
 		return 1;

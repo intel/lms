@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "RegistryStorage.h"
 #include "DataStorageGenerator.h"
@@ -43,6 +43,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetAuditLogs_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetAuditLogs"));
 	regMap->at(GetTheFeatureState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetTheFeatureState"));
 	regMap->at(GetCustomerType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetCustomerType"));
+	regMap->at(GetPlatformType_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetPlatformType"));
 	regMap->at(GetMenageabiltyMode_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetMenageabiltyMode"));
 	regMap->at(GetConfigurationInfo_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetConfigurationInfo"));
 	regMap->at(GetUserConsentState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS,LMS_REG_TEXT("GetUserConsentState"));
