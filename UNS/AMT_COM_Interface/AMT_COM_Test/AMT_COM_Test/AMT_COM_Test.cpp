@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 // AMT_COM_Test.cpp : Defines the entry point for the console application.
 //
@@ -95,7 +95,7 @@ TEST_F(AMT_COM_Manageability, GetCustomerType)
 TEST_F(AMT_COM_Manageability, GetPlatformType)
 {
 	enum AMT_COM_InterfaceLib::PLATFORM_TYPE Type;
-	ASSERT_THROW_NOTIMPL(amthi->GetPlatformType(&Type));
+	ASSERT_NO_THROW_COM(amthi->GetPlatformType(&Type));
 }
 
 TEST_F(AMT_COM_Manageability, GetMenageabiltyMode)

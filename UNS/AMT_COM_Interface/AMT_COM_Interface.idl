@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 // AMT_COM_Interface.idl : IDL source for AMT_COM_Interface
 //
@@ -133,7 +133,7 @@ interface IManageability_Commands : IDispatch{
 	[id(3), helpstring("method GetTheFeatureState")] HRESULT GetTheFeatureState([in] FEATURES feat, [out] FEATURE_STATE* pState);
 	[id(4), helpstring("method GetFeaturesState (DEPRECATED)")] HRESULT GetFeaturesState([out]SAFEARRAY(SHORT)* ppStates);
 	[id(5), helpstring("method GetCustomerType")] HRESULT GetCustomerType([out] CUSTOMER_TYPE* pType);
-	[id(6), helpstring("method GetPlatformType (DEPRECATED)")] HRESULT GetPlatformType([out] PLATFORM_TYPE* pType);
+	[id(6), helpstring("method GetPlatformType")] HRESULT GetPlatformType([out] PLATFORM_TYPE* pType);
 	[id(7), helpstring("method GetMenageabiltyMode")] HRESULT GetMenageabiltyMode([out] MENAGEABILTY_MODE* pMode);
 	[id(8), helpstring("method GetFWInfo")] HRESULT GetFWInfo([out] BSTR* pMEBxVersion, [out] ULONG* pBiosBootState, [out] VARIANT_BOOL* pCryptoFuseEnable, [out] VARIANT_BOOL* pLocalFWupdateEnable);
 	[id(9), helpstring("method GetPMCVersion")] HRESULT GetPMCVersion([out] BSTR* pFwVer);

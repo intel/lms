@@ -128,8 +128,22 @@ HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
 	if (pType == nullptr)
 		return E_POINTER;
 
-	UNS_DEBUG(L"CManageability_Commands::GetPlatformType - deprecated\n");
-	return E_NOTIMPL;
+	UNS_DEBUG(L"CManageability_Commands::GetPlatformType\n");
+
+	try
+	{
+		if (CheckCredentials(GetPlatformType_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetPlatformType(*pType);
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR(L"GetPlatformType failed %C\n", e.what());
+		return E_FAIL;
+	}
 }
 
 HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)

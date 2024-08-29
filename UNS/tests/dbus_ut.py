@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2023 Intel Corporation
+# Copyright (C) 2010-2024 Intel Corporation
 """
 LMS DBus interface unit-tests
 
@@ -43,6 +43,10 @@ class ManageabilityTestCase(unittest.TestCase):
     def test_GetCustomerType(self):
         '''GetCustomerType test method'''
         self.iface.GetCustomerType()
+
+    def test_GetPlatformType(self):
+        '''GetPlatformType test method'''
+        self.iface.GetPlatformType()
 
     def test_GetMenageabiltyMode(self):
         '''GetMenageabiltyMode test method'''

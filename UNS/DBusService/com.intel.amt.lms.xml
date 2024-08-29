@@ -60,6 +60,15 @@
 <arg name="CustomerType" type="u" direction="out" />
 </method>
 <!--
+    GetPlatformType:
+    @PlatformType: 0 = MOBILE, 1 = DESKTOP, 2 = SERVER, 3 = WORKSTATION
+
+    Retrieves platform type.
+-->
+<method name="GetPlatformType">
+<arg name="PlatformType" type="u" direction="out" />
+</method>
+<!--
     GetMenageabiltyMode:
     @MenageabiltyMode: 0 = NONE, 1 = NOT_KNOWN, 2 = VPRO, 3 = STANDARD, 4 = L3, 5 = SBT
 

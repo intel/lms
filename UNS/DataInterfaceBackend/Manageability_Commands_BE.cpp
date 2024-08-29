@@ -220,6 +220,32 @@ namespace Intel {
 			return LMS_ERROR::FAIL;
 		}
 
+		LMS_ERROR Manageability_Commands_BE::GetPlatformType(PLATFORM_TYPE & pType)
+		{
+			try
+			{
+				Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
+				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
+				UNS_DEBUG(L"CManageability_Commands::GetPlatformType: Platform=0x%X \n", Platform.Data);
+
+				if (Platform.Fields.Desktop)
+					pType = DESKTOP;
+				else if (Platform.Fields.Mobile)
+					pType = MOBILE;
+				else if (Platform.Fields.Server)
+					pType = SERVER;
+				else if (Platform.Fields.WorkStn)
+					pType = WORKSTATION;
+				else
+					return LMS_ERROR::UNEXPECTED;
+				return LMS_ERROR::OK;
+			}
+			CATCH_MKHIErrorException(L"GetPlatformTypeCommand")
+			CATCH_MEIClientException(L"GetPlatformTypeCommand")
+			CATCH_exception(L"GetPlatformTypeCommand")
+			return LMS_ERROR::FAIL;
+		}
+
 		LMS_ERROR Manageability_Commands_BE::GetMenageabiltyMode(MENAGEABILTY_MODE &pMode)
 		{
 			try
