@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019-2023 Intel Corporation
+ * Copyright (C) 2019-2024 Intel Corporation
  */
 #include "PFWUpdateDllWrapperME12.h"
 #include "fwupdatelib_ME12.h"
@@ -268,5 +268,5 @@ End:
 
 void PFWUpdateDllWrapperME12::printPfwuReturnCode(const uint32_t status)
 {
-	UNS_DEBUG("PFWUpdate Return Code %u: %C\n", status, GetErrorString((ErrorCodes)status));
+	UNS_DEBUG("PFWUpdate Return Code %u: %C\n", status, GetErrorString(status));
 }

@@ -1,81 +1,290 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2019 Intel Corporation
- */
-/*++
-File Name:
-    errorlist.c
-
-Abstract:
-    List of all error codes, categories and error strings.
-
---*/
+Copyright (c) 2024 Intel Corporation. All rights reserved
+*/
 
 #include "errorlist.h"
 
-typedef struct _ErrData
-{
-    const char * ErrStr;
-    unsigned char Category;
-} ErrData;
-
-static const char* gErrorCategories[ERROR_CATEGORIES_COUNT + 1] =
-{
-#ifdef CATEGORY_DEFINE_HELPER
-#error "Rename CATEGORY_DEFINE_HELPER to name that not in use"
+#ifndef ARRAY_SIZE
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 #endif
-#define CATEGORY_DEFINE_HELPER(eenum, sstring)    sstring, 
-    CATEGORY_LIST_HELPER1
-#undef CATEGORY_DEFINE_HELPER
+
+const char* gErrorList[] =
+{
+    [SUCCESS] = "Success.",
+    [INTERNAL_ERROR] = "Internal Error. Unexpected error occurred.",
+    [ERROR_MEMORY_ALLOC] = "Memory allocation error occurred.",
+    [FILEIO_LIB_READ_ERROR] = "Error occurred while reading the file.",
+    [FILEIO_ERROR_OPEN_FILE] = "An unknown error occurred while opening the file.",
+    [HECI_STATUS_MSG_TRANSMISSION_ERROR] = "Communication error between application and Intel(R) ME module.",
+    [HECI_STATUS_CANNOT_FOUND_ME_CLIENT] = "Cannot find ME client.",
+    [HECI_STATUS_CANNOT_DISCONNECT] = "Failure occurred during ME disconnect.",
+    [HECI_STATUS_FLOW_CONTROL_ERROR] = "Flow control error.",
+    [HECI_STATUS_BUFFER_TOO_SMALL] = "Buffer is too small.",
+    [CLI_ERROR_INVALID_COMMAND_ARGUMENT] = "Invalid command line option(s).",
+    [SAFE_FUNC_ERROR_INVALID_SIZE] = "Internal Error (Safe function wrapper error: Invalid size).",
+    [SAFE_FUNC_ERROR_MEMNCPY] = "Internal Error (Safe function wrapper error: memncpy).",
+    [CANNOT_ACCESS_PCI] = "Could not access PCI device.",
+    [FW_REGISTER_READ_ERROR] = "Fail to read FW Status Register value.",
+    [HECI_RESP_LEN_INVALID] = "Internal error - Invalid Heci response length.",
+    [FWU_FW_NOT_FOUND] = "Unexpected internal FW error occurred. Object was not found.",
+    [SIZE_FAILURE] = "Detected invalid data size.",
+    [ERROR_READ_FAIL] = "Failed to Read Signature.",
+    [FWU_FW_INVALID] = "Unexpected internal FW error occurred. Invalid parameter.",
+    [HECI_UNSUPPORTED_MSG_TYPE] = "Intel (R) ME Interface : Unsupported message type.",
+    [PART_NOT_PRESENT] = "Specified partition was not found in the Update Image.",
+    [FWU_NO_FPT_IN_IMAGE] = "FPT is not found in the image.",
+    [FWU_ALLOWSV_MISSING] = "Full FW Update using same version is not allowed. Include -allowsv in command line to allow it.",
+    [FWU_RESTORE_POINT_FAILURE] = "Restore Point Image Failure. Reboot may be required.",
+    [FWU_INVALID_PARTID] = "Invalid Partition ID. Use a Partition ID which is possible to do Partial FW Update on.",
+    [FWU_PID_NOT_EXPECTED] = "The partition provided is not supported by the platform.",
+    [FWU_INVALID_IMG_LENGTH] = "The requested size of partition to read/write/erase exceeds the actual partition size.",
+    [FWU_UPD_PROCESS] = "Firmware Update operation not initiated because a firmware update is already in progress.",
+    [FWU_SKU_MISMATCH] = "Sku capabilities bits are different between the Update Image and the Flash Image.",
+    [FWU_VER_MISMATCH] = "Major version number of Update Image is not the same as major version number of Flash Image.",
+    [FWU_ERROR_CREATING_FT] = "Firmware update failed due to an internal error\nThe total size of the backup partitions is bigger than NFTP size.",
+    [FWU_SAL_NOTIFICATION] = "Firmware update failed due to an internal error caused by a failure in event publishing.",
+    [FWU_FW_DEVICE_ERROR] = "FW Flash read/write/erase operation failed.",
+    [FWU_UPDATE_TIMEOUT] = "Update operation timed-out; cannot determine if the operation succeeded.",
+    [FWU_LOCAL_DIS] = "FW Update is disabled. MEBX has options to disable / enable FW Update.",
+    [FWU_INVALID_OEM_ID] = "Firmware update cannot be initiated because the OEM ID given for FW Update did not match the OEM ID in the FW.",
+    [FWU_DISPLAY_FW_VERSION] = "Display FW Version failed.",
+    [FWU_DOWNGRADE_VETOED] = "Update was blocked by one of the FW modules.",
+    [FWU_FW_WRITE_FILE_FAIL] = "Firmware update failed due to an internal error\nWrite file failed.",
+    [FWU_PARTITION_LAYOUT_NOT_COMP] = "Sanity check in erase/write of partitions. Error might have happened when size of partition is not 4K aligned.",
+    [FWU_FLASH_CODE_PARTITION_INVALID] = "FTPR invalid.",
+    [FWU_FLASH_NFT_PARTITION_INVALID] = "NFTP invalid.",
+    [FWU_HOST_RESET_REQUIRED] = "Host reset is required after the last FW Update operation.",
+    [FWU_LOWER_TCB_SVN] = "Update to Image with lower TCB SVN is not allowed.",
+    [FWU_INSTID_IS_NOT_EXPECTED_ID] = "Partial update is allowed only to the expected instance ID of an IUP.\nThe Update Image contains IUP with instance ID that is not the currently expected one by the FW.\nTo update LOCL, please use The Intel Management and Security Status (IMSS) tool.",
+    [FWU_REJ_IPU_FULL_UPDATE_NEEDED] = "Partial Update is not allowed, because CSE is in Recovery Mode.",
+    [FWU_IPU_NAMEID_NOT_FOUND] = "Partial Update of an IUP was requested, but this IUP doesn't exist in the Flash Image.",
+    [FWU_RESTORE_POINT_OPERATION_NOT_ALLOWED] = "Get Restore Point Image is not allowed, because FW Update is in progress. (The regular FW Update will continue).",
+    [FWU_LOWER_VCN] = "Update to Image with lower VCN is not allowed.",
+    [FWU_INVALID_SVN] = "SVN invalid: SVN is too large.",
+    [FWU_OUT_OF_SVN_RESOURCES] = "PSVN partition is full, so cannot update to higher SVN.",
+    [FWU_RESTORE_POINT_REQUEST_FLASH_IN_RECOVERY] = "Restore Point Image was requested, but it is not allowed because CSE is in Recovery Mode.",
+    [FWU_DISPLAY_PART_VERSION] = "Display Partition Version failed.",
+    [FWU_RESTORE_POINT_REQUEST_RESTART_NEEDED] = "Restore Point Image was requested, but there was Full/Partial FW Update before without Restart after it.",
+    [FWU_ERROR_PMC_INSTANCE] = "Update to incompatible PMC: The PMC instance ID is different, which may be due to H/LP SKU incompatibility.",
+    [FWU_ERROR_H_LP_MISMATCH] = "Update to incompatible H/LP SKU image.",
+    [FWU_ERROR_UPD_IMG_TOO_BIG] = "Update Image length is bigger than the expected size of the image according to its size in the flash.\nFor example: Error on updating from Consumer to Corporate.",
+    [FWU_ERROR_INVALID_MANIFEST_SIZE] = "Manifest size in Update Image is too large.",
+    [FWU_ERROR_364] = "Firmware update failed due to an internal error 364.",
+    [FWU_ERROR_365] = "Firmware update failed due to an internal error 365.",
+    [FWU_ERROR_366] = "Failed to verify signature of OEM or RoT key manifests. For example: Error on update from Production to Pre-Production.",
+    [FWU_ERROR_367] = "Firmware update failed due to an internal error 367.",
+    [FWU_ERROR_SKUMGR_FAILED] = "Firmware update failed due to an internal error 368.",
+    [FWU_ERROR_CFGMGR_FAILED] = "Firmware update failed due to an internal error 369.",
+    [FWU_ERROR_MAN_NOT_FOUND] = "Manifest not found in partition (in Update or Flash Image).",
+    [FWU_ERROR_371] = "Firmware update failed due to an internal error 371.",
+    [FWU_ERROR_VER_MAN_FAILED_FTPR] = "Loader failed to verify manifest signature of FTPR. Production vs. Pre-Production.",
+    [FWU_ERROR_VER_MAN_FAILED_NFTP] = "Loader failed to verify manifest signature of NFTP.",
+    [FWU_ERROR_VER_MAN_FAILED_DLMP] = "Loader failed to verify manifest signature of IDLM.",
+    [FWU_ERROR_VER_MAN_FAILED_RBEP] = "Loader failed to verify manifest signature of RBE.",
+    [FWU_ERROR_VER_MAN_FAILED_PMCP] = "Loader failed to verify manifest signature of PMC.",
+    [FWU_ERROR_VER_MAN_FAILED_OEMP] = "Loader failed to verify manifest signature of OEM KM.",
+    [FWU_ERROR_VER_MAN_FAILED_WCOD] = "Loader failed to verify manifest signature of WCOD.",
+    [FWU_ERROR_VER_MAN_FAILED_LOCL] = "Loader failed to verify manifest signature of LOCL.",
+    [FWU_ERROR_VER_MAN_FAILED_PCHC] = "Loader failed to verify manifest signature of PCHC.",
+    [FWU_ERROR_VER_MAN_FAILED_IOMP] = "Loader failed to verify manifest signature of IOMP.",
+    [FWU_ERROR_VER_MAN_FAILED_NPHY] = "Loader failed to verify manifest signature of NPHY.",
+    [FWU_ERROR_VER_MAN_FAILED_TBTP] = "Loader failed to verify manifest signature of TBTP.",
+    [FWU_ERROR_VER_MAN_FAILED_ISHC] = "Loader failed to verify manifest signature of ISHC.",
+    [FWU_ERROR_VER_MAN_FAILED_IUNP] = "Loader failed to verify manifest signature of IUNIT.",
+    [FWU_ERROR_GET_EXT_FAILED_FTPR] = "Some manifest extension is missing in FTPR.",
+    [FWU_ERROR_GET_EXT_FAILED_NFTP] = "Some manifest extension is missing in NFTP.",
+    [FWU_ERROR_GET_EXT_FAILED_DLMP] = "Some manifest extension is missing in IDLM.",
+    [FWU_ERROR_GET_EXT_FAILED_RBEP] = "Some manifest extension is missing in RBE.",
+    [FWU_ERROR_GET_EXT_FAILED_PMCP] = "Some manifest extension is missing in PMC. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_OEMP] = "Some manifest extension is missing in OEM KM. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_WCOD] = "Some manifest extension is missing in WCOD.",
+    [FWU_ERROR_GET_EXT_FAILED_LOCL] = "Some manifest extension is missing in LOCL.",
+    [FWU_ERROR_GET_EXT_FAILED_PCHC] = "Some manifest extension is missing in PCHC. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_IOMP] = "Some manifest extension is missing in IOMP. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_NPHY] = "Some manifest extension is missing in NPHY. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_TBTP] = "Some manifest extension is missing in TBTP. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_ISHC] = "Some manifest extension is missing in ISHC. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_IUNP] = "Some manifest extension is missing in IUNIT. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_FTPR] = "FTPR partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_NFTP] = "NFTP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_DLMP] = "DLMP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_RBEP] = "RBEP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_PMCP] = "PMCP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_OEMP] = "OEMP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_WCOD] = "WCOD partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_LOCL] = "LOCL partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_PCHC] = "PCHC partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_IOMP] = "IOMP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_NPHY] = "NPHY partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_TBTP] = "TBTP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_ISHC] = "ISHC partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_IUNP] = "IUNP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_API_VER_MAJOR_FTPR] = "Place holder. This error code will not be returned by the FW.",
+    [FWU_ERROR_API_VER_MAJOR_NFTP] = "Place holder. This error code will not be returned by the FW.",
+    [FWU_ERROR_API_VER_MAJOR_DLMP] = "Place holder. This error code will not be returned by the FW.",
+    [FWU_ERROR_API_VER_MAJOR_RBEP] = "Place holder. This error code will not be returned by the FW.",
+    [FWU_ERROR_API_VER_MAJOR_PMCP] = "PMCP must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update.",
+    [FWU_ERROR_API_VER_MAJOR_OEMP] = "OEMP must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update.",
+    [FWU_ERROR_API_VER_MAJOR_WCOD] = "WCOD must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_LOCL] = "LOCL must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_PCHC] = "PCHC must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_IOMP] = "IOMP must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_NPHY] = "NPHY must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_TBTP] = "TBTP must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_ISHC] = "ISHC must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_API_VER_MAJOR_IUNP] = "IUNP must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_PART_SIZE] = "The size of an Update partition is bigger than the size of the Flash partition.",
+    [FWU_ERROR_BACKUP_OUTSIDE_NFTP] = "Location of partition to backup is not inside NFTP.",
+    [FWU_ERROR_MAX_IUPS] = "The number of IUPs in the Update/Flash Image is bigger than MAX_IUPS.",
+    [FWU_ERROR_NOT_IUP] = "Partition name inside IUPs list (in FTPR manifest extension) is not IUP.",
+    [FWU_ERROR_IUP_MISSING_UPDATE] = "Non-optional IUP (like LOCL, WCOD) inside IUPs list (in FTPR manifest extension) is not in the Update Image.",
+    [FWU_ERROR_PMC_MISSING_UPDATE] = "PMC partition is not in the Update Image.",
+    [FWU_ERROR_NOT_PARTIAL_IUP] = "It is not allowed to do Partial Update on this partition.",
+    [FWU_ERROR_PARTIAL_TCSS] = "It is not allowed to do Partial Update on Type-C partitions, according to NVAR.",
+    [FWU_ERROR_FTPR_VER] = "RBEP and NFTP must have the same version as FTPR, in the Update Image.",
+    [FWU_ERROR_FTPR_SVN] = "RBEP and NFTP must have the same SVN as FTPR, in the Update Image.",
+    [FWU_ERROR_FTPR_VCN] = "RBEP and NFTP must have the same VCN as FTPR, in the Update Image.",
+    [FWU_ERROR_FTPR_VER_MAJOR] = "Non-optional IUPs (like LOCL, WCOD) must have the same major build version as FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_IUP_SVN] = "Update IUP must not have SVN smaller than SVN of Flash IUP.",
+    [FWU_ERROR_IMAGE_LEN] = "Update Image length is not the same as Flash Image length.",
+    [FWU_ERROR_IUP_VCN] = "Update IUP must not have VCN smaller than VCN of Flash IUP.",
+    [FWU_ERROR_PV_BIT] = "Update from PV bit ON to PV bit OFF is not allowed.",
+    [FWU_ERROR_REVENUE] = "Update to PV bit OFF on Revenue platform is not allowed.",
+    [FWU_ERROR_SVN_UPGRADE] = "Update to higher SVN must be an upgrade - to higher build version.",
+    [FWU_ERROR_SVN_HOTFIX] = "Update to higher SVN must be to a higher Hot Fix number (the third number in the build version).",
+    [FWU_ERROR_IUP_MISSING_FLASH] = "Non-optional IUP (like LOCL, WCOD) inside IUPs list (in FTPR manifest extension) is not in the Flash Image.",
+    [FWU_ERROR_PARTITION_NOT_FOUND] = "A partition that was searched in the Update Image is not in it.",
+    [FWU_ERROR_ENGINEERING_MISMATCH] = "Update between engineering build vs regular build is not allowed.\nBoth builds have to be the same type: regular or engineering build.\nEngineering build is 7000 and above. Regular build is below 7000.",
+    [FWU_ERROR_OEMP_MISSING] = "OEM KM partition is not in the Update Image, but ISHC/IUNP is in the Update Image, which is not allowed.",
+    [FWU_ERROR_IUPS_NOT_COMPATIBLE] = "ISHC/IUNP do not exist in the same way in the Update Image and in the Flash Image.",
+    [FWU_ERROR_OEMP_IN_UPDATE] = "OEM KM partition is not in the Flash Image, but it is in the Update Image, which is not allowed.",
+    [FWU_ERROR_WRONG_IUP] = "Partial FW Update: the Update Image contains IUP that is different than the one that was requested to be updated in the Partial Update command.",
+    [FWU_ERROR_IMAGE_IUP_SIZE] = "The Partial Update Image size is different than the size of the IUP in it (as it is in the manifest).\nThis means that the Update Image contains more (or less) than the IUP partition.",
+    [FWU_ERROR_OPEN_IUP] = "Firmware update failed due to an internal error 455.",
+    [FWU_ERROR_SPI_IUP] = "Firmware update failed due to an internal error 456.",
+    [FWU_ERROR_ENABLED_INVALID] = "Invalid FW Update enabled state.",
+    [FWU_ERROR_PWR_FAILED] = "Firmware update failed due to an internal error 458.",
+    [FWU_ERROR_SPI_FAILED] = "Firmware update failed due to an internal error 459.",
+    [FWU_ERROR_RESTORE_POINT_ALREADY_STARTED] = "Get Restore Point Image is not allowed, because a previous Get Restore Point operation already started.\nBoth operations will be aborted. (Get Restore Point can be started again after this).",
+    [FWU_ERROR_RESTORE_POINT_OFFSET_INVALID] = "Firmware update failed due to an internal error 461.",
+    [FWU_ERROR_WRONG_HECI_MSG_LENGTH] = "Heci message length is not as expected.",
+    [FWU_ERROR_ENV_INVALID] = "FWU_START_MSG Heci message contains invalid value in UpdateEnvironment.\nValue should be FWU_ENV_MANUFACTURING. (Other possible value: FWU_ENV_IFU is obsolete).",
+    [FWU_ERROR_WRONG_DATA_OPERATION] = "FWU_DATA Heci command was sent, but the FW Update wasn't started with FWU_START Heci command before it.",
+    [FWU_ERROR_NVM_FAILED] = "Firmware update failed due to an internal error 465.",
+    [FWU_ERROR_UFS_EOP] = "FW Update is not possible on UFS Flash after End Of Post (after the OS is running).\nIt is possible only before the OS is running using Bios Capsule Update.",
+    [FWU_ERROR_API_VER_MAJOR_SPHY] = "SPHY must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_INTEGRITY_FAILED_SPHY] = "SPHY partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_SPHY] = "Some manifest extension is missing in SPHY. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_VER_MAN_FAILED_SPHY] = "Loader failed to verify manifest signature of SPHY.",
+    [FWU_ERROR_SVN_TCB_ARB] = "Update to higher TCB SVN must be also to higher ARB SVN.",
+    [FWU_INVALID_PARTID_ALL] = "Invalid Partition ID. Use a Partition ID which is on the Flash Image.",
+    [FWU_DISPLAY_PART_VENDOR_ID] = "Display Partition Vendor ID failed.",
+    [FWU_ERROR_INVALID_UPDATE_IMAGE] = "Wrong structure of Update Image.",
+    [FWU_ERROR_INVALID_FLASH_IMAGE] = "Flash Image content is invalid.",
+    [FWU_ERROR_PG_FAILURE] = "Firmware update failed due to an internal error 476.",
+    [FWU_ERROR_FLUSH_NVM_ERR] = "Firmware update failed due to an internal error 478.",
+    [FWU_ERROR_WRONG_END_OPERATION] = "FWU_END Heci command was sent, but there was no FWU_DATA command before it.",
+    [FWU_ERROR_DATA_LENGTH_INVALID] = "FWU_DATA Heci command has invalid data length (too big).",
+    [FWU_INVALID_HECI_CMD] = "FW Update process received Heci command message with unknown command type.",
+    [FWU_ERROR_FTPR_BUILD] = "RBEP and NFTP must have the same unique build as FTPR, in the Update Image.",
+    [FWU_ERROR_501] = "Firmware update failed due to an internal error 501.",
+    [FWU_ERROR_PCHC_MISSING_UPDATE] = "PCHC partition is not in the Update Image.",
+    [FWU_SMALL_BUFFER] = "Invalid Update Image length, size is smaller than required.",
+    [FWU_CORRUPTED] = "The internal structure of the Update Image is corrupted.",
+    [FWU_FULL_INVALID] = "Update Image has wrong structure for Full Update operation.",
+    [FWU_PARTIAL_INVALID] = "Update Image has wrong structure for Partial Update operation.",
+    [FWU_MAX_IUP_ERROR] = "Number of IUPs in FW exceeds allowed maximum.",
+    [FWU_MAN_NOT_FOUND] = "Missing a required partition manifest in the Update Image.",
+    [FWU_EXT_NOT_FOUND] = "Missing a required partition manifest extension in the Update Image.",
+    [FWU_ALLOCATED_BUFFER_SMALL] = "Update Image size exceeds allocated buffer.",
+    [FWU_FWSTS_REG] = "FW failed to read FWSTS register.",
+    [FWU_FW_READ_FILE_FAIL] = "Firmware update failed due to an internal error\nRead file failed.",
+    [FWU_PG_IN_PROGRESS] = "Firmware update failed due to an internal error 518.",
+    [FWU_ALLOWSV_RS_MISSING] = "Full FW Update using same version is not allowed. Include /s in command line to allow it.",
+    [FWU_FW_ISH_CFG] = "FW failed to set ISH configuration file.",
+    [FWU_ERROR_FWSTS_INVALID] = "CSE is in Recovery Mode but FWSTS registers report Normal Mode.",
+    [FWU_ERROR_BURN_INVALID] = "The Flash Image that was burned on the platform was corrupted. CSE is in Recovery Mode at first boot.",
+    [FWU_ERROR_NVM_COMPAT_FTPR] = "Update FTPR must have the same NVM compatibility (SPI/UFS) as Flash FTPR.",
+    [FWU_ERROR_NVM_COMPAT_RBEP] = "Update RBEP must have the same NVM compatibility (SPI/UFS) as Flash RBEP.",
+    [FWU_ERROR_NVM_COMPAT_NFTP] = "Update NFTP must have the same NVM compatibility (SPI/UFS) as Flash NFTP.",
+    [FWU_ERROR_NVM_COMPAT_IUP] = "Update IUP must have the same NVM compatibility (SPI/UFS) as Flash IUP.",
+    [FWU_ERROR_ENGINEERING_PART] = "Update of partition between engineering build vs regular build is not allowed.",
+    [FWU_ERROR_API_VER_MAJOR_ISIF] = "ISIF must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_INTEGRITY_FAILED_ISIF] = "ISIF partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_ISIF] = "Some manifest extension is missing in ISIF. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_VER_MAN_FAILED_ISIF] = "Loader failed to verify manifest signature of ISIF.",
+    [FWU_ERROR_FW_TYPE_FTPR] = "Update FTPR must have the same FW Type and Sub-Type as Flash FTPR.",
+    [FWU_ERROR_API_VER_MAJOR_SAMF] = "SAMF must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_INTEGRITY_FAILED_SAMF] = "SAMF partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_SAMF] = "Some manifest extension is missing in SAMF. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_VER_MAN_FAILED_SAMF] = "Loader failed to verify manifest signature of SAMF.",
+    [FWU_ERROR_API_VER_MAJOR_PPHY] = "PPHY must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_INTEGRITY_FAILED_PPHY] = "PPHY partition hash and calculated hash are not the same. If partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_GET_EXT_FAILED_PPHY] = "Some manifest extension is missing in PPHY. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_VER_MAN_FAILED_PPHY] = "Loader failed to verify manifest signature of PPHY.",
+    [FWU_ERROR_UNLOCK] = "CSE is in Unlocked Mode. FW Update is not possible.",
+    [FWU_ERROR_INCOMPLETE_DATA] = "FWUpdate Data is shorter than the update image length.",
+    [MKHI_COMMAND_GENERAL_ERROR] = "Intel (R) ME Interface : FW failed for invalid input or general error.",
+    [FWU_ERROR_SKU_MISMATCH] = "Update to incompatible FW type: Consumer / Corporate or other.",
+    [FWU_ERROR_VER_MAN_FAILED_PSEP] = "Loader failed to verify manifest signature of PSEP.",
+    [FWU_ERROR_GET_EXT_FAILED_PSEP] = "Some manifest extension is missing in PSEP. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_PSEP] = "PSEP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_API_VER_MAJOR_PSEP] = "PSEP must have the same major API version as the version inside the list in FTPR,\nin the Update Image for Full Update, in the Flash Image for Partial Update.",
+    [FWU_ERROR_VER_MAN_FAILED_ADSP] = "Loader failed to verify manifest signature of ADSP.",
+    [FWU_ERROR_GET_EXT_FAILED_ADSP] = "Some manifest extension is missing in ADSP. Wrong MEU Tool was used to create the partition.",
+    [FWU_ERROR_INTEGRITY_FAILED_ADSP] = "ADSP partition hash and calculated hash are not the same.\nIf partition hash is zero - wrong MEU Tool was used to create the partition.",
+    [FWU_HECI_CLIENT_UNMAPPED_ERROR] = "Internal Error - FW Update HECI client unmapped status.",
+    [UNKNOWN_HECI_CLIENT_GUID] = "Internal Error - Unknown HECI client unmapped status.",
+    [FWU_ERROR_VER_MAN_FAILED_OUT_OF_RESOURCES] = "Resource allocation error.",
+    [FWU_ERROR_FVC_TCB_ARB] = "Update to higher TCB SVN must be also to higher FVC SVN.",
+    [FWU_LOWER_FVC_SVN] = "Update to Image with lower FVC SVN is not allowed.",
+    [FWU_ERROR_KM_LOWER_SVN] = "It is not allowed to update to an image with OEM or RoT Key Manifest that contains ARB SVN for a partition, that is lower than its ARB SVN inside the OEM or RoT Key Manifest in the flash.",
+    [FWU_ERROR_IUP_KM_SVN] = "It is not allowed to update to a partition with ARB SVN that is lower than its ARB SVN in OEM or RoT Key Manifest.",
+    [FWU_RECOVERY_IMAGE_FAILURE] = "Recovery Image Failure.",
+    [FWU_ERROR_GET_RECOVERY_NOT_ALLOWED] = "Get Recovery Image is not allowed, because FW Update is in progress. (The regular FW Update will continue).",
+    [FWU_ERROR_GET_RECOVERY_FLASH_IN_RECOVERY] = "Recovery Image was requested, but it is not allowed because CSE is in Recovery Mode.",
+    [FWU_ERROR_GET_RECOVERY_IUP_NOT_VALID] = "Recovery Image was requested, but it is not allowed because one or more IUPs are not valid.",
+    [FWU_RESTORE_POINT_REQUEST_IUP_NOT_VALID] = "Restore Point Image was requested, but it is not allowed because one or more IUPs are not valid.",
+    [FWU_ERROR_GET_RECOVERY_AFTER_EOP] = "Get Recovery Image to buffer command is not supported after EOP.",
+    [FWU_ERROR_RECOVERY_IMAGE_FAILURE] = "Firmware update failed due to an internal error 801.",
+    [FWU_ERROR_DMA_FAILURE] = "Failed to configure or access the DMA buffer.",
+    [FWU_ERROR_DMA_BUFFER_NOT_ALIGNED] = "The address or size of the DMA buffer are not aligned to 4 KB.",
+    [FWU_ERROR_EPS_LICENSE] = "Sufficient Extended Platform Service license was not installed.",
+    [FWU_ERROR_PV_BIT_MISMATCH] = "Update to a partition with PV bit OFF on Revenue platform is not allowed.",
+    [FWU_ERROR_ESE_PROXY] = "Update failed because an error related to the SSE proxy.",
+    [FWU_ERROR_INVALID_FPT] = "Wrong structure of FPT in the update buffer.",
+    [FWU_ERROR_ESE_GENERAL_FAILURE] = "SSE Proxy failed to verify the SSE package.",
+    [FWU_ERROR_VER_MAN_FAILED_ESE] = "SSE Proxy failed to verify manifest signature of SSE component.",
+    [FWU_ERROR_ESE_SVN] = "Update SSE component must not have SVN smaller than SVN of Flash SSE component.",
+    [FWU_ERROR_ESE_VCN] = "Update SSE component must not have VCN smaller than VCN of Flash SSE component.",
+    [FWU_ERROR_INTEGRITY_FAILED_ESE] = "Update SSE component hash and calculated hash are not the same.",
+    [FWU_OPR_IN_PROG] = "Firmware Update operation not initiated because another operation is in progress.",
+    [FWU_ERROR_GET_RECOVERY_NOT_SUPPORTED] = "Get NVME Recovery Image is not supported with the current brand.",
+    [FWU_ERROR_NOT_FOUND_EFWP] = "EFWP partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_EFWS] = "EFWS partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_PCOD] = "PCOD partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_DCOD] = "DCOD partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_ACOD] = "ACOD partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_IOMP] = "IOMP partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_NPHY] = "NPHY partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_TBTP] = "TBTP partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_SSPH] = "SSPH partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_PMCS] = "PMCS partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_SOCC] = "SOCC partition is missing from the Update Image.",
+    [FWU_ERROR_NOT_FOUND_CNVI] = "CNVI partition is missing from the Update Image.",
+    [FWU_ERROR_ESE_EPS_LICENSE] = "Sufficient Extended Platform Service license was not installed for SSE.",
 };
 
-static ErrData gErrorData[ERROR_CODES_COUNT+1] =
-{
-#ifdef ERROR_DEFINE_HELPER
-#error "Rename ERROR_DEFINE_HELPER to name that not in use"
-#endif
-#define ERROR_DEFINE_HELPER(eenum, ccategory, sstring)    { sstring, ccategory },
-    ERROR_LIST_HELPER1
-    ERROR_LIST_HELPER2
-    ERROR_LIST_HELPER3
-    ERROR_LIST_HELPER4
-    ERROR_LIST_HELPER5
-    ERROR_LIST_HELPER6
-    ERROR_LIST_HELPER7
-#undef ERROR_DEFINE_HELPER
-};
+unsigned int gErrorListSize = ARRAY_SIZE(gErrorList);
 
-const char* GetErrorString(const ErrorCodes errorId)
+const char* GetErrorString(uint32_t errorCode)
 {
-    ErrData errDataStruct;
-    if (ERROR_CODES_COUNT < errorId)
+    if (errorCode > gErrorListSize ||
+        gErrorList[errorCode] == NULL)
     {
-        // unexpected
-        errDataStruct = gErrorData[INTERNAL_ERROR];
+        return gErrorList[INTERNAL_ERROR];
     }
-    else
-    {
-        errDataStruct = gErrorData[errorId];
-    }
-    return errDataStruct.ErrStr;
-}
 
-unsigned char GetErrorCategory(const ErrorCodes errorId)
-{
-    ErrData errDataStruct;
-    if (ERROR_CODES_COUNT < errorId)
-    {
-        // unexpected
-        errDataStruct = gErrorData[INTERNAL_ERROR];
-    }
-    else
-    {
-        errDataStruct = gErrorData[errorId];
-    }
-    return errDataStruct.Category;
-}
-
-const char* GetErrorCategoryString(const ErrorCategories errorCategory)
-{
-    return ERROR_CATEGORIES_COUNT < errorCategory ? gErrorData[INTERNAL_ERROR].ErrStr : gErrorCategories[errorCategory];
+    return gErrorList[errorCode];
 }
