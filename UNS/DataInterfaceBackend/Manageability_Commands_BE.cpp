@@ -246,6 +246,23 @@ namespace Intel {
 			return LMS_ERROR::FAIL;
 		}
 
+		LMS_ERROR Manageability_Commands_BE::GetCPUBrand(uint8_t& brand)
+		{
+			try
+			{
+				Intel::MEI_Client::MKHI_Client::GetPlatformTypeCommand getPlatformTypeCommand;
+				Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE Platform = getPlatformTypeCommand.getResponse();
+				UNS_DEBUG(L"CManageability_Commands::GetCPUBrand: Platform=0x%X \n", Platform.Data);
+
+				brand = Platform.Fields.CpuBrandClass;
+				return LMS_ERROR::OK;
+			}
+			CATCH_MKHIErrorException(L"GetCPUBrand")
+			CATCH_MEIClientException(L"GetCPUBrand")
+			CATCH_exception(L"GetCPUBrand")
+			return LMS_ERROR::FAIL;
+		}
+
 		LMS_ERROR Manageability_Commands_BE::GetMenageabiltyMode(MENAGEABILTY_MODE &pMode)
 		{
 			try

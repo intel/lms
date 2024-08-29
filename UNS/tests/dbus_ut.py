@@ -48,6 +48,10 @@ class ManageabilityTestCase(unittest.TestCase):
         '''GetPlatformType test method'''
         self.iface.GetPlatformType()
 
+    def test_GetCPUBrand(self):
+        '''GetCPUBrand test method'''
+        self.iface.GetCPUBrand()
+
     def test_GetMenageabiltyMode(self):
         '''GetMenageabiltyMode test method'''
         self.iface.GetMenageabiltyMode()

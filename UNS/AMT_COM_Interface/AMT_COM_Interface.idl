@@ -126,8 +126,6 @@ interface IUNSAlert : IDispatch{
 	pointer_default(unique)
 ]
 interface IManageability_Commands : IDispatch{
-	
-
 	//[id(1), helpstring("method GetFeatureState")] HRESULT GetFeatureState([out] ULONG* pState);
 	//[id(2), helpstring("method GetPlatformFeatureCapability")] HRESULT GetPlatformFeatureCapability([out] ULONG* pPlatform, [out] ULONG* pSKU);
 	[id(3), helpstring("method GetTheFeatureState")] HRESULT GetTheFeatureState([in] FEATURES feat, [out] FEATURE_STATE* pState);
@@ -138,6 +136,7 @@ interface IManageability_Commands : IDispatch{
 	[id(8), helpstring("method GetFWInfo")] HRESULT GetFWInfo([out] BSTR* pMEBxVersion, [out] ULONG* pBiosBootState, [out] VARIANT_BOOL* pCryptoFuseEnable, [out] VARIANT_BOOL* pLocalFWupdateEnable);
 	[id(9), helpstring("method GetPMCVersion")] HRESULT GetPMCVersion([out] BSTR* pFwVer);
 	[id(10), helpstring("method IsMeasuredBootState")] HRESULT IsMeasuredBootState([out] VARIANT_BOOL* pState);
+	[id(11), helpstring("method GetCPUBrand")] HRESULT GetCPUBrand([out] SHORT* pBrand);
 };
 [
 	uuid(9853D245-3E9D-4946-895A-F30D6396DEA6),

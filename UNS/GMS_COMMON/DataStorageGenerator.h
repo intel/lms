@@ -51,6 +51,7 @@ enum DATA_NAME : unsigned int
 	GetTheFeatureState_F,
 	GetCustomerType_F,
 	GetPlatformType_F,
+	GetCPUBrand_F,
 	GetMenageabiltyMode_F,
 	GetConfigurationInfo_F,
 	GetUserConsentState_F,

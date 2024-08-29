@@ -98,6 +98,12 @@ TEST_F(AMT_COM_Manageability, GetPlatformType)
 	ASSERT_NO_THROW_COM(amthi->GetPlatformType(&Type));
 }
 
+TEST_F(AMT_COM_Manageability, GetCPUBrand)
+{
+	SHORT Brand;
+	ASSERT_NO_THROW_COM(amthi->GetCPUBrand(&Brand));
+}
+
 TEST_F(AMT_COM_Manageability, GetMenageabiltyMode)
 {
 	enum AMT_COM_InterfaceLib::MENAGEABILTY_MODE Type;

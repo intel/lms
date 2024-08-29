@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -63,6 +63,7 @@ public:
 	STDMETHOD(GetFeaturesState)(SAFEARRAY** ppStates);
 	STDMETHOD(GetCustomerType)(CUSTOMER_TYPE* pType);
 	STDMETHOD(GetPlatformType)(PLATFORM_TYPE* pType);
+	STDMETHOD(GetCPUBrand)(SHORT* pBrand);
 	STDMETHOD(GetMenageabiltyMode)(MENAGEABILTY_MODE* pMode);
 	STDMETHOD(GetFWInfo)(BSTR* pMEBxVersion, ULONG* pBiosBootState, VARIANT_BOOL* pCryptoFuseEnable, VARIANT_BOOL* pLocalFWupdateEnable);
 	STDMETHOD(GetPMCVersion)(BSTR* pFwVer);

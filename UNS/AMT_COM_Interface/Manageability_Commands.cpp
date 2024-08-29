@@ -146,6 +146,31 @@ HRESULT CManageability_Commands::GetPlatformType(PLATFORM_TYPE* pType)
 	}
 }
 
+HRESULT CManageability_Commands::GetCPUBrand(SHORT* pBrand)
+{
+	if (pBrand == nullptr)
+		return E_POINTER;
+
+	UNS_DEBUG(L"CManageability_Commands::GetCPUBrand\n");
+
+	try
+	{
+		if (CheckCredentials(GetCPUBrand_F) != S_OK)
+			return E_ACCESSDENIED;
+
+		uint8_t brand = 0;
+		Intel::LMS::Manageability_Commands_BE be(GetGmsPortForwardingPort());
+		Intel::LMS::LMS_ERROR err = be.GetCPUBrand(brand);
+		*pBrand = brand;
+		return LMSError2HRESULT(err);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR(L"GetCPUBrand failed %C\n", e.what());
+		return E_FAIL;
+	}
+}
+
 HRESULT CManageability_Commands::GetMenageabiltyMode(MENAGEABILTY_MODE* pMode)
 {
 	if (pMode == nullptr)
