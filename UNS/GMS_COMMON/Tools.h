@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2023 Intel Corporation
+ * Copyright (C) 2013-2024 Intel Corporation
  */
 #ifndef _TOOLS_H
 #define _TOOLS_H
@@ -22,5 +22,7 @@ std::wstring UTF8ToWStr(const std::string& s);
 #endif // WIN32
 
 bool GetLocalFQDN(std::string& fqdn);
+
+bool MEIEnabled(std::wstring& err);
 
 #endif //_TOOLS_H

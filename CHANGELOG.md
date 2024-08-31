@@ -1,3 +1,23 @@
+## [2426.0.0.0]
+
+### Fixed
+ - move mei device detection to tools to avoid ATL include conflict
+ - avoid anonymous variables for logging
+
+### Changed
+ - conan: use libxml2 2.12.7
+ - MEIClient: update MeTee dependency to 4.1.0
+ - Windows: make all executables universal
+ - conan: use ACE 7.1.3
+ - CMake: bump minimal requirement to 3.15
+ - MEIClient: route metee logs to ace log
+
+### Removed
+ - remove support for windows 7 and 8
+
+### Added
+ - CMake: add local metee path to CMakePresets.json
+
 ## [2406.0.0.0]
 
 ### Fixed

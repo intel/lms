@@ -364,7 +364,7 @@ bool PartialFWUpdateService::checkImageFileExist(std::wstring &imagePath)
 	std::wstring path;
 	std::wstring value;
 
-	FuncEntryExit<decltype(retVal)>(this, L"checkImageFileExist", retVal);
+	FuncEntryExit<decltype(retVal)> fee(this, L"checkImageFileExist", retVal);
 
 	if (GetServiceDirectory(L"LMS", lmsPath) != true)
 	{
@@ -702,7 +702,7 @@ bool PartialFWUpdateService::getImageFileNameByFwVersion(std::wstring &fileName,
 bool PartialFWUpdateService::isMESKU() const
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(this, L"isMESKU", res);
+	FuncEntryExit<decltype(res)> fee(this, L"isMESKU", res);
 	//Lock lock(FWUpdate_Client::FWUpdateCommand::getInternalSemaphore());
 	try
 	{
@@ -735,7 +735,7 @@ bool PartialFWUpdateService::isMESKU() const
 bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAGE_FLOW_MODE mode)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(this, L"updateLanguageChangeCode", res);
+	FuncEntryExit<decltype(res)> fee(this, L"updateLanguageChangeCode", res);
 	bool defaultLangSet = (languageID == DEFAULT_LANG_ID);
 
 	if (defaultLangSet)
@@ -812,7 +812,7 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 bool PartialFWUpdateService::invokePartialFWUpdateFlow(PARTIAL_FWU_MODULE module, UINT32 partialID)
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(this, L"invokePartialFWUpdateFlow", res);
+	FuncEntryExit<decltype(res)> fee(this, L"invokePartialFWUpdateFlow", res);
 
 	UNS_DEBUG(L"Partition: 0x%X\n", partialID);
 	publishPartialFWUpgrade_begin(module);
@@ -835,7 +835,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, LANGUAGE_FLOW_MODE _mo
 	bool res = false;
 	langID = _langID;
 	mode = _mode;
-	FuncEntryExit<decltype(res)>(this, L"partialFWUpdate", res);
+	FuncEntryExit<decltype(res)> fee(this, L"partialFWUpdate", res);
 
 
 	if (!m_mainService->GetPortForwardingPort()) {
@@ -914,7 +914,7 @@ bool PartialFWUpdateService::partialFWUpdate(int _langID, LANGUAGE_FLOW_MODE _mo
 bool PartialFWUpdateService::SetExpectedWithLocalOSLanguage() const
 {
 	bool res = false;
-	FuncEntryExit<decltype(res)>(this, L"SetExpectedWithLocalOSLanguage", res);
+	FuncEntryExit<decltype(res)> fee(this, L"SetExpectedWithLocalOSLanguage", res);
 
 	unsigned long languageId;
 	bool retVal = DSinstance().GetDataValue(LastLanguageUpdate, languageId);

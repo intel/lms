@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2021 Intel Corporation
-cmake_minimum_required (VERSION 3.1)
+# Copyright (C) 2010-2024 Intel Corporation
+cmake_minimum_required (VERSION 3.15)
 
 add_library (PowerOperationsService STATIC
   PowerEventFilter.cpp
@@ -13,9 +13,7 @@ if (UNIX)
   set (PWR_LIBRARIES ${GIO_LIBRARIES})
   set (PWR_INCLUDE_DIRS ${GIO_INCLUDE_DIRS})
 else (UNIX)
-  if (NOT BUILD_WIN_UNIVERSAL)
-    set (PWR_LIBRARIES powrprof)
-  endif (NOT BUILD_WIN_UNIVERSAL)
+  set (PWR_LIBRARIES "")
   set (PWR_INCLUDE_DIRS "")
 endif (UNIX)
 

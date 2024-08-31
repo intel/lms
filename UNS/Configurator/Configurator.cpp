@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -10,24 +10,15 @@
 #include "UNSEventsDefinition.h"
 
 #include "HECIException.h"
-#include "CFG_SetOverrideProsetAdapterSwitchingCommand.h"
+#include "AMTHICommand.h"
 #include "GetFWVersionCommand.h"
 #include "GetFWCapsCommand.h"
 #include "GMSExternalLogger.h"
 #ifdef WIN32
-#include <cguid.h>
-#include <comdef.h>
-#include <Wbemidl.h>
 #include <Dbt.h>
-#include <ShlObj.h>
-#include <atlbase.h>
-#include <propvarutil.h>
-#include <functiondiscoverykeys.h>
-#include <VersionHelpers.h>
 #endif // WIN32
 
 #include "DataStorageGenerator.h"
-
 
 //Wsman
 #include "SyncIpClient.h"
@@ -44,95 +35,8 @@
 #endif
 #include <memory>
 
-#define NUM_RETRIES 3
-#define LME_EXISTS_LOOP_DELAY 200
-
-/********************************** Help functions **********************************/
-#ifdef WIN32
-
-const wchar_t APP_ID[] = L"Intel.IMSS";
-const wchar_t SHORTCUT_PATH[] = L"\\Programs\\Intel\\Intel(R) Management Engine Components\\Intel(R) Management and Security Status.lnk";
-const std::wstring IMSS_EXE = L"IMSS\\PrivacyIconClient.exe";
-
-HRESULT CreateIMSSShortcut()
-{
-	if (!IsWindows8OrGreater()) //abort this function
-	{
-		return S_OK;
-	}
-
-	HRESULT hr = E_FAIL;
-	std::wstring exePath;
-	wchar_t fullSortcutPath[MAX_PATH];
-
-	//Get IMSS shortcut path
-	if (!SHGetSpecialFolderPathW(NULL, fullSortcutPath, CSIDL_COMMON_STARTMENU, false))
-		return hr;
-	wcscat_s(fullSortcutPath, MAX_PATH, SHORTCUT_PATH);
-
-	//Get IMSS executable path
-	if (GetServiceDirectory(L"LMS", exePath) != true)
-		return hr;
-	size_t pos = exePath.find(L"LMS");
-	size_t charNum = exePath.size() - pos;
-	exePath.replace(pos, charNum, IMSS_EXE);
-
-	//Check if IMSS executable exists
-
-	if (!checkFileExist(exePath))
-		return hr;
-
-	//Create the shortcut with the desired properties
-
-	CComPtr<IShellLink> shellLink;
-	hr = CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&shellLink));
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	std::wstring wrkDir = exePath.substr(0, exePath.rfind(L'\\'));
-	hr = shellLink->SetWorkingDirectory(wrkDir.c_str());
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	hr = shellLink->SetPath(exePath.c_str());
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	hr = shellLink->SetArguments(L"");
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	CComPtr<IPropertyStore> propertyStore;
-	hr = shellLink.QueryInterface(&propertyStore);
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	PROPVARIANT appIdPropVar;
-	hr = InitPropVariantFromString(APP_ID, &appIdPropVar);
-	if (!SUCCEEDED(hr))
-		return hr;
-
-	hr = propertyStore->SetValue(PKEY_AppUserModel_ID, appIdPropVar);
-	if (SUCCEEDED(hr))
-	{
-		hr = propertyStore->Commit();
-		if (SUCCEEDED(hr))
-		{
-			CComPtr<IPersistFile> persistFile;
-			hr = shellLink.QueryInterface(&persistFile);
-			if (SUCCEEDED(hr))
-			{
-				hr = persistFile->Save(fullSortcutPath, TRUE);
-			}
-		}
-	}
-	PropVariantClear(&appIdPropVar);
-
-	return hr;
-}
-#else
-void CreateIMSSShortcut() {}
-#endif // WIN32
+static const int NUM_RETRIES = 3;
+static const long long LME_EXISTS_LOOP_DELAY = 200;
 
 //check if LME exists in FW
 //to be used only BEFORE starting PortForwardingService
@@ -184,100 +88,6 @@ void GetSkuAndBrand(Intel::MEI_Client::MKHI_Client::MKHI_PLATFORM_TYPE& platform
 	stateData_Amt = stateData.Fields.Amt;
 	platform = getPlatformTypeCommand.getResponse();
 }
-
-#ifdef WIN32
-bool Configurator::MEIEnabled() const
-{
-	bool meiEnabled = false;
-	IWbemLocator *loc = NULL;
-	IWbemServices *svc = NULL;
-	IWbemClassObject *obj = NULL;
-	ULONG uReturn = 0;
-
-	FuncEntryExit<decltype(meiEnabled)> fee(this, L"MEIEnabled", meiEnabled);
-	try
-	{
-		HRESULT hres = CoCreateInstance(__uuidof(WbemLocator), 0, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID *) &loc);
-
-		if (!FAILED(hres))
-		{
-			// Connect to the root\cimv2 namespace with
-			// the current user and obtain pointer pSvc
-			// to make IWbemServices calls.
-			hres = loc->ConnectServer(CComBSTR(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &svc);
-			if (!FAILED(hres))
-			{
-				IEnumWbemClassObject* enumerator = NULL;
-				hres = svc->ExecQuery(CComBSTR(L"WQL"),
-					CComBSTR(L"SELECT Status FROM Win32_PnPEntity where Caption = \'Intel(R) Management Engine Interface \' or Caption = \'Intel(R) Management Engine Interface #1\'"),
-					WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &enumerator);
-				if (!FAILED(hres))
-				{
-					if (enumerator)//we have only one instance
-					{
-						hres = enumerator->Next(WBEM_INFINITE, 1, &obj, &uReturn);
-						if(uReturn != 0)
-						{
-							VARIANT vtProp;
-							hres = obj->Get(L"Status", 0, &vtProp, 0, 0);
-							if (SUCCEEDED(hres))
-							{
-								if (wcscmp(vtProp.bstrVal, L"OK") == 0)
-								{
-									meiEnabled = true;
-								}
-							}
-							else
-							{
-								UNS_ERROR(L"isMEIEnabled() failed to get status %d\n", hres);
-							}
-						}
-						else
-						{
-							UNS_ERROR(L"isMEIEnabled() failed to enumerate device %d\n", hres);
-						}
-					}
-				}
-				else
-				{
-					UNS_ERROR(L"isMEIEnabled() failed to connect to exec WMI query\n");
-				}
-			}
-			else
-			{
-				UNS_ERROR(L"isMEIEnabled() failed to connect to WMI server\n");
-			}
-		}
-		else
-		{
-			UNS_ERROR(L"isMEIEnabled() failed in CoCreateInstance()\n");
-		}
-	}
-	catch (const ATL::CAtlException& e)
-	{
-		UNS_ERROR("isMEIEnabled() AtlException hr = 0x%X\n", e.m_hr);
-	}
-	if (svc!= NULL) svc->Release();
-	if (loc!= NULL) loc->Release();
-	if (obj!= NULL) obj->Release();
-	return meiEnabled;
-}
-#else
-bool Configurator::MEIEnabled() const
-{
-	struct stat buf;
-	static const std::vector<std::string> devnode =
-	{ "/dev/mei", "/dev/mei0", "/dev/mei1", "/dev/mei2", "/dev/mei3" };
-
-	for (std::vector<std::string>::const_iterator it = devnode.begin();
-		it != devnode.end(); ++it)
-	{
-		if (!lstat(it->c_str(), &buf))
-			return true;
-	}
-	return false;
-}
-#endif //WIN32
 
 static const int CONFIGURATOR_CHECK_RETRIES = 3; // Retry if wsman fails (usually with timeout)
 
@@ -543,7 +353,6 @@ void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 			case MB_ME_CONFIGURED:
 			{
 				UNS_DEBUG(L"ME_CONFIGURED\n");
-				CreateIMSSShortcut();
 				sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_PROVISIONING, ACE_TEXT("Intel(R) ME configured"));
 			}
 			break;
@@ -785,36 +594,6 @@ namespace
 	}
 }
 
-#ifdef WIN32
-	void Configurator::DoOverrideProsetAdapterSwitching() const
-	{
-		FuncEntryExit<void> fee(this, L"DoOverrideProsetAdapterSwitching");
-
-		if (IsWindows8OrGreater())
-			return;
-
-		unsigned long prosetOverride = 0;
-		if(!DSinstance().GetDataValue(OverrideProsetAdapterSwitching, prosetOverride))
-			return;
-
-		UNS_DEBUG(L"OverrideProsetAdapterSwitching value=%d\n", prosetOverride);
-
-		try
-		{
-			using namespace Intel::MEI_Client::AMTHI_Client;
-			CFG_SetOverrideProsetAdapterSwitchingCommand cmd(prosetOverride);
-			AMT_HOSTIF_CFG_SET_OVERRIDE_PROSET_ADAPTER_SWITCHING_RESPONSE res = cmd.getResponse();
-			UNS_DEBUG(L"Set Proset status %d\n", res.Status);
-		}
-		catch (std::exception& e)
-		{
-			UNS_ERROR(L"Could not set Proset override. %C\n", e.what());
-		}
-	}
-#else
-	void Configurator::DoOverrideProsetAdapterSwitching() const {}
-#endif // WIN32
-
 void Configurator::ScanConfiguration()
 {
 	FuncEntryExit<void> fee(this, L"ScanConfiguration");
@@ -832,8 +611,6 @@ void Configurator::ScanConfiguration()
 			UNS_DEBUG(L"platform=0x%X FWCaps.Amt=%d LME_exists=%d\n" , m_platform, m_stateData_Amt, m_LME_exists);
 		}
 		m_SkuAndBrandScanned = true;
-
-		DoOverrideProsetAdapterSwitching();
 
 		ServicesBatchStartCommand batch;
 		ServiceNamesList services;
@@ -889,9 +666,11 @@ void Configurator::ScanConfiguration()
 	{
 		UNS_ERROR(L"Exception in EnvironmentScanning. %C\n", e.what());
 
-		if(!MEIEnabled())
+		std::wstring err;
+		if (!MEIEnabled(err))
 		{
 			m_scanningNum=0;
+			UNS_ERROR("%W\n", err.c_str());
 			GMSExternalLogger::instance().WarningLog(ACE_TEXT("LMS cannot connect to Intel(R) MEI driver"));
 			UNS_DEBUG(L"MEI state: disabled\n");
 			ACE_Reactor::instance()->cancel_timer (this);//wait for MEI enable
