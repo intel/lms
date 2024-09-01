@@ -565,8 +565,7 @@ TEST_F(EthernetSettingsWSManClientTest, Enumerate)
 	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
 	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
 
-	unsigned int response = client.Enumerate(ethernetSettings);
-	ASSERT_TRUE(response == 0);
+	EXPECT_TRUE(client.Enumerate(ethernetSettings));
 	std::cout << "EthernetSettingsWSManClient size: " << ethernetSettings.size() << std::endl;
 	for (settingsIterator = ethernetSettings.begin();
 		settingsIterator != ethernetSettings.end();

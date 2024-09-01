@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -12,7 +12,7 @@
 #include "WsmanClientLog.h"
 #include "WsmanClientCatch.h"
 
-EthernetSettingsWSManClient::EthernetSettingsWSManClient(unsigned int port) : BaseWSManClient(port), m_isInit(false)
+EthernetSettingsWSManClient::EthernetSettingsWSManClient(unsigned int port) : BaseWSManClient(port)
 {
 }
 
@@ -20,7 +20,7 @@ EthernetSettingsWSManClient::~EthernetSettingsWSManClient()
 {
 }
 
-unsigned int EthernetSettingsWSManClient::Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings)
+bool EthernetSettingsWSManClient::Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings)
 {
 	try
 	{

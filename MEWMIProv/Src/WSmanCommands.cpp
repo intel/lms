@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -179,40 +179,35 @@ UINT32 WSmanCommands::GetPortSettings(std::vector<EthernetPortEntryWSMan> &ether
 		std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
 		std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
 
-		unsigned int response = client.Enumerate(ethernetSettings);
-		if (response == S_OK)
-		{
-			for (settingsIterator = ethernetSettings.begin(); 
-				 settingsIterator != ethernetSettings.end() ; 
-				 settingsIterator++)
-			{
-				EthernetPortEntryWSMan entry;
+		if (!client.Enumerate(ethernetSettings))
+			return ERR_UKNOWN_CONNECTION_ERROR;
 
-				if(settingsIterator->get()->DefaultGatewayExists())
-					entry.DefaultGateway = ToWStr(settingsIterator->get()->DefaultGateway());
-				if (settingsIterator->get()->DHCPEnabledExists())
-					entry.DHCPEnabled = settingsIterator->get()->DHCPEnabled();
-				if (settingsIterator->get()->IPAddressExists())
-					entry.IPAddress = ToWStr(settingsIterator->get()->IPAddress());
-				if (settingsIterator->get()->LinkIsUpExists())
-					entry.LinkIsUp = settingsIterator->get()->LinkIsUp();
-				if (settingsIterator->get()->MACAddressExists())
-					entry.MACAddress = ToWStr(settingsIterator->get()->MACAddress());
-				if (settingsIterator->get()->PrimaryDNSExists())
-					entry.PrimaryDNS = ToWStr(settingsIterator->get()->PrimaryDNS());
-				if (settingsIterator->get()->SecondaryDNSExists())
-					entry.SecondaryDNS = ToWStr(settingsIterator->get()->SecondaryDNS());
-				if (settingsIterator->get()->SubnetMaskExists())
-					entry.SubnetMask = ToWStr(settingsIterator->get()->SubnetMask());
-				ethernetPortList.push_back(entry);
-			}
-		}
-		if (response == EthernetSettingsWSManClient::ERROR_UNKNOWN_ERROR)
+		for (settingsIterator = ethernetSettings.begin();
+			settingsIterator != ethernetSettings.end();
+			settingsIterator++)
 		{
-			response = ERR_UKNOWN_CONNECTION_ERROR;
+			EthernetPortEntryWSMan entry;
+
+			if(settingsIterator->get()->DefaultGatewayExists())
+				entry.DefaultGateway = ToWStr(settingsIterator->get()->DefaultGateway());
+			if (settingsIterator->get()->DHCPEnabledExists())
+				entry.DHCPEnabled = settingsIterator->get()->DHCPEnabled();
+			if (settingsIterator->get()->IPAddressExists())
+				entry.IPAddress = ToWStr(settingsIterator->get()->IPAddress());
+			if (settingsIterator->get()->LinkIsUpExists())
+				entry.LinkIsUp = settingsIterator->get()->LinkIsUp();
+			if (settingsIterator->get()->MACAddressExists())
+				entry.MACAddress = ToWStr(settingsIterator->get()->MACAddress());
+			if (settingsIterator->get()->PrimaryDNSExists())
+				entry.PrimaryDNS = ToWStr(settingsIterator->get()->PrimaryDNS());
+			if (settingsIterator->get()->SecondaryDNSExists())
+				entry.SecondaryDNS = ToWStr(settingsIterator->get()->SecondaryDNS());
+			if (settingsIterator->get()->SubnetMaskExists())
+				entry.SubnetMask = ToWStr(settingsIterator->get()->SubnetMask());
+			ethernetPortList.push_back(entry);
 		}
 
-		return response;
+		return 0;
 	}
 	catch (const std::exception& exc)
 	{
