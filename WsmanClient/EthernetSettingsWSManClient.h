@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -13,19 +13,16 @@
 
 #include "AMT_EthernetPortSettings.h"
 #include "BaseWSManClient.h"
-#include <string>
+#include <memory>
+#include <vector>
 
 class EthernetSettingsWSManClient : public BaseWSManClient
 {
 public:
-	static const unsigned int ERROR_UNKNOWN_ERROR = 1000;
-
 	EthernetSettingsWSManClient(unsigned int port);
 	virtual ~EthernetSettingsWSManClient();
-	unsigned int Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings);
+	bool Enumerate(std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> &EthernetSettings);
 private:
-	bool m_isInit;
-
 	LOCK_BEFORE;
 	Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings m_service;
 	UNLOCK_AFTER;
