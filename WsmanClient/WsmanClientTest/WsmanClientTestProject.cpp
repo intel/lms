@@ -16,6 +16,7 @@
 #include "Mock_AMT_EthernetPortSettings.h"
 #include "MNGIsChangeToAMTEnabledCommand.h"
 #include "KVMScreenSettingClient.h"
+#include "EthernetSettingsWSManClient.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -554,6 +555,27 @@ TEST_F(TimeSynchronizationTest, getEnabledState)
 	cout << "Local time sync enabled state is: " << state << endl;
 }
 
+class EthernetSettingsWSManClientTest : public WsmanClientTest
+{
+};
+
+TEST_F(EthernetSettingsWSManClientTest, Enumerate)
+{
+	EthernetSettingsWSManClient client(m_port);
+	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>> ethernetSettings;
+	std::vector<std::shared_ptr<Intel::Manageability::Cim::Typed::AMT_EthernetPortSettings>>::iterator settingsIterator;
+
+	unsigned int response = client.Enumerate(ethernetSettings);
+	ASSERT_TRUE(response == 0);
+	std::cout << "EthernetSettingsWSManClient size: " << ethernetSettings.size() << std::endl;
+	for (settingsIterator = ethernetSettings.begin();
+		settingsIterator != ethernetSettings.end();
+		settingsIterator++)
+	{
+		std::cout << "EthernetSettingsWSManClient data ip: " <<
+			((settingsIterator->get()->IPAddressExists()) ? settingsIterator->get()->IPAddress() : "N/A") << std::endl;
+	}
+}
 
 int main(int argc, char** argv)  
 {  
