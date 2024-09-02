@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2023 Intel Corporation
+ * Copyright (C) 2011-2024 Intel Corporation
  */
 #ifndef _VERIFY_FILE
 #define _VERIFY_FILE
@@ -20,7 +20,8 @@ public:
 
 private:
 	static bool VerifyFileSignature(const std::wstring &filePath, HANDLE hFile);
-	static void InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &FileData, const std::wstring &filePath, HANDLE hFile);
+	static void InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &FileData,
+		WINTRUST_SIGNATURE_SETTINGS& SignatureSettings, const std::wstring &filePath, HANDLE hFile);
 	static bool VerifyCertificateName(const std::wstring &filePath);
 	static bool VerifyNotSymbolicLink(const std::wstring &filePath, HANDLE hFile);
 	static bool VerifyDll(const std::wstring &filePath, HANDLE hFile);
