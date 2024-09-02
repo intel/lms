@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2023 Intel Corporation
+ * Copyright (C) 2011-2024 Intel Corporation
  */
 #include "VerifyFile.h"
 #include "DataStorageGenerator.h"
@@ -164,7 +164,8 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath, HANDLE hFile)
     GUID WVTPolicyGUID = WINTRUST_ACTION_GENERIC_VERIFY_V2; 
 	WINTRUST_FILE_INFO FileData;
     WINTRUST_DATA WinTrustData;
-	InitWinTrust(WinTrustData, FileData, filePath, hFile);
+	WINTRUST_SIGNATURE_SETTINGS SignatureSettings;
+	InitWinTrust(WinTrustData, FileData, SignatureSettings, filePath, hFile);
 
     
     // WinVerifyTrust verifies signatures as specified by the GUID and Wintrust_Data.
@@ -238,7 +239,8 @@ bool VerifyFile::VerifyFileSignature(const std::wstring &filePath, HANDLE hFile)
 }
 
 
-void VerifyFile::InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &FileData, const std::wstring &filePath, HANDLE hFile)
+void VerifyFile::InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &FileData,
+	WINTRUST_SIGNATURE_SETTINGS &SignatureSettings, const std::wstring &filePath, HANDLE hFile)
 {
 	// Initialize the WINTRUST_FILE_INFO structure.
 	memset(&FileData, 0, sizeof(FileData));
@@ -287,9 +289,15 @@ void VerifyFile::InitWinTrust(WINTRUST_DATA &WinTrustData, WINTRUST_FILE_INFO &F
 
     // Set pFile.
     WinTrustData.pFile = &FileData;
+
+	memset(&SignatureSettings, 0, sizeof(SignatureSettings));
+
+	SignatureSettings.cbStruct = sizeof(WINTRUST_SIGNATURE_SETTINGS);
+	SignatureSettings.dwFlags = WSS_VERIFY_SPECIFIC; // verifies the specific certificate only
+	SignatureSettings.dwIndex = 0;                   // index for the first certificate in the chain
+
+	WinTrustData.pSignatureSettings = &SignatureSettings;
 }
-
-
 
 /*
  * Verifies that Certificate of given file was signed by Intel
