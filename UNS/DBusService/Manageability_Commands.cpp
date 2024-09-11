@@ -56,9 +56,9 @@ namespace Manageability {
 		return TRUE;
 	}
 
-	gboolean on_get_cpu_brand(LmsManageability* skeleton, GDBusMethodInvocation* invocation, gpointer user_data)
+	gboolean on_get_cpubrand(LmsManageability* skeleton, GDBusMethodInvocation* invocation, gpointer user_data)
 	{
-		UNS_DEBUG(L"on_get_cpu_brand\n");
+		UNS_DEBUG(L"on_get_cpubrand\n");
 		DBusService* th = (DBusService*)user_data;
 		uint8_t brand = 0;
 
@@ -144,8 +144,8 @@ namespace Manageability {
 			G_CALLBACK (on_get_customer_type), user_data);
 		g_signal_connect(*skeleton_manageability, "handle-get-platform-type",
 			G_CALLBACK(on_get_platform_type), user_data);
-		g_signal_connect(*skeleton_manageability, "handle-get-cpu-brand",
-			G_CALLBACK(on_get_cpu_brand), user_data);
+		g_signal_connect(*skeleton_manageability, "handle-get-cpubrand",
+			G_CALLBACK(on_get_cpubrand), user_data);
 		g_signal_connect (*skeleton_manageability, "handle-get-menageabilty-mode",
 			G_CALLBACK (on_get_menageabilty_mode), user_data);
 		g_signal_connect (*skeleton_manageability, "handle-get-fwinfo",
