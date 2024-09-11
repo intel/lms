@@ -76,6 +76,8 @@ private:
 		};
 
 		SSIP_Message_Block(SSIP_STATE State) : Value(State) {}
+		SSIP_Message_Block(const SSIP_Message_Block& other) = delete;
+		SSIP_Message_Block& operator=(const SSIP_Message_Block& other) = delete;
 		virtual ~SSIP_Message_Block();
 		// Data members
 		SSIP_STATE Value;

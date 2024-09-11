@@ -34,6 +34,8 @@ public:
 		{
 			SecureZeroMemory(&_profileData, sizeof(_profileData));
 		}
+		WPFS_Message_Block(const WPFS_Message_Block& other) = delete;
+		WPFS_Message_Block& operator=(const WPFS_Message_Block& other) = delete;
 		virtual ~WPFS_Message_Block() {}
 		// Data members
 		wlanps::INTEL_PROFILE_DATA _profileData;

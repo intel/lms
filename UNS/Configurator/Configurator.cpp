@@ -1281,16 +1281,18 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 		switch(type) //For messages with special DataBlock
 		{
 			case MB_DEVICE_EVENT:
-				taskMbPtr->data_block(new DeviceEventDataBlock(*((DeviceEventDataBlock*)mbPtr->data_block())));
+				taskMbPtr->data_block(new DeviceEventDataBlock(((DeviceEventDataBlock*)mbPtr->data_block())->eventType,
+					((DeviceEventDataBlock*)mbPtr->data_block())->wasOnOurGuid));
 				break;
 			case MB_CONFIGURATION_CHANGE:
-				taskMbPtr->data_block(new ChangeConfiguration(*((ChangeConfiguration*)mbPtr->data_block())));
+				taskMbPtr->data_block(new ChangeConfiguration(((ChangeConfiguration*)mbPtr->data_block())->type,
+					((ChangeConfiguration*)mbPtr->data_block())->value));
 				break;
 			case MB_PORT_FORWARDING_STOPPED:
-				taskMbPtr->data_block(new PortForwardingStoppedBlock(*((PortForwardingStoppedBlock*)mbPtr->data_block())));
+				taskMbPtr->data_block(new PortForwardingStoppedBlock(((PortForwardingStoppedBlock*)mbPtr->data_block())->m_publishFailure));
 				break;
 			case MB_PORT_FORWARDING_STARTED:
-				taskMbPtr->data_block(new PortForwardingStartedBlock(*((PortForwardingStartedBlock*)mbPtr->data_block())));
+				taskMbPtr->data_block(new PortForwardingStartedBlock(((PortForwardingStartedBlock*)mbPtr->data_block())->m_portForwardingPort));
 			break;
 			default:
 				taskMbPtr->data_block(new ACE_Data_Block());

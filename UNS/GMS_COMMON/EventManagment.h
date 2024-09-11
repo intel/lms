@@ -48,13 +48,7 @@ class GMS_AlertIndication: public ACE_Data_Block
 {
 public:
 	GMS_AlertIndication(): category(0), id(0) {} ;	// Default constructor
-	GMS_AlertIndication(const GMS_AlertIndication& other): // Copy constructor
-		category(other.category),
-		id(other.id),
-		Datetime(other.Datetime),
-		MessageID(other.MessageID),
-		Message(other.Message),
-		MessageArguments(other.MessageArguments){}
+	GMS_AlertIndication(const GMS_AlertIndication& other) = delete;
 	GMS_AlertIndication(unsigned short o_category, unsigned long o_id,
 		const std::string &o_Datetime, const ACE_TString &o_MessageID, const ACE_TString &o_Message):
 		category(o_category), id(o_id), Datetime(o_Datetime), MessageID(o_MessageID), Message(o_Message) {}
@@ -128,9 +122,7 @@ class ChangeConfiguration: public ACE_Data_Block
 {
 public:
 	ChangeConfiguration() : type(CONFIGURATION_TYPE::WRONG_CONFIGURATION_TYPE), value(0)  {};	// Default constructor
-	ChangeConfiguration(const ChangeConfiguration& other): // Copy constructor
-		type(other.type),
-			value(other.value){};
+	ChangeConfiguration(const ChangeConfiguration& other) = delete;
 	ChangeConfiguration(CONFIGURATION_TYPE o_type,int o_value) :
 		type(o_type),value(o_value) {}
 	virtual ~ChangeConfiguration(){}; // Destructor
@@ -145,7 +137,7 @@ class StartPFWUP: public ACE_Data_Block
 {
 public:
 	StartPFWUP() : value(0) {};											// Default constructor
-	StartPFWUP(const StartPFWUP& other):value(other.value){};	// Copy constructor
+	StartPFWUP(const StartPFWUP& other) = delete;
 	StartPFWUP(unsigned short o_value) :
 		value(o_value) {}
 	virtual ~StartPFWUP(){};							// Destructor
@@ -159,8 +151,7 @@ class DeviceEventDataBlock : public ACE_Data_Block
 {
 public:
 	DeviceEventDataBlock() : eventType(0), wasOnOurGuid(false) {};// Default constructor
-	DeviceEventDataBlock(const DeviceEventDataBlock& other) :
-		eventType(other.eventType), wasOnOurGuid(other.wasOnOurGuid){}// Copy constructor
+	DeviceEventDataBlock(const DeviceEventDataBlock& other) = delete;
 	DeviceEventDataBlock(unsigned long o_eventType, bool o_wasOnOurGuid) :
 		eventType(o_eventType), wasOnOurGuid(o_wasOnOurGuid) {}
 	virtual ~DeviceEventDataBlock(){}// Destructor
@@ -175,7 +166,7 @@ class StopServiceDataBlock: public ACE_Data_Block
 {
 public:
 	StopServiceDataBlock():m_meiEnabled(true) {};											// Default constructor
-	StopServiceDataBlock(const StopServiceDataBlock& other):m_meiEnabled(other.m_meiEnabled){};	// Copy constructor
+	StopServiceDataBlock(const StopServiceDataBlock& other) = delete;
 	StopServiceDataBlock(bool meiEnabled):m_meiEnabled(meiEnabled) {}
 	virtual ~StopServiceDataBlock(){};							// Destructor
 	StopServiceDataBlock &operator=(const StopServiceDataBlock &other) = delete;
@@ -197,7 +188,7 @@ class ServiceStatus: public ACE_Data_Block
 {
 public:
 	ServiceStatus() : serviceName(), status(SERVICE_STATUS_TYPE::UNKNOWN) {}; // Default constructor
-	ServiceStatus(const ServiceStatus& other): serviceName(other.serviceName),status(other.status){};// Copy constructor
+	ServiceStatus(const ServiceStatus& other) = delete;
 	ServiceStatus(const ACE_TString &o_serviceName, SERVICE_STATUS_TYPE o_status):
 		serviceName(o_serviceName),
 		status(o_status){};
@@ -213,7 +204,7 @@ class PortForwardingStoppedBlock : public ACE_Data_Block
 {
 public:
 	PortForwardingStoppedBlock() :m_publishFailure(false) {};											// Default constructor
-	PortForwardingStoppedBlock(const PortForwardingStoppedBlock& other) :m_publishFailure(other.m_publishFailure) {};	// Copy constructor
+	PortForwardingStoppedBlock(const PortForwardingStoppedBlock& other) = delete;
 	PortForwardingStoppedBlock(bool failure) :m_publishFailure(failure) {}
 	virtual ~PortForwardingStoppedBlock() {};							// Destructor
 	PortForwardingStoppedBlock &operator=(const PortForwardingStoppedBlock &other) = delete;
@@ -225,7 +216,7 @@ class PortForwardingStartedBlock : public ACE_Data_Block
 {
 public:
 	PortForwardingStartedBlock() : m_portForwardingPort(0) {}; // Default constructor
-	PortForwardingStartedBlock(const PortForwardingStartedBlock& other) : m_portForwardingPort(other.m_portForwardingPort) {}; // Copy constructor
+	PortForwardingStartedBlock(const PortForwardingStartedBlock& other) = delete;
 	PortForwardingStartedBlock(unsigned int portForwardingPort) : m_portForwardingPort(portForwardingPort) {}
 	virtual ~PortForwardingStartedBlock() {}; // Destructor
 	PortForwardingStartedBlock& operator=(const PortForwardingStartedBlock& other) = delete;
