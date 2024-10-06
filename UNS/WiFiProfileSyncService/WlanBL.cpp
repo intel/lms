@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2023 Intel Corporation
+ * Copyright (C) 2018-2024 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
@@ -45,7 +45,7 @@ namespace wlanps {
 		
 		for (auto iterator = wlanOsProfiles.begin(); iterator != wlanOsProfiles.end(); iterator++)
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Profile= %-25W SSID=  %-25W aut = %-10sW, enc= %W\n",
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Profile= %-25W SSID=  %-25W aut = %-10W, enc= %W\n",
 			 (*iterator)->profile, (*iterator)->SSID, (*iterator)->auth, (*iterator)->encr);
 		}
 
