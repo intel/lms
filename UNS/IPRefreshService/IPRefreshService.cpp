@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include <sstream>
 
@@ -23,6 +23,8 @@ int IPRefreshService::init (int argc, ACE_TCHAR *argv[])
 	wirelessAdaptorID_updated = false;
 	wiredAdaptorID		= -1;
 	wirelessAdaptorID	= -1;
+	wiredAdaptorDHCP = false;
+	wirelessAdaptorDHCP = false;
 	startSubService();
 	return 0;
 }

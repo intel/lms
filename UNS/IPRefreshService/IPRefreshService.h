@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef __IPREFRESHSERVICE_H_
 #define __IPREFRESHSERVICE_H_
@@ -33,6 +33,8 @@ private:
 	std::string wirelessMacAddress;
 	int  wiredAdaptorID;
 	int  wirelessAdaptorID;
+	bool wiredAdaptorDHCP;
+	bool wirelessAdaptorDHCP;
 
 	bool GetAdaptorIDs();
 	void publishIPRefreshEvent(bool wlan);
