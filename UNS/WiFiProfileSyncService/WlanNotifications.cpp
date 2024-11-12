@@ -17,7 +17,6 @@ wlanps::WlanNotifications& wlanps::WlanNotifications::getInstance()
 
 unsigned long wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncService *service)
 {
-
 	m_service = service;
 
 	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": WlanRegisterNotification\n");
@@ -25,7 +24,7 @@ unsigned long wlanps::WlanNotifications::Init(HANDLE hwlan, WiFiProfileSyncServi
 	//  register notifications on all wireless interfaces
 	unsigned long retVal = WlanRegisterNotification(
 		hwlan,
-		WLAN_NOTIFICATION_SOURCE_ACM | WLAN_NOTIFICATION_SOURCE_MSM,
+		WLAN_NOTIFICATION_SOURCE_ACM,
 		TRUE,                      // IgnoreDuplicate, TRUE - notification will not be sent to the client if it is identical to the previous one.
 		wlanps::WlanNotifications::WlanNotificationCbk,
 		this,                       // context - pointer to the object class
@@ -60,10 +59,9 @@ VOID WINAPI wlanps::WlanNotifications::WlanNotificationCbk(PWLAN_NOTIFICATION_DA
 	wlanps::WlanNotifications *pWlanNotif = (wlanps::WlanNotifications*)(pContext);
 	PWLAN_CONNECTION_NOTIFICATION_DATA pConnNotifData =	(PWLAN_CONNECTION_NOTIFICATION_DATA)pWlanNotificationData->pData;
 
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Got WLAN Notification. Source = %d\n", pWlanNotificationData->NotificationSource);
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Got WLAN Notification. Code = %d\n", pWlanNotificationData->NotificationCode);
 
-	if (pWlanNotificationData->NotificationSource == WLAN_NOTIFICATION_SOURCE_ACM && 
-		pWlanNotificationData->NotificationCode == wlan_notification_acm_connection_complete)
+	if (pWlanNotificationData->NotificationCode == wlan_notification_acm_connection_complete)
 	{
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": acm_connection_complete\n");
 			
