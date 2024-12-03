@@ -250,7 +250,7 @@ namespace wlanps {
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Calling osProfiles.GetProfileData...\n");
 		WlanProfiles osProfiles(hwlan); // Operating System Profiles, in OS format
-		retVal = osProfiles.GetProfileData(profileData, &profileFlags);
+		retVal = osProfiles.GetProfileData(profileData, &profileFlags, supportedAuthentication, supportedEncription);
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Calling osProfiles.GetProfileData returned %d\n", retVal);
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Profile details: SSID = %W aut = %W, enc = %W profileFlags 0x%08X\n",
@@ -259,14 +259,6 @@ namespace wlanps {
 		if (!retVal)
 		{
 			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": GetProfileData failed! Stop add Profile process\n");
-			return;
-		}
-
-		// Check if this profile is an IT (Group Policy) profile
-		if (profileFlags == WLAN_PROFILE_GROUP_POLICY)
-		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": This is an IT Profile --> Do nothing\n");
-			profileData->FreeKeyMaterial();
 			return;
 		}
 

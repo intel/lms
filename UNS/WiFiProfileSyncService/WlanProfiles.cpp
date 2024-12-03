@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2020 Intel Corporation
+ * Copyright (C) 2018-2024 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
@@ -10,66 +10,90 @@ wlanps::WlanProfiles::WlanProfiles(HANDLE wlanHandle) : m_hwlan(wlanHandle)
 {
 }
 
-bool wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long *pProfileFlags)
+bool wlanps::WlanProfiles::GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long* pProfileFlags,
+	const authenticationSet_t& supportedAuthentication, const encriptionSet_t& supportedEncription)
 {
+	std::wstring auth;
+	std::wstring enc;
+	std::wstring key;
+	std::wstring ssid;
+	std::wstring ssidElement;
+	bool ret;
+
+	// WlanGetProfile
 	LPWSTR pProfileXml = nullptr;
-	unsigned long  flags = WLAN_PROFILE_GET_PLAINTEXT_KEY;
+	*pProfileFlags = WLAN_PROFILE_GET_PLAINTEXT_KEY;
 	unsigned long  dwGrantedAccess = 0;
-	unsigned long  dwResult = ERROR_SUCCESS;
-
-	UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": profile: [%W]\n", profileData->profile);
-
-	// Get Wlan Profile
-	dwResult = WlanGetProfile(m_hwlan, &(profileData->ifGuid), profileData->profile, nullptr, &pProfileXml, &flags, &dwGrantedAccess);
+	unsigned long  dwResult = WlanGetProfile(m_hwlan, &(profileData->ifGuid), profileData->profile, nullptr, &pProfileXml, pProfileFlags, &dwGrantedAccess);
 
 	if (dwResult != ERROR_SUCCESS)
 	{
-		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanGetProfile Failed %d\n", dwResult);
+		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: WlanGetProfile failed with %d\n", dwResult);
+		ret = false;
+		goto cleanup;
+	}
 
-		if (pProfileXml != nullptr)
-		{
-			WlanFreeMemory(pProfileXml);
-			pProfileXml = nullptr;
-		}
-
-		// Get Profile failed
-		return false;
+	// Check if this profile is an IT (Group Policy) profile
+	if (*pProfileFlags & WLAN_PROFILE_GROUP_POLICY)
+	{
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %W is a Group Policy Profile\n", profileData->profile);
+		ret = false;
+		goto cleanup; // skip
 	}
 
 	if (!isLegalProfileName(profileData->profile))
 	{
-		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Illegal profile name %W -> Return ERROR\n", profileData->profile);
-
-		if (pProfileXml != nullptr)
-		{
-			WlanFreeMemory(pProfileXml);
-		}
-		return false;
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: illegal profile name %W\n", profileData->profile);
+		ret = false;
+		goto cleanup;
 	}
 
-	// Set additional profile data
+	if (pProfileXml == nullptr)
+	{
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: empty profile xml for %W\n", profileData->profile);
+		ret = false;
+		goto cleanup;
+	}
+
+	auth = xmlRead(pProfileXml, L"authentication");
+	enc = xmlRead(pProfileXml, L"encryption");
+	key = xmlRead(pProfileXml, L"keyMaterial");
+	ssidElement = xmlRead(pProfileXml, L"SSID");
+	ssid = xmlRead(ssidElement, L"name");
+
+	if (!isSupportedEncription(enc, supportedEncription))
+	{
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: encription unsupported by LMS-PS %W for Profile %W\n",
+			enc.c_str(), profileData->profile);
+		ret = false;
+		goto cleanup;
+	}
+
+	if (!isSupportedAuthentication(auth, supportedAuthentication))
+	{
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported by LMS-PS %W for Profile %W\n",
+			auth.c_str(), profileData->profile);
+		ret = false;
+		goto cleanup;
+	}
+
+	//Set the profile data
+	wcsncpy_s(profileData->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
+	wcsncpy_s(profileData->encr, INTEL_SHORT_DESCR_LEN, enc.c_str(), enc.length());
+	wcsncpy_s(profileData->keyMaterial, INTEL_KEY_MATERIAL_LEN, key.c_str(), key.length());
+	wcsncpy_s(profileData->SSID, ssid.c_str(), _countof(profileData->SSID));
+
+	ret = true;
+
+cleanup:
 	if (pProfileXml != nullptr)
 	{
-		// Authentication
-		wcsncpy_s(profileData->auth, xmlRead(pProfileXml, L"authentication").c_str(), sizeof(profileData->auth) / sizeof(profileData->auth[0]));
-
-		// Encription
-		wcsncpy_s(profileData->encr, xmlRead(pProfileXml, L"encryption").c_str(), sizeof(profileData->encr) / sizeof(profileData->encr[0]));
-
-		// Key
-		wcsncpy_s(profileData->keyMaterial,	xmlRead(pProfileXml, L"keyMaterial").c_str(), sizeof(profileData->keyMaterial) / sizeof(profileData->keyMaterial[0]));
-
-		UNS_TRACE(L"[ProfileSync] " __FUNCTIONW__": \n  auth: %W\n  encr: %W\n Flags: %d\n",
-			profileData->auth, profileData->encr, flags);
-
-		// Set Profile Flags
-		*pProfileFlags = flags;
-
 		WlanFreeMemory(pProfileXml);
 		pProfileXml = nullptr;
 	}
+	SecureZeroMemory(&key[0], key.size() * sizeof(WCHAR));
 
-	return true;
+	return ret;
 }
 
 std::wstring wlanps::WlanProfiles::xmlRead(const std::wstring &strXML, std::wstring strKey)
@@ -169,79 +193,21 @@ bool wlanps::WlanProfiles::GetProfiles(WlanOsProfileList &profiles, const authen
 				// Loop over all OS profiles or until MAX_USER_PROFILES User Profiles were found
 				for (j = 0; (j < pProfileList->dwNumberOfItems) && (profiles.size() < MAX_USER_PROFILES); j++)
 				{
-					std::wstring auth = L"";
-					std::wstring enc = L"";
-					std::wstring key = L"";
-					std::wstring ssid = L"";
-
-					pProfile = (WLAN_PROFILE_INFO *)&pProfileList->ProfileInfo[j];
-
-					// WlanGetProfile
-					LPWSTR pProfileXml = nullptr;
-					unsigned long  dwFlags = WLAN_PROFILE_GET_PLAINTEXT_KEY;
-					unsigned long  dwGrantedAccess = 0;
-					unsigned long  dwResult = WlanGetProfile(m_hwlan, &pIfInfo->InterfaceGuid, pProfile->strProfileName, nullptr, &pProfileXml, &dwFlags, &dwGrantedAccess);
-
-					if (dwResult != ERROR_SUCCESS)
-					{
-						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: WlanGetProfile failed with %d\n", dwResult);
-						continue;
-					}
-
-					if (pProfile->dwFlags & WLAN_PROFILE_GROUP_POLICY)
-					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %W is a Group Policy Profile\n", pProfile->strProfileName);
-						continue; // skip
-					}
-
-					if (!isLegalProfileName(pProfile->strProfileName))
-					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: illegal profile name %W\n", pProfile->strProfileName);
-						continue;
-					}
-
-					if (pProfileXml != nullptr)
-					{
-						auth = xmlRead(pProfileXml, L"authentication");
-						enc = xmlRead(pProfileXml, L"encryption");
-						key = xmlRead(pProfileXml, L"keyMaterial");
-						std::wstring ssidElement = xmlRead(pProfileXml, L"SSID");
-						ssid = xmlRead(ssidElement, L"name");
-
-						WlanFreeMemory(pProfileXml);
-						pProfileXml = nullptr;
-					}
-
-					if (!isSupportedEncription(enc, supportedEncription))
-					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: encription unsupported by LMS-PS %W for Profile %W\n",
-							enc.c_str(), pProfile->strProfileName);
-						continue;
-					}
-
-					if (!isSupportedAuthentication(auth, supportedAuthentication))
-					{
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported by LMS-PS %W for Profile %W\n",
-							auth.c_str(), pProfile->strProfileName);
-						continue;
-					}
-
-					//allocate new user profile data
 					std::shared_ptr<INTEL_PROFILE_DATA> prof(new INTEL_PROFILE_DATA);
+					unsigned long profileFlags = 0;
 
-
-					//Set the profile data
+					pProfile = (WLAN_PROFILE_INFO*)&pProfileList->ProfileInfo[j];
 					wcsncpy_s(prof->profile, pProfile->strProfileName, _countof(prof->profile));
 					memcpy_s(&prof->ifGuid, sizeof(prof->ifGuid), &pIfInfo->InterfaceGuid, sizeof(prof->ifGuid));
-					wcsncpy_s(prof->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
-					wcsncpy_s(prof->encr, INTEL_SHORT_DESCR_LEN, enc.c_str(), enc.length());
-					wcsncpy_s(prof->keyMaterial, INTEL_KEY_MATERIAL_LEN, key.c_str(), key.length());
-					wcsncpy_s(prof->SSID, ssid.c_str(), _countof(prof->SSID));
+
+					if (!GetProfileData(prof.get(), &profileFlags, supportedAuthentication, supportedEncription))
+					{
+						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: GetProfileData failed\n");
+						continue;
+					}
 
 					//update the list
 					profiles.push_back(prof);
-
-					SecureZeroMemory(&key[0], key.size() * sizeof(WCHAR));
 				}
 			}
 		}
