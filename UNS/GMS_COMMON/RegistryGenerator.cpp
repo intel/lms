@@ -85,6 +85,7 @@ std::shared_ptr<RegEntryMap> generateRegMap()
 	regMap->at(GetUPIDFeatureState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("GetUPIDFeatureState"));
 	regMap->at(SetUPIDFeatureState_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("SetUPIDFeatureState"));
 	regMap->at(SkuMgrQualifiedBrandEntitlements_F) = RegEntry(AMT_REG_ENTRY_UNS_PREFIX_CREDENTIALS, LMS_REG_TEXT("SkuMgrQualifiedBrandEntitlements"));
+	regMap->at(WlanProfileNames) = RegEntry(LMS_REG, LMS_REG_TEXT("WlanProfileNames"));
 	//When adding to this regMap - add to the same place you added to the DataStorageGenerator.h!!!!
 	return regMap;
 }
