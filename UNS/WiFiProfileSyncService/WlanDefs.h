@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2022 Intel Corporation
+ * Copyright (C) 2018-2024 Intel Corporation
  */
 #ifndef __WLAN_DEFS_H_
 #define __WLAN_DEFS_H_
@@ -20,8 +20,12 @@ namespace wlanps {
 		WCHAR profile[WLAN_MAX_NAME_LENGTH + 1];
 		WCHAR SSID[DOT11_SSID_MAX_LENGTH + 1];
 		WCHAR auth[INTEL_SHORT_DESCR_LEN];
+		WCHAR auth2[INTEL_SHORT_DESCR_LEN];
 		WCHAR encr[INTEL_SHORT_DESCR_LEN];
 		WCHAR keyMaterial[INTEL_KEY_MATERIAL_LEN];
+		bool transitionMode;
+		unsigned int profileID1;
+		unsigned int profileID2;
 
 		void FreeKeyMaterial()
 		{
