@@ -21,13 +21,12 @@ namespace wlanps {
 		static std::mutex _updateMutex;
 
 		static bool trans2CIM(PINTEL_PROFILE_DATA profileData, SingleMeProfile& wifiSettings);
-		static void PrintWifiSetting(unsigned short auth, unsigned short enc, int prio, wchar_t* elementName, wchar_t* ssid);
 		static void CleanOsProfileList(WlanOsProfileList &wlanOsProfiles);
 		static bool AddMissingProfilesToMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles);
 		static bool FetchOsProfiles(HANDLE hwlan, WlanOsProfileList &wlanOsProfiles);
-		static void PrintInternalOsUserProfileList(WlanOsProfileList &wlanOsProfiles);
-		static bool CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles);
+		static bool CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles, bool all);
 		static bool EnumerateMeProfiles(WlanWSManClient &wsmanClient, MeProfileList &profiles);
+		static unsigned int AddUpdateProfile(WlanWSManClient& wsmanClient, SingleMeProfile& wifiSettings, bool found);
 	};
 }
 

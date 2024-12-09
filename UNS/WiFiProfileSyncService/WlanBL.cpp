@@ -33,24 +33,19 @@ namespace wlanps {
 		bool ret = osProfiles.GetProfiles(wlanOsProfiles, supportedAuthentication, supportedEncription);
 		if (ret)
 		{
-			PrintInternalOsUserProfileList(wlanOsProfiles);
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: ------- GetProfiles: - OS Profiles List Start (length [%02d]) ------\n",
+				wlanOsProfiles.size());
+
+			for (auto iterator = wlanOsProfiles.begin(); iterator != wlanOsProfiles.end(); iterator++)
+			{
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Profile= %-25W SSID=  %-25W aut = %-10W, enc= %W\n",
+					(*iterator)->profile, (*iterator)->SSID, (*iterator)->auth, (*iterator)->encr);
+			}
+
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: ------- GetProfiles - OS Profiles List End (length [%02d]) ------\n",
+				wlanOsProfiles.size());
 		}
 		return ret;
-	}
-
-	void WlanBL::PrintInternalOsUserProfileList(WlanOsProfileList &wlanOsProfiles)
-	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: ------- GetProfiles: - OS Profiles List Start (length [%02d]) ------\n",
-			wlanOsProfiles.size());
-		
-		for (auto iterator = wlanOsProfiles.begin(); iterator != wlanOsProfiles.end(); iterator++)
-		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Profile= %-25W SSID=  %-25W aut = %-10W, enc= %W\n",
-			 (*iterator)->profile, (*iterator)->SSID, (*iterator)->auth, (*iterator)->encr);
-		}
-
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: ------- GetProfiles - OS Profiles List End (length [%02d]) ------\n",
-			wlanOsProfiles.size());
 	}
 
 	bool WlanBL::EnumerateMeProfiles(WlanWSManClient &wsmanClient, MeProfileList &profiles)
@@ -101,7 +96,7 @@ namespace wlanps {
 		}
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Delete Profiles which are not in the top16 user profiles\n");
-		wsmanStatus = CleanupProfilesInMe(wsmanClient, MeProfileList, wlanOsProfiles);
+		wsmanStatus = CleanupProfilesInMe(wsmanClient, MeProfileList, wlanOsProfiles, true);
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
 
 		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Add Missing profiles \n");
@@ -111,7 +106,7 @@ namespace wlanps {
 		CleanOsProfileList(wlanOsProfiles);
 	}
 
-	bool WlanBL::CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles)
+	bool WlanBL::CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles, bool all)
 	{
 		bool bFoundMatch;
 		bool status;
@@ -146,6 +141,8 @@ namespace wlanps {
 					status = wsmanClient.DeleteProfile(**meIterator);
 					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  DeleteProfile completed %C\n",
 						name.c_str(), status == true ? "successfully" : "with Exception");
+					if (!all) // exit after one slot is freed
+						break;
 				}
 			}
 		}
@@ -180,50 +177,8 @@ namespace wlanps {
 
 				std::string currentOsProfile(ACE_Wide_To_Ascii((*osIterator)->profile).char_rep());
 				MeProfileList::iterator me_it = find_if(MeProfileList.begin(), MeProfileList.end(),
-					[currentOsProfile](const std::shared_ptr<SingleMeProfile> &p) {return currentOsProfile == p->ElementName(); });
-				if (me_it == MeProfileList.end())
-				{
-					//If I got here, it means I didn't find a match in the OS list for this profile
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C OS Profile has no match - Add Profile To ME !\n",
-						currentOsProfile.c_str());
-					unsigned int wsmanStatus = wsmanClient.AddProfile(wifiSettings);
-					switch (wsmanStatus)
-					{
-					case WSMAN_AMT_ERROR_SUCCESS:
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C AddProfile completed\n",
-							currentOsProfile.c_str());
-						break;
-					case WSMAN_AMT_UNSUPPORTED:
-						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C AddProfile rejected as unsupported by FW\n",
-							currentOsProfile.c_str());
-						break;
-					default:
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C AddProfile failed ret = %u\n",
-							currentOsProfile.c_str(), wsmanStatus);
-						break;
-					}
-				}
-				else
-				{
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C OS Profile has match - Update Profile To ME !\n",
-						currentOsProfile.c_str());
-					unsigned int wsmanStatus = wsmanClient.UpdateProfile(wifiSettings);
-					switch (wsmanStatus)
-					{
-					case WSMAN_AMT_ERROR_SUCCESS:
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C UpdateProfile completed\n",
-							currentOsProfile.c_str());
-						break;
-					case WSMAN_AMT_UNSUPPORTED:
-						UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C UpdateProfile rejected as unsupported by FW\n",
-							currentOsProfile.c_str());
-						break;
-					default:
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C UpdateProfile failed ret = %u\n",
-							currentOsProfile.c_str(), wsmanStatus);
-						break;
-					}
-				}
+					[&currentOsProfile](const std::shared_ptr<SingleMeProfile> &p) { return currentOsProfile == p->ElementName(); });
+				AddUpdateProfile(wsmanClient, wifiSettings, (me_it != MeProfileList.end()));
 			}
 		}
 		catch (std::exception* e)
@@ -240,7 +195,6 @@ namespace wlanps {
 		std::lock_guard<std::mutex> lock(_updateMutex);
 		bool retVal;
 		bool bFound = false;
-		bool bFoundMatch = false;
 		unsigned long profileFlags = 0;
 		WlanWSManClient wsmanClient(portForwardingPort);
 		MeProfileList MeProfileList;
@@ -297,96 +251,19 @@ namespace wlanps {
 				MeProfileList.size(), wlanOsProfiles.size());
 
 			// Search the Profile in ME Profile list
-			for (auto meIterator = MeProfileList.begin(); meIterator != MeProfileList.end(); meIterator++)
-			{
-				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_MeProfileList->ElementName: [%C]\n",
-					(*meIterator)->ElementName().c_str());
+			std::string currentOsProfile(wifiSettings.ElementName());
+			MeProfileList::iterator me_it = find_if(MeProfileList.begin(), MeProfileList.end(),
+				[&currentOsProfile](const std::shared_ptr<SingleMeProfile>& p) { return currentOsProfile == p->ElementName(); });
 
-				if ((*meIterator)->ElementName().compare(wifiSettings.ElementName()) == 0)
-				{
-					bFound = true;
-					break;
-				}
-			}
-
-			if ((MAX_USER_PROFILES == MeProfileList.size()) && (bFound == false))
+			if ((MAX_USER_PROFILES == MeProfileList.size()) && (me_it == MeProfileList.end()))
 			{
 				// FW DB is full, delete the appropriate user profile
-				for (auto meIterator = MeProfileList.begin(); meIterator != MeProfileList.end(); meIterator++)
-				{
-					bFoundMatch = false;
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__": Going to search ME Profile %C in OS profile list...\n",
-						(*meIterator)->ElementName().c_str());
-					for (auto osIterator = wlanOsProfiles.begin(); osIterator != wlanOsProfiles.end(); osIterator++)
-					{
-						std::string currentOsProfile(ACE_Wide_To_Ascii((*osIterator)->profile).char_rep());
-
-						if ((*meIterator)->ElementName().compare(currentOsProfile) == 0)
-						{
-							UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  Profile matching with one of top 16 OS User Profile\n",
-								currentOsProfile.c_str());
-							bFoundMatch = true;
-							break;
-						}
-					}
-
-					if (bFoundMatch == false)
-					{
-						std::string name = (*meIterator)->ElementName();
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  Profile is not at the top 16 - Deleting Profile From ME!\n",
-							name.c_str());
-
-						wsmanStatus = wsmanClient.DeleteProfile(**meIterator);
-
-						UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: %-25C  DeleteProfile completed %s\n",
-							name.c_str(), (wsmanStatus) ? L"succesfully" : L"with failure");
-						break;
-					}
-				}
+				CleanupProfilesInMe(wsmanClient, MeProfileList, wlanOsProfiles, false);
 			}
 
 			CleanOsProfileList(wlanOsProfiles);
 
-			if (bFound == true)
-			{
-				// Profile exists in ME Profile list -> Update Profile
-				unsigned int status = wsmanClient.UpdateProfile(wifiSettings);
-				switch (status)
-				{
-				case WSMAN_AMT_ERROR_SUCCESS:
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] completed\n",
-						profileData->profile);
-					break;
-				case WSMAN_AMT_UNSUPPORTED:
-					UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] rejected as unsupported by FW\n",
-						profileData->profile);
-					break;
-				default:
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%W] failed ret = %u\n",
-						profileData->profile, status);
-					break;
-				}
-			}
-			else
-			{
-				// Profile not exists in ME Profile list -> Add Profile
-				unsigned int status = wsmanClient.AddProfile(wifiSettings);
-				switch (status)
-				{
-				case WSMAN_AMT_ERROR_SUCCESS:
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] completed\n",
-						profileData->profile);
-					break;
-				case WSMAN_AMT_UNSUPPORTED:
-					UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] rejected as unsupported by FW\n",
-						profileData->profile);
-					break;
-				default:
-					UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%W] failed ret = %u\n",
-						profileData->profile, status);
-					break;
-				}
-			}
+			AddUpdateProfile(wsmanClient, wifiSettings, (me_it != MeProfileList.end()));
 		}
 		catch (std::exception* e)
 		{
@@ -404,7 +281,7 @@ namespace wlanps {
 
 		unsigned short auth = AuthenticationMethodOther;
 		unsigned short encr = EncryptionMethodOther;
-		int priority = 8;
+		int priority = NoneEncPriority;
 
 		// translate to CIM_WiFiEndpointSettings
 		static const std::map<std::wstring, unsigned short> authMap = {
@@ -455,14 +332,56 @@ namespace wlanps {
 			wifiSettings.PSKPassPhrase(ACE_Wide_To_Ascii(profileData->keyMaterial).char_rep());
 		}
 
-		PrintWifiSetting(auth, encr, priority, profileData->profile, profileData->SSID);
+		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: wifiSettings Profile=%-25W, ssid=%-25W prio=%d auth=%d enc=%d\n",
+			profileData->profile, profileData->SSID, priority, auth, encr);
 
 		return true;
 	}
 
-	void WlanBL::PrintWifiSetting(unsigned short auth, unsigned short enc, int prio, wchar_t* elementName, wchar_t* ssid)
+	unsigned int WlanBL::AddUpdateProfile(WlanWSManClient& wsmanClient, SingleMeProfile& wifiSettings, bool found)
 	{
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: wifiSettings Profile=%-25W, ssid=%-25W prio=%d auth=%d enc=%d\n",
-			elementName, ssid, prio, auth, enc);
+		unsigned int status;
+
+		if (found == true)
+		{
+			// Profile exists in ME Profile list -> Update Profile
+			status = wsmanClient.UpdateProfile(wifiSettings);
+			switch (status)
+			{
+			case WSMAN_AMT_ERROR_SUCCESS:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%C] completed\n",
+					wifiSettings.ElementName().c_str());
+				break;
+			case WSMAN_AMT_UNSUPPORTED:
+				UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%C] rejected as unsupported by FW\n",
+					wifiSettings.ElementName().c_str());
+				break;
+			default:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.UpdateProfile [%C] failed ret = %u\n",
+					wifiSettings.ElementName().c_str(), status);
+				break;
+			}
+		}
+		else
+		{
+			// Profile not exists in ME Profile list -> Add Profile
+			status = wsmanClient.AddProfile(wifiSettings);
+			switch (status)
+			{
+			case WSMAN_AMT_ERROR_SUCCESS:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%C] completed\n",
+					wifiSettings.ElementName().c_str());
+				break;
+			case WSMAN_AMT_UNSUPPORTED:
+				UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%C] rejected as unsupported by FW\n",
+					wifiSettings.ElementName().c_str());
+				break;
+			default:
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: m_wsmanClient.AddProfile [%C] failed ret = %u\n",
+					wifiSettings.ElementName().c_str(), status);
+				break;
+			}
+		}
+		return status;
 	}
 } // namespace wlanps
