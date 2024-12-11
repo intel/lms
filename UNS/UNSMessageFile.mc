@@ -1,5 +1,5 @@
 ;//  SPDX-License-Identifier: Apache-2.0
-;//  Copyright (C) Intel Corporation, 2003 - 2020.
+;//  Copyright (C) Intel Corporation, 2003 - 2024.
 ;//
 ;//  File:       UNSEventsCnf.mc 
 ;//
@@ -489,6 +489,22 @@ Severity=Warning
 SymbolicName=WATCHDOG_ERROR
 Language=All
 Failed to send watchdog keepalive.
+.
+
+MessageId=2128
+Facility=Application
+Severity=Informational
+SymbolicName=FWCIRAWORKAROUND_SUCCESS
+Language=All
+W/A for User Initiated Connection Succeeded
+.
+
+MessageId=2129
+Facility=Application
+Severity=Warning
+SymbolicName=FWCIRAWORKAROUND_FAILURE
+Language=All
+W/A for User Initiated Connection Failed
 .
 
 ;//***********************End of Event Definitions***********************

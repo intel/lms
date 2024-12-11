@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -159,6 +159,8 @@
 #define EVENT_FW_FATAL_ERROR                            282
 #define EVENT_AMT_DISABLE_ATTEMPT						283
 #define EVENT_WATCHDOG_ERROR                            284
+#define EVENT_FWCIRAWORKAROUND_SUCCESS                  285
+#define EVENT_FWCIRAWORKAROUND_FAILURE                  286
 
 //note this should be updated when when adding events
 #define MAX_EVENT_NUM							290

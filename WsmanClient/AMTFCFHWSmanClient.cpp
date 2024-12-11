@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -196,4 +196,43 @@ bool AMTFCFHWSmanClient::CILAFilterCollectionSubscriptionExists(short* pExist, c
 		WSMAN_DEBUG("Filter with InstanceID=%C doesn't exist, %C\n", filterType.c_str(), reason);
 	}
 	return true;
+}
+
+bool AMTFCFHWSmanClient::periodicAllDayPolicyExists(short* pExist)
+{
+	if (!Init())
+	{
+		return false;
+	}
+	try
+	{
+		//Lock WsMan to prevent reentry
+		std::lock_guard<std::mutex> lock(WsManSemaphore());
+		std::vector<std::shared_ptr<CimTyped::AMT_RemoteAccessPolicyRule>> RemoteAccessPolicyRules =
+			CimTyped::AMT_RemoteAccessPolicyRule::Enumerate(m_client.get());
+		std::vector<std::shared_ptr<CimTyped::AMT_RemoteAccessPolicyRule>>::iterator RemoteAccessPolicyRulesIterator;
+		*pExist = false;
+		for (RemoteAccessPolicyRulesIterator = RemoteAccessPolicyRules.begin();
+			RemoteAccessPolicyRulesIterator != RemoteAccessPolicyRules.end();
+			RemoteAccessPolicyRulesIterator++)
+		{
+			CimTyped::AMT_RemoteAccessPolicyRule* currRule = RemoteAccessPolicyRulesIterator->get();
+			if (!currRule)
+				continue;
+
+			if (currRule->TriggerExists() && currRule->TunnelLifeTimeExists())
+			{
+				if (currRule->Trigger() == 2 && currRule->TunnelLifeTime() == 0)
+				{
+					*pExist = true;
+					WSMAN_DEBUG("periodicAllDayPolicyExists: periodic all day policy rule exists\n");
+					return true;
+				}
+			}
+		}
+		WSMAN_DEBUG("periodicAllDayPolicyExists: periodic all day policy rule doesn't exist\n");
+		return true;
+	}
+	CATCH_exception("AMTFCFHWSmanClient::periodicAllDayPolicyExists")
+	return false;
 }
