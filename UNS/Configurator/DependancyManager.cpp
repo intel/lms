@@ -34,6 +34,7 @@ void DependencyManager::ReadMountOrder()
 	m_mountOrder[7].push_back(GMS_IPREFRESHSERVICE);
 	m_mountOrder[7].push_back(POWER_OPERATIONS_SERVICE);
 	m_mountOrder[7].push_back(GMS_WATCHDOGSERVICE);
+	m_mountOrder[7].push_back(GMS_FWCIRAWORKAROUNDSERVICE);
 	m_mountOrder[8].push_back(AMT_ENABLE_LAST_SERVICE);
 	m_mountOrder[8].push_back(WAITING_FOR_PFW_LAST_SERVICE);
 	m_mountOrder[9].push_back(LAST_SERVICE);
@@ -53,6 +54,7 @@ void DependencyManager::ReadAbsoluteDependencies()
 	DependsAbsolutely(GMS_SHAREDSTATICIPSERVICE, GMS_PORTFORWARDINGSERVICE);
 	DependsAbsolutely(GMS_PARTIALFWUPDATESERVICE, GMS_PORTFORWARDINGSERVICE);
 	DependsAbsolutely(POWER_OPERATIONS_SERVICE, GMS_PORTFORWARDINGSERVICE);
+	DependsAbsolutely(GMS_FWCIRAWORKAROUNDSERVICE, GMS_PORTFORWARDINGSERVICE);
 }
 
 void DependencyManager::ReadDependencies()

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2019 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #ifndef SERVICES_NAMES
 #define SERVICES_NAMES
@@ -23,6 +23,7 @@ static const ACE_TString POWER_OPERATIONS_SERVICE(ACE_TEXT("PowerOperationsServi
 static const ACE_TString GMS_DBUSSERVICE(ACE_TEXT("DBusService"));
 static const ACE_TString GMS_WIFIPROFILESYNCSERVICE(ACE_TEXT("WiFiProfileSyncService"));
 static const ACE_TString GMS_WATCHDOGSERVICE(ACE_TEXT("WatchdogService"));
+static const ACE_TString GMS_FWCIRAWORKAROUNDSERVICE(ACE_TEXT("FWCIRAWorkaroundService"));
 static const ACE_TString FIRST_SERVICE(ACE_TEXT("FirstService"));
 static const ACE_TString LAST_SERVICE(ACE_TEXT("LastService"));
 static const ACE_TString AMT_ENABLE_LAST_SERVICE(ACE_TEXT("AmtEnableLastService"));

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "WinLogEventHandler.h"
 #include "HTMGetFLogCommand.h"
@@ -110,7 +110,7 @@ WinLogEventHandler::winLogging(GMS_AlertIndication* alert)
 		(et.id == AGENT_PRSENCE_STOPED)				|| (et.id == AGENT_PRSENCE_EXPIRED) ||
 		(et.id == UNS_NETWORK_SYNC_UPDATE_FAILED)	|| (et.id == UNS_WARNING_MESSAGE) ||
 		(et.id == FW_FATAL_ERROR)					|| (et.id == EVENT_PORT_FORWARDING_SERVICE_UNAVAILABLE) ||
-		(et.id == WATCHDOG_ERROR))
+		(et.id == WATCHDOG_ERROR)					|| (et.id == FWCIRAWORKAROUND_FAILURE))
 	{
 		if (alert->MessageArguments.size() > 0)
 		{

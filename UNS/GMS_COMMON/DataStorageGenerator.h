@@ -93,6 +93,7 @@ enum DATA_NAME : unsigned int
 	SetUPIDFeatureState_F,
 	SkuMgrQualifiedBrandEntitlements_F,
 	WlanProfileNames,
+	FWCIRAWorkaround,
 
 	DATA_NAME_MAX_SENTINEL
 };

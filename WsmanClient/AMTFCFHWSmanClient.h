@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2024 Intel Corporation
  */
 /*++
 
@@ -28,6 +28,9 @@ public:
 	
 	bool snmpEventSubscriberExists(short* pExist);
 	bool CILAFilterCollectionSubscriptionExists(short* pExist);
+
+	bool periodicAllDayPolicyExists(short* pExist);
+
 	bool Init();
 private:
 	bool CILAFilterCollectionSubscriptionExists(short* pExist, const std::string &filterType);

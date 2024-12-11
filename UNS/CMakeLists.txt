@@ -68,6 +68,7 @@ if (UNIX)
   add_subdirectory ("WatchdogService" "WatchdogService")
 endif (UNIX)
 add_subdirectory ("DataInterfaceBackend" "DataInterfaceBackend")
+add_subdirectory ("FWCIRAWorkaroundService" "FWCIRAWorkaroundService")
 
 add_executable (lms WIN32
   UNSMain.cpp
@@ -90,6 +91,7 @@ target_link_libraries (lms
   StatusEventHandler
   TimeSyncService
   WinLogEventHandler
+  FWCIRAWorkaroundService
   $<$<BOOL:${WIN32}>:IPRefreshService>
   $<$<BOOL:${WIN32}>:WiFiProfileSyncService>
   $<$<BOOL:${WIN32}>:PartialFWUpdateService>

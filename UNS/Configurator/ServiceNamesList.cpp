@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2022 Intel Corporation
+ * Copyright (C) 2010-2024 Intel Corporation
  */
 #include "ServiceNamesList.h"
 #include "servicesNames.h"
@@ -49,6 +49,7 @@ void ServiceNamesList::Read(NamesGroup namesGroup)
 		AddName(GMS_TIMESYNCSERVICE);
 		AddNameWin(GMS_WIFIPROFILESYNCSERVICE);
 		AddNameLinux(GMS_WATCHDOGSERVICE);
+		AddName(GMS_FWCIRAWORKAROUNDSERVICE);
 		break;
 
 	case NamesGroup::SKU_5_NO_LME_GROUP:
