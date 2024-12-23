@@ -339,7 +339,7 @@ namespace wlanps {
 		try
 		{
 			auth = authMap.at(profileData->auth);
-			auth2 = authMap.at(profileData->auth2);
+			if (profileData->auth2[0] != L'\0') auth2 = authMap.at(profileData->auth2);
 			encr = encrMap.at(profileData->encr);
 			priority = priorityMap.at(profileData->encr);
 		}
