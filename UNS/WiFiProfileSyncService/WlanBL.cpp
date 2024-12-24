@@ -433,7 +433,7 @@ namespace wlanps {
 
 		if (secondary ? profileData->profileID2 == 0 : profileData->profileID1 == 0)
 			return std::string();
-		str << "INTEL_SYNC_" << secondary ? profileData->profileID2 : profileData->profileID1;
+		str << "INTEL_SYNC_" << (secondary ? profileData->profileID2 : profileData->profileID1);
 		return str.str();
 	}
 } // namespace wlanps
