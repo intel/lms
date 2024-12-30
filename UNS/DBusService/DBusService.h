@@ -31,7 +31,7 @@ public:
 
 	virtual int svc();
 
-	bool emit_alarm(const GMS_AlertIndication* alert);
+	bool emit_alarm(MessageBlockPtr mbPtr);
 
 	void stop();
 
@@ -47,7 +47,7 @@ private:
 
 	std::mutex m_mutex;
 	bool m_have_bus;
-	std::vector<GMS_AlertIndication> m_store;
+	std::vector<MessageBlockPtr> m_store;
 
 	static void on_bus_acquired(GDBusConnection *connection,
 				    const gchar *name, gpointer user_data);
@@ -55,7 +55,7 @@ private:
 	static void on_name_lost(GDBusConnection *connection,
 				 const gchar *name, gpointer user_data);
 
-	void send_alarm(const GMS_AlertIndication* alert);
+	void send_alarm(MessageBlockPtr mbPtr);
 };
 
 class DBUSSERVICE_Export DBusService : public EventHandler
@@ -81,7 +81,7 @@ protected:
 private:
 	DBusThread m_DBusThread;
 
-	void SendAlarm(const GMS_AlertIndication* alert);
+	void SendAlarm(MessageBlockPtr mbPtr);
 
 	std::shared_ptr<DBusFilter> filter_;
 };
