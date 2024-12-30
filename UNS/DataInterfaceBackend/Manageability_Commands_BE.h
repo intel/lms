@@ -9,6 +9,7 @@
 --*/
 
 #include "DataInterfaceBackend.h"
+#include <cstdint>
 #include <string>
 #include <vector>
 
