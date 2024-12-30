@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2023 Intel Corporation
+ * Copyright (C) 2017-2024 Intel Corporation
  */
 #include <gio/gio.h>
 
@@ -56,28 +56,33 @@ int DBusThread::svc()
 	return 0;
 }
 
-bool DBusThread::emit_alarm(const GMS_AlertIndication* alert)
+bool DBusThread::emit_alarm(MessageBlockPtr mbPtr)
 {
 	std::lock_guard<std::mutex> l(m_mutex);
 
 	if (!m_have_bus)
 	{
-		m_store.push_back(*alert);
+		m_store.push_back(mbPtr);
 		return true;
 	}
 	if (!m_skeleton)
 		return false;
-	send_alarm(alert);
+	send_alarm(mbPtr);
 	return true;
 }
 
-void DBusThread::send_alarm(const GMS_AlertIndication* alert)
+void DBusThread::send_alarm(MessageBlockPtr mbPtr)
 {
+	GMS_AlertIndication *alert = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
+	if (!alert)
+		return;
+
 	lms_emit_alert(m_skeleton, alert->category, alert->id,
 	     ACE_TEXT_ALWAYS_CHAR(alert->Message.c_str()),
 	     (alert->MessageArguments.size() > 0) ? ACE_TEXT_ALWAYS_CHAR(alert->MessageArguments[0].c_str()) : "",
 	     ACE_TEXT_ALWAYS_CHAR(alert->MessageID.c_str()), alert->Datetime.c_str());
 }
+
 void DBusThread::stop()
 {
 	if (m_loop)
@@ -101,8 +106,8 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 	Intel::DBus::AT_Device::on_bus_acquired(connection, &th->m_skeleton_device, th->m_father);
 	Intel::DBus::UNSAlert::on_bus_acquired(connection, &th->m_skeleton_alert, th->m_father);
 	th->m_have_bus = true;
-	for (const auto& alert : th->m_store)
-		th->send_alarm(&alert);
+	for (const auto alert : th->m_store)
+		th->send_alarm(alert);
 	th->m_store.clear();
 	UNS_DEBUG(L"Main DBus Thread on_bus_acquired %d\n", ret);
 }
@@ -160,9 +165,9 @@ const ACE_TString DBusService::name()
 
 LMS_SUBSERVICE_DEFINE (DBUSSERVICE, DBusService)
 
-void DBusService::SendAlarm(const GMS_AlertIndication* alert)
+void DBusService::SendAlarm(MessageBlockPtr mbPtr)
 {
-	if (!m_DBusThread.emit_alarm(alert))
+	if (!m_DBusThread.emit_alarm(mbPtr))
 		UNS_ERROR(L"DBusService can't send alarm\n");
 }
 
@@ -170,13 +175,10 @@ int DBusService::handle_event(MessageBlockPtr mbPtr)
 {
 	FuncEntryExit<void> fee(this, L"handle_event");
 	int type = mbPtr->msg_type();
-	GMS_AlertIndication *pGMS_AlertIndication = nullptr;
 	switch (type)
 	{
 	case MB_PUBLISH_EVENT:
-		pGMS_AlertIndication = dynamic_cast<GMS_AlertIndication*>(mbPtr->data_block());
-		if (pGMS_AlertIndication)
-			SendAlarm(pGMS_AlertIndication);
+		SendAlarm(mbPtr);
 		break;
 	default:
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT ("DBusService::Invalid Message.\n")), -1);
