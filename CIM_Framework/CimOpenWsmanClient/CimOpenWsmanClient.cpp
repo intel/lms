@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) 2003 - 2021 Intel Corporation  All Rights Reserved.
+// Copyright (c) 2003 - 2025 Intel Corporation  All Rights Reserved.
 //
 //  File:       CimOpenWsmanClient.cpp
 //
@@ -16,6 +16,12 @@
 #include "WsmanFilter.h"
 
 using namespace std;
+
+extern "C"
+{
+#define LOG_DAEMON (3<<3) /* system daemons */
+	int facility = LOG_DAEMON;
+}
 
 namespace Intel
 {
