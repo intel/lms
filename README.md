@@ -45,8 +45,7 @@ Alternatively, in order to use pre-compiled MeTee one can set the following envi
 
 #### OpenWsman library
 The in-tree copy of OpenWsman library is located at CIM_Framework/openwsman/ directory.
-The sources are from 2.7.0 version from [GitHub](https://github.com/Openwsman/openwsman) with local modifications:
-* Passwords are securely cleaned up
+The sources are from 2.8.0 version from [GitHub](https://github.com/Openwsman/openwsman)
 
 #### GoogleTest (only for builds with unit-tests enabled)
 
@@ -56,7 +55,7 @@ To skip automatic download one can download it manually to Common/googletest dir
 ## Build dependencies
 
 ### Windows
-* VisualStudio 2017 with CMake support.
+* VisualStudio 2019 with CMake support.
 
 ### Linux
 #### Tools
@@ -96,7 +95,7 @@ You can not set both flags to ON.
 Note: The DLL signature check tests Intel(R) signatures, so external build should disable DLL signature check.
 
 1. Create `build` directory
-2. Run `cmake -G "Visual Studio 15 2017" -A <Build_arch> -DIGNORE_DLL_SIGNATURES=YES <srcdir>` from the `build` directory (best to set build_arch to Win32)
+2. Run `cmake -G "Visual Studio 16 2019" -A <Build_arch> -DIGNORE_DLL_SIGNATURES=YES <srcdir>` from the `build` directory (best to set build_arch to Win32)
 3. Run `cmake --build . --config Release --target package -j <nproc>` from the `build` directory to build an archive with all executables and libraries (e.g. lms-1.0.0-win32.zip)
 
 ### Linux
