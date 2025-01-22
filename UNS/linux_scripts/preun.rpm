@@ -1,0 +1,18 @@
+#!/bin/bash
+##############
+# LMS preun hook - RPM
+##############
+
+case "$1" in
+    1|0)
+        systemctl stop -q lms
+        systemctl disable -q lms
+    ;;
+
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
