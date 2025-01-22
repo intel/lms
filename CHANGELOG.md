@@ -1,3 +1,51 @@
+## [2506.0.0.0]
+
+### Fixed
+ - fix trailing whitespace and spelling
+ - fix error print format
+ - DataInterfaceBackend: fix print specifier
+ - PartialFWUpdateService: fix print specifier
+ - PartialFWUpdateService: streamline error list
+ - GMS_COMMON: fix certificate bypass
+ - MEWMIProv: Fix EthernetPortSettings enumeration
+ - CMake: fix Linux debug ACE search
+ - WiFiProfileSyncService: fix print specifier
+ - PortForwardingService: restore socket type workaround
+ - IPRefreshService: avoid refresh for static IP
+ - WiFiProfileSyncService: remove MSM from notification filter
+ - cleanup copy constructors
+ - DataInterfaceBackend: cstdint include for uint8_t
+ - DBusService: pass whole shared pointer
+
+### Changed
+ - make array indexes size_t
+ - WsmanClient: make lengths unsigned
+ - conan: use ACE 8.0.2 and libxml2 2.13.5
+ - WiFiProfileSyncService: consolidate GetProfileData
+ - WiFiProfileSyncService: compact code
+ - import openwsman 2.8.0
+ - openwsman: revert minimal cmake to 3.12
+ - README: update for latest
+
+### Removed
+ - MEIClient: remove unused header field
+ - remove secio events
+
+### Added
+ - MEIClient: add timeout on write
+ - add product version print in log
+ - MEWMIProv: enable logging in service functions
+ - WsmanClient: add test for EthernetSettingsWSManClient
+ - resurrect GetPlatformType COM/DBus method
+ - add GetCPUBrand method to COM/DBus
+ - WiFiProfileSyncService: add transition profile workaround
+ - FWCIRAWorkaroundService: initial implementation
+ - CIM_Framework: CimOpenWsmanClient: define facility
+ - CMake: use FindPython3
+ - MEWMIProv: add description to alert id
+ - Linux: craft post and pre install for rpm
+ - CMake: add udev in usr to rpm exclude list
+
 ## [2426.0.0.0]
 
 ### Fixed
