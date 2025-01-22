@@ -1,0 +1,27 @@
+#!/bin/bash
+##############
+# LMS postinst hook - RPM
+##############
+
+case "$1" in
+    1)
+      mkdir -p /etc/lms
+      udevadm control -R && udevadm trigger -c add
+      systemctl restart rsyslog
+      systemctl -q daemon-reload
+      systemctl enable -fq lms
+      systemctl start -q lms &
+    ;;
+
+    2)
+      systemctl enable -fq lms
+      systemctl start -q lms &
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
