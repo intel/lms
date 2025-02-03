@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #include "IMSSFilter.h"
 #include "UNSEventsDefinition.h"
@@ -37,11 +37,7 @@ bool IMSSFilter::toSubscribe(const GMS_AlertIndication *alert) const
 				)
 				return true;
 		case CATEGORY_SECIO:
-			if ((alert->id == EVENT_SECIO_SEMAPHORE_AT_HOST)||
-				(alert->id == EVENT_SECIO_SEMAPHORE_AT_ME) ||
-				(alert->id == EVENT_SECIO_SEMAPHORE_TIMEOUT)||
-				(alert->id == EVENT_SECIO_CONFIGURATION_EVENT)
-				)
+			if (alert->id == EVENT_SECIO_CONFIGURATION_EVENT)
 				return true;
 		case CATEGORY_KVM:
 			if ((alert->id == EVENT_KVM_SESSION_REQUESTED)||

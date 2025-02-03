@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2019 Intel Corporation
+ * Copyright (C) 2017-2025 Intel Corporation
  */
 /*++
 
@@ -74,9 +74,6 @@ bool DBusFilter::defaultInitialization(std::shared_ptr<DBusFilter> filter)
 		filter->addEvent(EVENT_WLAN_PROTECTION_ON_PASSIVE) &&
 		filter->addEvent(EVENT_WLAN_PROTECTION_OFF) &&
 
-		filter->addEvent(EVENT_SECIO_SEMAPHORE_AT_HOST) &&
-		filter->addEvent(EVENT_SECIO_SEMAPHORE_AT_ME) &&
-		filter->addEvent(EVENT_SECIO_SEMAPHORE_TIMEOUT) &&
 		filter->addEvent(EVENT_SECIO_CONFIGURATION_EVENT) &&
 
 		filter->addEvent(EVENT_KVM_SESSION_REQUESTED) &&

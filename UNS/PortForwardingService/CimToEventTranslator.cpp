@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -61,9 +61,6 @@ const ACE_TString WLAN_NOTIFICATION_10(ACE_TEXT("iAMT0068 - 0"));	// 5 49	 - WLA
 const ACE_TString WLAN_CONTROL_NOTIFICATION_2(ACE_TEXT("iAMT0066 - 1"));	// 5 57  - WLAN Link Control set to ME	
 const ACE_TString WLAN_CONTROL_NOTIFICATION_1(ACE_TEXT("iAMT0066 - 0"));	// 5 58  - WLAN Link Control set to HOST	
 
-const ACE_TString SECIO_NOTIFICATION_1(ACE_TEXT("iAMT0051 - 0"));	// 6 60
-const ACE_TString SECIO_NOTIFICATION_2(ACE_TEXT("iAMT0051 - 1"));// 6 61
-const ACE_TString SECIO_NOTIFICATION_3(ACE_TEXT("iAMT0051 - 2"));	// 6 62
 const ACE_TString SECIO_NOTIFICATION_4(ACE_TEXT("iAMT0060 - 0"));	// 6 63
 
 const ACE_TString KVM_NOTIFICATION_1(ACE_TEXT("iAMT0052 - 0"));	// 7 70
@@ -148,9 +145,6 @@ CimToEventTranslator::CimToEventTranslator()
 	 m_eventsMap.bind(WLAN_CONTROL_NOTIFICATION_1, GmsEventType(CATEGORY_WLAN, EVENT_WLAN_CONTROL_HOST,"WLAN Link Control set to Host (Operating system)")); //User Notification Alert - WLAN Link Control set to HOST
 	 m_eventsMap.bind(WLAN_CONTROL_NOTIFICATION_2, GmsEventType(CATEGORY_WLAN, EVENT_WLAN_CONTROL_ME,"WLAN Link Control set to Intel(R) ME")); //User Notification Alert - WLAN Link Control set to Intel® ME
 
-	 m_eventsMap.bind(SECIO_NOTIFICATION_1, GmsEventType(CATEGORY_SECIO, EVENT_SECIO_SEMAPHORE_AT_HOST, "Sprite is in use by another application")); //User Notification Alert   - SecIo event %1s
-	 m_eventsMap.bind(SECIO_NOTIFICATION_2, GmsEventType(CATEGORY_SECIO, EVENT_SECIO_SEMAPHORE_AT_ME, ""));
-	 m_eventsMap.bind(SECIO_NOTIFICATION_3, GmsEventType(CATEGORY_SECIO, EVENT_SECIO_SEMAPHORE_TIMEOUT, ""));
 	 m_eventsMap.bind(SECIO_NOTIFICATION_4, GmsEventType(CATEGORY_SECIO, EVENT_SECIO_CONFIGURATION_EVENT, "Sprite configuration change requested")); //User Notification Alert   - SecIO configuration event
 
 	 m_eventsMap.bind(KVM_NOTIFICATION_1, GmsEventType(CATEGORY_KVM, EVENT_KVM_SESSION_REQUESTED, "KVM session requested")); //User Notification Alert   - KVM session event %1s

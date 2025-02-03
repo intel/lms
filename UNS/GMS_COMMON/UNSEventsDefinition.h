@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -75,9 +75,6 @@
 #define EVENT_WLAN_CONTROL_ME					57
 #define EVENT_WLAN_CONTROL_HOST					58
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-#define EVENT_SECIO_SEMAPHORE_AT_HOST			60
-#define EVENT_SECIO_SEMAPHORE_AT_ME				61
-#define EVENT_SECIO_SEMAPHORE_TIMEOUT			62
 #define EVENT_SECIO_CONFIGURATION_EVENT			63
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define EVENT_KVM_SESSION_REQUESTED				70
