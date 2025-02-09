@@ -1,7 +1,8 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2024 Intel Corporation
+ * Copyright (C) 2013-2025 Intel Corporation
  */
+#include <ace/Log_Msg.h>
 #include "AMTEthernetPortSettingsClient.h"
 #include "AMTFCFHWSmanClient.h"
 #include "AMTRedirectionServiceWSManClient.h"
@@ -578,6 +579,7 @@ TEST_F(EthernetSettingsWSManClientTest, Enumerate)
 
 int main(int argc, char** argv)  
 {  
+	ACE_LOG_MSG->priority_mask(ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS) & ~LM_TRACE, ACE_Log_Msg::PROCESS);
 	/*
 	//Add this code for filtering tests
 	argc = 2;
