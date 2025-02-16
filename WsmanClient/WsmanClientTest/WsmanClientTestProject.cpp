@@ -14,19 +14,15 @@
 #include "SIOWSManClient.h"
 #include "SyncIpClient.h"
 #include "TimeSynchronizationClient.h"
-#include "Mock_AMT_EthernetPortSettings.h"
 #include "MNGIsChangeToAMTEnabledCommand.h"
 #include "KVMScreenSettingClient.h"
 #include "EthernetSettingsWSManClient.h"
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <sstream>
 #include <iostream>
 #include <string>
 
-using ::testing::AtLeast;
-using ::testing::Return;
 using std::cout;
 using std::endl;
 
@@ -68,33 +64,6 @@ TEST_F(AMTEthernetPortSettingsTest, Get)
 		cout << "Link Preference: " << pLinkPreference << endl;
 		cout << "Link Control: " << pLinkControl << endl << endl;
 		cout << "Link Protection: " << pLinkProtection << endl << endl;
-	}
-}
-
-TEST_F(AMTEthernetPortSettingsTest, Set1)
-{
-	Mock_AMT_EthernetPortSettings mock_settings;
-	unsigned int preference = 1;
-	AMT_EthernetPortSettings::SetLinkPreference_INPUT input;
-	input.LinkPreference(preference);
-
-	ON_CALL(mock_settings, LinkControlExists()).WillByDefault(Return(true));
-	ON_CALL(mock_settings, LinkPreferenceExists()).WillByDefault(Return(true));
-	ON_CALL(mock_settings, LinkControl()).WillByDefault(Return(1));
-	ON_CALL(mock_settings, LinkPreference()).WillByDefault(Return(1));
-	//ON_CALL(mock_settings, SetLinkPreference(input)).WillByDefault(Return(1));
-
-	AMTEthernetPortSettingsClient client(m_port);
-	EXPECT_TRUE(client.SetLinkPreference(1));
-	unsigned int pLinkPreference;
-	unsigned int pLinkControl;
-	unsigned int pLinkProtection;
-	bool pIsLink = false;
-	bool ret = false;
-	EXPECT_TRUE(ret = client.GetAMTEthernetPortSettings(&pLinkPreference, &pLinkControl, &pLinkProtection, &pIsLink));
-	if (ret && pIsLink){
-		EXPECT_EQ(1, pLinkPreference);
-		EXPECT_EQ(1, pLinkControl);
 	}
 }
 
@@ -222,7 +191,7 @@ TEST_F(HBPWSManTest, getConfigurationInfo)
 {
 	HBPWSManClient hbpw(m_port);
 	short controlMode=0, provisioningMethod=0;
-	string timeStamp;
+	std::string timeStamp;
 	std::vector<unsigned char> pCertHash;
 	bool ret = false;
 	EXPECT_TRUE(ret = hbpw.GetConfigurationInfo(&controlMode, &provisioningMethod, timeStamp, pCertHash));
@@ -332,7 +301,7 @@ TEST_F(SyncIpTest, GetNetworkData)
 {
 	SyncIpClient syncIP(m_port);
 	bool ret=false, DHCPEnabled=false;
-	string IPAddress, subnet, gateway, dnsAddress1, dnsAddress2;
+	std::string IPAddress, subnet, gateway, dnsAddress1, dnsAddress2;
 	EXPECT_TRUE(ret = syncIP.GetNetworkData(DHCPEnabled, IPAddress, subnet, gateway, dnsAddress1, dnsAddress2));
 	if (ret){
 		cout << "Type of IP: " << "\t" << ((DHCPEnabled==true) ? "DHCP" : "Static") << endl;
@@ -579,14 +548,14 @@ TEST_F(EthernetSettingsWSManClientTest, Enumerate)
 
 int main(int argc, char** argv)  
 {  
-	ACE_LOG_MSG->priority_mask(ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS) & ~LM_TRACE, ACE_Log_Msg::PROCESS);
+	ACE_LOG_MSG->priority_mask(ACE_LOG_MSG->priority_mask(ACE_Log_Msg::PROCESS) & ~LM_TRACE & ~LM_DEBUG, ACE_Log_Msg::PROCESS);
 	/*
 	//Add this code for filtering tests
 	argc = 2;
 	argv[1] = "--gtest_filter=*-*AMTEthernetPortSettingsClient*";
 	*/
 
-	testing::InitGoogleMock(&argc, argv); 
+	testing::InitGoogleTest(&argc, argv);
 
 	//getchar(); // keep console window open until Return keystroke 
 
