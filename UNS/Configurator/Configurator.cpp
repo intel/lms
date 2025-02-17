@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2024 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #include "Configurator.h"
 #include "LoadedServices.h"
@@ -378,8 +378,6 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 	int ret = initSubService(argc, argv);
 	if (ret)
 		return ret;
-
-	UNS_DEBUG(L"Configurator, 0x%x\n", this);
 
 	//add to the map, services that demand special test before loading
 	//the test will be performed in the start of the service (is StartAceService())
