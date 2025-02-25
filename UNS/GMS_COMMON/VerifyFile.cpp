@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2024 Intel Corporation
+ * Copyright (C) 2011-2025 Intel Corporation
  */
 #include "VerifyFile.h"
 #include "DataStorageGenerator.h"
@@ -332,7 +332,7 @@ bool VerifyFile::VerifyCertificateName(const std::wstring &filePath)
 			break;
 		}
 		// Get signer information size.
-		DWORD dwSignerInfo;
+		DWORD dwSignerInfo = 0;
 		fResult = CryptMsgGetParam( 
 			hMsg, 
 			CMSG_SIGNER_INFO_PARAM, 
