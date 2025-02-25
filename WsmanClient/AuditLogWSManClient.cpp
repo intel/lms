@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -725,7 +725,6 @@ std::string AuditLogWSManClient::DisplayExtendedData(unsigned short appId, unsig
 std::string AuditLogWSManClient::PrintUint32(uint8_t* extData, uint8_t extendedDataLen, const char* message, size_t &i)
 {
 	std::stringstream ss;
-	ss << "";
 	uint32_t* pvalue = NULL;
 	
 	try
@@ -734,7 +733,7 @@ std::string AuditLogWSManClient::PrintUint32(uint8_t* extData, uint8_t extendedD
 	}
 	catch (std::bad_alloc&)
 	{
-		return ss.str();
+		return std::string();
 	}
 	if ((i+sizeof(uint32_t))<=extendedDataLen)
 	{
@@ -756,7 +755,7 @@ std::string AuditLogWSManClient::PrintUint32(uint8_t* extData, uint8_t extendedD
  ****************************************************************************/
 std::string AuditLogWSManClient::PrintUint16(uint8_t* extData, uint8_t extendedDataLen, const char* message, size_t &i)
 {
-	std::stringstream ss ("");
+	std::stringstream ss;
 	uint16_t* pvalue = NULL;
 	try
 	{
@@ -764,7 +763,7 @@ std::string AuditLogWSManClient::PrintUint16(uint8_t* extData, uint8_t extendedD
 	}
 	catch (std::bad_alloc&)
 	{
-		return ss.str();
+		return std::string();
 	}
 	if ((i+sizeof(uint16_t))<=extendedDataLen)
 	{
@@ -793,7 +792,7 @@ std::string AuditLogWSManClient::PrintInterfaceHandleUint32(uint8_t* extData, ui
 	}
 	catch (std::bad_alloc&)
 	{
-		return ss.str();
+		return std::string();
 	}
 	if ((i+sizeof(uint32_t))<=extendedDataLen)
 	{
@@ -1321,7 +1320,7 @@ std::string AuditLogWSManClient::DisplaySecurityAdminSetRealmAuthenticationModeE
 		}
 		catch (std::bad_alloc&)
 		{
-			return ss.str();
+			return std::string();
 		}
 		if ((i+sizeof(uint32_t))<=extendedDataLen)
 		{
@@ -1414,7 +1413,7 @@ std::string AuditLogWSManClient::DisplayFirmwareVerion(uint8_t* extData, int i)
 	}
 	catch (std::bad_alloc&)
 	{
-		return ss.str();
+		return std::string();
 	}
 	for (int j =0; j < 4; j++, i+=sizeof(uint16_t)) 
 	{
@@ -1506,7 +1505,7 @@ std::string AuditLogWSManClient::DisplayTimeStamp(uint8_t* extData)
 	}
 	catch (std::bad_alloc&)
 	{
-		return ss.str();
+		return std::string();
 	}
 	ReverseMemCopy(time, extData, sizeof(unsigned int));
 	ss <<  formatTime(time);
@@ -1656,7 +1655,7 @@ std::string AuditLogWSManClient::DisplayNetworkAdminLinkPolicySetEvent(uint8_t* 
 		}
 		catch (std::bad_alloc&)
 		{
-			return ss.str();
+			return std::string();
 		}
 		ReverseMemCopy(pvalue, extData+i, sizeof(uint32_t));
 		ss << "Link Policy: ";
@@ -2370,7 +2369,7 @@ std::string AuditLogWSManClient::DisplayEacSetOptionsEvent(uint8_t* extData, uin
 		}
 		catch (std::bad_alloc&)
 		{
-			return ss.str();
+			return std::string();
 		}
 		ReverseMemCopy(pvalue, extData+i, sizeof(uint32_t));
 		
