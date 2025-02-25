@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2003-2024 Intel Corporation
+ * Copyright (C) 2003-2025 Intel Corporation
  */
 /*++
 
@@ -145,11 +145,11 @@ struct _ATL_AutomationType<std::wstring>
 
 #define RETURNIF(exp)                                                       \
     do{                                                                     \
-        HRESULT hr = exp;                                                   \
-        if(hr != S_OK)                                                      \
+        HRESULT _hr = exp;                                                  \
+        if(_hr != S_OK)                                                     \
         {                                                                   \
-			UNS_ERROR("Bad WMI param %d\n", hr);                            \
-			return hr;                                                      \
+			UNS_ERROR("Bad WMI param %d\n", _hr);                           \
+			return _hr;                                                     \
         }                                                                   \
     }while(0)
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -846,9 +846,9 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 			pResponse->vt = VT_ARRAY | VT_BSTR;
 			pResponse->parray = pSar;
 		}
-		catch(const _com_error &err)
+		catch(const _com_error &e)
 		{
-			const TCHAR* reason =  err.ErrorMessage();
+			const TCHAR* reason =  e.ErrorMessage();
 			UNS_DEBUG(L"com error %W\n", reason);
 			return E_FAIL;
 		}

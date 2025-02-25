@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2053 Intel Corporation
  */
 
 #include "SharedStaticIPService.h"
@@ -85,10 +85,10 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 	if ((ret = ACE_Reactor::instance()->register_handler(this, m_event)) != 0)
 	{
 		UNS_ERROR(L"Register handler error... %d, SharedStaticIP will stop - failure to initialize\n", ret);
-		int ret = 0;
-		if ((ret = ACE_Reactor::instance()->remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
+		int ret1;
+		if ((ret1 = ACE_Reactor::instance()->remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
 																	ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close
-			UNS_ERROR(L"Remove handler error... %d\n", ret);
+			UNS_ERROR(L"Remove handler error... %d\n", ret1);
 		free_event();
 		return -1;
 	}

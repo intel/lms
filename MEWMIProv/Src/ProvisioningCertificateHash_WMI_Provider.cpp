@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -153,9 +153,9 @@ HRESULT ProvisioningCertificateHash_WMI_Provider::Get_Entry(
 				CComPtr<IWbemClassObject> obj;
 				RETURNIF(WMIPutMember(pNamespace, &obj, L"AMT_ProvisioningCertificateHash"));
 				BREAKIF(WMIPut<1>(obj, L"ElementName", L"Intel(r) AMT: Provisioning Certificate Hash"));
-				WCHAR str[256];
-				swprintf_s(str, 256, L"Certificate Hash %d",num);
-				BREAKIF(WMIPut<1>(obj, L"InstanceID", str));
+				WCHAR hash[256];
+				swprintf_s(hash, 256, L"Certificate Hash %u",num);
+				BREAKIF(WMIPut<1>(obj, L"InstanceID", hash));
 				BREAKIF(WMIPut<1>(obj, L"Description", entry.Description));
 				BREAKIF(WMIPut<1>(obj, L"IsDefault", entry.IsDefault));
 				BREAKIF(WMIPut<1>(obj, L"HashType", entry.HashType));
