@@ -744,6 +744,9 @@ void Configurator::ScanConfiguration()
 		if(batch.Execute(servicesNames) != ServicesBatchCommand::ExecuteCommandResult::SUCCESS)
 			TaskCompleted();
 
+		if(theLoadedServices::instance()->IsLoaded(LAST_SERVICE)) // in case all services are loaded, and we are trying to load them again (for example by getting driver load event), we must mark task completed
+			TaskCompleted();
+
 		ACE_Reactor::instance()->cancel_timer (this);
 	}
 	catch (std::exception& e)
