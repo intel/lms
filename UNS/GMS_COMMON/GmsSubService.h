@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #ifndef __SUBSERVICE_H_
 #define __SUBSERVICE_H_
@@ -17,8 +17,10 @@
 class GmsSubService : public ACE_Task<ACE_MT_SYNCH>
 {
 public:
-
-	GmsSubService() :notifier_(0, NULL, ACE_Event_Handler::WRITE_MASK), m_mainService(nullptr), m_serviceIsClosed(false) {}
+	GmsSubService() :notifier_(0, NULL, ACE_Event_Handler::WRITE_MASK), m_mainService(nullptr), m_serviceIsClosed(false)
+	{
+		water_marks(ACE_IO_Cntl_Msg::SET_HWM, QUEUE_SIZE);
+	}
 
 	virtual int init(int argc, ACE_TCHAR *argv[]);
 
@@ -61,6 +63,7 @@ protected:
 	using FuncEntryExit = FuncEntryExit_<T, GmsSubService>;
 private:
 	void sendStatusChanged(SERVICE_STATUS_TYPE type);
+	const size_t QUEUE_SIZE = 64 * 1024; /* 64K */
 };
 
 #define LMS_SUBSERVICE_DEFINE(_export_, _name_) \

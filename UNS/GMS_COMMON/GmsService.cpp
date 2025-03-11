@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2024 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 
 #include "global.h"
@@ -496,7 +496,14 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 		UNS_ERROR(L"GmsService: sending message - Object is not an ACE_Task\n");
 		return false;
 	}
-	subServiceTask->putq(mb->duplicate()); 
+
+	ACE_Time_Value tv = ACE_OS::gettimeofday() + ACE_Time_Value(5); /* 5 seconds relative to current time */
+	i = subServiceTask->putq(mb->duplicate(), &tv);
+	if (i == -1)
+	{
+		UNS_ERROR(L"GmsService: sending message - queue is full\n");
+		return false;
+	}
 
 	return true;
 }
