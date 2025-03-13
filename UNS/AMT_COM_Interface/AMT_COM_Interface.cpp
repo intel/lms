@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -183,6 +183,7 @@ public:
 									LPVOID lpEventData,
 									LPVOID lpContext)
 	{
+		GMSsrv->inherit_log_msg_attributes();
 		switch (dwControl)
 		{
 			case SERVICE_CONTROL_SHUTDOWN:
