@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -50,18 +50,20 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 		{
 			if (m_HostProvisioningRecord.ProvCertificateHashExists())
 			{
-				const unsigned char* temp_data = (m_HostProvisioningRecord.ProvCertificateHash().Data());
-				const unsigned int temp_data_length = (m_HostProvisioningRecord.ProvCertificateHash().Length());
-				ppCertHash.resize(temp_data_length);
-
+				Intel::Manageability::Cim::Utils::Base64 data = m_HostProvisioningRecord.ProvCertificateHash();
+				ppCertHash.resize(data.Length());
 				std::stringstream stream;
-				stream << "CertificateHash len = " << temp_data_length << " data: ";
-				for (unsigned int i = 0; i < temp_data_length; i++)
+				stream << "CertificateHash len = " << data.Length() << " data: ";
+				for (unsigned int i = 0; i < data.Length(); i++)
 				{
-					ppCertHash[i]=temp_data[i];
-					stream << " " << std::hex << temp_data[i];
+					ppCertHash[i] = data.Data()[i];
+					stream << " " << std::hex << (unsigned int)data.Data()[i];
 				}
 				WSMAN_DEBUG("%C\n", stream.str().c_str());
+			}
+			else
+			{
+				ppCertHash.resize(0);
 			}
 			if (m_HostProvisioningRecord.CreationTimeStampExists())
 			{
@@ -78,17 +80,14 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 				*pProvisioningMethod = ProvisioningMethod_Remote;
 				if (m_RemoteProvisioningRecord.SelectedHashDataExists())
 				{
-					// hash data
-					const unsigned char* temp_data = m_RemoteProvisioningRecord.SelectedHashData().Data();
-					const unsigned int temp_data_length = m_RemoteProvisioningRecord.SelectedHashData().Length();
-					ppCertHash.resize(temp_data_length);
+					Intel::Manageability::Cim::Utils::Base64 data = m_RemoteProvisioningRecord.SelectedHashData();
+					ppCertHash.resize(data.Length());
 					std::stringstream stream;
-					stream << "CertificateHash len = " << temp_data_length << " data: ";
-					for (unsigned int i=0; i<temp_data_length; i++)
+					stream << "CertificateHash len = " << data.Length() << " data: ";
+					for (unsigned int i = 0; i < data.Length(); i++)
 					{
-						ppCertHash[i]=temp_data[i];
-						stream << " " << std::hex << temp_data[i];
-
+						ppCertHash[i] = data.Data()[i];
+						stream << " " << std::hex << (unsigned int)data.Data()[i];
 					}
 					WSMAN_DEBUG("%C\n", stream.str().c_str());
 				}
@@ -106,6 +105,7 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 						CreationTimeStamp = toUNSDateFormat(m_ManualProvisioningRecord.CreationTimeStamp().Serialize());
 					}
 					*pProvisioningMethod = ProvisioningMethod_Manual;
+					ppCertHash.resize(0);
 				}
 				else
 				{
@@ -116,7 +116,8 @@ bool HBPWSManClient::GetConfigurationInfo(short* pControlMode, short* pProvision
 							CreationTimeStamp = toUNSDateFormat(m_AdminProvisioningRecord.CreationTimeStamp().Serialize());
 						}
 						*pProvisioningMethod = ProvisioningMethod_Reserved1; //Admin;
-						WSMAN_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C !!!!!!!!!!\n", CreationTimeStamp.c_str());
+						ppCertHash.resize(0);
+						WSMAN_DEBUG("AdminProvisioningRecord CreationTimeStamp=%C\n", CreationTimeStamp.c_str());
 					}
 					else
 					{
@@ -207,7 +208,7 @@ bool HBPWSManClient::Init(bool forceGet)
 						m_AdminProvisioningRecord.WsmanClient(m_client.get());
 						m_AdminProvisioningRecord.Get(); 
 						m_AdminProvisioningRecordGot = true;
-						WSMAN_DEBUG("m_AdminProvisioningRecord.Get succeed !!!!!!!!!!\n");
+						WSMAN_DEBUG("m_AdminProvisioningRecord.Get succeed\n");
 					}
 					CATCH_exception_debug("HBPWSManClient::Init get m_AdminProvisioningRecordGet")
 				}
