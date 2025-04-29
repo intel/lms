@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -596,7 +596,7 @@ void LMEConnection::_doRX()
 		}
 
 
-		UNS_TRACE(L"==>LME: %d bytes, message type %02d\n", bytesRead, rxBuffer[0]);
+		UNS_TRACE(L"LME==>: %d bytes, message type %02d\n", bytesRead, rxBuffer[0]);
 
 		uint32_t posBytesRead = (uint32_t) bytesRead;
 
