@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -30,7 +30,7 @@ STDMETHODIMP CAT_Device::GetAuditLogs(BSTR* bstrAuditLogs)
 	if (bstrAuditLogs == nullptr)
 		return E_POINTER;
 
-	UNS_DEBUG(L"GetATDeviceInfo\n");
+	UNS_DEBUG(L"GetAuditLogs\n");
 	try
 	{
 		if (CheckCredentials(GetAuditLogs_F) != S_OK)
