@@ -497,7 +497,7 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 		return false;
 	}
 
-	ACE_Time_Value tv = ACE_OS::gettimeofday() + ACE_Time_Value(5); /* 5 seconds relative to current time */
+	ACE_Time_Value tv = subServiceTask->gettimeofday() + ACE_Time_Value(5); /* 5 seconds relative to current time */
 	i = subServiceTask->putq(mb->duplicate(), &tv);
 	if (i == -1)
 	{
