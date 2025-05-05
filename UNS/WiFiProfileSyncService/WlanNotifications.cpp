@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2019 Intel Corporation
+ * Copyright (C) 2018-2025 Intel Corporation
  */
 #include <string>
 #include "global.h"
@@ -78,7 +78,7 @@ VOID WINAPI wlanps::WlanNotifications::WlanNotificationCbk(PWLAN_NOTIFICATION_DA
 
 			mbPtr->data_block(message);
 			mbPtr->msg_type(MB_WPFS_SYNC);
-			pWlanNotif->m_service->putq(mbPtr->duplicate());
+			GmsService::putq_timeout(pWlanNotif->m_service, pWlanNotif->m_service->name(), mbPtr);
 		}
 		else
 		{

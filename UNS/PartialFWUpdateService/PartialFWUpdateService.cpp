@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2024 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -132,7 +132,7 @@ void PartialFWUpdateService::startPFWUpMessage()
 	mbPtr->data_block(new StartPFWUP());
 	mbPtr->msg_type(MB_PFWU_START_EVENT);
 	mbPtr->msg_priority(3);//higher than normal messages
-	this->putq(mbPtr->duplicate());
+	GmsService::putq_timeout(this, name(), mbPtr);
 }
 
 LMS_SUBSERVICE_DEFINE (PARTIALFWUPDATESERVICE, PartialFWUpdateService)

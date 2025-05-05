@@ -48,6 +48,7 @@ GmsService::GmsService(void) : stopped(false), loading(false),
 	if (a_reactor == NULL)
 		throw std::runtime_error("Failed to instantiate ACE_Reactor");
 	reactor(a_reactor);
+	water_marks(ACE_IO_Cntl_Msg::SET_HWM, QUEUE_SIZE);
 }
 
 GmsService::~GmsService(void)
@@ -497,14 +498,18 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 		return false;
 	}
 
-	ACE_Time_Value tv = subServiceTask->gettimeofday() + ACE_Time_Value(5); /* 5 seconds relative to current time */
-	i = subServiceTask->putq(mb->duplicate(), &tv);
+	return putq_timeout(subServiceTask, dest, mb);
+}
+
+bool GmsService::putq_timeout(ACE_Task *task, const ACE_TString& name, const MessageBlockPtr& mb)
+{
+	ACE_Time_Value tv = task->gettimeofday() + ACE_Time_Value(5); /* 5 seconds relative to current time */
+	int i = task->putq(mb->duplicate(), &tv);
 	if (i == -1)
 	{
-		UNS_ERROR(L"GmsService: sending message - queue is full\n");
+		UNS_ERROR(L"%s: sending message - queue is full\n", name.c_str());
 		return false;
 	}
-
 	return true;
 }
 

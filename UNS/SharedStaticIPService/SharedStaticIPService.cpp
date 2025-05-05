@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2053 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 
 #include "SharedStaticIPService.h"
@@ -213,7 +213,7 @@ int SharedStaticIPService::handle_timeout (const ACE_Time_Value &current_time, c
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new SSIP_Message_Block((SSIP_Message_Block::SSIP_STATE) (0xFFFFFFFF & state)));
 	mbPtr->msg_type(MB_TIMER_EXPIRED);
-	this->putq(mbPtr->duplicate());
+	GmsService::putq_timeout(this, name(), mbPtr);
 
 	return 0;
 }
@@ -228,7 +228,7 @@ void SharedStaticIPService::MoveToState(SSIP_Message_Block::SSIP_STATE State, un
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new SSIP_Message_Block(State));
 		mbPtr->msg_type(MB_TIMER_EXPIRED);
-		this->putq(mbPtr->duplicate());
+		GmsService::putq_timeout(this, name(), mbPtr);
 		return ;
 	}
 	setTimer(Interval, State);

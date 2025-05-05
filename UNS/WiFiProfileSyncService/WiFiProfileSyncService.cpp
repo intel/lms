@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2023 Intel Corporation
+ * Copyright (C) 2018-2025 Intel Corporation
  */
 #include "WiFiProfileSyncService.h"
 #include "WlanBL.h"
@@ -83,7 +83,7 @@ int WiFiProfileSyncService::handle_timeout(const ACE_Time_Value &current_time, c
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->data_block(new ACE_Data_Block());
 		mbPtr->msg_type(MB_TIMER_EXPIRED);
-		this->putq(mbPtr->duplicate());
+		GmsService::putq_timeout(this, name(), mbPtr);
 
 	}
 	return 0;

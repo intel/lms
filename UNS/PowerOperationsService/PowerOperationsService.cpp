@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 // PowerOperationsService.cpp : Defines the exported functions for the DLL application.
 
@@ -308,7 +308,7 @@ int PowerOperationsService::init (int argc, ACE_TCHAR *argv[])
 	mbPtr->data_block(new ACE_Data_Block());
 	mbPtr->msg_type(MB_PWR_OPR_START_EVENT);
 	mbPtr->msg_priority(3);//higher than normal messages
-	this->putq(mbPtr->duplicate());
+	GmsService::putq_timeout(this, name(), mbPtr);
 
 	return 0;
 }

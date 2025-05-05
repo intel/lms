@@ -587,7 +587,7 @@ int Configurator::handle_timeout (const ACE_Time_Value &current_time,const void 
 		MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 		mbPtr->msg_type(MB_DEFERRED_RESUME);
 		mbPtr->msg_priority(4);//priority higher than other messages (except stop service).
-		this->putq(mbPtr->duplicate());
+		GmsService::putq_timeout(this, name(), mbPtr);
 		return -1;
 	}
 	if (m_scanningNum<NUM_RETRIES)
@@ -978,7 +978,7 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 					pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
 					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
-					this->putq(pfwPtr->duplicate());
+					GmsService::putq_timeout(this, name(), pfwPtr);
 
 					TaskCompleted();
 					break;
@@ -1261,7 +1261,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 					pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
 					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
-					this->putq(pfwPtr->duplicate());
+					GmsService::putq_timeout(this, name(), pfwPtr);
 
 					TaskCompleted();
 				}break;
@@ -1328,7 +1328,7 @@ void Configurator::TaskCompleted()
 	MessageBlockPtr mbPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
 	mbPtr->data_block(new ACE_Data_Block());
 	mbPtr->msg_type(MB_TASK_COMPLETED);
-	this->putq(mbPtr->duplicate());
+	GmsService::putq_timeout(this, name(), mbPtr);
 }
 
 LMS_SUBSERVICE_DEFINE(CONFIGURATOR, Configurator)
