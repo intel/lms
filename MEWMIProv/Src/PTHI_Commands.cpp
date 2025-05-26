@@ -984,7 +984,7 @@ unsigned int PTHI_Commands::GetPortSettings(std::vector<EthernetPortEntry> &ethe
 				lanSettings.MacAddress[3], lanSettings.MacAddress[4], lanSettings.MacAddress[5]);
 			entry.MACAddress = sMacAddress;
 			entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true : false;
-			entry.DHCPEnabled = lanSettings.DhcpEnabled;
+			entry.DHCPEnabled = (lanSettings.DhcpEnabled == AMT_TRUE);
 			ethernetPortList.push_back(entry);
 			rc = 0;
 		}
