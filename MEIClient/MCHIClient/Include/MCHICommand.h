@@ -85,8 +85,8 @@ private:
 		return tmp;
 	}
 	//the AMTHI command number (in the header) of the request command
-	uint32_t m_requestHeaderCommandNumber;
-	uint32_t m_requestHeaderGroupID;
+	uint8_t m_requestHeaderCommandNumber;
+	uint8_t m_requestHeaderGroupID;
 };
 
 template <typename T>
