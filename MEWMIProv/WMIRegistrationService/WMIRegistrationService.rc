@@ -76,7 +76,7 @@ BEGIN
             VALUE "FileDescription", "Intel(R) Management Engine WMI Provider Registration"
             VALUE "FileVersion", VER_PRODUCTVERSION_STR
             VALUE "InternalName", "WmiRegistrationService"
-            VALUE "LegalCopyright", "Copyright © 2009-" CURRENT_YEAR_STRING ", Intel Corporation. All rights reserved."
+            VALUE "LegalCopyright", "Copyright (C) 2009, Intel Corporation. All rights reserved."
             VALUE "OriginalFilename", "WmiRegistrationService.exe"
             VALUE "ProductName", "Intel(R) Management Engine WMI Provider Registration"
             VALUE "ProductVersion", VER_PRODUCTVERSION_STR

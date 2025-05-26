@@ -78,7 +78,7 @@ BEGIN
             VALUE "FileDescription", "Intel(R) Management Engine Provider Dynamic Link Library"
             VALUE "FileVersion", VER_PRODUCTVERSION_STR
             VALUE "InternalName", "MEProv"
-            VALUE "LegalCopyright", "Copyright © 2009-" CURRENT_YEAR_STRING ", Intel Corporation. All rights reserved."
+            VALUE "LegalCopyright", "Copyright (C) 2009, Intel Corporation. All rights reserved."
             VALUE "OriginalFilename", "MEProv.dll"
             VALUE "ProductName", "Intel(R) Management Engine Provider Dynamic Link Library"
             VALUE "ProductVersion", VER_PRODUCTVERSION_STR
