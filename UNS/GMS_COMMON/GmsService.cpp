@@ -488,7 +488,11 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 	//the subService is active
 	UNS_DEBUG(L"GmsService: sending message - found destination service\n");
 	const ACE_Service_Type_Impl *type = svc_rec->type (); 
-	if (type == 0) return false; 
+	if (type == 0) 
+	{
+		UNS_ERROR(L"GmsService: sending message - service type is null\n");
+		return false;
+	}
 
 	ACE_Service_Object *obj = static_cast<ACE_Service_Object *>(type->object ()); 
 	ACE_Task *subServiceTask = dynamic_cast<ACE_Task*>(obj);

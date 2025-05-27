@@ -530,12 +530,13 @@ bool Configurator::StartAceService(const ACE_TString &serviceName)
 
 bool Configurator::StopAceService(const ACE_TString &serviceName)
 {
-	FuncEntryExit<void> fee(this, L"StopAceService");
+	bool res = false;
+	FuncEntryExit<decltype(res)> fee(this, L"StopAceService", res);
 
 	if (!theLoadedServices::instance()->IsLoaded(serviceName))
 	{
 		UNS_ERROR(L"Trying to stop not running service %s\n", serviceName.c_str());
-		return false;
+		return res;
 	}
 
 	if (theLoadedServices::instance()->IsActive(serviceName))
@@ -546,13 +547,16 @@ bool Configurator::StopAceService(const ACE_TString &serviceName)
 		mbPtr->data_block(new StopServiceDataBlock(m_meiEnabled));
 		mbPtr->msg_type(MB_STOP_SERVICE);
 		mbPtr->msg_priority(5); //This message should be with the highest priority
-		return m_mainService->sendMessage(serviceName,mbPtr);
+		res = m_mainService->sendMessage(serviceName, mbPtr);
+		UNS_DEBUG(L"sendMessage stop service %d\n", res);
+		return res;
 	}
 
 	//brutally killing - the service is loaded but not active
 	FiniAceService(serviceName);
 
-	return true;
+	res = true;
+	return res;
 }
 
 bool Configurator::SuspendAceService(const ACE_TString &serviceName)
@@ -973,13 +977,13 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 				// So stop it, and trigger an event to come here again.
 				if (theLoadedServices::instance()->IsLoaded(WAITING_FOR_PFW_LAST_SERVICE))
 				{
-					StopAceService(WAITING_FOR_PFW_LAST_SERVICE);
-
-					MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-					pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
-					pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
-					GmsService::putq_timeout(this, name(), pfwPtr);
-
+					if (StopAceService(WAITING_FOR_PFW_LAST_SERVICE)) // Resend CONFIGURATION_CHANGE again only if the stop succeeded, to avoid infinte loop.
+					{
+						MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
+						pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
+						pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
+						GmsService::putq_timeout(this, name(), pfwPtr);
+					}
 					TaskCompleted();
 					break;
 				}
