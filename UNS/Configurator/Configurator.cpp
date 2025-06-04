@@ -974,18 +974,10 @@ int Configurator::UpdateConfiguration(const ChangeConfiguration *conf)
 
 				// Before adding the PFW_LAST_SERVICE to servicesNames, Make sure it is stopped.
 				// As if it is "running" already, its "start" won't be called and therefor TaskCompleted will not be called.
-				// So stop it, and trigger an event to come here again.
 				if (theLoadedServices::instance()->IsLoaded(WAITING_FOR_PFW_LAST_SERVICE))
 				{
-					if (StopAceService(WAITING_FOR_PFW_LAST_SERVICE)) // Resend CONFIGURATION_CHANGE again only if the stop succeeded, to avoid infinte loop.
-					{
-						MessageBlockPtr pfwPtr(new ACE_Message_Block(), deleteMessageBlockPtr);
-						pfwPtr->data_block(new ChangeConfiguration(CONFIGURATION_TYPE::PFW_ENABLE_CONF, 1));
-						pfwPtr->msg_type(MB_CONFIGURATION_CHANGE);
-						GmsService::putq_timeout(this, name(), pfwPtr);
-					}
-					TaskCompleted();
-					break;
+					// brutally killing, not using StopAceService that may fail.
+					FiniAceService(WAITING_FOR_PFW_LAST_SERVICE);
 				}
 				servicesNames.push_back(WAITING_FOR_PFW_LAST_SERVICE); //When it will "start" - TaskCompleted() will be called
 
