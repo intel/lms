@@ -468,11 +468,11 @@ int GmsService::resume()
 	return 0;
 }
 
-bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb) const
+bool GmsService::sendMessage(const ACE_TString& dest, const MessageBlockPtr& mb) const
 {
 	UNS_DEBUG(L"GmsService: sending message to %s\n", dest.c_str());
-	const ACE_Service_Type *svc_rec;
-	int i=ACE_Service_Repository::instance ()->find (dest.c_str(), &svc_rec);
+	const ACE_Service_Type* svc_rec;
+	int i = ACE_Service_Repository::instance()->find(dest.c_str(), &svc_rec);
 	if (i != 0)
 	{
 		if (i == -2) // the subService is suspended
@@ -481,28 +481,31 @@ bool GmsService::sendMessage(const ACE_TString &dest, const MessageBlockPtr &mb)
 		}
 		else
 			UNS_ERROR(L"The desired service doesn't exists\n");
-		
+
 		return false;
 	}
 
 	//the subService is active
 	UNS_DEBUG(L"GmsService: sending message - found destination service\n");
-	const ACE_Service_Type_Impl *type = svc_rec->type (); 
-	if (type == 0) 
+	const ACE_Service_Type_Impl* type = svc_rec->type();
+	if (type == 0)
 	{
 		UNS_ERROR(L"GmsService: sending message - service type is null\n");
 		return false;
 	}
 
-	ACE_Service_Object *obj = static_cast<ACE_Service_Object *>(type->object ()); 
-	ACE_Task *subServiceTask = dynamic_cast<ACE_Task*>(obj);
+	ACE_Service_Object* obj = static_cast<ACE_Service_Object*>(type->object());
+	ACE_Task* subServiceTask = dynamic_cast<ACE_Task*>(obj);
 	if (subServiceTask == nullptr)
 	{
 		UNS_ERROR(L"GmsService: sending message - Object is not an ACE_Task\n");
 		return false;
 	}
 
-	return putq_timeout(subServiceTask, dest, mb);
+	bool res = putq_timeout(subServiceTask, dest, mb);
+	UNS_DEBUG(L"GmsService: putq_timeout result: %d\n", res);
+
+	return res;
 }
 
 bool GmsService::putq_timeout(ACE_Task *task, const ACE_TString& name, const MessageBlockPtr& mb)
