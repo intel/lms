@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -2060,15 +2060,22 @@ bool Protocol::_updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, 
 	}
 
 	{
-		std::lock_guard<std::mutex> l(_remoteAccessLock);
-		_remoteAccessEnabledInAMT = false;
-		try {
+		{
+			std::lock_guard<std::mutex> l(_remoteAccessLock);
+			_remoteAccessEnabledInAMT = false;
+		}
+		try 
+		{
 			Intel::MEI_Client::AMTHI_Client::SetEnterpriseAccessCommand setEnterpriseAccessCommand(Flags, HostIPAddress, EnterpriseAccess);
-			_remoteAccessEnabledInAMT = true;
-			printf("Remote access is allowed. This state is deprecated.\n");
+			{
+				std::lock_guard<std::mutex> l(_remoteAccessLock);
+				_remoteAccessEnabledInAMT = true;
+			}
+			UNS_DEBUG(L"Remote access is allowed. This state is deprecated.\n");
 		}
 		catch (const Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 		{
+			std::lock_guard<std::mutex> l(_remoteAccessLock);
 			switch (e.getErr())
 			{
 			case PT_STATUS_REMOTE_ACCESS_NOT_GRANTED:
@@ -2189,10 +2196,12 @@ int Protocol::_isRemote(SOCKET s) const
 	}
 
 	int result = 0;
-
-	std::lock_guard<std::mutex> l(_remoteAccessLock);
-
-	if (_remoteAccessEnabledInAMT) {
+	bool remoteAccessEnabledInAMT = false; //temp variable to hold the value of _remoteAccessEnabledInAMT by using _remoteAccessLock only for the read time and not during the whole `if`
+	{
+		std::lock_guard<std::mutex> l(_remoteAccessLock);
+		remoteAccessEnabledInAMT = _remoteAccessEnabledInAMT;
+	}
+	if (remoteAccessEnabledInAMT) {
 
 		string dnsSuffix = AdapterListInfo::GetDNSSuffixFromLocalIP(localAddr);
 

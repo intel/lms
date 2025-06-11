@@ -130,17 +130,17 @@ private:
 	ACE_Pipe _signalPipe; // Used to notify Select() to check new available channels
 	PortMap _openPorts;
 	ChannelMap _openChannels;
-	std::mutex _portsLock;
-	std::mutex _channelsLock;
+	std::mutex _portsLock; // lock for _openPorts
+	std::mutex _channelsLock; // lock for _openChannels
 	std::mutex _deleteLock;
 	char *_rxSocketBuffer;
-	size_t _rxSocketBufferSize;
+	size_t _rxSocketBufferSize; // lock _rxSocketBuffer and _rxSocketBufferSize
 
 	std::vector<std::string> _AMTDNSSuffixes;
-	mutable std::mutex _AMTDNSLock;
+	mutable std::mutex _AMTDNSLock; // lock for _AMTDNSSuffixes
 	bool _remoteAccessEnabledInAMT;
 	bool _remoteAccessCurrentlyPossible;
-	mutable std::mutex _remoteAccessLock;
+	mutable std::mutex _remoteAccessLock; // lock for _remoteAccessEnabledInAMT
 
 	enum class VERSION_HANDSHAKING {
 		NOT_INITIATED,
@@ -156,7 +156,7 @@ private:
 	VERSION_HANDSHAKING _handshakingStatus;
 	SERVICE_STATUS _pfwdService;
 	LMEProtocolVersionMessage _AmtProtVersion;
-	std::mutex _versionLock;
+	std::mutex _versionLock; // lock for _handshakingStatus, _pfwdService, _AmtProtVersion.MajorVersion, _AmtProtVersion.MinorVersion
 	
 	std::string _AMTFQDN;
 	EventLogCallback _eventLogWrn;
