@@ -51,27 +51,34 @@ namespace wlanps {
 
 	bool WlanBL::EnumerateMeProfiles(WlanWSManClient &wsmanClient, MeProfileList &profiles)
 	{
-		if (!wsmanClient.Enumerate(profiles))
+		try {
+			if (!wsmanClient.Enumerate(profiles))
+			{
+				return false;
+			}
+
+			UNS_DEBUG(L"[ProfileSync] ME Profiles List Start ------\n");
+			for (MeProfileList::iterator it = profiles.begin(); it != profiles.end();)
+			{
+				if ((*it)->InstanceID().compare(0, IntelInstanceIDUser.length(), IntelInstanceIDUser) != 0)
+				{
+					UNS_DEBUG(L"[ProfileSync] ME Profile  = '%C' - IT one, ignoring\n", (*it)->ElementName().c_str());
+					it = profiles.erase(it);
+				}
+				else
+				{
+					UNS_DEBUG(L"[ProfileSync] ME Profile  = '%C'\n", (*it)->ElementName().c_str());
+					++it;
+				}
+			}
+			UNS_DEBUG(L"[ProfileSync] ME Profiles List End ------\n");
+			return true;
+		}
+		catch (const std::exception &e)
 		{
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e.what());
 			return false;
 		}
-
-		UNS_DEBUG(L"[ProfileSync] ME Profiles List Start ------\n");
-		for (MeProfileList::iterator it = profiles.begin(); it != profiles.end();)
-		{
-			if ((*it)->InstanceID().compare(0, IntelInstanceIDUser.length(), IntelInstanceIDUser) != 0)
-			{
-				UNS_DEBUG(L"[ProfileSync] ME Profile  = '%C' - IT one, ignoring\n", (*it)->ElementName().c_str());
-				it = profiles.erase(it);
-			}
-			else
-			{
-				UNS_DEBUG(L"[ProfileSync] ME Profile  = '%C'\n", (*it)->ElementName().c_str());
-				++it;
-			}
-		}
-		UNS_DEBUG(L"[ProfileSync] ME Profiles List End ------\n");
-		return true;
 	}
 
 	void WlanBL::SyncProfiles(unsigned int portForwardingPort, HANDLE hwlan)
@@ -163,9 +170,9 @@ namespace wlanps {
 				}
 			}
 		}
-		catch (std::exception* e)
+		catch (const std::exception &e)
 		{
-			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e.what());
 			return false;
 		}
 
@@ -204,9 +211,9 @@ namespace wlanps {
 				}
 			}
 		}
-		catch (std::exception* e)
+		catch (const std::exception &e)
 		{
-			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e->what());
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]:  Exception %C\n", e.what());
 			return false;
 		}
 
@@ -290,9 +297,9 @@ namespace wlanps {
 
 			CleanOsProfileList(wlanOsProfiles);
 		}
-		catch (std::exception* e)
+		catch (const std::exception &e)
 		{
-			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Exception %C\n", e->what());
+			UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Exception %C\n", e.what());
 			return;
 		}
 	}
