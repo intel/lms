@@ -99,7 +99,9 @@ private:
 	static const std::string DEFAULT_USER;
 
 	BaseWSManClient& operator= (const BaseWSManClient&) = delete; //to avoid misuse
-
+	BaseWSManClient(const BaseWSManClient&) = delete; //to avoid misuse
+	BaseWSManClient(BaseWSManClient&&) = delete; //to avoid misuse
+	BaseWSManClient& operator=(BaseWSManClient&&) = delete; //to avoid misuse
 };
 
 //since class members are constructed in the order of declaration, declaring a Locker before CIM-framework objects and an Unlocker after them (using
