@@ -107,7 +107,7 @@ void DBusThread::on_bus_acquired(GDBusConnection *connection,
 	Intel::DBus::UNSAlert::on_bus_acquired(connection, &th->m_skeleton_alert, th->m_father);
 	th->m_have_bus = true;
 	for (const auto alert : th->m_store)
-		th->send_alarm(alert);
+		th->send_alarm(std::move(alert));
 	th->m_store.clear();
 	UNS_DEBUG(L"Main DBus Thread on_bus_acquired %d\n", ret);
 }

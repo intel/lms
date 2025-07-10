@@ -204,7 +204,7 @@ UINT32 WSmanCommands::GetPortSettings(std::vector<EthernetPortEntryWSMan> &ether
 				entry.SecondaryDNS = ToWStr(settingsIterator->get()->SecondaryDNS());
 			if (settingsIterator->get()->SubnetMaskExists())
 				entry.SubnetMask = ToWStr(settingsIterator->get()->SubnetMask());
-			ethernetPortList.push_back(entry);
+			ethernetPortList.push_back(std::move(entry));
 		}
 
 		return 0;

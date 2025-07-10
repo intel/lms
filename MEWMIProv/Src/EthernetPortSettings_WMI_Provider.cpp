@@ -131,7 +131,7 @@ uint32 EthernetPortSettings_WMI_Provider::GetPortList(std::vector<EthernetPortEn
 			entry.PrimaryDNS = portIterator->PrimaryDNS;
 			entry.SecondaryDNS = portIterator->SecondaryDNS;
 			entry.SubnetMask = portIterator->SubnetMask;
-			ethernetPortList.push_back(entry);
+			ethernetPortList.push_back(std::move(entry));
 		}
 	}
 	//if failed try using pthi

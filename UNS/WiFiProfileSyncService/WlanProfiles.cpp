@@ -262,7 +262,7 @@ namespace wlanps
 				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Profile= %-25W SSID= %-25W aut= %-10W/%-10W, enc= %W, transitionMode= %d\n",
 					prof->profile, prof->SSID, prof->auth, prof->auth2, prof->encr, prof->transitionMode);
 				//update the list
-				profiles.push_back(prof);
+				profiles.push_back(std::move(prof));
 			}
 		}
 

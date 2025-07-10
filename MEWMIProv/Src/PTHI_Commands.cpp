@@ -870,7 +870,7 @@ unsigned int PTHI_Commands::GetCertificateHash(std::vector<HashEntry> &hashlist)
 				entry.Enabled = entry_response.IsActive;
 				entry.HashType = entry_response.HashAlgorithm;
 				memcpy_s(entry.HashData, sizeof(entry.HashData), entry_response.CertificateHash, sizeof(entry_response.CertificateHash));
-				hashlist.push_back(entry);
+				hashlist.push_back(std::move(entry));
 			}
 			catch (AMTHIErrorException& e)
 			{
@@ -985,7 +985,7 @@ unsigned int PTHI_Commands::GetPortSettings(std::vector<EthernetPortEntry> &ethe
 			entry.MACAddress = sMacAddress;
 			entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true : false;
 			entry.DHCPEnabled = (lanSettings.DhcpEnabled == AMT_TRUE);
-			ethernetPortList.push_back(entry);
+			ethernetPortList.push_back(std::move(entry));
 			rc = 0;
 		}
 		catch (AMTHIErrorException& e)
@@ -1013,7 +1013,7 @@ unsigned int PTHI_Commands::GetPortSettings(std::vector<EthernetPortEntry> &ethe
 				entry.MACAddress = sMacAddress;
 				entry.LinkIsUp = (lanSettings.LinkStatus == 1) ? true : false;
 				entry.DHCPEnabled = (lanSettings.DhcpEnabled == AMT_TRUE);
-				ethernetPortList.push_back(entry);
+				ethernetPortList.push_back(std::move(entry));
 				rc = 0;
 			}
 			catch (AMTHIErrorException& e)
@@ -1058,7 +1058,7 @@ unsigned int PTHI_Commands::GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAcc
 
 		if (response.Password.length() < CFG_MAX_ACL_PWD_LENGTH)
 		{
-			LocalAccount->Password = response.Password;
+			LocalAccount->Password = std::move(response.Password);
 		}
 		rc = 0;
 	}
