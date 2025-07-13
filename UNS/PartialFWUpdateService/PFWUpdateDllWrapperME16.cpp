@@ -130,6 +130,12 @@ uint32_t PFWUpdateDllWrapperME16::isPfwuRequired(bool& isLoclPfuRequired, bool& 
 			goto End;
 		}
 		UNS_DEBUG(L"isPfwuRequired LOCL: currentInstanceId=%u, expectedInstanceId=%u\n", currentInstanceId, expectedInstanceId);
+		if (expectedInstanceId == 0) // FW should not return 0 as expectedInstanceId, as they don't have "default language", only real languages
+		{
+			status = INTERNAL_ERROR;
+			UNS_ERROR(L"expectedInstanceId is 0\n");
+			goto End;
+		}
 		if (currentInstanceId == 0 ||
 			currentInstanceId != expectedInstanceId)
 		{
