@@ -202,7 +202,6 @@ private:
 	void publishAlarmClockBoot(HostBootReasonClient::SX_STATES previousSXState);
 	ACE_TString GetSXState(HostBootReasonClient::SX_STATES previousSXState);
 
-	void SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State);
 	// Get the network settings (need for populate the MAC address)
 	bool GetEACEnabled(bool& enable);
 	bool GetKVMRedirectionState(bool& enable,KVM_STATE& connected);

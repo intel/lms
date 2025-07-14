@@ -1188,12 +1188,6 @@ Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE StatusEventHandler::Upda
 	m_prevProvState = State;
 	return prevState;
 }
-
-void StatusEventHandler::SafeSetProvisioningState(Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE State)
-{
-	std::lock_guard<std::mutex> lock(m_semAMTEnabled);
-	m_prevProvState = State;
-}
  
 bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_POLICY* pPolicy)
 {
@@ -1338,7 +1332,7 @@ void StatusEventHandler::firstPullForEvents(void)
 	{
 		prevProvState = (AMTHI_Client::AMT_PROVISIONING_STATE)val;
 	}
-	SafeSetProvisioningState(prevProvState);
+	UpdatePrevProvisioningState(prevProvState);
 }
 
 void StatusEventHandler::checkForBootReason()
