@@ -1459,7 +1459,6 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 	{		
 		AMTHI_Client::GetEACStateCommand getEACStateCommand;
 		AMTHI_Client::AMT_BOOLEAN Eac_enabled = getEACStateCommand.getResponse().EacEnabled;
-		std::lock_guard<std::mutex> lock(m_semAMTEnabled);
 		enable = m_eacEnabled = (Eac_enabled != AMTHI_Client::AMT_FALSE);
 	}
 	catch (AMTHI_Client::AMTHIErrorException& e)

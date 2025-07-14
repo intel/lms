@@ -213,7 +213,6 @@ private:
 	short m_prevUserConsentState;
 	Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE m_prevProvState;
 	USER_CONSENT_POLICY m_UserConsentPolicy;
-	std::mutex m_semAMTEnabled;
 	bool m_eacEnabled;
 	FEATURE_STATE m_prevAmtState;
 	CUSTOMER_TYPE m_prevCustomerType;
