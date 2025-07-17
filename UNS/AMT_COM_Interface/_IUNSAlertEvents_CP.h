@@ -30,8 +30,15 @@ public:
 		for (int iConnection = 0; iConnection < cConnections; iConnection++)
 		{
 			pThis->Lock();
-			ATL::CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
+			IUnknown* pRawConnection = m_vec.GetAt(iConnection);
+			if (pRawConnection)
+			{
+				pRawConnection->AddRef(); // No need call Release() later, as it's part of Smart Pointer Dtor
+			}
 			pThis->Unlock();
+			
+			ATL::CComPtr<IUnknown> punkConnection;
+			punkConnection.Attach(pRawConnection);
 
 			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
 
@@ -52,7 +59,7 @@ public:
 				avarParams[0].vt = VT_BSTR;
 				DISPPARAMS params = { avarParams, NULL, 6, 0 };
 				hr = pConnection->Invoke(1, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, NULL, NULL, NULL);
-				if (hr!=S_OK)
+				if (hr != S_OK)
 				{
 					UNS_DEBUG(L"Invoke (%d) returned hr=0x%X\n", iConnection, hr);
 				}
