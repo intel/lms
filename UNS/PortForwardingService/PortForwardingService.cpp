@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #include "PortForwardingService.h"
 
@@ -439,6 +439,7 @@ void PortForwardingService::OnStop()
 	}
 	m_mainService->SetHeciEventCB(NULL, NULL, NULL);
 	closeSubService();
+	m_serviceIsClosed = true;
 }
 
 
