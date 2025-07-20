@@ -14,7 +14,7 @@ int WatchdogService::init(int argc, ACE_TCHAR *argv[])
 		return ret;
 	// Start timer to have first ping immediately
 	ACE_Time_Value ace_interval((wd_interval / 2) * GMS_ACE_SECOND);
-	ACE_Reactor::instance()->schedule_timer(this, 0, ACE_Time_Value::zero, ace_interval);
+	gmsSubServiceReactor.schedule_timer(this, 0, ACE_Time_Value::zero, ace_interval);
 	startSubService();
 	return 0;
 }
@@ -22,9 +22,13 @@ int WatchdogService::init(int argc, ACE_TCHAR *argv[])
 int WatchdogService::fini(void)
 {
 	FuncEntryExit<void> fee(this, L"fini");
-	ACE_Reactor::instance()->cancel_timer(this);
+		
+	// Call base class fini for proper cleanup
+	int ret = GmsSubService::fini();
+	
 	StopWatchdog();
-	return 0;
+	
+	return ret;
 }
 
 const ACE_TString WatchdogService::name()
@@ -151,7 +155,7 @@ bool WatchdogService::StartWatchdog()
 	goto out;
 
 fail:
-	ACE_Reactor::instance()->cancel_timer(this);
+	gmsSubServiceReactor.cancel_timer(this);
 	switch (wd_last_error)
 	{
 		case ENOENT:
@@ -212,14 +216,14 @@ void WatchdogService::CloseWatchdog()
 
 void WatchdogService::StartTimer()
 {
-	ACE_Reactor::instance()->cancel_timer(this);
+	gmsSubServiceReactor.cancel_timer(this);
 	ACE_Time_Value ace_interval((wd_interval / 2) * GMS_ACE_SECOND);
-	ACE_Reactor::instance()->schedule_timer(this, 0, ace_interval, ace_interval);
+	gmsSubServiceReactor.schedule_timer(this, 0, ace_interval, ace_interval);
 }
 
 void WatchdogService::StartShortTimer()
 {
-	ACE_Reactor::instance()->cancel_timer(this);
+	gmsSubServiceReactor.cancel_timer(this);
 	ACE_Time_Value ace_interval(wd_short_interval * GMS_ACE_SECOND);
-	ACE_Reactor::instance()->schedule_timer(this, 0, ace_interval, ace_interval);
+	gmsSubServiceReactor.schedule_timer(this, 0, ace_interval, ace_interval);
 }

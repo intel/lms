@@ -82,11 +82,11 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 			return -1;
 		}
 	}
-	if ((ret = ACE_Reactor::instance()->register_handler(this, m_event)) != 0)
+	if ((ret = gmsSubServiceReactor.register_handler(this, m_event)) != 0)
 	{
 		UNS_ERROR(L"Register handler error... %d, SharedStaticIP will stop - failure to initialize\n", ret);
 		int ret1;
-		if ((ret1 = ACE_Reactor::instance()->remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
+		if ((ret1 = gmsSubServiceReactor.remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
 																	ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close
 			UNS_ERROR(L"Remove handler error... %d\n", ret1);
 		free_event();
@@ -118,10 +118,10 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 	nl_socket_set_nonblocking(m_sock);
 
 	m_event = nl_socket_get_fd(m_sock);
-	if ((ret = ACE_Reactor::instance()->register_handler(m_event, this, ACE_Event_Handler::READ_MASK)) != 0)
+	if ((ret = gmsSubServiceReactor.register_handler(m_event, this, ACE_Event_Handler::READ_MASK)) != 0)
 	{
 		UNS_ERROR(L"Register handler error...%d, SharedStaticIP will stop - failure to initialize\n", ret);
-		if ((ret = ACE_Reactor::instance()->remove_handler(m_event,
+		if ((ret = gmsSubServiceReactor.remove_handler(m_event,
 		     ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close
 			UNS_ERROR(L"Remove handler error... %d\n", ret);
 		free_event();
@@ -130,7 +130,7 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 #endif // WIN32
 
 	ACE_Time_Value interval (CheckDNSInterval);
-	if (ACE_Reactor::instance()->schedule_timer(this, (void*)(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE), interval, interval) == -1)
+	if (gmsSubServiceReactor.schedule_timer(this, (void*)(SSIP_Message_Block::SSIP_STATE::GETSHAREDSTATICIPSTATE), interval, interval) == -1)
 	{
 		UNS_ERROR(L"failed to schedule timer first time\n");
 		return -1;
@@ -145,7 +145,9 @@ int
 SharedStaticIPService::fini (void)
 {
 	UNS_DEBUG(L"SharedStaticIP service stopped\n");
-	return 0;
+	
+	// Call base class fini for proper cleanup
+	return GmsSubService::fini();
 }
 
 
@@ -156,11 +158,11 @@ SharedStaticIPService::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 	FuncEntryExit<void> fee(this, L"handle_close");
 
 	int ret = 0;
-	if ((ret = ACE_Reactor::instance()->remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
+	if ((ret = gmsSubServiceReactor.remove_handler(m_event, ACE_Event_Handler::ALL_EVENTS_MASK |
 																ACE_Event_Handler::DONT_CALL)) != 0)  // Don't call handle_close
 		UNS_ERROR(L"Remove handler error... %d\n", ret);
 	free_event();
-	if (ACE_Reactor::instance()->cancel_timer(this) != 1)
+	if (gmsSubServiceReactor.cancel_timer(this) != 1)
 		UNS_ERROR(L"Cancel timer error...\n");
 	this->reactor(0);
 	return 0;
@@ -477,13 +479,13 @@ bool SharedStaticIPService::setTimer(unsigned long Interval, SSIP_Message_Block:
 	FuncEntryExit<void> fee(this, L"setTimer");
 	UNS_DEBUG(L"%d %d\n", Interval, State);
 
-	if ((ACE_Reactor::instance()->cancel_timer(this)) != 1)
+	if (gmsSubServiceReactor.cancel_timer(this) != 1)
 	{
 		UNS_ERROR(L"failed to cancel timer\n");
 		return false;
 	}
 	ACE_Time_Value interval (Interval);
-	if (ACE_Reactor::instance()->schedule_timer(this, (void*)State, interval, interval) == -1)
+	if (gmsSubServiceReactor.schedule_timer(this, (void*)State, interval, interval) == -1)
 	{
 		UNS_ERROR(L"failed to schedule timer\n");
 		return false;

@@ -9,6 +9,7 @@
 #include <map>
 #include "ace/NT_Service.h"
 #include "ace/Mutex.h"
+#include "ace/Reactor.h"
 #include "MessageBlockPtr.h"
 #include "ace/streams.h"
 #include "IServicesManager.h"
@@ -104,6 +105,8 @@ public:
 	}
 
 private:
+	ACE_Reactor gmsReactor;
+
 	bool stopped;
 	bool loading;
 #ifdef WIN32

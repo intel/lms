@@ -22,6 +22,25 @@ public:
 		water_marks(ACE_IO_Cntl_Msg::SET_HWM, QUEUE_SIZE);
 	}
 
+	GmsSubService(const GmsSubService&) = delete; // Prevent copy construction
+	GmsSubService& operator=(const GmsSubService&) = delete; // Prevent assignment operator
+
+	virtual ~GmsSubService()
+	{
+		// Clear message queue before destroying reactor
+		ACE_Message_Block *mb = nullptr;
+		while (!this->msg_queue()->is_empty()) {
+			if (this->getq(mb, (ACE_Time_Value*)&ACE_Time_Value::zero) != -1 && mb != nullptr) {
+				mb->release();
+				mb = nullptr;
+			} else {
+				break;
+			}
+		}
+		
+		gmsSubServiceReactor.close();
+	}
+
 	virtual int init(int argc, ACE_TCHAR *argv[]);
 
 	virtual int fini(void);
@@ -29,6 +48,8 @@ public:
 	virtual int suspend();
 
 	virtual int resume(); // this base implementation must be called by all derived services
+
+	virtual int svc(void);
 
 	//please don't reimplement
 	int handle_output(ACE_HANDLE fd = ACE_INVALID_HANDLE);
@@ -52,6 +73,7 @@ protected:
 
 	virtual const ACE_TString name() = 0;
 
+	ACE_Reactor gmsSubServiceReactor;
 	ACE_Reactor_Notification_Strategy notifier_;
 	GmsService* m_mainService;
 	// This indicates that the service is in a closing process

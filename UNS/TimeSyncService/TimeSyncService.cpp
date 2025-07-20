@@ -35,10 +35,7 @@ TimeSyncService::init (int argc, ACE_TCHAR *argv[])
 	m_needToSyncOnResume = false;
 	m_syncRequiredButNoPfw = false;
 	ACE_Time_Value interval (ms_Interval);
-	ACE_Reactor::instance()->schedule_timer (this,
-											0,
-											ACE_Time_Value::zero,
-											interval);
+	gmsSubServiceReactor.schedule_timer(this, 0, ACE_Time_Value::zero, interval);
 	return 0;
 }
 
@@ -46,8 +43,9 @@ int
 TimeSyncService::fini (void)
 {
 	UNS_DEBUG(L"TimeSync service stopped\n");
-	ACE_Reactor::instance()->cancel_timer (this);
-	return 0;
+	
+	// Call base class fini for proper cleanup
+	return GmsSubService::fini();
 }
 
 

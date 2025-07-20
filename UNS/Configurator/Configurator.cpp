@@ -369,8 +369,6 @@ bool Configurator::PasswordOnWakeupDisabled() const
 bool Configurator::PasswordOnWakeupDisabled() const { return true;}
 #endif
 
-/****************************************************************************************/
-
 int Configurator::init (int argc, ACE_TCHAR *argv[])
 {
 	FuncEntryExit<void> fee(this, L"init");
@@ -420,14 +418,23 @@ int Configurator::init (int argc, ACE_TCHAR *argv[])
 int Configurator::fini (void)
 {
 	FuncEntryExit<void> fee(this, L"fini");
+	
+	// Call base class fini() first for common cleanup
+	int ret = GmsSubService::fini();
+	
+	// Clear Configurator's specific task queue
+	while (!m_nextTasks.empty()) {
+		m_nextTasks.pop();
+	}
+	
+	// Clean up Configurator-specific singletons
 	theDependencyManager::close();
 	theLoadedServices::close();
-	//There can be crash in Linux on shut-down if messages are left in the queue.
-	//Clean-up messages in the queue to ensure that memory is released orderly.
-	this->reactor()->purge_pending_notifications(this);
+
 	UNS_DEBUG(L"Success\n");
-	return 0;
+	return ret;
 }
+
 
 void Configurator::HandleAceMessage(int type, MessageBlockPtr &mbPtr)
 {
@@ -601,7 +608,7 @@ int Configurator::handle_timeout (const ACE_Time_Value &current_time,const void 
 	}
 	else
 	{
-		ACE_Reactor::instance()->cancel_timer (this);
+		gmsSubServiceReactor.cancel_timer(this);
 		StopAllServices();
 		TaskCompleted();
 	}
@@ -686,7 +693,7 @@ void Configurator::ScanConfiguration()
 {
 	FuncEntryExit<void> fee(this, L"ScanConfiguration");
 	ACE_Time_Value interval(5);
-	ACE_Reactor::instance()->schedule_timer (this, 0,interval,interval);
+	gmsSubServiceReactor.schedule_timer(this, 0, interval, interval);
 
 	try
 	{
@@ -751,7 +758,7 @@ void Configurator::ScanConfiguration()
 		if(theLoadedServices::instance()->IsLoaded(LAST_SERVICE)) // in case all services are loaded, and we are trying to load them again (for example by getting driver load event), we must mark task completed
 			TaskCompleted();
 
-		ACE_Reactor::instance()->cancel_timer (this);
+		gmsSubServiceReactor.cancel_timer(this);
 	}
 	catch (std::exception& e)
 	{
@@ -764,7 +771,7 @@ void Configurator::ScanConfiguration()
 			UNS_ERROR("%W\n", err.c_str());
 			GMSExternalLogger::instance().WarningLog(ACE_TEXT("LMS cannot connect to Intel(R) MEI driver"));
 			UNS_DEBUG(L"MEI state: disabled\n");
-			ACE_Reactor::instance()->cancel_timer (this);//wait for MEI enable
+			gmsSubServiceReactor.cancel_timer(this);//wait for MEI enable
 			m_meiEnabled = false;
 			TaskCompleted();
 		}
@@ -1113,7 +1120,7 @@ void Configurator::CancelDeferredResumeTimer()
 	if (deferredResumeTimerId_ == -1)
 		return;
 
-	ACE_Reactor::instance()->cancel_timer(deferredResumeTimerId_);
+	gmsSubServiceReactor.cancel_timer(deferredResumeTimerId_);
 	deferredResumeTimerId_ = -1;
 	return;
 }
@@ -1187,7 +1194,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 
 				if (m_fwVer.FTMajor < 12) //else - do nothing. the ResumeAllServices() was called by MB_CONFIGURATION_RESUME
 				{
-					if (deferredResumeTimerId_ != -1 && ACE_Reactor::instance()->cancel_timer(deferredResumeTimerId_)) // login before deferredResumeTimerId_ is timed-out
+					if (deferredResumeTimerId_ != -1 &&  gmsSubServiceReactor.cancel_timer(deferredResumeTimerId_)) // login before deferredResumeTimerId_ is timed-out
 					{
 						deferredResumeTimerId_ = -1;
 						ResumeAllServices();
@@ -1226,8 +1233,7 @@ void Configurator::ExecuteTask(MessageBlockPtr& mbPtr)
 						// However there are other process (such MFA) which also want to run flows on Resume against FW and
 						// These processes are very sensitive to any delay in the communications.
 						// So deferring LMS resume for some period of time event solves that problem
-
-						deferredResumeTimerId_ = ACE_Reactor::instance()->schedule_timer (this, &deferredResumeTimerId_, ACE_Time_Value(90), ACE_Time_Value::zero); // will trigger MB_DEFERRED_RESUME event (when timeout)
+						deferredResumeTimerId_ = gmsSubServiceReactor.schedule_timer(this, &deferredResumeTimerId_, ACE_Time_Value(90), ACE_Time_Value::zero); // will trigger MB_DEFERRED_RESUME event (when timeout)
 					}
 
 					TaskCompleted();

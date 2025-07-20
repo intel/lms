@@ -86,7 +86,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 		{
 			m_retryReboot = reboot;
 			m_retryAttempt = attempt + 1;
-			ACE_Reactor::instance()->schedule_timer(this, NULL,
+			gmsSubServiceReactor.schedule_timer(this, NULL,
 				ACE_Time_Value(RETRY_TIMEOUT), ACE_Time_Value::zero);
 			return 0;
 		}
@@ -316,13 +316,14 @@ int PowerOperationsService::init (int argc, ACE_TCHAR *argv[])
 int PowerOperationsService::fini (void)
 {
 	UNS_DEBUG(L"PowerOperationsService finalized\n");
-	ACE_Reactor::instance()->cancel_timer (this);
-	return 0;
+	
+	// Call base class fini for proper cleanup
+	return EventHandler::fini();
 }
 
 int PowerOperationsService::suspend()
 {
-	ACE_Reactor::instance()->cancel_timer (this);
+	gmsSubServiceReactor.cancel_timer(this);
 	return EventHandler::suspend();
 }
 

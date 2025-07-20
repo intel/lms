@@ -304,9 +304,13 @@ PortForwardingService::init (int argc, ACE_TCHAR *argv[])
 int
 PortForwardingService::fini (void)
 {
+	// Call base class fini first to set shutdown flag and cancel timers
+	int ret = GmsSubService::fini();
+	
 	delete m_lmsMainThread;
+	
 	UNS_DEBUG(L"PFWS: finalized\n");
-	return 0;
+	return ret;
 }
 
 int PortForwardingService::suspend() 

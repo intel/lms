@@ -23,7 +23,7 @@ HostChangesNotificationService::init (int argc, ACE_TCHAR *argv[])
 	static unsigned long nGetFQDN_Interval = 3600 * GMS_ACE_SECOND;
 	ACE_Time_Value interval (nGetFQDN_Interval); 
 
-	/*long timerID = */ACE_Reactor::instance()->schedule_timer (this,
+	gmsSubServiceReactor.schedule_timer(this,
 		0,
 		ACE_Time_Value::zero,
 		interval);
@@ -33,11 +33,12 @@ HostChangesNotificationService::init (int argc, ACE_TCHAR *argv[])
 }
 
 int
-HostChangesNotificationService::fini (void)
+HostChangesNotificationService::fini(void)
 {
 	UNS_DEBUG(L"HostChangesNotificationService service stopped\n");
-	ACE_Reactor::instance()->cancel_timer (this);
-	return 0;
+	
+	// Call base class fini() first for common cleanup
+	return GmsSubService::fini();
 }
 
 const ACE_TString

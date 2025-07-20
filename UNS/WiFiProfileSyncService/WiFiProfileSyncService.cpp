@@ -33,7 +33,7 @@ void WiFiProfileSyncService::InitAndPerformSync()
 
 	if (!InitWlan())
 	{
-		ACE_Reactor::instance()->schedule_timer(this, NULL, ACE_Time_Value(INIT_LOOP_DELAY), ACE_Time_Value::zero);
+		gmsSubServiceReactor.schedule_timer(this, NULL, ACE_Time_Value(INIT_LOOP_DELAY), ACE_Time_Value::zero);
 		return;
 	}
 
@@ -92,12 +92,16 @@ int WiFiProfileSyncService::handle_timeout(const ACE_Time_Value &current_time, c
 
 int WiFiProfileSyncService::fini(void)
 {
-	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSync service stopped\n");
+	UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]:: WiFiProfileSyncService::fini - starting shutdown\n");
+	
+	// Call base class fini for proper cleanup
+	int result = EventHandler::fini();
+	
 	WlanCloseHandle(m_wlanHandle, nullptr);
-	ACE_Reactor::instance()->cancel_timer(this);
-	return 0;
+	
+	UNS_DEBUG(L"[ProfileSync] WiFiProfileSync service stopped\n");
+	return result;
 }
-
 
 const ACE_TString WiFiProfileSyncService::name()
 {

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 
 #include "GmsSubService.h"
@@ -11,6 +11,7 @@
 
 int GmsSubService::init (int argc, ACE_TCHAR *argv[])
 {
+	FuncEntryExit<void> fee(this, L"init");
 	int ret = initSubService(argc, argv);
 	if (ret)
 		return ret;
@@ -29,13 +30,42 @@ int GmsSubService::initSubService(int argc, ACE_TCHAR *argv[])
 		return -1;
 	}
 
-	this->reactor(ACE_Reactor::instance());
+	this->reactor(&gmsSubServiceReactor);
 	this->notifier_.reactor(this->reactor());
 	this->notifier_.event_handler(this);
 	this->msg_queue()->notification_strategy(&this->notifier_);
 	m_serviceIsClosed=false;
+	this->activate();
 	UNS_DEBUG(L"%s\n",name().c_str());
 	return 0;
+}
+
+int GmsSubService::svc(void)
+{
+	FuncEntryExit<void> fee(this, L"svc");
+	UNS_DEBUG(L"%s svc\n", name().c_str());
+
+	int ret = 0;
+
+	reactor()->owner(ACE_Thread::self());
+
+	try
+	{
+		reactor()->run_reactor_event_loop();
+	}
+	catch (std::exception& e)
+	{
+		UNS_ERROR(L"Exception %C\n", e.what());
+		ret = -1;
+	}
+	catch (...)
+	{
+		UNS_ERROR(L"Exception\n");
+		ret = -1;
+	}
+	
+	UNS_DEBUG(L"%s Shutting down\n", name().c_str());
+	return ret;
 }
 
 void GmsSubService::sendStatusChanged(SERVICE_STATUS_TYPE type)
@@ -49,6 +79,19 @@ void GmsSubService::sendStatusChanged(SERVICE_STATUS_TYPE type)
 int GmsSubService::closeSubService()
 {
 	FuncEntryExit<void> fee(this, L"closeSubService");
+
+	ACE_Message_Block *mb = nullptr;
+	int cleared_count = 0;
+	while (!this->msg_queue()->is_empty() && cleared_count < 1000) { // Safety limit
+		if (this->getq(mb, (ACE_Time_Value*)&ACE_Time_Value::zero) != -1 && mb != nullptr) {
+			mb->release();
+			mb = nullptr;
+			cleared_count++;
+		} else {
+			break;
+		}
+	}
+	UNS_DEBUG(L"%s::closeSubService cleared %d messages from queue\n", name().c_str(), cleared_count);
 
 	sendStatusChanged(SERVICE_STATUS_TYPE::UNLOADCOMPLETE);
 
@@ -77,6 +120,31 @@ int GmsSubService::startSubService()
 int GmsSubService::fini (void)
 {
 	UNS_DEBUG(L"%s service finalized\n",name().c_str());
+
+	if (reactor() && !reactor()->reactor_event_loop_done()) {
+		reactor()->end_reactor_event_loop();
+		reactor()->notify();
+		wait();
+
+		reactor()->remove_handler(this, ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL);
+		reactor()->purge_pending_notifications(this);
+		reactor()->cancel_timer(this);
+	}
+
+	// Clear pending tasks from message queue with improved cleanup
+	ACE_Message_Block *mb = nullptr;
+	int cleared_count = 0;
+	while (!this->msg_queue()->is_empty() && cleared_count < 1000) { // Safety limit
+		if (this->getq(mb, (ACE_Time_Value*)&ACE_Time_Value::zero) != -1 && mb != nullptr) {
+			mb->release();
+			mb = nullptr;
+			cleared_count++;
+		} else {
+			break;
+		}
+	}
+	UNS_DEBUG(L"fini: cleared %d messages from queue\n", cleared_count);
+	
 	return 0;
 }
 

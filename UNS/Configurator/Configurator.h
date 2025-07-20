@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2024 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #ifndef __CONFIGURATOR_H_
 #define __CONFIGURATOR_H_
@@ -35,7 +35,7 @@ class CONFIGURATOR_Export Configurator : public GmsSubService, public IServicesM
 		m_meiEnabled(true), m_gotMeiEnabled(false), m_inProcessType(MB_SUBSCRIBE_EVENT-1),
 		m_inProcess(false), m_onToggleService(false), deferredResumeTimerId_(-1) {}
 
-	~Configurator(){}
+	virtual ~Configurator() {}
 
 	// ********************* ACE PART ********************************
 	virtual int init (int argc, ACE_TCHAR *argv[]);

@@ -94,16 +94,17 @@ int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int StatusEventHandler::fini (void)
+int StatusEventHandler::fini(void)
 {
 	UNS_DEBUG(L"StatusEventHandler service finalized\n");
-	ACE_Reactor::instance()->cancel_timer (this);
-	return 0;
+	
+	// Call base class fini for proper cleanup
+	return GmsSubService::fini();
 }
 
 int StatusEventHandler::suspend()
 {
-	ACE_Reactor::instance()->cancel_timer (this);
+	gmsSubServiceReactor.cancel_timer(this);
 	return EventHandler::suspend();
 }
 

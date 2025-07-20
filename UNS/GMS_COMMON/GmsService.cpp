@@ -44,16 +44,14 @@ GmsService::GmsService(void) : stopped(false), loading(false),
 	ACE_Service_Repository *repo = ACE_Service_Repository::instance();
 	if (repo == NULL)
 		throw std::runtime_error("Failed to instantiate ACE_Service_Repository");
-	ACE_Reactor *a_reactor = ACE_Reactor::instance();
-	if (a_reactor == NULL)
-		throw std::runtime_error("Failed to instantiate ACE_Reactor");
-	reactor(a_reactor);
+	
+	reactor(&gmsReactor);
 	water_marks(ACE_IO_Cntl_Msg::SET_HWM, QUEUE_SIZE);
 }
 
 GmsService::~GmsService(void)
 {
-	reactor()->close();
+	gmsReactor.close();
 }
 
 void GmsService::CloseHeciHandle()
@@ -406,7 +404,10 @@ void GmsService::SetSuspend()
 void GmsService::SetStop()
 {
 	UNS_DEBUG(L"GmsService::SetStop()\n");
-	reactor()->end_reactor_event_loop();
+	if (reactor() && !reactor()->reactor_event_loop_done()) {
+		UNS_DEBUG(L"ending reactor loop\n");
+		reactor()->end_reactor_event_loop();
+	}
 }
 
 bool GmsService::GetStopped()

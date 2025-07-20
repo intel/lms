@@ -32,7 +32,7 @@ int FWCIRAWorkaroundService::init(int argc, ACE_TCHAR *argv[])
 	UNS_DEBUG(L"FWCIRAWorkaroundService::init timeout 0x%x\n", timeout);
 	// Start timer to have first ping immediately
 	ACE_Time_Value ace_interval(timeout * GMS_ACE_MINUTE);
-	ACE_Reactor::instance()->schedule_timer(this, 0, ace_interval, ace_interval);
+	gmsSubServiceReactor.schedule_timer(this, 0, ace_interval, ace_interval);
 	startSubService();
 	return 0;
 }
@@ -40,8 +40,9 @@ int FWCIRAWorkaroundService::init(int argc, ACE_TCHAR *argv[])
 int FWCIRAWorkaroundService::fini(void)
 {
 	FuncEntryExit<void> fee(this, L"fini");
-	ACE_Reactor::instance()->cancel_timer(this);
-	return 0;
+	
+	// Call base class fini for common cleanup
+	return GmsSubService::fini();
 }
 
 const ACE_TString FWCIRAWorkaroundService::name()
