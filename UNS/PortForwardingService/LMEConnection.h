@@ -336,11 +336,13 @@ private:
 	ACE_Thread_Manager * aceMgr_;
 	ACE_thread_t _rxThread;
 	
-
+	volatile bool m_shutdownInProgress; 
+	
 	template <typename T>
 	using FuncEntryExit = FuncEntryExit_<T, LMEConnection>;
 public:
 	const wchar_t *short_name() const { return L"LMEC"; }
+	void SetShutdownInProgress(bool shutdown);
 };
 
 #endif

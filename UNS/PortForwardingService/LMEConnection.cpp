@@ -27,7 +27,8 @@ const uint32_t LMEConnection::RX_WINDOW_SIZE = 1024; // TBD Choose optimal windo
 LMEConnection::LMEConnection(bool verbose): _initState(INIT_STATE_DISCONNECTED),
 				_cb(NULL), _signalSelectCallback(nullptr), _cbParam(NULL), _heci(GenerateLMEClient(verbose)),
 				_threadStartedEvent(1), _portIsOk(1), m_portForwardingPort(0),
-				_selfDisconnect(false), _clientNotFound(false), aceMgr_(nullptr), _rxThread(0)
+				_selfDisconnect(false), _clientNotFound(false), aceMgr_(nullptr), _rxThread(0),
+				m_shutdownInProgress(false)
 {
 	_devNotify = NULL;
 	_devNotifyParam = NULL;
@@ -516,6 +517,12 @@ ssize_t LMEConnection::_receiveMessage(unsigned char *buffer, size_t len)
 		return -1;
 	}
 
+	// Check if shutdown is in progress
+	if (m_shutdownInProgress) {
+		UNS_DEBUG(L"LMEConnection::_receiveMessage - shutdown in progress, stop reading\n");
+		return -1;
+	}
+
 	try
 	{
 		return _heci->ReceiveHeciMessage(buffer, len, 0);
@@ -533,6 +540,12 @@ bool LMEConnection::_sendMessage(unsigned char *buffer, size_t len)
 	if (initState != INIT_STATE_CONNECTED)
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
+		return false;
+	}
+
+	// Check if shutdown is in progress
+	if (m_shutdownInProgress) {
+		UNS_DEBUG(L"LMEConnection::_sendMessage - shutdown in progress, stop writing\n");
 		return false;
 	}
 
@@ -1005,3 +1018,9 @@ size_t LMEConnection::GetBufferSize() const
 {
 	return _heci->GetBufferSize();
 }
+
+void LMEConnection::SetShutdownInProgress(bool shutdown)
+{
+	m_shutdownInProgress = shutdown;
+}
+
