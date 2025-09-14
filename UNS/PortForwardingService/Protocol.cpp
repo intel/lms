@@ -954,8 +954,7 @@ int Protocol::Select()
 	if (FD_ISSET(_serverSignalSocket, &rset)) {	// Received a 'signal'
 		char c = 0;
 		_signalPipe.recv(&c, 1);
-		FD_CLR(_serverSignalSocket, &rset);
-		res--;
+		return 1; //Stop listening when closing thread
 	}
 
 	{
