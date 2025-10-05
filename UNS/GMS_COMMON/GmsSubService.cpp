@@ -167,16 +167,16 @@ int GmsSubService::handle_output(ACE_HANDLE fd)
 	FuncEntryExit<void> fee(this, L"handle_output");
 	UNS_DEBUG(L"handle_output: %s\n",name().c_str());
 
-	ACE_Message_Block *mb = 0;
-	while (! this->msg_queue()->is_empty() && ShouldPass())
-	{	
-		/*int qcount = */this->getq(mb);
-		MessageBlockPtr mbPtr(mb, deleteMessageBlockPtr);
-		if (mb != 0)
+	ACE_Message_Block *mb = nullptr;
+	while (!this->msg_queue()->is_empty() && ShouldPass())
+	{
+		if (this->getq(mb) != -1 && mb != nullptr)
 		{
+			MessageBlockPtr mbPtr(mb, deleteMessageBlockPtr);
 			int type=mbPtr->msg_type();
 			HandleAceMessage(type, mbPtr);
 		}
+		mb = nullptr;
 	}
 	return true;
 }
