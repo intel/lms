@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2024 Intel Corporation
+ * Copyright (C) 2017-2025 Intel Corporation
  */
 #include <gio/gio.h>
 
@@ -155,7 +155,8 @@ int DBusService::fini (void)
 	m_DBusThread.stop();
 	m_DBusThread.thr_mgr()->wait_task(&m_DBusThread);
 
-	return 0;
+	// Call base class fini for proper cleanup
+	return EventHandler::fini();
 }
 
 const ACE_TString DBusService::name()
