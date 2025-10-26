@@ -13,7 +13,7 @@ class LMSConan(ConanFile):
 
     def requirements(self):
         if self.settings.os == "Windows":
-            self.requires("libxml2/2.14.2@mesw/stable")
+            self.requires("libxml2/2.14.6@mesw/stable")
             self.requires("ACE/8.0.2@mesw/stable")
         else:
             if os.environ.get("LOCAL_ACE", None):
