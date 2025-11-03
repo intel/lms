@@ -164,7 +164,6 @@ SharedStaticIPService::handle_close(ACE_HANDLE, ACE_Reactor_Mask)
 	free_event();
 	if (gmsSubServiceReactor.cancel_timer(this) != 1)
 		UNS_ERROR(L"Cancel timer error...\n");
-	this->reactor(0);
 	return 0;
 }
 
