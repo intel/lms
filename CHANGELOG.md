@@ -1,3 +1,34 @@
+## [2550.0.0.0]
+
+### Fixed
+ - WsmanClientTest: fix log verboseness
+ - Complete task on trying to load services while loaded already
+ - Stop PFW_LAST_SERVICE before starting all services waiting for PFW
+ - GMS_COMMON: handle full event queue
+ - WsmanClient: fix cert hash processing
+ - PortForwardingService: fix flow direction in print
+ - fix build issue with gcc 15
+ - PFW: Check ret code of LAST service stop
+ - PFW: brutally stop LAST
+ - Narrow mutex usage
+
+### Changed
+ - general code cleanup
+ - conan: update libxml2 to 2.14.6
+ - update copyright strings in resourses
+ - MeTee download: update to Git tag 6.0.2
+
+### Removed
+ - WsmanClient: drop gmock test
+ - Configurator: remove pointer print
+
+### Added
+ - AMT_COM_Interface: enable logs in service callbacks
+ - add timeout for every putq
+ - Add print at the end of GmsService::sendMessage
+ - PFW: Add missing m_serviceIsClosed
+ - ACE Reactor for each SubService
+
 ## [2506.0.0.0]
 
 ### Fixed
