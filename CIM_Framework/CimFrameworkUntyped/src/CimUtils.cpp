@@ -12,6 +12,7 @@
 #include <cstring>
 #include <cstdio>
 #include <sstream>
+#include <algorithm>
 
 #include "CimUtils.h"
 #include "CimDateTime.h"
@@ -134,9 +135,7 @@ namespace Intel
 						}
 						len = blen;
 						data = new unsigned char[len];
-						if (memcpy_s(data, len, buffer, len)) {
-							throw CimException(string("Error copying memmory").c_str());
-						}
+						std::copy(buffer, buffer + len, data);
 					}
 				}
 
@@ -153,9 +152,7 @@ namespace Intel
 					len = other.len;
 					if (len > 0) {
 						data = new unsigned char[len];
-						if (memcpy_s(data, len, other.data, len)) {
-							throw CimException(string("Error copying memmory").c_str());
-						}
+						std::copy(other.data, other.data + len, data);
 					}
 					return *this;
 				}
