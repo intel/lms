@@ -19,4 +19,4 @@ class LMSConan(ConanFile):
             if os.environ.get("LOCAL_ACE", None):
                 self.requires("ACE/8.0.2@mesw/stable")
         if self.options.build_tests:
-            self.requires("gtest/1.10.0@mesw/stable")
+            self.requires("gtest/1.12.1@mesw/stable")
