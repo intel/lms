@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2013-2022 Intel Corporation
+ * Copyright (C) 2013-2025 Intel Corporation
  */
 #include "HistoryEventHandler.h"
 #include "DataStorageGenerator.h"
@@ -36,13 +36,6 @@ HistoryEventHandler:: HistoryEventHandler():filter_(new IMSSFilter)
 
 		return 0;
 	}
-
-	int
-	HistoryEventHandler::fini (void)
-	{
-		return EventHandler::fini();
-	}
-
 
 	int
 	HistoryEventHandler::handle_event (MessageBlockPtr mbPtr )

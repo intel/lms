@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 #include "WMIEventHandler.h"
 #include <atlbase.h>
@@ -19,21 +19,6 @@
 	{
 		WMIFilter::defaultInitialization(filter_);
 	}
-
-
-	int
-	WMIEventHandler::init (int argc, ACE_TCHAR *argv[])
-	{
-		int retVal = EventHandler::init(argc, argv);
-		if (retVal != 0)
-		{
-			UNS_ERROR(L"EventHandler::init failed. retVal: %d\n", retVal);
-			return retVal;
-		}
-
-		return 0;
-	}
-
 
 	int
 	WMIEventHandler::handle_event (MessageBlockPtr mbPtr )

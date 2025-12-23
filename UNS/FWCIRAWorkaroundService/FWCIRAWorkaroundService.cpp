@@ -37,14 +37,6 @@ int FWCIRAWorkaroundService::init(int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int FWCIRAWorkaroundService::fini(void)
-{
-	FuncEntryExit<void> fee(this, L"fini");
-	
-	// Call base class fini for common cleanup
-	return GmsSubService::fini();
-}
-
 const ACE_TString FWCIRAWorkaroundService::name()
 {
 	return GMS_FWCIRAWORKAROUNDSERVICE;

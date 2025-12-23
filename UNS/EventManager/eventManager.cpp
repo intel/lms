@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #include "eventManager.h"
 
@@ -131,12 +131,5 @@ const ACE_TString
 	{
 		return EVENT_MANAGER;
 	}
-
-int EventManager::resume()
-{
-	GmsSubService::resume();
-
-	return 0;
-}
 
 LMS_SUBSERVICE_DEFINE(EVENTMANAGER, EventManager)

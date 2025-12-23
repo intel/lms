@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 #ifndef __WINLOGEVENTHANDLER_H_
 #define __WINLOGEVENTHANDLER_H_
@@ -17,8 +17,6 @@ public:
 	WinLogEventHandler();
 
 	virtual int init (int argc, ACE_TCHAR *argv[]);
-
-	virtual int fini (void);
 
 protected:
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #ifndef __POWEROPERATIONSSERVICE_H_
 #define __POWEROPERATIONSSERVICE_H_
@@ -17,7 +17,6 @@ public:
 	PowerOperationsService() :m_filter(new PowerEventFilter), m_addCapabilitiesRequiredButNoPfw(false), m_retryReboot(false), m_retryAttempt(0) {}
 protected:
 	virtual int init(int argc, ACE_TCHAR *argv[]);
-	virtual int fini (void);
 	virtual int suspend();
 	virtual int handle_event (MessageBlockPtr mbPtr);
 	virtual const ACE_TString name();

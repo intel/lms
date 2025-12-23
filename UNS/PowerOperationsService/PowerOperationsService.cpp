@@ -313,14 +313,6 @@ int PowerOperationsService::init (int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int PowerOperationsService::fini (void)
-{
-	UNS_DEBUG(L"PowerOperationsService finalized\n");
-	
-	// Call base class fini for proper cleanup
-	return EventHandler::fini();
-}
-
 int PowerOperationsService::suspend()
 {
 	gmsSubServiceReactor.cancel_timer(this);

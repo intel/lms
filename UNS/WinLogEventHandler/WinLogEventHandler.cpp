@@ -62,12 +62,6 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 }
 
 int
-WinLogEventHandler::fini (void)
-{
-	return EventHandler::fini();
-}
-
-int
 WinLogEventHandler::handle_event (MessageBlockPtr mbPtr )
 {
 	GMS_AlertIndication *pGMS_AlertIndication = nullptr;

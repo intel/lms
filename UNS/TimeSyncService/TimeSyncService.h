@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2011-2020 Intel Corporation
+ * Copyright (C) 2011-2025 Intel Corporation
  */
 #ifndef __TIME_SYNC_SERVICE_H_
 #define __TIME_SYNC_SERVICE_H_
@@ -17,8 +17,6 @@ class TIMESYNCSERVICE_Export TimeSyncService : public EventHandler
 	// ********************* ACE PART ********************************
 	
 	virtual int init (int argc, ACE_TCHAR *argv[]);
-
-    virtual int fini (void);
 
 	virtual int resume();
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 #ifndef __WMIEVENTHANDLER_H_
 #define __WMIEVENTHANDLER_H_
@@ -15,7 +15,6 @@ class WMIEVENTHANDLER_Export WMIEventHandler : public EventHandler
 public:
 	WMIEventHandler();
 
-	virtual int init (int argc, ACE_TCHAR *argv[]);
 protected:
 
 	virtual int handle_event (MessageBlockPtr mbPtr);

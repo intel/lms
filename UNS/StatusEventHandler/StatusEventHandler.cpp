@@ -94,14 +94,6 @@ int StatusEventHandler::init (int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int StatusEventHandler::fini(void)
-{
-	UNS_DEBUG(L"StatusEventHandler service finalized\n");
-	
-	// Call base class fini for proper cleanup
-	return GmsSubService::fini();
-}
-
 int StatusEventHandler::suspend()
 {
 	gmsSubServiceReactor.cancel_timer(this);

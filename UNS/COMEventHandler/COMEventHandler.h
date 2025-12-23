@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 #ifndef __COMEVENTHANDLER_H_
 #define __COMEVENTHANDLER_H_
@@ -18,8 +18,6 @@ public:
 	COMEventHandler();
 
 protected:
-
-	virtual int init (int argc, ACE_TCHAR *argv[]);
 
 	virtual int handle_event (MessageBlockPtr mbPtr);
 

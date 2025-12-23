@@ -32,15 +32,6 @@ HostChangesNotificationService::init (int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int
-HostChangesNotificationService::fini(void)
-{
-	UNS_DEBUG(L"HostChangesNotificationService service stopped\n");
-	
-	// Call base class fini() first for common cleanup
-	return GmsSubService::fini();
-}
-
 const ACE_TString
 HostChangesNotificationService::name()
 {

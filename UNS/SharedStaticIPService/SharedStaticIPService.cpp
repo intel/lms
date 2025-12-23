@@ -141,16 +141,6 @@ int SharedStaticIPService::init (int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int
-SharedStaticIPService::fini (void)
-{
-	UNS_DEBUG(L"SharedStaticIP service stopped\n");
-	
-	// Call base class fini for proper cleanup
-	return GmsSubService::fini();
-}
-
-
 // handle close
 int
 SharedStaticIPService::handle_close(ACE_HANDLE, ACE_Reactor_Mask)

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2024 Intel Corporation
+ * Copyright (C) 2024-2025 Intel Corporation
  */
 #ifndef __FWCIRAWORKAROUND_SERVICE_H_
 #define __FWCIRAWORKAROUND_SERVICE_H_
@@ -14,7 +14,6 @@ public:
 
 	// ********************* ACE PART ********************************
 	virtual int init(int argc, ACE_TCHAR *argv[]);
-	virtual int fini(void);
 	virtual int resume();
 	virtual const ACE_TString name();
 	virtual const wchar_t *short_name() const { return L"CIRAWA"; }

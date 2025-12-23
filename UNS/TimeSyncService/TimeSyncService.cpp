@@ -39,16 +39,6 @@ TimeSyncService::init (int argc, ACE_TCHAR *argv[])
 	return 0;
 }
 
-int
-TimeSyncService::fini (void)
-{
-	UNS_DEBUG(L"TimeSync service stopped\n");
-	
-	// Call base class fini for proper cleanup
-	return GmsSubService::fini();
-}
-
-
 const ACE_TString
 TimeSyncService::name()
 {

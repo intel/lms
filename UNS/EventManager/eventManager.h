@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2020 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #ifndef __EVENTMANAGER_H_
 #define __EVENTMANAGER_H_
@@ -25,8 +25,6 @@ public:
 	EventManager(){}
 
 	virtual void HandleAceMessage(int type, MessageBlockPtr &mbPtr);
-
-	virtual int resume();
 
 	void publishEvent(MessageBlockPtr &eventMsg, const GMS_AlertIndication *pGMS_AlertIndication);
 

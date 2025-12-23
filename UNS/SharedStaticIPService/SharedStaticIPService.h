@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2025 Intel Corporation
  */
 #ifndef __SHAREDSTATICIPSERVICE_H_
 #define __SHAREDSTATICIPSERVICE_H_
@@ -33,8 +33,6 @@ public:
 
 	// ********************* ACE PART ********************************
 	virtual int init (int argc, ACE_TCHAR *argv[]);
-
-	virtual int fini (void);
 
 	virtual int handle_close(ACE_HANDLE, ACE_Reactor_Mask);
 
