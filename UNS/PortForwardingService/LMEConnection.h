@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -239,8 +239,6 @@ typedef void (*HECICallback) (void *param, void *buffer, unsigned int len, int *
 typedef bool (*DeviceNotifyCallBack)(void *param, HDEVNOTIFY * hNotify, HANDLE drvHandle, bool regOrUnreg);
 typedef void (*SignalSelectCallback) (void* protocol);
 
-
-
 class LMEConnection {
 public:
 	LMEConnection(bool verbose = false);
@@ -250,7 +248,7 @@ public:
 	LMEConnection& operator = (const LMEConnection&) = delete;
 
 	struct InitParameters
-		{
+	{
 		
 		InitParameters(HECICallback heciCb, void * heciCbParam, 
 							DeviceNotifyCallBack devNotifyCb, void * devNotifyCbParam, 
@@ -270,7 +268,7 @@ public:
 		
 		private:
 			InitParameters();
-		};
+	};
 
 	bool Init(InitParameters & params);
 	bool IsInitialized();
@@ -289,11 +287,11 @@ public:
 	bool ChannelClose(uint32_t recipient);
 	bool ChannelData(uint32_t recipient, uint32_t len, unsigned char *buffer);
 	bool ChannelWindowAdjust(uint32_t recipient, uint32_t len);
-	bool IsSelfDisconnect() { return _selfDisconnect; }
-	bool IsClientNotFound() { return _clientNotFound; }
+	bool IsSelfDisconnect() const { return _selfDisconnect; }
+	bool IsClientNotFound() const { return _clientNotFound; }
 	//parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
 	void Deinit(bool signalSelect = false);
-	size_t GetBufferSize() const;
+	size_t GetBufferSize() const { return _heci->GetBufferSize(); }
 	unsigned int GetPortForwardingPort() const { return m_portForwardingPort; }
 
 	enum INIT_STATES {
@@ -321,7 +319,6 @@ private:
 	std::mutex _initLock;
 	std::mutex _sendMessageLock;
 	INIT_STATES _initState;
-	INIT_STATES getInitState() { std::lock_guard<std::mutex> lock(_initLock); return _initState; }
 	std::unique_ptr<Intel::MEI_Client::HECI> _heci;
 	ACE_Event _threadStartedEvent;
 	ACE_Event _portIsOk;
@@ -342,7 +339,7 @@ private:
 	using FuncEntryExit = FuncEntryExit_<T, LMEConnection>;
 public:
 	const wchar_t *short_name() const { return L"LMEC"; }
-	void SetShutdownInProgress(bool shutdown);
+	void SetShutdownInProgress(bool shutdown) { m_shutdownInProgress = shutdown; }
 };
 
 #endif

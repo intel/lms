@@ -199,9 +199,7 @@ bool LMEConnection::Disconnect(APF_DISCONNECT_REASON_CODE reasonCode)
 
 bool LMEConnection::ServiceAccept(const std::string &serviceName)
 {
-	INIT_STATES initState = getInitState();
-
-	if (initState != INIT_STATE_CONNECTED)
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -222,8 +220,7 @@ bool LMEConnection::ServiceAccept(const std::string &serviceName)
 
 bool LMEConnection::UserAuthSuccess()
 {
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -238,8 +235,7 @@ bool LMEConnection::UserAuthSuccess()
 
 bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage &versionMessage)
 {
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -258,10 +254,9 @@ bool LMEConnection::ProtocolVersion(const LMEProtocolVersionMessage &versionMess
 	return _sendMessage((unsigned char*)&protVersion, sizeof(protVersion));
 }
 
-bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::TcpForwardReplySuccess(uint32_t port)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -277,10 +272,9 @@ bool LMEConnection::TcpForwardReplySuccess(uint32_t port) {
 	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
-bool LMEConnection::TcpForwardReplyFailure() {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::TcpForwardReplyFailure()
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -293,10 +287,9 @@ bool LMEConnection::TcpForwardReplyFailure() {
 	return _sendMessage(&buf, sizeof(buf));
 }
 
-bool LMEConnection::TcpForwardCancelReplySuccess() {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::TcpForwardCancelReplySuccess()
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -309,10 +302,9 @@ bool LMEConnection::TcpForwardCancelReplySuccess() {
 	return _sendMessage(&buf, sizeof(buf));
 }
 
-bool LMEConnection::TcpForwardCancelReplyFailure() {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::TcpForwardCancelReplyFailure()
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -334,10 +326,9 @@ bool LMEConnection::TcpForwardCancelReplyFailure() {
 																}
 
 bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const std::string &connectedIP, uint32_t connectedPort,
-												const std::string &originatorIP, uint32_t originatorPort) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+												const std::string &originatorIP, uint32_t originatorPort)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -398,10 +389,9 @@ bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const st
 	return res;
 }
 
-bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t senderChannel) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t senderChannel)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -420,10 +410,9 @@ bool LMEConnection::ChannelOpenReplaySuccess(uint32_t recipientChannel, uint32_t
 	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
-bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t reason) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t reason)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -442,10 +431,9 @@ bool LMEConnection::ChannelOpenReplayFailure(uint32_t recipientChannel, uint32_t
 	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
-bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::ChannelClose(uint32_t recipientChannel)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -461,10 +449,9 @@ bool LMEConnection::ChannelClose(uint32_t recipientChannel) {
 	return _sendMessage((unsigned char*)&message, sizeof(message));
 }
 
-bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -488,10 +475,9 @@ bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigne
 	return _sendMessage((unsigned char *)message, sizeof(APF_CHANNEL_DATA_MESSAGE) + len);
 }
 
-bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len) {
-
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
+{
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -510,8 +496,7 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 
 ssize_t LMEConnection::_receiveMessage(unsigned char *buffer, size_t len)
 {
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return -1;
@@ -536,8 +521,7 @@ ssize_t LMEConnection::_receiveMessage(unsigned char *buffer, size_t len)
 
 bool LMEConnection::_sendMessage(unsigned char *buffer, size_t len)
 {
-	INIT_STATES initState = getInitState();
-	if (initState != INIT_STATE_CONNECTED)
+	if (!IsInitialized())
 	{
 		UNS_DEBUG(L"State: not connected to HECI.\n");
 		return false;
@@ -1013,14 +997,3 @@ void LMEConnection::_doRX()
 		}
 	}
 }
-
-size_t LMEConnection::GetBufferSize() const
-{
-	return _heci->GetBufferSize();
-}
-
-void LMEConnection::SetShutdownInProgress(bool shutdown)
-{
-	m_shutdownInProgress = shutdown;
-}
-
