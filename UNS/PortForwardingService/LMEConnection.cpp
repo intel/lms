@@ -150,12 +150,17 @@ bool LMEConnection::Init(InitParameters & params)
 // Should be called under _initLock
 void LMEConnection::DeinitInternal()
 {
+	FuncEntryExit<void> fee(this, L"DeinitInternal");
+
+	// Try to stop RX thread asynchronously to catch it before blocking read
+	aceMgr_->cancel(_rxThread, 1);
+	// Stop blocking read in RX thread
+	_heci->CancelIO();
+	// Stop RX thread synchronously when it exited blocking read
+	aceMgr_->cancel(_rxThread, 0);
 	_heci->Deinit();
 	_initState = INIT_STATE_DISCONNECTED;
 	m_portForwardingPort = 0;
-
-	if (aceMgr_)
-		aceMgr_->cancel(_rxThread, 0);
 }
 
 //parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection
@@ -165,13 +170,16 @@ void LMEConnection::Deinit(bool signalSelect)
 
 	std::lock_guard<std::mutex> lock(_initLock);
 
-	if (_devNotify != NULL)
+	if (_initState != INIT_STATE_DISCONNECTED)
 	{
-		if (_devNotify(_devNotifyParam, &_notifyHandle, NULL, false))
-			_notifyHandle = NULL;
-	}
+		if (_devNotify != NULL)
+		{
+			if (_devNotify(_devNotifyParam, &_notifyHandle, NULL, false))
+				_notifyHandle = NULL;
+		}
 
-	DeinitInternal();
+		DeinitInternal();
+	}
 
 	if (signalSelect)
 		_signalSelectCallback(_cbParam);
@@ -572,6 +580,12 @@ void LMEConnection::_doRX()
 
 	while (true) {
 		int status = 1;
+
+		if (aceMgr_->testcancel(aceMgr_->thr_self()))
+		{
+			UNS_DEBUG(L"_doRX thread shutdown\n");
+			break;
+		}
 
 		bytesRead = _receiveMessage(rxBuffer, GetBufferSize());
 

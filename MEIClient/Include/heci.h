@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -26,6 +26,7 @@ namespace Intel {
 
 			void Init();
 			void Deinit();
+			void CancelIO();
 			size_t ReceiveHeciMessage(unsigned char *buffer, size_t len, unsigned long timeout);
 			size_t SendHeciMessage(const unsigned char *buffer, size_t len, unsigned long timeout);
 			size_t GetBufferSize() const { return _bufSize; }

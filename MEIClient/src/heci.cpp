@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2025 Intel Corporation
  */
 /*++
 
@@ -109,6 +109,13 @@ void HECI::Deinit()
 	if (_initialized) {
 		TeeDisconnect(_handle.get());
 		_initialized = false;
+	}
+}
+
+void HECI::CancelIO()
+{
+	if (_initialized) {
+		TeeCancelIO(_handle.get());
 	}
 }
 
