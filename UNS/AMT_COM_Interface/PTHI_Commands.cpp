@@ -155,7 +155,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	}
 
 	HRESULT hr = S_OK;
-	DWORD dwImp = 0;
+	SECURITY_IMPERSONATION_LEVEL dwImp = SecurityAnonymous;
 	HANDLE hThreadTok = NULL;
 	DWORD dwBytesReturned;
 	BOOL bRes;
@@ -172,7 +172,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	bRes = OpenThreadToken(GetCurrentThread(), TOKEN_QUERY, TRUE, &hThreadTok);
 	if (bRes == FALSE)
 	{
-		UNS_ERROR(L"Unable to OpenThreadToken (0x%x)", GetLastError());
+		UNS_ERROR(L"Unable to OpenThreadToken (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		return hr;
@@ -181,9 +181,9 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	bRes = ::GetTokenInformation(hThreadTok, TokenImpersonationLevel,
 	                             &dwImp, sizeof(dwImp), &dwBytesReturned);
 
-	if (bRes == FALSE || (dwBytesReturned < sizeof(PTOKEN_USER)))
+	if (bRes == FALSE || (dwBytesReturned < sizeof(dwImp)))
 	{
-		UNS_ERROR(L"Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)", GetLastError());
+		UNS_ERROR(L"Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		return hr;
@@ -191,7 +191,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 
 	if ((dwImp != SecurityImpersonation) && (dwImp != SecurityIdentification))
 	{
-		UNS_ERROR(L"Wrong security TokenImpersonationLevel (%d)", dwImp);
+		UNS_ERROR(L"Wrong security TokenImpersonationLevel (%d)\n", dwImp);
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		CloseHandle(hThreadTok);
 		return hr;
@@ -200,7 +200,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups, NULL, 0, &dwBytesReturned);
 	if (bRes == FALSE && (GetLastError() != ERROR_INSUFFICIENT_BUFFER))
 	{
-		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups NULL (0x%x)", GetLastError());
+		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups NULL (0x%x)\n", GetLastError());
 		CloseHandle(hThreadTok);
 		return S_FALSE;//STATUS_SECURITY_PROBLEM;
 	}
@@ -210,7 +210,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	bRes = ::GetTokenInformation(hThreadTok, TokenGroups, groups, dwBytesReturned, &dwBytesReturned);
 	if (bRes == FALSE || dwBytesReturned < sizeof(TOKEN_GROUPS))
 	{
-		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups (0x%x)", GetLastError());
+		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		delete [] groups;
@@ -222,7 +222,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	hr = CoRevertToSelf();
 	if (hr != S_OK)
 	{
-		UNS_ERROR(L"CoRevertToSelf (0x%x)", hr);
+		UNS_ERROR(L"CoRevertToSelf (0x%x)\n", hr);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		delete [] groups;
 		return hr;
