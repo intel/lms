@@ -16,11 +16,7 @@ if /i %ACTION%=="" (
 	exit /b 1
 )
 
-set LMS_INSTALL_PATH32=C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\LMS
 set LMS_INSTALL_PATH=C:\Program Files\Intel\Intel(R) Management Engine Components\LMS
-if EXIST "C:\Program Files (x86)" (
-set "LMS_INSTALL_PATH=%LMS_INSTALL_PATH32%"
-)
 
 goto :Action
 

@@ -9,7 +9,7 @@ mofcomp wmi_build.mof
 rem register the MeProv as the provider
 mofcomp register.mof
 
-rem register ..\MeProf.dll
-regsvr32 ..\MeProv.dll
+rem register ..\MeProv.dll using 64-bit regsvr32
+%SystemRoot%\System32\regsvr32.exe ..\MeProv.dll
 
 pause

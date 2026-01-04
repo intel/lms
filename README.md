@@ -95,8 +95,8 @@ You can not set both flags to ON.
 Note: The DLL signature check tests Intel(R) signatures, so external build should disable DLL signature check.
 
 1. Create `build` directory
-2. Run `cmake -G "Visual Studio 16 2019" -A <Build_arch> -DIGNORE_DLL_SIGNATURES=YES <srcdir>` from the `build` directory (best to set build_arch to Win32)
-3. Run `cmake --build . --config Release --target package -j <nproc>` from the `build` directory to build an archive with all executables and libraries (e.g. lms-1.0.0-win32.zip)
+2. Run `cmake -G "Visual Studio 16 2019" -A <Build_arch> -DIGNORE_DLL_SIGNATURES=YES <srcdir>` from the `build` directory (best to set build_arch to x64)
+3. Run `cmake --build . --config Release --target package -j <nproc>` from the `build` directory to build an archive with all executables and libraries (e.g. lms-1.0.0-win64.zip)
 
 ### Linux
 
@@ -140,7 +140,7 @@ LMS service should be restarted to pick up a new log level.
 
 ### Windows
 
-LMS prints debug logs to the file, located at C:\Windows\SysWOW64\Gms.log. The file is trimmed at service start.
+LMS prints debug logs to the file, located at C:\Windows\System32\Gms.log. The file is trimmed at service start.
 
 Messages with level DEBUG and up are logged by default. Use UNS/windows_scripts/lms_enable_logging_severity.bat script to set desired log level.
 
