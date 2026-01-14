@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -174,7 +174,7 @@ void LMEConnection::Deinit(bool signalSelect)
 	{
 		if (_devNotify != NULL)
 		{
-			if (_devNotify(_devNotifyParam, &_notifyHandle, NULL, false))
+			if (_devNotify(_devNotifyParam, &_notifyHandle, static_cast<HANDLE>(NULL), false))
 				_notifyHandle = NULL;
 		}
 
