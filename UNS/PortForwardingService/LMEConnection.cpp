@@ -527,8 +527,8 @@ void LMEConnection::_rxThreadFunc(void *param)
 		connection->_doRX();
 	}
 
-	catch (...) {
-		UNS_ERROR(L"LMEConnection do RX exception\n");
+	catch (const std::exception &e) {
+		UNS_ERROR(L"LMEConnection do RX exception %C\n", e.what());
 	}
 }
 
