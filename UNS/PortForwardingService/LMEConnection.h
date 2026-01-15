@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -285,7 +285,7 @@ public:
 	bool ChannelOpenReplaySuccess(uint32_t recipient, uint32_t sender);
 	bool ChannelOpenReplayFailure(uint32_t recipient, uint32_t reason);
 	bool ChannelClose(uint32_t recipient);
-	bool ChannelData(uint32_t recipient, uint32_t len, unsigned char *buffer);
+	bool ChannelData(uint32_t recipient, uint32_t len, char *buffer);
 	bool ChannelWindowAdjust(uint32_t recipient, uint32_t len);
 	bool IsSelfDisconnect() const { return _selfDisconnect; }
 	bool IsClientNotFound() const { return _clientNotFound; }

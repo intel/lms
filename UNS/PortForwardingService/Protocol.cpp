@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -122,7 +122,7 @@ namespace
 	}
 }
 
-Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(), _rxSocketBuffer(0), _rxSocketBufferSize(0),
+Protocol::Protocol() : _lme(true), _sockets_active(false), _signalPipe(),
 					   _eventLogWrn(nullptr), _eventLogDbg(nullptr), _eventLogParam(nullptr), _clientNotFound(false)
 {
 	_handshakingStatus = VERSION_HANDSHAKING::NOT_INITIATED;
@@ -178,8 +178,7 @@ bool Protocol::Init(InitParameters & params)
 
 	size_t bufSize = _lme.GetBufferSize() - sizeof(APF_CHANNEL_DATA_MESSAGE);
 	if (bufSize > 0) {
-		_rxSocketBuffer = new char[bufSize];
-		_rxSocketBufferSize = bufSize;
+		_rxSocketBuffer.resize(bufSize);
 	}
 	else {
 		Deinit();
@@ -365,17 +364,6 @@ void Protocol::Deinit()
 				}
 			}
 			_openPorts.clear();
-		}
-
-		{
-			std::lock_guard<std::mutex> l(_deleteLock);
-			if (_rxSocketBuffer != NULL)
-			{
-				delete[] _rxSocketBuffer;
-				_rxSocketBuffer = NULL;
-				_rxSocketBufferSize = 0;
-			}
-
 		}
 		{
 			std::lock_guard<std::mutex> l(_versionLock);
@@ -1015,17 +1003,17 @@ int Protocol::_rxFromSocket(SOCKET s)
 
 	int res = 0;
 
-	int len = std::min(c->GetTxWindow(), (unsigned int) _rxSocketBufferSize);
-	res = recv(s, _rxSocketBuffer, len, 0);
+	int len = std::min(c->GetTxWindow(), (unsigned int)_rxSocketBuffer.size());
+	res = recv(s, _rxSocketBuffer.data(), len, 0);
 	if (res > 0) {
 		// send data to LME
 		UNS_TRACE(L"Socket[%d] ==>: %d bytes\n", (int)s, res);
 #ifdef _DEBUG
-		std::string dbg_dump(_rxSocketBuffer, _rxSocketBuffer + res);
+		std::string dbg_dump(_rxSocketBuffer.data(), _rxSocketBuffer.data() + res);
 		UNS_TRACE(L"-----------------------From application---------------------------\n%C\n-----------------------End from application---------------------------\n\n",
 			dbg_dump.c_str());
 #endif // _DEBUG
-		_lme.ChannelData(c->GetRecipientChannel(), res, (unsigned char *)_rxSocketBuffer);
+		_lme.ChannelData(c->GetRecipientChannel(), res, _rxSocketBuffer.data());
 		goto out;
 	} else if (res == 0) {
 		// connection closed

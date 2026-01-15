@@ -446,7 +446,7 @@ bool LMEConnection::ChannelClose(uint32_t recipientChannel)
 	return _sendMessage(buf);
 }
 
-bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, unsigned char *buffer)
+bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, char *buffer)
 {
 	if (!IsInitialized())
 	{

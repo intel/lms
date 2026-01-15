@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -132,9 +132,7 @@ private:
 	ChannelMap _openChannels;
 	std::mutex _portsLock; // lock for _openPorts
 	std::mutex _channelsLock; // lock for _openChannels
-	std::mutex _deleteLock;
-	char *_rxSocketBuffer;
-	size_t _rxSocketBufferSize; // lock _rxSocketBuffer and _rxSocketBufferSize
+	std::vector<char> _rxSocketBuffer;
 
 	std::vector<std::string> _AMTDNSSuffixes;
 	mutable std::mutex _AMTDNSLock; // lock for _AMTDNSSuffixes
