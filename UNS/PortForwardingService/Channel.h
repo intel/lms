@@ -61,7 +61,7 @@ public:
 	bool SetStatus(const CHANNEL_STATUS newStatus) { _status = newStatus; return true; }
 	PortForwardRequest * GetPortForwardRequest() const { return _portForwardRequest; }
 
-	virtual int ProcessRx(const char *data, uint32_t len, bool& request_close) = 0;
+	virtual size_t ProcessRx(const char *data, size_t len, bool& request_close) = 0;
 
 private:
 	unsigned int _recipientChannel;
@@ -82,10 +82,10 @@ public:
 	SocketChannel(const SocketChannel &orig) : Channel(orig) {};
 	SocketChannel &operator=(const SocketChannel &) = delete;
 
-	virtual int ProcessRx(const char *data, uint32_t len, bool& request_close)
+	virtual size_t ProcessRx(const char *data, size_t len, bool& request_close)
 	{
 		request_close = false;
-		return send(GetSocket(), data, len, 0);
+		return send(GetSocket(), data, static_cast<int>(len), 0);
 	}
 };
 
@@ -99,7 +99,7 @@ public:
 	SoapChannel(const SoapChannel &) = delete;
 	SoapChannel &operator=(const SoapChannel &) = delete;
 
-	virtual int ProcessRx(const char *data, uint32_t len, bool& request_close)
+	virtual size_t ProcessRx(const char *data, size_t len, bool& request_close)
 	{
 		request_close = _soapHandler.handle_input(data, len);
 		return len;

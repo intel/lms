@@ -138,11 +138,11 @@ bool checkFileExist(std::wstring path)
 #ifdef WIN32
 std::wstring UTF8ToWStr(const std::string& s)
 {
-	int wc_size = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.length(), NULL, 0);
+	int wc_size = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), static_cast<int>(s.length()), NULL, 0);
 	if (wc_size <= 0)
 		return L"";
 	std::wstring wc_str(wc_size, '\0');
-	if (!MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.length(), &wc_str[0], wc_size))
+	if (!MultiByteToWideChar(CP_UTF8, 0, s.c_str(), static_cast<int>(s.length()), &wc_str[0], wc_size))
 		return L"";
 	return wc_str;
 }

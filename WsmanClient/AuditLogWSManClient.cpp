@@ -65,7 +65,7 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 				records.push_back(CimTyped::Base64(output.EventRecords().at(i)));
 			}
 			// update number of records that were read 
-			recordsRead += outputSize;
+			recordsRead += static_cast<unsigned int>(outputSize);
 
 		} while (recordsRead < totalRecordsCount && recordsRead < MAX_RECORDS_COUNT);
 	}

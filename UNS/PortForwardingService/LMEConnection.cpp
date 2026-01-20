@@ -226,7 +226,7 @@ bool LMEConnection::ServiceAccept(const std::string &serviceName)
 	auto apfSam = reinterpret_cast<APF_SERVICE_ACCEPT_MESSAGE*>(buf.data());
 
 	apfSam->MessageType = APF_SERVICE_ACCEPT;
-	apfSam->ServiceNameLength = htonl(serviceName.size());
+	apfSam->ServiceNameLength = htonl(static_cast<u_long>(serviceName.size()));
 	// The apfSam allocate with enough place for serviceName
 	std::copy(serviceName.begin(), serviceName.end(), apfSam->ServiceName);
 
@@ -363,7 +363,7 @@ bool LMEConnection::ChannelOpenForwardedRequest(uint32_t senderChannel, const st
 	*((uint32_t *)pCurrent) = 0xFFFFFFFF; pCurrent += sizeof(uint32_t);
 
 	CHECK_BUFFER_OVERFLOW(sizeof(uint32_t));
-	*((uint32_t *)pCurrent) = htonl(connectedIP.size()); pCurrent += sizeof(uint32_t);
+	*((uint32_t *)pCurrent) = htonl(static_cast<u_long>(connectedIP.size())); pCurrent += sizeof(uint32_t);
 
 	CHECK_BUFFER_OVERFLOW(connectedIP.size());
 	std::copy(connectedIP.begin(), connectedIP.end(), pCurrent);
@@ -470,7 +470,7 @@ bool LMEConnection::ChannelData(uint32_t recipientChannel, uint32_t len, char *b
 	return _sendMessage(_txBuffer);
 }
 
-bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
+bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, size_t len)
 {
 	if (!IsInitialized())
 	{
@@ -483,9 +483,9 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, uint32_t len)
 
 	message->MessageType = APF_CHANNEL_WINDOW_ADJUST;
 	message->RecipientChannel = htonl(recipientChannel);
-	message->BytesToAdd = htonl(len);
+	message->BytesToAdd = htonl(static_cast<u_long>(len));
 
-	UNS_TRACE(L"==>LME[%d]: Window Adjust with %d bytes\n", recipientChannel, len);
+	UNS_TRACE(L"==>LME[%d]: Window Adjust with %zu bytes\n", recipientChannel, len);
 	return _sendMessage(buf);
 }
 

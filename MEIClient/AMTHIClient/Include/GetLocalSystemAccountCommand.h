@@ -57,14 +57,14 @@ namespace Intel
 
 				virtual uint32_t requestDataSize()
 				{
-					return sizeof(uint8_t) * reserved_size; //"Reserved"
+					return reserved_size; //"Reserved"
 				}
 				virtual std::vector<uint8_t> SerializeData()
 				{
 					std::vector<uint8_t> output(reserved_size, 0); //"Reserved"
 					return output;
 				}
-				const size_t reserved_size = 40;
+				const uint32_t reserved_size = 40;
 			};
 
 			class GetLocalSystemAccountCommand : public AMTHICommand

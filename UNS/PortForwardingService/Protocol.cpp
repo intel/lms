@@ -878,7 +878,7 @@ int Protocol::Select()
 
 	FD_ZERO(&rset);
 
-	int _serverSignalSocket = (int)_signalPipe.read_handle();
+	SOCKET _serverSignalSocket = (SOCKET)_signalPipe.read_handle();
 
 	FD_SET(_serverSignalSocket, &rset);
 	if ((int)_serverSignalSocket > fdCount) {
@@ -1563,7 +1563,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								return;
 							}
 
-							int count = send(s, (char *)udpSendToMessage->Data.data(), udpSendToMessage->Data.size(), 0);
+							int count = send(s, (char *)udpSendToMessage->Data.data(), static_cast<int>(udpSendToMessage->Data.size()), 0);
 							UNS_TRACE(L"Sent UDP data: %d bytes of %d.\n", count, udpSendToMessage->Data.size());
 #ifdef _DEBUG
 							std::string dbg_dump(udpSendToMessage->Data.begin(), udpSendToMessage->Data.end());
@@ -1813,8 +1813,8 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 						}
 
 						bool request_close = false;
-						int count = it->second->ProcessRx((char *)channelDataMessage->Data.data(), channelDataMessage->Data.size(), request_close);
-						UNS_TRACE(L"Sent %d bytes of %d from AMT to channel %d with socket %d.\n", 
+						size_t count = it->second->ProcessRx((char *)channelDataMessage->Data.data(), channelDataMessage->Data.size(), request_close);
+						UNS_TRACE(L"Sent %zu bytes of %zu from AMT to channel %u with socket %d.\n",
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG

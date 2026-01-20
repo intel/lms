@@ -286,7 +286,7 @@ public:
 	bool ChannelOpenReplayFailure(uint32_t recipient, uint32_t reason);
 	bool ChannelClose(uint32_t recipient);
 	bool ChannelData(uint32_t recipient, uint32_t len, char *buffer);
-	bool ChannelWindowAdjust(uint32_t recipient, uint32_t len);
+	bool ChannelWindowAdjust(uint32_t recipient, size_t len);
 	bool IsSelfDisconnect() const { return _selfDisconnect; }
 	bool IsClientNotFound() const { return _clientNotFound; }
 	//parameter : signalSelect - indicates that we want to signal the main thread to exit the select and reinit the connection

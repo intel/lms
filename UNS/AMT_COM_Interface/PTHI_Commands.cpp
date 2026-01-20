@@ -836,7 +836,7 @@ STDMETHODIMP CPTHI_Commands::GetIPv6NetworkSettings(SHORT ConnectionType /*WIRED
 		BSTR bstrTmp;
 		try
 		{
-			pSar = SafeArrayCreateVector(VT_BSTR, 0, Response.size());
+			pSar = SafeArrayCreateVector(VT_BSTR, 0, static_cast<ULONG>(Response.size()));
 			for (LONG i = 0 ; i < (LONG)Response.size(); i++)
 			{
 				if (!CreateBSTR(Response[i], &bstrTmp))
@@ -1122,7 +1122,7 @@ STDMETHODIMP CPTHI_Commands::GetConfigurationInfo(SHORT* pControlMode,
 
 		if (!CreateBSTR(CreationTimeStampStr, pCreationTimeStamp))
 			return E_FAIL;
-		ATL::CComSafeArray<BYTE> hashdata(CertHash.size());
+		ATL::CComSafeArray<BYTE> hashdata(static_cast<ULONG>(CertHash.size()));
 		for (size_t i = 0; i < CertHash.size(); i++)
 		{
 			hashdata[(LONG)i] = CertHash[i];
@@ -1545,10 +1545,10 @@ STDMETHODIMP CPTHI_Commands::GetPlatformServiceRecordRaw(SAFEARRAY** binPSR)
 		if (err != Intel::LMS::LMS_ERROR::OK)
 			return LMSError2HRESULT(err);
 
-		ATL::CComSafeArray<BYTE> arr(PSR.size());
+		ATL::CComSafeArray<BYTE> arr(static_cast<ULONG>(PSR.size()));
 		for (size_t i = 0; i < PSR.size(); i++)
 		{
-			arr.SetAt(i, PSR[i]);
+			arr.SetAt(static_cast<LONG>(i), PSR[i]);
 		}
 		*binPSR = arr.Detach();
 

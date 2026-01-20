@@ -205,7 +205,7 @@ STDAPI DllRegisterServer(void)
 		return E_FAIL;
 	}
 
-    lRet = RegSetValueExA(hKey1, NULL, 0, REG_SZ, (BYTE *)pName, strlen(pName)+1);
+    lRet = RegSetValueExA(hKey1, NULL, 0, REG_SZ, (BYTE *)pName, static_cast<DWORD>(strlen(pName)) + 1);
 	if (lRet != ERROR_SUCCESS)
 	{
 		RegCloseKey(hKey1);
@@ -229,8 +229,7 @@ STDAPI DllRegisterServer(void)
         return E_FAIL;
     }
 	//printf ("%s %d", szModule, strlen(szModule));
-    lRet = RegSetValueEx(hKey2, NULL, 0, REG_SZ, (BYTE *)szModule, 
-                                        (_tcslen(szModule)+1)*sizeof(TCHAR));
+    lRet = RegSetValueEx(hKey2, NULL, 0, REG_SZ, (BYTE *)szModule, static_cast<DWORD>((_tcslen(szModule) + 1) * sizeof(TCHAR)));
 	if (lRet != ERROR_SUCCESS)
 	{
 	    RegCloseKey(hKey2);
@@ -238,7 +237,7 @@ STDAPI DllRegisterServer(void)
 		return E_FAIL;
 	}
     lRet = RegSetValueExA(hKey2, "ThreadingModel", 0, REG_SZ, 
-                                        (BYTE *)pModel, strlen(pModel)+1);
+                                        (BYTE *)pModel, static_cast<DWORD>(strlen(pModel)) + 1);
 	if (lRet != ERROR_SUCCESS)
 	{
 	    RegCloseKey(hKey2);
