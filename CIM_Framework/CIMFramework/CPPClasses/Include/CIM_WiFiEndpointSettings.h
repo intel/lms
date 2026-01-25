@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       CIM_WiFiEndpointSettings.h
 //
@@ -148,7 +148,8 @@ namespace Typed
 		// 	* WPA2 PSK (6): shall indicate that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) PSK (Pre-Shared Key). AuthenticationMethod should containt 6 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 IEEE 802.1x (7): shall indicated that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) IEEE 802.1x. AuthenticationMethod should contain 7 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA3 SAE IEEE 802.1x (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
-		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")
+		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")	* WPA3 SAE TM (32772): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE TM (Transition Mode)authentication is supported. 
+		// 
 		const unsigned short AuthenticationMethod() const;
 
 		// Optional, AuthenticationMethod shall specify the 802.11 authentication method used when the settings are applied. 	* Other (1): shall indicate that the desired authentication method is not specified in the list below. If AuthenticationMethod contains 1, OtherAuthenticationMethod should not be NULL and should not be empty.
@@ -159,7 +160,8 @@ namespace Typed
 		// 	* WPA2 PSK (6): shall indicate that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) PSK (Pre-Shared Key). AuthenticationMethod should containt 6 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 IEEE 802.1x (7): shall indicated that the desired authentication method is WPA2 (Wi-Fi Protected Access Version 2) IEEE 802.1x. AuthenticationMethod should contain 7 only if EncryptionMethod contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA3 SAE IEEE 802.1x (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
-		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")
+		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")	* WPA3 SAE TM (32772): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE TM (Transition Mode)authentication is supported. 
+		// 
 		void AuthenticationMethod(const unsigned short value); 
 
 		// Is true if the field AuthenticationMethod exists in the current object, otherwise is false.

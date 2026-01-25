@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_AgentPresenceService.cpp
 //
@@ -46,6 +46,24 @@ namespace Typed
 	const vector<CimFieldAttribute> &AMT_AgentPresenceService::GetMetaData() const
 	{
 		return _classMetaData;
+	}
+	const CimFieldAttribute AMT_AgentPresenceService::EnableHostResetAction_INPUT::_metadata[] = {
+		{"Enable", false, true },
+	};
+	void AMT_AgentPresenceService::EnableHostResetAction_INPUT::Enable(const bool value)
+	{
+		SetOrAddField("Enable", TypeConverter::TypeToString(value));
+	}
+	const VectorFieldData AMT_AgentPresenceService::EnableHostResetAction_INPUT::GetAllFields() const
+	{
+		VectorFieldData ret;
+		ret = sortData(_metadata, 1);
+		return ret;
+	}
+	unsigned int AMT_AgentPresenceService::EnableHostResetAction(const EnableHostResetAction_INPUT &input)
+	{
+		CimEmptyParam output;
+		return Invoke("EnableHostResetAction", input, output);
 	}
 	const string AMT_AgentPresenceService::CLASS_NAME = "AMT_AgentPresenceService";
 	const string AMT_AgentPresenceService::CLASS_URI = "http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AgentPresenceService";

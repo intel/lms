@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_AuditLog.cpp
 //
@@ -410,7 +410,7 @@ namespace Typed
 		return Invoke("ExportAuditLogSignature", input, output);
 	}
 	const CimFieldAttribute AMT_AuditLog::SetSigningKeyMaterial_INPUT::_metadata[] = {
-		{"SigningMechanismType", false, true },
+		{"SigningMechanismType", false, false },
 		{"SigningKey", false, true },
 		{"LengthOfCertificates", false, true },
 		{"Certificates", false, true },

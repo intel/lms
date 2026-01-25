@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2023 All Rights Reserved.
+// Copyright (C) 2003 Intel Corporation
 //
 //  File: XMLUtils_MS.cpp    
 //
@@ -9,11 +9,14 @@
 //----------------------------------------------------------------------------
 
 #include <msxml6.h>
-#include <atlbase.h>
 #include <vector>
 #include <comutil.h>
 #include "XMLUtils.h"
 #include <MsXml2.h>
+#include <wrl/client.h>
+#include <comdef.h>
+
+using Microsoft::WRL::ComPtr;
 
 namespace Intel
 {
@@ -21,18 +24,20 @@ namespace Manageability
 {
 namespace XMLUtils 
 {
-  bool   _CimXMLUtilsInitialized = false;
-  
-	string ConvertCComBSTRToString(CComBSTR val)
+  	bool   _CimXMLUtilsInitialized = false;
+
+	string ConvertBSTRToString(_bstr_t val)
 	{
-		try
-		{
-			return (string)CW2A(val);
-		}
-		catch (const ::CAtlException&)
-		{
-			throw XMLException("Failed to convert string");
-		}
+		 // Get required buffer size
+		int size = ::WideCharToMultiByte(CP_UTF8, 0, static_cast<const wchar_t*>(val),
+										 -1, nullptr, 0, nullptr, nullptr);
+		if (size <= 0)
+			return "";
+		std::string result(size - 1, '\0');
+    	::WideCharToMultiByte(CP_UTF8, 0, static_cast<const wchar_t*>(val),
+							  -1, &result[0], size, nullptr, nullptr);
+
+    	return result;
 	}
 
 	// Function to remove empty definitions of namespaces.
@@ -54,9 +59,9 @@ namespace XMLUtils
 	{
 		friend class XMLDocImpl;
 	private:
-		CComPtr<IXMLDOMNode> domNode;
-		CComPtr<IXMLDOMDocument> domDoc;
-		IXMLDOMNode* cloneNode(const CComPtr<IXMLDOMNode> node)
+		ComPtr<IXMLDOMNode> domNode;
+		ComPtr<IXMLDOMDocument> domDoc;
+		IXMLDOMNode* cloneNode(const ComPtr<IXMLDOMNode> node)
 		{
 			IXMLDOMNode *newNode;
 			if (FAILED(node->cloneNode(true, &newNode)))
@@ -67,7 +72,7 @@ namespace XMLUtils
 		}
 		
 	public:
-		XMLElementImpl(CComPtr<IXMLDOMNode> node)
+		XMLElementImpl(ComPtr<IXMLDOMNode> node)
 		{
 			domNode = node;
 			if (node)
@@ -99,7 +104,7 @@ namespace XMLUtils
 
 		XMLElementImpl* deepClone(const XMLElementImpl &other)
 		{
-			CComPtr<IXMLDOMNode> newNode = CComPtr<IXMLDOMNode>(cloneNode(other.domNode));
+			ComPtr<IXMLDOMNode> newNode = ComPtr<IXMLDOMNode>(cloneNode(other.domNode));
 			XMLElementImpl *ret = new XMLElementImpl(newNode);
 			return ret;
 		}
@@ -112,24 +117,24 @@ namespace XMLUtils
 			string qn = !prefix.empty() ?
 					prefix + ":" + nodeName : nodeName;
 			
-			CComPtr<IXMLDOMNode> dummy = nullptr;
-			CComPtr<IXMLDOMElement> elem = nullptr;
-			if (FAILED(domDoc->createElement(CComBSTR(nodeName.c_str()), &elem)))
+			ComPtr<IXMLDOMNode> dummy = nullptr;
+			ComPtr<IXMLDOMElement> elem = nullptr;
+			if (FAILED(domDoc->createElement(_bstr_t(nodeName.c_str()), elem.GetAddressOf())))
 				throw XMLException("Failed to create XMLElement");
-			if (FAILED(domNode->appendChild(elem, &dummy)))
+			if (FAILED(domNode->appendChild(elem.Get(), dummy.GetAddressOf())))
 				throw XMLException("Failed to create XMLElement");
 			
 			if(text)
 			{
-				CComPtr<IXMLDOMText> val = nullptr;
-				if (FAILED(domDoc->createTextNode(CComBSTR(text->c_str()), &val)))
+				ComPtr<IXMLDOMText> val = nullptr;
+				if (FAILED(domDoc->createTextNode(_bstr_t(text->c_str()), val.GetAddressOf())))
 					throw XMLException("Failed to create XMLElement");
-				dummy.Release();
+				dummy.Reset();
 				
-				if (FAILED(elem->appendChild(val, &dummy)))
+				if (FAILED(elem->appendChild(val.Get(), dummy.GetAddressOf())))
 					throw XMLException("Failed to create XMLElement");
 			}
-			CComPtr<IXMLDOMNode> ret = nullptr;
+			ComPtr<IXMLDOMNode> ret = nullptr;
 			ret = elem;
 			return new XMLElementImpl(ret);
 		}
@@ -152,59 +157,60 @@ namespace XMLUtils
 			string qn = !prefix.empty() ?
 			prefix + ":" + nodeName : nodeName;
 			
-			CComPtr<IXMLDOMNode> dummy = nullptr;
-			CComPtr<IXMLDOMElement> elem = nullptr;
-			CComPtr<IXMLDOMNode> node = nullptr;
-			if (FAILED(domDoc->createNode(CComVariant(NODE_ELEMENT), CComBSTR(nodeName.c_str()), CComBSTR(ns.c_str()), &node)))
+			ComPtr<IXMLDOMNode> dummy = nullptr;
+			ComPtr<IXMLDOMElement> elem = nullptr;
+			ComPtr<IXMLDOMNode> node = nullptr;
+			if (FAILED(domDoc->createNode(_variant_t(NODE_ELEMENT), _bstr_t(nodeName.c_str()), _bstr_t(ns.c_str()), node.GetAddressOf())))
 				throw XMLException("Failed to create XMLElement");
 			
-			elem = node;
+			if (FAILED(node.As(&elem)))
+    			throw XMLException("Failed to query IXMLDOMElement interface");
 
 			if (! attribute.empty())
-				if (FAILED(elem->setAttribute(CComBSTR(attribute.c_str()), CComVariant(attributeValue.c_str()))))
+				if (FAILED(elem->setAttribute(_bstr_t(attribute.c_str()), _variant_t(attributeValue.c_str()))))
 					throw XMLException("Failed to create XMLElement");
 
-			if (FAILED(domNode->appendChild(elem, &dummy)))
+			if (FAILED(domNode->appendChild(elem.Get(), dummy.GetAddressOf())))
 				throw XMLException("Failed to create XMLElement");
 			
-			dummy.Release();
+			dummy.Reset();
 			
 			
-			CComPtr<IXMLDOMText> val = NULL;
-			if (FAILED(domDoc->createTextNode(CComBSTR(nodeValue.c_str()), &val)))
+			ComPtr<IXMLDOMText> val = NULL;
+			if (FAILED(domDoc->createTextNode(_bstr_t(nodeValue.c_str()), val.GetAddressOf())))
 				throw XMLException("Failed to create XMLElement");
-			if (FAILED(elem->appendChild(val, &dummy)))
+			if (FAILED(elem->appendChild(val.Get(), dummy.GetAddressOf())))
 				throw XMLException("Failed to create XMLElement");	
 		}
 
 		void AppendNode(const XMLElement &innerElem)
 		{
-			CComPtr<IXMLDOMNode> out = nullptr;
-			if (FAILED(domNode->appendChild(innerElem.impl->domNode, &out)))
+			ComPtr<IXMLDOMNode> out = nullptr;
+			if (FAILED(domNode->appendChild(innerElem.impl->domNode.Get(), out.GetAddressOf())))
 				throw XMLException("Failed to Append Node");
 		}
 
 		void AddText(const string& nodeValue)
 		{
 
-			CComPtr<IXMLDOMNode> dummy = nullptr;
-			CComPtr<IXMLDOMText> val = nullptr;
-			if (FAILED(domDoc->createTextNode(CComBSTR(nodeValue.c_str()), &val)))
+			ComPtr<IXMLDOMNode> dummy = nullptr;
+			ComPtr<IXMLDOMText> val = nullptr;
+			if (FAILED(domDoc->createTextNode(_bstr_t(nodeValue.c_str()), val.GetAddressOf())))
 				throw XMLException("Failed to add text node");
-			if (FAILED(domNode->appendChild(val, &dummy)))
+			if (FAILED(domNode->appendChild(val.Get(), dummy.GetAddressOf())))
 				throw XMLException("Failed to add text node");	
 		}
 
 		bool HasNextSibling() const
 		{
-			CComPtr<IXMLDOMNode> tmp;
-			if (FAILED(domNode->get_nextSibling(&tmp)))
+			ComPtr<IXMLDOMNode> tmp;
+			if (FAILED(domNode->get_nextSibling(tmp.GetAddressOf())))
 				throw XMLException("Failed to retrieve sibling");
 			DOMNodeType type = NODE_ELEMENT;
 			while(tmp != nullptr && SUCCEEDED(tmp->get_nodeType(&type)) && type != NODE_ELEMENT)
 			{
-				CComPtr<IXMLDOMNode> node;
-				if (FAILED(tmp->get_nextSibling(&node)))
+				ComPtr<IXMLDOMNode> node;
+				if (FAILED(tmp->get_nextSibling(node.GetAddressOf())))
 					throw XMLException("Failed to retrieve sibling");
 				tmp = node;
 			}
@@ -213,21 +219,21 @@ namespace XMLUtils
 
 		XMLElementImpl* GetNextSibling() const
 		{
-			CComPtr<IXMLDOMNode> tmp;
+			ComPtr<IXMLDOMNode> tmp;
 			
-			if (FAILED(domNode->get_nextSibling(&tmp)))
+			if (FAILED(domNode->get_nextSibling(tmp.GetAddressOf())))
 				throw XMLException("Failed to retrieve sibling");
 			DOMNodeType type = NODE_ELEMENT;
 			while(tmp != nullptr && SUCCEEDED(tmp->get_nodeType(&type)) && type != NODE_ELEMENT)
 			{
-				CComPtr<IXMLDOMNode> node;
-				if (FAILED(tmp->get_nextSibling(&node)))
+				ComPtr<IXMLDOMNode> node;
+				if (FAILED(tmp->get_nextSibling(node.GetAddressOf())))
 					throw XMLException("Failed to retrieve sibling");
 				tmp = node;
 			}
 			if (tmp == nullptr)
 				return nullptr;
-			return new XMLElementImpl(tmp);
+			return new XMLElementImpl(tmp.Get());
 		}
 
 		bool HasChildren() const
@@ -237,8 +243,8 @@ namespace XMLUtils
 			{
 				return b;
 			}
-			CComPtr<IXMLDOMNode> sibling = nullptr;
-			CComPtr<IXMLDOMNode> nextSibling = nullptr;
+			ComPtr<IXMLDOMNode> sibling = nullptr;
+			ComPtr<IXMLDOMNode> nextSibling = nullptr;
 			DOMNodeType type;
 			VARIANT_BOOL vb;
 			long len;
@@ -255,8 +261,8 @@ namespace XMLUtils
 			}
 
 			
-			CComPtr<IXMLDOMNodeList> children;
-			if(FAILED(domNode->get_childNodes(&children)) ||
+			ComPtr<IXMLDOMNodeList> children;
+			if(FAILED(domNode->get_childNodes(children.GetAddressOf())) ||
 				FAILED(children->get_length(&len)))
 			{
 				return b;
@@ -264,8 +270,8 @@ namespace XMLUtils
 
 			for(long i = 0; i < len; i++)
 			{
-				CComPtr<IXMLDOMNode> item = nullptr;
-				if(FAILED(children->get_item(i, &item)) ||
+				ComPtr<IXMLDOMNode> item = nullptr;
+				if(FAILED(children->get_item(i, item.GetAddressOf())) ||
 					FAILED(item->get_nodeType(&type)))
 				{
 					return b;
@@ -292,28 +298,28 @@ namespace XMLUtils
 
 		XMLElementImpl* GetFirstChild() const
 		{
-			CComPtr<IXMLDOMNode> child;
-			if (FAILED(domNode->get_firstChild(&child)))
+			ComPtr<IXMLDOMNode> child;
+			if (FAILED(domNode->get_firstChild(child.GetAddressOf())))
 				throw XMLException("Failed to retrieve child element");
 
 			DOMNodeType type = NODE_ELEMENT;
 			while(child && child->get_nodeType(&type) == 0 && type != NODE_ELEMENT)
 			{
-				CComPtr<IXMLDOMNode> node;
-				child->get_nextSibling(&node);
+				ComPtr<IXMLDOMNode> node;
+				child->get_nextSibling(node.GetAddressOf());
 				child = node;
 			}
 			
-			return new XMLElementImpl(child);
+			return new XMLElementImpl(child.Get());
 		}
 
 		string GetNodeName() const
 		{
-			CComBSTR tmp;
-			if (FAILED(domNode->get_nodeName(&tmp)))
+			_bstr_t tmp;
+			if (FAILED(domNode->get_nodeName(tmp.GetAddress())))
 				throw XMLException("Failed to retrieve node name");
 
-			string name = ConvertCComBSTRToString(tmp);
+			string name = ConvertBSTRToString(tmp);
 			const auto pos = name.find(':');
 			name = (pos == string::npos) ? name : name.substr(pos + 1);
 			return name;
@@ -321,38 +327,46 @@ namespace XMLUtils
 
 		string GetNSUri() const
 		{
-			CComBSTR tmp;
-			if (FAILED(domNode->get_namespaceURI(&tmp)))
+			_bstr_t tmp;
+			string name = "";
+			if (FAILED(domNode->get_namespaceURI(tmp.GetAddress())))
 				throw XMLException("Failed to retrieve namespace URI");
-			if(tmp)
-				return ConvertCComBSTRToString(tmp);
-			
-			return "";
+			if(tmp.GetBSTR())
+			{
+				name = ConvertBSTRToString(tmp);
+			}
+			return name;
 		}
 
 		string GetNSPrefix() const
 		{
-			CComBSTR tmp;
-			if (FAILED(domNode->get_prefix(&tmp)))
+			_bstr_t tmp;
+			string name = "";
+			if (FAILED(domNode->get_prefix(tmp.GetAddress())))
 				throw XMLException("Failed to retrieve namespace prefix");
-			if(tmp)
-				return ConvertCComBSTRToString(tmp);
-			return "";
+			if(tmp.GetBSTR())
+			{
+				name = ConvertBSTRToString(tmp);
+			}
+			return name;
 		}
 
 		string GetTextValue() const
 		{
-			CComBSTR tmp;
-			if (FAILED(domNode->get_text(&tmp)))
+			_bstr_t tmp;
+			string name = "";
+			if (FAILED(domNode->get_text(tmp.GetAddress())))
 				throw XMLException("Failed to retrieve text value");
-			if (tmp)
-				return ConvertCComBSTRToString(tmp);
-			return "";
+			if (tmp.GetBSTR())
+			{
+				name = ConvertBSTRToString(tmp);
+			}
+			return name;
 		}
 
 		string ToString(bool incRoot = false) const
 		{
-			CComBSTR retBSTR;
+			_bstr_t retBSTR;
 			if(!incRoot && IsLeafNode())
 			{
 				return GetTextValue();
@@ -360,13 +374,13 @@ namespace XMLUtils
 
 			if(incRoot)
 			{
-				if (FAILED(domNode->get_xml(&retBSTR)))
+				if (FAILED(domNode->get_xml(retBSTR.GetAddress())))
 					throw XMLException("Failed to serialize element");
 			}
 			else
 			{
-				CComPtr<IXMLDOMNode> child;
-				CComPtr<IXMLDOMNodeList> childList;
+				ComPtr<IXMLDOMNode> child;
+				ComPtr<IXMLDOMNodeList> childList;
 				if (FAILED(domNode->get_childNodes(&childList)))
 					throw XMLException("Failed to serialize element");
 
@@ -374,24 +388,23 @@ namespace XMLUtils
 					throw ("Failed to serialize element");
 				while (child)
 				{
-					CComBSTR tmp;
-					if (FAILED(child->get_xml(&tmp)))
+					_bstr_t tmp;
+					if (FAILED(child->get_xml(tmp.GetAddress())))
 						throw ("Failed to serialize element");
 					retBSTR += tmp;
-					child.Release();
+					child.Reset();
 					if (FAILED(childList->nextNode(&child)))
 						throw ("Failed to serialize element");
 				}
 			}
-			string ret = cleanXML(ConvertCComBSTRToString(retBSTR));
+			string ret = cleanXML(ConvertBSTRToString(retBSTR));
 			return ret;
 		}	
 
-		void GetAttributes(map<string, string>& attribs) const
+		void GetAttributes(std::map<string, string>& attribs) const
 		{
-			CComBSTR tmpName;
-			CComVariant tmpValue;
-			CComPtr<IXMLDOMNamedNodeMap> attributeMap = NULL;
+			_variant_t tmpValue;
+			ComPtr<IXMLDOMNamedNodeMap> attributeMap = NULL;
 			if (FAILED(domNode->get_attributes(&attributeMap)))
 				throw XMLException("Failed to retrieve attributes");
 			long len = 0;
@@ -400,25 +413,27 @@ namespace XMLUtils
 
 			for (long i=0; i < len; ++i)
 			{
-				CComPtr<IXMLDOMNode> listItem = NULL;
+				_bstr_t tmpName;
+
+				ComPtr<IXMLDOMNode> listItem = NULL;
 				if (FAILED(attributeMap->get_item(i, &listItem)))
 					throw XMLException("Failed to retrieve attributes");
-				if (FAILED(listItem->get_nodeName(&tmpName)))
+				if (FAILED(listItem->get_nodeName(tmpName.GetAddress())))
 					throw XMLException("Failed to retrieve attributes");
 				if (FAILED(listItem->get_nodeValue(&tmpValue)))
 					throw XMLException("Failed to retrieve attributes");
 
-				attribs[ConvertCComBSTRToString(tmpName)] = ConvertCComBSTRToString(tmpValue.bstrVal);
+				attribs[ConvertBSTRToString(tmpName)] = ConvertBSTRToString(tmpValue.bstrVal);
 			}	
 		}
 
 		string GetAttribValue(const string& name) const
 		{
 			string ret = "";
-			CComBSTR tmpName;
-			CComVariant tmpValue;
-			CComPtr<IXMLDOMNamedNodeMap> attributeMap = NULL;
-			if (FAILED(domNode->get_attributes(&attributeMap)))
+			_bstr_t tmpName;
+			_variant_t tmpValue;
+			ComPtr<IXMLDOMNamedNodeMap> attributeMap = NULL;
+			if (FAILED(domNode->get_attributes(attributeMap.GetAddressOf())))
 				throw XMLException("Failed to retrieve attributes");
 
 			long len = 0;
@@ -426,16 +441,16 @@ namespace XMLUtils
 				throw XMLException("Failed to retrieve attributes");
 			for (long i=0; i < len; ++i)
 			{
-				CComPtr<IXMLDOMNode> listItem = NULL;
-				if (FAILED(attributeMap->get_item(i, &listItem)))
+				ComPtr<IXMLDOMNode> listItem = NULL;
+				if (FAILED(attributeMap->get_item(i, listItem.GetAddressOf())))
 					throw XMLException("Failed to retrieve attributes");
-				if (FAILED(listItem->get_nodeName(&tmpName)))
+				if (FAILED(listItem->get_nodeName(tmpName.GetAddress())))
 					throw XMLException("Failed to retrieve attributes");
 				if (FAILED(listItem->get_nodeValue(&tmpValue)))
 					throw XMLException("Failed to retrieve attributes");
-				if(name.compare(ConvertCComBSTRToString(tmpName)) == 0)
+				if(name.compare(ConvertBSTRToString(tmpName)) == 0)
 				{
-					ret = ConvertCComBSTRToString(tmpValue.bstrVal);
+					ret = ConvertBSTRToString(tmpValue.bstrVal);
 					break;
 				}
 				
@@ -446,9 +461,10 @@ namespace XMLUtils
 
 		void AddAttribValue(const string& name, const string& value)
 		{
-			CComPtr<IXMLDOMElement> elem;
-			elem = domNode;
-			if (FAILED(elem->setAttribute(CComBSTR(name.c_str()), CComVariant(value.c_str()))))
+			ComPtr<IXMLDOMElement> elem;
+			if (FAILED(domNode.As(&elem)))
+    			throw XMLException("Failed to query IXMLDOMElement interface");
+			if (FAILED(elem->setAttribute(_bstr_t(name.c_str()), _variant_t(value.c_str()))))
 				throw XMLException("Failed to add Add attribute value");
 		}
 
@@ -460,15 +476,16 @@ namespace XMLUtils
 				qn.append(":").append(*prefix);
 			}
 
-			CComPtr<IXMLDOMAttribute> att;
-			CComPtr<IXMLDOMAttribute> dummy;
-			if (FAILED(domDoc->createAttribute(CComBSTR(qn.c_str()), &att)))
+			ComPtr<IXMLDOMAttribute> att;
+			ComPtr<IXMLDOMAttribute> dummy;
+			if (FAILED(domDoc->createAttribute(_bstr_t(qn.c_str()), att.GetAddressOf())))
 				throw XMLException("Failed to add namespace definition");
-			if (FAILED(att->put_value(CComVariant(ns.c_str()))))
+			if (FAILED(att->put_value(_variant_t(ns.c_str()))))
 				throw XMLException("Failed to add namespace definition");
-			CComPtr<IXMLDOMElement> elem;
-			elem = domNode;
-			if (FAILED(elem->setAttributeNode(att, &dummy)))
+			ComPtr<IXMLDOMElement> elem;
+			if (FAILED(domNode.As(&elem)))
+    			throw XMLException("Failed to query IXMLDOMElement interface");
+			if (FAILED(elem->setAttributeNode(att.Get(), dummy.GetAddressOf())))
 				throw XMLException("Failed to add namespace definition");
 		}
 		
@@ -478,15 +495,15 @@ namespace XMLUtils
 	class XMLDocImpl
 	{
 	private:
-		CComPtr<IXMLDOMElement> rootNode;
-		CComPtr<IXMLDOMDocument> doc;
+		ComPtr<IXMLDOMElement> rootNode;
+		ComPtr<IXMLDOMDocument> doc;
 	public:		
 		XMLDocImpl(const string& xml, const char*  /*xsdFile = NULL*/):doc(NULL), rootNode(NULL)//doc(NULL), parser(NULL)
 		{
 			VARIANT_BOOL status;
 
 			HRESULT res = CoCreateInstance(__uuidof(DOMDocument60), NULL,
-				CLSCTX_INPROC_SERVER, __uuidof(IXMLDOMDocument), (void**)&doc) ||
+				CLSCTX_INPROC_SERVER, __uuidof(IXMLDOMDocument), (void**)doc.GetAddressOf()) ||
 				FAILED(doc->put_async(VARIANT_FALSE)) ||
 				FAILED(doc->put_validateOnParse(VARIANT_FALSE)) ||
 				FAILED(doc->put_resolveExternals(VARIANT_FALSE));
@@ -494,18 +511,12 @@ namespace XMLUtils
 
 			if (res != S_OK)
 				throw XMLException("Failed to create XML document");
-			try
-			{
-				const auto ret = doc->loadXML(CComBSTR(xml.c_str()), &status);
-				if (ret != S_OK)
-					throw XMLException("Failed to create XML document");
-			}
-			catch (CAtlException)
-			{
-				throw XMLException("Failed to create XML document, AtlException");
-			}
+			const auto ret = doc->loadXML(_bstr_t(xml.c_str()), &status);
+			if (ret != S_OK)
+				throw XMLException("Failed to create XML document");
+				
 			if (status == VARIANT_TRUE)
-				if (doc->get_documentElement(&rootNode) != S_OK)
+				if (doc->get_documentElement(rootNode.GetAddressOf()) != S_OK)
 					throw XMLException("Failed to create XML document");
 		}
 
@@ -520,64 +531,64 @@ namespace XMLUtils
 			FAILED(doc->put_resolveExternals(VARIANT_FALSE)) )
 				throw XMLException("Failed to create XML document");
 
-			if (FAILED(doc->createNode(CComVariant(NODE_ELEMENT), CComBSTR(rootName), CComBSTR(uri), (IXMLDOMNode **)&rootNode)))
+			if (FAILED(doc->createNode(_variant_t(NODE_ELEMENT), _bstr_t(rootName), _bstr_t(uri), (IXMLDOMNode **)rootNode.GetAddressOf())))
 				throw XMLException("Failed to create XML document");
-			if (FAILED(doc->putref_documentElement(rootNode)))
+			if (FAILED(doc->putref_documentElement(rootNode.Get())))
 				throw XMLException("Failed to create XML document");
 
-			CComBSTR docstr;
-			if (FAILED(doc->get_xml(&docstr)))
+			_bstr_t docstr;
+			if (FAILED(doc->get_xml(docstr.GetAddress())))
 				throw XMLException("Failed to create XML document");
 	
 		}		
 
 		~XMLDocImpl()
 		{
-			doc.Release();
+			doc.Reset();
 		}
 
 		void LoadXml(const char* xmlString)
 		{
 			VARIANT_BOOL status;
-			if (doc->loadXML(CComBSTR(xmlString), &status) != S_OK)
+			if (doc->loadXML(_bstr_t(xmlString), &status) != S_OK)
 				throw XMLException("Failed to Load XML");
 		}
 
 		XMLElement GetRootNode()
 		{
-			CComPtr<IXMLDOMElement> DOMElement = nullptr;
+			ComPtr<IXMLDOMElement> DOMElement = nullptr;
 			if (FAILED(doc->get_documentElement(&DOMElement)))
 				throw XMLException("Failed to retrieve root element");
-			return XMLElement(new XMLElementImpl((CComPtr<IXMLDOMNode>)DOMElement));			
+			return XMLElement(new XMLElementImpl((ComPtr<IXMLDOMNode>)DOMElement));
 		}
 
 		string GetElementByTagName(const string &name)
 		{
-			CComPtr<IXMLDOMNodeList> resultList = nullptr;
+			ComPtr<IXMLDOMNodeList> resultList = nullptr;
 			
-			if (FAILED(doc->getElementsByTagName(CComBSTR(name.c_str()), &resultList)))
+			if (FAILED(doc->getElementsByTagName(_bstr_t(name.c_str()), &resultList)))
 				return "";
 			long length = 0;
 			if (resultList == nullptr || FAILED(resultList->get_length(&length)))
 				throw XMLException("Failed to retrieve element");
 			if (length == 0)
 				return "";
-			CComPtr<IXMLDOMNode> listItem = nullptr;
+			ComPtr<IXMLDOMNode> listItem = nullptr;
 			if (FAILED(resultList->get_item(0, &listItem)))
 				throw XMLException("Failed to retrieve element");
-			CComVariant value;
+			_variant_t value;
 			if (FAILED(listItem->get_nodeValue(&value)))
 				throw XMLException("Failed to retrieve element");
-			return ConvertCComBSTRToString(value.bstrVal);		
+			return ConvertBSTRToString(value.bstrVal);		
 		}
 
 		string ToString(bool /*incVersionStr = false*/)
 		{
 			
-			CComBSTR retBSTR;
-			if (FAILED(doc->get_xml(&retBSTR)))
+			_bstr_t retBSTR;
+			if (FAILED(doc->get_xml(retBSTR.GetAddress())))
 				throw XMLException("Failed to serialize XML document");
-			string ret = cleanXML(ConvertCComBSTRToString(retBSTR));
+			string ret = cleanXML(ConvertBSTRToString(retBSTR));
 			
 			return ret;
 		}
@@ -714,7 +725,7 @@ namespace XMLUtils
 		return impl->GetNSPrefix();
 	}
 
-	void XMLElement::GetAttributes(map<string, string>& attribs) const
+	void XMLElement::GetAttributes(std::map<string, string>& attribs) const
 	{
 		impl->GetAttributes(attribs);
 	}

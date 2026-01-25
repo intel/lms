@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (C) 2003 Intel Corporation
 //
 //  File:       CimUtils.cpp
 //
@@ -61,11 +61,11 @@ namespace Intel
 				{
 					if (!inStr || !outStr)
 						return;
-
+					string tmp((const char*)inStr);
 					base64_decodestate state;
 					base64_init_decodestate(&state);
 					*outStrSize = base64_decode_block((const char *)inStr,
-						strlen((const char *)inStr), (char*)outStr, &state);
+						strnlen_s((const char *)inStr, tmp.length()), (char*)outStr, &state);
 				}
 
 				Base64::Base64()
@@ -134,7 +134,9 @@ namespace Intel
 						}
 						len = blen;
 						data = new unsigned char[len];
-						memcpy(data, buffer, len);
+						if (memcpy_s(data, len, buffer, len)) {
+							throw CimException(string("Error copying memmory").c_str());
+						}
 					}
 				}
 
@@ -151,7 +153,9 @@ namespace Intel
 					len = other.len;
 					if (len > 0) {
 						data = new unsigned char[len];
-						memcpy(data, other.data, len);
+						if (memcpy_s(data, len, other.data, len)) {
+							throw CimException(string("Error copying memmory").c_str());
+						}
 					}
 					return *this;
 				}

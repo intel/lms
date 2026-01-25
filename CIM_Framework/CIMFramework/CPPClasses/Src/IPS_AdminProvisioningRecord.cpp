@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_AdminProvisioningRecord.cpp
 //
@@ -20,6 +20,7 @@ namespace Typed
 {
 	const CimFieldAttribute IPS_AdminProvisioningRecord::_metadata[] = {
 		{"SecureDNS", false, false, false },
+		{"PkiTrustMethod", false, false, false },
 		{"CertificateCN", false, false, false },
 		{"SelectedHashType", false, false, false },
 		{"SelectedHashData", false, false, false },
@@ -46,6 +47,25 @@ namespace Typed
 	void IPS_AdminProvisioningRecord::RemoveSecureDNS()
 	{
 		RemoveField("SecureDNS");
+	}
+
+	const unsigned char IPS_AdminProvisioningRecord::PkiTrustMethod() const
+	{
+		unsigned char ret = 0;
+		TypeConverter::StringToType(GetField("PkiTrustMethod"), ret);
+		return ret;
+	}
+	void IPS_AdminProvisioningRecord::PkiTrustMethod(const unsigned char &value)
+	{
+		SetOrAddField("PkiTrustMethod", TypeConverter::TypeToString(value));
+	}
+	bool IPS_AdminProvisioningRecord::PkiTrustMethodExists() const
+	{
+		return ContainsField("PkiTrustMethod");
+	}
+	void IPS_AdminProvisioningRecord::RemovePkiTrustMethod()
+	{
+		RemoveField("PkiTrustMethod");
 	}
 
 	const string IPS_AdminProvisioningRecord::CertificateCN() const

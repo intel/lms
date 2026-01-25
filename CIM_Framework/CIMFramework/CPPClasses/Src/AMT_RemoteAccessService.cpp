@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_RemoteAccessService.cpp
 //
@@ -18,7 +18,49 @@ namespace Cim
 {
 namespace Typed 
 {
+	const CimFieldAttribute AMT_RemoteAccessService::_metadata[] = {
+		{"IsRemoteTunnelConnected", false, false, false },
+		{"RemoteTunnelKeepAliveTimeout", false, false, false },
+	};
 	// class fields
+	const bool AMT_RemoteAccessService::IsRemoteTunnelConnected() const
+	{
+		bool ret = false;
+		TypeConverter::StringToType(GetField("IsRemoteTunnelConnected"), ret);
+		return ret;
+	}
+	void AMT_RemoteAccessService::IsRemoteTunnelConnected(const bool value)
+	{
+		SetOrAddField("IsRemoteTunnelConnected", TypeConverter::TypeToString(value));
+	}
+	bool AMT_RemoteAccessService::IsRemoteTunnelConnectedExists() const
+	{
+		return ContainsField("IsRemoteTunnelConnected");
+	}
+	void AMT_RemoteAccessService::RemoveIsRemoteTunnelConnected()
+	{
+		RemoveField("IsRemoteTunnelConnected");
+	}
+
+	const unsigned int AMT_RemoteAccessService::RemoteTunnelKeepAliveTimeout() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("RemoteTunnelKeepAliveTimeout"), ret);
+		return ret;
+	}
+	void AMT_RemoteAccessService::RemoteTunnelKeepAliveTimeout(const unsigned int value)
+	{
+		SetOrAddField("RemoteTunnelKeepAliveTimeout", TypeConverter::TypeToString(value));
+	}
+	bool AMT_RemoteAccessService::RemoteTunnelKeepAliveTimeoutExists() const
+	{
+		return ContainsField("RemoteTunnelKeepAliveTimeout");
+	}
+	void AMT_RemoteAccessService::RemoveRemoteTunnelKeepAliveTimeout()
+	{
+		RemoveField("RemoteTunnelKeepAliveTimeout");
+	}
+
 	CimBase *AMT_RemoteAccessService::CreateFromCimObject(const CimObject &object)
 	{
 		AMT_RemoteAccessService *ret = NULL;

@@ -1,12 +1,12 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_AgentPresenceWatchdogAction.cpp
 //
 //  Contents:   Represents an action which is triggered on an application watchdog state transition.
 //
-//              This file was automatically generated from AMT_AgentPresenceWatchdogAction.mof,  version: 4.0.0
+//              This file was automatically generated from AMT_AgentPresenceWatchdogAction.mof,  version: 5.0.0
 //
 //----------------------------------------------------------------------------
 #include "AMT_AgentPresenceWatchdogAction.h"
@@ -88,21 +88,6 @@ namespace Typed
 	const vector<CimFieldAttribute> &AMT_AgentPresenceWatchdogAction::GetMetaData() const
 	{
 		return _classMetaData;
-	}
-	const bool AMT_AgentPresenceWatchdogAction::GetActionEac_OUTPUT::ActionEac() const
-	{
-		bool ret = false;
-		TypeConverter::StringToType(GetField("ActionEac"), ret);
-		return ret;
-	}
-	bool AMT_AgentPresenceWatchdogAction::GetActionEac_OUTPUT::ActionEacExists() const
-	{
-		return ContainsField("ActionEac");
-	}
-	unsigned int AMT_AgentPresenceWatchdogAction::GetActionEac(GetActionEac_OUTPUT &output)
-	{
-		CimEmptyParam input;
-		return Invoke("GetActionEac", input, output);
 	}
 	const string AMT_AgentPresenceWatchdogAction::CLASS_NAME = "AMT_AgentPresenceWatchdogAction";
 	const string AMT_AgentPresenceWatchdogAction::CLASS_URI = "http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AgentPresenceWatchdogAction";

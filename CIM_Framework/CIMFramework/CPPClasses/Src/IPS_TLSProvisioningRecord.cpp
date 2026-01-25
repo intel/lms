@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_TLSProvisioningRecord.cpp
 //
@@ -20,6 +20,7 @@ namespace Typed
 {
 	const CimFieldAttribute IPS_TLSProvisioningRecord::_metadata[] = {
 		{"ProvisioningTLSMode", false, false, false },
+		{"PkiTrustMethod", false, false, false },
 		{"SecureDNS", false, false, false },
 		{"HostInitiated", false, false, false },
 		{"ProvServerFQDN", false, false, false },
@@ -49,6 +50,25 @@ namespace Typed
 	void IPS_TLSProvisioningRecord::RemoveProvisioningTLSMode()
 	{
 		RemoveField("ProvisioningTLSMode");
+	}
+
+	const unsigned char IPS_TLSProvisioningRecord::PkiTrustMethod() const
+	{
+		unsigned char ret = 0;
+		TypeConverter::StringToType(GetField("PkiTrustMethod"), ret);
+		return ret;
+	}
+	void IPS_TLSProvisioningRecord::PkiTrustMethod(const unsigned char &value)
+	{
+		SetOrAddField("PkiTrustMethod", TypeConverter::TypeToString(value));
+	}
+	bool IPS_TLSProvisioningRecord::PkiTrustMethodExists() const
+	{
+		return ContainsField("PkiTrustMethod");
+	}
+	void IPS_TLSProvisioningRecord::RemovePkiTrustMethod()
+	{
+		RemoveField("PkiTrustMethod");
 	}
 
 	const bool IPS_TLSProvisioningRecord::SecureDNS() const

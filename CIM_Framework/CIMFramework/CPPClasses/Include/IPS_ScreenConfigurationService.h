@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_ScreenConfigurationService.h
 //
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Service::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Service::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 
@@ -77,6 +77,18 @@ namespace Typed
 
 		// Remove CurrentState field.
 		void RemoveCurrentState(); 
+
+		// Optional, Indicates if currently screens are blanked according to feedback from HW. This property is read only.
+		const unsigned short ActualState() const;
+
+		// Optional, Indicates if currently screens are blanked according to feedback from HW. This property is read only.
+		void ActualState(const unsigned short value); 
+
+		// Is true if the field ActualState exists in the current object, otherwise is false.
+		bool ActualStateExists() const;
+
+		// Remove ActualState field.
+		void RemoveActualState(); 
 
 		// Optional, Indicates if currently screen blanking is enabled, i.e. screen blanking session can be opened.
 		const unsigned short EnabledState() const;
@@ -208,7 +220,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Service::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -218,14 +230,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_Service::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 3);
+				CimBase::SetMetaData(_classMetaData, _metadata, 4);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_Service::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 3);
+			CimBase::SetMetaData(childMetaData, _metadata, 4);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

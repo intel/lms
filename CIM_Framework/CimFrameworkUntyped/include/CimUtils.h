@@ -36,6 +36,7 @@ namespace Utils
 	using std::vector;
 	using std::string;
 	using Intel::Manageability::Exceptions::ConversionException;
+	using Intel::Manageability::Exceptions::CimException;
 	using Intel::Manageability::Cim::CimReference;
 
 

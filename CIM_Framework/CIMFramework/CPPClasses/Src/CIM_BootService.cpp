@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       CIM_BootService.cpp
 //
@@ -49,6 +49,38 @@ namespace Typed
 	const vector<CimFieldAttribute> &CIM_BootService::GetMetaData() const
 	{
 		return _classMetaData;
+	}
+	const CimFieldAttribute CIM_BootService::RequestStateChange_INPUT::_metadata[] = {
+		{"RequestedState", false, false },
+		{"TimeoutPeriod", false, false },
+	};
+	void CIM_BootService::RequestStateChange_INPUT::RequestedState(const unsigned short value)
+	{
+		SetOrAddField("RequestedState", TypeConverter::TypeToString(value));
+	}
+	void CIM_BootService::RequestStateChange_INPUT::TimeoutPeriod(const CimDateTime &value)
+	{
+		SetOrAddField("TimeoutPeriod", TypeConverter::TypeToString(value));
+	}
+	const VectorFieldData CIM_BootService::RequestStateChange_INPUT::GetAllFields() const
+	{
+		VectorFieldData ret;
+		ret = sortData(_metadata, 2);
+		return ret;
+	}
+	const CimReference CIM_BootService::RequestStateChange_OUTPUT::Job() const
+	{
+		CimReference ret;
+		TypeConverter::StringToType(GetField("Job"), ret);
+		return ret;
+	}
+	bool CIM_BootService::RequestStateChange_OUTPUT::JobExists() const
+	{
+		return ContainsField("Job");
+	}
+	unsigned int CIM_BootService::RequestStateChange(const RequestStateChange_INPUT &input, RequestStateChange_OUTPUT &output)
+	{
+		return Invoke("RequestStateChange", input, output);
 	}
 	const CimFieldAttribute CIM_BootService::SetBootConfigRole_INPUT::_metadata[] = {
 		{"BootConfigSetting", false, true },

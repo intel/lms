@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       CIM_Processor.cpp
 //
@@ -35,6 +35,7 @@ namespace Typed
 		{"Characteristics", false, false, false },
 		{"EnabledProcessorCharacteristics", false, false, false },
 		{"NumberOfEnabledCores", false, false, false },
+		{"SocketType", false, false, false },
 	};
 	// class fields
 	const string CIM_Processor::Role() const
@@ -331,6 +332,23 @@ namespace Typed
 	void CIM_Processor::RemoveNumberOfEnabledCores()
 	{
 		RemoveField("NumberOfEnabledCores");
+	}
+
+	const string CIM_Processor::SocketType() const
+	{
+		return GetField("SocketType")[0];
+	}
+	void CIM_Processor::SocketType(const string &value)
+	{
+		SetOrAddField("SocketType", value);
+	}
+	bool CIM_Processor::SocketTypeExists() const
+	{
+		return ContainsField("SocketType");
+	}
+	void CIM_Processor::RemoveSocketType()
+	{
+		RemoveField("SocketType");
 	}
 
 	CimBase *CIM_Processor::CreateFromCimObject(const CimObject &object)

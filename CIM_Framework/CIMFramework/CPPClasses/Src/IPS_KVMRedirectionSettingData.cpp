@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_KVMRedirectionSettingData.cpp
 //
@@ -32,6 +32,7 @@ namespace Typed
 		{"ZlibControlSupported", false, false, false },
 		{"GrayscalePixelFormatSupported", false, false, false },
 		{"InitialDecimationModeForLowRes", false, false, false },
+		{"LastKvmSessionClosingReason", false, false, false },
 	};
 	// class fields
 	const bool IPS_KVMRedirectionSettingData::EnabledByMEBx() const
@@ -279,6 +280,25 @@ namespace Typed
 		RemoveField("InitialDecimationModeForLowRes");
 	}
 
+	const unsigned short IPS_KVMRedirectionSettingData::LastKvmSessionClosingReason() const
+	{
+		unsigned short ret = 0;
+		TypeConverter::StringToType(GetField("LastKvmSessionClosingReason"), ret);
+		return ret;
+	}
+	void IPS_KVMRedirectionSettingData::LastKvmSessionClosingReason(const unsigned short value)
+	{
+		SetOrAddField("LastKvmSessionClosingReason", TypeConverter::TypeToString(value));
+	}
+	bool IPS_KVMRedirectionSettingData::LastKvmSessionClosingReasonExists() const
+	{
+		return ContainsField("LastKvmSessionClosingReason");
+	}
+	void IPS_KVMRedirectionSettingData::RemoveLastKvmSessionClosingReason()
+	{
+		RemoveField("LastKvmSessionClosingReason");
+	}
+
 	CimBase *IPS_KVMRedirectionSettingData::CreateFromCimObject(const CimObject &object)
 	{
 		IPS_KVMRedirectionSettingData *ret = NULL;
@@ -312,6 +332,51 @@ namespace Typed
 		CimEmptyParam input;
 		CimEmptyParam output;
 		return Invoke("TerminateSession", input, output);
+	}
+	const Base64 IPS_KVMRedirectionSettingData::DataChannelRead_OUTPUT::DataMessage() const
+	{
+		Base64 ret;
+		TypeConverter::StringToType(GetField("DataMessage"), ret);
+		return ret;
+	}
+	const unsigned int IPS_KVMRedirectionSettingData::DataChannelRead_OUTPUT::MessageId() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("MessageId"), ret);
+		return ret;
+	}
+	const unsigned int IPS_KVMRedirectionSettingData::DataChannelRead_OUTPUT::RealmsBitmap() const
+	{
+		unsigned int ret = 0;
+		TypeConverter::StringToType(GetField("RealmsBitmap"), ret);
+		return ret;
+	}
+	const string IPS_KVMRedirectionSettingData::DataChannelRead_OUTPUT::Username() const
+	{
+		return GetField("Username")[0];
+	}
+	unsigned int IPS_KVMRedirectionSettingData::DataChannelRead(DataChannelRead_OUTPUT &output)
+	{
+		CimEmptyParam input;
+		return Invoke("DataChannelRead", input, output);
+	}
+	const CimFieldAttribute IPS_KVMRedirectionSettingData::DataChannelWrite_INPUT::_metadata[] = {
+		{"DataMessage", false, true },
+	};
+	void IPS_KVMRedirectionSettingData::DataChannelWrite_INPUT::DataMessage(const Base64 &value)
+	{
+		SetOrAddField("DataMessage", TypeConverter::TypeToString(value));
+	}
+	const VectorFieldData IPS_KVMRedirectionSettingData::DataChannelWrite_INPUT::GetAllFields() const
+	{
+		VectorFieldData ret;
+		ret = sortData(_metadata, 1);
+		return ret;
+	}
+	unsigned int IPS_KVMRedirectionSettingData::DataChannelWrite(const DataChannelWrite_INPUT &input)
+	{
+		CimEmptyParam output;
+		return Invoke("DataChannelWrite", input, output);
 	}
 	const string IPS_KVMRedirectionSettingData::CLASS_NAME = "IPS_KVMRedirectionSettingData";
 	const string IPS_KVMRedirectionSettingData::CLASS_URI = "http://intel.com/wbem/wscim/1/ips-schema/1/IPS_KVMRedirectionSettingData";

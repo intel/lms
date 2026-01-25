@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_WiFiPortConfigurationService.cpp
 //
@@ -242,6 +242,24 @@ namespace Typed
 		CimEmptyParam input;
 		CimEmptyParam output;
 		return Invoke("DeleteAllUserProfiles", input, output);
+	}
+	const CimFieldAttribute AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill_INPUT::_metadata[] = {
+		{"ApplicationRequestedRfKill", false, true },
+	};
+	void AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill_INPUT::ApplicationRequestedRfKill(const bool value)
+	{
+		SetOrAddField("ApplicationRequestedRfKill", TypeConverter::TypeToString(value));
+	}
+	const VectorFieldData AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill_INPUT::GetAllFields() const
+	{
+		VectorFieldData ret;
+		ret = sortData(_metadata, 1);
+		return ret;
+	}
+	unsigned int AMT_WiFiPortConfigurationService::SetApplicationRequestedRfKill(const SetApplicationRequestedRfKill_INPUT &input)
+	{
+		CimEmptyParam output;
+		return Invoke("SetApplicationRequestedRfKill", input, output);
 	}
 	const string AMT_WiFiPortConfigurationService::CLASS_NAME = "AMT_WiFiPortConfigurationService";
 	const string AMT_WiFiPortConfigurationService::CLASS_URI = "http://intel.com/wbem/wscim/1/amt-schema/1/AMT_WiFiPortConfigurationService";

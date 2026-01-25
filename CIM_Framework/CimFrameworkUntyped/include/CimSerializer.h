@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2009  All Rights Reserved.
+// Copyright (C) 2003 Intel Corporation
 //
 //  File:       CimSerializer.h
 //

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+// Copyright (C) 2003 Intel Corporation
 //
 //  File:       
 //
@@ -28,7 +28,9 @@ namespace Manageability
 {
 namespace XMLUtils 
 {
-	using namespace std;
+	using std::string;
+	using std::vector;
+	using std::runtime_error;
 	using namespace Intel::Manageability::Cim::Utils;
 
 	// function declarations
@@ -120,7 +122,7 @@ namespace XMLUtils
 
 		string GetNSPrefix() const;
 
-		void GetAttributes(map<string, string>& attribs) const;
+		void GetAttributes(std::map<string, string>& attribs) const;
 
 		void AppendNode(const XMLElement &innerElem);
 

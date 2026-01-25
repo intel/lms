@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_HostBasedSetupService.cpp
 //
@@ -271,6 +271,34 @@ namespace Typed
 		CimEmptyParam input;
 		CimEmptyParam output;
 		return Invoke("DisableClientControlMode", input, output);
+	}
+	const CimFieldAttribute IPS_HostBasedSetupService::PkiUnprovision_INPUT::_metadata[] = {
+		{"McNonce", false, false },
+		{"SigningAlgorithm", false, false },
+		{"DigitalSignature", false, false },
+	};
+	void IPS_HostBasedSetupService::PkiUnprovision_INPUT::McNonce(const Base64 &value)
+	{
+		SetOrAddField("McNonce", TypeConverter::TypeToString(value));
+	}
+	void IPS_HostBasedSetupService::PkiUnprovision_INPUT::SigningAlgorithm(const unsigned short value)
+	{
+		SetOrAddField("SigningAlgorithm", TypeConverter::TypeToString(value));
+	}
+	void IPS_HostBasedSetupService::PkiUnprovision_INPUT::DigitalSignature(const Base64 &value)
+	{
+		SetOrAddField("DigitalSignature", TypeConverter::TypeToString(value));
+	}
+	const VectorFieldData IPS_HostBasedSetupService::PkiUnprovision_INPUT::GetAllFields() const
+	{
+		VectorFieldData ret;
+		ret = sortData(_metadata, 3);
+		return ret;
+	}
+	unsigned int IPS_HostBasedSetupService::PkiUnprovision(const PkiUnprovision_INPUT &input)
+	{
+		CimEmptyParam output;
+		return Invoke("PkiUnprovision", input, output);
 	}
 	const string IPS_HostBasedSetupService::CLASS_NAME = "IPS_HostBasedSetupService";
 	const string IPS_HostBasedSetupService::CLASS_URI = "http://intel.com/wbem/wscim/1/ips-schema/1/IPS_HostBasedSetupService";

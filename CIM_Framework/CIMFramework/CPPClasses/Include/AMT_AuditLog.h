@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_AuditLog.h
 //
@@ -365,7 +365,7 @@ namespace Typed
 			// Reserved: 3..65535
 			const unsigned int SignatureMechanism() const;
 			bool SignatureMechanismExists() const;
-			// The audit log signature, 256 bytes long.
+			// The audit log signature, 1024 bytes long.
 			const Base64 Signature() const;
 			bool SignatureExists() const;
 			// An array specifying the length of each certificate.
@@ -390,7 +390,7 @@ namespace Typed
 			// Class Destructor
 			~SetSigningKeyMaterial_INPUT(){}
 
-			// Required, Audit data signing mechanism type.
+			// Optional, Audit data signing mechanism type.
 			// Legal values:
 			// RSA_SHA1: 0
 			// RSA_SHA256: 1

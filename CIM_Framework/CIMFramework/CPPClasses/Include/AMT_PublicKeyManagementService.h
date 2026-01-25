@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_PublicKeyManagementService.h
 //
@@ -281,6 +281,7 @@ namespace Typed
 			// Required, The algorithm of the generated key.
 			// Legal values:
 			// RSA: 0
+			// ECC: 1
 			// Reserved: ..
 			void KeyAlgorithm(const unsigned int value); 
 

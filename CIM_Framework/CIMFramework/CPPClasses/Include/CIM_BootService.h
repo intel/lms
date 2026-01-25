@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       CIM_BootService.h
 //
@@ -63,6 +63,64 @@ namespace Typed
 		{
 		public:
 		};
+		//Input parameter for function RequestStateChange
+		class CIMFRAMEWORK_API RequestStateChange_INPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			RequestStateChange_INPUT() : CimParam() {}
+
+			// Class Destructor
+			~RequestStateChange_INPUT(){}
+
+			// Optional, The state requested for the element. This information will be placed into the RequestedState property of the instance if the return code of the RequestStateChange method is 0 ('Completed with No Error'), 3 ('Timeout'), or 4096 (0x1000) ('Job Started'). Refer to the description of the EnabledState and RequestedState properties for the detailed explanations of the RequestedState values.
+			// Legal values:
+			// Enabled: 2
+			// Disabled: 3
+			// Shut Down: 4
+			// Offline: 6
+			// Test: 7
+			// Defer: 8
+			// Quiesce: 9
+			// Reboot: 10
+			// Reset: 11
+			// DMTF Reserved: 12..32767
+			// disable OCR and RPE, enable all other boot options: 32768
+			// disable RPE, enable OCR and all other boot options: 32769
+			// disable OCR, enable RPE and all other boot options: 32770
+			// enable OCR, RPE and all other boot options: 32771
+			void RequestedState(const unsigned short value); 
+
+			// Optional, A timeout period that specifies the maximum amount of time that the client expects the transition to the new state to take. The interval format must be used to specify the TimeoutPeriod. A value of 0 or a null parameter indicates that the client has no time requirements for the transition. 
+			// If this property does not contain 0 or null and the implementation does not support this parameter, a return code of 'Use Of Timeout Parameter Not Supported' must be returned.
+			void TimeoutPeriod(const CimDateTime &value); 
+
+			const VectorFieldData GetAllFields() const;
+		private:
+			static const CimFieldAttribute _metadata[];
+		};
+
+		//Output parameter for function RequestStateChange
+		class CIMFRAMEWORK_API RequestStateChange_OUTPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			RequestStateChange_OUTPUT() : CimParam() {}
+
+			// Class Destructor
+			~RequestStateChange_OUTPUT(){}
+
+			// class fields
+			// Reference to the job (can be null if the task is completed).
+			const CimReference Job() const;
+			bool JobExists() const;
+		private:
+		};
+
+		// Requests that the state of the element be changed to the value specified in the RequestedState parameter. When the requested state change takes place, the EnabledState and RequestedState of the element will be the same. Invoking the RequestStateChange method multiple times could result in earlier requests being overwritten or lost. 
+		// If 0 is returned, then the task completed successfully and the use of ConcreteJob was not required. If 4096 (0x1000) is returned, then the task will take some time to complete, ConcreteJob will be created, and its reference returned in the output parameter Job. Any other return code indicates an error condition.
+		virtual unsigned int RequestStateChange(const RequestStateChange_INPUT &input, RequestStateChange_OUTPUT &output);
+
 		//Input parameter for function SetBootConfigRole
 		class CIMFRAMEWORK_API SetBootConfigRole_INPUT : public CimParam
 		{

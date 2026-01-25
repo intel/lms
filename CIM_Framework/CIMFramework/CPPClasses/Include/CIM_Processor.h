@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       CIM_Processor.h
 //
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_LogicalDevice::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 16);
+				CimBase::SetMetaData(_classMetaData, _metadata, 17);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_LogicalDevice::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 16);
+				CimBase::SetMetaData(_classMetaData, _metadata, 17);
 			}
 		}
 
@@ -258,6 +258,18 @@ namespace Typed
 		// Remove NumberOfEnabledCores field.
 		void RemoveNumberOfEnabledCores(); 
 
+		// Optional, A string that describes the Processor Upgrade Method. It is used when the Upgrade Method is set to 1 ("Other"). This string should be set to NULL when the Upgrade Method is any value other than 1.
+		const string SocketType() const;
+
+		// Optional, A string that describes the Processor Upgrade Method. It is used when the Upgrade Method is set to 1 ("Other"). This string should be set to NULL when the Upgrade Method is any value other than 1.
+		void SocketType(const string &value); 
+
+		// Is true if the field SocketType exists in the current object, otherwise is false.
+		bool SocketTypeExists() const;
+
+		// Remove SocketType field.
+		void RemoveSocketType(); 
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 
@@ -276,7 +288,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_LogicalDevice::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 16);
+				CimBase::SetMetaData(_classMetaData, _metadata, 17);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -286,14 +298,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_LogicalDevice::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 16);
+				CimBase::SetMetaData(_classMetaData, _metadata, 17);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_LogicalDevice::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 16);
+			CimBase::SetMetaData(childMetaData, _metadata, 17);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

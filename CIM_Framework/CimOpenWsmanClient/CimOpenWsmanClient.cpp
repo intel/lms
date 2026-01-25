@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) 2003 - 2025 Intel Corporation  All Rights Reserved.
+// Copyright (C) 2003 Intel Corporation
 //
 //  File:       CimOpenWsmanClient.cpp
 //
@@ -8,19 +8,21 @@
 //
 //----------------------------------------------------------------------------
 
-#include <string.h>
+#include <cstring>
+#include <math.h> 
 #include "CimException.h"
 #include "CimOpenWsmanClient.h"
 #include "OpenWsmanClient.h"
 #include "WsmanEPR.h"
 #include "WsmanFilter.h"
+#include "u/syslog.h"
+
+
+#pragma comment(lib, "legacy_stdio_definitions.lib")
 
 using namespace std;
-
-extern "C"
-{
-#define LOG_DAEMON (3<<3) /* system daemons */
-	int facility = LOG_DAEMON;
+extern "C" {
+    int facility = LOG_USER;
 }
 
 namespace Intel
@@ -50,36 +52,172 @@ namespace Intel
 			// search for a client cert with this name
 			const string& cert,
 			// search for a client cert with this oid
-			const string &oid
-
+			const string& oid,
+			// accept self-signed certificicate
+			const bool acceptSelfSignedCert
 		)
 			: cl(NULL)
 		{
-			connection.authmethod = auth_method;
+			try {
+				setHost(host);
+				setPortNum(port);
+				setSecure(secure);
+				setAuth(auth_method);
+				setUserName(username);
+				setPassword(password);
+				setClientCert(oid, cert, local);
+				setProxy(proxy, proxy_username, proxy_password);
+			}
+			catch (GeneralWsmanException& ex)
+			{
+				WSManException ex1(ex.what());
+				throw ex1;
+			}
+
+			OpenConnection(acceptSelfSignedCert);
+		}
+
+
+		CimOpenWsmanClient::CimOpenWsmanClient(const ConnectionInfo& Connection, const bool acceptSelfSignedCert)
+			: cl(NULL),
+			connection(Connection)
+		{
+			OpenConnection(acceptSelfSignedCert);
+		}
+
+		//set host
+		void CimOpenWsmanClient::setHost(const string& host) {
+			validateHost(host);
 			connection.host = host;
+		}
+
+		//set port number
+		void CimOpenWsmanClient::setPortNum(const int port) {
+			validatePortNum(port);
 			connection.port = port;
-			connection.username = username;
-			connection.password = password;
+		}
+
+		//set secure
+		void CimOpenWsmanClient::setSecure(const bool secure) {
 			connection.secure = secure;
-			connection.certificate = cert;
-			connection.local = local;
-			connection.oid = oid;
+		}
+
+		//setAuth
+		void CimOpenWsmanClient::setAuth(AuthMethod auth_method) {
+			connection.authmethod = auth_method;
+		}
+
+		// set user name
+		void CimOpenWsmanClient::setUserName(const string& user_name) {
+			validateUserName(user_name);
+			connection.username = user_name;
+		}
+
+		//set password
+		void CimOpenWsmanClient::setPassword(const string& password) {
+			validatePassword(password);
+			connection.password = password;
+		}
+
+		//set proxy params
+		void CimOpenWsmanClient::setProxy(const string& proxy, const string& proxy_username, const string& proxy_password) {
+			validateProxy(proxy, proxy_username, proxy_password);
 			connection.proxy_host = proxy;
 			connection.proxy_user = proxy_username;
 			connection.proxy_password = proxy_password;
+		}
 
-			OpenConnection();
+		//set client certificate params
+		void CimOpenWsmanClient::setClientCert(const string& caOid, const string& caName, const bool localCert) {
+			validateClientCert(caName);
+			connection.local = localCert;
+			connection.certificate = caName;
+			connection.oid = caOid;
 		}
 
 
-		CimOpenWsmanClient::CimOpenWsmanClient(const ConnectionInfo &Connection)
-			: cl(NULL),
-			  connection(Connection)
+		//Validate host
+		void CimOpenWsmanClient::validateHost(const string& host)
 		{
-			OpenConnection();
+			unsigned long addr = inet_addr(host.c_str());
+			if (INADDR_NONE != addr && INADDR_ANY != addr) {
+				//if it is valid dotted-decimal address
+				//convert back to string will prevent unwanted duplicates
+				struct in_addr inaddr;
+				inaddr.s_addr = addr;
+				char* client_ip = inet_ntoa(inaddr);
+				if (!client_ip) {
+					string error = "wsman_client_create failed:: invalid host name";
+					throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+				}
+			}
 		}
 
-		void CimOpenWsmanClient::OpenConnection()
+		// Validate port
+		void CimOpenWsmanClient::validatePortNum(int port) {
+			//The largest possible source port number is 2^16 or 65535
+			if (port < 0 || port > pow(2.0, 16.0)) {
+				string error = "wsman_client_create failed:: invalid port number";
+				throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+			}
+		}
+
+		//Validate username
+		void CimOpenWsmanClient::validateUserName(const string& user_name) {
+			//Accepting empty string for Kerberos connection
+			if (user_name.length() == 0 && connection.authmethod == KERBEROS)
+				return;
+			if (user_name.length() < 1 || user_name.length() > 32) {
+				string error = "wsman_client_create failed:: invalid username";
+				throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+			}
+		}
+
+		//Validate password
+		void CimOpenWsmanClient::validatePassword(const string& password) {
+			//Accepting empty string for Kerberos connection
+			if (password.length() == 0 && connection.authmethod == KERBEROS)
+				return;
+			if (password.length() < 8 || password.length() > 32) {
+				string error = "wsman_client_create failed:: invalid password";
+				throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+			}
+		}
+
+		//validate client certificate params
+		void CimOpenWsmanClient::validateClientCert(const string& caName) {
+			// In the common name field of the DN of a X509 certificate, , the limit is up to 64 characters
+			if (caName.length() > 64) {
+				string error = "wsman_client_create failed:: invalid certificate parameter";
+				throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+			}
+		}
+
+		void CimOpenWsmanClient::validateProxyUsername(const string& user_name) {
+			if (user_name.length() < 1 || user_name.length() > 32) {
+				string error = "wsman_client_create failed:: invalid username";
+				throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+			}
+		}
+
+		void CimOpenWsmanClient::validateProxyPassword(const string& password) {
+			if (password.length() < 8 || password.length() > 32) {
+				string error = "wsman_client_create failed:: invalid password";
+				throw WsmanClientException(error.c_str(), WSMAN_GENERAL_ERROR);
+			}
+		}
+
+		//validate proxy params
+		void CimOpenWsmanClient::validateProxy(const string& proxy, const string& proxy_username, const string& proxy_password) {
+			if(!proxy.empty())
+				validateHost(proxy);
+			if(!proxy_username.empty())
+				validateProxyUsername(proxy_username);
+			if(!proxy_password.empty())
+				validateProxyPassword(proxy_password);
+		}
+
+		void CimOpenWsmanClient::OpenConnection(bool acceptSelfSignedCert)
 		{
 			try
 			{
@@ -100,15 +238,15 @@ namespace Intel
 					connection.oid
 #endif // WIN32
 				);
-				cl->AllowSelfSignedServerCert();
 			}
 			catch (GeneralWsmanException& ex)
 			{
-				WSManException ex1(ex.what());
-				throw ex1;
+				throw WSManException(ex.what());
 			}
-
-
+			if (acceptSelfSignedCert)
+			{
+				cl->AllowSelfSignedServerCert();
+			}
 		}
 
 		// Destructor.
@@ -203,7 +341,7 @@ namespace Intel
 			string ret;
 			try
 			{
-				ret = cl->GetWithFlags(resourceUri, s, FLAG_SUPRESS_100_CONTINUE);
+				ret = cl->Get(resourceUri, s);
 			}
 			catch (WsmanSoapFault& ex)
 			{
@@ -226,7 +364,7 @@ namespace Intel
 			string ret;
 			try
 			{
-				ret = cl->PutWithFlags(resourceUri, content, s, FLAG_SUPRESS_100_CONTINUE);
+				ret = cl->Put(resourceUri, content, s);
 			}
 			catch (WsmanSoapFault& ex)
 			{
@@ -249,10 +387,7 @@ namespace Intel
 			string ret;
 			try
 			{
-				WsmanOptions options(FLAG_SUPRESS_100_CONTINUE);
-				options.setNamespace(cl->GetNamespace());
-				options.addSelectors(s);
-				ret = cl->Invoke(resourceUri, methodName, content, options);
+				ret = cl->Invoke(resourceUri, methodName, content, s);
 			}
 			catch (WsmanSoapFault& ex)
 			{
@@ -428,14 +563,14 @@ namespace Intel
 		// Set user name
 		void CimOpenWsmanClient::SetUserName(const char* user_name)
 		{
-			connection.username = user_name;
+			setUserName(user_name);
 			cl->SetUserName(user_name);
 		}
 
 		// Set passsword
 		void CimOpenWsmanClient::SetPassword(const char* password)
 		{
-			connection.password = password;
+			setPassword(password);
 			cl->SetPassword(password);
 		}
 
@@ -454,16 +589,12 @@ namespace Intel
 		// Set client certificate params
 		void CimOpenWsmanClient::SetClientCert(const char* caOid, const char* caName, const bool localCert)
 		{
-			connection.oid = caOid;
-			connection.certificate = caName;
-			connection.local = localCert;
+			setClientCert(caOid, caName, localCert);
 			cl->SetClientCert(caOid, caName, localCert);
 		}
 		void CimOpenWsmanClient::SetProxy(const char* proxy, const char* proxy_username, const char* proxy_password)
 		{
-			connection.proxy_host = proxy;
-			connection.proxy_user = proxy_username;
-			connection.proxy_password = proxy_password;
+			setProxy(proxy, proxy_username, proxy_password);
 			delete cl;
 			cl = NULL;
 			OpenConnection();

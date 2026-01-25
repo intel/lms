@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_KVMRedirectionSettingData.h
 //
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 13);
+				CimBase::SetMetaData(_classMetaData, _metadata, 14);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 13);
+				CimBase::SetMetaData(_classMetaData, _metadata, 14);
 			}
 		}
 
@@ -222,8 +222,66 @@ namespace Typed
 		// Remove InitialDecimationModeForLowRes field.
 		void RemoveInitialDecimationModeForLowRes(); 
 
+		// Optional, A read-only indication of the reason for closing the last KVM session.0 = Unknown.1 = Closed by end user (from AMT SW IMSS application).
+		const unsigned short LastKvmSessionClosingReason() const;
+
+		// Optional, A read-only indication of the reason for closing the last KVM session.0 = Unknown.1 = Closed by end user (from AMT SW IMSS application).
+		void LastKvmSessionClosingReason(const unsigned short value); 
+
+		// Is true if the field LastKvmSessionClosingReason exists in the current object, otherwise is false.
+		bool LastKvmSessionClosingReasonExists() const;
+
+		// Remove LastKvmSessionClosingReason field.
+		void RemoveLastKvmSessionClosingReason(); 
+
 		// This API terminates an active KVM session. it may be issues by a local tool acting on behalf of the local user which desires to terminate a remote session due to privacy concerns.
 		virtual unsigned int TerminateSession();
+
+		//Output parameter for function DataChannelRead
+		class CIMFRAMEWORK_API DataChannelRead_OUTPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			DataChannelRead_OUTPUT() : CimParam() {}
+
+			// Class Destructor
+			~DataChannelRead_OUTPUT(){}
+
+			// class fields
+			// Data channel message buffer
+			const Base64 DataMessage() const;
+			// Id of the received data message
+			const unsigned int MessageId() const;
+			// Realms bitmap of the user
+			const unsigned int RealmsBitmap() const;
+			// Username of the user
+			const string Username() const;
+		private:
+		};
+
+		// This function reads a KVM data Channel message from KVM channel. 
+		virtual unsigned int DataChannelRead(DataChannelRead_OUTPUT &output);
+
+		//Input parameter for function DataChannelWrite
+		class CIMFRAMEWORK_API DataChannelWrite_INPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			DataChannelWrite_INPUT() : CimParam() {}
+
+			// Class Destructor
+			~DataChannelWrite_INPUT(){}
+
+			// Required, Data channel message to send
+			void DataMessage(const Base64 &value); 
+
+			const VectorFieldData GetAllFields() const;
+		private:
+			static const CimFieldAttribute _metadata[];
+		};
+
+		// This function writes a KVM data Channel message to KVM channel. 
+		virtual unsigned int DataChannelWrite(const DataChannelWrite_INPUT &input);
 
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
@@ -243,7 +301,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 13);
+				CimBase::SetMetaData(_classMetaData, _metadata, 14);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -253,14 +311,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				CIM_SettingData::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 13);
+				CimBase::SetMetaData(_classMetaData, _metadata, 14);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_SettingData::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 13);
+			CimBase::SetMetaData(childMetaData, _metadata, 14);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

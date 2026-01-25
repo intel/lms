@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_AgentPresenceService.h
 //
@@ -61,6 +61,27 @@ namespace Typed
 		{
 		public:
 		};
+		//Input parameter for function EnableHostResetAction
+		class CIMFRAMEWORK_API EnableHostResetAction_INPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			EnableHostResetAction_INPUT() : CimParam() {}
+
+			// Class Destructor
+			~EnableHostResetAction_INPUT(){}
+
+			// Required, This flag indicates whether the requested operation is enable or disable.
+			void Enable(const bool value); 
+
+			const VectorFieldData GetAllFields() const;
+		private:
+			static const CimFieldAttribute _metadata[];
+		};
+
+		// This routine is used to enable or disable automatic platform reset.
+		virtual unsigned int EnableHostResetAction(const EnableHostResetAction_INPUT &input);
+
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);
 

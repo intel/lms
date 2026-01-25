@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2003 - 2018  All Rights Reserved.
+// Copyright (C) 2003 Intel Corporation
 //
 //  File:       CimSerializer.cpp
 //
@@ -23,6 +23,7 @@ namespace Cim
 {
 namespace Untyped 
 {
+	using std::setw;
 	using namespace Intel::Manageability::XMLUtils;
 
 	bool CimSerializer::initialized = false;
@@ -124,9 +125,9 @@ namespace Untyped
 						WsManSelectors sel;
 						for(;;)
 						{
-							map<string, string> attribs;
+							std::map<string, string> attribs;
 							selector.GetAttributes(attribs);
-							pair<string, string> current;
+							std::pair<string, string> current;
 							current.first = attribs["Name"];
 							current.second = selector.GetTextValue();
 							sel.insert(current);
@@ -161,7 +162,7 @@ namespace Untyped
 
 	string CimSerializer::SerializeDateTime(const CimDateTime &dateTime) const
 	{
-		ostringstream ret;
+		std::ostringstream ret;
 		switch (dateTime.Type()) {
 		case CimDateTime::DT_ABSOLUTE:
 			ret << "<Datetime xmlns=\"http://schemas.dmtf.org/wbem/wscim/1/common\">"
@@ -207,7 +208,7 @@ namespace Untyped
 
 	string CimSerializer::SerializeDateTimeAbsolute(const CimDateTimeAbsolute &dateTime) const
 	{
-		ostringstream ret;
+		std::ostringstream ret;
 		ret.fill('0');
 
 		ret << setw(4) << (dateTime.Year() > 0 ? dateTime.Year() : 1) << '-'
@@ -244,7 +245,7 @@ namespace Untyped
 
 	string CimSerializer::SerializeDateTimeInterval(const CimDateTimeInterval &dateTime) const
 	{
-		ostringstream ret;
+		std::ostringstream ret;
 		ret << 'P';
 		if (dateTime.Days() > 0)
 		{
@@ -307,7 +308,7 @@ namespace Untyped
 		GetValueIfExists(begin, dateString.end(), 'D', days);
 
 		// Convert number of years, months, and days to number of days
-		days += (years * 365) + (months * 30);
+		days += static_cast<unsigned long>(years * 365 + months * 30);
 	}
 
 	void CimSerializer::DeserializeTimeInterval(const string& timeString, unsigned short& hours, unsigned short& minutes, unsigned short& seconds, unsigned long& microseconds) const
@@ -321,11 +322,11 @@ namespace Untyped
 		if (timeString.find('.') != string::npos)
 		{
 			GetValueIfExists(begin, timeString.end(), '.', seconds);
-			ostringstream microseconds_stream;
+			std::ostringstream microseconds_stream;
 			microseconds_stream.fill('0');
-			microseconds_stream << setiosflags(ios::left) << setw(6)
+			microseconds_stream << std::setiosflags(std::ios::left) << setw(6)
 								<< string(begin, find(begin, timeString.end(), 'S'))
-								<< resetiosflags(ios::left);
+								<< std::resetiosflags(std::ios::left);
 			TypeConverter::StringToType(microseconds_stream.str(), microseconds);
 		}
 		else
@@ -570,7 +571,7 @@ namespace Untyped
 		{
 			XMLElement tmp = node.GetFirstChild();
 
-			map <string, string> attributes;
+			std::map <string, string> attributes;
 			for (;;)
 			{
 				tmp.GetAttributes(attributes);

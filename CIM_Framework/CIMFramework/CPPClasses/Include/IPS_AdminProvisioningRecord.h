@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_AdminProvisioningRecord.h
 //
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 8);
+				CimBase::SetMetaData(_classMetaData, _metadata, 9);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 8);
+				CimBase::SetMetaData(_classMetaData, _metadata, 9);
 			}
 		}
 
@@ -77,6 +77,18 @@ namespace Typed
 
 		// Remove SecureDNS field.
 		void RemoveSecureDNS(); 
+
+		// Optional, PKI trust method
+		const unsigned char PkiTrustMethod() const;
+
+		// Optional, PKI trust method
+		void PkiTrustMethod(const unsigned char &value); 
+
+		// Is true if the field PkiTrustMethod exists in the current object, otherwise is false.
+		bool PkiTrustMethodExists() const;
+
+		// Remove PkiTrustMethod field.
+		void RemovePkiTrustMethod(); 
 
 		// Optional, Specifies the CN value in the SSL certificate used for provisioning. 
 		const string CertificateCN() const;
@@ -180,7 +192,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 8);
+				CimBase::SetMetaData(_classMetaData, _metadata, 9);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -190,14 +202,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 8);
+				CimBase::SetMetaData(_classMetaData, _metadata, 9);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			IPS_ProvisioningAuditRecord::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 8);
+			CimBase::SetMetaData(childMetaData, _metadata, 9);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

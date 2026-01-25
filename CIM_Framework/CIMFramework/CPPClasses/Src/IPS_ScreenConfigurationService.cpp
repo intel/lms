@@ -1,6 +1,6 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_ScreenConfigurationService.cpp
 //
@@ -20,6 +20,7 @@ namespace Typed
 {
 	const CimFieldAttribute IPS_ScreenConfigurationService::_metadata[] = {
 		{"CurrentState", false, false, false },
+		{"ActualState", false, false, false },
 		{"EnabledState", false, false, false },
 		{"RemainingConsecutiveRebootsNum", false, false, false },
 	};
@@ -41,6 +42,25 @@ namespace Typed
 	void IPS_ScreenConfigurationService::RemoveCurrentState()
 	{
 		RemoveField("CurrentState");
+	}
+
+	const unsigned short IPS_ScreenConfigurationService::ActualState() const
+	{
+		unsigned short ret = 0;
+		TypeConverter::StringToType(GetField("ActualState"), ret);
+		return ret;
+	}
+	void IPS_ScreenConfigurationService::ActualState(const unsigned short value)
+	{
+		SetOrAddField("ActualState", TypeConverter::TypeToString(value));
+	}
+	bool IPS_ScreenConfigurationService::ActualStateExists() const
+	{
+		return ContainsField("ActualState");
+	}
+	void IPS_ScreenConfigurationService::RemoveActualState()
+	{
+		RemoveField("ActualState");
 	}
 
 	const unsigned short IPS_ScreenConfigurationService::EnabledState() const

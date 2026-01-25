@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2009  All Rights Reserved.
+// Copyright (C) 2009 Intel Corporation
 //
 //  File:       CimUntypedDllExport.h
 //

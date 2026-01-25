@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       IPS_TLSProvisioningRecord.h
 //
@@ -32,7 +32,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 11);
+				CimBase::SetMetaData(_classMetaData, _metadata, 12);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 11);
+				CimBase::SetMetaData(_classMetaData, _metadata, 12);
 			}
 		}
 
@@ -77,6 +77,18 @@ namespace Typed
 
 		// Remove ProvisioningTLSMode field.
 		void RemoveProvisioningTLSMode(); 
+
+		// Optional, PKI trust method
+		const unsigned char PkiTrustMethod() const;
+
+		// Optional, PKI trust method
+		void PkiTrustMethod(const unsigned char &value); 
+
+		// Is true if the field PkiTrustMethod exists in the current object, otherwise is false.
+		bool PkiTrustMethodExists() const;
+
+		// Remove PkiTrustMethod field.
+		void RemovePkiTrustMethod(); 
 
 		// Optional, True, if the DNS Suffix used to authorize the provisioning entityWas set via the MEBx, false if value was read from the DHCP Server's option 15 valueValid only if TLSProvisioningMethod="TLS-PKI"
 		const bool SecureDNS() const;
@@ -216,7 +228,7 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 11);
+				CimBase::SetMetaData(_classMetaData, _metadata, 12);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -226,14 +238,14 @@ namespace Typed
 			if(_classMetaData.size() == 0)
 			{
 				IPS_ProvisioningAuditRecord::SetMetaData(_classMetaData);
-				CimBase::SetMetaData(_classMetaData, _metadata, 11);
+				CimBase::SetMetaData(_classMetaData, _metadata, 12);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			IPS_ProvisioningAuditRecord::SetMetaData(childMetaData);
-			CimBase::SetMetaData(childMetaData, _metadata, 11);
+			CimBase::SetMetaData(childMetaData, _metadata, 12);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:

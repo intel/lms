@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_WiFiPortConfigurationService.h
 //
@@ -168,7 +168,7 @@ namespace Typed
 		private:
 		};
 
-		// Atomically creates an instance of CIM_WifiEndpointSettings from the embedded instance parameter and optionally an instance of CIM_IEEE8021xSettings from the embedded instance parameter (if provided), associates the CIM_WiFiEndpointSettings instance with the referenced instance of CIM_WiFiEndpoint using an instance of CIM_ElementSettingData optionally associates the newly created or referenced by parameter instance of CIM_IEEE8021xSettings with the instance of CIM_WiFiEndpointSettings using an instance of CIM_ConcreteComponent and optionally associates the referenced instance of AMT_PublicKeyCertificate (if provided) with the instance of CIM_IEEE8021xSettings (if provided) using an instance of CIM_CredentialContext.
+		// Adds a new WiFi profile.The method atomically creates an instance of CIM_WifiEndpointSettings based on the provided embedded instance parameter WiFiEndpointSettingsInput.The new CIM_WifiEndpointSettings instance is then associated with the referenced instance of CIM_WifiEndpoint (through an instance of CIM_ElementSettingData).If an instance of CIM_IEEE8021xSettings is also provided as an embedded parameter (IEEE8021xSettingsInput), the instance  will be created as well.If the CIM_IEEE8021xSettings instance is created or already exists, it will be linked to the CIM_WifiEndpointSettings instance (using an instance of CIM_ConcreteComponent).If a referenced instance of AMT_PublicKeyCertificate is provided (for ClientCredential and/or CACredential), it will be associated with the CIM_IEEE8021xSettings instance (using an instance of CIM_CredentialContext).
 		virtual unsigned int AddWiFiSettings(const AddWiFiSettings_INPUT &input, AddWiFiSettings_OUTPUT &output);
 
 		//Input parameter for function UpdateWiFiSettings
@@ -226,6 +226,27 @@ namespace Typed
 
 		// Deletes all the instances of CIM_WiFiEndpointSettings and CIM_IEEE8021xSettings that were created by local user applications. Also deletes all the associations that reference the instances of CIM_WiFiEndpointSettings and CIM_IEEE8021xSettings that were deleted.
 		virtual unsigned int DeleteAllUserProfiles();
+
+		//Input parameter for function SetApplicationRequestedRfKill
+		class CIMFRAMEWORK_API SetApplicationRequestedRfKill_INPUT : public CimParam
+		{
+		public:
+			// Class Constructor
+			SetApplicationRequestedRfKill_INPUT() : CimParam() {}
+
+			// Class Destructor
+			~SetApplicationRequestedRfKill_INPUT(){}
+
+			// Required, Indicates the adapter switching state
+			void ApplicationRequestedRfKill(const bool value); 
+
+			const VectorFieldData GetAllFields() const;
+		private:
+			static const CimFieldAttribute _metadata[];
+		};
+
+		// Notifies Intel(R) AMT WLAN that SW RF Kill is due to Host Adapter Switching
+		virtual unsigned int SetApplicationRequestedRfKill(const SetApplicationRequestedRfKill_INPUT &input);
 
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);

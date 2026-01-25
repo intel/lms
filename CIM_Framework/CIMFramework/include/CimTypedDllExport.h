@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-// Copyright (c) Intel Corporation, 2009  All Rights Reserved.
+// Copyright (C) 2009 Intel Corporation
 //
 //  File:       CimTypedDllExport.h
 //
@@ -15,13 +15,13 @@
 #pragma warning(disable: 4251)
 
 #if (defined (_WIN32) || defined (_WIN64)) && defined (CIMFRAMEWORK_DLL)
-	#ifdef CIMFRAMEWORK_EXPORTS
-		#define CIMFRAMEWORK_API __declspec(dllexport)
-	#else
-		#define CIMFRAMEWORK_API __declspec(dllimport)
-	#endif
+#ifdef CIMFRAMEWORK_EXPORTS
+#define CIMFRAMEWORK_API __declspec(dllexport)
 #else
-	#define CIMFRAMEWORK_API
+#define CIMFRAMEWORK_API __declspec(dllimport)
+#endif
+#else
+#define CIMFRAMEWORK_API
 #endif
 
 #endif // CIMDLLEXPORT_H

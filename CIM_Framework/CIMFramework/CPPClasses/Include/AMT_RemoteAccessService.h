@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_RemoteAccessService.h
 //
@@ -31,7 +31,8 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 2);
 			}
 		}
 
@@ -41,7 +42,8 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 2);
 			}
 		}
 
@@ -61,6 +63,33 @@ namespace Typed
 		{
 		public:
 		};
+
+		// class fields declarations
+
+		// Optional, Reflects the connection status of the remote tunnel
+		const bool IsRemoteTunnelConnected() const;
+
+		// Optional, Reflects the connection status of the remote tunnel
+		void IsRemoteTunnelConnected(const bool value); 
+
+		// Is true if the field IsRemoteTunnelConnected exists in the current object, otherwise is false.
+		bool IsRemoteTunnelConnectedExists() const;
+
+		// Remove IsRemoteTunnelConnected field.
+		void RemoveIsRemoteTunnelConnected(); 
+
+		// Optional, Reflects the keep-alive timeout value of the remote tunnel (in seconds)
+		const unsigned int RemoteTunnelKeepAliveTimeout() const;
+
+		// Optional, Reflects the keep-alive timeout value of the remote tunnel (in seconds)
+		void RemoteTunnelKeepAliveTimeout(const unsigned int value); 
+
+		// Is true if the field RemoteTunnelKeepAliveTimeout exists in the current object, otherwise is false.
+		bool RemoteTunnelKeepAliveTimeoutExists() const;
+
+		// Remove RemoteTunnelKeepAliveTimeout field.
+		void RemoveRemoteTunnelKeepAliveTimeout(); 
+
 		//Input parameter for function AddMpServer
 		class CIMFRAMEWORK_API AddMpServer_INPUT : public CimParam
 		{
@@ -202,7 +231,8 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 2);
 			}
 		}
 		 // Protected constructor which receives CimObject
@@ -211,16 +241,19 @@ namespace Typed
 		{
 			if(_classMetaData.size() == 0)
 			{
-				_classMetaData = CIM_Service::GetMetaData();
+				CIM_Service::SetMetaData(_classMetaData);
+				CimBase::SetMetaData(_classMetaData, _metadata, 2);
 			}
 		}
 		// Called by derived classes
 		void SetMetaData(vector<CimFieldAttribute>& childMetaData)
 		{
 			CIM_Service::SetMetaData(childMetaData);
+			CimBase::SetMetaData(childMetaData, _metadata, 2);
 		}
 		const vector<CimFieldAttribute> &GetMetaData() const;
 	private:
+		static const CimFieldAttribute _metadata[];
 		static const string CLASS_NAME;
 		static const string CLASS_URI;
 		static const string CLASS_NS;

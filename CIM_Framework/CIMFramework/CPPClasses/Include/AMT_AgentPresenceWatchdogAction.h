@@ -1,12 +1,12 @@
-//----------------------------------------------------------------------------
+﻿//----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       AMT_AgentPresenceWatchdogAction.h
 //
 //  Contents:   Represents an action which is triggered on an application watchdog state transition.
 //
-//              This file was automatically generated from AMT_AgentPresenceWatchdogAction.mof,  version: 4.0.0
+//              This file was automatically generated from AMT_AgentPresenceWatchdogAction.mof,  version: 5.0.0
 //
 //----------------------------------------------------------------------------
 #ifndef AMT_AGENTPRESENCEWATCHDOGACTION_H
@@ -89,26 +89,6 @@ namespace Typed
 
 		// Remove ActionSd field.
 		void RemoveActionSd(); 
-
-		//Output parameter for function GetActionEac
-		class CIMFRAMEWORK_API GetActionEac_OUTPUT : public CimParam
-		{
-		public:
-			// Class Constructor
-			GetActionEac_OUTPUT() : CimParam() {}
-
-			// Class Destructor
-			~GetActionEac_OUTPUT(){}
-
-			// class fields
-			// A boolean flag indicating whether this action is defined as an EAC action.
-			const bool ActionEac() const;
-			bool ActionEacExists() const;
-		private:
-		};
-
-		// This method allows to determine if this action is defined as an EAC action. If this method returns TRUE: 1. Information about this agent is included in an Intel(R) AMT EAC posture. This happens if at least one transition is defined as TRUE for this agent. Posture information includes current state and state counters showing how many times each state was entered. 2. When this specific state transition occurs, an avent is generated to indicate that Intel(R) AMT posture has changed.
-		virtual unsigned int GetActionEac(GetActionEac_OUTPUT &output);
 
 		 // Function used by the factory
 		static CimBase *CreateFromCimObject(const CimObject &object);

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 //
-//  Copyright (c) Intel Corporation, 2003 - 2012  All Rights Reserved.
+//  Copyright (C) 2003 Intel Corporation
 //
 //  File:       CIM_WiFiEndpointCapabilities.h
 //
@@ -72,7 +72,7 @@ namespace Typed
 		// 	* TKIP (3): shall indicate that the Temporal Key Integrity Protocol (TKIP) is supported. SupportedEncryptionMethods shall contain 3 only if SupportedAuthenticationMethods contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* CCMP (4): shall indicate that the Counter Mode with Cipher Block Chaining Message Authentication Code Protocol (CCMP) is supported. SupportedEncryptionMethods shall contain 4 only if SupportedAuthenticationMethods contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* None (5): shall indicate that the associated WiFiEndpoint supports connecting to a network without encryption. SupportedEncryptionMethods shall contain 5 only if SupportedAuthenticationMethods contains 2 ("Open System") or 3 ("Shared Key").
-		// 	* GCMP 256 (32768): shall indicate that the GCMP protocol is supported. SupportedEncryptionMethods shall contain 32768 only if SupportedAuthenticationMethods contains 6 ("WPA2 PSK"), 7 ("WPA2 IEEE 802.1x") or 32768 ("WPA3 SAE").
+		// 	* GCMP 256 (32768): shall indicate that the GCMP protocol is supported. SupportedEncryptionMethods shall contain 32768 only if SupportedAuthenticationMethods contains 7 ("WPA2 IEEE 802.1x")
 		const vector<unsigned short> SupportedEncryptionMethods() const;
 
 		// Optional, The set of IEEE 802.11 encryption methods supported by the associated WifiEndpoint. Shall contain one or more of the values below.
@@ -81,7 +81,7 @@ namespace Typed
 		// 	* TKIP (3): shall indicate that the Temporal Key Integrity Protocol (TKIP) is supported. SupportedEncryptionMethods shall contain 3 only if SupportedAuthenticationMethods contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* CCMP (4): shall indicate that the Counter Mode with Cipher Block Chaining Message Authentication Code Protocol (CCMP) is supported. SupportedEncryptionMethods shall contain 4 only if SupportedAuthenticationMethods contains 4 ("WPA PSK"), 5 ("WPA IEEE 802.1x"), 6 ("WPA2 PSK"), or 7 ("WPA2 IEEE 802.1x").
 		// 	* None (5): shall indicate that the associated WiFiEndpoint supports connecting to a network without encryption. SupportedEncryptionMethods shall contain 5 only if SupportedAuthenticationMethods contains 2 ("Open System") or 3 ("Shared Key").
-		// 	* GCMP 256 (32768): shall indicate that the GCMP protocol is supported. SupportedEncryptionMethods shall contain 32768 only if SupportedAuthenticationMethods contains 6 ("WPA2 PSK"), 7 ("WPA2 IEEE 802.1x") or 32768 ("WPA3 SAE").
+		// 	* GCMP 256 (32768): shall indicate that the GCMP protocol is supported. SupportedEncryptionMethods shall contain 32768 only if SupportedAuthenticationMethods contains 7 ("WPA2 IEEE 802.1x")
 		void SupportedEncryptionMethods(const vector<unsigned short> &value); 
 
 		// Is true if the field SupportedEncryptionMethods exists in the current object, otherwise is false.
@@ -109,8 +109,12 @@ namespace Typed
 		// 	* WPA IEEE 802.1x (5): shall indicate that WPA (Wi-Fi Protected Access) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 5 only if SupportedEncryptionMethods contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 PSK (6): shall indicate that WPA2 (Wi-Fi Protected Access Version 2) PSK (Pre-Shared Key) authentication is supported. SupportedAuthenticationMethods shall contain 6 only if SupportedEncryptionMethods contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 IEEE 802.1x (7): shall indicate that WPA2 (Wi-Fi Protected Access Version 2) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 7 only if SupportedEncryptionMethods contains 3 ("TKIP") or 4 ("CCMP").
-		// 	* WPA3 SAE IEEE 802.1x (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
-		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")
+		// 	* WPA3 SAE (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
+		// 	* WPA3 OWE (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP").
+		// 	* WPA3 SAE H2E (32770): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE H2E (Hash-to-Element) authentication is supported. 
+		// 	* WPA3 SAE RSNO (32771): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE RSN Override (Robust Security Network Override) authentication is supported. 
+		// 	* WPA3 SAE TM (32772): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE TM (Transition Mode)authentication is supported. 
+		// 
 		const vector<unsigned short> SupportedAuthenticationMethods() const;
 
 		// Optional, The set of IEEE 802.11 authentication methods supported by the associated WifiEndpoint.	* Other (1): shall indicate that at least one authentication method not specified in the list below is supported. If SupportedAuthenticationMethods contains 1, OtherSupportedAuthenticationMethods shall not be NULL and shall not be empty.
@@ -120,8 +124,12 @@ namespace Typed
 		// 	* WPA IEEE 802.1x (5): shall indicate that WPA (Wi-Fi Protected Access) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 5 only if SupportedEncryptionMethods contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 PSK (6): shall indicate that WPA2 (Wi-Fi Protected Access Version 2) PSK (Pre-Shared Key) authentication is supported. SupportedAuthenticationMethods shall contain 6 only if SupportedEncryptionMethods contains 3 ("TKIP") or 4 ("CCMP").
 		// 	* WPA2 IEEE 802.1x (7): shall indicate that WPA2 (Wi-Fi Protected Access Version 2) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 7 only if SupportedEncryptionMethods contains 3 ("TKIP") or 4 ("CCMP").
-		// 	* WPA3 SAE IEEE 802.1x (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
-		// 	* WPA3 OWE IEEE 802.1x (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP")
+		// 	* WPA3 SAE (32768): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32768 only if SupportedEncryptionMethods contains 4 ("CCMP").
+		// 	* WPA3 OWE (32769): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) OWE (Opportunistic Wireless Encryption) IEEE 802.1x authentication is supported. SupportedAuthenticationMethods shall contain 32769 only if SupportedEncryptionMethods contains 4 ("CCMP").
+		// 	* WPA3 SAE H2E (32770): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE H2E (Hash-to-Element) authentication is supported. 
+		// 	* WPA3 SAE RSNO (32771): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE RSN Override (Robust Security Network Override) authentication is supported. 
+		// 	* WPA3 SAE TM (32772): shall indicate that WPA3 (Wi-Fi Protected Access Version 3) SAE TM (Transition Mode)authentication is supported. 
+		// 
 		void SupportedAuthenticationMethods(const vector<unsigned short> &value); 
 
 		// Is true if the field SupportedAuthenticationMethods exists in the current object, otherwise is false.
