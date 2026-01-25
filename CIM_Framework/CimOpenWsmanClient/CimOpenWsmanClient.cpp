@@ -10,6 +10,10 @@
 
 #include <cstring>
 #include <math.h> 
+#ifdef __linux__
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
 #include "CimException.h"
 #include "CimOpenWsmanClient.h"
 #include "OpenWsmanClient.h"
