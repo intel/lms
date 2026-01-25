@@ -395,7 +395,7 @@ namespace Typed
 
 		// Optional, UserPasswordEncoding specifies encoding used for the UserPassword property.
 		// "kbd" denotes a string in hexadecimal format containing keyboard scan code input. An example of a UserPassword structured in this format would be "321539191E1F1F11181320", which is the representation of "my password" in US English keyboard scan codes.
-		// "ascii" denotes clear text that complies with the ASCII character set. An example would be "my password".
+		// "ascii" denotes clear text that complies with the ASCII character set. An example would be "my password".
 		// "pin" denotes that only numeric input in ASCII text is allowed for the UserPassword. An example would be "1234".
 		// "UTF-8" denotes that the UserPassword is a Unicode string that is encoded using UTF-8 character set.
 		// "UTF-16" denotes that the UserPassword is a Unicode string that is encoded using UTF-16 character set. The byte order mark (BOM) shall be the first character of the string.
@@ -406,7 +406,7 @@ namespace Typed
 
 		// Optional, UserPasswordEncoding specifies encoding used for the UserPassword property.
 		// "kbd" denotes a string in hexadecimal format containing keyboard scan code input. An example of a UserPassword structured in this format would be "321539191E1F1F11181320", which is the representation of "my password" in US English keyboard scan codes.
-		// "ascii" denotes clear text that complies with the ASCII character set. An example would be "my password".
+		// "ascii" denotes clear text that complies with the ASCII character set. An example would be "my password".
 		// "pin" denotes that only numeric input in ASCII text is allowed for the UserPassword. An example would be "1234".
 		// "UTF-8" denotes that the UserPassword is a Unicode string that is encoded using UTF-8 character set.
 		// "UTF-16" denotes that the UserPassword is a Unicode string that is encoded using UTF-16 character set. The byte order mark (BOM) shall be the first character of the string.
