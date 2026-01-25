@@ -570,7 +570,7 @@ namespace XMLUtils
 			return xml;
 		}	
 
-		void GetAttributes(map<string, string>& attribs) const
+		void GetAttributes(std::map<string, string>& attribs) const
 		{
 			YStr ystr1, ystr2;
 			try
@@ -1041,7 +1041,7 @@ namespace XMLUtils
 		return impl->GetNSPrefix();
 	}
 
-	void XMLElement::GetAttributes(map<string, string>& attribs) const
+	void XMLElement::GetAttributes(std::map<string, string>& attribs) const
 	{
 		impl->GetAttributes(attribs);
 	}
