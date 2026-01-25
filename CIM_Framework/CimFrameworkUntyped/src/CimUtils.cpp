@@ -65,7 +65,7 @@ namespace Intel
 					base64_decodestate state;
 					base64_init_decodestate(&state);
 					*outStrSize = base64_decode_block((const char *)inStr,
-						strnlen_s((const char *)inStr, tmp.length()), (char*)outStr, &state);
+						tmp.length(), (char*)outStr, &state);
 				}
 
 				Base64::Base64()
