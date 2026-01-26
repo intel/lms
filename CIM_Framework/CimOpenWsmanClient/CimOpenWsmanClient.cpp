@@ -345,7 +345,7 @@ namespace Intel
 			string ret;
 			try
 			{
-				ret = cl->Get(resourceUri, s);
+				ret = cl->GetWithFlags(resourceUri, s, FLAG_SUPRESS_100_CONTINUE);
 			}
 			catch (WsmanSoapFault& ex)
 			{
@@ -368,7 +368,7 @@ namespace Intel
 			string ret;
 			try
 			{
-				ret = cl->Put(resourceUri, content, s);
+				ret = cl->PutWithFlags(resourceUri, content, s, FLAG_SUPRESS_100_CONTINUE);
 			}
 			catch (WsmanSoapFault& ex)
 			{
@@ -391,7 +391,10 @@ namespace Intel
 			string ret;
 			try
 			{
-				ret = cl->Invoke(resourceUri, methodName, content, s);
+				WsmanOptions options(FLAG_SUPRESS_100_CONTINUE);
+				options.setNamespace(cl->GetNamespace());
+				options.addSelectors(s);
+				ret = cl->Invoke(resourceUri, methodName, content, options);
 			}
 			catch (WsmanSoapFault& ex)
 			{
