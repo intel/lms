@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -79,7 +79,14 @@ void BaseWSManClient::SetEndpoint()
 									  (m_port == AMT_SECURE_PORT),
 									  Intel::WSManagement::DIGEST,
 									  m_defaultUser,
-									  m_defaultPass.Get()));
+									  m_defaultPass.Get(),
+									  std::string(),
+									  std::string(),
+									  std::string(),
+									  false,
+									  std::string(),
+									  std::string(),
+									  true));
 }
 
 bool BaseWSManClient::GetLocalSystemAccount()
