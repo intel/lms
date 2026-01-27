@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 
 #include "global.h"
@@ -29,6 +29,10 @@
 //Localized strings to load
 static unsigned int strings[] = {SHUTDOWN_MSG_ID,REBOOT_MSG_ID};
 static const size_t numOfStrings = 2;
+
+static const char* const LOG_NAME = "Gms";
+static const char* const LOG_EXT = ".log";
+static const size_t LOG_MAX_BACKUPS = 5;
 #endif // WIN32
 
 GmsService::GmsService(void) : stopped(false), loading(false), 
@@ -253,18 +257,78 @@ bool GmsService::ResumeAceService(const ACE_TString &serviceName)
 	return (ACE_Service_Repository::instance()->resume(serviceName.c_str()) == 0);
 }
 
+#ifdef WIN32
+namespace {
+	std::string LogFileName(size_t index = 0)
+	{
+		// index 0 = "Gms.log", index N = "GmsN.log"
+		if (index == 0)
+			return std::string(LOG_NAME) + LOG_EXT;
+		return std::string(LOG_NAME) + std::to_string(index) + LOG_EXT;
+	}
+
+	void RenameFile(const std::string& oldName, const std::string& newName, std::vector<std::string>& logRotationErrors)
+	{
+		if (!MoveFileA(oldName.c_str(), newName.c_str()))
+		{
+			DWORD err = GetLastError();
+			if (err != ERROR_FILE_NOT_FOUND)
+			{
+				logRotationErrors.push_back("Failed to rename " + oldName + " to " + newName + ", error: " + std::to_string(err));
+			}
+		}
+	}
+
+	std::vector<std::string> RotateLogs()
+	{
+		// Log rotation: keep last LOG_MAX_BACKUPS log files (Gms1.log to GmsN.log)
+		std::vector<std::string> logRotationErrors;
+
+		// Remove oldest log if it exists
+		std::string oldestLog = LogFileName(LOG_MAX_BACKUPS);
+		if (!DeleteFileA(oldestLog.c_str()))
+		{
+			DWORD err = GetLastError();
+			if (err != ERROR_FILE_NOT_FOUND)
+			{
+				logRotationErrors.push_back("Failed to delete " + oldestLog + ", error: " + std::to_string(err));
+			}
+		}
+
+		// Rename Gms(N).log to Gms(N+1).log for N = (LOG_MAX_BACKUPS-1) down to 1
+		for (size_t i = LOG_MAX_BACKUPS - 1; i >= 1; --i)
+		{
+			RenameFile(LogFileName(i), LogFileName(i + 1), logRotationErrors);
+		}
+
+		// Rename Gms.log to Gms1.log
+		RenameFile(LogFileName(), LogFileName(1), logRotationErrors);
+
+		return logRotationErrors;
+	}
+}
+#endif // WIN32
+
 int GmsService::svc(void)
 {
 	int ret=0;
 #ifdef WIN32
+	std::vector<std::string> logRotationErrors = RotateLogs();
+
 	try
 	{
-		ofstream *output_file = new ofstream("Gms.log", ios::out);
+		ofstream *output_file = new ofstream(LogFileName(), ios::out);
 		if (output_file && output_file->rdstate() == ios::goodbit)
 			ACE_LOG_MSG->msg_ostream(output_file, 1);
 		ACE_LOG_MSG->open(L"lms.exe",
 			ACE_Log_Msg::STDERR | ACE_Log_Msg::OSTREAM,
 			0);
+		
+		// Log any rotation errors that occurred
+		for (const auto& err : logRotationErrors)
+		{
+			UNS_ERROR(L"Log rotation: %C\n", err.c_str());
+		}
 	}
 	catch (const std::exception&)
 	{
