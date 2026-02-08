@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2024 Intel Corporation
+# Copyright (C) 2010-2025 Intel Corporation
 cmake_minimum_required (VERSION 3.15)
 
 add_subdirectory ("${TOP_DIR}/CIM_Framework" "CIM_Framework")
@@ -25,6 +25,7 @@ add_library (WsmanClient STATIC
   TimeSynchronizationClient.cpp
   WlanWSManClient.cpp
   WifiPortClient.cpp
+  WifiEndpointCapabilitiesClient.cpp
 )
 
 target_link_libraries (WsmanClient

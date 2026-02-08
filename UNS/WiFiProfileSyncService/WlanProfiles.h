@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2024 Intel Corporation
+ * Copyright (C) 2018-2025 Intel Corporation
  */
 #ifndef __WLAN_PRFOFILES_H_
 #define __WLAN_PRFOFILES_H_
@@ -44,9 +44,15 @@ namespace wlanps {
 		profile_numbers_t GetProfile(const std::wstring &name);
 	};
 
+	struct CrossauthTriple {
+		std::wstring originalAuth;
+		std::wstring waAuth2; //Workaround
+		std::wstring tmAuth1; //Transition mode
+	}; 
+
 	typedef std::set<std::wstring> authenticationSet_t;
 	typedef std::set<std::wstring> encriptionSet_t;
-	typedef std::vector<std::pair<std::wstring, std::wstring>> crossauthSet_t;
+	typedef std::vector<CrossauthTriple> crossauthSet_t;
 
 	class WlanProfiles
 	{
@@ -55,7 +61,7 @@ namespace wlanps {
 		bool transition_workaround;
 
 	public:
-		WlanProfiles(HANDLE hwlan, bool _transition_workaround);
+		WlanProfiles(HANDLE wlanHandle, bool _transition_workaround);
 		~WlanProfiles() {};
 
 		bool GetProfileData(PINTEL_PROFILE_DATA profileData, unsigned long* pProfileFlags,
@@ -73,7 +79,12 @@ namespace wlanps {
 		bool isLegalProfileName(const std::wstring &profileName);
 		bool isSupportedEncription(const std::wstring &enc, const encriptionSet_t &supportedEnc);
 		bool isSupportedAuthentication(const std::wstring &auth, const authenticationSet_t &supportedAuth);
-		std::wstring checkSupportedTransitionAuthentication(const std::wstring& auth, const crossauthSet_t& supportedCrossauth);
+		bool checkSupportedTransitionAuthentication(
+			const std::wstring& auth,
+			const crossauthSet_t& supportedCrossauth,
+			std::wstring& waAuth2,
+			std::wstring& tmAuth1
+		);
 	};
 }
 #endif //__WLAN_PRFOFILES_H_

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2024 Intel Corporation
+ * Copyright (C) 2018-2025 Intel Corporation
  */
 #ifndef __WLAN_BL_H_
 #define __WLAN_BL_H_
@@ -16,6 +16,7 @@ namespace wlanps {
 	public:
 		static void SyncProfiles(unsigned int portForwardingPort, HANDLE hwlan);
 		static void onConnectionComplete(unsigned int portForwardingPort, HANDLE hwlan, PINTEL_PROFILE_DATA profileData);
+		static void SetTransitionWorkaround(bool value) { transition_workaround = value; }
 
 	private:
 		static std::mutex _updateMutex;

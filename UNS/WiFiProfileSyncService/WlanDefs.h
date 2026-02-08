@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2024 Intel Corporation
+ * Copyright (C) 2018-2025 Intel Corporation
  */
 #ifndef __WLAN_DEFS_H_
 #define __WLAN_DEFS_H_
@@ -47,6 +47,7 @@ namespace wlanps {
 	const unsigned short AuthenticationMethodWPA3SAE = 32768; // WPA3
 	const unsigned short AuthenticationMethodWPA3OWE = 32769; // OWE
 	const unsigned short AuthenticationMethodVendorReserved = 32770;
+	const unsigned short AuthenticationMethodWPA3SAE_TM = 32772; // WPA3_TM
 
 	const unsigned short EncryptionMethodOther = 1;
 	const unsigned short EncryptionMethodWEP = 2;

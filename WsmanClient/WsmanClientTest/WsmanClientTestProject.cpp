@@ -17,6 +17,7 @@
 #include "MNGIsChangeToAMTEnabledCommand.h"
 #include "KVMScreenSettingClient.h"
 #include "EthernetSettingsWSManClient.h"
+#include "WifiEndpointCapabilitiesClient.h"
 
 #include "gtest/gtest.h"
 #include <sstream>
@@ -543,6 +544,31 @@ TEST_F(EthernetSettingsWSManClientTest, Enumerate)
 	{
 		std::cout << "EthernetSettingsWSManClient data ip: " <<
 			((settingsIterator->get()->IPAddressExists()) ? settingsIterator->get()->IPAddress() : "N/A") << std::endl;
+	}
+}
+
+class WifiEndpointCapabilitiesClientTest : public WsmanClientTest
+{
+};
+
+TEST_F(WifiEndpointCapabilitiesClientTest, isTransitionModeSupported)
+{
+	WifiEndpointCapabilitiesClient client(m_port);
+	bool supported = false;
+	bool ret = false;
+
+	// TODO in the future we would be able to check if ret is true,
+	// (and not just if there was an unhandled exception)
+	// by sending Wiman Ports WSMAN command
+	// which is available also when there is no wifi 
+	// and if > 0 - really test wifi commands, for example:
+	// EXPECT_TRUE(ret = client.isTransitionModeSupported(supported));
+	ASSERT_NO_THROW(ret = client.isTransitionModeSupported(supported));
+	if (ret) {
+		cout << "Transition Mode Supported: " << (supported ? "Yes" : "No") << endl;
+	}
+	else {
+		cout << "WifiEndpointCapabilitiesClientTest::isTransitionModeSupported failed." << endl;
 	}
 }
 

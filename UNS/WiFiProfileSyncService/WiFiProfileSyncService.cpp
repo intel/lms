@@ -6,6 +6,7 @@
 #include "WlanBL.h"
 #include "WlanNotifications.h"
 #include "UNSEventsDefinition.h"
+#include "WifiEndpointCapabilitiesClient.h"
 
 #define NUM_RETRIES 3
 #define INIT_LOOP_DELAY 2 //seconds
@@ -57,6 +58,24 @@ bool WiFiProfileSyncService::InitWlan()
 	if (dwResult != ERROR_SUCCESS)
 	{
 		UNS_ERROR(L"[ProfileSync] " __FUNCTIONW__": WlanOpenHandle error\n");
+		return false;
+	}
+
+	try
+	{
+		// Perform transition mode check once
+		bool tmSupported = false;
+		WifiEndpointCapabilitiesClient client(m_mainService->GetPortForwardingPort());
+		bool workaround = true;
+		if (client.isTransitionModeSupported(tmSupported) && tmSupported)
+		{
+			workaround = false;
+		}
+		wlanps::WlanBL::SetTransitionWorkaround(workaround);
+	}
+	catch (const std::exception& exc)
+	{
+		UNS_ERROR("[ProfileSync] " __FUNCTIONW__": Exception in WifiEndpointCapabilitiesClient %C\n", exc.what());
 		return false;
 	}
 

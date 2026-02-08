@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2024 Intel Corporation
+ * Copyright (C) 2018-2025 Intel Corporation
  */
 #include "global.h"
 #include <sstream>
@@ -21,7 +21,6 @@ namespace wlanps
 		bool add_map)
 	{
 		std::wstring auth;
-		std::wstring auth2;
 		std::wstring enc;
 		std::wstring key;
 		std::wstring ssid;
@@ -90,17 +89,39 @@ namespace wlanps
 			goto cleanup;
 		}
 
-		if (transitionMode && (auth2 = checkSupportedTransitionAuthentication(auth, supportedCrossauth)).empty())
+		UNS_DEBUG(L"transitionMode: %d, transition_workaround: %d\n", transitionMode, transition_workaround);
+			
+		if (transitionMode)
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported for transition by LMS-PS %W for Profile %W\n",
-				auth.c_str(), profileData->profile);
-			ret = false;
-			goto cleanup;
+			std::wstring waAuth2, tmAuth1;
+			if (!checkSupportedTransitionAuthentication(auth, supportedCrossauth, waAuth2, tmAuth1))
+			{
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: authentication unsupported for transition by LMS-PS %W for Profile %W\n",
+					auth.c_str(), profileData->profile);
+				ret = false;
+				goto cleanup;
+			}
+
+			if (transition_workaround)
+			{
+				// Use WA value for auth2
+				wcsncpy_s(profileData->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
+				wcsncpy_s(profileData->auth2, INTEL_SHORT_DESCR_LEN, waAuth2.c_str(), waAuth2.length());
+			}
+			else
+			{
+				// Use TM value for auth; Do not set auth2
+				wcsncpy_s(profileData->auth, INTEL_SHORT_DESCR_LEN, tmAuth1.c_str(), tmAuth1.length());
+				wcsncpy_s(profileData->auth2, INTEL_SHORT_DESCR_LEN, L"", 0);
+			}
+		}
+		else
+		{
+			// No TM - just use auth as is
+			wcsncpy_s(profileData->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
+			wcsncpy_s(profileData->auth2, INTEL_SHORT_DESCR_LEN, L"", 0);
 		}
 
-		//Set the profile data
-		wcsncpy_s(profileData->auth, INTEL_SHORT_DESCR_LEN, auth.c_str(), auth.length());
-		wcsncpy_s(profileData->auth2, INTEL_SHORT_DESCR_LEN, auth2.c_str(), auth2.length());
 		wcsncpy_s(profileData->encr, INTEL_SHORT_DESCR_LEN, enc.c_str(), enc.length());
 		wcsncpy_s(profileData->keyMaterial, INTEL_KEY_MATERIAL_LEN, key.c_str(), key.length());
 		wcsncpy_s(profileData->SSID, ssid.c_str(), _countof(profileData->SSID));
@@ -318,14 +339,30 @@ namespace wlanps
 		}
 	}
 
-	std::wstring WlanProfiles::checkSupportedTransitionAuthentication(const std::wstring &auth, const crossauthSet_t &supportedCrossauth)
+	bool WlanProfiles::checkSupportedTransitionAuthentication(
+		const std::wstring& auth,
+		const crossauthSet_t& supportedCrossauth,
+		std::wstring& waAuth2,
+		std::wstring& tmAuth1
+	) 
 	{
-		auto auth_pair = find_if(supportedCrossauth.cbegin(), supportedCrossauth.cend(),
-			[auth](const auto& auth_p) { return auth_p.first == auth; });
+		auto it = std::find_if(
+			supportedCrossauth.cbegin(),
+			supportedCrossauth.cend(),
+			[&auth](const CrossauthTriple& triple) 
+			{
+				return triple.originalAuth == auth;
+			}
+		);
 
-		if (auth_pair == supportedCrossauth.end())
-			return std::wstring(); // No supported auth found
-		return auth_pair->second;
+		if (it != supportedCrossauth.end()) 
+		{
+			waAuth2 = it->waAuth2;
+			tmAuth1 = it->tmAuth1;
+			return true;
+		}
+
+		return false;
 	}
 
 	bool WlanProfileNameMapper::ReadMap()
