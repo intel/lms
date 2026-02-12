@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "lms",
+  "version": "0.0.1",
+  "builtin-baseline": "0a434205c521ca43d66921271ae2a1d051e718a5",
+  "dependencies": [
+    {
+      "name": "libiconv"
+    },
+    {
+      "name": "libxml2",
+      "features": ["iconv"]
+    },
+    {
+      "name": "ace",
+      "features": ["wchar"]
+    }
+  ]
+}

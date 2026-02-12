@@ -1,0 +1,40 @@
+name: Build Windows (x64)
+
+on:
+  push:
+
+jobs:
+  build-windows-amd64:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Setup vcpkg
+      uses: lukka/run-vcpkg@v11
+
+    - name: Configure (CMake + vcpkg toolchain, VS generator)
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        mkdir build -Force
+
+        cmake -S . -B build `
+          -G "Visual Studio 17 2022" -A x64 `
+          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
+          -DVCPKG_TARGET_TRIPLET=x64-windows-static-release `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DIGNORE_DLL_SIGNATURES=YES
+
+    - name: Build (Release)
+      shell: pwsh
+      run: cmake --build build --config Release --target package
+
+    - name: Upload package
+      if: success()
+      uses: actions/upload-artifact@v6
+      with:
+        name: lms-windows-amd64
+        path: |
+          build/*
