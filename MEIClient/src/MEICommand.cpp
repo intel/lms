@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 /*++
 
@@ -8,6 +8,8 @@
 
 --*/
 
+#include <chrono>
+#include <thread>
 #include <ace/Log_Msg.h>
 #include <meteepp.h>
 
@@ -26,6 +28,31 @@ namespace Intel {
 			vsnprintf(msg, DEBUG_MSG_LEN, fmt, varl);
 			va_end(varl);
 			ACE_DEBUG(((is_error) ? LM_ERROR : LM_TRACE, ACE_TEXT("(%t)[%D][%-11M] %I %C"), msg));
+		}
+
+		void heciConnect(intel::security::metee& heciClient, const std::string& data_path, std::stringstream &err_str)
+		{
+			constexpr int HECI_MAX_CONNECT_RETRY = 3;
+			int retry = 0;
+			while (true)
+			{
+				try
+				{
+					heciClient.connect();
+					return;
+				}
+				catch (const intel::security::metee_exception& e)
+				{
+					if ((e.code().value() == TEE_BUSY || e.code().value() == TEE_UNABLE_TO_COMPLETE_OPERATION) &&
+						++retry < HECI_MAX_CONNECT_RETRY)
+					{
+						err_str << data_path << " connect " << e.what() << " ";
+						std::this_thread::sleep_for(std::chrono::milliseconds(500));
+						continue;
+					}
+					throw;
+				}
+			};
 		}
 
 		intel::security::metee heciClientByGUID(const GUID& guid)
@@ -51,17 +78,17 @@ namespace Intel {
 				try
 				{
 					intel::security::metee heciClient(guid, *it, TEE_LOG_LEVEL_VERBOSE, HECI_Log);
-					heciClient.connect();
+					heciConnect(heciClient, ((it->data.path) ? it->data.path : "NULL"), err_str);
 					return heciClient;
 				}
 				catch (const intel::security::metee_exception& e)
 				{
-					err_str << ((it->data.path) ? it->data.path : "NULL") << " init " << e.code().value() << " ";
+					err_str << ((it->data.path) ? it->data.path : "NULL") << " init " << e.what() << " ";
 					if (e.code().value() == TEE_CLIENT_NOT_FOUND)
 					{
 						err = TEE_CLIENT_NOT_FOUND;
 					}
-					else if (e.code().value() == TEE_BUSY)
+					else if (e.code().value() == TEE_BUSY || e.code().value() == TEE_UNABLE_TO_COMPLETE_OPERATION)
 					{
 						err = TEE_BUSY;
 						break;
@@ -73,7 +100,6 @@ namespace Intel {
 			else
 				throw MEIClientException(err_str.str(), err);
 		}
-
 
 		void GetHeciDriverVersion(std::string& ver)
 		{
