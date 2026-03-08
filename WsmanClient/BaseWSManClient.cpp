@@ -71,6 +71,11 @@ void BaseWSManClient::SetEndpoint()
 			throw std::runtime_error("Can't get local system account");
 	}
 
+	if (m_port == 0)
+	{
+		throw std::runtime_error("No port forwarding port");
+	}
+
 	//Lock WsMan to prevent reentry
 	std::lock_guard<std::mutex> lock(WsManSemaphore());
 		
