@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -179,7 +179,7 @@ STDAPI DllRegisterServer(void)
 {
     char       szID[128];
     WCHAR      wcID[128];
-    std::string szCLSID("Software\\classes\\CLSID\\");
+    std::string szCLSID("Software\\Classes\\CLSID\\");
     TCHAR      szModule[MAX_PATH + 1];
     const char * pName = "IntelMEProv";
     const char * pModel = "Both";
@@ -195,10 +195,16 @@ STDAPI DllRegisterServer(void)
     wcstombs_s(&intReturnValue, szID, sizeof(szID), wcID,  sizeof(szID));
 	szCLSID+= szID;
 
-    // Create entries under CLSID
-
+	memset(&szModule, NULL, sizeof(szModule));
+    if (GetModuleFileName(ghModule, szModule, sizeof(szModule) / sizeof(TCHAR) - 1) == 0)
+    {
+        return E_FAIL;
+    }
+    
+    // === 32-bit clients ===
+    // WOW6432Node (32-bit clients) uses InprocServer64:
 	LONG lRet = RegCreateKeyExA( HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, NULL,
-                    REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, 
+                    REG_OPTION_NON_VOLATILE, KEY_WRITE | KEY_WOW64_32KEY, NULL, 
                     &hKey1, NULL );
 	if (lRet != ERROR_SUCCESS)
 	{
@@ -212,8 +218,8 @@ STDAPI DllRegisterServer(void)
 		return E_FAIL;
 	}
 
-	lRet = RegCreateKeyExA( hKey1, "InprocServer32", 0, NULL,
-                    REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, 
+	lRet = RegCreateKeyExA( hKey1, "InprocServer64", 0, NULL,
+                    REG_OPTION_NON_VOLATILE, KEY_WRITE | KEY_WOW64_32KEY, NULL, 
                     &hKey2, NULL );
 	if (lRet != ERROR_SUCCESS)
 	{
@@ -221,14 +227,6 @@ STDAPI DllRegisterServer(void)
 		return E_FAIL;
 	}
 
-	memset(&szModule, NULL, sizeof(szModule));
-    if (GetModuleFileName(ghModule, szModule, sizeof(szModule) / sizeof(TCHAR) - 1) == 0)
-    {
-        RegCloseKey(hKey2);
-        RegCloseKey(hKey1);
-        return E_FAIL;
-    }
-	//printf ("%s %d", szModule, strlen(szModule));
     lRet = RegSetValueEx(hKey2, NULL, 0, REG_SZ, (BYTE *)szModule, static_cast<DWORD>((_tcslen(szModule) + 1) * sizeof(TCHAR)));
 	if (lRet != ERROR_SUCCESS)
 	{
@@ -246,7 +244,51 @@ STDAPI DllRegisterServer(void)
 	}
     RegCloseKey(hKey1);
     RegCloseKey(hKey2);
-	
+
+    // === 64-bit clients ===
+    // Regular registry (64-bit clients) uses InprocServer32:
+    lRet = RegCreateKeyExA( HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, NULL,
+                    REG_OPTION_NON_VOLATILE, KEY_WRITE | KEY_WOW64_64KEY, NULL,
+                    &hKey1, NULL );
+    if (lRet != ERROR_SUCCESS)
+    {
+        return E_FAIL;
+    }
+
+    lRet = RegSetValueExA(hKey1, NULL, 0, REG_SZ, (BYTE *)pName, static_cast<DWORD>(strlen(pName)) + 1);
+    if (lRet != ERROR_SUCCESS)
+    {
+        RegCloseKey(hKey1);
+        return E_FAIL;
+    }
+
+    lRet = RegCreateKeyExA( hKey1, "InprocServer32", 0, NULL,
+                    REG_OPTION_NON_VOLATILE, KEY_WRITE | KEY_WOW64_64KEY, NULL,
+                    &hKey2, NULL );
+    if (lRet != ERROR_SUCCESS)
+    {
+        RegCloseKey(hKey1);
+        return E_FAIL;
+    }
+
+    lRet = RegSetValueEx(hKey2, NULL, 0, REG_SZ, (BYTE *)szModule, static_cast<DWORD>((_tcslen(szModule) + 1) * sizeof(TCHAR)));
+    if (lRet != ERROR_SUCCESS)
+    {
+        RegCloseKey(hKey2);
+        RegCloseKey(hKey1);
+        return E_FAIL;
+    }
+    lRet = RegSetValueExA(hKey2, "ThreadingModel", 0, REG_SZ,
+                                        (BYTE *)pModel, static_cast<DWORD>(strlen(pModel)) + 1);
+    if (lRet != ERROR_SUCCESS)
+    {
+        RegCloseKey(hKey2);
+        RegCloseKey(hKey1);
+        return E_FAIL;
+    }
+    RegCloseKey(hKey1);
+    RegCloseKey(hKey2);
+
 	WindowsEventLog windowsEventLog(EVENT_LOG_APPLICATION, ME_PPROV_NAME, EVENT_CATEGORY_NUMBER, L"MEProv.dll");
     return NOERROR;
 	
@@ -265,34 +307,49 @@ STDAPI DllUnregisterServer(void)
 {
 	char       szID[128];
     WCHAR      wcID[128];
-    std::string szCLSID("Software\\classes\\CLSID\\");
+    std::string szCLSID("Software\\Classes\\CLSID\\");
     size_t intReturnValue = 0;
     HKEY hKey;
 
     // Create the path using the CLSID
 	memset(wcID, NULL, sizeof(wcID));
-	memset(szID, NULL, sizeof(szID));	
+	memset(szID, NULL, sizeof(szID));
     StringFromGUID2(CLSID_IntelMEProv, wcID, sizeof(wcID)/sizeof(WCHAR));
-
     wcstombs_s(&intReturnValue, szID, sizeof(szID), wcID, sizeof(szID));
+    szCLSID += szID;
 
-	szCLSID += szID;
-
-    // First delete the InProcServer subkey.
-
-    DWORD dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, KEY_WRITE, &hKey);
-    if(dwRet == NO_ERROR)
+    // === 32-bit clients ===
+    // Delete InprocServer64 subkey and CLSID entry from WOW6432Node (32-bit view)
+    DWORD dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, KEY_WRITE | KEY_WOW64_32KEY, &hKey);
+    if (dwRet == NO_ERROR)
     {
-        RegDeleteKeyA(hKey, "InProcServer32");
+        RegDeleteKeyA(hKey, "InprocServer64");
         RegCloseKey(hKey);
     }
 
-    dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE,"SOFTWARE\\CLASSES\\CLSID\\", 0, KEY_WRITE, &hKey);
-    if(dwRet == NO_ERROR)
+    dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Classes\\CLSID\\", 0, KEY_WRITE | KEY_WOW64_32KEY, &hKey);
+    if (dwRet == NO_ERROR)
     {
-        RegDeleteKeyA(hKey,szID);
+        RegDeleteKeyA(hKey, szID);
         RegCloseKey(hKey);
     }
+
+    // === 64-bit clients ===
+    // Delete InprocServer32 subkey and CLSID entry from 64-bit view
+    dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, szCLSID.c_str(), 0, KEY_WRITE | KEY_WOW64_64KEY, &hKey);
+    if (dwRet == NO_ERROR)
+    {
+        RegDeleteKeyA(hKey, "InprocServer32");
+        RegCloseKey(hKey);
+    }
+
+    dwRet = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Classes\\CLSID\\", 0, KEY_WRITE | KEY_WOW64_64KEY, &hKey);
+    if (dwRet == NO_ERROR)
+    {
+        RegDeleteKeyA(hKey, szID);
+        RegCloseKey(hKey);
+    }
+
 	WindowsEventLog::RemoveEventSource(EVENT_LOG_APPLICATION, ME_PPROV_NAME);
     return NOERROR;
 
