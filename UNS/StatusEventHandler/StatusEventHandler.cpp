@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 #include "UNSEventsDefinition.h"
 #include "StatusEventHandler.h"
@@ -701,10 +701,18 @@ void StatusEventHandler::GenerateSharedStaticIPEvents(bool AMTstate)
 	bool IPSyncEnabled = false;//TODO::to check if it is the right default value
 	if (AMTstate)
 	{
-		SyncIpClient syncIpClient(m_mainService->GetPortForwardingPort());
-		if (!syncIpClient.GetSharedStaticIpState(&IPSyncEnabled)) 
+		try
 		{
-			UNS_ERROR(L"StatusEventHandler: GetIPSyncState failed\n");
+			SyncIpClient syncIpClient(m_mainService->GetPortForwardingPort());
+			if (!syncIpClient.GetSharedStaticIpState(&IPSyncEnabled))
+			{
+				UNS_ERROR(L"StatusEventHandler: GetIPSyncState failed\n");
+				return;
+			}
+		}
+		catch (const std::exception& ex)
+		{
+			UNS_ERROR(L"StatusEventHandler: SyncIpClient threw exception: %C\n", ex.what());
 			return;
 		}
 	}
@@ -735,11 +743,19 @@ void StatusEventHandler::GenerateTimeSyncEvents(bool AMTstate)
 	bool timeSyncEnabled = false;
 	if (AMTstate)
 	{
-		TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
-
-		if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncEnabled))
+		try
 		{
-			UNS_ERROR(L"StatusEventHandler: GetTimeSyncState failed\n");
+			TimeSynchronizationClient timeClient(m_mainService->GetPortForwardingPort());
+
+			if (!timeClient.GetLocalTimeSyncEnabledState(timeSyncEnabled))
+			{
+				UNS_ERROR(L"StatusEventHandler: GetTimeSyncState failed\n");
+				return;
+			}
+		}
+		catch (const std::exception& ex)
+		{
+			UNS_ERROR(L"StatusEventHandler: TimeSynchronizationClient threw exception: %C\n", ex.what());
 			return;
 		}
 	}
@@ -830,23 +846,31 @@ void StatusEventHandler::GenerateWLANEvents()
 {
 	FuncEntryExit<void> fee(this, L"GenerateWLANEvents");
 
-	AMTEthernetPortSettingsClient client(m_mainService->GetPortForwardingPort());
-	unsigned int linkPreference, linkControl, linkProtection; 
-	bool isLink = false;
-	if(!client.GetAMTEthernetPortSettings(&linkPreference, &linkControl, &linkProtection, &isLink))
+	try
 	{
-		UNS_ERROR(L"StatusEventHandler: GetAMTEthernetPortSettings failed\n");
-		return;
-	}
-	if(!isLink)
-	{
-		UNS_DEBUG(L"No wireless link available\n");
-		return;
-	}
+		AMTEthernetPortSettingsClient client(m_mainService->GetPortForwardingPort());
+		unsigned int linkPreference, linkControl, linkProtection;
+		bool isLink = false;
+		if (!client.GetAMTEthernetPortSettings(&linkPreference, &linkControl, &linkProtection, &isLink))
+		{
+			UNS_ERROR(L"StatusEventHandler: GetAMTEthernetPortSettings failed\n");
+			return;
+		}
+		if (!isLink)
+		{
+			UNS_DEBUG(L"No wireless link available\n");
+			return;
+		}
 
-	CheckForStatusChange(static_cast<WLAN_CONTROL_STATE>(linkControl));
-	if(linkProtection != static_cast<int>(WLAN_PROTECTION_STATE::NOT_EXIST))
-		CheckForStatusChange(static_cast<WLAN_PROTECTION_STATE>(linkProtection));
+		CheckForStatusChange(static_cast<WLAN_CONTROL_STATE>(linkControl));
+		if (linkProtection != static_cast<int>(WLAN_PROTECTION_STATE::NOT_EXIST))
+			CheckForStatusChange(static_cast<WLAN_PROTECTION_STATE>(linkProtection));
+	}
+	catch (const std::exception& ex)
+	{
+		UNS_ERROR(L"StatusEventHandler: AMTEthernetPortSettingsClient threw exception: %C\n", ex.what());
+		return;
+	}
 }
 
 namespace 
@@ -1184,33 +1208,49 @@ Intel::MEI_Client::AMTHI_Client::AMT_PROVISIONING_STATE StatusEventHandler::Upda
  
 bool StatusEventHandler::GetUserConsentState(OPT_IN_STATE* pState, USER_CONSENT_POLICY* pPolicy)
 {
-	CancelOptInClient _CancelOptInClient(m_mainService->GetPortForwardingPort());
-	short UserConsentPolicy;
-	short UserConsentState;
+	try
+	{
+		CancelOptInClient _CancelOptInClient(m_mainService->GetPortForwardingPort());
+		short UserConsentPolicy;
+		short UserConsentState;
 
-	if (!_CancelOptInClient.GetUserConsentState(&UserConsentState, &UserConsentPolicy))
+		if (!_CancelOptInClient.GetUserConsentState(&UserConsentState, &UserConsentPolicy))
+			return false;
+		*pPolicy = (USER_CONSENT_POLICY)UserConsentPolicy;
+		*pState = (OPT_IN_STATE)UserConsentState;
+		UNS_DEBUG(L"GetUserConsentState State=%d, Policy=%d\n", *pState, *pPolicy);
+		return true;
+	}
+	catch (const std::exception& ex)
+	{
+		UNS_ERROR(L"StatusEventHandler: CancelOptInClient threw exception: %C\n", ex.what());
 		return false;
-	*pPolicy = (USER_CONSENT_POLICY)UserConsentPolicy;
-	*pState = (OPT_IN_STATE)UserConsentState;
-	UNS_DEBUG(L"GetUserConsentState State=%d, Policy=%d\n",*pState,*pPolicy);
-	return true;
+	}
 }
 
 #ifdef WIN32
 bool StatusEventHandler::GetLocalProfileSynchronizationEnabled(bool &enabled)
 {
-	WlanWSManClient WlanWSMan(m_mainService->GetPortForwardingPort());
-	bool ret;
+	try
+	{
+		WlanWSManClient WlanWSMan(m_mainService->GetPortForwardingPort());
+		bool ret;
 
-	ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
-	if (!ret) {
-		UNS_ERROR(L"StatusEventHandler:: WlanWSMan failed to receive current state\n");
+		ret = WlanWSMan.LocalProfileSynchronizationEnabled(enabled);
+		if (!ret) {
+			UNS_ERROR(L"StatusEventHandler: WlanWSMan failed to receive current state\n");
+			return false;
+		}
+		if (!enabled)
+			UNS_DEBUG(L"StatusEventHandler: LocalProfileSynchronization disabled in FW\n");
+
+		return true;
+	}
+	catch (const std::exception& ex)
+	{
+		UNS_ERROR(L"StatusEventHandler: WlanWSManClient threw exception: %C\n", ex.what());
 		return false;
 	}
-	if (!enabled)
-		UNS_DEBUG(L"StatusEventHandler:: LocalProfileSynchronization disabled in FW\n");
-
-	return true;
 }
 #else // WIN32
 bool StatusEventHandler::GetLocalProfileSynchronizationEnabled(bool &enabled)
@@ -1480,56 +1520,71 @@ bool StatusEventHandler::GetEACEnabled(bool& enable)
 
 bool StatusEventHandler::GetAlarmClockBootEvent(HostBootReasonClient::SX_STATES &previousSXState)
 {
-	HostBootReasonClient client(m_mainService->GetPortForwardingPort());
-
-	HostBootReasonClient::HOST_RESET_REASON int_resetReason;
-	HostBootReasonClient::SX_STATES int_previousSXState;
-	if (client.GetHostResetReason(int_resetReason, int_previousSXState))
+	try
 	{
-		if (int_resetReason == HostBootReasonClient::HOST_RESET_REASON::Alarm)
+		HostBootReasonClient client(m_mainService->GetPortForwardingPort());
+
+		HostBootReasonClient::HOST_RESET_REASON int_resetReason;
+		HostBootReasonClient::SX_STATES int_previousSXState;
+		if (client.GetHostResetReason(int_resetReason, int_previousSXState))
 		{
-			previousSXState = int_previousSXState;
-			return true;
+			if (int_resetReason == HostBootReasonClient::HOST_RESET_REASON::Alarm)
+			{
+				previousSXState = int_previousSXState;
+				return true;
+			}
 		}
+		return false;
 	}
-	return false;
+	catch (std::exception& ex)
+	{
+		UNS_ERROR(L"StatusEventHandler: HostBootReasonClient threw exception: %C\n", ex.what());
+		return false;
+	}
 }
 
 bool StatusEventHandler::GetKVMRedirectionState(bool& enable,KVM_STATE& connected)
 {
-	KVMWSManClient Client(m_mainService->GetPortForwardingPort());
-	OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
-	USER_CONSENT_POLICY UserConsentPolicy;
-	unsigned short state;
-
-	if (Client.KVMRedirectionState(&state))
+	try
 	{
-		UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%u\n", state);
-		switch (state)
-		{
-		case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_CONNECTED:
-			enable=true;
-			connected = KVM_STATE::KVM_STARTED;
-			if (GetUserConsentState(&UserConsentState, &UserConsentPolicy) &&
-			   (UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED))
-				connected = KVM_STATE::KVM_REQUESTED;
-			return true;
-		case KVM_REDIRECTION_SAP_STATE_KVM_DISABLED:
-			enable=false;
-			connected = KVM_STATE::KVM_STOPPED;
-			return true;
-		case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_DISCONNECTED:
-			enable=true;
-			connected = KVM_STATE::KVM_STOPPED;
-			return true;
-		default:
-			UNS_ERROR(L"Wrong KVMRedirectionState=%u\n", state);
-			return false;
-		}
-	}
-	return false;
-}
+		KVMWSManClient Client(m_mainService->GetPortForwardingPort());
+		OPT_IN_STATE UserConsentState = OPT_IN_STATE_NOT_STARTED;
+		USER_CONSENT_POLICY UserConsentPolicy;
+		unsigned short state;
 
+		if (Client.KVMRedirectionState(&state))
+		{
+			UNS_DEBUG(L"StatusEventHandler: KVMRedirectionState=%u\n", state);
+			switch (state)
+			{
+			case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_CONNECTED:
+				enable = true;
+				connected = KVM_STATE::KVM_STARTED;
+				if (GetUserConsentState(&UserConsentState, &UserConsentPolicy) &&
+					(UserConsentState == OPT_IN_STATE_REQUESTED || UserConsentState == OPT_IN_STATE_DISPLAYED))
+					connected = KVM_STATE::KVM_REQUESTED;
+				return true;
+			case KVM_REDIRECTION_SAP_STATE_KVM_DISABLED:
+				enable = false;
+				connected = KVM_STATE::KVM_STOPPED;
+				return true;
+			case KVM_REDIRECTION_SAP_STATE_KVM_ENABLED_AND_DISCONNECTED:
+				enable = true;
+				connected = KVM_STATE::KVM_STOPPED;
+				return true;
+			default:
+				UNS_ERROR(L"Wrong KVMRedirectionState=%u\n", state);
+				return false;
+			}
+		}
+		return false;
+	}
+	catch (const std::exception& ex)
+	{
+		UNS_ERROR(L"StatusEventHandler: KVMWSManClient threw exception: %C\n", ex.what());
+		return false;
+	}
+}
 
 void StatusEventHandler::publishUCStateEvent(UC_STATE state)
 {

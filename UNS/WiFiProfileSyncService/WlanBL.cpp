@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2018-2025 Intel Corporation
+ * Copyright (C) 2018-2026 Intel Corporation
  */
 #include "global.h"
 #include "WlanDefs.h"
@@ -85,39 +85,46 @@ namespace wlanps {
 	{
 		std::lock_guard<std::mutex> lock(_updateMutex);
 
-		bool wsmanStatus;
-		MeProfileList MeProfileList;
-		WlanWSManClient wsmanClient(portForwardingPort);
-
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerating ME (CSME FW) Profiles, Wait for it...\n");
-		if (!EnumerateMeProfiles(wsmanClient, MeProfileList))
+		try
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerate failed -> Stop sync operation\n");
-			return;
-		}
+			bool wsmanStatus;
+			MeProfileList MeProfileList;
+			WlanWSManClient wsmanClient(portForwardingPort);
 
-		WlanOsProfileList wlanOsProfiles;
-		WlanProfiles osProfiles(hwlan, transition_workaround); // Operating System Profiles, in OS format
-		if (!FetchOsProfiles(osProfiles, wlanOsProfiles))
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerating ME (CSME FW) Profiles, Wait for it...\n");
+			if (!EnumerateMeProfiles(wsmanClient, MeProfileList))
+			{
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Enumerate failed -> Stop sync operation\n");
+				return;
+			}
+
+			WlanOsProfileList wlanOsProfiles;
+			WlanProfiles osProfiles(hwlan, transition_workaround); // Operating System Profiles, in OS format
+			if (!FetchOsProfiles(osProfiles, wlanOsProfiles))
+			{
+				UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Fetch OS Profiles failed -> Stop sync operation\n");
+				return;
+			}
+
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Delete Profiles which are not in the top16 user profiles\n");
+			wsmanStatus = CleanupProfilesInMe(wsmanClient, MeProfileList, wlanOsProfiles, true);
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
+
+			if (transition_workaround)
+			{
+				osProfiles.RefillProfilesWithID(wlanOsProfiles);
+			}
+
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Add Missing profiles \n");
+			wsmanStatus = AddMissingProfilesToMe(wsmanClient, MeProfileList, wlanOsProfiles);
+			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: AddMissingProfilesToMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
+
+			CleanOsProfileList(wlanOsProfiles);
+		}
+		catch (const std::exception& ex)
 		{
-			UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Fetch OS Profiles failed -> Stop sync operation\n");
-			return;
+			UNS_ERROR(L"WlanBL: WlanWSManClient threw exception: %C\n", ex.what());
 		}
-
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Delete Profiles which are not in the top16 user profiles\n");
-		wsmanStatus = CleanupProfilesInMe(wsmanClient, MeProfileList, wlanOsProfiles, true);
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: CleanupProfilesInMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
-
-		if (transition_workaround)
-		{
-			osProfiles.RefillProfilesWithID(wlanOsProfiles);
-		}
-
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: Add Missing profiles \n");
-		wsmanStatus = AddMissingProfilesToMe(wsmanClient, MeProfileList, wlanOsProfiles);
-		UNS_DEBUG(L"[ProfileSync] " __FUNCTIONW__"[%03l]: AddMissingProfilesToMe completed %C\n", wsmanStatus == true ? "successfully" : "with failure");
-
-		CleanOsProfileList(wlanOsProfiles);
 	}
 
 	bool WlanBL::CleanupProfilesInMe(WlanWSManClient &wsmanClient, MeProfileList &MeProfileList, WlanOsProfileList &wlanOsProfiles, bool all)

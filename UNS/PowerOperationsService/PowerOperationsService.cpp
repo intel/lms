@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 // PowerOperationsService.cpp : Defines the exported functions for the DLL application.
 
@@ -420,13 +420,21 @@ void PowerOperationsService::addPowerCapabilities()
 	}
 	//update graceful power capabilities
 	UNS_DEBUG(L"adding graceful power operations\n");
-	PowerManagementCapabilitiesClient powerManagementCapabilitiesClient(m_mainService->GetPortForwardingPort());
-	bool sleep,hibernate;
-	getPowerCapabilities(sleep,hibernate);
-	UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep,hibernate);
-	if (!powerManagementCapabilitiesClient.addGracefulOperations(sleep,hibernate))
+	try
 	{
-		UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu\n",GetLastError());
+		PowerManagementCapabilitiesClient powerManagementCapabilitiesClient(m_mainService->GetPortForwardingPort());
+		bool sleep, hibernate;
+		getPowerCapabilities(sleep, hibernate);
+		UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep, hibernate);
+		if (!powerManagementCapabilitiesClient.addGracefulOperations(sleep, hibernate))
+		{
+			UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu\n", GetLastError());
+			return;
+		}
+	}
+	catch (const std::exception& ex)
+	{
+		UNS_ERROR(L"PowerOperationsService: PowerManagementCapabilitiesClient threw exception: %C\n", ex.what());
 		return;
 	}
 }

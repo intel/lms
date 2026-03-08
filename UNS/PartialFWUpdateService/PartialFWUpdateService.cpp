@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 #include "PartialFWUpdateService.h"
 
@@ -743,34 +743,42 @@ bool PartialFWUpdateService::updateLanguageChangeCode(UINT32 languageID, LANGUAG
 		languageID = getUCLanguageID();
 	}
 
-	SIOWSManClient client(m_mainService->GetPortForwardingPort());
 	unsigned short currentLang = 0;
-
-	if (!client.GetSpriteLanguage(&currentLang))
+	try
 	{
-		publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
-		return res;
-	}
+		SIOWSManClient client(m_mainService->GetPortForwardingPort());
 
-	UNS_DEBUG(L"Current language %u\n", (unsigned int)currentLang);
-	UNS_DEBUG(L"Requested language %C%d\n", defaultLangSet ? "(System Default) " : "", languageID);
-
-	unsigned short expectedLang = 0;
-	if(!client.GetExpectedLanguage(&expectedLang))
-	{
-		UNS_ERROR(L"Failed to get expected language\n");
-		publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
-		return res;
-	}
-
-	if (expectedLang != languageID)
-	{
-		if (!client.SetExpectedLanguage((unsigned short)languageID))
+		if (!client.GetSpriteLanguage(&currentLang))
 		{
-			UNS_ERROR(L"failed to set expected language %d\n", languageID);
-			publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to set FW status", 8725);
+			publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
 			return res;
 		}
+
+		UNS_DEBUG(L"Current language %u\n", (unsigned int)currentLang);
+		UNS_DEBUG(L"Requested language %C%d\n", defaultLangSet ? "(System Default) " : "", languageID);
+
+		unsigned short expectedLang = 0;
+		if (!client.GetExpectedLanguage(&expectedLang))
+		{
+			UNS_ERROR(L"Failed to get expected language\n");
+			publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to get FW status", 8725);
+			return res;
+		}
+
+		if (expectedLang != languageID)
+		{
+			if (!client.SetExpectedLanguage((unsigned short)languageID))
+			{
+				UNS_ERROR(L"failed to set expected language %d\n", languageID);
+				publishPartialFWUpgrade_failed(PARTIAL_FWU_MODULE::LANGUAGE, L"- Failed to set FW status", 8725);
+				return res;
+			}
+		}
+	}
+	catch (const std::exception& ex)
+	{
+		UNS_ERROR(L"PartialFWUpdateService: SIOWSManClient threw exception: %C\n", ex.what());
+		return false;
 	}
 
 	// If on INIT_MODE, perform PFU even if new language equals current one,
