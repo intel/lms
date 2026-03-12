@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2019 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -13,7 +13,6 @@
 #include <atlbase.h>
 #ifdef _DEBUG
 #include "global.h"
-#include "Is64BitOs.h"
 
 bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, WCHAR *val, size_t size)
 {
@@ -51,9 +50,6 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, wchar_t* val
 	if (val == NULL)
 		return false;
 
-	REGSAM RegSAM = KEY_READ;
-	if (Is64BitOS())
-		  RegSAM |= KEY_WOW64_64KEY;
 	HKEY hKey;
 	std::wstring szRegPath(LMS_REG);
 	std::wstring szRegPathBackup(LMS_REG_BACKUP);
@@ -63,7 +59,7 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, wchar_t* val
 	szRegPath +=folder;
 	szRegPathBackup += folder;
 
-	if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, szRegPath.c_str(), 0, RegSAM, &hKey) )
+	if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, szRegPath.c_str(), 0, KEY_READ | KEY_WOW64_64KEY, &hKey) )
 	{
 		if (ERROR_SUCCESS == RegQueryValueExW(hKey, key.c_str(), NULL, &type, (LPBYTE)val, valsz))
 		{
@@ -74,7 +70,7 @@ bool GetFromRegistry(const LmsRegStr &folder, const LmsRegStr &key, wchar_t* val
 
 		RegCloseKey(hKey);
 	}
-	else if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, szRegPathBackup.c_str(), 0, RegSAM, &hKey))
+	else if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, szRegPathBackup.c_str(), 0, KEY_READ | KEY_WOW64_64KEY, &hKey))
 	{
 		if (ERROR_SUCCESS == RegQueryValueExW(hKey, key.c_str(), NULL, &type, (LPBYTE)val, valsz))
 		{

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -17,7 +17,6 @@
 #include <Security.h>
 #include <iptypes.h>
 #include "RegistryCache.h"
-#include "Is64BitOs.h"
 #include <Windows.h>
 #include <Strsafe.h>
 #include "Tools.h"
@@ -178,23 +177,13 @@ namespace {
 		// to recurse.
 		try
 		{
-			REGSAM RegSAM = KEY_ALL_ACCESS;
-
-			/*We need to check in runtime whether we're in a 64 bit OS. If so, we're loading a special RegDeleteKeyEx()
-			function from Advapi32.dll, to enable us to delete from the 64 bit version of the registry. Otherwise, we
-			just call the normal RegDeleteKey() function.*/
-			if (Is64BitOS())
-			{
-				RegSAM |= KEY_WOW64_64KEY;
-			}
-
-			lResult = RegDeleteKeyEx(hKeyRoot, lpSubKey, RegSAM, 0);
+			lResult = RegDeleteKeyEx(hKeyRoot, lpSubKey, KEY_ALL_ACCESS | KEY_WOW64_64KEY, 0);
 			if (lResult == ERROR_SUCCESS)
 			{
 				return true;
 			}
 
-			lResult = RegOpenKeyEx(hKeyRoot, lpSubKey, 0, RegSAM, &hKey);
+			lResult = RegOpenKeyEx(hKeyRoot, lpSubKey, 0, KEY_ALL_ACCESS | KEY_WOW64_64KEY, &hKey);
 			if (lResult != ERROR_SUCCESS)
 			{
 				if (lResult == ERROR_FILE_NOT_FOUND) {
@@ -258,7 +247,7 @@ namespace {
 
 			RegCloseKey(hKey);
 
-			lResult = RegDeleteKeyEx(hKeyRoot, lpSubKey, RegSAM, 0);
+			lResult = RegDeleteKeyEx(hKeyRoot, lpSubKey, KEY_ALL_ACCESS | KEY_WOW64_64KEY, 0);
 			if (lResult == ERROR_SUCCESS)
 				return true;
 		}
@@ -306,12 +295,8 @@ RegistryStorage::DeleteRegEntry(RegEntry& entry)
 	bool retval = true;
 	HKEY hKey;
 
-    // get handle to correct registry path
-	REGSAM RegSAM = KEY_ALL_ACCESS;
-	if (Is64BitOS())
-		RegSAM |= KEY_WOW64_64KEY;
-
-	if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, entry.first.c_str() , 0, RegSAM, &hKey) ) {
+	if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, entry.first.c_str() , 0,
+			KEY_ALL_ACCESS | KEY_WOW64_64KEY, &hKey) ) {
 		long res = RegDeleteValue(hKey, entry.second.c_str());
         if( (ERROR_SUCCESS != res) && (res != ERROR_FILE_NOT_FOUND)) {
             retval = false;
@@ -335,19 +320,14 @@ RegistryStorage::GetRegistryData(void* value, size_t* valsz, unsigned long* type
 		//compose full base path
 		if (withCache)
 		{
-
-
 			if (RegistryCache::GetData(value, valsz, type,  dummy, key, valueName) == true)
 			{
 				return true;
 			}
 		}
-		// get handle to correct registry path
-		REGSAM RegSAM = KEY_READ;
-		if (Is64BitOS())
-			RegSAM |= KEY_WOW64_64KEY;
 
-		if( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, RegSAM, &hKey) ) {
+		if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, KEY_READ | KEY_WOW64_64KEY, &hKey) )
+		{
 			if( ERROR_SUCCESS != RegQueryValueEx(hKey, valueName.c_str(), NULL,
 									type, (LPBYTE)value, (LPDWORD)valsz)) {
 				retval = false;
@@ -376,16 +356,12 @@ RegistryStorage::SetRegistryData(const void* value, size_t valsz, unsigned long 
     HKEY hKey;
 
 	DWORD dwDisposition;
-    // get handle to correct registry path
-	REGSAM RegSAM = KEY_ALL_ACCESS;
-	if (Is64BitOS())
-		RegSAM |= KEY_WOW64_64KEY;
 
 	if (valsz > ULONG_MAX)
 		return false;
 
 	if( ERROR_SUCCESS == RegCreateKeyEx(HKEY_LOCAL_MACHINE, key.c_str(), 0, NULL,
-		0, RegSAM, NULL, &hKey, &dwDisposition))
+		0, KEY_ALL_ACCESS | KEY_WOW64_64KEY, NULL, &hKey, &dwDisposition))
 	{
 		if( ERROR_SUCCESS != RegSetValueEx(hKey, valueName.c_str(), 0, type, (LPBYTE)value, (DWORD)valsz)) {
             retval = false;

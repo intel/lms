@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2024 Intel Corporation
+# Copyright (C) 2010-2026 Intel Corporation
 cmake_minimum_required (VERSION 3.15)
 
 if (UNIX)
@@ -16,7 +16,6 @@ else (UNIX)
     version.lib
   )
   set (REGISTRY_SRC WindowsRegistryStorage.cpp)
-  set (IS64BIT_SRC Is64BitOs.cpp)
   set (STRINGMANAGER_SRC StringManager.cpp)
   set (STRINGLOADER_SRC WindowsStringLoader.cpp)
 endif (UNIX)
@@ -35,7 +34,6 @@ add_library (GMS_COMMON STATIC
   DataStorageWrapper.cpp
   RegistryStorage.cpp
   ${REGISTRY_SRC}
-  ${IS64BIT_SRC}
   ${STRINGMANAGER_SRC}
   ${STRINGLOADER_SRC}
 )
