@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2024 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 /*++
 
@@ -20,17 +20,13 @@ namespace Intel
 	{
 		namespace Manageability_Client
 		{
-			const uint8_t ENABLED_MASK = BIT(0);
-			const uint8_t CURRENTOPERATIONALSTATE_MASK = BIT(1);
 			const uint8_t CIRAPERIODICTIMERFIX_MASK = BIT(5);
 			const uint8_t TLSONLOCALPORTS_MASK = BIT(6);
 			const uint8_t ISNEWINTERFACEVERSION_MASK = BIT(7);
 
 			struct IsChangedEnabledResponse
 			{
-				IsChangedEnabledResponse() : Enabled(false), CurrentOperationalState(false), TlsOnLocalPorts(false), CIRAPeriodicTimerFix(false){}
-				bool Enabled;
-				bool CurrentOperationalState;
+				IsChangedEnabledResponse() : TlsOnLocalPorts(false), CIRAPeriodicTimerFix(false) {}
 				bool TlsOnLocalPorts;
 				bool CIRAPeriodicTimerFix;
 
@@ -38,8 +34,6 @@ namespace Intel
 				{
 					uint8_t buf;
 					Intel::MEI_Client::parseData(buf, itr, end);
-					Enabled = buf & ENABLED_MASK;
-					CurrentOperationalState = (buf & CURRENTOPERATIONALSTATE_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
 					TlsOnLocalPorts = (buf & TLSONLOCALPORTS_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
 					CIRAPeriodicTimerFix = (buf & CIRAPERIODICTIMERFIX_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
 				}
