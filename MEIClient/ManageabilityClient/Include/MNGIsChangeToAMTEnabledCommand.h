@@ -22,7 +22,6 @@ namespace Intel
 		{
 			const uint8_t CIRAPERIODICTIMERFIX_MASK = BIT(5);
 			const uint8_t TLSONLOCALPORTS_MASK = BIT(6);
-			const uint8_t ISNEWINTERFACEVERSION_MASK = BIT(7);
 
 			struct IsChangedEnabledResponse
 			{
@@ -34,8 +33,8 @@ namespace Intel
 				{
 					uint8_t buf;
 					Intel::MEI_Client::parseData(buf, itr, end);
-					TlsOnLocalPorts = (buf & TLSONLOCALPORTS_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
-					CIRAPeriodicTimerFix = (buf & CIRAPERIODICTIMERFIX_MASK) && (buf & ISNEWINTERFACEVERSION_MASK);
+					TlsOnLocalPorts = buf & TLSONLOCALPORTS_MASK;
+					CIRAPeriodicTimerFix = buf & CIRAPERIODICTIMERFIX_MASK;
 				}
 			};
 
