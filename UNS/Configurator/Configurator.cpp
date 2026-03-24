@@ -617,7 +617,7 @@ bool Configurator::ResumeAceService(const ACE_TString &serviceName)
 int Configurator::handle_timeout (const ACE_Time_Value &current_time,const void *arg)
 {
 	FuncEntryExit<void> fee(this, L"handle_timeout");
-	UNS_DEBUG(L"%s service  arg=%lu\n",name().c_str(), arg);
+	UNS_DEBUG(L"%s service  arg=%Lu\n",name().c_str(), arg);
 	if (arg == &deferredResumeTimerId_)
 	{
 		deferredResumeTimerId_ = -1;

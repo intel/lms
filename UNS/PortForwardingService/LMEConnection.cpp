@@ -485,7 +485,7 @@ bool LMEConnection::ChannelWindowAdjust(uint32_t recipientChannel, size_t len)
 	message->RecipientChannel = htonl(recipientChannel);
 	message->BytesToAdd = htonl(static_cast<u_long>(len));
 
-	UNS_TRACE(L"==>LME[%d]: Window Adjust with %zu bytes\n", recipientChannel, len);
+	UNS_TRACE(L"==>LME[%d]: Window Adjust with %B bytes\n", recipientChannel, len);
 	return _sendMessage(buf);
 }
 

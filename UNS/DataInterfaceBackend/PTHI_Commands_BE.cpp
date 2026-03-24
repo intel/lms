@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -1187,7 +1187,7 @@ constexpr size_t array_size(const T (&)[SIZE]) { return SIZE; }
 				Intel::MEI_Client::MCHI_Client::READ_FILE_EX_RESPONSE response = readFileEx.getResponse();
 				if (response.Data.size() != sizeof(unsigned int))
 				{
-					UNS_DEBUG("Data size is wrong %zu != %zu\n", response.Data.size(), sizeof(unsigned int));
+					UNS_DEBUG("Data size is wrong %B != %B\n", response.Data.size(), sizeof(unsigned int));
 					return LMS_ERROR::FAIL;
 				}
 				uint8_t* p = (uint8_t*)&data;

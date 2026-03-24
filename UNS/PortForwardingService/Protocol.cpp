@@ -1814,7 +1814,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 						bool request_close = false;
 						size_t count = it->second->ProcessRx((char *)channelDataMessage->Data.data(), channelDataMessage->Data.size(), request_close);
-						UNS_TRACE(L"Sent %zu bytes of %zu from AMT to channel %u with socket %d.\n",
+						UNS_TRACE(L"Sent %B bytes of %B from AMT to channel %u with socket %d.\n",
 							count, channelDataMessage->Data.size(), channelDataMessage->RecipientChannel,
 							it->second->GetSocket());
 #ifdef _DEBUG

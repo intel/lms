@@ -55,14 +55,14 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 	ret = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 	if (!ret)
 	{
-		UNS_ERROR(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %lu\n", GetLastError());
+		UNS_ERROR(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %Lu\n", GetLastError());
 	}
 	else
 	{
 		ret = LookupPrivilegeValue(NULL,SE_SHUTDOWN_NAME, &prv.Privileges[0].Luid);
 		if (!ret)
 		{
-			UNS_ERROR(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %lu\n", GetLastError());
+			UNS_ERROR(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %Lu\n", GetLastError());
 		}
 		else
 		{
@@ -70,7 +70,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			prv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 			ret = AdjustTokenPrivileges(hToken, FALSE, &prv, 0, (PTOKEN_PRIVILEGES)NULL, 0);
 			if (!ret)
-				UNS_ERROR(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %lu\n", GetLastError());
+				UNS_ERROR(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %Lu\n", GetLastError());
 		}
 		CloseHandle(hToken);
 	}
@@ -91,7 +91,7 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			return 0;
 		}
 		ss<<err;
-		UNS_ERROR(L"remote graceful getLastError %lu\n",err);
+		UNS_ERROR(L"remote graceful getLastError %Lu\n",err);
 	}
 	return ret;
 }
@@ -104,7 +104,7 @@ void getPowerCapabilities(bool& sleep,bool& hibernate)
 	SYSTEM_POWER_CAPABILITIES systemCaps = { 0 };
 	if (!GetPwrCapabilities(&systemCaps))
 	{
-		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %lu\n", GetLastError());
+		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %Lu\n", GetLastError());
 		sleep = hibernate = false;
 	}
 	//systemCaps.HiberFilePresent shows if hibernation was enabled/disabled (such as using "powercfg.exe /h off")
@@ -428,7 +428,7 @@ void PowerOperationsService::addPowerCapabilities()
 		UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep, hibernate);
 		if (!powerManagementCapabilitiesClient.addGracefulOperations(sleep, hibernate))
 		{
-			UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %lu\n", GetLastError());
+			UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %Lu\n", GetLastError());
 			return;
 		}
 	}
