@@ -1,4 +1,4 @@
- //Copyright 2009 - 2023 Intel Corporation All Rights Reserved.
+//Copyright 2009 - 2026 Intel Corporation All Rights Reserved.
 #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -7,7 +7,7 @@ instance of __Namespace {
 
 #pragma namespace("\\\\.\\root\\Intel_ME")
 
-[Version ( "0.0.4" ), 
+[Version ( "0.0.5" ), 
     Description ( "A class for handling Intel(R) ME's OOB activation(aka Intel(R) AMT provisioning) and for "
     		"reporting the OOB configuration" ):Amended, LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
 class OOB_Service : CIM_Service {
@@ -140,5 +140,18 @@ class OOB_Service : CIM_Service {
 	string Username, 
 	[OUT, Description ("Local administrator password")]
 	string Password);
+
+   [Description ("Management Presence Remote Service Access Point (or an MPS) to be accessed by the Intel(R) AMT subsystem from remote."): Amended, static, implemented]
+   uint32 getManagementPresenceRemoteSAP(
+	[OUT, Description("An enumerated integer that describes the format and interpretation of the AccessInfo property."),
+	ValueMap {"3", "4", "201"},
+	Values { "IPv4 Address", "IPv6 Address", "FQDN" }]
+	uint16 InfoFormat,
+	[OUT, Description("Access or addressing information or a combination of this information for a remote connection. This information can be a host name, network address, or similar information.")]
+	string AccessInfo,
+	[OUT, Description("The port to be used to establish a tunnel with the MPS.")]
+	uint16 Port,
+	[OUT, Description("A common name used when AccessInfo is an IP address.")]
+	string CN);
 		
 };

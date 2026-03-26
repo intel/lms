@@ -1,0 +1,20 @@
+//Copyright (C) 2026 Intel Corporation
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.1" ), Description("This class contains all current WiFi ports in AMT database."):Amended,
+ LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+
+class CIM_WiFiPort : CIM_SettingData {
+[Description("State of the port"),
+		ValueMap {"3", "32768", "32769" },
+		Values { "WiFi is disabled", "WiFi is enabled in S0", "WiFi is enabled in S0 + Sx/AC" }]
+	uint16 EnabledState;
+	[Description("IEEE 802 EUI-48 MAC address")]
+	string PermanentAddress;
+};

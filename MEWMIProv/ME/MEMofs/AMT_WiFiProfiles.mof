@@ -1,0 +1,28 @@
+//Copyright (C) 2026 Intel Corporation
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.1" ), Description("This class contains all current WiFi profiles in AMT database."):Amended,
+ LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+
+class AMT_WiFiProfiles : CIM_SettingData { 
+	[Description("Profile Name")]
+	string ProfileName;
+	[Description("Profile Priority")]
+	uint8 Priority;
+	[Description("Service Set Identifier SSID")]
+	string SSID;
+	[Description("Encryption method used"),
+	ValueMap {"1", "2", "3", "4", "5", "32768" },
+	Values { "Other", "WEP", "TKIP", "CCMP 128", "None", "GCMP 256" }]
+	uint16 EncryptionMethod;
+	[Description("Authentication method used"),
+	ValueMap { "1", "2", "3", "4", "5", "6", "7", "32768", "32769" },
+	Values { "Other", "Open System", "Shared Key", "WPA PSK", "WPA IEEE 802.1x", "WPA2 PSK", "WPA2 IEEE 802.1x", "WPA3 SAE", "WPA3 OWE" }]
+	uint16 AuthenticationMethod;
+};

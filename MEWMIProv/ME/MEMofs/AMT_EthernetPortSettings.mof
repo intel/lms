@@ -1,4 +1,4 @@
- //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+ //Copyright 2009 - 2026 Intel Corporation All Rights Reserved.
 #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -7,7 +7,7 @@ instance of __Namespace {
 
 #pragma namespace("\\\\.\\root\\Intel_ME")
 
-[Version ( "0.0.3" ), Description("This class contains all Intel(R) AMT specific settings (IP, DHCP) for one network interface in the system."):Amended,
+[Version ( "0.0.4" ), Description("This class contains all Intel(R) AMT specific settings (IP, DHCP) for one network interface in the system."):Amended,
  LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv"),
 InternalOnly("This class is taken from the ME CIM schema ")]
 
@@ -40,6 +40,45 @@ class AMT_EthernetPortSettings : CIM_SettingData {
    
    [Description("Secondary DNS in a string format. For example: 10.12.232.1")]   
    string   SecondaryDNS;
+
+   [Description("Link policy restrictions for better power consumption."),
+      ValueMap { "1", "14", "16", "224" },
+      Values { "available on S0 AC", "available on Sx AC", "available on S0 DC", "available on Sx DC" }]
+   uint8 LinkPolicy[];
+
+   [Description("Determines whether the link is preferred to be owned by ME or host."),
+      ValueMap { "0", "1", "2" },
+      Values { "Not Set", "ME", "HOST" }]
+   uint32 LinkPreference;
+
+   [Description("Determines whether the link is owned by ME or host."),
+      ValueMap { "0", "1", "2" },
+      Values { "Not Set", "ME", "HOST" }]
+   uint32 LinkControl;
+
+   [Description("Indicates whether the static host IP is shared with ME.")]
+   boolean SharedStaticIp;
+
+   [Description("Indicates whether the IP synchronization between host and ME is enabled.")]
+   boolean IpSyncEnabled;
+
+   [Description("Indicates the number of retransmissions host TCP SW tries if no ack is accepted.")]
+   uint32 ConsoleTcpMaxRetransmissions;
+
+   [Description("Defines the level of the link protection feature activation."),
+      ValueMap { "0", "1", "2", "3" },
+      Values { "OVERRIDE", "NONE", "PASSIVE", "HIGH" }]
+   uint32 WLANLinkProtectionLevel;
+
+   [Description("Indicates the physical connection type of this network interface."),
+      ValueMap { "0", "1", "2", "3" },
+      Values { "Integrated LAN NIC", "Discrete LAN NIC", "LAN via a Thunderbolt dock", "Wireless LAN" }]
+   uint32 PhysicalConnectionType;
+
+   [Description("Indicates which medium is currently used by Intel(R) AMT to communicate with the NIC."),
+      ValueMap { "0", "1" },
+      Values { "SMBUS", "PCIe" }]
+   uint32 PhysicalNicMedium;
 
 };
 

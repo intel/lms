@@ -1,0 +1,29 @@
+//Copyright (C) 2026 Intel Corporation
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.1" ), Description("Represents a Remote Access policy. The policy defines a condition that will trigger the establishment of a tunnel between the Intel(R) AMT subsystem and a remote MpServer. \
+ The policy also defines parameters for the connection such as TunnelLifeTime in seconds."):Amended,
+ LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+
+class AMT_RemoteAccessPolicyRule : CIM_SettingData { 
+	[Description("A user-friendly name of this PolicyRule.")]
+	string PolicyRuleName;
+
+	[Description("The event that will trigger the establishment of the remote connection to the MpServer."),
+		ValueMap { "0", "1", "2", "3" },
+		Values { "User Initiated", "Alert", "Periodic", "Home Provisioning"}]
+	uint16 Trigger;
+
+	[Description("Defines the tunnel lifetime in seconds, 0 means no lifetime - the tunnel should stay open until it is closed by CloseRemoteAccessConnection or when a different policy with higher priority needs to be processed.")]
+	uint32 TunnelLifeTime;
+
+	[Description("Data associated with the policy, up to 32 bytes.")]
+	uint8 ExtendedData[];
+};
+

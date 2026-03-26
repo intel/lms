@@ -1,4 +1,4 @@
- //Copyright 2009 - 2010 Intel Corporation All Rights Reserved.
+ //Copyright 2009 - 2026 Intel Corporation All Rights Reserved.
  #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -6,7 +6,7 @@ instance of __Namespace {
 };
 
 #pragma namespace("\\\\.\\root\\Intel_ME")
-  [Version ( "0.0.1" ), 
+  [Version ( "0.0.2" ), 
     Description ( "A class providing access to Intel(R) AMT Features configuration, such as KVM and IDE-Redirect" )
 :Amended, LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
 class AMT_Service : CIM_Service {
@@ -64,4 +64,200 @@ class AMT_Service : CIM_Service {
 		ValueMap {"0","1","2","3","4","5","6","7","8","9","10"}, 
 		Values { "English", "French", "German", "Chinese Traditional", "Japanese", "Russian","Italian", "Spanish", "Portuguese Brazil", "Korean", "Chinese Simplified"}] 
 		uint8 locale);
+
+	[Description ("Obtains AMT boot capabilities"): Amended, static, implemented]
+	uint32 getBootCapabilities(
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'IDE Redirection'")]
+		boolean IDER,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Serial Over Lan'")]
+		boolean SOL,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'BIOS Reflash'")]
+		boolean BIOSReflash,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'BIOS Setup'")]
+		boolean BIOSSetup,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'BIOS Pause'")]
+		boolean BIOSPause,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Force PXE Boot'")]
+		boolean ForcePXEBoot,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Force Hard Drive Boot'")]
+		boolean ForceHardDriveBoot,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Force Hard Drive Safe Mode Boot'")]
+		boolean ForceDiagnosticBoot,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Force CD or DVD Boot'")]
+		boolean ForceCDorDVDBoot,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Verbosity Screen Blank'")]
+		boolean VerbosityScreenBlank,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Power Button Lock'")]
+		boolean PowerButtonLock,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Reset Button Lock'")]
+		boolean ResetButtonLock,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Keyboard Lock'")]
+		boolean KeyboardLock,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Sleep Button Lock'")]
+		boolean SleepButtonLock,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'User Password Bypass'")]
+		boolean UserPasswordBypass,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Forced Progress Events'")]
+		boolean ForcedProgressEvents,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Verbosity/Verbose'")]
+		boolean VerbosityVerbose,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Verbosity/Quiet'")]
+		boolean VerbosityQuiet,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Configuration Data Reset'")]
+		boolean ConfigurationDataReset,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'BIOS Secure Boot'")]
+		boolean BIOSSecureBoot,
+		[OUT, Description("Indicates whether Intel(R) AMT device supports 'Secure Erase'")]
+		boolean SecureErase,
+		[OUT, Description("Supports Intel AMT invoking boot to WinRE")]
+		boolean ForceWinREBoot,
+		[OUT, Description("Supports booting to an ISV's PBA")]
+		boolean ForceUEFIPBABoot,
+		[OUT, Description("Supports Intel AMT invoking HTTPS boot")]
+		boolean ForceUEFIHTTPSBoot,
+		[OUT, Description("Determines whether Intel AMT is privileged by BIOS to disable secure boot for an AMT triggered boot option. If true, the BIOS allows Intel AMT to control the secure boot (i.e., to disable secure boot in recovery from HTTPS under certain conditions).")]
+		boolean AMTSecureBootControl,
+		[OUT, Description("Determines whether UEFI BIOS and Intel AMT WiFi profile share is supported.")]
+		boolean UEFIWiFiCoExistenceAndProfileShare,
+		[OUT, Description("Indicates whether the Intel AMT device supports Intel Remote Platform Erase (i.e., whether the OEM's BIOS includes support for the feature), and shows the devices that can be erased.")]
+		uint32 PlatformErase
+		);
+
+	[Description ("Obtains AMT environment detection settings"): Amended, static, implemented]
+	uint32 getEnvironmentDetectionSettingData(
+		[OUT, Description("Specifies which algorithm is used to determine whether the system is in its intranet environment or in the Internet environment."),
+		ValueMap { "0", "1" },
+		Values { "Local Domains", "Remote URLs" }]
+		uint16 DetectionAlgorithm,
+		[OUT, Description("An array of strings used in the environment detection algorithm. If DetectionAlgorithm is \'Local Domains\', DetectionStrings contains a set of local domain strings. If DetectionAlgorithm is \'Remote URLs\', then DetectionStrings contains a set of remote URLs.")]
+		string DetectionStrings[],
+		[OUT, Description("Can be used for environment detection in IPv6 networks that do not configure the DNS suffix via DHCP. The format is: \"XXXX:XXXX:XXXX:XXXX/Y\" where Y is the prefix length, the XXXX:XXXX:XXXX:XXXX part can include zeros compression (e.g. 0:0:0 or ::) formats.")]
+		string DetectionIPv6LocalPrefixes[]);
+
+	[Description ("Obtains AMT general settings"): Amended, static, implemented]
+	uint32 getGeneralSettings(
+		[OUT, Description("Indicates whether the network interface is enabled")]
+		boolean NetworkInterfaceEnabled,
+		[OUT, Description("The Intel(R) AMT device Digest Authentication Realm parameter as defined by RFC 2617.")]
+		string DigestRealm,
+		[OUT, Description("Defines the minimum time value, in minutes, that Intel(R) AMT will be powered after waking up from a sleep power state, or after the host enters sleep or off state.This timer value will be reloaded whenever Intel(R) AMT is servicing requests. Note: this setting may not be applicable under some power package definitions.")]
+		uint32 IdleWakeTimeout,
+		[OUT, Description("Intel(R) AMT host setting.")]
+		string HostName,
+		[OUT, Description("Intel(R) AMT domain name setting.")]
+		string DomainName,
+		[OUT, Description("Indicates whether Intel(R) AMT should respond to ping Echo Request messages.")]
+		boolean PingResponseEnabled,
+		[OUT, Description("Indicates whether Intel(R) AMT should block network interfaces other than WS-Management.")]
+		boolean WsmanOnlyMode,
+		[OUT, Description("Preferred Address Family IPv4/IPv6."),
+		ValueMap { "0", "1", "2" },
+		Values { "IPv4", "IPv6", "Reserved" }]
+		uint32 PreferredAddressFamily,
+		[OUT, Description("Defines the Maximum Duration (DHCPv6 MRD for the Solicit Message) in seconds during which the Intel(R) ME FW tries to locate a DHCPv6 server. 0 - means try forever. The default value for this property is 0.")]
+		uint16 DHCPv6ConfigurationTimeout,
+		[OUT, Description("Defines Whether the FQDN (HostName.DomainName) is shared with the Host or dedicated to ME. (The default value for this property is shared - TRUE).")]
+		boolean SharedFQDN,
+		[OUT, Description("Intel(R) AMT host OS FQDN. This value of host FQDN is needed for the case that FW is set with a dedicated FQDN - this allows the SW to correlate the FW name with the Host name.")]
+		string HostOSFQDN,
+		[OUT, Description("When set to Disabled, the AMT OOB network interfaces (LAN and WLAN) are disabled including AMT user initiated applications, Environment Detection and RMCPPing. Since OOB networking is disabled, there will not be an option to enable it back remotely."),
+		ValueMap { "0", "1", "2" },
+		Values { "Disabled", "Enabled", "Reserved" }]
+		uint32 AMTNetworkEnabled,
+		[OUT, Description("Indicates whether Intel(R) AMT should respond to RMCP ping Echo Request messages.")]
+		boolean RmcpPingResponseEnabled,
+		[OUT, Description("Defines the interval at which the FW will send periodic WS-management events notifications (for the subscribed clients) whenever network settings are changed. Units are minutes. A value of 0 disables periodic events. The default value for this property is 0 (notifications are disabled). The minimal allowed value is 15 minutes.")]
+		uint32 PresenceNotificationInterval,
+		[OUT, Description("Defines the Privacy and Security Level setting. Privacy Level defines the values for privacy/security-related parameters by default and upon ME-unconfigure event. The setting can have the following values: \
+			Default: \
+			SOL enabled = true, IDER enabled = true, KVM enabled = true, Opt-in can be disabled = true, opt-in configurable remotely = true. From Intel ME 8: Also Client Control Mode allowed=true and RCFG enabled=true. \
+			Enhanced: \
+			SOL enabled = true, IDER enabled = true, KVM enabled = true, Opt-in can be disabled = false, opt-in configurable remotely = true. From Intel ME 8: Also Client Control Mode allowed=true and RCFG enabled=true. \
+			Extreme: \
+			SOL enabled = false, IDER enabled = false, KVM enabled = false, Opt-in can be disabled = false, opt-in configurable remotely = false. From Intel ME 8: Also Client Control Mode allowed=false and RCFG enabled = false."),
+		ValueMap { "0", "1", "2", "3" },
+		Values { "Default", "Enhanced", "Extreme", "Reserved" }]
+		uint32 PrivacyLevel,
+		[OUT, Description("The system current power source"),
+		ValueMap { "0", "1", "2" },
+		Values { "AC", "DC", "Reserved" }]
+		uint32 PowerSource,
+		[OUT, Description("When set to Disabled, a management console cannot communicate with Intel AMT via a Thunderbolt dock."),
+		ValueMap { "0", "1" },
+		Values { "Disabled", "Enabled" }]
+		uint32 ThunderboltDockEnabled,
+		[OUT, Description("The OEM's vendor ID as listed in the Peripheral Component Interconnect Special Interest Group (PCI-SIG) list of member companies.")]
+		uint16 OemID);
+
+	[Description ("Obtains WiFi Port Configuration"): Amended, static, implemented]
+	uint32 getWiFiPortConfiguration(
+		[OUT, Description("The SSID of the Wireless network that was last connected in ME Control state.")]
+		string LastConnectedSsidUnderMeControl,
+		[OUT, Description("UEFI/CSME Wi-Fi Profile Sharing state.")]
+		boolean UEFIWiFiProfileShareEnabled,
+		[OUT, Description("Local profile synchronization enabled state."),
+		ValueMap { "0", "1..2", "3", "4.." },
+		Values { "Local synchronization disabled", "Vendor Reserved", "Unrestricted synchronization", "Reserved" }]
+		uint32 LocalProfileSynchronizationEnabled);
+
+	[Description ("Obtains WiFi Endpoint State"): Amended, static, implemented]
+	uint32 getWiFiEndpointState(
+		[OUT, Description("The principal unicast address used in communication with the LANEndpoint.")]
+		string MACAddress,
+		[OUT, Description("Indicates the current health of the element."),
+		ValueMap {"0", "5", "10", "15", "20", "25", "30" },
+		Values { "Unknown", "OK", "Degraded/Warning", "Minor failure", "Major failure", "Critical failure", "Non-recoverable error" }]
+		uint16 HealthState,
+		[OUT, Description("Indicates the enabled state of the element."),
+		ValueMap {"2", "3", "6" },
+		Values { "Enabled", "Disabled", "Enabled but Offline" }]
+		uint16 EnabledState
+		);
+
+	[Description ("Obtains AMT setup and configuration settings"): Amended, static, implemented]
+	uint32 getAMTConfiguration(
+		[OUT, Description("The DNS suffix provisioned to Intel AMT from a DHCP server.")]
+		string DhcpDNSSuffix,
+		[OUT, Description("The trusted DNS suffix configured in Intel AMT.")]
+		string TrustedDNSSuffix,
+		[OUT, Description("Indicates whether Zero Touch Configuration (ZTC) is enabled.")]
+		boolean ZeroTouchConfigurationEnabled,
+		[OUT, Description("The provisioning mode of Intel AMT."),
+		ValueMap { "1", "4" },
+		Values { "Admin Control Mode", "Client Control Mode" }]
+		uint8 ProvisioningMode);
+
+	[Description ("Retrieve the log with information about current CIRA status and past failures."): Amended, static, implemented]
+	uint32 getCIRALog(
+		[OUT, OctetStringDescription("Log stream"), OctetString]
+		string ciraLog);
+
+	[Description ("Obtains AMT time synchronization configuration"): Amended, static, implemented]
+	uint32 getTimeSynchronizationConfig(
+		[OUT, Description("The current AMT internal clock value (UTC Unix timestamp).")]
+		uint32 AMTTime,
+		[OUT, Description("Indicates whether local time synchronization is enabled."),
+		ValueMap { "0", "1", "2" },
+		Values { "Enabled (default)", "Enabled (configured)", "Disabled" }]
+		uint32 LocalTimeSyncEnabled,
+		[OUT, Description("Indicates the source used for time synchronization."),
+		ValueMap { "0", "1" },
+		Values { "RTC", "Host" }]
+		uint32 TimeSource);
+
+	[Description ("Obtains AMT opt-in configuration"): Amended, static, implemented]
+	uint32 getOptInConfiguration(
+		[OUT, Description("The timeout in seconds for the opt-in code entered by the user.")]
+		uint32 OptInCodeTimeout,
+		[OUT, Description("Indicates whether user opt-in is required for KVM/IDER/SOL redirection."),
+		ValueMap { "0", "1", "4294967295" },
+		Values { "None", "KVM", "All" }]
+		uint32 OptInRequired,
+		[OUT, Description("Indicates the state of OptIn."),
+		ValueMap { "0", "1", "2", "3", "4" },
+		Values { "Not started", "Requested", "Displayed", "Received", "In Session" }]
+		uint8 OptInState,
+		[OUT, Description("The timeout in seconds for displaying the opt-in code on screen.")]
+		uint16 OptInDisplayTimeout);
+
 };

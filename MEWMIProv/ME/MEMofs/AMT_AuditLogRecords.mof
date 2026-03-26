@@ -1,0 +1,16 @@
+//Copyright (C) 2026 Intel Corporation
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.1" ), Description("This class contains all current records in the AMT Audit Log database."):Amended,
+ LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+
+class AMT_AuditLogRecords : CIM_SettingData { 
+	[Description("Audit log record")]
+	uint8 AuditLogRecord[];
+};

@@ -1,0 +1,24 @@
+//Copyright (C) 2026 Intel Corporation
+#pragma namespace("\\\\.\\root")
+
+instance of __Namespace {
+	name="Intel_ME";
+};
+
+#pragma namespace("\\\\.\\root\\Intel_ME")
+
+[Version ( "0.0.1" ), Description("Represents the set of proxy settings that should be used by Intel AMT when connecting through an HTTP proxy."):Amended,
+ LOCALE(0x409), dynamic: ToInstance, provider("IntelMEProv")]
+
+class IPS_HTTPProxyAccessPoint : CIM_SettingData { 
+	[Description("Access or addressing information for the proxy server (hostname or IP address).")]
+	string AccessInfo;
+	[Description("An enumerated integer that describes the format and interpretation of the AccessInfo property.")]
+	uint16 InfoFormat;
+	[Description("The port to be used for this HTTP proxy.")]
+	uint16 Port;
+	[Description("Domain name of the network to which this proxy belongs.")]
+	string NetworkDnsSuffix;
+	[Description("Proxy Priority.")]
+	uint32 Priority;
+};

@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Apache-2.0
-//Copyright (C) 2009-2012 Intel Corporation
+//Copyright (C) 2009-2026 Intel Corporation
 
 #PRAGMA AUTORECOVER
 #pragma include ("s/Core/CIM_ManagedElement.mof")
@@ -31,3 +31,8 @@ Qualifier InternalOnly : string = null,
 #pragma include ("MEmofs/ME_Event.mof")
 #pragma include ("MEmofs/AMT_ConcreteComponent.mof")
 #pragma include ("MEmofs/AMT_HostedService.mof")
+#pragma include ("MEmofs/AMT_AuditLogRecords.mof")
+#pragma include ("MEmofs/AMT_RemoteAccessPolicyRule.mof")
+#pragma include ("MEmofs/AMT_WiFiProfiles.mof")
+#pragma include ("MEmofs/IPS_HTTPProxyAccessPoint.mof")
+#pragma include ("MEmofs/CIM_WiFiPort.mof")

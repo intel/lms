@@ -268,6 +268,38 @@ Specifies the list of ACPI states Intel(R) ME is operational in<br/>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getFullFWVersion">getFullFWVersion</A></B>(FWVersion[3])</CODE>
+<BR>
+Full Firmware version of Intel(R) ME<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getFLogSize">getFLogSize</A></B>(fLogSize)</CODE>
+<BR>
+Returns the FLog size<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getFLog">getFLog</A></B>(fLog)</CODE>
+<BR>
+Returns the FLog<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ME_System.html#getRTCValue">getRTCValue</A></B>(rtcValue)</CODE>
+<BR>
+Returns the RTC value<br/>
+</TD>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;uint32</CODE></FONT></TD>
 <TD><CODE><B><A HREF="ME_System.html#IsFirmwareUpdateEnabled">IsFirmwareUpdateEnabled</A></B>(enabled)</CODE>
 <BR>
 Indicates whether the Firmware Update capability is currently enabled<br/>
@@ -618,6 +650,62 @@ public uint32 <B>getCurrentPowerPolicy</B>([OUT]string PowerPolicy)</PRE>
 
 <b>Permission Information:</b><br />No permissions defined<br/><br/>
 <b>General Information:</b><br/>Specifies the list of ACPI states Intel(R) ME is operational in<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>PowerPolicy</b><DD><b>General Information:</b><br/>A description of the power policy<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getFullFWVersion"><!-- --></A>
+<H3>getFullFWVersion</H3>
+<PRE>
+public uint32 <B>getFullFWVersion</B>([OUT]string FWVersion[3])</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Intel(R) ME full firmware version<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>FWVersion[3]</b><DD><b>General Information:</b><br/>Full firmware version<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getFLogSize"><!-- --></A>
+<H3>getFLogSize</H3>
+<PRE>
+public uint32 <B>getFLogSize</B>([OUT]uint32 fLogSize)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />Requires local administrator privileges. Non-admin callers receive WBEM_E_ACCESS_DENIED.<br/><br/>
+<b>General Information:</b><br/>Returns the FLog size<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>fLogSize</b><DD><b>General Information:</b><br/>FLog size<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getFLog"><!-- --></A>
+<H3>getFLog</H3>
+<PRE>
+public uint32 <B>getFLog</B>([OUT]string fLog)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />Requires local administrator privileges. Non-admin callers receive WBEM_E_ACCESS_DENIED.<br/><br/>
+<b>General Information:</b><br/>returns the FLog value<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>fLog</b><DD><b>General Information:</b><br/>FLog value<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
+</DD>
+</DL>
+<HR>
+    
+<A NAME="getRTCValue"><!-- --></A>
+<H3>getRTCValue</H3>
+<PRE>
+public uint32 <B>getRTCValue</B>([OUT]uint32 rtcValue)</PRE>
+
+<DL>
+<DD>
+
+<b>Permission Information:</b><br />No permissions defined<br/><br/>
+<b>General Information:</b><br/>Returns the RTC value<br/><br/><b>Qualifiers:</b><br>-------------<br>static<br/>implemented<br/><br/><br/><b>Parameters:</b><br/>--------------<br/><dl><DT><b>rtcValue</b><DD><b>General Information:</b><br/>RTC value<br/><br/><b>Qualifiers:</b><br>-------------<br>OUT<br/><br/></dl><br/>
 </DD>
 </DL>
 <HR>

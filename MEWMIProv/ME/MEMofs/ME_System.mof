@@ -1,4 +1,4 @@
- //Copyright 2009 - 2022 Intel Corporation All Rights Reserved.
+ //Copyright 2009 - 2026 Intel Corporation All Rights Reserved.
 #pragma namespace("\\\\.\\root")
 
 instance of __Namespace {
@@ -7,7 +7,7 @@ instance of __Namespace {
 
 #pragma namespace("\\\\.\\root\\Intel_ME")
 
-[Version ( "0.0.5" ),
+[Version ( "0.0.6" ),
     Description ( "A class Representing Intel(R) Manageability Engine (Intel(R) ME) information" ):Amended, dynamic: ToInstance, provider("IntelMEProv"):ToInstance]
 class ME_System : CIM_ComputerSystem {
    
@@ -139,4 +139,24 @@ class ME_System : CIM_ComputerSystem {
 			ValueMap {false, true},
 			Values {"Disabled", "Enabled"}]
 		boolean state);
+
+	[Description ("Get full CSME FW version"): Amended, static, implemented]
+	uint32 getFullFWVersion(
+		[OUT, Description("Three blocks of CSME FW version in dotted format")]
+		string FWVersion[3]);
+
+	[Description ("Get CSME Flash Log size"): Amended, static, implemented]
+	uint32 getFLogSize(
+		[OUT, Description("CSME Flash Log size")]
+		uint32 fLogSize);
+
+	[Description ("Get CSME Flash Log"): Amended, static, implemented]
+	uint32 getFLog(
+		[OUT, OctetStringDescription("CSME Flash Log"), OctetString]
+		string fLog);
+
+	[Description ("Retrieves PRTC time in UTC format"): Amended, static, implemented]
+	uint32 getRTCValue(
+		[OUT, Description("PRTC time in UTC format")]
+		uint32 rtcValue);
 };
