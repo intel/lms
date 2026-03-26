@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -59,7 +59,7 @@ typedef struct _HashEntry
 class EthernetPortEntry
 {
 public:
-	EthernetPortEntry() : LinkIsUp(false), DHCPEnabled(false) {}
+	EthernetPortEntry() : LinkIsUp(false), DHCPEnabled(false), LinkPreference(0), LinkControl(0), SharedStaticIp(false), IpSyncEnabled(false), ConsoleTcpMaxRetransmissions(0), WLANLinkProtectionLevel(0), PhysicalConnectionType(0), PhysicalNicMedium(0) {}
 	std::wstring MACAddress;
 	boolean	LinkIsUp;
 	boolean DHCPEnabled;
@@ -68,6 +68,15 @@ public:
 	std::wstring   DefaultGateway;
 	std::wstring   PrimaryDNS;
 	std::wstring   SecondaryDNS;
+	std::vector<uint8_t> LinkPolicy;
+	uint32_t LinkPreference;
+	uint32_t LinkControl;
+	boolean SharedStaticIp;
+	boolean IpSyncEnabled;
+	uint32_t ConsoleTcpMaxRetransmissions;
+	uint32_t WLANLinkProtectionLevel;
+	uint32_t PhysicalConnectionType;
+	uint32_t PhysicalNicMedium;
 };
 
 typedef struct _LOCAL_SYSTEM_ACCOUNT
@@ -96,6 +105,7 @@ public:
 	unsigned int GetAMTState(unsigned int* LastMEResetReason, bool *cryptoFuseEnabled);
 	unsigned int GetPowerPolicy(std::wstring* policy);
 	unsigned int GetAMTVersion(std::wstring* AMTVersion);
+	unsigned int GetFullFWVersion(std::vector<std::wstring>& fwVersionArray);
 	unsigned int GetMESetupAudit(MEAdminAudit *MEAudit);
 	unsigned int getWebUIState(SHORT* pState);
 	unsigned int GetRedirectionStatus(SHORT* pSOL, SHORT* pIDER);
@@ -104,6 +114,10 @@ public:
 	unsigned int GetPortSettings(std::vector<EthernetPortEntry> &ethernetPortList);
 	unsigned int GetLocalSystemAccount(LOCAL_SYSTEM_ACCOUNT *LocalAccount);
 	unsigned int GetKVMSessionActivation(bool* activated);
+	unsigned int GetFLogSize(uint32_t& flogSize);
+	unsigned int GetFLog(std::string& flogValue);
+	unsigned int GetCIRALog(std::string& ciraLogData);
+	unsigned int GetRTCValue(uint32_t& rtcValue);
 	unsigned int Unprovision();
 
 	unsigned int OpenCIRA(void);

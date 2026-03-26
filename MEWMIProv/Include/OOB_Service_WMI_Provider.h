@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2015 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -120,6 +120,11 @@ private:
 		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 		IWbemServices*                 pNamespace);
 	static HRESULT GetLocalAdminCredentials(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+	static HRESULT getManagementPresenceRemoteSAP(
 		IWbemClassObject*              pClass,
 		IWbemClassObject __RPC_FAR*    pInParams,
 		IWbemObjectSink  __RPC_FAR*    pResponseHandler,

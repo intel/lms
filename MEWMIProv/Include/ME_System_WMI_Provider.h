@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2022 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -136,6 +136,30 @@ private:
 		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
 		IWbemServices*                 pNamespace);
 
+	static   HRESULT getFullFWVersion(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+
+	static   HRESULT getFLogSize(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+
+	static   HRESULT getFLog(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+
+	static   HRESULT getRTCValue(
+		IWbemClassObject*              pClass,
+		IWbemClassObject __RPC_FAR*    pInParams,
+		IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+		IWbemServices*                 pNamespace);
+	
 	static HRESULT IsFirmwareUpdateEnabled(
 		IWbemClassObject*              pClass,
 		IWbemClassObject __RPC_FAR*    pInParams,

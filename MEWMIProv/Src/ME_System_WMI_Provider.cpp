@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -50,6 +50,14 @@ HRESULT ME_System_WMI_Provider::DispatchMethods(
 				hr = getUniquePlatformIDFeatureSupported(pClass, pInParams, pResponseHandler, pNamespace);
 			else if (CComBSTR(strMethodName) == L"getUniquePlatformIDFeatureOSControlState")
 				hr = getUniquePlatformIDFeatureOSControlState(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getFullFWVersion")
+				hr = getFullFWVersion(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getFLogSize")
+				hr = getFLogSize(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getFLog")
+				hr = getFLog(pClass, pInParams, pResponseHandler, pNamespace);
+			else if (CComBSTR(strMethodName) == L"getRTCValue")
+				hr = getRTCValue(pClass, pInParams, pResponseHandler, pNamespace);
 			else
 			{
 				hr = WBEM_E_NOT_SUPPORTED;
@@ -78,7 +86,10 @@ HRESULT ME_System_WMI_Provider::Enumerate(
 	IWbemContext __RPC_FAR *pCtx,
 	IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	//Get all keys in a colllection, from an internal function
+	// Flow:
+	// 1) Read current ME subsystem state from firmware (GetMESystem).
+	// 2) Materialize a single ME_System WMI instance and map all exposed properties.
+	// 3) Return the completed instance via pResponseHandler->Indicate.
 	HRESULT hr = WBEM_S_NO_ERROR;
 	uint32 ReturnValue = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
@@ -201,6 +212,138 @@ HRESULT ME_System_WMI_Provider::getCurrentPowerPolicy(
 			WMIGetMethodOParams(pClass, L"getCurrentPowerPolicy", &pOutParams.p);
 			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
 			BREAKIF(WMIPut<1>(pOutParams, L"PowerPolicy", powerPolicy));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT ME_System_WMI_Provider::getFullFWVersion(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			// Pre-sized to 3: [0] FT version, [1] NFT (recovery) version, [2] reserved.
+			std::vector<std::wstring> fwVersionArray(3);
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetFullFWVersion(fwVersionArray);
+			ERROR_HANDLER(ReturnValue);
+
+			WMIGetMethodOParams(pClass, L"getFullFWVersion", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"FWVersion", fwVersionArray));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT ME_System_WMI_Provider::getFLogSize(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	// FLog size might be sensitive information; restrict to admin callers.
+	if (IsUserAdmin() == S_FALSE)
+	{
+		hr = WBEM_E_ACCESS_DENIED;
+		pResponseHandler->SetStatus(0, hr, NULL, NULL);
+		return hr;
+	}
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			uint32_t flogSize = 0;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetFLogSize(flogSize);
+			ERROR_HANDLER(ReturnValue);
+
+			WMIGetMethodOParams(pClass, L"getFLogSize", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"fLogSize", flogSize));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT ME_System_WMI_Provider::getFLog(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	// FLog content might contain sensitive platform diagnostics; restrict to admin callers.
+	if (IsUserAdmin() == S_FALSE)
+	{
+		hr = WBEM_E_ACCESS_DENIED;
+		pResponseHandler->SetStatus(0, hr, NULL, NULL);
+		return hr;
+	}
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			std::string flogData = "";
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetFLog(flogData);
+			ERROR_HANDLER(ReturnValue);
+
+			// Convert string to wstring as required for WMIPut
+			std::wstring wflogData(flogData.begin(), flogData.end());
+
+			WMIGetMethodOParams(pClass, L"getFLog", &pOutParams.p);
+
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"fLog", wflogData));
 
 			pResponseHandler->Indicate(1, &pOutParams.p);
 		} while (0);
@@ -853,5 +996,42 @@ HRESULT ME_System_WMI_Provider::getUniquePlatformIDFeatureOSControlState(
 	}
 
 	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT ME_System_WMI_Provider::getRTCValue(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	UINT32 ReturnValue = 0;
+	HRESULT hr = S_OK;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			uint32_t rtcValue = 0;
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetRTCValue(rtcValue);
+			ERROR_HANDLER(ReturnValue);
+
+			WMIGetMethodOParams(pClass, L"getRTCValue", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"rtcValue", rtcValue));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
 	return hr;
 }

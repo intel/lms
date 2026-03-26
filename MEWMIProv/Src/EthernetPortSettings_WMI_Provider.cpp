@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -18,7 +18,10 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	//Get all keys in a colllection, from an internal function
+	// Flow:
+	// 1) Collect current Ethernet port settings from firmware (WSMan first, PTHI fallback).
+	// 2) For each entry, create an AMT_EthernetPortSettings WMI instance and copy fields.
+	// 3) Publish each completed instance through pResponseHandler->Indicate.
 	uint32 ReturnValue = 0;
 	HRESULT hr = 0;
 	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
@@ -46,6 +49,15 @@ HRESULT EthernetPortSettings_WMI_Provider::Enumerate(
 				BREAKIF(WMIPut<1>(obj, L"DefaultGateway",entry->DefaultGateway));
 				BREAKIF(WMIPut<1>(obj, L"PrimaryDNS",entry->PrimaryDNS ));
 				BREAKIF(WMIPut<1>(obj, L"SecondaryDNS",entry->SecondaryDNS));
+				BREAKIF(WMIPut(obj, L"LinkPolicy", entry->LinkPolicy));		// LinkPolicy is an array so WMIPut without <1> is used
+				BREAKIF(WMIPut<1>(obj, L"LinkPreference", entry->LinkPreference));
+				BREAKIF(WMIPut<1>(obj, L"LinkControl", entry->LinkControl));
+				BREAKIF(WMIPut<1>(obj, L"SharedStaticIp", entry->SharedStaticIp));
+				BREAKIF(WMIPut<1>(obj, L"IpSyncEnabled", entry->IpSyncEnabled));
+				BREAKIF(WMIPut<1>(obj, L"ConsoleTcpMaxRetransmissions", entry->ConsoleTcpMaxRetransmissions));
+				BREAKIF(WMIPut<1>(obj, L"WLANLinkProtectionLevel", entry->WLANLinkProtectionLevel));
+				BREAKIF(WMIPut<1>(obj, L"PhysicalConnectionType", entry->PhysicalConnectionType));
+				BREAKIF(WMIPut<1>(obj, L"PhysicalNicMedium", entry->PhysicalNicMedium));
 		
 				BREAKIF(pResponseHandler->Indicate(1, &obj.p));
 			}
@@ -131,6 +143,15 @@ uint32 EthernetPortSettings_WMI_Provider::GetPortList(std::vector<EthernetPortEn
 			entry.PrimaryDNS = portIterator->PrimaryDNS;
 			entry.SecondaryDNS = portIterator->SecondaryDNS;
 			entry.SubnetMask = portIterator->SubnetMask;
+			entry.LinkPolicy = portIterator->LinkPolicy;
+			entry.LinkPreference = portIterator->LinkPreference;
+			entry.LinkControl = portIterator->LinkControl;
+			entry.SharedStaticIp = portIterator->SharedStaticIp;
+			entry.IpSyncEnabled = portIterator->IpSyncEnabled;
+			entry.ConsoleTcpMaxRetransmissions = portIterator->ConsoleTcpMaxRetransmissions;
+			entry.WLANLinkProtectionLevel = portIterator->WLANLinkProtectionLevel;
+			entry.PhysicalConnectionType = portIterator->PhysicalConnectionType;
+			entry.PhysicalNicMedium = portIterator->PhysicalNicMedium;
 			ethernetPortList.push_back(std::move(entry));
 		}
 	}
@@ -155,6 +176,15 @@ EthernetPortSettings_WMI_Provider::EthernetPortSettings_WMI_Provider(const Ether
 	PrimaryDNS = port.PrimaryDNS;
 	SecondaryDNS = port.SecondaryDNS;
 	SubnetMask = port.SubnetMask;
+	LinkPolicy = port.LinkPolicy;
+	LinkPreference = port.LinkPreference;
+	LinkControl = port.LinkControl;
+	SharedStaticIp = port.SharedStaticIp;
+	IpSyncEnabled = port.IpSyncEnabled;
+	ConsoleTcpMaxRetransmissions = port.ConsoleTcpMaxRetransmissions;
+	WLANLinkProtectionLevel = port.WLANLinkProtectionLevel;
+	PhysicalConnectionType = port.PhysicalConnectionType;
+	PhysicalNicMedium = port.PhysicalNicMedium;
 }
 
 HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
@@ -220,6 +250,15 @@ HRESULT EthernetPortSettings_WMI_Provider::Get_PortSettings(
 			BREAKIF(WMIPut<1>(obj, L"DefaultGateway", entry.DefaultGateway));
 			BREAKIF(WMIPut<1>(obj, L"PrimaryDNS", entry.PrimaryDNS));
 			BREAKIF(WMIPut<1>(obj, L"SecondaryDNS", entry.SecondaryDNS));
+			BREAKIF(WMIPut(obj, L"LinkPolicy", entry.LinkPolicy));	// LinkPolicy is an array so WMIPut without <1> is used
+			BREAKIF(WMIPut<1>(obj, L"LinkPreference", entry.LinkPreference));
+			BREAKIF(WMIPut<1>(obj, L"LinkControl", entry.LinkControl));
+			BREAKIF(WMIPut<1>(obj, L"SharedStaticIp", entry.SharedStaticIp));
+			BREAKIF(WMIPut<1>(obj, L"IpSyncEnabled", entry.IpSyncEnabled));
+			BREAKIF(WMIPut<1>(obj, L"ConsoleTcpMaxRetransmissions", entry.ConsoleTcpMaxRetransmissions));
+			BREAKIF(WMIPut<1>(obj, L"WLANLinkProtectionLevel", entry.WLANLinkProtectionLevel));
+			BREAKIF(WMIPut<1>(obj, L"PhysicalConnectionType", entry.PhysicalConnectionType));
+			BREAKIF(WMIPut<1>(obj, L"PhysicalNicMedium", entry.PhysicalNicMedium));
 
 			
 			BREAKIF(pResponseHandler->Indicate(1, &obj.p));

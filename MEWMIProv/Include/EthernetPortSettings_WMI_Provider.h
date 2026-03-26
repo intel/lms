@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2020 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -25,6 +25,15 @@ public:
 	std::wstring DefaultGateway;
 	std::wstring PrimaryDNS;
 	std::wstring SecondaryDNS;
+	std::vector<uint8_t> LinkPolicy;
+	uint32_t LinkPreference;
+	uint32_t LinkControl;
+	bool SharedStaticIp;
+	bool IpSyncEnabled;
+	uint32_t ConsoleTcpMaxRetransmissions;
+	uint32_t WLANLinkProtectionLevel;
+	uint32_t PhysicalConnectionType;
+	uint32_t PhysicalNicMedium;
 
 	static HRESULT Enumerate(
 		IWbemServices* pNamespace,

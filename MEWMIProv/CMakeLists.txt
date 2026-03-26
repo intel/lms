@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (C) 2010-2024 Intel Corporation
+# Copyright (C) 2010-2026 Intel Corporation
 cmake_minimum_required (VERSION 3.15)
 
 set (MEPROV_MESSAGE_FILES
@@ -48,6 +48,11 @@ add_library (MEProv SHARED
   Src/WMIInfrastructure.cpp
   Src/WSmanCommands.cpp
   Src/UPID_Commands.cpp
+  Src/AuditLogRecords_WMI_Provider.cpp
+  Src/RemoteAccessPolicyRule_WMI_Provider.cpp
+  Src/WiFiProfiles_WMI_Provider.cpp
+  Src/HTTPProxyAccessPoint_WMI_Provider.cpp
+  Src/WiFiPort_WMI_Provider.cpp
   MethProv.Def
   ${CMAKE_CURRENT_BINARY_DIR}/MEProvMessageFile.rc
   MEProv.rc

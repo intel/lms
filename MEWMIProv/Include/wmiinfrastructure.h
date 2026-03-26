@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2003-2025 Intel Corporation
+ * Copyright (C) 2003-2026 Intel Corporation
  */
 /*++
 
@@ -403,7 +403,7 @@ template<typename T>
 HRESULT  WMIPut(
                         IWbemClassObject*   obj,
                         LPCWSTR             name,
-                        std::vector<T>&     var)
+                        const std::vector<T>&     var)
 {
     CComSafeArray<ImpliedType<T>::type> array((ULONG)var.size());
 

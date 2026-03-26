@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2023 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -23,6 +23,11 @@
 #include "OOB_Service_WMI_Provider.h"
 #include "ME_System_WMI_Provider.h"
 #include "Audit_Record_WMI_Provider.h"
+#include "AuditLogRecords_WMI_Provider.h"
+#include "RemoteAccessPolicyRule_WMI_Provider.h"
+#include "WiFiProfiles_WMI_Provider.h"
+#include "HTTPProxyAccessPoint_WMI_Provider.h"
+#include "WiFiPort_WMI_Provider.h"
 #include "AMT_Service_WMI_Provider.h"
 #include "ProvisioningCertificateHash_WMI_Provider.h"
 #include "EthernetPortSettings_WMI_Provider.h"
@@ -171,6 +176,7 @@ SCODE CMethodPro::CreateInstanceEnumAsync( const BSTR RefStr, long lFlags,
 
 	try
 	{
+		// Route class enumeration requests to the matching provider Enumerate implementation.
 
 		if(CComBSTR(RefStr) == L"OOB_Service")
 			OOB_Service_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
@@ -182,6 +188,16 @@ SCODE CMethodPro::CreateInstanceEnumAsync( const BSTR RefStr, long lFlags,
 			ProvisioningCertificateHash_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
 		else if(CComBSTR(RefStr) == L"AMT_EthernetPortSettings")
 			EthernetPortSettings_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
+		else if(CComBSTR(RefStr) == L"AMT_AuditLogRecords")
+			AuditLogRecords_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
+		else if(CComBSTR(RefStr) == L"AMT_RemoteAccessPolicyRule")
+			RemoteAccessPolicyRule_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
+		else if(CComBSTR(RefStr) == L"AMT_WiFiProfiles")
+			WiFiProfiles_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
+		else if(CComBSTR(RefStr) == L"IPS_HTTPProxyAccessPoint")
+			HTTPProxyAccessPoint_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
+		else if(CComBSTR(RefStr) == L"CIM_WiFiPort")
+			WiFiPort_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
 		else if(CComBSTR(RefStr) == L"AMT_Service")
 			AMT_Service_WMI_Provider::Enumerate(m_pWbemSvcs, pCtx, pHandler);
 		else if(CComBSTR(RefStr) == L"CIM_HostedService")
@@ -224,6 +240,7 @@ HRESULT CMethodPro::GetObjectAsync(
 	{
 		do
 		{
+			// Parse class name from object path and dispatch instance retrieval to the owning provider.
 			CComPtr<IWbemPath>pParser;
 			hr = CoCreateInstance(CLSID_WbemDefPath,
 				0,
@@ -252,6 +269,11 @@ HRESULT CMethodPro::GetObjectAsync(
 				ProvisioningCertificateHash_WMI_Provider::Get_Entry(m_pWbemSvcs,strClass, pCtx, pResponseHandler);
 			else if(CComBSTR(className) == L"AMT_EthernetPortSettings")
 				EthernetPortSettings_WMI_Provider::Get_PortSettings(m_pWbemSvcs,strClass, pCtx, pResponseHandler);
+			// AMT_AuditLogRecords supports instance-level lookup by InstanceID; the other new
+			// classes (RemoteAccessPolicyRule, WiFiProfiles, HTTPProxyAccessPoint, CIM_WiFiPort)
+			// are enumerate-only and have no GetObjectAsync entry.
+			else if(CComBSTR(className) == L"AMT_AuditLogRecords")
+				AuditLogRecords_WMI_Provider::GetAuditLogRecord(m_pWbemSvcs,strClass, pCtx, pResponseHandler);
 			else if (CComBSTR(className) == L"AMT_Service")
 				AMT_Service_WMI_Provider::GetAMT_Service(m_pWbemSvcs,strClass, pCtx, pResponseHandler);
 			else if (CComBSTR(className) == L"CIM_HostedService")

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -12,6 +12,7 @@
 #include "pthi_commands.h"
 #include "WSmanCommands.h"
 #include "WMIHelper.h"
+#include "StringManipulator.h"
 
 
 HRESULT AMT_Service_WMI_Provider::DispatchMethods(
@@ -42,6 +43,24 @@ HRESULT AMT_Service_WMI_Provider::DispatchMethods(
 				hr = setSpriteZoom(pClass, pInParams, pResponseHandler, pNamespace);
 			else if(CComBSTR(strMethodName) == L"setSpriteLocale")
 				hr = setSpriteLocale(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getBootCapabilities")
+				hr = getBootCapabilities(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getEnvironmentDetectionSettingData")
+				hr = getEnvironmentDetectionSettingData(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getGeneralSettings")
+				hr = getGeneralSettings(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getAMTConfiguration")
+				hr = getAMTConfiguration(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getWiFiPortConfiguration")
+				hr = getWiFiPortConfiguration(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getWiFiEndpointState")
+				hr = getWiFiEndpointState(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getCIRALog")
+				hr = getCIRALog(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getTimeSynchronizationConfig")
+				hr = getTimeSynchronizationConfig(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getOptInConfiguration")
+				hr = getOptInConfiguration(pClass, pInParams, pResponseHandler, pNamespace);
 			else
 			{
 				hr = WBEM_E_NOT_SUPPORTED;
@@ -463,6 +482,470 @@ HRESULT AMT_Service_WMI_Provider::setSpriteLocale(
 	return hr;
 }
 
+HRESULT AMT_Service_WMI_Provider::getBootCapabilities(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			BootCapabilitiesWSMan caps;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetBootCapabilities(caps);
+			ERROR_HANDLER(ReturnValue);
+
+			WMIGetMethodOParams(pClass, L"getBootCapabilities", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"IDER", caps.IDER));
+			BREAKIF(WMIPut<1>(pOutParams, L"SOL", caps.SOL));
+			BREAKIF(WMIPut<1>(pOutParams, L"BIOSReflash", caps.BIOSReflash));
+			BREAKIF(WMIPut<1>(pOutParams, L"BIOSSetup", caps.BIOSSetup));
+			BREAKIF(WMIPut<1>(pOutParams, L"BIOSPause", caps.BIOSPause));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForcePXEBoot", caps.ForcePXEBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForceHardDriveBoot", caps.ForceHardDriveBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForceDiagnosticBoot", caps.ForceDiagnosticBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForceCDorDVDBoot", caps.ForceCDorDVDBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"VerbosityScreenBlank", caps.VerbosityScreenBlank));
+			BREAKIF(WMIPut<1>(pOutParams, L"PowerButtonLock", caps.PowerButtonLock));
+			BREAKIF(WMIPut<1>(pOutParams, L"ResetButtonLock", caps.ResetButtonLock));
+			BREAKIF(WMIPut<1>(pOutParams, L"KeyboardLock", caps.KeyboardLock));
+			BREAKIF(WMIPut<1>(pOutParams, L"SleepButtonLock", caps.SleepButtonLock));
+			BREAKIF(WMIPut<1>(pOutParams, L"UserPasswordBypass", caps.UserPasswordBypass));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForcedProgressEvents", caps.ForcedProgressEvents));
+			BREAKIF(WMIPut<1>(pOutParams, L"VerbosityVerbose", caps.VerbosityVerbose));
+			BREAKIF(WMIPut<1>(pOutParams, L"VerbosityQuiet", caps.VerbosityQuiet));
+			BREAKIF(WMIPut<1>(pOutParams, L"ConfigurationDataReset", caps.ConfigurationDataReset));
+			BREAKIF(WMIPut<1>(pOutParams, L"BIOSSecureBoot", caps.BIOSSecureBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"SecureErase", caps.SecureErase));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForceWinREBoot", caps.ForceWinREBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForceUEFIPBABoot", caps.ForceUEFIPBABoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"ForceUEFIHTTPSBoot", caps.ForceUEFIHTTPSBoot));
+			BREAKIF(WMIPut<1>(pOutParams, L"AMTSecureBootControl", caps.AMTSecureBootControl));
+			BREAKIF(WMIPut<1>(pOutParams, L"UEFIWiFiCoExistenceAndProfileShare", caps.UEFIWiFiCoExistenceAndProfileShare));
+			BREAKIF(WMIPut<1>(pOutParams, L"PlatformErase", caps.PlatformErase));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getEnvironmentDetectionSettingData(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			EnvironmentDetectionWSMan detection;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetEnvironmentDetection(detection);
+			ERROR_HANDLER(ReturnValue);
+
+			// WMIPut requires wstring arrays; convert each element of the string vectors returned by WSMan.
+			std::vector<std::wstring> wDetectionStrings;
+			for (const auto& s : detection.DetectionStrings)
+				wDetectionStrings.push_back(ToWStr(s));
+
+			std::vector<std::wstring> wDetectionIPv6LocalPrefixes;
+			for (const auto& s : detection.DetectionIPv6LocalPrefixes)
+				wDetectionIPv6LocalPrefixes.push_back(ToWStr(s));
+
+			WMIGetMethodOParams(pClass, L"getEnvironmentDetectionSettingData", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"DetectionAlgorithm", detection.DetectionAlgorithm));
+			BREAKIF(WMIPut<1>(pOutParams, L"DetectionStrings", wDetectionStrings));
+			BREAKIF(WMIPut<1>(pOutParams, L"DetectionIPv6LocalPrefixes", wDetectionIPv6LocalPrefixes));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getGeneralSettings(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			GeneralSettingsWSMan settings;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetGeneralSettings(settings);
+			ERROR_HANDLER(ReturnValue);
+
+			std::wstring wDigestRealm = ToWStr(settings.DigestRealm);
+			std::wstring wHostName = ToWStr(settings.HostName);
+			std::wstring wDomainName = ToWStr(settings.DomainName);
+			std::wstring wHostOSFQDN = ToWStr(settings.HostOSFQDN);
+
+			WMIGetMethodOParams(pClass, L"getGeneralSettings", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"NetworkInterfaceEnabled", settings.NetworkInterfaceEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"DigestRealm", wDigestRealm));
+			BREAKIF(WMIPut<1>(pOutParams, L"IdleWakeTimeout", settings.IdleWakeTimeout));
+			BREAKIF(WMIPut<1>(pOutParams, L"HostName", wHostName));
+			BREAKIF(WMIPut<1>(pOutParams, L"DomainName", wDomainName));
+			BREAKIF(WMIPut<1>(pOutParams, L"PingResponseEnabled", settings.PingResponseEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"WsmanOnlyMode", settings.WsmanOnlyMode));
+			BREAKIF(WMIPut<1>(pOutParams, L"PreferredAddressFamily", settings.PreferredAddressFamily));
+			BREAKIF(WMIPut<1>(pOutParams, L"DHCPv6ConfigurationTimeout", settings.DHCPv6ConfigurationTimeout));
+			BREAKIF(WMIPut<1>(pOutParams, L"SharedFQDN", settings.SharedFQDN));
+			BREAKIF(WMIPut<1>(pOutParams, L"HostOSFQDN", wHostOSFQDN));
+			BREAKIF(WMIPut<1>(pOutParams, L"AMTNetworkEnabled", settings.AMTNetworkEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"RmcpPingResponseEnabled", settings.RmcpPingResponseEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"PresenceNotificationInterval", settings.PresenceNotificationInterval));
+			BREAKIF(WMIPut<1>(pOutParams, L"PrivacyLevel", settings.PrivacyLevel));
+			BREAKIF(WMIPut<1>(pOutParams, L"PowerSource", settings.PowerSource));
+			BREAKIF(WMIPut<1>(pOutParams, L"ThunderboltDockEnabled", settings.ThunderboltDockEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"OemID", settings.OemID));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getAMTConfiguration(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			AMTConfigurationWSMan config;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetAMTConfiguration(config);
+			ERROR_HANDLER(ReturnValue);
+
+			std::wstring wDhcpDNSSuffix = ToWStr(config.DhcpDNSSuffix);
+			std::wstring wTrustedDNSSuffix = ToWStr(config.TrustedDNSSuffix);
+
+			WMIGetMethodOParams(pClass, L"getAMTConfiguration", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"DhcpDNSSuffix", wDhcpDNSSuffix));
+			BREAKIF(WMIPut<1>(pOutParams, L"TrustedDNSSuffix", wTrustedDNSSuffix));
+			BREAKIF(WMIPut<1>(pOutParams, L"ZeroTouchConfigurationEnabled", config.ZeroTouchConfigurationEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"ProvisioningMode", config.ProvisioningMode));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getWiFiPortConfiguration(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			WiFiPortConfigWSMan wifiConfig;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetWiFiPortConfiguration(wifiConfig);
+			ERROR_HANDLER(ReturnValue);
+
+			std::wstring wLastConnectedSsid = ToWStr(wifiConfig.LastConnectedSsidUnderMeControl);
+
+			WMIGetMethodOParams(pClass, L"getWiFiPortConfiguration", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"LastConnectedSsidUnderMeControl", wLastConnectedSsid));
+			BREAKIF(WMIPut<1>(pOutParams, L"UEFIWiFiProfileShareEnabled", wifiConfig.UEFIWiFiProfileShareEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"LocalProfileSynchronizationEnabled", wifiConfig.LocalProfileSynchronizationEnabled));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getWiFiEndpointState(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			WiFiEndpointStateWSMan wifiState;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetWiFiEndpointState(wifiState);
+			ERROR_HANDLER(ReturnValue);
+
+			std::wstring wMACAddress = ToWStr(wifiState.MACAddress);
+
+			WMIGetMethodOParams(pClass, L"getWiFiEndpointState", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"MACAddress", wMACAddress));
+			BREAKIF(WMIPut<1>(pOutParams, L"HealthState", wifiState.HealthState));
+			BREAKIF(WMIPut<1>(pOutParams, L"EnabledState", wifiState.EnabledState));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getCIRALog(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			std::string ciraLogData = "";
+			// CIRA log is not accessible via WSMan, hence PTHI instead of WSmanCommands.
+			PTHI_Commands pthic;
+			ReturnValue = pthic.GetCIRALog(ciraLogData);
+			ERROR_HANDLER(ReturnValue);
+
+			// Convert string to wstring as required for WMIPut
+			std::wstring wciraLogData(ciraLogData.begin(), ciraLogData.end());
+
+			WMIGetMethodOParams(pClass, L"getCIRALog", &pOutParams.p);
+
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"ciraLog", wciraLogData));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace,pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getTimeSynchronizationConfig(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			TimeSyncConfigWSMan timeConfig;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetTimeSyncConfig(timeConfig);
+			ERROR_HANDLER(ReturnValue);
+
+			WMIGetMethodOParams(pClass, L"getTimeSynchronizationConfig", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"AMTTime", timeConfig.AMTTime));
+			BREAKIF(WMIPut<1>(pOutParams, L"LocalTimeSyncEnabled", timeConfig.LocalTimeSyncEnabled));
+			BREAKIF(WMIPut<1>(pOutParams, L"TimeSource", timeConfig.TimeSource));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
+HRESULT AMT_Service_WMI_Provider::getOptInConfiguration(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			CComPtr<IWbemClassObject> pOutParams;
+			OptInConfigWSMan optInConfig;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetOptInConfig(optInConfig);
+			ERROR_HANDLER(ReturnValue);
+
+			WMIGetMethodOParams(pClass, L"getOptInConfiguration", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"OptInCodeTimeout", optInConfig.OptInCodeTimeout));
+			BREAKIF(WMIPut<1>(pOutParams, L"OptInRequired", optInConfig.OptInRequired));
+			BREAKIF(WMIPut<1>(pOutParams, L"OptInState", optInConfig.OptInState));
+			BREAKIF(WMIPut<1>(pOutParams, L"OptInDisplayTimeout", optInConfig.OptInDisplayTimeout));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in %C: %C\n", __FUNCTION__, e.what());
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
+	return hr;
+}
+
 HRESULT AMT_Service_WMI_Provider::Enumerate(
 								IWbemServices* pNamespace,
 								IWbemContext __RPC_FAR *pCtx,
@@ -473,6 +956,10 @@ HRESULT AMT_Service_WMI_Provider::Enumerate(
 
 	try
 	{
+		// Flow:
+		// 1) Build the single AMT_Service WMI instance identity fields.
+		// 2) Populate the class keys and naming properties.
+		// 3) Publish the completed instance through pResponseHandler->Indicate.
 		do {
 			CComPtr<IWbemClassObject> obj;
 			RETURNIF(WMIPutMember(pNamespace, &obj, L"AMT_Service"));

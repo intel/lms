@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2024 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -11,6 +11,7 @@
 #include "OOB_Service_WMI_Provider.h"
 #include "StringManipulator.h"
 #include "pthi_commands.h"
+#include "WSmanCommands.h"
 #include "WMIHelper.h"
 #include "MEProvMessageUtil.h" 
 #include <iostream>
@@ -67,6 +68,8 @@ HRESULT OOB_Service_WMI_Provider::DispatchMethods(
 				hr = Unconfigure(pClass, pInParams, pResponseHandler, pNamespace);
 			else if(CComBSTR(strMethodName) == L"GetLocalAdminCredentials")
 				hr = GetLocalAdminCredentials(pClass, pInParams, pResponseHandler, pNamespace);
+			else if(CComBSTR(strMethodName) == L"getManagementPresenceRemoteSAP")
+				hr = getManagementPresenceRemoteSAP(pClass, pInParams, pResponseHandler, pNamespace);
 			else
 			{
 				hr = WBEM_E_NOT_SUPPORTED;
@@ -240,7 +243,10 @@ HRESULT OOB_Service_WMI_Provider::Enumerate(
 								IWbemContext __RPC_FAR *pCtx,
 								IWbemObjectSink __RPC_FAR *pResponseHandler)
 {
-	//Get all keys in a colllection, from an internal function
+	// Flow:
+	// 1) Build the single OOB_Service WMI instance identity fields.
+	// 2) Populate class keys and system linkage properties.
+	// 3) Publish the completed instance via pResponseHandler->Indicate.
 	HRESULT hr = 0;
 	EntryExitLogShort log(__FUNCTION__, hr);
 	try
@@ -750,5 +756,46 @@ HRESULT OOB_Service_WMI_Provider::GetLocalAdminCredentials(
 	messageStream << "Calling User: " << domain << "/" << userName << "\n"; 
 	windowsEventLog.LogEvent(ME_PROVIDER_EVENT, UNCONFIGURE_REQUEST, EVENTLOG_INFORMATION_TYPE, messageStream.str().c_str());
 
+	return hr;
+}
+
+HRESULT OOB_Service_WMI_Provider::getManagementPresenceRemoteSAP(
+	IWbemClassObject*              pClass,
+	IWbemClassObject __RPC_FAR*    pInParams,
+	IWbemObjectSink  __RPC_FAR*    pResponseHandler,
+	IWbemServices*                 pNamespace)
+{
+	uint32 ReturnValue = 0;
+	HRESULT hr = 0;
+	EntryExitLog log(__FUNCTION__, ReturnValue, hr);
+
+	try
+	{
+		do {
+			// If no MPS is configured the call succeeds with all fields empty/zero.
+			ManagementPresenceSAPWSMan sap;
+			WSmanCommands wsmc;
+			ReturnValue = wsmc.GetManagementPresenceRemoteSAP(sap);
+			ERROR_HANDLER(ReturnValue);
+
+			CComPtr<IWbemClassObject> pOutParams;
+			WMIGetMethodOParams(pClass, L"getManagementPresenceRemoteSAP", &pOutParams.p);
+			BREAKIF(WMIPut<1>(pOutParams, L"ReturnValue", ReturnValue));
+			BREAKIF(WMIPut<1>(pOutParams, L"InfoFormat", sap.InfoFormat));
+			BREAKIF(WMIPut<1>(pOutParams, L"AccessInfo", ToWStr(sap.AccessInfo)));
+			BREAKIF(WMIPut<1>(pOutParams, L"Port", sap.Port));
+			BREAKIF(WMIPut<1>(pOutParams, L"CN", ToWStr(sap.CN)));
+
+			pResponseHandler->Indicate(1, &pOutParams.p);
+		} while (0);
+	}
+	catch(...)
+	{
+		UNS_ERROR("%C Bad catch", __FUNCTION__);
+		hr  = WBEM_E_PROVIDER_FAILURE;
+		ReturnValue  = ERROR_EXCEPTION_IN_SERVICE;
+	}
+
+	WMIHandleSetStatus(pNamespace, pResponseHandler, hr);
 	return hr;
 }
