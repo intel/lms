@@ -73,6 +73,29 @@ bool AuditLogWSManClient::readLogsFromFW(std::vector<Intel::Manageability::Cim::
 	return true;
 }
 
+bool AuditLogWSManClient::GetAuditLogRecords(std::vector<BinaryData>& records)
+{
+	try
+	{
+		std::vector<Intel::Manageability::Cim::Utils::Base64> base64Records;
+		if (!readLogsFromFW(base64Records))
+			return false;
+
+		for (const auto& rec : base64Records)
+		{
+			const unsigned char* data = rec.Data();
+			const unsigned int len = rec.Length();
+			if (data != nullptr && len > 0)
+				records.emplace_back(data, data + len);
+			else
+				records.emplace_back();
+		}
+	}
+	CATCH_exception_return("AuditLogWSManClient::GetAuditLogRecords")
+
+	return true;
+}
+
 bool AuditLogWSManClient::Init(bool forceGet)
 {
 	if (!forceGet && m_isInit) return true;

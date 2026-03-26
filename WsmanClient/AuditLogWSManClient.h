@@ -57,12 +57,13 @@ public:
 	AuditLogWSManClient(unsigned int port);
 	virtual ~AuditLogWSManClient();
 
-	bool readLogsFromFW(std::vector<Intel::Manageability::Cim::Utils::Base64> &records);
+	bool GetAuditLogRecords(std::vector<BinaryData>& records);
 	bool Init(bool forceGet = false);
 	bool AuditLogRecordFromBinaryBase64Data(BinaryData binaryRecord, AuditLogRecord &structedRecord);
 	bool parseLogs (std::string &parsed, const std::vector<BinaryData> &unParsed);
 
 private:
+	bool readLogsFromFW(std::vector<Intel::Manageability::Cim::Utils::Base64>& records);
 	void ReverseMemCopy(void *dst, const void *src, size_t n);
 	void GetCharPtrFromUint8Vector(uint8_t length, std::vector<uint8_t> data, char* parsedData);
 	std::string formatTime(time_t* time);
