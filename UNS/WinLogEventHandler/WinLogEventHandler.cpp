@@ -1,9 +1,9 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2024 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 #include "WinLogEventHandler.h"
-#include "HTMGetFLogCommand.h"
+#include "HTMGetFLogSizeCommand.h"
 #include "DataStorageGenerator.h"
 #include "UNSMessageFile.h"
 #include "UNSEventsDefinition.h"
@@ -29,17 +29,17 @@ WinLogEventHandler::init (int argc, ACE_TCHAR *argv[])
 	uint32_t currentSize = 0;
 	try
 	{			
-		Intel::MEI_Client::HOTHAM_Client::HTMGetFatalErrorsCommand getFatalErrorsCommand;	
-		currentSize = getFatalErrorsCommand.getResponse().response.response;
+		Intel::MEI_Client::HOTHAM_Client::HTMGetFLogSizeCommand getFLogSizeCommand;
+		currentSize = getFLogSizeCommand.getResponse().response;
 	}
 	catch (std::exception& e)
 	{
-		UNS_ERROR(L"Exception with HTMGetFatalErrorsCommand: %C\n", e.what());
+		UNS_ERROR(L"Exception with HTMGetFLogSizeCommand: %C\n", e.what());
 		return 0;
 	}
 	catch(...)
 	{
-		UNS_ERROR(L"Exception with HTMGetFatalErrorsCommand\n");
+		UNS_ERROR(L"Exception with HTMGetFLogSizeCommand\n");
 		return 0;
 	}
 
