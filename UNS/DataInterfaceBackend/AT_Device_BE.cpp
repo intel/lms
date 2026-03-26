@@ -24,19 +24,11 @@ namespace Intel {
 				std::string parsedRecords;
 				AuditLogWSManClient client(m_port);
 				std::vector<BinaryData> records;
-				std::vector<Intel::Manageability::Cim::Typed::Base64> base64Records;
 
-				if (!client.readLogsFromFW(base64Records))
+				if (!client.GetAuditLogRecords(records))
 					return LMS_ERROR::FAIL;
 
-				UNS_DEBUG(L"get %d logs\n", base64Records.size());
-				for (unsigned int i = 0; i < base64Records.size(); i++)
-				{
-					const unsigned char *data= base64Records.at(i).Data();
-					unsigned int length = base64Records.at(i).Length();
-
-					records.push_back(BinaryData(data, data + length));
-				}
+				UNS_DEBUG(L"get %d logs\n", records.size());
 				if (client.parseLogs(parsedRecords, records))
 				{
 					bstrAuditLogs = parsedRecords;

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -103,6 +103,8 @@ ComFilter::defaultInitialization(std::shared_ptr<ComFilter> filter)
 		filter->addEvent(EVENT_UNPROVISIONING) &&
 		filter->addEvent(EVENT_SD_STARTED) &&
 		filter->addEvent(EVENT_SD_FINISHED) &&
+
+		filter->addEvent(EVENT_FIRMWARE_RESET) &&
 
 		filter->addEvent(EVENT_IP_SYNC_DISABLE) &&
 		filter->addEvent(EVENT_IP_SYNC_ENABLE) &&

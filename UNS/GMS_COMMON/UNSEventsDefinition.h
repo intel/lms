@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -43,6 +43,7 @@
 #define EVENT_NETWORK_STATE_CHANGE 				14
 #define EVENT_UNPROVISIONES_STARTED				15
 #define EVENT_CONTROL_MODE_CHANGE				16 
+#define EVENT_FIRMWARE_RESET					17
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define EVENT_ALARM_CLOCK_BOOT					18
 #define EVENT_REMOTE_REBOOT						19
@@ -158,6 +159,8 @@
 #define EVENT_WATCHDOG_ERROR                            284
 #define EVENT_FWCIRAWORKAROUND_SUCCESS                  285
 #define EVENT_FWCIRAWORKAROUND_FAILURE                  286
+#define EVENT_FWCIRAWORKAROUND_NOTACTIVE                287
+#define EVENT_REMOTE_CONNECTIVITY_INITIATED             288
 
 //note this should be updated when when adding events
 #define MAX_EVENT_NUM							290

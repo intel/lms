@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2024-2025 Intel Corporation
+ * Copyright (C) 2024-2026 Intel Corporation
  */
 #include "FWCIRAWorkaroundService.h"
 #include "UNSEventsDefinition.h"
@@ -81,8 +81,8 @@ int FWCIRAWorkaroundService::resume()
 
 bool FWCIRAWorkaroundService::CheckCIRA()
 {
-	bool res = true;
-	FuncEntryExit<decltype(res)> fee(this, L"CheckCIRA", res);
+	bool ciraOpenSucceeded = false;
+	FuncEntryExit<decltype(ciraOpenSucceeded)> fee(this, L"CheckCIRA", ciraOpenSucceeded);
 
 	try {
 		Intel::MEI_Client::AMTHI_Client::GetRemoteAccessConnectionStatusCommand getRemoteAccessConnectionStatus;
@@ -90,17 +90,22 @@ bool FWCIRAWorkaroundService::CheckCIRA()
 		if (Status.RemoteAccessConnectionStatus == Intel::MEI_Client::AMTHI_Client::REMOTE_ACCESS_CONNECTION_STATUS_CONNECTED)
 		{
 			UNS_DEBUG(L"FWCIRAWorkaroundService::CheckCIRA no need - connected\n");
+			sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_FWCIRAWORKAROUND_NOTACTIVE, ACE_TEXT(""), ACE_TEXT("connected"));
+			ciraOpenSucceeded = false;
 			return false;
 		}
 		if (Status.AmtNetworkConnectionStatus != Intel::MEI_Client::AMTHI_Client::AMT_NETWORK_CONNECTION_OUTSIDE_ENTERPRISE)
 		{
 			UNS_DEBUG(L"FWCIRAWorkaroundService::CheckCIRA no need - not out of enterprise\n");
+			sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_FWCIRAWORKAROUND_NOTACTIVE, ACE_TEXT(""), ACE_TEXT("not out of enterprise"));
+			ciraOpenSucceeded = false;
 			return false;
 		}
 	}
 	catch (const std::exception& e)
 	{
 		UNS_ERROR(L"Exception in GetRemoteAccessConnectionStatusCommand %C\n", e.what());
+		ciraOpenSucceeded = false;
 		return false;
 	}
 
@@ -113,21 +118,23 @@ bool FWCIRAWorkaroundService::CheckCIRA()
 		if ((responseWired.LinkStatus != 1) && (responseWireless.LinkStatus != 1))
 		{
 			UNS_DEBUG(L"FWCIRAWorkaroundService::CheckCIRA no need - no valid link\n");
+			sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_FWCIRAWORKAROUND_NOTACTIVE, ACE_TEXT(""), ACE_TEXT("no valid link"));
+			ciraOpenSucceeded = false;
 			return false;
 		}
 	}
 	catch (const std::exception& e)
 	{
 		UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
+		ciraOpenSucceeded = false;
 		return false;
 	}
 
 	// restore session
-	bool success_in_restore;
 	try {
 		Intel::MEI_Client::AMTHI_Client::OpenUserInitiatedConnectionCommand openUserInitiatedConnection;
 		UNS_DEBUG(L"OpenUserInitiatedConnection opened\n");
-		success_in_restore = true;
+		ciraOpenSucceeded = true;
 	}
 	catch (const Intel::MEI_Client::AMTHI_Client::AMTHIErrorException& e)
 	{
@@ -135,21 +142,21 @@ bool FWCIRAWorkaroundService::CheckCIRA()
 		if ((status == AMT_STATUS_NOT_READY) || (status == AMT_STATUS_DATA_MISSING))
 		{
 			UNS_DEBUG(L"OpenUserInitiatedConnection failed, but returned status=%d\n", status);
-			success_in_restore = true;
+			ciraOpenSucceeded = true;
 		}
 		else
 		{
 			UNS_DEBUG(L"OpenUserInitiatedConnection failed, status=%d\n", status);
-			success_in_restore = false;
+			ciraOpenSucceeded = false;
 		}
 	}
 	catch (const std::exception& e)
 	{
 		UNS_ERROR("Exception in OpenUserInitiatedConnection %C\n", e.what());
-		success_in_restore = false;
+		ciraOpenSucceeded = false;
 	}
 
-	if (success_in_restore)
+	if (ciraOpenSucceeded)
 	{
 		sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_FWCIRAWORKAROUND_SUCCESS, ACE_TEXT(""), ACE_TEXT(""));
 	}
@@ -158,5 +165,5 @@ bool FWCIRAWorkaroundService::CheckCIRA()
 		sendAlertIndicationMessage(CATEGORY_GENERAL, EVENT_FWCIRAWORKAROUND_FAILURE, ACE_TEXT(""), ACE_TEXT(""));
 	}
 
-	return success_in_restore;
+	return ciraOpenSucceeded;
 }

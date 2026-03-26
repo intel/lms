@@ -59,6 +59,7 @@ const ACE_TString LINK_PROTECTION_PASSIVE_MSG(ACE_TEXT("Intel(R) ME WLAN Link Pr
 const ACE_TString LINK_PROTECTION_OFF_MSG(ACE_TEXT("Intel(R) ME WLAN Link Protection is OFF"));
 const ACE_TString LINK_CONTROL_HOST_MSG(ACE_TEXT("WLAN Link Control set to Host (Operating system)"));
 const ACE_TString LINK_CONTROL_ME_MSG(ACE_TEXT("WLAN Link Control set to Intel(R) ME"));
+const ACE_TString EVENT_FIRMWARE_RESET_MSG(ACE_TEXT("Intel(R) ME firmware reset"));
 
 StatusEventHandler::StatusEventHandler(): filter_(new StatusEventFilter)
 {
@@ -215,6 +216,9 @@ void StatusEventHandler::handleGeneralEvents(const GMS_AlertIndication *alert)
 	case EVENT_AGENT_4:
 		handleAgentPresenceEvents(alert);
 		break;
+	case EVENT_FIRMWARE_RESET:
+		handleFWResetEvent(alert);
+		break;
 	}
 
 }
@@ -287,6 +291,11 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 	}
 	SaveCurrentStatus(curProvState, AMT_PROVISIONING_STATE_S);
 	NotifyConfigurator(curProvState, CONFIGURATION_TYPE::AMT_PROVISION_CONF);
+}
+
+void StatusEventHandler::handleFWResetEvent(const GMS_AlertIndication* alert)
+{
+	raiseGMS_AlertIndication(alert->category, EVENT_FIRMWARE_RESET, alert->Datetime, alert->MessageID, EVENT_FIRMWARE_RESET_MSG, alert->MessageArguments);
 }
 
 void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *alert)

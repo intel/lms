@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 #include "IMSSFilter.h"
 #include "UNSEventsDefinition.h"
@@ -18,6 +18,7 @@ bool IMSSFilter::toSubscribe(const GMS_AlertIndication *alert) const
 				(alert->id == EVENT_AMT_DISABLE)||
 				(alert->id == EVENT_NETWORK_STATE_CHANGE)||
 				(alert->id == EVENT_REMOTE_REBOOT)||
+				(alert->id == EVENT_REMOTE_CONNECTIVITY_INITIATED)||
 				(alert->id == EVENT_FW_FATAL_ERROR))
 				return true;
 		case CATEGORY_CIRCUIT_BREAKER:

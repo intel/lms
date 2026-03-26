@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2025 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 #ifndef __STATUSEVENTHANDLER_H_
 #define __STATUSEVENTHANDLER_H_
@@ -188,6 +188,7 @@ private:
 	void handleAgentPresenceEvents(const GMS_AlertIndication *alert);
 	void handleWlanEvents(const GMS_AlertIndication *alert);
 	void handleTimeSyncEvents(const GMS_AlertIndication *alert);
+	void handleFWResetEvent(const GMS_AlertIndication* alert);
 
 	void raiseGMS_AlertIndication(unsigned short category, unsigned long id, const std::string &Datetime,
 		const ACE_TString &MessageID, const ACE_TString &Message, const std::vector<ACE_TString> &MessageArguments);

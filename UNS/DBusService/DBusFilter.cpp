@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2017-2025 Intel Corporation
+ * Copyright (C) 2017-2026 Intel Corporation
  */
 /*++
 
@@ -94,6 +94,8 @@ bool DBusFilter::defaultInitialization(std::shared_ptr<DBusFilter> filter)
 		filter->addEvent(EVENT_UNPROVISIONING) &&
 		filter->addEvent(EVENT_SD_STARTED) &&
 		filter->addEvent(EVENT_SD_FINISHED) &&
+
+		filter->addEvent(EVENT_FIRMWARE_RESET) &&
 
 		filter->addEvent(EVENT_IP_SYNC_DISABLE) &&
 		filter->addEvent(EVENT_IP_SYNC_ENABLE) &&
