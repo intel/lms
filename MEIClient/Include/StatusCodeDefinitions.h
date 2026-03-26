@@ -340,4 +340,7 @@ typedef unsigned int AMT_STATUS;
 #define    AMT_STATUS_IPV6_INTERFACE_DISABLED  2500
 #define    AMT_STATUS_INTERFACE_DOES_NOT_EXIST  2501
 
+//MEI client received a zero-length response from the AMTHI interface
+#define AMT_STATUS_AMTHI_ZERO_LEN_RESP  0x2000
+
 #endif

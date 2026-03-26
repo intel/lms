@@ -7,6 +7,9 @@
 
 #include "MEIClientException.h"
 #include <cstring>
+#include <iomanip>
+#include <sstream>
+#include <string>
 #include <vector>
 #include <cstdint>
 
@@ -167,6 +170,16 @@ void parseComplexArray (std::vector<T>& v,std::vector<uint8_t>::const_iterator& 
 	//parse should check for buffer size
 	for (uint32_t i = 0; i<count; ++i)
 		v[i].parse(itr,end);
+}
+
+inline std::string parseHexString(std::vector<uint8_t>::const_iterator& itr, const std::vector<uint8_t>::const_iterator& end)
+{
+	std::ostringstream hexStream;
+	hexStream << std::hex << std::setfill('0');
+	for (auto it = itr; it != end; ++it)
+		hexStream << std::setw(2) << static_cast<unsigned int>(*it);
+	itr = end;
+	return hexStream.str();
 }
 
 #ifndef BIT
