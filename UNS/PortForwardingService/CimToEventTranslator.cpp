@@ -71,6 +71,8 @@ const ACE_TString KVM_NOTIFICATION_3(ACE_TEXT("iAMT0052 - 2"));	// 7 72  - EVENT
 const ACE_TString KVM_NOTIFICATION_4(ACE_TEXT("iAMT0059 - 0"));	// 7 73
 const ACE_TString KVM_NOTIFICATION_5(ACE_TEXT("iAMT0059 - 1"));	// 7 74
 const ACE_TString KVM_NOTIFICATION_6(ACE_TEXT("iAMT0052 - 3"));	// 7 76  - EVENT_KVM_DATA_CHANNEL
+const ACE_TString KVM_NOTIFICATION_7(ACE_TEXT("iAMT0052 - 4"));	// 7 77  - EVENT_KVM_UNSET_VIRTUAL_DESKTOP_REG_KEY
+const ACE_TString KVM_NOTIFICATION_8(ACE_TEXT("iAMT0052 - 5"));	// 7 78  - EVENT_KVM_SET_VIRTUAL_DESKTOP_REG_KEY
 
 
 const ACE_TString RCS_NOTIFICATION_5(ACE_TEXT("iAMT0058 - 0"));	// 8 84  - EVENT_RCS_TUNNEL_CLOSE - CIRA_DISCONNECTED
@@ -159,6 +161,8 @@ CimToEventTranslator::CimToEventTranslator()
 	 m_eventsMap.bind(KVM_NOTIFICATION_4, GmsEventType(CATEGORY_KVM, EVENT_KVM_DISABLED, "KVM disabled")); //User Notification Alert   - KVM enabled event %1s
 	 m_eventsMap.bind(KVM_NOTIFICATION_5, GmsEventType(CATEGORY_KVM, EVENT_KVM_ENABLED, "KVM enabled")); //User Notification Alert   - KVM enabled event %1s
 	 m_eventsMap.bind(KVM_NOTIFICATION_6, GmsEventType(CATEGORY_KVM, EVENT_KVM_DATA_CHANNEL, "KVM data channel")); //User Notification Alert   - KVM session event %1s
+	 m_eventsMap.bind(KVM_NOTIFICATION_7, GmsEventType(CATEGORY_KVM, EVENT_KVM_UNSET_VIRTUAL_DESKTOP_REG_KEY, "KVM extended display - unset registry key")); //User Notification Alert   - KVM session event %1s
+	 m_eventsMap.bind(KVM_NOTIFICATION_8, GmsEventType(CATEGORY_KVM, EVENT_KVM_SET_VIRTUAL_DESKTOP_REG_KEY, "KVM extended display - set registry key")); //User Notification Alert   - KVM session event %1s
 	 m_eventsMap.bind(RCS_NOTIFICATION_5, GmsEventType(CATEGORY_RCS, EVENT_RCS_TUNNEL_CLOSE, "Client Initiated Remote Access (CIRA) session disconnected")); //User Notification Alert   - Remote Access Connection Notification %1s
 	 m_eventsMap.bind(RCS_NOTIFICATION_6, GmsEventType(CATEGORY_RCS, EVENT_RCS_TUNNEL_OPEN, "Client Initiated Remote Access (CIRA) session connected")); //User Notification Alert   - Remote Access Connection Notification %1s
 	 

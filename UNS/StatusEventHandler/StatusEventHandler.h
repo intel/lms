@@ -207,6 +207,9 @@ private:
 	bool GetKVMRedirectionState(bool& enable,KVM_STATE& connected);
 	void requestDisplaySettings();
 
+	// set KVM Extended Display registry key value
+	void SetForceVirtualDesktopRegistry(uint32_t value);
+	
 	short m_KVM;
 	short m_SOL;
 	short m_IDER;

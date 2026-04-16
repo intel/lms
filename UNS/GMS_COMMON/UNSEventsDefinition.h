@@ -85,6 +85,8 @@
 #define EVENT_KVM_ENABLED						74
 #define EVENT_KVM_SCREEN_SETTING_UPDATE	        75 
 #define EVENT_KVM_DATA_CHANNEL					76 
+#define EVENT_KVM_UNSET_VIRTUAL_DESKTOP_REG_KEY	77 
+#define EVENT_KVM_SET_VIRTUAL_DESKTOP_REG_KEY	78 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define EVENT_RCS_TUNNEL_CLOSE					84
 #define EVENT_RCS_TUNNEL_OPEN					85

@@ -15,6 +15,9 @@
 #include "Tools.h"
 #include "MKHIErrorException.h"
 #include "DataStorageWrapper.h"
+#ifdef WIN32
+#include <Windows.h>
+#endif
 
 //WSMAN calls
 #include "CancelOptInClient.h"
@@ -418,6 +421,16 @@ void  StatusEventHandler::handleKVMEvents(const GMS_AlertIndication *alert)
 		break;
 	case EVENT_KVM_DATA_CHANNEL:
 		SaveCurrentStatus(KVM_STATE::KVM_DATA_CHANNEL);
+		break;
+	case EVENT_KVM_UNSET_VIRTUAL_DESKTOP_REG_KEY:
+		// set the ForceVirtualDesktop registry value to 0
+		UNS_DEBUG(L"Received EVENT_KVM_UNSET_VIRTUAL_DESKTOP_REG_KEY event, setting ForceVirtualDesktop registry value to 0\n");
+		SetForceVirtualDesktopRegistry(0);
+		break;
+	case EVENT_KVM_SET_VIRTUAL_DESKTOP_REG_KEY:
+		// set the ForceVirtualDesktop registry value to 1
+		UNS_DEBUG(L"Received EVENT_KVM_SET_VIRTUAL_DESKTOP_REG_KEY event, setting ForceVirtualDesktop registry value to 1\n");
+		SetForceVirtualDesktopRegistry(1);
 		break;
 	}
 }
@@ -1737,5 +1750,110 @@ void StatusEventHandler::requestDisplaySettings()
 	raiseGMS_AlertIndication(CATEGORY_KVM,EVENT_KVM_SCREEN_SETTING_UPDATE,getDateTime(),ACTIVE_MESSAGEID, ACE_TEXT(""));
 	UNS_DEBUG(L"Sending request for display settings\n");
 }
+
+#ifdef WIN32
+// Set the ForceVirtualDesktop registry value on all device instances under the base key.
+// Multiple instances may exist (e.g., after device re-enumeration or stale ghost entries),
+// so we apply the value to every instance that has a "Device Parameters" subkey.
+// We cannot reliably detect the active instance using registry alone because stale entries
+// may lack removal flags, and adding a new library (SetupDi) for this single operation is overkill.
+void StatusEventHandler::SetForceVirtualDesktopRegistry(uint32_t value)
+{
+	FuncEntryExit<void> fee(this, L"SetForceVirtualDesktopRegistry");
+
+	const wchar_t* regValueName = L"ForceVirtualDesktop";
+	// VID_8087 is Intel's USB vendor ID and PID_002C is the product ID of the Intel AMT KVM
+	// virtual USB input device; MI_01 is its HID mouse interface.
+	const wchar_t* deviceBaseKeyPath = L"SYSTEM\\CurrentControlSet\\Enum\\HID\\VID_8087&PID_002C&MI_01";
+	HKEY hDeviceBaseKey;
+
+	// Open with enumerate + query access to iterate over child keys
+	LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE, deviceBaseKeyPath, 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_WOW64_64KEY, &hDeviceBaseKey);
+	if (result != ERROR_SUCCESS)
+	{
+		UNS_ERROR(L"Failed to open device base key '%s', error: %d\n", deviceBaseKeyPath, result);
+		return;
+	}
+
+	LONG enumResult = ERROR_GEN_FAILURE;
+	DWORD index = 0;
+	wchar_t instanceName[MAX_PATH];		// max registry subkey name length is 255 chars
+	DWORD instanceNameSize = MAX_PATH;
+	bool regSetSucceeded = false;
+
+	while ((enumResult = RegEnumKeyExW(hDeviceBaseKey, index, instanceName, &instanceNameSize, NULL, NULL, NULL, NULL)) == ERROR_SUCCESS)
+	{
+		std::wstring devParamsPath = deviceBaseKeyPath;
+		devParamsPath += L"\\";
+		devParamsPath += instanceName;
+		devParamsPath += L"\\Device Parameters";
+
+		HKEY hKey;
+		LONG openResult = RegOpenKeyExW(HKEY_LOCAL_MACHINE, devParamsPath.c_str(), 0, KEY_SET_VALUE | KEY_WOW64_64KEY, &hKey);
+		if (openResult == ERROR_SUCCESS)
+		{
+			LONG setResult = RegSetValueExW(hKey, regValueName, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&value), sizeof(uint32_t));
+			RegCloseKey(hKey);
+
+			if (setResult == ERROR_SUCCESS)
+			{
+				regSetSucceeded = true;
+			}
+			else
+			{
+				UNS_ERROR(L"Failed to set ForceVirtualDesktop on '%s', error: %d\n", devParamsPath.c_str(), setResult);
+			}
+		}
+		else
+		{
+			// A stale/ghost device instance may lack a "Device Parameters" subkey.
+			// In such cases ERROR_FILE_NOT_FOUND is the expected outcome so log it only
+			// at debug level to avoid redundant entries in the log
+			if (openResult == ERROR_FILE_NOT_FOUND)
+			{
+				UNS_DEBUG(L"Skipping instance without Device Parameters '%s'\n", devParamsPath.c_str());
+			}
+			else
+			{
+				UNS_ERROR(L"Failed to open Device Parameters '%s', error: %d\n", devParamsPath.c_str(), openResult);
+			}
+		}
+
+		index++;
+		instanceNameSize = MAX_PATH;	// reset buffer size for next call
+	}
+
+	RegCloseKey(hDeviceBaseKey);
+
+	// log issues in key enumeration or value setting
+	if (index == 0)
+	{
+		if (enumResult == ERROR_NO_MORE_ITEMS)
+		{
+			UNS_ERROR(L"Cannot set ForceVirtualDesktop: no device instances found under base key\n");
+		}
+		else
+		{
+			UNS_ERROR(L"Cannot set ForceVirtualDesktop: failed to enumerate device instances, error: %d\n", enumResult);
+		}
+	}
+	else
+	{
+		if (enumResult != ERROR_NO_MORE_ITEMS)
+		{
+			UNS_ERROR(L"ForceVirtualDesktop: device instance enumeration terminated early after %u instance(s), error: %d\n", index, enumResult);
+		}
+		if (!regSetSucceeded)
+		{
+			UNS_ERROR(L"Cannot set ForceVirtualDesktop: no successful write on any of %u enumerated instances\n", index);
+		}
+	}
+}
+#else
+void StatusEventHandler::SetForceVirtualDesktopRegistry(uint32_t)
+{
+	UNS_DEBUG(L"SetForceVirtualDesktopRegistry: not supported on this platform\n");
+}
+#endif
 
 LMS_SUBSERVICE_DEFINE (STATUSEVENTHANDLER, StatusEventHandler)
