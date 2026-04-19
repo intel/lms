@@ -1,3 +1,62 @@
+## [2625.0.0.0]
+
+### Fixed
+ - cancel outstanding read before disconnect
+ - PTHI: CheckCredentials: Fix wrong response size compare.
+ - Linux: overwrite FORTIFY_SOURCE from distribution
+ - PortForwardingService: cast NULL to HANDLE
+ - silence some of 64bit size warnings
+ - MEIClient: MNGIsChangeToAMTEnabledCommand: do not depend on new interface bit
+ - Fix print specifiers
+ - MEWMIProv: do not fail on null buffer
+ - AMT_COM_Interface: add CoRevertToSelf on error path
+ - catch GetLastError before UNS_ERROR
+ - PowerOperationsService: add missing return
+ - README_INTERNAL: update Conan artifactory path
+ - MEIClient: fix variable sizes for group and command
+ - PartialFWUpdateService: fix state print
+ - PortForwardingService: fix print of callback type
+
+### Changed
+ - conan: use gtest 1.12.1
+ - PortForwardingService: compact LMEConnection class
+ - Windows: Move from 32-bit to 64-bit
+ - PortForwardingService: use vector for tx buffer
+ - PortForwardingService: specialize catch
+ - use metee cpp wrapper
+ - update in-tree copy of OpenWsman to 2.8.1
+ - BDBA: update dependency versions
+ - CIM_Framework: update to latest and fix errors
+ - Update WifiEndpoint h files with new TransitionMode value
+ - rename HTMGetFLogCommand to HTMGetFLogSizeCommand to reflect actual request
+ - conan: update libxml to 2.15.3 and ACE to 8.0.6
+ - MEIClient: update MeTee to 6.2.3
+
+### Removed
+ - drop virtual functions that just call parent
+ - windows_pack: drop required pfu
+ - GMS_COMMON: drop Is64BitOs
+ - MEIClient: MNGIsChangeToAMTEnabledCommand: remove unused fields
+ - PortForwardingService: remove unused parameter from _checkRemoteSupport
+
+### Added
+ - Store last 5 GMS logs
+ - WPA3-SAE Transition Mode Profile Support
+ - WsmanClientTest: Test Wifi-enabled setups
+ - MEIClient: add retry on connect
+ - catch exceptions from WsManClent calls
+ - WsmanClient: throw on empty port number
+ - MEWMIProv: expand MEProvTest with comprehensive debug attribute coverage
+ - UNS: add event codes and update handlers for AMT debug events
+ - MEWMIProv: add new providers and extend existing ones with debug attributes
+ - WsmanClient: add WSMan clients for AMT debug attribute retrieval
+ - MEWMIProv: add and update MOF schemas, INF, and build script
+ - MEIClient: add firmware commands for CIRA log, FLog, and RTC
+ - send events iAMT0058 and iAMT0057 to event log
+ - PortForwardingService: add debug prints in Init
+ - KVM Extended Display - set HID mouse parameter in Windows Registry
+ - GMS_COMMON: print error code when LoadLibrary fail
+
 ## [2550.0.0.0]
 
 ### Fixed
