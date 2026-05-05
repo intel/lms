@@ -563,6 +563,30 @@ Language=All
 The user consent process ended
 .
 
+MessageId=2137
+Facility=Application
+Severity=Informational
+SymbolicName=RCS_TUNNEL_CLOSE
+Language=All
+Intel(R) ME Client Initiated Remote Access (CIRA) session disconnected
+.
+
+MessageId=2138
+Facility=Application
+Severity=Informational
+SymbolicName=RCS_TUNNEL_OPEN
+Language=All
+Intel(R) ME Client Initiated Remote Access (CIRA) session connected
+.
+
+MessageId=2139
+Facility=Application
+Severity=Informational
+SymbolicName=WLAN_LINK_IS_DOWN
+Language=All
+Intel(R) ME WLAN Link is down
+.
+
 ;//***********************End of Event Definitions***********************
 
 ;#endif

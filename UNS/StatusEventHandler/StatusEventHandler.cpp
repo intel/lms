@@ -10,6 +10,7 @@
 #include "GetRedirectionSessionsStateCommand.h"
 #include "GetFWCapsCommand.h"
 #include "GetLastHostResetReasonCommand.h"
+#include "GetLanInterfaceSettingsCommand.h"
 #include "GetEACStateCommand.h"
 #include "Tools.h"
 #include "MKHIErrorException.h"
@@ -219,6 +220,9 @@ void StatusEventHandler::handleGeneralEvents(const GMS_AlertIndication *alert)
 	case EVENT_FIRMWARE_RESET:
 		handleFWResetEvent(alert);
 		break;
+	case EVENT_NETWORK_STATE_CHANGE:
+		handleNetworkStateChange(alert);
+		break;
 	}
 
 }
@@ -296,6 +300,25 @@ void StatusEventHandler::handleProvisioningEvents(const GMS_AlertIndication *ale
 void StatusEventHandler::handleFWResetEvent(const GMS_AlertIndication* alert)
 {
 	raiseGMS_AlertIndication(alert->category, EVENT_FIRMWARE_RESET, alert->Datetime, alert->MessageID, EVENT_FIRMWARE_RESET_MSG, alert->MessageArguments);
+}
+
+void StatusEventHandler::handleNetworkStateChange(const GMS_AlertIndication* alert)
+{
+	FuncEntryExit<void> fee(this, L"handleNetworkStateChange");
+	try {
+		Intel::MEI_Client::AMTHI_Client::GetLanInterfaceSettingsCommand lanSettingWireless(Intel::MEI_Client::AMTHI_Client::WIRELESS);
+		Intel::MEI_Client::AMTHI_Client::LAN_SETTINGS responseWireless = lanSettingWireless.getResponse();
+
+		UNS_DEBUG(L"StatusEventHandler::handleNetworkStateChange - WIRELESS LinkStatus %u\n", (unsigned int)responseWireless.LinkStatus);
+		if (responseWireless.LinkStatus == 0)
+		{
+			raiseGMS_AlertIndication(CATEGORY_GENERAL, EVENT_WLAN_LINK_IS_DOWN, alert->Datetime, alert->MessageID, ACE_TEXT("AMT Wireless Lan link is down"));
+		}
+	}
+	catch (const std::exception& e)
+	{
+		UNS_ERROR("Exception in GetLanInterfaceSettingsCommand %C\n", e.what());
+	}
 }
 
 void  StatusEventHandler::handleSystemDefenceEvents(const GMS_AlertIndication *alert)

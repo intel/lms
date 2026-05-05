@@ -161,6 +161,7 @@
 #define EVENT_FWCIRAWORKAROUND_FAILURE                  286
 #define EVENT_FWCIRAWORKAROUND_NOTACTIVE                287
 #define EVENT_REMOTE_CONNECTIVITY_INITIATED             288
+#define EVENT_WLAN_LINK_IS_DOWN                         289
 
 //note this should be updated when when adding events
 #define MAX_EVENT_NUM							290

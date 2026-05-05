@@ -189,6 +189,7 @@ private:
 	void handleWlanEvents(const GMS_AlertIndication *alert);
 	void handleTimeSyncEvents(const GMS_AlertIndication *alert);
 	void handleFWResetEvent(const GMS_AlertIndication* alert);
+	void handleNetworkStateChange(const GMS_AlertIndication* alert);
 
 	void raiseGMS_AlertIndication(unsigned short category, unsigned long id, const std::string &Datetime,
 		const ACE_TString &MessageID, const ACE_TString &Message, const std::vector<ACE_TString> &MessageArguments);
