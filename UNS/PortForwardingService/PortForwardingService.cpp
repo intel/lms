@@ -479,6 +479,7 @@ HDEVNOTIFY PortForwardingService::_registerDeviceNotifications(HANDLE drvHandle)
 	filter.dbch_devicetype = DBT_DEVTYP_HANDLE;
 	filter.dbch_handle = drvHandle;
 
+	UNS_DEBUG(L"RegisterDeviceNotification\n");
 	SERVICE_STATUS_HANDLE& sshStatusHandle = m_mainService->GetServiceHandle();
 	notifyHandle = RegisterDeviceNotification(sshStatusHandle, &filter, DEVICE_NOTIFY_SERVICE_HANDLE);
 	if (notifyHandle == NULL) {
@@ -500,6 +501,7 @@ void PortForwardingService::_unregisterDeviceNotifications(HDEVNOTIFY notifyHand
 	static bool alreadyLoggedFailure = false;
 
 	if (notifyHandle != NULL) {
+		UNS_DEBUG(L"UnregisterDeviceNotification\n");
 		if (!UnregisterDeviceNotification(notifyHandle)) {
 			if (!alreadyLoggedFailure) 
 			{

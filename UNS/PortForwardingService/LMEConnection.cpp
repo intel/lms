@@ -59,6 +59,7 @@ bool LMEConnection::Init(InitParameters & params)
 
 		_clientNotFound = false;
 		if (_initState == INIT_STATE_CONNECTED) {
+			UNS_DEBUG(L"Disconnect\n");
 			_heci.Disconnect();
 		}
 		else if (_initState != INIT_STATE_DISCONNECTED) {
@@ -72,6 +73,7 @@ bool LMEConnection::Init(InitParameters & params)
 
 		try
 		{
+			UNS_DEBUG(L"Connect\n");
 			_heci.Connect();
 
 			// Register Device Notification
@@ -104,6 +106,7 @@ bool LMEConnection::Init(InitParameters & params)
 			return res;
 		}
 
+		UNS_DEBUG(L"Spawn thread\n");
 		// launch RX thread
 		auto spawn_res = aceMgr_->spawn((ACE_THR_FUNC)_rxThreadFunc, this, THR_CANCEL_ENABLE, &_rxThread);
 		if (spawn_res == -1)
@@ -113,6 +116,7 @@ bool LMEConnection::Init(InitParameters & params)
 			return res;
 		}
 
+		UNS_DEBUG(L"Wait for _threadStartedEvent\n");
 		ACE_Time_Value till(10);
 		int wait = _threadStartedEvent.wait(&till, 0);
 		_threadStartedEvent.reset();
@@ -127,6 +131,7 @@ bool LMEConnection::Init(InitParameters & params)
 		_initState = INIT_STATE_CONNECTED;
 	}
 
+	UNS_DEBUG(L"Wait for _portIsOk\n");
 	ACE_Time_Value till(5);
 	int wait = _portIsOk.wait(&till, 0);
 	_portIsOk.reset();
