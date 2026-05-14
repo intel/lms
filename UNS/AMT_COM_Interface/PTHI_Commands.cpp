@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2025 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -175,6 +175,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 		UNS_ERROR(L"Unable to OpenThreadToken (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
+		CoRevertToSelf();
 		return hr;
 	}
 
@@ -186,6 +187,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 		UNS_ERROR(L"Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
+		CoRevertToSelf();
 		return hr;
 	}
 
@@ -194,6 +196,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 		UNS_ERROR(L"Wrong security TokenImpersonationLevel (%d)\n", dwImp);
 		hr = S_FALSE;//STATUS_SECURITY_NOT_CORRECT;
 		CloseHandle(hThreadTok);
+		CoRevertToSelf();
 		return hr;
 	}
 
@@ -202,6 +205,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 	{
 		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups NULL (0x%x)\n", GetLastError());
 		CloseHandle(hThreadTok);
+		CoRevertToSelf();
 		return S_FALSE;//STATUS_SECURITY_PROBLEM;
 	}
 
@@ -213,6 +217,7 @@ HRESULT CheckCredentials(DATA_NAME funcName)
 		UNS_ERROR(L"Unable to GetTokenInformation - TokenGroups (0x%x)\n", GetLastError());
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
+		CoRevertToSelf();
 		delete [] groups;
 		return hr;
 	}
