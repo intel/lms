@@ -55,14 +55,16 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 	ret = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 	if (!ret)
 	{
-		UNS_ERROR(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %Lu\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR(L"PowerOperationsService::initiateShutDown - OpenProcessToken failed, error %Lu\n", err);
 	}
 	else
 	{
 		ret = LookupPrivilegeValue(NULL,SE_SHUTDOWN_NAME, &prv.Privileges[0].Luid);
 		if (!ret)
 		{
-			UNS_ERROR(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %Lu\n", GetLastError());
+			DWORD err = GetLastError();
+			UNS_ERROR(L"PowerOperationsService::initiateShutDown - LookupPrivilegeValue failed, error %Lu\n", err);
 		}
 		else
 		{
@@ -70,7 +72,18 @@ bool PowerOperationsService::shutdownOp(bool reboot, int attempt, std::wstringst
 			prv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 			ret = AdjustTokenPrivileges(hToken, FALSE, &prv, 0, (PTOKEN_PRIVILEGES)NULL, 0);
 			if (!ret)
-				UNS_ERROR(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %Lu\n", GetLastError());
+			{
+				DWORD err = GetLastError();
+				UNS_ERROR(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %Lu\n", err);
+			}
+			else
+			{
+				DWORD err = GetLastError();
+				if (err == ERROR_NOT_ALL_ASSIGNED)
+				{
+					UNS_ERROR(L"PowerOperationsService::initiateShutDown - AdjustTokenPrivileges failed, error %Lu\n", err);
+				}
+			}
 		}
 		CloseHandle(hToken);
 	}
@@ -104,7 +117,8 @@ void getPowerCapabilities(bool& sleep,bool& hibernate)
 	SYSTEM_POWER_CAPABILITIES systemCaps = { 0 };
 	if (!GetPwrCapabilities(&systemCaps))
 	{
-		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %Lu\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %Lu\n", err);
 		sleep = hibernate = false;
 	}
 	//systemCaps.HiberFilePresent shows if hibernation was enabled/disabled (such as using "powercfg.exe /h off")
@@ -428,7 +442,7 @@ void PowerOperationsService::addPowerCapabilities()
 		UNS_DEBUG(L"adding graceful power operations %d %d\n", sleep, hibernate);
 		if (!powerManagementCapabilitiesClient.addGracefulOperations(sleep, hibernate))
 		{
-			UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed with error %Lu\n", GetLastError());
+			UNS_ERROR(L"powerManagementCapabilitiesClient.addGracefulOperations() failed\n");
 			return;
 		}
 	}

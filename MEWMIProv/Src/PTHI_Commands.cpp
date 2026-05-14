@@ -84,7 +84,8 @@ HRESULT IsUserAdmin()
 
 	if (bRes == FALSE)
 	{
-		UNS_ERROR("Unable to OpenThreadToken (0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to OpenThreadToken (0x%x)\n", err);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -101,7 +102,8 @@ HRESULT IsUserAdmin()
 
 	if (!bRes)
 	{
-		UNS_ERROR("Unable to GetTokenInformation - TokenImpersonationLevel (0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to GetTokenInformation - TokenImpersonationLevel (0x%x)\n", err);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -124,7 +126,8 @@ HRESULT IsUserAdmin()
 
 	if (!bRes && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 	{
-		UNS_ERROR("Unable to GetTokenInformation - TokenGroups (0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to GetTokenInformation - TokenGroups (0x%x)\n", err);
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -139,7 +142,8 @@ HRESULT IsUserAdmin()
 		dwBytesReturned, &dwBytesReturned);
 	if (!bRes || dwBytesReturned < sizeof(TOKEN_GROUPS))
 	{
-		UNS_ERROR("Unable to GetTokenInformation - TokenGroups (0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to GetTokenInformation - TokenGroups (0x%x)\n", err);
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -163,7 +167,8 @@ HRESULT IsUserAdmin()
 	// Create a SID on the local computer.
 	if(!CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, AdministratorsSid, &SidSize))
 	{
-		UNS_ERROR("Unable to CreateWellKnownSid (0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to CreateWellKnownSid (0x%x)\n", err);
 		LocalFree(AdministratorsSid);
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -225,7 +230,8 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (bRes == FALSE)
 	{
-		UNS_ERROR("Unable to OpenThreadToken (0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to OpenThreadToken (0x%x)\n", err);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();
@@ -242,7 +248,8 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (!bRes)
 	{
-		UNS_ERROR("Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("Unable to GetTokenInformation - TokenImpersonationLevel(0x%x)\n", err);
 		hr = S_FALSE;//STATUS_SECURITY_PROBLEM;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf () ;
@@ -263,7 +270,8 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 
 	if (!bRes && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 	{
-		UNS_ERROR("GetTokenInformation first failed (%d, (0x%x)\n", bRes, GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("GetTokenInformation first failed (%d, 0x%x)\n", bRes, err);
 		hr = S_FALSE;
 		CloseHandle(hThreadTok);
 		CoRevertToSelf();

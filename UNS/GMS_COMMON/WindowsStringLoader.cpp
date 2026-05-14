@@ -19,7 +19,8 @@ STRING_TYPE WindowsStringLoader::loadString(unsigned int id)
 	ZeroMemory(&char_arr[0],sizeof(char_arr));
 	if (LoadString(GetModuleHandle(NULL),id,&char_arr[0],MAX_STRING_LEN)<=0)
 	{
-		UNS_ERROR(L"WindowsStringLoader::loadString - LoadString failed with error %Lu\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR(L"WindowsStringLoader::loadString - LoadString failed with error %Lu\n", err);
 		return EMPTY_STR;
 	}
 

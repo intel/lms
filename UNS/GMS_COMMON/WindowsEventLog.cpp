@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2009-2021 Intel Corporation
+ * Copyright (C) 2009-2026 Intel Corporation
  */
 /*++
 
@@ -114,7 +114,8 @@ void WindowsEventLog::LogEvent(	unsigned short	CategoryID,
 				RawData);					// lpRawData 
 	if (!rc)
 	{
-		//UNS_ERROR("ReportEvent failed, Last Error %d\n", GetLastError());
+		DWORD err = GetLastError();
+		UNS_ERROR("ReportEvent failed, Last Error %d\n", err);
 	}
 }
 
