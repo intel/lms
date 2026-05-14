@@ -289,11 +289,15 @@ HRESULT getApplicationDetails(std::string& userNameStr, std::string& domainNameS
 	bRes = ::LookupAccountSid(NULL, user->User.Sid, NULL, (LPDWORD)&userNameSize, NULL, (LPDWORD)&domainNameSize, &eUse);
 	if (!bRes)
 	{
-		UNS_ERROR("LookupAccountSid failed (%d, (0x%x)\n", bRes, GetLastError());
-		hr = S_FALSE;
-		CloseHandle(hThreadTok);
-		CoRevertToSelf();
-		return hr;
+		DWORD err = GetLastError();
+		if (ERROR_INSUFFICIENT_BUFFER != err)
+		{
+			UNS_ERROR("LookupAccountSid failed (%d, (0x%x)\n", bRes, err);
+			hr = S_FALSE;
+			CloseHandle(hThreadTok);
+			CoRevertToSelf();
+			return hr;
+		}
 	}
 
 	userName = (char *)GlobalAlloc(
