@@ -120,6 +120,7 @@ void getPowerCapabilities(bool& sleep,bool& hibernate)
 		DWORD err = GetLastError();
 		UNS_ERROR(L"getPowerCapabilities - GetPwrCapabilities failed with error %Lu\n", err);
 		sleep = hibernate = false;
+		return;
 	}
 	//systemCaps.HiberFilePresent shows if hibernation was enabled/disabled (such as using "powercfg.exe /h off")
 	//systemCaps.SystemS4 shows if hibernation is available or not because of internal reasons (such as disabling gfx driver)
