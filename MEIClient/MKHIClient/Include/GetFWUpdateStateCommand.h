@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 /*++
 
@@ -45,7 +45,7 @@ namespace Intel
 				virtual ~GetFWUpdateStateRequest() {}
 
 			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x02;
+				static const uint8_t REQUEST_COMMAND_NUMBER = 0x02;
 
 				virtual uint32_t requestDataSize()
 				{
@@ -80,7 +80,7 @@ namespace Intel
 
 				MKHIGetRuleCommandResponse<FW_UPDATE_STATE> m_response;
 
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x02;
+				static const uint8_t RESPONSE_COMMAND_NUMBER = 0x02;
 
 			};
 		} // namespace MKHI_Client

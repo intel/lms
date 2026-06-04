@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2022-2023 Intel Corporation
+ * Copyright (C) 2022-2026 Intel Corporation
  */
 /*++
 
@@ -23,11 +23,7 @@ namespace MEI_Client
 {
 namespace MCHI_Client
 {
-
-enum MCHIGroups
-{
-	MCHI_GROUP_ID_MCA = 0xA,
-};
+const uint8_t MCHI_GROUP_ID_MCA = 0xA;
 
 typedef union _MCHI_MSG_HEADER
 {
@@ -69,7 +65,7 @@ private:
 class MCHICommandRequest: public Intel::MEI_Client::MEICommandRequest
 {
 public:
-	MCHICommandRequest(uint32_t requestHeaderCommandNumber, uint32_t requestHeaderGroupID) :
+	MCHICommandRequest(uint8_t requestHeaderCommandNumber, uint8_t requestHeaderGroupID) :
 		m_requestHeaderCommandNumber(requestHeaderCommandNumber), m_requestHeaderGroupID(requestHeaderGroupID) {}
 	virtual ~MCHICommandRequest() {}
 	virtual std::vector<uint8_t> Serialize();
@@ -96,7 +92,7 @@ public:
 	MCHICommandResponse() : m_result(), m_commandNumber(0), m_groupID(0) {}
 	MCHICommandResponse(MCHICommandResponse&& other) = default;
 	MCHICommandResponse& operator = (MCHICommandResponse&& other) = default;
-	MCHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID) : m_result()
+	MCHICommandResponse(const std::vector<uint8_t>& buffer, uint8_t commandNumber, uint8_t groupID) : m_result()
 	{
 		m_commandNumber = commandNumber;
 		m_groupID = groupID;
@@ -111,8 +107,8 @@ public:
 	}
 protected:
 	T m_result;
-	unsigned int m_commandNumber;
-	unsigned int m_groupID;
+	uint8_t m_commandNumber;
+	uint8_t m_groupID;
 
 private:
 	void verifyHeaderAndStatus(const std::vector<uint8_t>& buffer, unsigned int& headerAndStatSize)
@@ -142,8 +138,8 @@ private:
 	{
 		m_result.parse(itr, end);
 	}
-	unsigned int getCommandNumber() { return m_commandNumber; }
-	unsigned int getGroupID() { return m_groupID; }
+	uint8_t getCommandNumber() { return m_commandNumber; }
+	uint8_t getGroupID() { return m_groupID; }
 };
 
 } // namespace MCHI_Client

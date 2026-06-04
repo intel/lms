@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2022-2023 Intel Corporation
+ * Copyright (C) 2022-2026 Intel Corporation
  */
 /*++
 
@@ -59,7 +59,7 @@ namespace Intel
 				virtual ~ReadFileExRequest() {}
 
 			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0xA;
+				static const uint8_t REQUEST_COMMAND_NUMBER = 0xA;
 
 				virtual uint32_t requestDataSize()
 				{
@@ -94,7 +94,7 @@ namespace Intel
 
 				MCHICommandResponse<READ_FILE_EX_RESPONSE> m_response;
 
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0xA;
+				static const uint8_t RESPONSE_COMMAND_NUMBER = 0xA;
 			};
 		} // namespace MCHI_Client
 	} // namespace MEI_Client

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 /*++
 
@@ -24,21 +24,11 @@ namespace MEI_Client
 namespace MKHI_Client
 {
 
-enum MKHIGroups
-{
-	MKHI_CBM_GROUP_ID = 0x0,
-	MKHI_PM_GROUP_ID,
-	MKHI_PWD_GROUP_ID,
-	MKHI_FWCAPS_GROUP_ID,
-	MKHI_APP_GROUP_ID,
-	MKHI_HMRFPO_GROUP_ID,
-	MKHI_FWUPDATE_GROUP_ID,
-	MKHI_MAX_GROUP_ID,
-	MKHI_GEN_GROUP_ID = 0xff
-};
+const uint8_t MKHI_FWCAPS_GROUP_ID = 0x03;
+const uint8_t MKHI_GEN_GROUP_ID = 0xFF;
 
 //Macro to build a rule identifier. for Me rules all other fields are zeros
-#define MAKE_ME_RULE_ID(FeatureId, RuleId)  ((FeatureId << 16) | RuleId)
+#define MAKE_ME_RULE_ID(FeatureId, RuleId)  (((FeatureId) << 16) | (RuleId))
 #define ME_RULE_FEATURE_ID                            0
 #define MEFWCAPS_FW_SKU_RULE                          0
 #define MEFWCAPS_ME_FW_UPDATE_RULE                    7
@@ -102,7 +92,7 @@ private:
 class MKHICommandRequest: public Intel::MEI_Client::MEICommandRequest
 {
 public:
-	MKHICommandRequest(uint32_t requestHeaderCommandNumber, uint32_t requestHeaderGroupID) :
+	MKHICommandRequest(uint8_t requestHeaderCommandNumber, uint8_t requestHeaderGroupID) :
 		m_requestHeaderCommandNumber(requestHeaderCommandNumber), m_requestHeaderGroupID(requestHeaderGroupID) {}
 	virtual ~MKHICommandRequest() {}
 	virtual std::vector<uint8_t> Serialize();
@@ -128,7 +118,7 @@ public:
 	MKHICommandResponse() : m_result(), m_commandNumber(0), m_groupID(0) {}
 	MKHICommandResponse(MKHICommandResponse&& other) = default;
 	MKHICommandResponse& operator = (MKHICommandResponse&& other) = default;
-	MKHICommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID) : m_result()
+	MKHICommandResponse(const std::vector<uint8_t>& buffer, uint8_t commandNumber, uint8_t groupID) : m_result()
 	{
 		m_commandNumber = commandNumber;
 		m_groupID = groupID;
@@ -143,8 +133,8 @@ public:
 	}
 protected:
 	T m_result;
-	unsigned int m_commandNumber;
-	unsigned int m_groupID;
+	uint8_t m_commandNumber;
+	uint8_t m_groupID;
 
 private:
 	void verifyHeaderAndStatus(const std::vector<uint8_t>& buffer, unsigned int & headerAndStatSize)
@@ -171,8 +161,8 @@ private:
 	{
 		m_result.parse(itr, end);
 	}
-	unsigned int getCommandNumber() { return m_commandNumber; }
-	unsigned int getGroupID() { return m_groupID; }
+	uint8_t getCommandNumber() { return m_commandNumber; }
+	uint8_t getGroupID() { return m_groupID; }
 };
 
 template <typename T>
@@ -182,8 +172,8 @@ public:
 	MKHIGetRuleCommandResponse() : m_result(), m_commandNumber(0), m_groupID(0), m_ruleID(0) {}
 	MKHIGetRuleCommandResponse(MKHIGetRuleCommandResponse&& other) = default;
 	MKHIGetRuleCommandResponse& operator = (MKHIGetRuleCommandResponse&& other) = default;
-	MKHIGetRuleCommandResponse(const std::vector<uint8_t>& buffer, unsigned int commandNumber, unsigned int groupID,
-		unsigned int ruleID) : m_result(), m_commandNumber(commandNumber), m_groupID(groupID), m_ruleID(ruleID)
+	MKHIGetRuleCommandResponse(const std::vector<uint8_t>& buffer, uint8_t commandNumber, uint8_t groupID,
+		uint32_t ruleID) : m_result(), m_commandNumber(commandNumber), m_groupID(groupID), m_ruleID(ruleID)
 	{
 		unsigned int headerAndStatSize = 0;
 		verifyHeaderAndStatus(buffer,  headerAndStatSize);
@@ -196,9 +186,9 @@ public:
 	}
 protected:
 	T m_result;
-	unsigned int m_commandNumber;
-	unsigned int m_groupID;
-	unsigned int m_ruleID;
+	uint8_t m_commandNumber;
+	uint8_t m_groupID;
+	uint32_t m_ruleID;
 
 private:
 	void verifyHeaderAndStatus(const std::vector<uint8_t>& buffer, unsigned int & headerAndStatSize)
@@ -246,9 +236,9 @@ private:
 	{
 		m_result.parse(itr, end);
 	}
-	unsigned int getCommandNumber() { return m_commandNumber; }
-	unsigned int getGroupID() { return m_groupID; }
-	unsigned int getRuleID() { return m_ruleID; }
+	uint8_t getCommandNumber() { return m_commandNumber; }
+	uint8_t getGroupID() { return m_groupID; }
+	uint32_t getRuleID() { return m_ruleID; }
 };
 
 } // namespace MKHI_Client

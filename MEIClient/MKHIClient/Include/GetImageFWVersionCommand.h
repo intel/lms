@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 /*++
 
@@ -64,7 +64,7 @@ namespace Intel
 				virtual ~GetImageFWVersionRequest() {}
 
 			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x1C;
+				static const uint8_t REQUEST_COMMAND_NUMBER = 0x1C;
 
 				virtual uint32_t requestDataSize()
 				{
@@ -100,7 +100,7 @@ namespace Intel
 
 				MKHICommandResponse<GET_IMAGE_FW_VERSION_RESPONSE> m_response;
 
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1C;
+				static const uint8_t RESPONSE_COMMAND_NUMBER = 0x1C;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

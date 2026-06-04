@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2010-2023 Intel Corporation
+ * Copyright (C) 2010-2026 Intel Corporation
  */
 /*++
 
@@ -39,7 +39,7 @@ namespace Intel
 				virtual ~GetImageTypeRequest() {}
 
 			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x18;
+				static const uint8_t REQUEST_COMMAND_NUMBER = 0x18;
 			};
 
 			class GetImageTypeCommand : public MKHICommand
@@ -63,7 +63,7 @@ namespace Intel
 
 				MKHICommandResponse<MKHI_IMAGE_TYPE> m_response;
 
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x18;
+				static const uint8_t RESPONSE_COMMAND_NUMBER = 0x18;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

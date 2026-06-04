@@ -41,7 +41,7 @@ namespace Intel
 				virtual ~GetRTCValueRequest() {}
 
 			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0x1b;
+				static const uint8_t REQUEST_COMMAND_NUMBER = 0x1b;
 			};
 
 			class GetRTCValueCommand : public MKHICommand
@@ -65,7 +65,7 @@ namespace Intel
 
 				MKHICommandResponse<RTC_VALUE_RESPONSE> m_response;
 
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0x1b;
+				static const uint8_t RESPONSE_COMMAND_NUMBER = 0x1b;
 			};
 		} // namespace MKHI_Client
 	} // namespace MEI_Client

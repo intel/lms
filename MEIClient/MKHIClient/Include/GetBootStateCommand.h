@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
- * Copyright (C) 2024 Intel Corporation
+ * Copyright (C) 2024-2026 Intel Corporation
  */
  /*++
 
@@ -49,7 +49,7 @@ namespace Intel
 				virtual ~GetBootStateRequest() {}
 
 			private:
-				static const uint32_t REQUEST_COMMAND_NUMBER = 0xA;
+				static const uint8_t REQUEST_COMMAND_NUMBER = 0xA;
 			};
 
 			class GetBootStateCommand : public MKHICommand
@@ -73,7 +73,7 @@ namespace Intel
 
 				MKHICommandResponse<GET_BOOT_STATE_RESPONSE> m_response;
 
-				static const uint32_t RESPONSE_COMMAND_NUMBER = 0xA;
+				static const uint8_t RESPONSE_COMMAND_NUMBER = 0xA;
 			};
 
 		} // namespace MKHI_Client
