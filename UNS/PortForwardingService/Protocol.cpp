@@ -185,7 +185,7 @@ bool Protocol::Init(InitParameters & params)
 		return res;
 	}
 
-	res = _checkRemoteSupport(true);
+	res = _checkRemoteSupport();
 
 	return res;
 }
@@ -1425,9 +1425,6 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 								}
 							}
 
-
-
-
 							if (failure == true) {
 								_lme.Disconnect(APF_DISCONNECT_PROTOCOL_ERROR);
 								Deinit();
@@ -1446,18 +1443,15 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 							}
 
 							if (!failure) {
+								UNS_TRACE(L"Listening at port %d addr:%C at %C interface.\n", tcpForwardRequestMessage->Port,
+									tcpForwardRequestMessage->Address.c_str(), (cb == _isLocalCallback) ? L"local" : L"remote");
 								if (cb == _isLocalCallback) {
-
-									UNS_TRACE(L"Listening at port %d addr:%C at %C interface.\n", tcpForwardRequestMessage->Port, 
-										tcpForwardRequestMessage->Address.c_str(),
-										(cb == _isLocalCallback)?L"local":L"remote");
-
 									// Now it only updates for IPv4
 									_updateIPFQDN(tcpForwardRequestMessage->Address);
 
 								} else {
 									UNS_DEBUG(L"--------->remote tunnel created - going to check remote support\n");
-									_checkRemoteSupport(true);
+									_checkRemoteSupport();
 								}
 							}
 						}
@@ -1910,38 +1904,36 @@ void Protocol::_AdapterCallback(void *param, SuffixMap &localDNSSuffixes)
 
 }
 
-bool Protocol::_checkRemoteSupport(bool requestDnsFromAmt)
+bool Protocol::_checkRemoteSupport()
 {
-	if (requestDnsFromAmt) {
-		try
+	try
+	{
+		Intel::MEI_Client::AMTHI_Client::GetDNSSuffixListCommand getDNSSuffixListCommand;
+		Intel::MEI_Client::AMTHI_Client::GET_DNS_SUFFIX_LIST_RESPONSE response = getDNSSuffixListCommand.getResponse();
+		std::lock_guard<std::mutex> l(_AMTDNSLock);
+		_AMTDNSSuffixes.clear();
+		size_t n = response.HashHandles.size();
+		if (n > 0)
 		{
-			Intel::MEI_Client::AMTHI_Client::GetDNSSuffixListCommand getDNSSuffixListCommand;
-			Intel::MEI_Client::AMTHI_Client::GET_DNS_SUFFIX_LIST_RESPONSE response = getDNSSuffixListCommand.getResponse();
-			std::lock_guard<std::mutex> l(_AMTDNSLock);
-			_AMTDNSSuffixes.clear();
-			size_t n = response.HashHandles.size();
-			if (n > 0)
+			vector<string> dnsSuffixes;
+			string ss;
+			for (size_t i = 0; i < n; i++)
 			{
-				vector<string> dnsSuffixes;
-				string ss;
-				for (size_t i = 0; i < n; i++)
+				char c = response.HashHandles[i];
+				if (c == '\0')
 				{
-					char c = response.HashHandles[i];
-					if (c == '\0')
-					{
-						dnsSuffixes.push_back(ss);
-						ss.clear();
-					}
-					else
-						ss += c;
+					dnsSuffixes.push_back(ss);
+					ss.clear();
 				}
-				_AMTDNSSuffixes.assign(dnsSuffixes.begin(), dnsSuffixes.end());
+				else
+					ss += c;
 			}
+			_AMTDNSSuffixes.assign(dnsSuffixes.begin(), dnsSuffixes.end());
 		}
-		catch(Intel::MEI_Client::MEIClientException e)
-		{
-			UNS_ERROR(L"_checkRemoteSupport: GetDNSSuffixListCommand failed: %C\n", e.what());
-		}
+	}
+	catch(const Intel::MEI_Client::MEIClientException &e)
+	{
+		UNS_ERROR(L"_checkRemoteSupport: GetDNSSuffixListCommand failed: %C\n", e.what());
 	}
 
 	return _updateEnterpriseAccessStatus(AdapterListInfo::GetLocalDNSSuffixList(), true);

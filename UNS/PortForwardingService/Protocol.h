@@ -108,7 +108,7 @@ private:
 	bool _remoteTunnelExist();
 
 	int _isRemote(SOCKET s) const;
-	bool _checkRemoteSupport(bool requestDnsFromAmt = false);
+	bool _checkRemoteSupport();
 	bool _updateEnterpriseAccessStatus(const SuffixMap &localDNSSuffixes, bool sendAnyWay = false);
 	bool _isRemoteAPFAddress(const std::string &addr);
 
