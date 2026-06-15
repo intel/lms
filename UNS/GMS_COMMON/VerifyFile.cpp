@@ -121,6 +121,11 @@ HMODULE VerifyFile::SafeLoadDll(const std::wstring & wcName)
 	if (VerifyDll(filepath, file_handle))
 	{
 		library_handle = LoadLibrary(filepath.c_str());
+		if (library_handle == nullptr)
+		{
+			DWORD dwLastError = GetLastError();
+			UNS_ERROR(L"LoadLibrary failed for %W with %lu\n", filepath.c_str(), dwLastError);
+		}
 	}
 
 	CloseHandle(file_handle);
