@@ -1444,7 +1444,7 @@ void Protocol::_LmeReceive(void *buffer, unsigned int len, int *status)
 
 							if (!failure) {
 								UNS_TRACE(L"Listening at port %d addr:%C at %C interface.\n", tcpForwardRequestMessage->Port,
-									tcpForwardRequestMessage->Address.c_str(), (cb == _isLocalCallback) ? L"local" : L"remote");
+									tcpForwardRequestMessage->Address.c_str(), (cb == _isLocalCallback) ? "local" : "remote");
 								if (cb == _isLocalCallback) {
 									// Now it only updates for IPv4
 									_updateIPFQDN(tcpForwardRequestMessage->Address);
